@@ -1,0 +1,45 @@
+svchost.exe (Service Hosting Process)
+
+Image Path:		%SystemRoot%\System32\svchost.exe
+
+Parent Process:		services.exe
+
+Child Processes:
+
+Number of Instances:	Five or more
+
+User Account:
+Varies depending on svchost instance, though it typically will be Local System, Network Service, or Local Service accounts. Beginning with Windows 10, an instance will start under the user context at logon (with command line '-k UnistackSvcGroup').
+
+Start Time:
+Typically within seconds of boot time. However, services can be started after boot, which might result in new instacnes of svchost.exe well after boot time.
+
+Description:
+The generic host process for Windows Services. It is used for running service DLLs. Windows will run multiple instances of svchost.exe, each using a unique '-k' parameter for grouping similar services. Typical '-k' parameters include BTsvcs, DcomLaunch, RPCSS, LocalServiceNetworkRestricted, netsvcs, LocalService,NetworkService, LocalServiceNoNetwork, secsvcs, and LocalServiceAnNoImpersonation. Malware authors often take advantage of the ubiquitous nature of svchost.exe and use it either directly or indirectly to hide their malware. They use it directly by installing the malware as a service in a legitimate instance of svchost.exe. Alternatively, they use it indirectly by trying to blend in with legitimate instances of svchost.exe, either by slightly misspelling the name (e.g., scvhost.exe) or spelling it correctly but placing it in a directory other than System32. Keep in mind that a legitmate svchost.exe should always run from %SystemRoot%\System32, should have services.exe as its parent, and should host at least one service. Also, on default installations of Windows 7 and later, all service executables and DLLs are signed by Microsoft.
+Multiple instances of svchost.exe can/do exist/run
+
+Username:
+Should only be one of three options: NT AUTHORITY\SYSTEM, LOCAL SERVICE, or NETWORK SERVICE
+
+Notes:
+Should always have a parent of services.exe
+
+Base Priority of 8
+
+Often mimicked (scvhost, svch0st, etc.) When they are mimicked they will not be running as children to services.exe.
+
+Command Line: 
+	svchost.exe -k <name>
+	-k <name> values should exist within the Software\Microsoft\Windows NT\CurrentVersion\Svchost registry key
+
+Often times when malware uses the actual svchost.exe to load their malicious service they will not include -k command line parameters and be running under a username that does not match on of the three listed in bullet 3.
+
+They should all be running within session 0
+
+SVCHOST is the Host Process for many Windows and third-party services.
+
+There will be multiple SVCHOST instances running on every PC, and malware commonly uses similar names to dodge any attention.
+
+The real SVCHOSTs will be a parent of SERVICES, and running in Session 0 as SYSTEM, LOCAL SERVICE or NETWORK SERVICE.
+
+The executable runs from %SystemRoot%\System32, with a command-line -k switch indicating its account or service name.

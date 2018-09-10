@@ -1,0 +1,30 @@
+lsass.exe (Local Security Authority)
+
+Image Path:	%SystemRoot%\System32\lsass.exe
+
+Parent Process:	wininit.exe
+
+Child Processes:
+
+Number of Instances:	One
+
+User Account:	Local System
+
+Start Time:	Within seconds of boot time
+
+Description:	The Local Security Authentication Subsystem Server process is responsible for authenticating users by callin an appropriate Security Service Provider (SSP) authentication package specified in HKLM\SYSTEM\CurrentControlSet\Control\Lsa. Typically this will be Kerberos SSP for domain accounts or the MSVI_0 SSP for local accounts. Once a user is authenticated, lsass.exe generates an access token for the user that specifies security rights and constraints for the user and the user's processes. Only one instance of this process should occur and it should never have child processes.
+Child to WININIT.EXE
+Only one lsass.exe process
+%SystemRoot%\System32\lsass.exe
+Responsible for local security policy to include managing users allowed to login, password policies, writing to the security event log, etc.
+Often targeted by malware as a means to dump passwords. Also mimicked by malware to hide on a system (lass.exe, lssass.exe, lsasss.exe, etc.). These 'fake' names will not be a children of wininit.exe.
+Base Priority of 9
+
+Username: NT AUTHORITY\SYSTEM
+
+Runs within session 0
+It should not have child processes
+The Local Security Authority process (LSASS.EXE) is responsible for all kinds of authentication and security management tasks, which makes it a regular target for attackers.
+Normally you’ll have a single LSASS, a child of WININIT, which doesn't have any child processes itself.
+The regular LSASS process runs as SYSTEM, in session 0, and typically won’t do much apart from generate a little CPU activity (and you’ll only notice that if you look closely).
+Malware sometimes tries to disguise itself with similar names, so pay attention to any lookalikes.
