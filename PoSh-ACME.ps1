@@ -1,11 +1,12 @@
 ﻿
+
 # Check if the script is running with Administrator Privlieges, if not it will attempt to re-run and prompt for credentials
 If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(`
     [Security.Principal.WindowsBuiltInRole] "Administrator"))
 {
     [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic")
     $verify = [Microsoft.VisualBasic.Interaction]::MsgBox(`
-        "Attention Under-Privileged User!`n   $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)`n`nThis sciprt requires Administrator privileges in order to remotely collect data corretcly! Otherwise, the script-up will start and may not collect data as expected.",`
+        "Attention Under-Privileged User!`n   $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)`n`nThis script requires Administrator privileges in order to remotely collect data corretcly! Otherwise, the script-up will start and may not collect data as expected.",`
         'YesNoCancel,Question',`
         "PoSH-ACME")
     switch ($verify) {
@@ -28,17 +29,19 @@ If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 $ErrorActionPreference = "SilentlyContinue"
    
 # Location PoSh-ACME will save files
-#$PoShHome = "C:\$env:HOMEPATH\Desktop\PoSh-ACME Results"
-$PoShHome = split-path -parent $MyInvocation.MyCommand.Definition
+$PoShHome             = Split-Path -parent $MyInvocation.MyCommand.Definition
+
+# Name of Collected Data Directory
+$CollectedData        = "Collected Data"
     
 # Location of separate queries
-$PoShLocation = "$PoShHome\Collected Data\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+$PoShLocation         = "$PoShHome\$CollectedData\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
 
 # Location of Uncompiled Results
 $CollectedResultsUncompiled = "Individual Host Results"
 
 # Files
-$LogFile              = "$PoShHome\PoSH-ACME Log.txt"
+$LogFile              = "$PoShHome\Log File.txt"
 $IPListFile           = "$PoShHome\iplist.txt"
 $OpNotesFile          = "$PoShHome\OpNotes.txt"
 $OpNotesWriteOnlyFile = "$PoShHome\OpNotes (Write Only).txt"
@@ -51,13 +54,16 @@ $LogMessage | Add-Content -Path $LogFile
 # The Font Used
 $Font = "Courier"
 
-# This deleay is introduced to allow certain collection commands to complete gathering data before it pulls back the data
-# Specificially in instances where Invoke-WmiMethod is being used to execute DOS or native commands on remote hosts and needs to finish
-# Increase this Start-Sleep variable in the event you determine that not all data is being pulled back as the copy command can pull back incomplete results
 $SleepTime = 5
+
+# Number of jobs simultaneously when collecting data
+$ThrottleLimit = 100
 
 # Clears out Computer List variable
 $ComputerList = ""
+
+# Credentials will be stored in this variable
+$Credential = ""
 
 
 # ============================================================================================================================================================
@@ -507,9 +513,7 @@ $PoShACME.Location     = New-Object System.Drawing.Size($PoShACMERightPosition,$
 $PoShACME.Size         = New-Object System.Drawing.Size($PoShACMEBoxWidth,$PoShACMEBoxHeight) 
 $PoShACME.ClientSize   = $System_Drawing_Size
 $PoShACME.DataBindings.DefaultDataSourceUpdateMode = 0
-#$PoShACME.Topmost = $true
 $PoShACME.Top = $true
-#$InitialFormWindowState = New-Object System.Windows.Forms.FormWindowState
 
 
 ##############################################################################################################################################################
@@ -601,6 +605,10 @@ $QueriesBoxWidth          = 410
 $QueriesBoxHeight         = 25
 
 
+#-------------
+# Queries Tab
+#-------------
+
 $Section1QueriesTab          = New-Object System.Windows.Forms.TabPage
 $Section1QueriesTab.Location = $System_Drawing_Point
 $Section1QueriesTab.Text     = "Queries"
@@ -655,7 +663,7 @@ $HuntCheckBox.Text     = "$($HuntCheckBox.Name)"
 $HuntCheckBox.TabIndex = 2
 $HuntCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $HuntCheckBox.Location = New-Object System.Drawing.Size(($Column1RightPosition),$Column1DownPosition)
-$HuntCheckBox.Size     = New-Object System.Drawing.Size(160,$Column1BoxHeight)
+$HuntCheckBox.Size     = New-Object System.Drawing.Size(130,$Column1BoxHeight)
 $HuntCheckBox.Add_Click({
     If ($HuntCheckBox.Checked -eq $true){
         $ClearCheckBox.Checked                 = $false
@@ -670,22 +678,23 @@ $HuntCheckBox.Add_Click({
 $Section1QueriesTab.Controls.Add($HuntCheckBox)
 
 
-#-----------------------
-# Survey (All) Checkbox
-#-----------------------
+#---------------------
+# Select All Checkbox
+#---------------------
 
 $SurveyCheckBox          = New-Object System.Windows.Forms.Checkbox
-$SurveyCheckBox.Name     = "Survey (All)"
+$SurveyCheckBox.Name     = "Select All (Not Recommended)"
 $SurveyCheckBox.Text     = "$($SurveyCheckBox.Name)"
 $SurveyCheckBox.TabIndex = 2
 $SurveyCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
-$SurveyCheckBox.Location = New-Object System.Drawing.Size(($Column1RightPosition + 160),$Column1DownPosition)
-$SurveyCheckBox.Size     = New-Object System.Drawing.Size(100,$Column1BoxHeight)
+$SurveyCheckBox.Location = New-Object System.Drawing.Size(($Column1RightPosition + 140),$Column1DownPosition)
+$SurveyCheckBox.Size     = New-Object System.Drawing.Size(200,$Column1BoxHeight)
 $SurveyCheckBox.Add_Click({
     If ($SurveyCheckBox.Checked -eq $true){
         $ClearCheckBox.Checked                      = $false
         $HuntCheckBox.Checked                       = $false
         $TestConnectionsCheckbox.Checked            = $true
+        $ProcessTreeLineageCheckBox.Checked         = $true
         $ProcessesStandardCheckBox.Checked          = $true
         $ProcessesEnhancedCheckBox.Checked          = $true
         $ProcessorCPUInfoCheckBox.Checked           = $true
@@ -704,7 +713,8 @@ $SurveyCheckBox.Add_Click({
         $ComputerInfoCheckBox.Checked               = $true
         $SecurityPatchesCheckBox.Checked            = $true
         $LogonInfoCheckBox.Checked                  = $true
-        $LogonStatusCheckBox.Checked                = $true
+        $LogonSessionsCheckBox.Checked              = $true
+        $LogonUserStatusCheckBox.Checked            = $true
         $CheckBoxNum09.Checked                      = $true
         $CheckBoxNum10.Checked                      = $true
         $GroupInfoCheckBox.Checked                  = $true
@@ -755,13 +765,14 @@ $ClearCheckBox.Name     = "Clear"
 $ClearCheckBox.Text     = "$($ClearCheckBox.Name)"
 $ClearCheckBox.TabIndex = 2
 $ClearCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
-$ClearCheckBox.Location = New-Object System.Drawing.Size(($Column1RightPosition + 300),$Column1DownPosition)
+$ClearCheckBox.Location = New-Object System.Drawing.Size(($Column1RightPosition + 340),$Column1DownPosition)
 $ClearCheckBox.Size     = New-Object System.Drawing.Size(80,$Column1BoxHeight)
 $ClearCheckBox.Add_Click({
     If ($ClearCheckBox.Checked -eq $true){
         $HuntCheckBox.Checked                       = $false
         $SurveyCheckBox.Checked                     = $false
         $TestConnectionsCheckbox.Checked            = $false
+        $ProcessTreeLineageCheckBox.Checked         = $false
         $ProcessesStandardCheckBox.Checked          = $false
         $ProcessesEnhancedCheckBox.Checked          = $false
         $ProcessorCPUInfoCheckBox.Checked           = $false
@@ -780,7 +791,8 @@ $ClearCheckBox.Add_Click({
         $ComputerInfoCheckBox.Checked               = $false
         $SecurityPatchesCheckBox.Checked            = $false
         $LogonInfoCheckBox.Checked                  = $false
-        $LogonStatusCheckBox.Checked                = $false
+        $LogonSessionsCheckBox.Checked              = $false
+        $LogonUserStatusCheckBox.Checked            = $false
         $CheckBoxNum09.Checked                      = $false
         $CheckBoxNum10.Checked                      = $false
         $GroupInfoCheckBox.Checked                  = $false
@@ -832,84 +844,24 @@ $Column1DownPosition += $Column1DownPositionShift + 5
 
 $QueryLabel           = New-Object System.Windows.Forms.Label
 $QueryLabel.Location  = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
-$QueryLabel.Size      = New-Object System.Drawing.Size(400,$Column1BoxHeight) 
+$QueryLabel.Size      = New-Object System.Drawing.Size(180,$Column1BoxHeight) 
 $QueryLabel.Text      = "Select What To Collect:"
 $QueryLabel.Font = New-Object System.Drawing.Font("$Font",11,1,3,1)
 $QueryLabel.ForeColor = "Blue"
-$Section1QueriesTab.Controls.Add($QueryLabel)  # Shift the Text and Button's Locaiton
+$Section1QueriesTab.Controls.Add($QueryLabel)
 
 
+$QueryLabel2           = New-Object System.Windows.Forms.Label
+$QueryLabel2.Location  = New-Object System.Drawing.Size(($Column1RightPosition + 180),($Column1DownPosition + 4)) 
+$QueryLabel2.Size      = New-Object System.Drawing.Size(400,($Column1BoxHeight - 4)) 
+$QueryLabel2.Text      = "* = Needs to be on the Domain"
+$QueryLabel2.Font = New-Object System.Drawing.Font("$Font",8,0,3,0)
+$QueryLabel2.ForeColor = "Blue"
+$Section1QueriesTab.Controls.Add($QueryLabel2)  
+
+# Shift the Text and Button's Locaiton
 $Column1DownPosition   += $Column1DownPositionShift
 
-
-# ============================================================================================================================================================
-# Tests connection to remote hosts and removes them if unable to pull data
-# ============================================================================================================================================================
-
-
-$TestConnectionsCheckbox      = New-Object System.Windows.Forms.CheckBox
-$TestConnectionsCheckbox.Name = "Test Connections First"
-function TestConnectionsCheckbox {
-        $Message1            = "$($TestConnectionsCheckbox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
-    foreach ($TargetComputer in $ComputerList) {
-        $Message1            = "Testing Connection with $TargetComputer"
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Add($Message1)
-        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
-        $LogMessage          | Add-Content -Path $LogFile
-
-        try {
-            Get-WmiObject -Class Win32_computersystem -ComputerName $TargetComputer -ErrorAction Stop | Out-Null
-            #$CheckWinRM = Get-Service -ComputerName $TargetComputer | Where-Object {$_.Name -eq "WinRM"} | Select-Object -Property Status -ExpandProperty Status
-            #if ($CheckWinRM -ne "Running") {Write-Host "action taken"}
-        }
-        catch [System.Runtime.InteropServices.COMException],[System.UnauthorizedAccessException] { 
-            #Write-Host "$($Error[0])" -ForegroundColor Red    
-            $Message1 = "Unable to Collect from host! Remove computer from list: $TargetComputer"
-            $MainListBox.Items.Insert(0,$Message1)
-            $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
-            $LogMessage | Add-Content -Path $LogFile
-            
-            # Removes $TargetComputer from $global:ComputerList if it fails to connect
-            $global:ComputerList = $ComputerList | Where-Object { $_ -ne "$TargetComputer" }
-            $global:ComputerListNotCollected +=  $TargetComputer
-        }
-        catch { 
-            ### The following $Error line helps identify the specific exception to catch!
-            # $Error[0].Exception.GetType().FullName    
-            #Write-Host "NO:  $TargetComputer" 
-            $Error[0].Exception.GetType().FullName
-            $Message1 = "What is this error? $($Error[0])"
-            $MainListBox.Items.Insert(0,$Message1)
-            $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
-            $LogMessage | Add-Content -Path $LogFile 
-        }
-    }
-    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($TestConnectionsCheckbox.Name)"
-    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0) 
-    $MainListBox.Items.Insert(0,$Message2)
-    $Message3 = "Finished Collecting Data!"
-    $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add($Message3)
-
-
-    # Outputs a List of all the Computers initially provided
-    $global:ComputerList | Out-File "$PoShLocation\~Computer List - Original List.txt"
-
-    # Outputs a List of all the Computers that will not be collected from
-    $global:ComputerListNotCollected | Out-File "$PoShLocation\~Computer List - Not Collected.txt"
-
-    # Outputs a List of all the Computers to Collect From
-    $global:ComputerList | Out-File "$PoShLocation\~Computer List - Collected From.txt"
-}
-$TestConnectionsCheckbox.Text     = "$($TestConnectionsCheckbox.Name)"
-$TestConnectionsCheckbox.TabIndex = 2
-$TestConnectionsCheckbox.DataBindings.DefaultDataSourceUpdateMode = 0
-$TestConnectionsCheckbox.Location = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
-$TestConnectionsCheckbox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
-$Section1QueriesTab.Controls.Add($TestConnectionsCheckbox)
 
 
 
@@ -917,86 +869,138 @@ $Section1QueriesTab.Controls.Add($TestConnectionsCheckbox)
 # ARP Cache 
 # ============================================================================================================================================================
 
-# Shift the Text and Button's Locaiton
-$Column1DownPosition   += $Column1DownPositionShift
-
-
 $ARPCacheCheckBox            = New-Object System.Windows.Forms.CheckBox
-$ARPCacheCheckBox.Name       = "ARP Cache"
+$ARPCacheCheckBox.Name       = "ARP Cache *"
+
 function ARPCacheCommand {
-        $Message1            = "$($ARPCacheCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($ARPCacheCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "ARP Cache"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($ARPCacheCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
-        $Message1            = "Collecting Data:  $($ARPCacheCheckBox.Name) from $TargetComputer"
+        $Message1            = "Sending Command:  $($ARPCacheCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Invoke-WmiMethod -Class Win32_Process -Name Create -Computername $TargetComputer -ArgumentList "cmd /c arp -a > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
-
-        # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
-        Start-Sleep -Seconds $SleepTime
-
-        # Pulls back the data from the Target Computer
-        Copy-Item -Path "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" -Destination "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
-        Remove-Item -Path "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-
-        # Imports the text file
-        $ARPCache = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
-
-        # Creates the fields that become the file headers
-        $ARPCacheHeader = "Interface,Internet Address,Physical Address,Type"
-
-        # Extracts the data 
-        $ARPCacheData = @()
-        $ARPCacheInterface = ""
-        foreach ($line in $ARPCache) {
-            if ($line -match "---") {
-                $ARPCacheInterface = $line
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
             }
-            if (($line -notmatch "---") -and ($line -notmatch "Type") -and ($line -match "  ")) {
-                $ARPCacheData += "$ARPCacheInterface   $line"
-            }
-        }
-        #Combines the File Header and Data
-        $ARPCacheCombined = @()
-        $ARPCacheCombined += $ARPCacheHeader
-        $ARPCacheCombined += $ARPCacheData
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c arp -a
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {                                           
+                    # Imports the text file
+                    $ARPCache = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
+
+                    # Creates the fields that become the file headers
+                    $ARPCacheHeader = "Interface,Internet Address,Physical Address,Type"
+
+                    # Extracts the data 
+                    $ARPCacheData = @()
+                    $ARPCacheInterface = ""
+                    foreach ($line in $ARPCache) {
+                        if ($line -match "---") {
+                            $ARPCacheInterface = $line
+                        }
+                        if (($line -notmatch "---") -and ($line -notmatch "Type") -and ($line -match "  ")) {
+                            $ARPCacheData += "$ARPCacheInterface   $line"
+                        }
+                    }
+                    #Combines the File Header and Data
+                    $ARPCacheCombined = @()
+                    $ARPCacheCombined += $ARPCacheHeader
+                    $ARPCacheCombined += $ARPCacheData
         
-        # Converts to CSV and removes unneeded data
-        $ARPCacheBuffer = @()
-        foreach ($line in $ARPCacheCombined) {
-            $ARPCacheBuffer += $line -replace " {2,}","," -replace ",$","" -replace "Interface: ",""
-        }
-        $ARPCacheBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    # Converts to CSV and removes unneeded data
+                    $ARPCacheBuffer = @()
+
+                    foreach ($line in $ARPCacheCombined) {
+                        $ARPCacheBuffer += $line -replace " {2,}","," -replace ",$","" -replace "Interface: ",""
+                    }
+                    $ARPCacheBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
         
-        # Add PSComputerName header and host/ip name
-        $ARPCacheFile = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-        $ARPCacheFile | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $ARPCacheFile | Select-Object "PSComputerName",*| Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-    }
-    # Removes duplicate headers from csv file
-    $count = 1
-    $output = @()
-    $Contents = Get-Content "$PoShLocation\$CollectionName.csv" | Sort-Object -Unique -Descending
-    $Header = $Contents | Select-Object -First 1
-    foreach ($line in $Contents) {
-        if ($line -match $Header -and $count -eq 1) {
-            $output = $line + "`r`n"
-            $count ++
+                    # Add PSComputerName header and host/ip name
+                    $ARPCacheFile = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $ARPCacheFile | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
+                    $ARPCacheFile | Select-Object "PSComputerName",*| Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
-        elseif ($line -notmatch $Header) {
-            $output += $line + "`r`n"
-        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c arp -a
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {                                           
+                    # Imports the text file
+                    $ARPCache = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
+
+                    # Creates the fields that become the file headers
+                    $ARPCacheHeader = "Interface,Internet Address,Physical Address,Type"
+
+                    # Extracts the data 
+                    $ARPCacheData = @()
+                    $ARPCacheInterface = ""
+                    foreach ($line in $ARPCache) {
+                        if ($line -match "---") {
+                            $ARPCacheInterface = $line
+                        }
+                        if (($line -notmatch "---") -and ($line -notmatch "Type") -and ($line -match "  ")) {
+                            $ARPCacheData += "$ARPCacheInterface   $line"
+                        }
+                    }
+                    #Combines the File Header and Data
+                    $ARPCacheCombined = @()
+                    $ARPCacheCombined += $ARPCacheHeader
+                    $ARPCacheCombined += $ARPCacheData
+        
+                    # Converts to CSV and removes unneeded data
+                    $ARPCacheBuffer = @()
+
+                    foreach ($line in $ARPCacheCombined) {
+                        $ARPCacheBuffer += $line -replace " {2,}","," -replace ",$","" -replace "Interface: ",""
+                    }
+                    $ARPCacheBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+        
+                    # Add PSComputerName header and host/ip name
+                    $ARPCacheFile = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $ARPCacheFile | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
+                    $ARPCacheFile | Select-Object "PSComputerName",*| Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
-    Remove-Item -Path "$PoShLocation\$CollectionName.csv"
-    $output | Out-File -FilePath "$PoShLocation\$CollectionName.csv"
+    MonitorJobs
 
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ARPCacheCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
@@ -1005,7 +1009,8 @@ function ARPCacheCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Remove-DuplicateCsvHeaders
 }
 
 $ARPCacheCheckBox.Text     = "$($ARPCacheCheckBox.Name)"
@@ -1017,8 +1022,10 @@ $ARPCacheCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Co
 $Section1QueriesTab.Controls.Add($ARPCacheCheckBox)
 
 
+
+
 # ============================================================================================================================================================
-# Autoruns / Startup
+# Autoruns - Startup
 # ============================================================================================================================================================
 
 # Shift the Text and Button's Locaiton
@@ -1026,25 +1033,60 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $AutorunsCheckBox = New-Object System.Windows.Forms.CheckBox
-$AutorunsCheckBox.Name = "Autoruns / Startup"
+$AutorunsCheckBox.Name = "Autoruns - Startup"
+
 function AutorunsCommand {
-        $Message1            = "$($AutorunsCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($AutorunsCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Autoruns - Startup"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+    
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+    
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($AutorunsCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($AutorunsCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_StartupCommand -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, Name, Location, Command, User `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+
+                Get-WmiObject -Credential $Credential -Class Win32_StartupCommand -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, Location, Command, User `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_StartupCommand -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, Location, Command, User `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($AutorunsCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1052,7 +1094,7 @@ function AutorunsCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $AutorunsCheckBox.Text     = "$($AutorunsCheckBox.Name)"
@@ -1062,6 +1104,7 @@ $AutorunsCheckBox.Location = New-Object System.Drawing.Size($Column1RightPositio
 $AutorunsCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($AutorunsCheckBox)
+
 
 
 
@@ -1075,25 +1118,60 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $BIOSInfoCheckBox = New-Object System.Windows.Forms.CheckBox
 $BIOSInfoCheckBox.Name = "BIOS Information"
+
 function BIOSInfoCommand {
-        $Message1            = "$($BIOSInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($BIOSInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "BIOS Information"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($BIOSInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($BIOSInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
-
-
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_BIOS -ComputerName $TargetComputer `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_BIOS -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName,  SMBIOSBIOSVersion, Name, Manufacturer, SerialNumber, Version, Description, ReleaseDate, InstallDate `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_BIOS -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName,  SMBIOSBIOSVersion, Name, Manufacturer, SerialNumber, Version, Description, ReleaseDate, InstallDate `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($BIOSInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1101,7 +1179,7 @@ function BIOSInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $BIOSInfoCheckBox.Text     = "$($BIOSInfoCheckBox.Name)"
@@ -1111,6 +1189,8 @@ $BIOSInfoCheckBox.Location = New-Object System.Drawing.Size($Column1RightPositio
 $BIOSInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($BIOSInfoCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -1123,24 +1203,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $ComputerInfoCheckBox = New-Object System.Windows.Forms.CheckBox
 $ComputerInfoCheckBox.Name = "Computer Information"
+
 function ComputerInfoCommand {
-        $Message1            = "$($ComputerInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($ComputerInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Computer Information"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($ComputerInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($ComputerInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_ComputerSystem -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, Description, Manufacturer, Model, SystemType, NumberOfProcessors, TotalPhysicalMemory, EnableDaylightSavingsTime, BootupState, ThermalState, ChassisBootupState, KeyboardPasswordStatus, PowerSupplyState, PartOfDomain, Domain, Roles, Username, PrimaryOwnerName `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_ComputerSystem -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Description, Manufacturer, Model, SystemType, NumberOfProcessors, TotalPhysicalMemory, EnableDaylightSavingsTime, BootupState, PartOfDomain, Domain, Username, PrimaryOwnerName `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_ComputerSystem -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Description, Manufacturer, Model, SystemType, NumberOfProcessors, TotalPhysicalMemory, EnableDaylightSavingsTime, BootupState, PartOfDomain, Domain, Username, PrimaryOwnerName `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ComputerInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1148,7 +1263,7 @@ function ComputerInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $ComputerInfoCheckBox.Text     = "$($ComputerInfoCheckBox.Name)"
 $ComputerInfoCheckBox.TabIndex = 2
@@ -1157,6 +1272,8 @@ $ComputerInfoCheckBox.Location = New-Object System.Drawing.Size($Column1RightPos
 $ComputerInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($ComputerInfoCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -1169,37 +1286,83 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $DatesCheckBox = New-Object System.Windows.Forms.CheckBox
 $DatesCheckBox.Name = "Dates - Install, Bootup, System"
+
 function DatesCommand {
-        $Message1            = "$($DatesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($DatesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Dates - Install, Bootup, System"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($DatesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($DatesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        function CollectDateTimes {
-            $DateTimes=Get-WmiObject -class Win32_OperatingSystem -ComputerName $TargetComputer `
-            | Select-Object PSComputerName, InstallDate, LastBootUpTime, LocalDateTime
-            foreach ($time in $DateTimes) {
-                $InstallDate=[System.Management.ManagementDateTimeConverter]::ToDateTime($time.InstallDate)
-                $LastBootUpTime=[System.Management.ManagementDateTimeConverter]::ToDateTime($time.LastBootUpTime)
-                $LocalDateTime=[System.Management.ManagementDateTimeConverter]::ToDateTime($time.LocalDateTime)
-                $DateTimeOutput=@()
-                $DateTimeOutput += New-Object psobject -Property @{PSComputerName=$TargetComputer
-                InstallDate=$InstallDate
-                LastBootUpTime=$LastBootUpTime
-                LocalDateTime=$LocalDateTime}
-                $DateTimeOutput
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
             }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                function CollectDateTimes {
+                    $DateTimes=Get-WmiObject -Credential $Credential -Class Win32_OperatingSystem -ComputerName $TargetComputer `
+                    | Select-Object PSComputerName, InstallDate, LastBootUpTime, LocalDateTime
+                    foreach ($time in $DateTimes) {
+                        $InstallDate=[System.Management.ManagementDateTimeConverter]::ToDateTime($time.InstallDate)
+                        $LastBootUpTime=[System.Management.ManagementDateTimeConverter]::ToDateTime($time.LastBootUpTime)
+                        $LocalDateTime=[System.Management.ManagementDateTimeConverter]::ToDateTime($time.LocalDateTime)
+                        $DateTimeOutput=@()
+                        $DateTimeOutput += New-Object psobject -Property @{PSComputerName=$TargetComputer
+                        InstallDate=$InstallDate
+                        LastBootUpTime=$LastBootUpTime
+                        LocalDateTime=$LocalDateTime}
+                        $DateTimeOutput
+                    }
+                }
+                CollectDateTimes | Select-Object -Property PSComputerName, * | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
-        CollectDateTimes | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                function CollectDateTimes {
+                    $DateTimes=Get-WmiObject -class Win32_OperatingSystem -ComputerName $TargetComputer `
+                    | Select-Object PSComputerName, InstallDate, LastBootUpTime, LocalDateTime
+                    foreach ($time in $DateTimes) {
+                        $InstallDate=[System.Management.ManagementDateTimeConverter]::ToDateTime($time.InstallDate)
+                        $LastBootUpTime=[System.Management.ManagementDateTimeConverter]::ToDateTime($time.LastBootUpTime)
+                        $LocalDateTime=[System.Management.ManagementDateTimeConverter]::ToDateTime($time.LocalDateTime)
+                        $DateTimeOutput=@()
+                        $DateTimeOutput += New-Object psobject -Property @{PSComputerName=$TargetComputer
+                        InstallDate=$InstallDate
+                        LastBootUpTime=$LastBootUpTime
+                        LocalDateTime=$LocalDateTime}
+                        $DateTimeOutput
+                    }
+                }
+                CollectDateTimes | Select-Object -Property PSComputerName, * | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DatesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1207,7 +1370,7 @@ function DatesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $DatesCheckBox.Text     = "$($DatesCheckBox.Name)"
@@ -1217,6 +1380,8 @@ $DatesCheckBox.Location = New-Object System.Drawing.Size($Column1RightPosition,$
 $DatesCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($DatesCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -1229,24 +1394,59 @@ $Column1DownPosition += $Column1DownPositionShift
 
 $DiskInfoCheckBox = New-Object System.Windows.Forms.CheckBox
 $DiskInfoCheckBox.Name = "Disk Information"
+
 function DiskInfoCommand {
-        $Message1            = "$($DiskInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($DiskInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Disk Information"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($DiskInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($DiskInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_LogicalDisk -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, DeviceID, Description, ProviderName, FreeSpace, Size, DriveType `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_LogicalDisk -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, DeviceID, Description, ProviderName, FreeSpace, Size, DriveType `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_LogicalDisk -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, DeviceID, Description, ProviderName, FreeSpace, Size, DriveType `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DiskInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1254,7 +1454,7 @@ function DiskInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $DiskInfoCheckBox.Text     = "$($DiskInfoCheckBox.Name)"
@@ -1266,45 +1466,116 @@ $DiskInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Co
 $Section1QueriesTab.Controls.Add($DiskInfoCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # DLLs Loaded by Processes
 # ============================================================================================================================================================
 
 # Shift the Text and Button's Locaiton
-$Column1DownPosition   += $Column1DownPositionShift
+$Column1DownPosition += $Column1DownPositionShift
 
 
 $DLLsLoadedByProcessesCheckBox = New-Object System.Windows.Forms.CheckBox
-$DLLsLoadedByProcessesCheckBox.Name = "DLLs Loaded by Processes"
+$DLLsLoadedByProcessesCheckBox.Name = "DLLs Loaded by Processes *"
+
 function DLLsLoadedByProcessesCommand {
-        $Message1            = "$($DLLsLoadedByProcessesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($DLLsLoadedByProcessesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "DLLs Loaded by Processes"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($DLLsLoadedByProcessesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
         $Message1            = "Collecting Data:  $($DLLsLoadedByProcessesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Invoke-WmiMethod -Class Win32_Process -Name Create -Computername $TargetComputer -ArgumentList "cmd /c tasklist /m /FO CSV > c:\$CollectionShortName-$TargetComputer.csv" | Out-Null
-        # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
-        Start-Sleep -Seconds $SleepTime
-        # Pulls back the data from the Target Computer
-        Copy-Item -Path "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.csv" -Destination "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-        Remove-Item -Path "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.csv"
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    param($TargetComputer)
+                    function Get-FileHash{
+                        param ([string] $Path ) $HashAlgorithm = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+                        $Hash=[System.BitConverter]::ToString($hashAlgorithm.ComputeHash([System.IO.File]::ReadAllBytes($Path)))
+                        $Properties=@{"Algorithm" = "MD5"
+                        "Path" = $Path
+                        "Hash" = $Hash.Replace("-", "")
+                        }
+                    $Ret=New-Object –TypeName PSObject –Prop $Properties
+                    return $Ret
+                    }
 
-        $DLLProcesses = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") 
-        Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $LoadedModules = "PSComputerName,ProcessName,Path,Hash,Algorithm`r`n"
+                    Get-Process | foreach {
+                        $ProcessName = $_.ProcessName
+                        $Modules = $_ | Select-Object -ExpandProperty Modules | foreach {Get-FileHash $_.Filename}
+                        foreach ($Module in $Modules) {
+                            $LoadedModules += "$TargetComputer," + "$ProcessName," + "$($Module -replace '@{','' -replace 'Path=','' -replace '; ',',' -replace '}','')" + "`r`n"        
+                        }
+                    }
+                    $LoadedModules 
+                } -ArgumentList @($TargetComputer) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    param($TargetComputer)
+                    function Get-FileHash{
+                        param ([string] $Path ) $HashAlgorithm = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+                        $Hash=[System.BitConverter]::ToString($hashAlgorithm.ComputeHash([System.IO.File]::ReadAllBytes($Path)))
+                        $Properties=@{"Algorithm" = "MD5"
+                        "Path" = $Path
+                        "Hash" = $Hash.Replace("-", "")
+                        }
+                    $Ret=New-Object –TypeName PSObject –Prop $Properties
+                    return $Ret
+                    }
 
-        # Add PSComputerName header and host/ip name
-        $DLLProcesses | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $DLLProcesses | Select-Object "PSComputerName","Image Name","PID","Modules" | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $LoadedModules = "PSComputerName,ProcessName,ModulePath,Hash,Algorithm`r`n"
+                    Get-Process | foreach {
+                        $ProcessName = $_.ProcessName
+                        $Modules = $_ | Select-Object -ExpandProperty Modules | foreach {Get-FileHash $_.Filename}
+                        foreach ($Module in $Modules) {
+                            $LoadedModules += "$TargetComputer," + "$ProcessName," + "$($Module -replace '@{','' -replace '; ',',' -replace '}','' -replace 'Path=','' -replace 'Hash=','' -replace 'Algorithm=','')" + "`r`n"        
+                        }
+                    }
+                    $LoadedModules 
+                } -ArgumentList @($TargetComputer) `
+                | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DLLsLoadedByProcessesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1312,7 +1583,7 @@ function DLLsLoadedByProcessesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $DLLsLoadedByProcessesCheckBox.Text     = "$($DLLsLoadedByProcessesCheckBox.Name)"
 $DLLsLoadedByProcessesCheckBox.TabIndex = 2
@@ -1321,6 +1592,8 @@ $DLLsLoadedByProcessesCheckBox.Location = New-Object System.Drawing.Size($Column
 $DLLsLoadedByProcessesCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($DLLsLoadedByProcessesCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -1332,108 +1605,189 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $DNSCacheCheckBox            = New-Object System.Windows.Forms.CheckBox
-$DNSCacheCheckBox.Name       = "DNS Cache"
-        $Message1            = "$($DNSCacheCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+$DNSCacheCheckBox.Name       = "DNS Cache *"
+
 function DNSCacheCommand {
+    $Message1            = "$($DNSCacheCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "DNS Cache"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($DNSCacheCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
         $Message1            = "Collecting Data:  $($DNSCacheCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Invoke-WmiMethod -Class Win32_Process -Name Create -Computername $TargetComputer -ArgumentList "cmd /c ipconfig /displaydns > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
-
-        # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
-        Start-Sleep -Seconds $SleepTime
-
-        # Pulls back the data from the Target Computer
-        Copy-Item -Path "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" -Destination "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
-        Remove-Item -Path "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-
-        # Imports the text file
-        $DNSCache = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
-
-        # Creates the fields that become the file headers
-        $DNSCacheHeader = "Record Name,Record Type,Time To Live,Data Length,Section,A(Host)/CNAME Record"
-        
-        # Extracts the data 
-        $DNSCacheData = ""
-        $DNSCacheInterface = ""
-        $RecordName = ""
-        foreach ($line in $DNSCache) {
-            if ($line -match "---"){
-                $DNSCacheData += $line -replace "-{2,}","`n"
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
             }
-            if ($line -match ':'){
-                if ($line -match "Record Name") {
-                    if ($(($line -split ':')[1]) -eq $RecordName) {
-                        $DNSCacheData += "`n$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c ipconfig /displaydns
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Imports the text file
+                    $DNSCache = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
+
+                    # Creates the fields that become the file headers
+                    $DNSCacheHeader = "RecordName,RecordType,TimeToLive,DataLength,Section,A(Host)/CNAMERecord"
+        
+                    # Extracts the data 
+                    $DNSCacheData = ""
+                    $DNSCacheInterface = ""
+                    $RecordName = ""
+                    foreach ($line in $DNSCache) {
+                        if ($line -match "---"){
+                            $DNSCacheData += $line -replace "-{2,}","`n"
+                        }
+                        if ($line -match ':'){
+                            if ($line -match "Record Name") {
+                                if ($(($line -split ':')[1]) -eq $RecordName) {
+                                    $DNSCacheData += "`n$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                                }
+                                else {
+                                    $RecordName = ($line -split ':')[1]
+                                    $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                                }    
+                            }
+                            if ($line -match "Record Type") {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                            }
+                            if ($line -match "Time To Live") {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                            }
+                            if (($line -match "Data") -and ($line -match "Length")) {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                            }
+                            if ($line -match "Section") {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                            }
+                            if (($line -match "Host") -and ($line -match "Record")) {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`")"
+                            }
+                            if (($line -match "CNAME") -and ($line -match "Record")) {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`")"
+                            }
+                        }
                     }
-                    else {
-                        $RecordName = ($line -split ':')[1]
-                        $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
-                    }    
-                }
-                if ($line -match "Record Type") {
-                    $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
-                }
-                if ($line -match "Time To Live") {
-                    $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
-                }
-                if (($line -match "Data") -and ($line -match "Length")) {
-                    $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
-                }
-                if ($line -match "Section") {
-                    $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
-                }
-                if (($line -match "Host") -and ($line -match "Record")) {
-                    $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`")"
-                }
-                if (($line -match "CNAME") -and ($line -match "Record")) {
-                    $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`")"
-                }
-            }
-        }
-        #Combines the File Header and Data
-        $DNSCacheCombined = @()
-        $DNSCacheCombined += $DNSCacheHeader
-        $DNSCacheCombined += $DNSCacheData
+                    #Combines the File Header and Data
+                    $DNSCacheCombined = @()
+                    $DNSCacheCombined += $DNSCacheHeader
+                    $DNSCacheCombined += $DNSCacheData
         
-        # Converts to CSV
-        $DNSCacheBuffer = @()
-        foreach ($line in $DNSCacheCombined) {
-            $DNSCacheBuffer += $line 
+                    # Converts to CSV
+                    $DNSCacheBuffer = @()
+                    foreach ($line in $DNSCacheCombined) {
+                        $DNSCacheBuffer += $line 
+                    }
+                    $DNSCacheBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+   
+                    # Add PSComputerName header and host/ip name
+                    $DNSCacheFile = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" | Select-Object -Skip 1 | Where-Object {$_.PSObject.Properties.Value -ne $null}
+                    $DNSCacheFile | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
+                    $DNSCacheFile | Select-Object "PSComputerName",* | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
-        $DNSCacheBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c ipconfig /displaydns
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Imports the text file
+                    $DNSCache = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
+
+                    # Creates the fields that become the file headers
+                    $DNSCacheHeader = "RecordName,RecordType,TimeToLive,DataLength,Section,A(Host)/CNAMERecord"
         
-        # Add PSComputerName header and host/ip name
-        $DNSCacheFile = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-        $DNSCacheFile | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $DNSCacheFile | Select-Object "PSComputerName",*| Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    # Extracts the data 
+                    $DNSCacheData = ""
+                    $DNSCacheInterface = ""
+                    $RecordName = ""
+                    foreach ($line in $DNSCache) {
+                        if ($line -match "---"){
+                            $DNSCacheData += $line -replace "-{2,}","`n"
+                        }
+                        if ($line -match ':'){
+                            if ($line -match "Record Name") {
+                                if ($(($line -split ':')[1]) -eq $RecordName) {
+                                    $DNSCacheData += "`n$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                                }
+                                else {
+                                    $RecordName = ($line -split ':')[1]
+                                    $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                                }    
+                            }
+                            if ($line -match "Record Type") {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                            }
+                            if ($line -match "Time To Live") {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                            }
+                            if (($line -match "Data") -and ($line -match "Length")) {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                            }
+                            if ($line -match "Section") {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`"),"
+                            }
+                            if (($line -match "Host") -and ($line -match "Record")) {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`")"
+                            }
+                            if (($line -match "CNAME") -and ($line -match "Record")) {
+                                $DNSCacheData += "$(($line -split ':')[1] -replace `"^ | $`",`"`")"
+                            }
+                        }
+                    }
+                    #Combines the File Header and Data
+                    $DNSCacheCombined = @()
+                    $DNSCacheCombined += $DNSCacheHeader
+                    $DNSCacheCombined += $DNSCacheData
+        
+                    # Converts to CSV
+                    $DNSCacheBuffer = @()
+                    foreach ($line in $DNSCacheCombined) {
+                        $DNSCacheBuffer += $line 
+                    }
+                    $DNSCacheBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+   
+                    # Add PSComputerName header and host/ip name
+                    $DNSCacheFile = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" | Select-Object -Skip 1 | Where-Object {$_.PSObject.Properties.Value -ne $null}
+                    $DNSCacheFile | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
+                    $DNSCacheFile | Select-Object "PSComputerName",* | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
-    # Removes duplicate headers from csv file
-    $count = 1
-    $output = @()
-    $Contents = Get-Content "$PoShLocation\$CollectionName.csv" | Sort-Object -Unique -Descending
-    $Header = $Contents | Select-Object -First 1
-    foreach ($line in $Contents) {
-        if ($line -match $Header -and $count -eq 1) {
-            $output = $line + "`r`n"
-            $count ++
-        }
-        elseif ($line -notmatch $Header) {
-            $output += $line + "`r`n"
-        }
-    }
-    Remove-Item -Path "$PoShLocation\$CollectionName.csv"
-    $output | Out-File -FilePath "$PoShLocation\$CollectionName.csv"
+    MonitorJobs
 
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DNSCacheCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
@@ -1442,7 +1796,7 @@ function DNSCacheCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $DNSCacheCheckBox.Text     = "$($DNSCacheCheckBox.Name)"
@@ -1452,6 +1806,8 @@ $DNSCacheCheckBox.Location = New-Object System.Drawing.Size($Column1RightPositio
 $DNSCacheCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($DNSCacheCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -1464,24 +1820,58 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $DriversDetailedCheckBox = New-Object System.Windows.Forms.CheckBox
 $DriversDetailedCheckBox.Name = "Drivers - Detailed"
+
 function DriversDetailedCommand {
-        $Message1            = "$($DriversDetailedCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1                = "$($DriversDetailedCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Drivers - Detailed"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($DriversDetailedCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($DriversDetailedCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_Systemdriver -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, State, Status, Started, StartMode, Name, InstallDate, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, DisplayName, ErrorControl, InstallDate, PathName, ServiceType `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_Systemdriver -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, DisplayName, ErrorControl, InstallDate, PathName, ServiceType, InstallDate `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_Systemdriver -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, DisplayName, ErrorControl, InstallDate, PathName, ServiceType, InstallDate `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
 
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DriversDetailedCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
@@ -1490,7 +1880,7 @@ function DriversDetailedCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $DriversDetailedCheckBox.Text     = "$($DriversDetailedCheckBox.Name)"
@@ -1502,6 +1892,8 @@ $DriversDetailedCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWi
 $Section1QueriesTab.Controls.Add($DriversDetailedCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Drivers - Signed Info
 # ============================================================================================================================================================
@@ -1511,36 +1903,76 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $DriversSignedInfoCheckBox = New-Object System.Windows.Forms.CheckBox
-$DriversSignedInfoCheckBox.Name = "Drivers - Signed Info"
+$DriversSignedInfoCheckBox.Name = "Drivers - Signed Info *"
+
 function DriversSignedCommand {
-        $Message1            = "$($DriversSignedInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($DriversSignedInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Drivers - Signed Info"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($DriversSignedInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
         $Message1            = "Collecting Data:  $($DriversSignedInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Invoke-WmiMethod -Class Win32_Process -Name Create -Computername $TargetComputer -ArgumentList "cmd /c driverquery /si /FO CSV > c:\$CollectionShortName-$TargetComputer.csv" | Out-Null
-        # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
-        Start-Sleep -Seconds $SleepTime
-        # Pulls back the data from the Target Computer
-        Copy-Item -Path "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.csv" -Destination "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-        Remove-Item -Path "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.csv"
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
 
-        $DriverSignedInfo = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") 
-        Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-    
-        # Add PSComputerName header and host/ip name
-        $DriverSignedInfo | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $DriverSignedInfo | Select-Object PSComputerName, IsSigned, Manufacturer, DeviceName, InfName | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c driverquery /si /FO CSV
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                }
+                else {
+                    $DriverSignedInfo = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") 
+                    $DriverSignedInfo | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
+                    $DriverSignedInfo | Select-Object PSComputerName, IsSigned, Manufacturer, DeviceName, InfName | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c driverquery /si /FO CSV
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                }
+                else {
+                    $DriverSignedInfo = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") 
+                    $DriverSignedInfo | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
+                    $DriverSignedInfo | Select-Object PSComputerName, IsSigned, Manufacturer, DeviceName, InfName | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }  
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DriversSignedInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1548,7 +1980,7 @@ function DriversSignedCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $DriversSignedInfoCheckBox.Text     = "$($DriversSignedInfoCheckBox.Name)"
@@ -1560,6 +1992,8 @@ $DriversSignedInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1Box
 $Section1QueriesTab.Controls.Add($DriversSignedInfoCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Drivers - Valid Signatures
 # ============================================================================================================================================================
@@ -1569,26 +2003,66 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $DriversValidSignaturesCheckBox = New-Object System.Windows.Forms.CheckBox
-$DriversValidSignaturesCheckBox.Name = "Drivers - Valid Signatures"
+$DriversValidSignaturesCheckBox.Name = "Drivers - Valid Signatures (slow)"
+
 function DriversValidSignaturesCommand {
-        $Message1            = "$($DriversValidSignaturesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($DriversValidSignaturesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Drivers - Valid Signatures"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($DriversValidSignaturesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($DriversValidSignaturesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_SystemDriver -ComputerName $TargetComputer `
-        | ForEach-Object {Get-AuthenticodeSignature $_.pathname} `
-        | Select-Object PSComputerName, Status, Path, @{Name="SignerCertificate";Expression={$_.SignerCertificate -join "; "}} `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_SystemDriver -ComputerName $TargetComputer `
+                | ForEach-Object {Get-AuthenticodeSignature $_.pathname} `
+                | Select-Object PSComputerName, Status, Path, @{Name="SignerCertificate";Expression={$_.SignerCertificate -join "; "}} `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_SystemDriver -ComputerName $TargetComputer `
+                | ForEach-Object {
+                    $Buffer = Get-AuthenticodeSignature $_.pathname
+                    $Buffer | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer
+                    $Buffer
+                    } `
+                | Select-Object PSComputerName, Status, Path, @{Name="SignerCertificate";Expression={$_.SignerCertificate -join "; "}} `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DriversValidSignaturesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1596,7 +2070,7 @@ function DriversValidSignaturesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $DriversValidSignaturesCheckBox.Text     = "$($DriversValidSignaturesCheckBox.Name)"
@@ -1606,6 +2080,8 @@ $DriversValidSignaturesCheckBox.Location = New-Object System.Drawing.Size($Colum
 $DriversValidSignaturesCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($DriversValidSignaturesCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -1618,24 +2094,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $EnvironmentalVariablesCheckBox = New-Object System.Windows.Forms.CheckBox
 $EnvironmentalVariablesCheckBox.Name = "Environmental Variables"
+
 function EnvironmentalVariablesCommand {
-        $Message1            = "$($EnvironmentalVariablesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($EnvironmentalVariablesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Environmental Variables"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($EnvironmentalVariablesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($EnvironmentalVariablesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_Environment -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, UserName, Name, VariableValue `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_Environment -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, UserName, Name, VariableValue `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_Environment -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, UserName, Name, VariableValue `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($EnvironmentalVariablesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1643,7 +2154,7 @@ function EnvironmentalVariablesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $EnvironmentalVariablesCheckBox.Text     = "$($EnvironmentalVariablesCheckBox.Name)"
@@ -1655,6 +2166,8 @@ $EnvironmentalVariablesCheckBox.Size     = New-Object System.Drawing.Size($Colum
 $Section1QueriesTab.Controls.Add($EnvironmentalVariablesCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # ============================================================================================================================================================
 # Event Logs 
@@ -1662,6 +2175,8 @@ $Section1QueriesTab.Controls.Add($EnvironmentalVariablesCheckBox)
 # ============================================================================================================================================================
 
 $LimitNumberOfEventLogsCollectToChoice = 100
+
+
 
 
 # ============================================================================================================================================================
@@ -1673,26 +2188,63 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $EventLogsApplicationCheckBox               = New-Object System.Windows.Forms.CheckBox
-$EventLogsApplicationCheckBox.Name          = "Event Logs - Application"
+$EventLogsApplicationCheckBox.Name          = "Event Logs (100) Application"
+
 function EventLogsApplicationCommand {
-        $Message1            = "$($EventLogsApplicationCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($EventLogsApplicationCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Event Logs (100) Application"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($EventLogsApplicationCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($EventLogsApplicationCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='Application')" `
-        | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
-        | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
-    }
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='Application')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='Application')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+        }   
+    }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($EventLogsApplicationCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1700,7 +2252,7 @@ function EventLogsApplicationCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $EventLogsApplicationCheckBox.Text     = "$($EventLogsApplicationCheckBox.Name)"
@@ -1712,6 +2264,8 @@ $EventLogsApplicationCheckBox.Size     = New-Object System.Drawing.Size($Column1
 $Section1QueriesTab.Controls.Add($EventLogsApplicationCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Event Logs - Application Errors
 # ============================================================================================================================================================
@@ -1721,27 +2275,62 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $EventLogsApplicationErrorsCheckBox               = New-Object System.Windows.Forms.CheckBox
-$EventLogsApplicationErrorsCheckBox.Name          = "Event Logs - Application Errors"
+$EventLogsApplicationErrorsCheckBox.Name          = "Event Logs (100) Application Errors"
+
 function EventLogsApplicationErrorsCommand {
-        $Message1            = "$($EventLogsApplicationErrorsCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($EventLogsApplicationErrorsCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Event Logs (100) Application Errors"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($EventLogsApplicationErrorsCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($EventLogsApplicationErrorsCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='Application') AND (type='error')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-        Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='Application') AND (type='error')" `
-        | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
-        | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='Application') AND (type='error')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($EventLogsApplicationErrorsCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1749,7 +2338,7 @@ function EventLogsApplicationErrorsCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $EventLogsApplicationErrorsCheckBox.Text     = "$($EventLogsApplicationErrorsCheckBox.Name)"
@@ -1761,6 +2350,8 @@ $EventLogsApplicationErrorsCheckBox.Size     = New-Object System.Drawing.Size($C
 $Section1QueriesTab.Controls.Add($EventLogsApplicationErrorsCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Event Logs - Security
 # ============================================================================================================================================================
@@ -1770,28 +2361,62 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $EventLogsSecurityCheckBox = New-Object System.Windows.Forms.CheckBox
-$EventLogsSecurityCheckBox.Name = "Event Logs - Security"
+$EventLogsSecurityCheckBox.Name = "Event Logs (100) Security"
+
 function EventLogsSecurityCommand {
-        $Message1            = "$($EventLogsSecurityCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($EventLogsSecurityCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Event Logs (100) Security"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($EventLogsSecurityCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($EventLogsSecurityCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
-
-
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='Security')" `
-        | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
-        | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='Security')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='Security')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($EventLogsSecurityCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1799,7 +2424,7 @@ function EventLogsSecurityCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $EventLogsSecurityCheckBox.Text     = "$($EventLogsSecurityCheckBox.Name)"
@@ -1811,6 +2436,8 @@ $EventLogsSecurityCheckBox.Size     = New-Object System.Drawing.Size($Column1Box
 $Section1QueriesTab.Controls.Add($EventLogsSecurityCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Event Logs - System
 # ============================================================================================================================================================
@@ -1820,26 +2447,62 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $EventLogsSystemCheckBox = New-Object System.Windows.Forms.CheckBox
-$EventLogsSystemCheckBox.Name = "Event Logs - System"
+$EventLogsSystemCheckBox.Name = "Event Logs (100) System"
+
 function EventLogsSystemCommand {
-        $Message1            = "$($EventLogsSystemCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($EventLogsSystemCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Event Logs (100) System"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($EventLogsSystemCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($EventLogsSystemCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='System')" `
-        | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
-        | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='System')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='System')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($EventLogsSystemCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1847,7 +2510,7 @@ function EventLogsSystemCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $EventLogsSystemCheckBox.Text     = "$($EventLogsSystemCheckBox.Name)"
@@ -1860,6 +2523,7 @@ $Section1QueriesTab.Controls.Add($EventLogsSystemCheckBox)
 
 
 
+
 # ============================================================================================================================================================
 # Event Logs - System Errors
 # ============================================================================================================================================================
@@ -1869,26 +2533,62 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $EventLogsSystemErrorsCheckBox = New-Object System.Windows.Forms.CheckBox
-$EventLogsSystemErrorsCheckBox.Name = "Event Logs - System Errors"
+$EventLogsSystemErrorsCheckBox.Name = "Event Logs (100) System Errors"
+
 function EventLogsSystemErrorsCommand {
-        $Message1            = "$($EventLogsSystemErrorsCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($EventLogsSystemErrorsCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Event Logs (100) System Errors"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($EventLogsSystemErrorsCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($EventLogsSystemErrorsCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='System') AND (type='error')" `
-        | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
-        | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='System') AND (type='error')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter "(logfile='System') AND (type='error')" `
+                | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
+                | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($EventLogsSystemErrorsCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1896,7 +2596,7 @@ function EventLogsSystemErrorsCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $EventLogsSystemErrorsCheckBox.Text     = "$($EventLogsSystemErrorsCheckBox.Name)"
@@ -1908,6 +2608,8 @@ $EventLogsSystemErrorsCheckBox.Size     = New-Object System.Drawing.Size($Column
 $Section1QueriesTab.Controls.Add($EventLogsSystemErrorsCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Firewall Rules
 # ============================================================================================================================================================
@@ -1917,49 +2619,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $FirewallRulesCheckBox = New-Object System.Windows.Forms.CheckBox
-$FirewallRulesCheckBox.Name = "Firewall Rules"
+$FirewallRulesCheckBox.Name = "Firewall Rules *"
+
 function FirewallRulesCommand {
-        $Message1            = "$($FirewallRulesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($FirewallRulesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Firewall Rules"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($FirewallRulesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
         $Message1            = "Collecting Data:  $($FirewallRulesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netsh advfirewall firewall show rule name=all > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
 
-        Start-Sleep -Seconds $SleepTime
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netsh advfirewall firewall show rule name=all
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # This copies the data from the target then removes the copy
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item  "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                elseif ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt").Length -le 5) {
+                    Remove-Item      "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {                            
+                    $FirewallRules = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
 
-        $FirewallRules = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
+                    $FileHeader = "Rule Name,Enabled,Direction,Profiles,Grouping,LocalIP,RemoteIP,Protocol,LocalPort,RemotePort,Edge Traversal,Action"
 
-        # Extracts the fields that become the file headers
-        ###$FileHeader = ""
-        ###foreach ($line in ($FirewallRules | Select-Object -First 12)) {$FileHeader += "$(($line -replace ' {2,}','' -split ':')[0]),"}
-        ###$FileHeader = $FileHeader -split "`n" -replace "^,|,$",""
-        $FileHeader = "Rule Name,Enabled,Direction,Profiles,Grouping,LocalIP,RemoteIP,Protocol,LocalPort,RemotePort,Edge Traversal,Action"
+                    # Extracts the data 
+                    $FileData = ""
+                    foreach ($line in ($FirewallRules)) {$FileData += "$(($line -replace ' {2,}','' -replace "Allow","Allow;;" -replace "Block","Block;;" -replace "Bypass","Bypass;;" -split ':')[1]),"}
+                    $FileData = $FileData -split ';;' -replace "^,|,$|","" -replace " ,|, ","," | Where-Object {$_.trim() -ne ""}
 
-        # Extracts the data 
-        $FileData = ""
-        foreach ($line in ($FirewallRules)) {$FileData += "$(($line -replace ' {2,}','' -replace "Allow","Allow;;" -replace "Block","Block;;" -replace "Bypass","Bypass;;" -split ':')[1]),"}
-        $FileData = $FileData -split ';;' -replace "^,|,$|","" -replace " ,|, ","," | Where-Object {$_.trim() -ne ""}
+                    # Adds computer names/ips to data
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,$FileHeader`n"
+                    foreach ($Rule in $FileData) {$ConvertedToCsv += "$TargetComputer,$Rule`n"}
+                    $ConvertedToCsv | Where-Object {$_.trim() -ne ""} | Where-Object {$_.PSComputerName -ne ""}| Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netsh advfirewall firewall show rule name=all
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # Adds computer names/ips to data
-        $ConvertedToCsv = ""
-        $ConvertedToCsv += "PSComputerName,$FileHeader`n"
-        foreach ($Rule in $FileData) {$ConvertedToCsv += "$TargetComputer,$Rule`n"}
-        $ConvertedToCsv | Where-Object {$_.trim() -ne ""} | Where-Object {$_.PSComputerName -ne ""}| Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item  "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                elseif ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt").Length -le 5) {
+                    Remove-Item      "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {                            
+                    $FirewallRules = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
+
+                    $FileHeader = "Rule Name,Enabled,Direction,Profiles,Grouping,LocalIP,RemoteIP,Protocol,LocalPort,RemotePort,Edge Traversal,Action"
+
+                    # Extracts the data 
+                    $FileData = ""
+                    foreach ($line in ($FirewallRules)) {$FileData += "$(($line -replace ' {2,}','' -replace "Allow","Allow;;" -replace "Block","Block;;" -replace "Bypass","Bypass;;" -split ':')[1]),"}
+                    $FileData = $FileData -split ';;' -replace "^,|,$|","" -replace " ,|, ","," | Where-Object {$_.trim() -ne ""}
+
+                    # Adds computer names/ips to data
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,$FileHeader`n"
+                    foreach ($Rule in $FileData) {$ConvertedToCsv += "$TargetComputer,$Rule`n"}
+                    $ConvertedToCsv | Where-Object {$_.trim() -ne ""} | Where-Object {$_.PSComputerName -ne ""}| Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($FirewallRulesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -1967,7 +2724,7 @@ function FirewallRulesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $FirewallRulesCheckBox.Text     = "$($FirewallRulesCheckBox.Name)"
@@ -1979,6 +2736,8 @@ $FirewallRulesCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidt
 $Section1QueriesTab.Controls.Add($FirewallRulesCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Firewall Status
 # ============================================================================================================================================================
@@ -1988,50 +2747,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $FirewallStatusCheckBox = New-Object System.Windows.Forms.CheckBox
-$FirewallStatusCheckBox.Name = "Firewall Status"
+$FirewallStatusCheckBox.Name = "Firewall Status *"
+
 function FirewallStatusCommand {
-        $Message1            = "$($FirewallStatusCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($FirewallStatusCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Firewall Status"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($FirewallStatusCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
         $Message1            = "Collecting Data:  $($FirewallStatusCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netsh advfirewall show allprofiles state
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    $FirewallStatus = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
 
-        # Execute Commands to collect data from the targets
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netsh advfirewall show allprofiles state > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
+                    # Creates the fields that become the file headers
+                    $FileHeader = "Firewall Profile,State"
+                    # Extracts the data 
+                    $FileData = $(($FirewallStatus | Out-String) -replace '-{2,}','' -replace ' {2,}','' -replace "`r|`n","" -replace ":","," -replace "State","" -creplace "ON","ON`n" -creplace "OFF","OFF`n" -replace 'Ok.','' -replace "^ | $","") -split "`n" | Where-Object {$_.trim() -ne ""}
     
-        Start-Sleep -Seconds $SleepTime
+                    #Combines the File Header and Data
+                    $Combined = @()
+                    $Combined += $FileHeader
+                    $Combined += $FileData
+                    $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
-        # This copies the data from the target then removes the copy
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netsh advfirewall show allprofiles state
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        $FirewallStatus = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    $FirewallStatus = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
 
-        # Creates the fields that become the file headers
-        $FileHeader = "Firewall Profile,State"
-        # Extracts the data 
-        $FileData = $(($FirewallStatus | Out-String) -replace '-{2,}','' -replace ' {2,}','' -replace "`r|`n","" -replace ":","," -replace "State","" -creplace "ON","ON`n" -creplace "OFF","OFF`n" -replace 'Ok.','' -replace "^ | $","") -split "`n" | Where-Object {$_.trim() -ne ""}
+                    # Creates the fields that become the file headers
+                    $FileHeader = "Firewall Profile,State"
+                    # Extracts the data 
+                    $FileData = $(($FirewallStatus | Out-String) -replace '-{2,}','' -replace ' {2,}','' -replace "`r|`n","" -replace ":","," -replace "State","" -creplace "ON","ON`n" -creplace "OFF","OFF`n" -replace 'Ok.','' -replace "^ | $","") -split "`n" | Where-Object {$_.trim() -ne ""}
     
-        #Combines the File Header and Data
-        $Combined = @()
-        $Combined += $FileHeader
-        $Combined += $FileData
-        $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    #Combines the File Header and Data
+                    $Combined = @()
+                    $Combined += $FileHeader
+                    $Combined += $FileData
+                    $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
-        # Add PSComputerName header and host/ip name
-        $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
-        $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($FirewallStatusCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2039,7 +2852,7 @@ function FirewallStatusCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $FirewallStatusCheckBox.Text     = "$($FirewallStatusCheckBox.Name)"
 $FirewallStatusCheckBox.TabIndex = 2
@@ -2048,6 +2861,8 @@ $FirewallStatusCheckBox.Location = New-Object System.Drawing.Size($Column1RightP
 $FirewallStatusCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($FirewallStatusCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2060,24 +2875,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $GroupInfoCheckBox = New-Object System.Windows.Forms.CheckBox
 $GroupInfoCheckBox.Name = "Group Information"
+
 function GroupInfoCommand {
-        $Message1            = "$($GroupInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($GroupInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Group Information"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($GroupInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($GroupInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_Group -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, Name, Caption, Domain, SID `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_Group -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, Caption, Domain, SID `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_Group -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, Caption, Domain, SID `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($GroupInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2085,7 +2935,7 @@ function GroupInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $GroupInfoCheckBox.Text     = "$($GroupInfoCheckBox.Name)"
@@ -2095,6 +2945,8 @@ $GroupInfoCheckBox.Location = New-Object System.Drawing.Size($Column1RightPositi
 $GroupInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($GroupInfoCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2107,24 +2959,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $LogonInfoCheckBox = New-Object System.Windows.Forms.CheckBox
 $LogonInfoCheckBox.Name = "Logon Information"
+
 function LogonInfoCommand {
-        $Message1            = "$($LogonInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($LogonInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Logon Information"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($LogonInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($LogonInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_NetworkLoginProfile -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, Name, LastLogon, LastLogoff, NumberOfLogons, PasswordAge `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_NetworkLoginProfile -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, LastLogon, LastLogoff, NumberOfLogons, PasswordAge `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_NetworkLoginProfile -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, LastLogon, LastLogoff, NumberOfLogons, PasswordAge `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($LogonInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2132,7 +3019,7 @@ function LogonInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $LogonInfoCheckBox.Text     = "$($LogonInfoCheckBox.Name)"
 $LogonInfoCheckBox.TabIndex = 2
@@ -2143,83 +3030,242 @@ $LogonInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$C
 $Section1QueriesTab.Controls.Add($LogonInfoCheckBox)
 
 
+
+
 # ============================================================================================================================================================
-# Logon Status
+# Logon Sessions
 # ============================================================================================================================================================
 
 # Shift the Text and Button's Locaiton
 $Column1DownPosition   += $Column1DownPositionShift
 
 
-$LogonStatusCheckBox = New-Object System.Windows.Forms.CheckBox
-$LogonStatusCheckBox.Name = "Logon Status"
-function LogonStatusCommand {
-        $Message1            = "$($LogonStatusCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+$LogonSessionsCheckBox = New-Object System.Windows.Forms.CheckBox
+$LogonSessionsCheckBox.Name = "Logon Sessions *"
+
+function LogonSessionsCommand {
+    $Message1            = "$($LogonSessionsCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Logon Sessions"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($LogonStatusCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $Message1            = "Collecting Data:  $($LogonStatusCheckBox.Name) from $TargetComputer"
+        $Message1            = "Collecting Data:  $($LogonSessionsCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c query user > c:\queryuser-$TargetComputer.txt" | Out-Null
-    
-        # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item   "\\$TargetComputer\c$\queryuser-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\queryuser-$TargetComputer.txt"
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c query session
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # Processes collection to format it from txt to csv
-        $queryuserinfo = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\queryuser-$TargetComputer.txt"
-        $queryuserbuf = @()
-        foreach ($line in $queryuserinfo) { 
-            $queryuserbuf += $line -replace " {2,}",","
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $LogonStatusInfo   = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $LogonStatusBuffer = @()
+                    foreach ($line in $LogonStatusInfo) { 
+                        $LogonStatusBuffer += $line -replace " {2,}",","
+                    }
+                    $LogonStatusBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
-        $queryuserbuf | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c query session
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # Add PSComputerName header and host/ip name
-        $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
-        $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $LogonStatusInfo   = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $LogonStatusBuffer = @()
+                    foreach ($line in $LogonStatusInfo) { 
+                        $LogonStatusBuffer += $line -replace " {2,}",","
+                    }
+                    $LogonStatusBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
-    # Removes duplicate headers
-    $count = 1
-    $output = @()
-    $Contents = Get-Content "$PoShLocation\$CollectionName.csv" | Sort-Object -Unique -Descending
-    $Header = $Contents | Select-Object -First 1
-    foreach ($line in $Contents) {
-        if ($line -match $Header -and $count -eq 1) {
-            $output = $line + "`r`n"
-            $count ++
-        }
-        elseif ($line -notmatch $Header) {
-            $output += $line + "`r`n"
-        }
-    }
-    Remove-Item -Path "$PoShLocation\$CollectionName.csv"
-    $output | Out-File -FilePath "$PoShLocation\$CollectionName.csv"
+    MonitorJobs
 
-    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($LogonStatusCheckBox.Name)"
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($LogonSessionsCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
     $Message3 = "Finished Collecting Data!"
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Remove-DuplicateCsvHeaders
 }
-$LogonStatusCheckBox.Text     = "$($LogonStatusCheckBox.Name)"
-$LogonStatusCheckBox.TabIndex = 2
-$LogonStatusCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
-$LogonStatusCheckBox.Location = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
-$LogonStatusCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
+$LogonSessionsCheckBox.Text     = "$($LogonSessionsCheckBox.Name)"
+$LogonSessionsCheckBox.TabIndex = 2
+$LogonSessionsCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$LogonSessionsCheckBox.Location = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
+$LogonSessionsCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
-$Section1QueriesTab.Controls.Add($LogonStatusCheckBox)
+$Section1QueriesTab.Controls.Add($LogonSessionsCheckBox)
+
+
+
+
+# ============================================================================================================================================================
+# Logon User Status
+# ============================================================================================================================================================
+
+# Shift the Text and Button's Locaiton
+$Column1DownPosition   += $Column1DownPositionShift
+
+
+$LogonUserStatusCheckBox = New-Object System.Windows.Forms.CheckBox
+$LogonUserStatusCheckBox.Name = "Logon User Status *"
+
+function LogonUserStatusCommand {
+    $Message1            = "$($LogonUserStatusCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Logon User Status"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($LogonUserStatusCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c query user
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $LogonStatusInfo   = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $LogonStatusBuffer = @()
+                    foreach ($line in $LogonStatusInfo) { 
+                        $LogonStatusBuffer += $line -replace " {2,}",","
+                    }
+                    $LogonStatusBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                   
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c query user
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $LogonStatusInfo   = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $LogonStatusBuffer = @()
+                    foreach ($line in $LogonStatusInfo) { 
+                        $LogonStatusBuffer += $line -replace " {2,}",","
+                    }
+                    $LogonStatusBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($LogonUserStatusCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Remove-DuplicateCsvHeaders
+}
+$LogonUserStatusCheckBox.Text     = "$($LogonUserStatusCheckBox.Name)"
+$LogonUserStatusCheckBox.TabIndex = 2
+$LogonUserStatusCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$LogonUserStatusCheckBox.Location = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
+$LogonUserStatusCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
+
+$Section1QueriesTab.Controls.Add($LogonUserStatusCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2232,24 +3278,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $MappedDrivesCheckBox = New-Object System.Windows.Forms.CheckBox
 $MappedDrivesCheckBox.Name = "Mapped Drives"
+
 function MappedDrivesCommand {
-        $Message1            = "$($MappedDrivesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($MappedDrivesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Mapped Drives"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($MappedDrivesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($MappedDrivesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_MappedLogicalDisk -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, Name, ProviderName `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_MappedLogicalDisk -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, ProviderName `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_MappedLogicalDisk -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, ProviderName `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($MappedDrivesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2257,7 +3338,7 @@ function MappedDrivesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $MappedDrivesCheckBox.Text     = "$($MappedDrivesCheckBox.Name)"
@@ -2266,6 +3347,8 @@ $MappedDrivesCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $MappedDrivesCheckBox.Location = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $MappedDrivesCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($MappedDrivesCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2278,24 +3361,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $MemoryCapacityInfoCheckBox = New-Object System.Windows.Forms.CheckBox
 $MemoryCapacityInfoCheckBox.Name = "Memory (RAM) Capacity Info"
+
 function MemoryCapacityInfoCommand {
-        $Message1            = "$($MemoryCapacityInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($MemoryCapacityInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Memory (RAM) Capacity Info"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($MemoryCapacityInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($MemoryCapacityInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_PhysicalMemoryArray -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, Model, Name, MaxCapacity, MemoryDevices `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_PhysicalMemoryArray -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Model, Name, MaxCapacity, MemoryDevices `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_PhysicalMemoryArray -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Model, Name, MaxCapacity, MemoryDevices `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($MemoryCapacityInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2303,7 +3421,7 @@ function MemoryCapacityInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $MemoryCapacityInfoCheckBox.Text     = "$($MemoryCapacityInfoCheckBox.Name)"
 $MemoryCapacityInfoCheckBox.TabIndex = 2
@@ -2312,6 +3430,8 @@ $MemoryCapacityInfoCheckBox.Location = New-Object System.Drawing.Size($Column1Ri
 $MemoryCapacityInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($MemoryCapacityInfoCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2324,24 +3444,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $MemoryPhysicalInfoCheckBox = New-Object System.Windows.Forms.CheckBox
 $MemoryPhysicalInfoCheckBox.Name = "Memory (RAM) Physical Info"
+
 function MemoryPhysicalInfoCommand {
-        $Message1            = "$($MemoryPhysicalInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1                = "$($MemoryPhysicalInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Memory (RAM) Physical Info"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($MemoryPhysicalInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($MemoryPhysicalInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_PhysicalMemory -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, Tag, Capacity, Speed, Manufacturer, PartNumber, SerialNumber `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_PhysicalMemory -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Tag, Capacity, Speed, Manufacturer, PartNumber, SerialNumber `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_PhysicalMemory -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Tag, Capacity, Speed, Manufacturer, PartNumber, SerialNumber `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }  
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($MemoryPhysicalInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2349,7 +3504,7 @@ function MemoryPhysicalInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $MemoryPhysicalInfoCheckBox.Text     = "$($MemoryPhysicalInfoCheckBox.Name)"
 $MemoryPhysicalInfoCheckBox.TabIndex = 2
@@ -2358,6 +3513,8 @@ $MemoryPhysicalInfoCheckBox.Location = New-Object System.Drawing.Size($Column1Ri
 $MemoryPhysicalInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($MemoryPhysicalInfoCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2370,24 +3527,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $MemoryUtilizationCheckBox = New-Object System.Windows.Forms.CheckBox
 $MemoryUtilizationCheckBox.Name = "Memory (RAM) Utilization"
+
 function MemoryUtilizationCommand {
-        $Message1            = "$($MemoryUtilizationCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($MemoryUtilizationCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Memory (RAM) Utilization"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($MemoryUtilizationCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($MemoryUtilizationCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_OperatingSystem -ComputerName $TargetComputer `
-        | Select-Object -Property PSComputerName, FreePhysicalMemory, TotalVisibleMemorySize, FreeVirtualMemory, TotalVirtualMemorySize `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_OperatingSystem -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, FreePhysicalMemory, TotalVisibleMemorySize, FreeVirtualMemory, TotalVirtualMemorySize `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_OperatingSystem -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, FreePhysicalMemory, TotalVisibleMemorySize, FreeVirtualMemory, TotalVirtualMemorySize `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($MemoryUtilizationCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2395,7 +3587,7 @@ function MemoryUtilizationCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $MemoryUtilizationCheckBox.Text     = "$($MemoryUtilizationCheckBox.Name)"
@@ -2405,6 +3597,26 @@ $MemoryUtilizationCheckBox.Location = New-Object System.Drawing.Size($Column1Rig
 $MemoryUtilizationCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($MemoryUtilizationCheckBox)
+
+
+
+
+# ============================================================================================================================================================
+# ============================================================================================================================================================
+# Column 2
+# ============================================================================================================================================================
+# ============================================================================================================================================================
+
+# Varables to Control Column 2
+$Column1RightPosition = 230   # Horizontal
+$Column1DownPosition    = -10   # Vertical
+
+
+# Shift the fields
+$Column1DownPosition += $Column1DownPositionShift
+$Column1DownPosition += $Column1DownPositionShift
+$Column1DownPosition += $Column1DownPositionShift
+
 
 
 
@@ -2418,24 +3630,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $MemoryPerformanceDataCheckBox = New-Object System.Windows.Forms.CheckBox
 $MemoryPerformanceDataCheckBox.Name = "Memory Performance Data"
+
 function MemoryPerformanceDataCommand {
-        $Message1            = "$($MemoryPerformanceDataCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($MemoryPerformanceDataCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Memory Performance Data"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($MemoryPerformanceDataCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($MemoryPerformanceDataCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_PerfRawData_PerfOS_Memory -ComputerName $TargetComputer `
-        | Sort-Object -Property PSComputerName, AvailableBytes, AvailableKBytes, AvailableMBytes, CacheBytes, CacheBytesPeak, CacheFaultsPersec, Caption, CommitLimit, CommittedBytes, DemandZeroFaultsPersec, FreeAndZeroPageListBytes, FreeSystemPageTableEntries, Frequency_Object, Frequency_PerfTime, Frequency_Sys100NS, LongTermAverageStandbyCacheLifetimes, ModifiedPageListBytes, PageFaultsPersec, PageReadsPersec, PagesInputPersec, PagesOutputPersec, PagesPersec, PageWritesPersec, PercentCommittedBytesInUse, PercentCommittedBytesInUse_Base, PoolNonpagedAllocs, PoolNonpagedBytes, PoolPagedAllocs, PoolPagedBytes, PoolPagedResidentBytes, StandbyCacheCoreBytes, StandbyCacheNormalPriorityBytes, StandbyCacheReserveBytes, SystemCacheResidentBytes, SystemCodeResidentBytes, SystemCodeTotalBytes, SystemDriverResidentBytes, SystemDriverTotalBytes, Timestamp_Object, Timestamp_PerfTime, Timestamp_Sys100NS, TransitionFaultsPersec, TransitionPagesRePurposedPersec, WriteCopiesPersec `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_PerfRawData_PerfOS_Memory -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, AvailableBytes, AvailableKBytes, AvailableMBytes, CacheBytes, CacheBytesPeak, CacheFaultsPersec, Caption, CommitLimit, CommittedBytes, DemandZeroFaultsPersec, FreeAndZeroPageListBytes, FreeSystemPageTableEntries, Frequency_Object, Frequency_PerfTime, Frequency_Sys100NS, LongTermAverageStandbyCacheLifetimes, ModifiedPageListBytes, PageFaultsPersec, PageReadsPersec, PagesInputPersec, PagesOutputPersec, PagesPersec, PageWritesPersec, PercentCommittedBytesInUse, PercentCommittedBytesInUse_Base, PoolNonpagedAllocs, PoolNonpagedBytes, PoolPagedAllocs, PoolPagedBytes, PoolPagedResidentBytes, StandbyCacheCoreBytes, StandbyCacheNormalPriorityBytes, StandbyCacheReserveBytes, SystemCacheResidentBytes, SystemCodeResidentBytes, SystemCodeTotalBytes, SystemDriverResidentBytes, SystemDriverTotalBytes, Timestamp_Object, Timestamp_PerfTime, Timestamp_Sys100NS, TransitionFaultsPersec, TransitionPagesRePurposedPersec, WriteCopiesPersec `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_PerfRawData_PerfOS_Memory -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, AvailableBytes, AvailableKBytes, AvailableMBytes, CacheBytes, CacheBytesPeak, CacheFaultsPersec, Caption, CommitLimit, CommittedBytes, DemandZeroFaultsPersec, FreeAndZeroPageListBytes, FreeSystemPageTableEntries, Frequency_Object, Frequency_PerfTime, Frequency_Sys100NS, LongTermAverageStandbyCacheLifetimes, ModifiedPageListBytes, PageFaultsPersec, PageReadsPersec, PagesInputPersec, PagesOutputPersec, PagesPersec, PageWritesPersec, PercentCommittedBytesInUse, PercentCommittedBytesInUse_Base, PoolNonpagedAllocs, PoolNonpagedBytes, PoolPagedAllocs, PoolPagedBytes, PoolPagedResidentBytes, StandbyCacheCoreBytes, StandbyCacheNormalPriorityBytes, StandbyCacheReserveBytes, SystemCacheResidentBytes, SystemCodeResidentBytes, SystemCodeTotalBytes, SystemDriverResidentBytes, SystemDriverTotalBytes, Timestamp_Object, Timestamp_PerfTime, Timestamp_Sys100NS, TransitionFaultsPersec, TransitionPagesRePurposedPersec, WriteCopiesPersec `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($MemoryPerformanceDataCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2443,7 +3690,7 @@ function MemoryPerformanceDataCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $MemoryPerformanceDataCheckBox.Text     = "$($MemoryPerformanceDataCheckBox.Name)"
@@ -2451,26 +3698,9 @@ $MemoryPerformanceDataCheckBox.TabIndex = 2
 $MemoryPerformanceDataCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $MemoryPerformanceDataCheckBox.Location = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $MemoryPerformanceDataCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
-
 $Section1QueriesTab.Controls.Add($MemoryPerformanceDataCheckBox)
 
 
-
-# ============================================================================================================================================================
-# ============================================================================================================================================================
-# Column 2
-# ============================================================================================================================================================
-# ============================================================================================================================================================
-
-# Varables to Control Column 2
-$Column1RightPosition = 240   # Horizontal
-$Column1DownPosition    = -10   # Vertical
-
-
-# Shift the fields
-$Column1DownPosition += $Column1DownPositionShift
-$Column1DownPosition += $Column1DownPositionShift
-$Column1DownPosition += $Column1DownPositionShift
 
 
 # ============================================================================================================================================================
@@ -2483,46 +3713,103 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 # Command Text and CheckBox
 $NetworkConnectionsTCPCheckBox = New-Object System.Windows.Forms.CheckBox
-$NetworkConnectionsTCPCheckBox.Name = "Network Connections TCP"
+$NetworkConnectionsTCPCheckBox.Name = "Network Connections TCP *"
+
 function NetworkConnectionsTCPCommand {
-        $Message1            = "$($NetworkConnectionsTCPCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkConnectionsTCPCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Network Connections TCP"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($NetworkConnectionsTCPCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($NetworkConnectionsTCPCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -anob -p tcp > c:\netstat-$TargetComputer.txt" | Out-Null
-    
-        # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item   "\\$TargetComputer\c$\netstat-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\netstat-$TargetComputer.txt"
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
 
-        # Processes collection to format it from txt to csv
-        $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\netstat-$TargetComputer.txt" | Select-Object -skip 3
-        $TCPdata = @()
-        $Connections.trim()  | Out-String | ForEach-Object {$TCPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;TCP","`r`nTCP" -replace ";;","  " -replace " {2,}","," -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
-        $format = $TCPdata -split "`r`n"
-        $TCPnetstat =@()
-        # This section combines two specific csv fields together for easier viewing
-        foreach ($line in $format) {
-            if ($line -match "\d,\[") {$TCPnetstat += $line}
-            if ($line -notmatch "\d,\[") {$TCPnetstat += $line -replace ",\["," ["}
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -anob -p tcp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {                
+                    # Processes collection to format it from txt to csv
+                    $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
+                    $TCPdata = @()
+                    $Connections.trim() | Out-String | ForEach-Object {$TCPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;TCP","`r`nTCP" -replace ";;","  " -replace " {2,}","," -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
+                    $format = $TCPdata -split "`r`n" -replace " {1,1}",""
+                    $TCPnetstatTxt =@()
+                    # This section combines two specific csv fields together for easier viewing
+                    foreach ($line in $format) {
+                        if ($line -match "\d,\[") {$TCPnetstatTxt += $line}
+                        if ($line -notmatch "\d,\[") {$TCPnetstatTxt += $line -replace ",\["," ["}
+                    }
+                    $TCPnetstatTxt | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
+                    $TCPnetstatCsv = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv")
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
+                    $TCPnetstatCsv | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
+                    $TCPnetstatCsv | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
-        $TCPnetstat | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
 
-        # Add PSComputerName header and host/ip name
-        $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
-        $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -anob -p tcp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {                
+                    # Processes collection to format it from txt to csv
+                    $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
+                    $TCPdata = @()
+                    $Connections.trim() | Out-String | ForEach-Object {$TCPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;TCP","`r`nTCP" -replace ";;","  " -replace " {2,}","," -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
+                    $format = $TCPdata -split "`r`n" -replace " {1,1}",""
+                    $TCPnetstatTxt =@()
+                    # This section combines two specific csv fields together for easier viewing
+                    foreach ($line in $format) {
+                        if ($line -match "\d,\[") {$TCPnetstatTxt += $line}
+                        if ($line -notmatch "\d,\[") {$TCPnetstatTxt += $line -replace ",\["," ["}
+                    }
+                    $TCPnetstatTxt | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
+                    $TCPnetstatCsv = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv")
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
+                    $TCPnetstatCsv | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
+                    $TCPnetstatCsv | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    #Remove-DuplicateCsvHeaders
+   
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkConnectionsTCPCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2530,7 +3817,7 @@ function NetworkConnectionsTCPCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $NetworkConnectionsTCPCheckBox.Text             = "$($NetworkConnectionsTCPCheckBox.Name)"
@@ -2542,6 +3829,8 @@ $NetworkConnectionsTCPCheckBox.Size     = New-Object System.Drawing.Size($Column
 $Section1QueriesTab.Controls.Add($NetworkConnectionsTCPCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Network Connections UDP
 # ============================================================================================================================================================
@@ -2551,47 +3840,106 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $NetworkConnectionsUDPCheckBox = New-Object System.Windows.Forms.CheckBox
-$NetworkConnectionsUDPCheckBox.Name = "Network Connections UDP"
+$NetworkConnectionsUDPCheckBox.Name = "Network Connections UDP *"
+
 function NetworkConnectionsUDPCommand {
-        $Message1            = "$($NetworkConnectionsUDPCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkConnectionsUDPCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Network Connections UDP"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($NetworkConnectionsUDPCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($NetworkConnectionsUDPCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -anob -p udp > c:\netstat-$TargetComputer.txt" | Out-Null
-    
-        # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item   "\\$TargetComputer\c$\netstat-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\netstat-$TargetComputer.txt"
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -anob -p udp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # Processes collection to format it from txt to csv
-        $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\netstat-$TargetComputer.txt" | Select-Object -skip 3
-        $UDPdata = @()
-        $Connections.trim()  | Out-String |   ForEach-Object {$UDPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;UDP","`r`nUDP" -replace ";;","  " -replace " {2,}","," -replace "State,","" -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {                
+                    # Processes collection to format it from txt to csv
+                    $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
+                    $UDPdata = @()
+                    $Connections.trim()  | Out-String |   ForEach-Object {$UDPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;UDP","`r`nUDP" -replace ";;","  " -replace " {2,}","," -replace "State,","" -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
 
-        $format = $UDPdata -split "`r`n"
-        $UDPnetstat =@()
-        # This section is needed to combine two specific csv fields together for easier viewing
-        foreach ($line in $format) {
-            if ($line -match "\d,\[") {$UDPnetstat += $line}
-            if ($line -notmatch "\d,\[") {$UDPnetstat += $line -replace ",\["," ["}
+                    $format = $UDPdata -split "`r`n"
+                    $UDPnetstat =@()
+                    # This section is needed to combine two specific csv fields together for easier viewing
+                    foreach ($line in $format) {
+                        if ($line -match "\d,\[") {$UDPnetstat += $line}
+                        if ($line -notmatch "\d,\[") {$UDPnetstat += $line -replace ",\["," ["}
+                    }
+                    $UDPnetstat | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
-        $UDPnetstat | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -anob -p udp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # Add PSComputerName header and host/ip name
-        $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
-        $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {                
+                    # Processes collection to format it from txt to csv
+                    $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
+                    $UDPdata = @()
+                    $Connections.trim()  | Out-String |   ForEach-Object {$UDPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;UDP","`r`nUDP" -replace ";;","  " -replace " {2,}","," -replace "State,","" -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
+
+                    $format = $UDPdata -split "`r`n"
+                    $UDPnetstat =@()
+                    # This section is needed to combine two specific csv fields together for easier viewing
+                    foreach ($line in $format) {
+                        if ($line -match "\d,\[") {$UDPnetstat += $line}
+                        if ($line -notmatch "\d,\[") {$UDPnetstat += $line -replace ",\["," ["}
+                    }
+                    $UDPnetstat | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkConnectionsUDPCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2599,7 +3947,7 @@ function NetworkConnectionsUDPCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $NetworkConnectionsUDPCheckBox.Text     = "$($NetworkConnectionsUDPCheckBox.Name)"
@@ -2609,6 +3957,8 @@ $NetworkConnectionsUDPCheckBox.Location = New-Object System.Drawing.Size($Column
 $NetworkConnectionsUDPCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($NetworkConnectionsUDPCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2621,35 +3971,79 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $NetworkSettingsCheckBox = New-Object System.Windows.Forms.CheckBox
 $NetworkSettingsCheckBox.Name = "Network Settings"
+
 function NetworkSettingsCommand {
-        $Message1            = "$($NetworkSettingsCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkSettingsCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Network Settings"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($NetworkSettingsCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($NetworkSettingsCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_NetworkAdapterConfiguration -ComputerName $TargetComputer `
+                | Select-Object -Property `
+                    PSComputerName, MACAddress, `
+                    @{Name="IPAddress";Expression={$_.IPAddress -join "; "}}, `
+                    @{Name="IpSubnet";Expression={$_.IpSubnet -join "; "}}, `
+                    @{Name="DefaultIPGateway";Expression={$_.DefaultIPgateway -join "; "}}, `
+                    Description, ServiceName, IPEnabled, DHCPEnabled, DNSHostname, `
+                    @{Name="DNSDomainSuffixSearchOrder";Expression={$_.DNSDomainSuffixSearchOrder -join "; "}}, `
+                    DNSEnabledForWINSResolution, DomainDNSRegistrationEnabled, FullDNSRegistrationEnabled, `
+                    @{Name="DNSServerSearchOrder";Expression={$_.DNSServerSearchOrder -join "; "}}, `
+                    @{Name="WinsPrimaryServer";Expression={$_.WinsPrimaryServer -join "; "}}, `
+                    @{Name="WINSSecindaryServer";Expression={$_.WINSSecindaryServer -join "; "}} `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-        Get-WmiObject -Class Win32_NetworkAdapterConfiguration -ComputerName $TargetComputer `
-        | Select-Object -Property `
-            PSComputerName, MACAddress, `
-            @{Name="IPAddress";Expression={$_.IPAddress -join "; "}}, `
-            @{Name="IpSubnet";Expression={$_.IpSubnet -join "; "}}, `
-            @{Name="DefaultIPGateway";Expression={$_.DefaultIPgateway -join "; "}}, `
-            Description, ServiceName, IPEnabled, DHCPEnabled, DNSHostname, `
-            @{Name="DNSDomainSuffixSearchOrder";Expression={$_.DNSDomainSuffixSearchOrder -join "; "}}, `
-            DNSEnabledForWINSResolution, DomainDNSRegistrationEnabled, FullDNSRegistrationEnabled, `
-            @{Name="DNSServerSearchOrder";Expression={$_.DNSServerSearchOrder -join "; "}}, `
-            @{Name="WinsPrimaryServer";Expression={$_.WinsPrimaryServer -join "; "}}, `
-            @{Name="WINSSecindaryServer";Expression={$_.WINSSecindaryServer -join "; "}} `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_NetworkAdapterConfiguration -ComputerName $TargetComputer `
+                | Select-Object -Property `
+                    PSComputerName, MACAddress, `
+                    @{Name="IPAddress";Expression={$_.IPAddress -join "; "}}, `
+                    @{Name="IpSubnet";Expression={$_.IpSubnet -join "; "}}, `
+                    @{Name="DefaultIPGateway";Expression={$_.DefaultIPgateway -join "; "}}, `
+                    Description, ServiceName, IPEnabled, DHCPEnabled, DNSHostname, `
+                    @{Name="DNSDomainSuffixSearchOrder";Expression={$_.DNSDomainSuffixSearchOrder -join "; "}}, `
+                    DNSEnabledForWINSResolution, DomainDNSRegistrationEnabled, FullDNSRegistrationEnabled, `
+                    @{Name="DNSServerSearchOrder";Expression={$_.DNSServerSearchOrder -join "; "}}, `
+                    @{Name="WinsPrimaryServer";Expression={$_.WinsPrimaryServer -join "; "}}, `
+                    @{Name="WINSSecindaryServer";Expression={$_.WINSSecindaryServer -join "; "}} `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkSettingsCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2657,7 +4051,7 @@ function NetworkSettingsCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $NetworkSettingsCheckBox.Text     = "$($NetworkSettingsCheckBox.Name)"
@@ -2669,6 +4063,8 @@ $NetworkSettingsCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWi
 $Section1QueriesTab.Controls.Add($NetworkSettingsCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Network Statistics IPv4
 # ============================================================================================================================================================
@@ -2678,48 +4074,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $NetworkStatisticsIPv4CheckBox      = New-Object System.Windows.Forms.CheckBox
-$NetworkStatisticsIPv4CheckBox.Name = "Network Statistics IPv4"
+$NetworkStatisticsIPv4CheckBox.Name = "Network Statistics IPv4 *"
+
 function NetworkStatisticsIPv4Command {
-        $Message1            = "$($NetworkStatisticsIPv4CheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkStatisticsIPv4CheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName             = "Network Statistics IPv4"
+    $CollectionDirectory        = $CollectionName
+    $CollectionShortName        = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName             = "$($NetworkStatisticsIPv4CheckBox.Name)"
-        $CollectionDirectory        = $CollectionName
-        $CollectionShortName        = $CollectionName -replace ' ',''
         $Message1                   = "Collecting Data:  $($NetworkStatisticsIPv4CheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage                 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage                 | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -e -p ip > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
-
-        # This copies the data from the target then removes the copy
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-        
-        # Processes collection to format it from txt to csv
-        $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p ip
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+   
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") | Select-Object -skip 4 -First 6
                 
-        # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
-        $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
 
-        # Extracts the fields that become the file headers
-        $FileHeader = ""
-        foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
             
-        # Extracts the fields that contain data
-        $FileData = ""
-        foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
-        $ConvertedToCsv = ""
-        $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
-        $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-        $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p ip
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+   
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") | Select-Object -skip 4 -First 6
+                
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+            
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkStatisticsIPv4CheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2727,7 +4179,7 @@ function NetworkStatisticsIPv4Command {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $NetworkStatisticsIPv4CheckBox.Text       = "$($NetworkStatisticsIPv4CheckBox.Name)"
 $NetworkStatisticsIPv4CheckBox.TabIndex   = 2
@@ -2735,6 +4187,8 @@ $NetworkStatisticsIPv4CheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $NetworkStatisticsIPv4CheckBox.Location   = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $NetworkStatisticsIPv4CheckBox.Size       = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($NetworkStatisticsIPv4CheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2746,48 +4200,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $NetworkStatisticsIPv4TCPCheckBox      = New-Object System.Windows.Forms.CheckBox
-$NetworkStatisticsIPv4TCPCheckBox.Name = "Network Statistics IPv4 TCP"
+$NetworkStatisticsIPv4TCPCheckBox.Name = "Network Statistics IPv4 TCP *"
+
 function NetworkStatisticsIPv4TCPCommand {
-        $Message1            = "$($NetworkStatisticsIPv4TCPCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkStatisticsIPv4TCPCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName             = "Network Statistics IPv4 TCP"
+    $CollectionDirectory        = $CollectionName
+    $CollectionShortName        = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName             = "$($NetworkStatisticsIPv4TCPCheckBox.Name)"
-        $CollectionDirectory        = $CollectionName
-        $CollectionShortName        = $CollectionName -replace ' ',''
         $Message1                   = "Collecting Data:  $($NetworkStatisticsIPv4TCPCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage                 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage                 | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p tcp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -e -p tcp > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
-
-        # This copies the data from the target then removes the copy
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-        
-        # Processes collection to format it from txt to csv
-        $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
-        # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
-        $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
 
-        # Extracts the fields that become the file headers
-        $FileHeader = ""
-        foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
             
-        # Extracts the fields that contain data
-        $FileData = ""
-        foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
-        $ConvertedToCsv = ""
-        $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
-        $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-        $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p tcp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+            
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkStatisticsIPv4TCPCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2795,7 +4305,7 @@ function NetworkStatisticsIPv4TCPCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $NetworkStatisticsIPv4TCPCheckBox.Text       = "$($NetworkStatisticsIPv4TCPCheckBox.Name)"
 $NetworkStatisticsIPv4TCPCheckBox.TabIndex   = 2
@@ -2803,6 +4313,8 @@ $NetworkStatisticsIPv4TCPCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $NetworkStatisticsIPv4TCPCheckBox.Location   = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $NetworkStatisticsIPv4TCPCheckBox.Size       = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($NetworkStatisticsIPv4TCPCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2814,48 +4326,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $NetworkStatisticsIPv4UDPCheckBox      = New-Object System.Windows.Forms.CheckBox
-$NetworkStatisticsIPv4UDPCheckBox.Name = "Network Statistics IPv4 UDP"
+$NetworkStatisticsIPv4UDPCheckBox.Name = "Network Statistics IPv4 UDP *"
+
 function NetworkStatisticsIPv4UDPCommand {
-        $Message1            = "$($NetworkStatisticsIPv4UDPCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkStatisticsIPv4UDPCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName             = "Network Statistics IPv4 UDP"
+    $CollectionDirectory        = $CollectionName
+    $CollectionShortName        = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName             = "$($NetworkStatisticsIPv4UDPCheckBox.Name)"
-        $CollectionDirectory        = $CollectionName
-        $CollectionShortName        = $CollectionName -replace ' ',''
         $Message1                   = "Collecting Data:  $($NetworkStatisticsIPv4UDPCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage                 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage                 | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p udp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -e -p udp > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
-
-        # This copies the data from the target then removes the copy
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-        
-        # Processes collection to format it from txt to csv
-        $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
-        # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
-        $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
 
-        # Extracts the fields that become the file headers
-        $FileHeader = ""
-        foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
             
-        # Extracts the fields that contain data
-        $FileData = ""
-        foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
-        $ConvertedToCsv = ""
-        $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
-        $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-        $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"             
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p udp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+            
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"             
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkStatisticsIPv4UDPCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2863,7 +4431,7 @@ function NetworkStatisticsIPv4UDPCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $NetworkStatisticsIPv4UDPCheckBox.Text       = "$($NetworkStatisticsIPv4UDPCheckBox.Name)"
 $NetworkStatisticsIPv4UDPCheckBox.TabIndex   = 2
@@ -2871,6 +4439,8 @@ $NetworkStatisticsIPv4UDPCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $NetworkStatisticsIPv4UDPCheckBox.Location   = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $NetworkStatisticsIPv4UDPCheckBox.Size       = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($NetworkStatisticsIPv4UDPCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2883,49 +4453,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $NetworkStatisticsIPv4ICMPCheckBox      = New-Object System.Windows.Forms.CheckBox
-$NetworkStatisticsIPv4ICMPCheckBox.Name = "Network Statistics IPv4 ICMP"
+$NetworkStatisticsIPv4ICMPCheckBox.Name = "Network Statistics IPv4 ICMP *"
+
 function NetworkStatisticsIPv4ICMPCommand {
-        $Message1            = "$($NetworkStatisticsIPv4ICMPCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkStatisticsIPv4ICMPCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName             = "Network Statistics IPv4 ICMP"
+    $CollectionDirectory        = $CollectionName
+    $CollectionShortName        = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName             = "$($NetworkStatisticsIPv4ICMPCheckBox.Name)"
-        $CollectionDirectory        = $CollectionName
-        $CollectionShortName        = $CollectionName -replace ' ',''
         $Message1                   = "Collecting Data:  $($NetworkStatisticsIPv4ICMPCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage                 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage                 | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p icmp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -e -p icmp > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {            
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
 
-        # This copies the data from the target then removes the copy
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-
-        
-        # Processes collection to format it from txt to csv
-        $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
                 
-        # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
-        $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p icmp
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # Extracts the fields that become the file headers
-        $FileHeader = ""
-        foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
-            
-        # Extracts the fields that contain data
-        $FileData = ""
-        foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
-        $ConvertedToCsv = ""
-        $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
-        $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-        $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {            
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+                
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkStatisticsIPv4ICMPCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -2933,7 +4558,7 @@ function NetworkStatisticsIPv4ICMPCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $NetworkStatisticsIPv4ICMPCheckBox.Text       = "$($NetworkStatisticsIPv4ICMPCheckBox.Name)"
 $NetworkStatisticsIPv4ICMPCheckBox.TabIndex   = 2
@@ -2941,6 +4566,8 @@ $NetworkStatisticsIPv4ICMPCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $NetworkStatisticsIPv4ICMPCheckBox.Location   = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $NetworkStatisticsIPv4ICMPCheckBox.Size       = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($NetworkStatisticsIPv4ICMPCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -2952,48 +4579,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $NetworkStatisticsIPv6CheckBox      = New-Object System.Windows.Forms.CheckBox
-$NetworkStatisticsIPv6CheckBox.Name = "Network Statistics IPv6"
+$NetworkStatisticsIPv6CheckBox.Name = "Network Statistics IPv6 *"
+
 function NetworkStatisticsIPv6Command {
-        $Message1            = "$($NetworkStatisticsIPv6CheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkStatisticsIPv6CheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName             = "Network Statistics IPv6"
+    $CollectionDirectory        = $CollectionName
+    $CollectionShortName        = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName             = "$($NetworkStatisticsIPv6CheckBox.Name)"
-        $CollectionDirectory        = $CollectionName
-        $CollectionShortName        = $CollectionName -replace ' ',''
         $Message1                   = "Collecting Data:  $($NetworkStatisticsIPv6CheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage                 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage                 | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p ipv6
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -e -p ipv6 > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
-
-        # This copies the data from the target then removes the copy
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-        
-        # Processes collection to format it from txt to csv
-        $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
-        # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
-        $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
 
-        # Extracts the fields that become the file headers
-        $FileHeader = ""
-        foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
             
-        # Extracts the fields that contain data
-        $FileData = ""
-        foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
-        $ConvertedToCsv = ""
-        $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
-        $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-        $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                        
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p ipv6
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+            
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }  
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkStatisticsIPv6CheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3001,7 +4684,7 @@ function NetworkStatisticsIPv6Command {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $NetworkStatisticsIPv6CheckBox.Text       = "$($NetworkStatisticsIPv6CheckBox.Name)"
 $NetworkStatisticsIPv6CheckBox.TabIndex   = 2
@@ -3009,6 +4692,8 @@ $NetworkStatisticsIPv6CheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $NetworkStatisticsIPv6CheckBox.Location   = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $NetworkStatisticsIPv6CheckBox.Size       = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($NetworkStatisticsIPv6CheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3020,48 +4705,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $NetworkStatisticsIPv6TCPCheckBox      = New-Object System.Windows.Forms.CheckBox
-$NetworkStatisticsIPv6TCPCheckBox.Name = "Network Statistics IPv6 TCP"
+$NetworkStatisticsIPv6TCPCheckBox.Name = "Network Statistics IPv6 TCP *"
+
 function NetworkStatisticsIPv6TCPCommand {
-        $Message1            = "$($NetworkStatisticsIPv6TCPCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkStatisticsIPv6TCPCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName             = "Network Statistics IPv6 TCP"
+    $CollectionDirectory        = $CollectionName
+    $CollectionShortName        = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName             = "$($NetworkStatisticsIPv6TCPCheckBox.Name)"
-        $CollectionDirectory        = $CollectionName
-        $CollectionShortName        = $CollectionName -replace ' ',''
         $Message1                   = "Collecting Data:  $($NetworkStatisticsIPv6TCPCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage                 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage                 | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p tcpv6
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -e -p tcpv6 > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
-
-        # This copies the data from the target then removes the copy
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-        
-        # Processes collection to format it from txt to csv
-        $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
-        # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
-        $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
 
-        # Extracts the fields that become the file headers
-        $FileHeader = ""
-        foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
             
-        # Extracts the fields that contain data
-        $FileData = ""
-        foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
-        $ConvertedToCsv = ""
-        $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
-        $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-        $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p tcpv6
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+            
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkStatisticsIPv6TCPCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3069,7 +4810,7 @@ function NetworkStatisticsIPv6TCPCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $NetworkStatisticsIPv6TCPCheckBox.Text       = "$($NetworkStatisticsIPv6TCPCheckBox.Name)"
 $NetworkStatisticsIPv6TCPCheckBox.TabIndex   = 2
@@ -3077,6 +4818,8 @@ $NetworkStatisticsIPv6TCPCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $NetworkStatisticsIPv6TCPCheckBox.Location   = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $NetworkStatisticsIPv6TCPCheckBox.Size       = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($NetworkStatisticsIPv6TCPCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3088,49 +4831,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $NetworkStatisticsIPv6UDPCheckBox      = New-Object System.Windows.Forms.CheckBox
-$NetworkStatisticsIPv6UDPCheckBox.Name = "Network Statistics IPv6 UDP"
+$NetworkStatisticsIPv6UDPCheckBox.Name = "Network Statistics IPv6 UDP *"
+
 function NetworkStatisticsIPv6UDPCommand {
-        $Message1            = "$($NetworkStatisticsIPv6UDPCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1                   = "$($NetworkStatisticsIPv6UDPCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName             = "Network Statistics IPv6 UDP"
+    $CollectionDirectory        = $CollectionName
+    $CollectionShortName        = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName             = "$($NetworkStatisticsIPv6UDPCheckBox.Name)"
-        $CollectionDirectory        = $CollectionName
-        $CollectionShortName        = $CollectionName -replace ' ',''
-        $Message1                   = "Collecting Data:  $($NetworkStatisticsIPv6UDPCheckBox.Name) from $TargetComputer"
+        $Message1               = "Collecting Data:  $($NetworkStatisticsIPv6UDPCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
-        $LogMessage                 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
-        $LogMessage                 | Add-Content -Path $LogFile
+        $LogMessage             = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage             | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p udpv6
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -e -p udpv6 > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
-
-        # This copies the data from the target then removes the copy
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-
-        
-        # Processes collection to format it from txt to csv
-        $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
-        # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
-        $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
 
-        # Extracts the fields that become the file headers
-        $FileHeader = ""
-        foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
             
-        # Extracts the fields that contain data
-        $FileData = ""
-        foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
-        $ConvertedToCsv = ""
-        $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
-        $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-        $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p udpv6
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {        
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+            
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkStatisticsIPv6UDPCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3138,7 +4936,7 @@ function NetworkStatisticsIPv6UDPCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $NetworkStatisticsIPv6UDPCheckBox.Text       = "$($NetworkStatisticsIPv6UDPCheckBox.Name)"
 $NetworkStatisticsIPv6UDPCheckBox.TabIndex   = 2
@@ -3146,6 +4944,8 @@ $NetworkStatisticsIPv6UDPCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $NetworkStatisticsIPv6UDPCheckBox.Location   = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $NetworkStatisticsIPv6UDPCheckBox.Size       = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($NetworkStatisticsIPv6UDPCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3157,49 +4957,104 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $NetworkStatisticsIPv6ICMPCheckBox      = New-Object System.Windows.Forms.CheckBox
-$NetworkStatisticsIPv6ICMPCheckBox.Name = "Network Statistics IPv6 ICMP"
+$NetworkStatisticsIPv6ICMPCheckBox.Name = "Network Statistics IPv6 ICMP *"
+
 function NetworkStatisticsIPv6ICMPCommand {
-        $Message1            = "$($NetworkStatisticsIPv6ICMPCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($NetworkStatisticsIPv6ICMPCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName             = "Network Statistics IPv6 ICMP"
+    $CollectionDirectory        = $CollectionName
+    $CollectionShortName        = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName             = "$($NetworkStatisticsIPv6ICMPCheckBox.Name)"
-        $CollectionDirectory        = $CollectionName
-        $CollectionShortName        = $CollectionName -replace ' ',''
         $Message1                   = "Collecting Data:  $($NetworkStatisticsIPv6ICMPCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage                 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage                 | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p icmpv6
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netstat -e -p icmpv6 > c:\$CollectionShortName-$TargetComputer.txt" | Out-Null
-
-        # This copies the data from the target then removes the copy
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\$CollectionShortName-$TargetComputer.txt"
-
-        
-        # Processes collection to format it from txt to csv
-        $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
-        # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
-        $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
 
-        # Extracts the fields that become the file headers
-        $FileHeader = ""
-        foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
             
-        # Extracts the fields that contain data
-        $FileData = ""
-        foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
-        $ConvertedToCsv = ""
-        $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
-        $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-        $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netstat -e -p icmpv6
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Processes collection to format it from txt to csv
+                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                
+                    # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
+                    $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
+
+                    # Extracts the fields that become the file headers
+                    $FileHeader = ""
+                    foreach ($line in $StatisticsData) {$FileHeader += "$($($line -split ',')[0]) (Rx/Tx),"}
+            
+                    # Extracts the fields that contain data
+                    $FileData = ""
+                    foreach ($line in $StatisticsData) {$FileData += "$($($line -split ',')[1])/$($($line -split ',')[2]),"}
+                    $ConvertedToCsv = ""
+                    $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
+                    $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
+                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }  
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($NetworkStatisticsIPv6ICMPCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3207,7 +5062,7 @@ function NetworkStatisticsIPv6ICMPCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 $NetworkStatisticsIPv6ICMPCheckBox.Text       = "$($NetworkStatisticsIPv6ICMPCheckBox.Name)"
 $NetworkStatisticsIPv6ICMPCheckBox.TabIndex   = 2
@@ -3215,6 +5070,8 @@ $NetworkStatisticsIPv6ICMPCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $NetworkStatisticsIPv6ICMPCheckBox.Location   = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $NetworkStatisticsIPv6ICMPCheckBox.Size       = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($NetworkStatisticsIPv6ICMPCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3227,24 +5084,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $PlugAndPlayCheckBox = New-Object System.Windows.Forms.CheckBox
 $PlugAndPlayCheckBox.Name = "Plug and Play Devices"
+
 function PlugAndPlayCommand {
-        $Message1            = "$($PlugAndPlayCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($PlugAndPlayCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Plug and Play Devices"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($PlugAndPlayCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($PlugAndPlayCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_PnPEntity -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, InstallDate, Status, Description, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID -join "; "}}, Manufacturer `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_PnPEntity -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, InstallDate, Status, Description, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID -join "; "}}, Manufacturer `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_PnPEntity -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, InstallDate, Status, Description, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID -join "; "}}, Manufacturer `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($PlugAndPlayCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3252,7 +5144,7 @@ function PlugAndPlayCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $PlugAndPlayCheckBox.Text     = "$($PlugAndPlayCheckBox.Name)"
@@ -3264,6 +5156,8 @@ $PlugAndPlayCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,
 $Section1QueriesTab.Controls.Add($PlugAndPlayCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Port Proxy Rules
 # ============================================================================================================================================================
@@ -3273,56 +5167,116 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $PortProxyRulesCheckBox = New-Object System.Windows.Forms.CheckBox
-$PortProxyRulesCheckBox.Name = "Port Proxy Rules"
+$PortProxyRulesCheckBox.Name = "Port Proxy Rules *"
+
 function PortProxyRulesCommand {
-        $Message1            = "$($PortProxyRulesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($PortProxyRulesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Port Proxy Rules"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($PortProxyRulesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
         $Message1            = "Collecting Data:  $($PortProxyRulesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netsh interface portproxy show all
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # Execute Commands to collect data from the targets
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c netsh interface portproxy show all > c:\ProxyRules-$TargetComputer.txt" | Out-Null
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Extracts the fields that become the file headers
+                    <# $FileHeader = ""
+                    foreach ($line in ($PortProxyRules | Select-Object -Skip 3 -First 1)) {$FileHeader += $line -replace ' {2,}',','} #>
+                    $FileHeader = "Listen on IPv4 Address,Listen on IPv4 Port,Connect to IPv4 Address,Connect to IPv4 Port"
 
-        Start-Sleep -Seconds $SleepTime
+                    # Extracts the fields that contain data
+                    $ProxyRules = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # This copies the data from the target then removes the copy
-        Copy-Item "\\$TargetComputer\c$\ProxyRules-$TargetComputer.txt" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
-        Remove-Item "\\$TargetComputer\c$\ProxyRules-$TargetComputer.txt"
+                    $FileData = @()
+                    foreach ($line in ($ProxyRules | Select-Object -Skip 5)) {$FileData += "`n$($line -replace ' {2,}',',')"}
+                    $FileData = $FileData  -replace "^,|,$","" -replace "^ | $","" -replace ";;","`n" | Where-Object {$_.trim() -ne ""}
+                    $FileData = foreach ($line in $($FileData | Where-Object {$_.trim() -ne ""}))  {"$TargetComputer," + $($line -replace "`n","")}
 
-        # Extracts the fields that become the file headers
-        <# $FileHeader = ""
-        foreach ($line in ($PortProxyRules | Select-Object -Skip 3 -First 1)) {$FileHeader += $line -replace ' {2,}',','} #>
-        $FileHeader = "Listen on IPv4 Address,Listen on IPv4 Port,Connect to IPv4 Address,Connect to IPv4 Port"
+                    # Combines the csv header and data to create the file
+                    $Combined = @()
+                    $Combined += $FileHeader
+                    $Combined += $FileData
+                    $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
-        # Extracts the fields that contain data
-        $ProxyRules = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c netsh interface portproxy show all
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        $FileData = @()
-        foreach ($line in ($ProxyRules | Select-Object -Skip 5)) {$FileData += "`n$($line -replace ' {2,}',',')"}
-        $FileData = $FileData  -replace "^,|,$","" -replace "^ | $","" -replace ";;","`n" | Where-Object {$_.trim() -ne ""}
-        $FileData = foreach ($line in $($FileData | Where-Object {$_.trim() -ne ""}))  {"$TargetComputer," + $($line -replace "`n","")}
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {
+                    # Extracts the fields that become the file headers
+                    <# $FileHeader = ""
+                    foreach ($line in ($PortProxyRules | Select-Object -Skip 3 -First 1)) {$FileHeader += $line -replace ' {2,}',','} #>
+                    $FileHeader = "Listen on IPv4 Address,Listen on IPv4 Port,Connect to IPv4 Address,Connect to IPv4 Port"
 
-        # Combines the csv header and data to create the file
-        $Combined = @()
-        $Combined += $FileHeader
-        $Combined += $FileData
-        $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    # Extracts the fields that contain data
+                    $ProxyRules = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-        # Add PSComputerName header and host/ip name
-        $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
-        $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $FileData = @()
+                    foreach ($line in ($ProxyRules | Select-Object -Skip 5)) {$FileData += "`n$($line -replace ' {2,}',',')"}
+                    $FileData = $FileData  -replace "^,|,$","" -replace "^ | $","" -replace ";;","`n" | Where-Object {$_.trim() -ne ""}
+                    $FileData = foreach ($line in $($FileData | Where-Object {$_.trim() -ne ""}))  {"$TargetComputer," + $($line -replace "`n","")}
+
+                    # Combines the csv header and data to create the file
+                    $Combined = @()
+                    $Combined += $FileHeader
+                    $Combined += $FileData
+                    $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                    # Add PSComputerName header and host/ip name
+                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($PortProxyRulesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3330,7 +5284,7 @@ function PortProxyRulesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $PortProxyRulesCheckBox.Text     = "$($PortProxyRulesCheckBox.Name)"
@@ -3342,6 +5296,8 @@ $PortProxyRulesCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWid
 $Section1QueriesTab.Controls.Add($PortProxyRulesCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Prefetch Files
 # ============================================================================================================================================================
@@ -3351,39 +5307,63 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $PrefetchFilesCheckBox       = New-Object System.Windows.Forms.CheckBox
-$PrefetchFilesCheckBox.Name  = "Prefetch Files"
-        $Message1            = "$($PrefetchFilesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+$PrefetchFilesCheckBox.Name  = "Prefetch Files *"
+
 function PrefetchFilesCommand {
+    $Message1                = "$($PrefetchFilesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Prefetch Files"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($PrefetchFilesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($PrefetchFilesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                  Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                        Get-ChildItem C:\Windows\Prefetch
+                    } -ArgumentList @($null) `
+                    | Select-Object -Property PSComputerName, Directory, Name, Length, CreationTime, LastWriteTime, LastAccessTime, Attributes, Mode `
+                    | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ChildItem C:\Windows\Prefetch
+                } -ArgumentList @($null) `
+                | Select-Object -Property PSComputerName, Directory, Name, Length, CreationTime, LastWriteTime, LastAccessTime, Attributes, Mode `
+                | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-        # Execute Commands to collect data from the targets
-        #Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c dir /T:C /Q %SystemRoot%\Prefetch > c:\$CollectionShortName-CreationTime-$TargetComputer.txt" | Out-Null
-        #Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c dir /T:A /Q %SystemRoot%\Prefetch > c:\$CollectionShortName-LastAccessTime-$TargetComputer.txt" | Out-Null
-        #Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c dir /T:W /Q %SystemRoot%\Prefetch > c:\$CollectionShortName-LastWriteTime-$TargetComputer.txt" | Out-Null
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "PowerShell -Command `"Get-ChildItem C:\Windows\Prefetch | Select-Object -Property Name, CreationTime, LastWriteTime, LastAccessTime, Mode, Attributes, Length, Directory | Export-CSV c:\prefetch.csv -NoTypeInformation`"" | Out-Null
-
-        Start-Sleep -Seconds $SleepTime
-
-        # This copies the data from the target then removes the copy
-        Copy-Item "\\$TargetComputer\c$\prefetch.csv" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-        Remove-Item "\\$TargetComputer\c$\prefetch.csv"
-
-        # Add PSComputerName header and host/ip name
-        $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
-        $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-        $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($PrefetchFilesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3391,7 +5371,7 @@ function PrefetchFilesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $PrefetchFilesCheckBox.Text     = "$($PrefetchFilesCheckBox.Name)"
@@ -3403,6 +5383,136 @@ $PrefetchFilesCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidt
 $Section1QueriesTab.Controls.Add($PrefetchFilesCheckBox)
 
 
+
+
+# ============================================================================================================================================================
+# Process Tree (Lineage)
+# ============================================================================================================================================================
+
+
+# Shift the Text and Button's Locaiton
+$Column1DownPosition   += $Column1DownPositionShift
+
+
+$ProcessTreeLineageCheckBox = New-Object System.Windows.Forms.CheckBox
+$ProcessTreeLineageCheckBox.Name = "Process Tree (Lineage) *"
+
+function ProcessTreeLineageCommand {
+    $Message1            = "$($ProcessTreeLineageCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")    
+    $CollectionName      = "Process Tree (Lineage)"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ProcessTreeLineageCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile      
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Function Get-ProcessTree {
+                        '=================================================='
+                        '{0,-7}{1}' -f 'PID','Process Name'
+                        '==================================================' 
+                        Function Get-ProcessChildren ($P,$Depth=1) {
+                            $procs | Where-Object {
+                                $_.ParentProcessId -eq $p.ProcessID -and $_.ParentProcessId -ne 0
+                            } | ForEach-Object {
+                                '{0,-7}{1}|--- {2}' -f $_.ProcessID,(' '*5*$Depth),$_.Name,$_.ParentProcessId 
+                                Get-ProcessChildren $_ (++$Depth) 
+                                $Depth-- 
+                            }
+                        } 
+                        $filter = { -not (Get-Process -Id $_.ParentProcessId -ErrorAction SilentlyContinue) -or $_.ParentProcessId -eq 0 } 
+                            $procs = Get-WmiObject -Class Win32_Process
+                            $top = $procs | Where-Object $filter | Sort-Object ProcessID 
+                        foreach ($p in $top) {
+                            '{0,-7}{1}' -f $p.ProcessID, $p.Name 
+                            Get-ProcessChildren $p
+                        }
+                    } 
+                    Get-ProcessTree
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"                    
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Function Get-ProcessTree {
+                        '=================================================='
+                        '{0,-7}{1}' -f 'PID','Process Name'
+                        '==================================================' 
+                        Function Get-ProcessChildren ($P,$Depth=1) {
+                            $procs | Where-Object {
+                                $_.ParentProcessId -eq $p.ProcessID -and $_.ParentProcessId -ne 0
+                            } | ForEach-Object {
+                                '{0,-7}{1}|--- {2}' -f $_.ProcessID,(' '*5*$Depth),$_.Name,$_.ParentProcessId 
+                                Get-ProcessChildren $_ (++$Depth) 
+                                $Depth-- 
+                            }
+                        } 
+                        $filter = { -not (Get-Process -Id $_.ParentProcessId -ErrorAction SilentlyContinue) -or $_.ParentProcessId -eq 0 } 
+                            $procs = Get-WmiObject -Class Win32_Process
+                            $top = $procs | Where-Object $filter | Sort-Object ProcessID 
+                        foreach ($p in $top) {
+                            '{0,-7}{1}' -f $p.ProcessID, $p.Name 
+                            Get-ProcessChildren $p
+                        }
+                    } 
+                    Get-ProcessTree
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ProcessTreeLineageCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    ### No Compile-CsvFiles as this is just text
+    # Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    "You have to go into each 'Individual Host Results' to view their Process Trees (Lineage)" | Out-File "$PoShLocation\$CollectionName.txt"
+    
+}
+
+$ProcessTreeLineageCheckBox.Text     = "$($ProcessTreeLineageCheckBox.Name)"
+$ProcessTreeLineageCheckBox.TabIndex = 2
+$ProcessTreeLineageCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ProcessTreeLineageCheckBox.Location = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
+$ProcessTreeLineageCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
+$Section1QueriesTab.Controls.Add($ProcessTreeLineageCheckBox)
+
+
+
+
+
 # ============================================================================================================================================================
 # Processes - Enhanced with Hashes
 # ============================================================================================================================================================
@@ -3412,66 +5522,145 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $ProcessesEnhancedCheckBox = New-Object System.Windows.Forms.CheckBox
-$ProcessesEnhancedCheckBox.Name = "Processes - Enhanced with Hashes"
+$ProcessesEnhancedCheckBox.Name = "Processes - Enhanced with Hashes *"
+
 function ProcessesEnhancedCommand {
-        $Message1            = "$($ProcessesEnhancedCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($ProcessesEnhancedCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Processes - Enhanced with Hashes"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($ProcessesEnhancedCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $Message1            = "Collecting Data:  $($ProcessesEnhancedCheckBox.Name) from $TargetComputer"
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Add($Message1)
+        #$Message1            = "Collecting Data:  $($ProcessesEnhancedCheckBox.Name) from $TargetComputer"
+        #$StatusListBox.Items.Clear()
+        #$StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        $ErrorActionPreference="SilentlyContinue"
-        function Get-FileHash{
-            param ([string] $Path ) $HashAlgorithm = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
-            $Hash=[System.BitConverter]::ToString($hashAlgorithm.ComputeHash([System.IO.File]::ReadAllBytes($Path)))
-            $Properties=@{"Algorithm" = "MD5"
-            "Path" = $Path
-            "Hash" = $Hash.Replace("-", "")
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
             }
-        $Ret=New-Object –TypeName PSObject –Prop $Properties
-        return $Ret
-        }
-        function Get-Processes {
-            Write-Verbose "Getting ProcessList"
-            $processes = Get-WmiObject -Class Win32_Process -ComputerName $TargetComputer
-            $processList = @()
-            foreach ($process in $processes) {
-                try {
-                    $Owner = $process.GetOwner().Domain.ToString() + "\"+ $process.GetOwner().User.ToString()
-                    $OwnerSID = $process.GetOwnerSid().Sid
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                $ErrorActionPreference="SilentlyContinue"
+                function Get-FileHash{
+                    param ([string] $Path ) $HashAlgorithm = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+                    $Hash=[System.BitConverter]::ToString($hashAlgorithm.ComputeHash([System.IO.File]::ReadAllBytes($Path)))
+                    $Properties=@{"Algorithm" = "MD5"
+                    "Path" = $Path
+                    "Hash" = $Hash.Replace("-", "")
+                    }
+                $Ret=New-Object –TypeName PSObject –Prop $Properties
+                return $Ret
+                }
+                function Get-Processes {
+                    Write-Verbose "Getting ProcessList"
+                    $processes = Get-WmiObject -Class Win32_Process
+                    $processList = @()
+                    foreach ($process in $processes) {
+                        try {
+                            $Owner = $process.GetOwner().Domain.ToString() + "\"+ $process.GetOwner().User.ToString()
+                            $OwnerSID = $process.GetOwnerSid().Sid
+                        } 
+                        catch {}
+                    $thisProcess=New-Object PSObject -Property @{
+                        PSComputerName=$process.PSComputerName
+                        OSName=$process.OSName
+                        Name=$process.Caption
+                        ProcessId=[int]$process.ProcessId
+                        ParentProcessName=($processes | where {$_.ProcessID -eq $process.ParentProcessId}).Caption
+                        ParentProcessId=[int]$process.ParentProcessId
+                        MemoryKiloBytes=[int]$process.WorkingSetSize/1000
+                        SessionId=[int]$process.SessionId
+                        Owner=$Owner
+                        OwnerSID=$OwnerSID
+                        PathName=$process.ExecutablePath
+                        CommandLine=$process.CommandLine
+                        CreationDate=$process.ConvertToDateTime($process.CreationDate)
+                    }
+                    if ($process.ExecutablePath) {
+                        $Signature = Get-FileHash $process.ExecutablePath | Select-Object -Property Hash, Algorithm
+                        $Signature.PSObject.Properties | Foreach-Object {$thisProcess | Add-Member -type NoteProperty -Name $_.Name -Value $_.Value -Force}
+                    } 
+                    $processList += $thisProcess
                 } 
-                catch {}
-            $thisProcess=New-Object PSObject -Property @{
-                PSComputerName=$process.PSComputerName
-                OSName=$process.OSName
-                Name=$process.Caption
-                ProcessId=[int]$process.ProcessId
-                ParentProcessName=($processes | where {$_.ProcessID -eq $process.ParentProcessId}).Caption
-                ParentProcessId=[int]$process.ParentProcessId
-                MemoryKiloBytes=[int]$process.WorkingSetSize/1000
-                SessionId=[int]$process.SessionId
-                Owner=$Owner
-                OwnerSID=$OwnerSID
-                PathName=$process.ExecutablePath
-                CommandLine=$process.CommandLine
-                CreationDate=$process.ConvertToDateTime($process.CreationDate)
-            }
-            if ($process.ExecutablePath) {
-                $Signature = Get-FileHash $process.ExecutablePath | Select-Object -Property Hash, Algorithm
-                $Signature.PSObject.Properties | Foreach-Object {$thisProcess | Add-Member -type NoteProperty -Name $_.Name -Value $_.Value -Force}
-            } 
-            $processList += $thisProcess
-        } 
-        return $processList}
-        Get-Processes | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessName, ParentProcessId, MemoryKiloBytes, CommandLine, PathName, Hash, Algorithm, CreationDate, Owner, OwnerSID, SessionId | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+                return $processList}
+                Get-Processes | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessName, ParentProcessId, MemoryKiloBytes, CommandLine, PathName, Hash, Algorithm, CreationDate, Owner, OwnerSID, SessionId `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                $ErrorActionPreference="SilentlyContinue"
+                function Get-FileHash{
+                    param ([string] $Path ) $HashAlgorithm = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+                    $Hash=[System.BitConverter]::ToString($hashAlgorithm.ComputeHash([System.IO.File]::ReadAllBytes($Path)))
+                    $Properties=@{"Algorithm" = "MD5"
+                    "Path" = $Path
+                    "Hash" = $Hash.Replace("-", "")
+                    }
+                $Ret=New-Object –TypeName PSObject –Prop $Properties
+                return $Ret
+                }
+                function Get-Processes {
+                    Write-Verbose "Getting ProcessList"
+                    $processes = Get-WmiObject -Class Win32_Process -ComputerName $TargetComputer
+                    $processList = @()
+                    foreach ($process in $processes) {
+                        try {
+                            $Owner = $process.GetOwner().Domain.ToString() + "\"+ $process.GetOwner().User.ToString()
+                            $OwnerSID = $process.GetOwnerSid().Sid
+                        } 
+                        catch {}
+                    $thisProcess=New-Object PSObject -Property @{
+                        PSComputerName=$process.PSComputerName
+                        OSName=$process.OSName
+                        Name=$process.Caption
+                        ProcessId=[int]$process.ProcessId
+                        ParentProcessName=($processes | where {$_.ProcessID -eq $process.ParentProcessId}).Caption
+                        ParentProcessId=[int]$process.ParentProcessId
+                        MemoryKiloBytes=[int]$process.WorkingSetSize/1000
+                        SessionId=[int]$process.SessionId
+                        Owner=$Owner
+                        OwnerSID=$OwnerSID
+                        PathName=$process.ExecutablePath
+                        CommandLine=$process.CommandLine
+                        CreationDate=$process.ConvertToDateTime($process.CreationDate)
+                    }
+                    if ($process.ExecutablePath) {
+                        $Signature = Get-FileHash $process.ExecutablePath | Select-Object -Property Hash, Algorithm
+                        $Signature.PSObject.Properties | Foreach-Object {$thisProcess | Add-Member -type NoteProperty -Name $_.Name -Value $_.Value -Force}
+                    } 
+                    $processList += $thisProcess
+                } 
+                return $processList}
+                Get-Processes | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessName, ParentProcessId, MemoryKiloBytes, CommandLine, PathName, Hash, Algorithm, CreationDate, Owner, OwnerSID, SessionId `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ProcessesEnhancedCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3479,7 +5668,7 @@ function ProcessesEnhancedCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $ProcessesEnhancedCheckBox.Text     = "$($ProcessesEnhancedCheckBox.Name)"
@@ -3488,6 +5677,8 @@ $ProcessesEnhancedCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $ProcessesEnhancedCheckBox.Location = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
 $ProcessesEnhancedCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1QueriesTab.Controls.Add($ProcessesEnhancedCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3500,24 +5691,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $ProcessesStandardCheckBox = New-Object System.Windows.Forms.CheckBox
 $ProcessesStandardCheckBox.Name = "Processes - Standard"
+
 function ProcessesStandardCommand {
-        $Message1            = "$($ProcessesStandardCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($ProcessesStandardCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Processes - Standard"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($ProcessesStandardCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($ProcessesStandardCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_Process -ComputerName $TargetComputer `
-        | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Credential $Credential -Class Win32_Process -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Class Win32_Process -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }  
     }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ProcessesStandardCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3525,7 +5751,7 @@ function ProcessesStandardCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $ProcessesStandardCheckBox.Text     = "$($ProcessesStandardCheckBox.Name)"
@@ -3535,6 +5761,8 @@ $ProcessesStandardCheckBox.Location = New-Object System.Drawing.Size($Column1Rig
 $ProcessesStandardCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($ProcessesStandardCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3547,25 +5775,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $ProcessorCPUInfoCheckBox       = New-Object System.Windows.Forms.CheckBox
 $ProcessorCPUInfoCheckBox.Name  = "Processor (CPU) Info"
+
 function ProcessorCPUInfoCommand {
-        $Message1            = "$($ProcessorCPUInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($ProcessorCPUInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Processor (CPU) Info"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($ProcessorCPUInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($ProcessorCPUInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_Process -ComputerName $TargetComputer `
-        | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
-    }
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_Processor -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, Name, Manufacturer, Caption, DeviceID, SocketDesignation, MaxClockSpeed  `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_Processor -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, Name, Manufacturer, Caption, DeviceID, SocketDesignation, MaxClockSpeed  `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ProcessorCPUInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3573,7 +5835,7 @@ function ProcessorCPUInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $ProcessorCPUInfoCheckBox.Text     = "$($ProcessorCPUInfoCheckBox.Name)"
@@ -3585,6 +5847,8 @@ $ProcessorCPUInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxW
 $Section1QueriesTab.Controls.Add($ProcessorCPUInfoCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Scheduled Tasks (schtasks)
 # ============================================================================================================================================================
@@ -3594,56 +5858,75 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $ScheduledTasksCheckBox = New-Object System.Windows.Forms.CheckBox
-$ScheduledTasksCheckBox.Name = "Scheduled Tasks (schtasks)"
+$ScheduledTasksCheckBox.Name = "Scheduled Tasks (schtasks) *"
+
 function ScheduledTasksCommand {
-        $Message1            = "$($ScheduledTasksCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($ScheduledTasksCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Scheduled Tasks (schtasks)"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($ScheduledTasksCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
         $Message1            = "Collecting Data:  $($ScheduledTasksCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
 
-        Invoke-WmiMethod -Class Win32_Process -Name Create -Computername $TargetComputer -ArgumentList "cmd /c schtasks /query /V /FO CSV > c:\$TargetComputer-$CollectionShortName.csv" | Out-Null
-        # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
-        Start-Sleep -Seconds $SleepTime
-        # Pulls back the data from the Target Computer
-        Copy-Item -Path "\\$TargetComputer\c$\$TargetComputer-$CollectionShortName.csv" -Destination "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\"
-        Remove-Item -Path "\\$TargetComputer\c$\$TargetComputer-$CollectionShortName.csv"
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c schtasks /query /V /FO CSV
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c schtasks /query /V /FO CSV
+                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
-
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ScheduledTasksCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
     $Message3 = "Finished Collecting Data!"
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
-
-    # Removes duplicate headers from csv file
-    $count = 1
-    $output = @()
-    $Contents = Get-Content "$PoShLocation\$CollectionName.csv" | Sort-Object -Unique -Descending
-    $Header = $Contents | Select-Object -First 1
-    foreach ($line in $Contents) {
-        if ($line -match $Header -and $count -eq 1) {
-            $output = $line + "`r`n"
-            $count ++
-        }
-        elseif ($line -notmatch $Header) {
-            $output += $line + "`r`n"
-        }
-    }
-    Remove-Item -Path "$PoShLocation\$CollectionName.csv"
-    $output | Out-File -FilePath "$PoShLocation\$CollectionName.csv"
-
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv" 
+    Remove-DuplicateCsvHeaders
 }
 
 $ScheduledTasksCheckBox.Text     = "$($ScheduledTasksCheckBox.Name)"
@@ -3653,6 +5936,8 @@ $ScheduledTasksCheckBox.Location = New-Object System.Drawing.Size($Column1RightP
 $ScheduledTasksCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($ScheduledTasksCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3665,27 +5950,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $ScreenSaverInfoCheckBox = New-Object System.Windows.Forms.CheckBox
 $ScreenSaverInfoCheckBox.Name = "Screen Saver Info"
+
 function ScreenSaverInfoCommand {
-        $Message1            = "$($ScreenSaverInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($ScreenSaverInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Screen Saver Info"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($ScreenSaverInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($ScreenSaverInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
-
-
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_Desktop -ComputerName $TargetComputer `
-        | Select-Object -Property PSComputerName, Name, ScreenSaverActive, ScreenSaverTimeout, ScreenSaverExecutable, Wallpaper `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
-    }
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_Desktop -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, Name, ScreenSaverActive, ScreenSaverTimeout, ScreenSaverExecutable, Wallpaper `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_Desktop -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, Name, ScreenSaverActive, ScreenSaverTimeout, ScreenSaverExecutable, Wallpaper `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ScreenSaverInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3693,7 +6010,7 @@ function ScreenSaverInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $ScreenSaverInfoCheckBox.Text     = "$($ScreenSaverInfoCheckBox.Name)"
@@ -3703,6 +6020,8 @@ $ScreenSaverInfoCheckBox.Location = New-Object System.Drawing.Size($Column1Right
 $ScreenSaverInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($ScreenSaverInfoCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3715,25 +6034,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $SecurityPatchesCheckBox = New-Object System.Windows.Forms.CheckBox
 $SecurityPatchesCheckBox.Name = "Security Patches"
+
 function SecurityPatchesCommand {
-        $Message1            = "$($SecurityPatchesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($SecurityPatchesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Security Patches"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($SecurityPatchesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($SecurityPatchesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_QuickFixEngineering -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, HotFixID, Description, InstalledBy, InstalledOn `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
-    }
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_QuickFixEngineering -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, HotFixID, Description, InstalledBy, InstalledOn `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_QuickFixEngineering -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, HotFixID, Description, InstalledBy, InstalledOn `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        } 
+    }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($SecurityPatchesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3741,7 +6094,7 @@ function SecurityPatchesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $SecurityPatchesCheckBox.Text     = "$($SecurityPatchesCheckBox.Name)"
@@ -3765,25 +6118,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $ServicesCheckBox = New-Object System.Windows.Forms.CheckBox
 $ServicesCheckBox.Name = "Services"
+
 function ServicesCommand {
-        $Message1            = "$($ServicesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($ServicesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Services"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($ServicesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($ServicesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_Service -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, State, Name, ProcessID, Description, PathName, Started, StartMode, StartName | Sort-Object PSComputerName, State, Name `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
-    }
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Credential $Credential -Class Win32_Service -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, State, Name, ProcessID, Description, PathName, Started, StartMode, StartName | Sort-Object PSComputerName, State, Name `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Class Win32_Service -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, State, Name, ProcessID, Description, PathName, Started, StartMode, StartName | Sort-Object PSComputerName, State, Name `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ServicesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3791,7 +6178,7 @@ function ServicesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $ServicesCheckBox.Text     = "$($ServicesCheckBox.Name)"
@@ -3801,6 +6188,8 @@ $ServicesCheckBox.Location = New-Object System.Drawing.Size($Column1RightPositio
 $ServicesCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($ServicesCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3814,25 +6203,59 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $SharesCheckBox = New-Object System.Windows.Forms.CheckBox
 $SharesCheckBox.Name = "Shares"
+
 function SharesCommand {
-        $Message1            = "$($SharesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($SharesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Shares"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($SharesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($SharesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject -Class Win32_Share -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, Name, Path, Description `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
-    }
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Credential $Credential -Class Win32_Share -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, Path, Description `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_Share -ComputerName $TargetComputer `
+                | Select-Object PSComputerName, Name, Path, Description `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($SharesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3840,7 +6263,7 @@ function SharesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $SharesCheckBox.Text     = "$($SharesCheckBox.Name)"
@@ -3852,6 +6275,8 @@ $SharesCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Colu
 $Section1QueriesTab.Controls.Add($SharesCheckBox)
 
 
+
+
 # ============================================================================================================================================================
 # Software Installed
 # ============================================================================================================================================================
@@ -3861,26 +6286,304 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $SoftwareInstalledCheckBox = New-Object System.Windows.Forms.CheckBox
-$SoftwareInstalledCheckBox.Name = "Software Installed"
+$SoftwareInstalledCheckBox.Name = "Software Installed *"
+
 function SoftwareInstalledCommand {
-        $Message1            = "$($SoftwareInstalledCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($SoftwareInstalledCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Software Installed"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($SoftwareInstalledCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($SoftwareInstalledCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject Win32_Product -ComputerName $TargetComputer `
-        | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
-    }
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
 
+                Function Get-Software  {
+                    [OutputType('System.Software.Inventory')]
+                    [Cmdletbinding()] 
+                    Param( 
+                        [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True)] 
+                        [String[]]$Computername=$env:COMPUTERNAME
+                    )         
+                    Begin {}
+                    Process  {
+                        ForEach  ($Computer in  $Computername){ 
+                            If  (Test-Connection -ComputerName  $Computer -Count  1 -Quiet) {
+                            $Paths  = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall","SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")         
+                                ForEach($Path in $Paths) { 
+                                Write-Verbose  "Checking Path: $Path"
+                                #  Create an instance of the Registry Object and open the HKLM base key 
+                                Try  { 
+                                    $reg=[microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$Computer,'Registry64') 
+                                } 
+                                Catch  { 
+                                    Write-Error $_ 
+                                    Continue 
+                                } 
+                                #  Drill down into the Uninstall key using the OpenSubKey Method 
+                                Try  {
+                                    $regkey=$reg.OpenSubKey($Path)  
+                                    # Retrieve an array of string that contain all the subkey names 
+                                    $subkeys=$regkey.GetSubKeyNames()      
+                                    # Open each Subkey and use GetValue Method to return the required  values for each 
+                                    ForEach ($key in $subkeys){   
+                                        Write-Verbose "Key: $Key"
+                                        $thisKey=$Path+"\\"+$key 
+                                        Try {  
+                                            $thisSubKey=$reg.OpenSubKey($thisKey)   
+                                            # Prevent Objects with empty DisplayName 
+                                            $DisplayName =  $thisSubKey.getValue("DisplayName")
+                                            If ($DisplayName  -AND $DisplayName  -notmatch '^Update  for|rollup|^Security Update|^Service Pack|^HotFix') {
+                                                $Date = $thisSubKey.GetValue('InstallDate')
+                                                If ($Date) {
+                                                    Try {
+                                                        $Date = [datetime]::ParseExact($Date, 'yyyyMMdd', $Null)
+                                                    }
+                                                    Catch{
+                                                        Write-Warning "$($Computer): $_ <$($Date)>"
+                                                        $Date = $Null
+                                                    }
+                                                } 
+                                                # Create New Object with empty Properties 
+                                                $Publisher =  Try {
+                                                    $thisSubKey.GetValue('Publisher').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('Publisher')
+                                                }
+                                                $Version = Try {
+                                                    #Some weirdness with trailing [char]0 on some strings
+                                                    $thisSubKey.GetValue('DisplayVersion').TrimEnd(([char[]](32,0)))
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('DisplayVersion')
+                                                }
+                                                $UninstallString =  Try {
+                                                    $thisSubKey.GetValue('UninstallString').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('UninstallString')
+                                                }
+                                                $InstallLocation =  Try {
+                                                    $thisSubKey.GetValue('InstallLocation').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('InstallLocation')
+                                                }
+                                                $InstallSource =  Try {
+                                                    $thisSubKey.GetValue('InstallSource').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('InstallSource')
+                                                }
+                                                $HelpLink = Try {
+                                                    $thisSubKey.GetValue('HelpLink').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('HelpLink')
+                                                }
+                                                $Object = [pscustomobject]@{
+                                                    Computername = $Computer
+                                                    DisplayName = $DisplayName
+                                                    Version  = $Version
+                                                    InstallDate = $Date
+                                                    Publisher = $Publisher
+                                                    UninstallString = $UninstallString
+                                                    InstallLocation = $InstallLocation
+                                                    InstallSource  = $InstallSource
+                                                    HelpLink = $thisSubKey.GetValue('HelpLink')
+                                                    EstimatedSizeMB = [decimal]([math]::Round(($thisSubKey.GetValue('EstimatedSize')*1024)/1MB,2))
+                                                }
+                                                $Object.pstypenames.insert(0,'System.Software.Inventory')
+                                                    Write-Output $Object
+                                                }
+                                            } 
+                                            Catch {
+                                                Write-Warning "$Key : $_"
+                                            }   
+                                        }
+                                    } 
+                                    Catch  {}   
+                                    $reg.Close() 
+                                }                  
+                            } 
+                            Else  {
+                                Write-Error  "$($Computer): unable to reach remote system!"
+                            }
+                        } 
+                    } 
+                } 
+                Get-Software -Computername $TargetComputer `
+                | Select-Object -Property @{Name = 'PSComputerName'; Expression = {$_.ComputerName}}, DisplayName, Version, InstallDate, Publisher, EstimatedSizeMB, UninstallString, InstallLocation, InstallSource, HelpLink `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+                # If the above doesn't provide any results, it will try to get the installed software using WMI... though obtaining results from Win32_Product class is painfully slow process
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv").length -eq $null) {
+                    Get-WmiObject -Credential $Credential Win32_Product -ComputerName $TargetComputer `
+                    | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber `
+                    | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation                    
+                }
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Function Get-Software  {
+                    [OutputType('System.Software.Inventory')]
+                    [Cmdletbinding()] 
+                    Param( 
+                        [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True)] 
+                        [String[]]$Computername=$env:COMPUTERNAME
+                    )         
+                    Begin {}
+                    Process  {
+                        ForEach  ($Computer in  $Computername){ 
+                            If  (Test-Connection -ComputerName  $Computer -Count  1 -Quiet) {
+                            $Paths  = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall","SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")         
+                                ForEach($Path in $Paths) { 
+                                Write-Verbose  "Checking Path: $Path"
+                                #  Create an instance of the Registry Object and open the HKLM base key 
+                                Try  { 
+                                    $reg=[microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$Computer,'Registry64') 
+                                } 
+                                Catch  { 
+                                    Write-Error $_ 
+                                    Continue 
+                                } 
+                                #  Drill down into the Uninstall key using the OpenSubKey Method 
+                                Try  {
+                                    $regkey=$reg.OpenSubKey($Path)  
+                                    # Retrieve an array of string that contain all the subkey names 
+                                    $subkeys=$regkey.GetSubKeyNames()      
+                                    # Open each Subkey and use GetValue Method to return the required  values for each 
+                                    ForEach ($key in $subkeys){   
+                                        Write-Verbose "Key: $Key"
+                                        $thisKey=$Path+"\\"+$key 
+                                        Try {  
+                                            $thisSubKey=$reg.OpenSubKey($thisKey)   
+                                            # Prevent Objects with empty DisplayName 
+                                            $DisplayName =  $thisSubKey.getValue("DisplayName")
+                                            If ($DisplayName  -AND $DisplayName  -notmatch '^Update  for|rollup|^Security Update|^Service Pack|^HotFix') {
+                                                $Date = $thisSubKey.GetValue('InstallDate')
+                                                If ($Date) {
+                                                    Try {
+                                                        $Date = [datetime]::ParseExact($Date, 'yyyyMMdd', $Null)
+                                                    }
+                                                    Catch{
+                                                        Write-Warning "$($Computer): $_ <$($Date)>"
+                                                        $Date = $Null
+                                                    }
+                                                } 
+                                                # Create New Object with empty Properties 
+                                                $Publisher =  Try {
+                                                    $thisSubKey.GetValue('Publisher').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('Publisher')
+                                                }
+                                                $Version = Try {
+                                                    #Some weirdness with trailing [char]0 on some strings
+                                                    $thisSubKey.GetValue('DisplayVersion').TrimEnd(([char[]](32,0)))
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('DisplayVersion')
+                                                }
+                                                $UninstallString =  Try {
+                                                    $thisSubKey.GetValue('UninstallString').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('UninstallString')
+                                                }
+                                                $InstallLocation =  Try {
+                                                    $thisSubKey.GetValue('InstallLocation').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('InstallLocation')
+                                                }
+                                                $InstallSource =  Try {
+                                                    $thisSubKey.GetValue('InstallSource').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('InstallSource')
+                                                }
+                                                $HelpLink = Try {
+                                                    $thisSubKey.GetValue('HelpLink').Trim()
+                                                } 
+                                                Catch {
+                                                    $thisSubKey.GetValue('HelpLink')
+                                                }
+                                                $Object = [pscustomobject]@{
+                                                    Computername = $Computer
+                                                    DisplayName = $DisplayName
+                                                    Version  = $Version
+                                                    InstallDate = $Date
+                                                    Publisher = $Publisher
+                                                    UninstallString = $UninstallString
+                                                    InstallLocation = $InstallLocation
+                                                    InstallSource  = $InstallSource
+                                                    HelpLink = $thisSubKey.GetValue('HelpLink')
+                                                    EstimatedSizeMB = [decimal]([math]::Round(($thisSubKey.GetValue('EstimatedSize')*1024)/1MB,2))
+                                                }
+                                                $Object.pstypenames.insert(0,'System.Software.Inventory')
+                                                    Write-Output $Object
+                                                }
+                                            } 
+                                            Catch {
+                                                Write-Warning "$Key : $_"
+                                            }   
+                                        }
+                                    } 
+                                    Catch  {}   
+                                    $reg.Close() 
+                                }                  
+                            } 
+                            Else  {
+                                Write-Error  "$($Computer): unable to reach remote system!"
+                            }
+                        } 
+                    } 
+                } 
+                Get-Software -Computername $TargetComputer `
+                | Select-Object -Property @{Name = 'PSComputerName'; Expression = {$_.ComputerName}}, DisplayName, Version, InstallDate, Publisher, EstimatedSizeMB, UninstallString, InstallLocation, InstallSource, HelpLink `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+                # If the above doesn't provide any results, it will try to get the installed software using WMI... though obtaining results from Win32_Product class is painfully slow process
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv").length -eq $null) {
+                    Get-WmiObject Win32_Product -ComputerName $TargetComputer `
+                    | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber `
+                    | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation                    
+                }
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }  
+    }
+    MonitorJobs
+    
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($SoftwareInstalledCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
     $MainListBox.Items.Insert(0,$Message2)
@@ -3888,7 +6591,7 @@ function SoftwareInstalledCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $SoftwareInstalledCheckBox.Text     = "$($SoftwareInstalledCheckBox.Name)"
@@ -3901,6 +6604,7 @@ $Section1QueriesTab.Controls.Add($SoftwareInstalledCheckBox)
 
 
 
+
 # ============================================================================================================================================================
 # System Information
 # ============================================================================================================================================================
@@ -3910,39 +6614,87 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 
 $SystemInfoCheckBox = New-Object System.Windows.Forms.CheckBox
-$SystemInfoCheckBox.Name = "System Information"
+$SystemInfoCheckBox.Name = "System Information *"
+
 function SystemInfoCommand {
-        $Message1            = "$($SystemInfoCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($SystemInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "System Information"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($SystemInfoCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
         $Message1            = "Collecting Data:  $($SystemInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-WmiMethod -Credential $Credential -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c systeminfo /fo csv > `"C:\Windows\Temp\$CollectionShortName-$TargetComputer.csv`"" | Out-Null
+    
+                # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
+                Start-Sleep -Seconds $SleepTime
 
-        Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c systeminfo /fo csv > c:\$TargetComputer-systeminfo.csv" | Out-Null
+                # This copies the data from the target then removes the copy
+                Copy-Item  -Credential $Credential "\\$TargetComputer\c$\Windows\Temp\$CollectionShortName-$TargetComputer.csv" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
+                Remove-Item -Credential $Credential "\\$TargetComputer\c$\Windows\Temp\$CollectionShortName-$TargetComputer.csv"
     
-        # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
-        Start-Sleep -Seconds $SleepTime
-        Copy-Item "\\$TargetComputer\c$\$TargetComputer-systeminfo.csv" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-        Remove-Item "\\$TargetComputer\c$\$TargetComputer-systeminfo.csv"
+                # Adds the addtional column header, PSComputerName, and target computer to each connection
+                $SystemInfo = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.csv"
+                $SystemInfo | ForEach-Object {
+                    if ($_ -match '"Host Name","OS Name"') {"PSComputerName," + "$_"}
+                    else {"$TargetComputer," + "$_"}
+                } | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
     
-        # Adds the addtional column header, PSComputerName, and target computer to each connection
-        $SystemInfo = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer-systeminfo.csv"
-        $SystemInfo | ForEach-Object {
-            if ($_ -match '"Host Name","OS Name"') {"PSComputerName," + "$_"}
-            else {"$TargetComputer," + "$_"}
-        } | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer-systeminfo-formated.csv"
+                Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.csv"
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c systeminfo /fo csv > `"C:\Windows\Temp\$CollectionShortName-$TargetComputer.csv`"" | Out-Null
     
-        Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer-systeminfo.csv"
+                # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
+                Start-Sleep -Seconds $SleepTime
+
+                # This copies the data from the target then removes the copy
+                Copy-Item   "\\$TargetComputer\c$\Windows\Temp\$CollectionShortName-$TargetComputer.csv" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
+                Remove-Item "\\$TargetComputer\c$\Windows\Temp\$CollectionShortName-$TargetComputer.csv"
+    
+                # Adds the addtional column header, PSComputerName, and target computer to each connection
+                $SystemInfo = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.csv"
+                $SystemInfo | ForEach-Object {
+                    if ($_ -match '"Host Name","OS Name"') {"PSComputerName," + "$_"}
+                    else {"$TargetComputer," + "$_"}
+                } | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+    
+                Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.csv"
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
 
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($SystemInfoCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
@@ -3951,7 +6703,7 @@ function SystemInfoCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $SystemInfoCheckBox.Text     = "$($SystemInfoCheckBox.Name)"
@@ -3961,6 +6713,8 @@ $SystemInfoCheckBox.Location = New-Object System.Drawing.Size($Column1RightPosit
 $SystemInfoCheckBox.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 
 $Section1QueriesTab.Controls.Add($SystemInfoCheckBox)
+
+
 
 
 # ============================================================================================================================================================
@@ -3973,24 +6727,64 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 $USBControllerDevicesCheckBox = New-Object System.Windows.Forms.CheckBox
 $USBControllerDevicesCheckBox.Name = "USB Controller Devices"
+
 function USBControllerDevicesCommand {
-        $Message1            = "$($USBControllerDevicesCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $Message1            = "$($USBControllerDevicesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "USB Controller Devices"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($USBControllerDevicesCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
         $Message1            = "Collecting Data:  $($USBControllerDevicesCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
-        Get-WmiObject Win32_USBControllerDevice -ComputerName $TargetComputer `
-        | Select-Object PSComputerName, Antecedent, Dependent `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                Get-WmiObject -Class Win32_USBControllerDevice -ComputerName $TargetComputer `
+                | Foreach {[wmi]($_.Dependent)} `
+                | Select-Object -Property PSComputerName, Name, Manufacturer, Status, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID}} `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                            
+                #Get-WmiObject -Class Win32_USBControllerDevice -ComputerName $TargetComputer `
+                #| Select-Object PSComputerName, Antecedent, Dependent `
+                #| Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                
+                Get-WmiObject -Class Win32_USBControllerDevice -ComputerName $TargetComputer `
+                | Foreach {[wmi]($_.Dependent)} `
+                | Select-Object -Property PSComputerName, Name, Manufacturer, Status, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID}} `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }  
     }
+    MonitorJobs
 
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($USBControllerDevicesCheckBox.Name)"
     $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
@@ -3999,7 +6793,7 @@ function USBControllerDevicesCommand {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add($Message3)
 
-    CompileCsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
 
 $USBControllerDevicesCheckBox.Text     = "$($USBControllerDevicesCheckBox.Name)"
@@ -4011,6 +6805,8 @@ $USBControllerDevicesCheckBox.Size     = New-Object System.Drawing.Size($Column1
 $Section1QueriesTab.Controls.Add($USBControllerDevicesCheckBox)
 
 
+
+
 ##############################################################################################################################################################
 ##############################################################################################################################################################
 ##
@@ -4020,7 +6816,7 @@ $Section1QueriesTab.Controls.Add($USBControllerDevicesCheckBox)
 ##############################################################################################################################################################
 
 # Varables
-$ActiveDirectoryRightPosition     = 18
+$ActiveDirectoryRightPosition     = 5
 $ActiveDirectoryDownPositionStart = 10
 $ActiveDirectoryDownPosition      = 10
 $ActiveDirectoryDownPositionShift = 22
@@ -4047,258 +6843,1778 @@ $ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
 #------------------------
 
 $ActiveDirectoryTabLabel1           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel1.Location  = New-Object System.Drawing.Point(($ActiveDirectoryRightPosition - 10),$ActiveDirectoryDownPositionStart) 
+$ActiveDirectoryTabLabel1.Location  = New-Object System.Drawing.Point(($ActiveDirectoryRightPosition),$ActiveDirectoryDownPositionStart) 
 $ActiveDirectoryTabLabel1.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel1.Text      = "Currently, these commands need to be run on a local server."
-$ActiveDirectoryTabLabel1.Font      = New-Object System.Drawing.Font("$Font",10,1,3,1)
+$ActiveDirectoryTabLabel1.Text      = "These options need to be ran on a Domain Controller Server."
+$ActiveDirectoryTabLabel1.Font      = New-Object System.Drawing.Font("$Font",9,0,3,0)
 $ActiveDirectoryTabLabel1.ForeColor = "Red"
 $Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel1)
 
 # Shift the fields
 $ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift - 25
 
-$ActiveDirectoryTabLabel1           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel1.Location  = New-Object System.Drawing.Point(($ActiveDirectoryRightPosition - 10),$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel1.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel1.Text      = "Collect from either the Server IP, localhost, or 127.0.0.1"
-$ActiveDirectoryTabLabel1.Font      = New-Object System.Drawing.Font("$Font",9,1,3,1)
-$ActiveDirectoryTabLabel1.ForeColor = "Blue"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel1)
+
+
+# ============================================================================================================================================================
+# Active Directory - Account Details and User Information
+# ============================================================================================================================================================
 
 # Shift the fields
 $ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
 
 
-# ============================================================================================================================================================
-# Active Directory
-# ============================================================================================================================================================
+$ActiveDirectoryAccountDetailsAndUserInfoCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryAccountDetailsAndUserInfoCheckBox.Name = "Active Directory - Account Details and User Information"
 
+function ActiveDirectoryAccountDetailsAndUserInfoCommand {
+    $Message1            = "$($ActiveDirectoryAccountDetailsAndUserInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Account Details and User Information"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
 
-$ActiveDirectoryCheckBox            = New-Object System.Windows.Forms.CheckBox
-$ActiveDirectoryCheckBox.Name       = "Active Directory (Note - These Are Server Commands)"
-function ActiveDirectoryCommand {
-        $Message1            = "$($ActiveDirectoryCheckBox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
 
     foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($ActiveDirectoryCheckBox.Name)"
-        $CollectionDirectory = $CollectionName
-        $CollectionShortName = $CollectionName -replace ' ',''
-        $Message1            = "Collecting Data:  $($ActiveDirectoryCheckBox.Name) from $TargetComputer"
+        $Message1            = "Collecting Data:  $($ActiveDirectoryAccountDetailsAndUserInfoCheckBox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($Message1)
         $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
         $LogMessage          | Add-Content -Path $LogFile
 
-        
-        #Account Details and User Information
-        $CollectionName      = "Account Details and User Information"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        Get-ADUser -Filter * -Properties * `
-        | Select-Object Name, CanonicalName, SID, Enabled, LockedOut, AccountLockoutTime, Created, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation -Force
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Select-Object Name, CanonicalName, SID, Enabled, LockedOut, AccountLockoutTime, Created, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-        #Account Logon & Passowrd Policy
-        $CollectionName      = "Account Logon & Passowrd Policy"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        Get-ADUser -Filter * -Properties * `
-        | Select-Object Name, Enabled, LockedOut, AccountLockoutTime, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation -Force
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Select-Object Name, CanonicalName, SID, Enabled, LockedOut, AccountLockoutTime, Created, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-        #Account Contact Information
-        $CollectionName      = "Account Contact Information"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        Get-ADUser -Filter * -Properties * `
-        | Select-Object Name, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation -Force
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                
+                    Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                        net users /domain
+                    } | Export-CSV "$PoShLocation\$CollectionName-$TargetComputer.txt" -NoTypeInformation -Force
+                }
 
-        #Account Email Addresses
-        $CollectionName      = "Account Email Addresses"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        Get-ADUser -Filter * -Properties * `
-        | Where-Object {$_.EmailAddress -ne $null} `
-        | Select-Object Name, EmailAddress `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation -Force
-
-        #Account Phone Numbers
-        $CollectionName      = "Account Phone Numbers"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        Get-ADUser -Filter * -Properties * `
-        | Where-Object {($_.OfficePhone -ne $null) -or ($_.HomePhone -ne $null) -or ($_.MobilePhone -ne $null)} `
-        | Select-Object Name, OfficePhone, HomePhone, MobilePhone `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation -Force
-
-        #Active Directory Groups
-        $CollectionName      = "Active Directory Groups"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        Get-ADGroup -Filter * `
-        | Select-Object -Property Name, SID, GroupCategory, GroupScope, DistinguishedName `
-        | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.csv" -NoTypeInformation -Force
-
-        #Active Directory Group Membership
-        $CollectionName      = "Active Directory Group Membership"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        $ADGroupList = Get-ADGroup -Filter * | Select-Object -Property Name
-        foreach ($Group in $ADGroupList) {
-            Get-ADPrincipalGroupMembership -Identity $Group.name `
-            | Select-Object -Property Name, SID, GroupCategory, GroupScope, DistinguishedName `
-            | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer - $Group.csv" -NoTypeInformation -Force
-        } 
-
-        #Accounts That Are Inactive for Longer Than 4 Weeks
-        $CollectionName      = "Accounts That Are Inactive for Longer Than 4 Weeks"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        dsquery user domainroot -inactive 4 `
-        | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.txt" -Force
-
-        #Accounts That Are Disabled
-        $CollectionName      = "Accounts That Are Disabled"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        dsquery user -disabled `
-        | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.txt" -Force
-
-        #Accounts - Last Logon Timestamps
-        $CollectionName      = "Accounts - Last Logon Timestamps"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        dsquery * -filter "&(objectClass=person)(objectCategory=user)" -attr cn lastLogonTimestamp -limit 0 `
-        | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.txt" -Force
-
-        #Accounts - Primary Group is Domain Users
-        $CollectionName      = "Accounts - Primary Group is Domain Users"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        dsquery * -filter "(primaryGroupID=513)" -limit 0 `
-        | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.txt" -Force
-
-        #Accounts - Primary Group is Guests
-        $CollectionName      = "Accounts - Primary Group is Guests"
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-        dsquery * -filter "(primaryGroupID=514)" -limit 0 `
-        | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName - $TargetComputer.txt" -Force
-    
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
     }
+    MonitorJobs
+
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryAccountDetailsAndUserInfoCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
 }
-$ActiveDirectoryCheckBox.Text     = "$($ActiveDirectoryCheckBox.Name)"
-$ActiveDirectoryCheckBox.TabIndex = 2
-$ActiveDirectoryCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
-$ActiveDirectoryCheckBox.Location = New-Object System.Drawing.Size(($ActiveDirectoryRightPosition - 15),$ActiveDirectoryDownPosition) 
-$ActiveDirectoryCheckBox.Size     = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryCheckBox)
 
+$ActiveDirectoryAccountDetailsAndUserInfoCheckBox.Text      = "$($ActiveDirectoryAccountDetailsAndUserInfoCheckBox.Name)"
+$ActiveDirectoryAccountDetailsAndUserInfoCheckBox.TabIndex  = 2
+$ActiveDirectoryAccountDetailsAndUserInfoCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryAccountDetailsAndUserInfoCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryAccountDetailsAndUserInfoCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryAccountDetailsAndUserInfoCheckBox)
+
+
+
+
+# ============================================================================================================================================================
+# Active Directory - Account Logon & Passowrd Policy
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.Name = "Active Directory - Account Logon & Password Policy"
+
+function ActiveDirectoryAccountLogonAndPassowrdPolicyCommand {
+    $Message1            = "$($ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Account Logon & Passowrd Policy"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Select-Object Name, Enabled, LockedOut, AccountLockoutTime, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Select-Object Name, Enabled, LockedOut, AccountLockoutTime, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.Text     = "$($ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.Name)"
+$ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.TabIndex = 2
+$ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox)
+
+
+
+
+
+# ============================================================================================================================================================
+# Active Directory - Account Contact Information
+# ============================================================================================================================================================
 
 # Shift the fields
 $ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
 
 
-#-------------------------
-# Active Directory Labels
-#-------------------------
+$ActiveDirectoryAccountContactInfoCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryAccountContactInfoCheckBox.Name = "Active Directory - Account Contact Information"
 
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Account Details and User Information"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
+function ActiveDirectoryAccountContactInfoCommand {
+    $Message1            = "$($ActiveDirectoryAccountContactInfoCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Account Contact Information"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
 
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
 
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Account Logon & Passowrd Policy"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
 
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryAccountContactInfoCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
 
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Account Contact Information"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Select-Object Name, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
-
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Account Email Addresses"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
-
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
-
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Account Phone Numbers"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
-
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
-
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Active Directory Groups"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
-
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
-
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Active Directory Group Membership"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
-
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
-
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Accounts That Are Inactive for Longer Than 4 Weeks"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
-
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
-
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Accounts That Are Disabled"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
-
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
-
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Accounts - Last Logon Timestamps"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
-
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
-
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Accounts - Primary Group is Domain Users"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
-
-# Shift the fields
-$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
-
-$ActiveDirectoryTabLabel           = New-Object System.Windows.Forms.Label
-$ActiveDirectoryTabLabel.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
-$ActiveDirectoryTabLabel.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
-$ActiveDirectoryTabLabel.Text      = "Accounts - Primary Group is Guests"
-$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Select-Object Name, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                    
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
     
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryAccountContactInfoCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryAccountContactInfoCheckBox.Text     = "$($ActiveDirectoryAccountContactInfoCheckBox.Name)"
+$ActiveDirectoryAccountContactInfoCheckBox.TabIndex = 2
+$ActiveDirectoryAccountContactInfoCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryAccountContactInfoCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryAccountContactInfoCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryAccountContactInfoCheckBox)
+
+
+
+
+
+
+# ============================================================================================================================================================
+# Active Directory - Account Email Addresses
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$ActiveDirectoryAccountEmailAddressesCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryAccountEmailAddressesCheckBox.Name = "Active Directory - Account Email Addresses"
+
+function ActiveDirectoryAccountEmailAddressesCommand {
+    $Message1            = "$($ActiveDirectoryAccountEmailAddressesCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Account Email Addresses"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryAccountEmailAddressesCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Where-Object {$_.EmailAddress -ne $null} `
+                    | Select-Object Name, EmailAddress
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Where-Object {$_.EmailAddress -ne $null} `
+                    | Select-Object Name, EmailAddress
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryAccountEmailAddressesCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryAccountEmailAddressesCheckBox.Text     = "$($ActiveDirectoryAccountEmailAddressesCheckBox.Name)"
+$ActiveDirectoryAccountEmailAddressesCheckBox.TabIndex = 2
+$ActiveDirectoryAccountEmailAddressesCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryAccountEmailAddressesCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryAccountEmailAddressesCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryAccountEmailAddressesCheckBox)
+
+
+
+# ============================================================================================================================================================
+# Active Directory - Account Phone Numbers
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$ActiveDirectoryAccountPhoneNumbersCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryAccountPhoneNumbersCheckBox.Name = "Active Directory - Account Phone Numbers"
+
+function ActiveDirectoryAccountPhoneNumbersCommand {
+    $Message1            = "$($ActiveDirectoryAccountPhoneNumbersCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Account Phone Numbers"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryAccountPhoneNumbersCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Where-Object {($_.OfficePhone -ne $null) -or ($_.HomePhone -ne $null) -or ($_.MobilePhone -ne $null)} `
+                    | Select-Object Name, OfficePhone, HomePhone, MobilePhone
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADUser -Filter * -Properties * `
+                    | Where-Object {($_.OfficePhone -ne $null) -or ($_.HomePhone -ne $null) -or ($_.MobilePhone -ne $null)} `
+                    | Select-Object Name, OfficePhone, HomePhone, MobilePhone
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryAccountPhoneNumbersCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryAccountPhoneNumbersCheckBox.Text     = "$($ActiveDirectoryAccountPhoneNumbersCheckBox.Name)"
+$ActiveDirectoryAccountPhoneNumbersCheckBox.TabIndex = 2
+$ActiveDirectoryAccountPhoneNumbersCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryAccountPhoneNumbersCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryAccountPhoneNumbersCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryAccountPhoneNumbersCheckBox)
+
+
+
+
+
+# ============================================================================================================================================================
+# Active Directory - Computers Details and OS Info
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$ActiveDirectoryComputersCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryComputersCheckBox.Name = "Active Directory - Computers"
+
+function ActiveDirectoryComputersCommand {
+    $Message1            = "$($ActiveDirectoryComputersCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Computers"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryComputersCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADComputer -Filter * -Properties *  `
+                    | Select-Object -Property Enabled, Name, OperatingSystem, OperatingSystemServicePack, OperatingSystemHotfix, OperatingSystemVersion, IPv4Address, IPv6Address, LastLogonDate, Created, ObjectClass, SID, SIDHistory, DistinguishedName, DNSHostName, SamAccountName, CannotChangePassword
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADComputer -Filter * -Properties *  `
+                    | Select-Object -Property Enabled, Name, OperatingSystem, OperatingSystemServicePack, OperatingSystemHotfix, OperatingSystemVersion, IPv4Address, IPv6Address, LastLogonDate, Created, ObjectClass, SID, SIDHistory, DistinguishedName, DNSHostName, SamAccountName, CannotChangePassword
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryComputersCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryComputersCheckBox.Text     = "$($ActiveDirectoryComputersCheckBox.Name)"
+$ActiveDirectoryComputersCheckBox.TabIndex = 2
+$ActiveDirectoryComputersCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryComputersCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryComputersCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryComputersCheckBox)
+
+
+
+# ============================================================================================================================================================
+# Active Directory - Default Domain Password Policy
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$ActiveDirectoryDefaultDomainPasswordPolicyCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.Name = "Active Directory - Default Domain Password Policy"
+
+function ActiveDirectoryDefaultDomainPasswordPolicyCommand {
+    $Message1            = "$($ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Default Domain Password Policy"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADDefaultDomainPasswordPolicy
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADDefaultDomainPasswordPolicy
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.Text     = "$($ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.Name)"
+$ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.TabIndex = 2
+$ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryDefaultDomainPasswordPolicyCheckBox)
+
+# ============================================================================================================================================================
+# Active Directory - Groups
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$ActiveDirectoryGroupsCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryGroupsCheckBox.Name = "Active Directory - Groups"
+
+function ActiveDirectoryGroupsCommand {
+    $Message1            = "$($ActiveDirectoryGroupsCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Groups"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryGroupsCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADGroup -Filter * `
+                    | Select-Object -Property Name, SID, GroupCategory, GroupScope, DistinguishedName
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADGroup -Filter * `
+                    | Select-Object -Property Name, SID, GroupCategory, GroupScope, DistinguishedName
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryGroupsCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryGroupsCheckBox.Text     = "$($ActiveDirectoryGroupsCheckBox.Name)"
+$ActiveDirectoryGroupsCheckBox.TabIndex = 2
+$ActiveDirectoryGroupsCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryGroupsCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryGroupsCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryGroupsCheckBox)
+
+
+
+
+# ============================================================================================================================================================
+# Active Directory - Group Membership by Groups
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$ActiveDirectoryGroupMembershipByGroupsCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryGroupMembershipByGroupsCheckBox.Name = "Active Directory - Group Membership By Groups"
+
+function ActiveDirectoryGroupMembershipByGroupsCommand {
+    $Message1            = "$($ActiveDirectoryGroupMembershipByGroupsCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Group Membership by Groups"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryGroupMembershipByGroupsCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    #Gets a list of all the groups
+                    $ADGroupList = Get-ADGroup -Filter * | Select-Object -ExpandProperty Name
+                    foreach ($Group in $ADGroupList) {
+                        $GroupMemberships = Get-ADGroupMember $Group
+                        $GroupMemberships | Add-Member -MemberType NoteProperty -Name GroupName -Value $Group -Force
+                        $GroupMemberships | select * -First 1
+                        $GroupMemberships | Select-Object -Property PSComputerName, GroupName, SamAccountName, SID, GroupCategory, GroupScope, DistinguishedName 
+                    } 
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    #Gets a list of all the groups
+                    $ADGroupList = Get-ADGroup -Filter * | Select-Object -ExpandProperty Name
+                    foreach ($Group in $ADGroupList) {
+                        $GroupMemberships = Get-ADGroupMember $Group
+                        $GroupMemberships | Add-Member -MemberType NoteProperty -Name GroupName -Value $Group -Force
+                        $GroupMemberships | select * -First 1
+                        $GroupMemberships | Select-Object -Property PSComputerName, GroupName, SamAccountName, SID, GroupCategory, GroupScope, DistinguishedName 
+                    } 
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryGroupMembershipByGroupsCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryGroupMembershipByGroupsCheckBox.Text     = "$($ActiveDirectoryGroupMembershipByGroupsCheckBox.Name)"
+$ActiveDirectoryGroupMembershipByGroupsCheckBox.TabIndex = 2
+$ActiveDirectoryGroupMembershipByGroupsCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryGroupMembershipByGroupsCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryGroupMembershipByGroupsCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryGroupMembershipByGroupsCheckBox)
+
+
+
+
+# ============================================================================================================================================================
+# Active Directory - Group Membership by Users
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$ActiveDirectoryGroupMembershipByUsersCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryGroupMembershipByUsersCheckBox.Name = "Active Directory - Group Membership by Users"
+
+function ActiveDirectoryGroupMembershipByUsersCommand {
+    $Message1            = "$($ActiveDirectoryGroupMembershipByUsersCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Group Membership by Users"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryGroupMembershipByUsersCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    ###get-aduser dan -property Memberof | Select -ExpandProperty memberOf
+                    $ADUserList = Get-ADUser -filter * | Select-Object -ExpandProperty SamAccountName
+                    foreach ($SamAccountName in $ADUserList) {                        
+                        $GroupMemberships = Get-ADPrincipalGroupMembership -Identity $SamAccountName
+                        $GroupMemberships | Add-Member -MemberType NoteProperty -Name SamAccountName -Value $SamAccountName -Force
+                        $GroupMemberships | Select-Object -Property SamAccountName, @{Name="Group Name";Expression={$_.Name}}, SID, GroupCategory, GroupScope, DistinguishedName
+                    } 
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {                    
+                    ###get-aduser dan -property Memberof | Select -ExpandProperty memberOf
+                    $ADUserList = Get-ADUser -filter * | Select-Object -ExpandProperty SamAccountName
+                    foreach ($SamAccountName in $ADUserList) {                        
+                        $GroupMemberships = Get-ADPrincipalGroupMembership -Identity $SamAccountName
+                        $GroupMemberships | Add-Member -MemberType NoteProperty -Name SamAccountName -Value $SamAccountName -Force
+                        $GroupMemberships | Select-Object -Property SamAccountName, @{Name="Group Name";Expression={$_.Name}}, SID, GroupCategory, GroupScope, DistinguishedName
+                    } 
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryGroupMembershipByUsersCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryGroupMembershipByUsersCheckBox.Text     = "$($ActiveDirectoryGroupMembershipByUsersCheckBox.Name)"
+$ActiveDirectoryGroupMembershipByUsersCheckBox.TabIndex = 2
+$ActiveDirectoryGroupMembershipByUsersCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryGroupMembershipByUsersCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryGroupMembershipByUsersCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryGroupMembershipByUsersCheckBox)
+
+
+
+
+# ============================================================================================================================================================
+# Active Directory - Groups Without Account Members
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$ActiveDirectoryGroupsWithoutAccountMembersCheckBox = New-Object System.Windows.Forms.CheckBox
+$ActiveDirectoryGroupsWithoutAccountMembersCheckBox.Name = "Active Directory - Groups Without Account Members"
+
+function ActiveDirectoryGroupsWithoutAccountMembersCommand {
+    $Message1            = "$($ActiveDirectoryGroupsWithoutAccountMembersCheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "Active Directory - Groups Without Account Members"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($ActiveDirectoryGroupsWithoutAccountMembersCheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADGroup -filter * `
+                    | Where-Object {-Not ($_ | Get-ADGroupMember)} 
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    Get-ADGroup -filter * `
+                    | Where-Object {-Not ($_ | Get-ADGroupMember)} 
+                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ActiveDirectoryGroupsWithoutAccountMembersCheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$ActiveDirectoryGroupsWithoutAccountMembersCheckBox.Text     = "$($ActiveDirectoryGroupsWithoutAccountMembersCheckBox.Name)"
+$ActiveDirectoryGroupsWithoutAccountMembersCheckBox.TabIndex = 2
+$ActiveDirectoryGroupsWithoutAccountMembersCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$ActiveDirectoryGroupsWithoutAccountMembersCheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$ActiveDirectoryGroupsWithoutAccountMembersCheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryGroupsWithoutAccountMembersCheckBox)
+
+
+
+# ============================================================================================================================================================
+# Domain - DNS All Records (Server 2008)
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$DomainDNSAllRecordsServer2008CheckBox = New-Object System.Windows.Forms.CheckBox
+$DomainDNSAllRecordsServer2008CheckBox.Name = "DNS All Records (Server 2008)"
+
+function DomainDNSAllRecordsServer2008Command {
+    $Message1            = "$($DomainDNSAllRecordsServer2008CheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "DNS All Records (Server 2008)"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($DomainDNSAllRecordsServer2008CheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Credential $Credential -ComputerName $TargetComputer -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
+                | Select-Object PSComputerName, __Class, ContainerName, DomainName, RecordData, OwnerName `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -ComputerName $TargetComputer -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
+                | Select-Object PSComputerName, __Class, ContainerName, DomainName, RecordData, OwnerName `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DomainDNSAllRecordsServer2008CheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$DomainDNSAllRecordsServer2008CheckBox.Text     = "$($DomainDNSAllRecordsServer2008CheckBox.Name)"
+$DomainDNSAllRecordsServer2008CheckBox.TabIndex = 2
+$DomainDNSAllRecordsServer2008CheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$DomainDNSAllRecordsServer2008CheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$DomainDNSAllRecordsServer2008CheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($DomainDNSAllRecordsServer2008CheckBox)
+
+
+
+# ============================================================================================================================================================
+# Domain - DNS Root Hints (Server 2008)
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$DomainDNSRootHintsServer2008CheckBox = New-Object System.Windows.Forms.CheckBox
+$DomainDNSRootHintsServer2008CheckBox.Name = "DNS Root Hints (Server 2008)"
+
+function DomainDNSRootHintsServer2008Command {
+    $Message1            = "$($DomainDNSRootHintsServer2008CheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "DNS Root Hints (Server 2008)"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($DomainDNSRootHintsServer2008CheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Credential $Credential -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
+                | Where-Object {$_.domainname -eq "..roothints"} `
+                | Select-Object PSComputerName, * `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
+                | Where-Object {$_.domainname -eq "..roothints"} `
+                | Select-Object PSComputerName, * `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DomainDNSRootHintsServer2008CheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$DomainDNSRootHintsServer2008CheckBox.Text     = "$($DomainDNSRootHintsServer2008CheckBox.Name)"
+$DomainDNSRootHintsServer2008CheckBox.TabIndex = 2
+$DomainDNSRootHintsServer2008CheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$DomainDNSRootHintsServer2008CheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$DomainDNSRootHintsServer2008CheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($DomainDNSRootHintsServer2008CheckBox)
+
+
+
+# ============================================================================================================================================================
+# Domain - DNS Zones (Server 2008)
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$DomainDNSZonesServer2008CheckBox = New-Object System.Windows.Forms.CheckBox
+$DomainDNSZonesServer2008CheckBox.Name = "DNS Zones (Server 2008)"
+
+function DomainDNSZonesServer2008Command {
+    $Message1            = "$($DomainDNSZonesServer2008CheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "DNS Zones (Server 2008)"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($DomainDNSZonesServer2008CheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Credential $Credential -Namespace "root\MicrosoftDNS" -Class MicrosoftDNS_Zone `
+                | Select-Object PSComputerName, Name `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Namespace "root\MicrosoftDNS" -Class MicrosoftDNS_Zone `
+                | Select-Object PSComputerName, Name `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DomainDNSZonesServer2008CheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$DomainDNSZonesServer2008CheckBox.Text     = "$($DomainDNSZonesServer2008CheckBox.Name)"
+$DomainDNSZonesServer2008CheckBox.TabIndex = 2
+$DomainDNSZonesServer2008CheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$DomainDNSZonesServer2008CheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$DomainDNSZonesServer2008CheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($DomainDNSZonesServer2008CheckBox)
+
+
+
+
+# ============================================================================================================================================================
+# Domain - DNS Statistics (Server 2008)
+# ============================================================================================================================================================
+
+# Shift the fields
+$ActiveDirectoryDownPosition += $ActiveDirectoryDownPositionShift
+
+
+$DomainDNSStatisticsServer2008CheckBox = New-Object System.Windows.Forms.CheckBox
+$DomainDNSStatisticsServer2008CheckBox.Name = "DNS Statistics (Server 2008)"
+
+function DomainDNSStatisticsServer2008Command {
+    $Message1            = "$($DomainDNSStatisticsServer2008CheckBox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "DNS Statistics (Server 2008)"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+
+    # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
+    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+
+    foreach ($TargetComputer in $ComputerList) {
+        $Message1            = "Collecting Data:  $($DomainDNSStatisticsServer2008CheckBox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add($Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Credential $Credential -Namespace root\MicrosoftDNS -Class MicrosoftDNS_Statistic `
+                | Select-Object PSComputerName, Name, Value `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                                            
+                Get-WmiObject -Namespace root\MicrosoftDNS -Class MicrosoftDNS_Statistic `
+                | Select-Object PSComputerName, Name, Value `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+        }   
+    }
+    MonitorJobs
+    
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($DomainDNSStatisticsServer2008CheckBox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+}
+
+$DomainDNSStatisticsServer2008CheckBox.Text     = "$($DomainDNSStatisticsServer2008CheckBox.Name)"
+$DomainDNSStatisticsServer2008CheckBox.TabIndex = 2
+$DomainDNSStatisticsServer2008CheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$DomainDNSStatisticsServer2008CheckBox.Location  = New-Object System.Drawing.Point($ActiveDirectoryRightPosition,$ActiveDirectoryDownPosition) 
+$DomainDNSStatisticsServer2008CheckBox.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
+$Section1ActiveDirectoryTab.Controls.Add($DomainDNSStatisticsServer2008CheckBox)
+
+
+
+##############################################################################################################################################################
+##############################################################################################################################################################
+##
+## Hunt The Bad Stuff
+##
+##############################################################################################################################################################
+##############################################################################################################################################################
+
+
+# Varables
+$HuntTheBadStuffRightPosition     = 3
+$HuntTheBadStuffDownPosition      = -10
+$HuntTheBadStuffDownPositionShift = 25
+$HuntTheBadStuffLableWidth        = 450
+$HuntTheBadStuffLableHeight       = 22
+$HuntTheBadStuffButtonWidth       = 110
+$HuntTheBadStuffButtonHeight      = 22
+
+
+$Section1HuntTheBadStuffTab          = New-Object System.Windows.Forms.TabPage
+$Section1HuntTheBadStuffTab.Location = $System_Drawing_Point
+$Section1HuntTheBadStuffTab.Text     = "File Searching"
+$Section1HuntTheBadStuffTab.Location = New-Object System.Drawing.Size($HuntTheBadStuffRightPosition,$HuntTheBadStuffDownPosition) 
+$Section1HuntTheBadStuffTab.Size     = New-Object System.Drawing.Size($HuntTheBadStuffLableWidth,$HuntTheBadStuffLableHeight) 
+$Section1HuntTheBadStuffTab.TabIndex = 0
+$Section1HuntTheBadStuffTab.UseVisualStyleBackColor = $True
+$Section1CollectionsTabControl.Controls.Add($Section1HuntTheBadStuffTab)
+
+
+
+# Shift the fields
+$HuntTheBadStuffDownPosition += $HuntTheBadStuffDownPositionShift
+
+
+# ============================================================================================================================================================
+# Hunt The Bad Stuff - Directory Listing
+# ============================================================================================================================================================
+
+#---------------------------------------------------------
+# Hunt The Bad Stuff - Directory Listing CheckBox Command
+#---------------------------------------------------------
+
+$HuntTheBadStuffDirectoryListingCheckbox = New-Object System.Windows.Forms.CheckBox
+$HuntTheBadStuffDirectoryListingCheckbox.Name = "Directory Listing"
+
+function HuntTheBadStuffDirectoryListingCommand {
+    $Message1            = "$($HuntTheBadStuffDirectoryListingCheckbox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "$($HuntTheBadStuffDirectoryListingCheckbox.Name)"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+    $Message1            = "Collecting Data:  $($HuntTheBadStuffDirectoryListingCheckbox.Name) from $TargetComputer"
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
+
+    foreach ($TargetComputer in $ComputerList) {
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Insert(0,$Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        $ListDirectory = $HuntTheBadStuffDirectoryListingTextbox.Text
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                
+   
+                $DirectoryListing = Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    param($ListDirectory)
+                    Get-ChildItem -Force $ListDirectory -ErrorAction SilentlyContinue                    
+                } -ArgumentList @($ListDirectory)
+                        
+
+                # Add the PSComputerName Property and Host name; then save the file
+                $DirectoryListing | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer
+                $DirectoryListing | Select-Object -Property PSComputerName, FullName, Name, Extension, Attributes, CreationTime, LastWriteTime, LastAccessTime `
+                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation      
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory)
+        }   
+    }
+    MonitorJobs
+
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($HuntTheBadStuffDirectoryListingCheckbox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Remove-DuplicateCsvHeaders
+}
+
+$HuntTheBadStuffDirectoryListingCheckbox.Text     = "$($HuntTheBadStuffDirectoryListingCheckbox.Name)"
+$HuntTheBadStuffDirectoryListingCheckbox.TabIndex = 2
+$HuntTheBadStuffDirectoryListingCheckbox.DataBindings.DefaultDataSourceUpdateMode = 0
+$HuntTheBadStuffDirectoryListingCheckbox.Location = New-Object System.Drawing.Size(($HuntTheBadStuffRightPosition),($HuntTheBadStuffDownPosition)) 
+$HuntTheBadStuffDirectoryListingCheckbox.Size     = New-Object System.Drawing.Size($HuntTheBadStuffLableWidth,$HuntTheBadStuffLableHeight) 
+$Section1HuntTheBadStuffTab.Controls.Add($HuntTheBadStuffDirectoryListingCheckbox)
+
+
+# Shift the fields
+$HuntTheBadStuffDownPosition += $HuntTheBadStuffDownPositionShift
+
+
+#----------------------------------------------
+# Hunt The Bad Stuff - Directory Listing Label
+#----------------------------------------------
+$HuntTheBadStuffDirectoryListingLabel           = New-Object System.Windows.Forms.Label
+$HuntTheBadStuffDirectoryListingLabel.Location  = New-Object System.Drawing.Point($HuntTheBadStuffRightPosition,$HuntTheBadStuffDownPosition) 
+$HuntTheBadStuffDirectoryListingLabel.Size      = New-Object System.Drawing.Size($HuntTheBadStuffLableWidth,$HuntTheBadStuffLableHeight) 
+$HuntTheBadStuffDirectoryListingLabel.Text      = "Collection time is dependant on the directory's contents."
+#$HuntTheBadStuffDirectoryListingLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,3,1)
+$HuntTheBadStuffDirectoryListingLabel.ForeColor = "Blue"
+$Section1HuntTheBadStuffTab.Controls.Add($HuntTheBadStuffDirectoryListingLabel)
+
+
+# Shift the fields
+$HuntTheBadStuffDownPosition += $HuntTheBadStuffDownPositionShift
+
+
+#----------------------------------------------------
+# Hunt The Bad Stuff - Directory Listing Directory Textbox
+#----------------------------------------------------
+$HuntTheBadStuffDirectoryListingTextbox               = New-Object System.Windows.Forms.TextBox
+$HuntTheBadStuffDirectoryListingTextbox.Location      = New-Object System.Drawing.Size($HuntTheBadStuffRightPosition,($HuntTheBadStuffDownPosition)) 
+$HuntTheBadStuffDirectoryListingTextbox.Size          = New-Object System.Drawing.Size(430,22)
+$HuntTheBadStuffDirectoryListingTextbox.MultiLine     = $False
+#$HuntTheBadStuffDirectoryListingTextbox.ScrollBars    = "Vertical"
+$HuntTheBadStuffDirectoryListingTextbox.WordWrap      = True
+$HuntTheBadStuffDirectoryListingTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+$HuntTheBadStuffDirectoryListingTextbox.AcceptsReturn = false # Allows you to enter in tabs into the textbox
+$HuntTheBadStuffDirectoryListingTextbox.DataBindings.DefaultDataSourceUpdateMode = 0
+$HuntTheBadStuffDirectoryListingTextbox.Text          = "C:\Windows\System32"
+#$HuntTheBadStuffDirectoryListingTextbox.Add_KeyDown({          })
+$Section1HuntTheBadStuffTab.Controls.Add($HuntTheBadStuffDirectoryListingTextbox)
+
+
+# Shift the fields
+$HuntTheBadStuffDownPosition += $HuntTheBadStuffDownPositionShift + $HuntTheBadStuffDirectoryListingTextbox.Size.Height
+
+
+
+
+# ============================================================================================================================================================
+# Hunt The Bad Stuff - File Search
+# ============================================================================================================================================================
+
+
+#---------------------------------------------------
+# Hunt The Bad Stuff - File Search Command CheckBox
+#---------------------------------------------------
+
+$HuntTheBadStuffFileSearchCheckbox = New-Object System.Windows.Forms.CheckBox
+$HuntTheBadStuffFileSearchCheckbox.Name = "File Search"
+
+function HuntTheBadStuffFileSearchCommand {
+    $Message1            = "$($HuntTheBadStuffFileSearchCheckbox.Name)"
+    $MainListBox.Items.Insert(0,"")
+    $MainListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1")
+    $CollectionName      = "$($HuntTheBadStuffFileSearchCheckbox.Name)"
+    $CollectionDirectory = $CollectionName
+    $CollectionShortName = $CollectionName -replace ' ',''
+    $Message1            = "Collecting Data:  $($HuntTheBadStuffFileSearchCheckbox.Name) from $TargetComputer"
+
+    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
+
+    foreach ($TargetComputer in $ComputerList) {
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Insert(0,$Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+
+        $DirectoriesToSearch = $HuntTheBadStuffFileSearchDirectoryTextbox.Text -split "`r`n"
+        $FilesToSearch       = $HuntTheBadStuffFileSearchFileTextbox.Text -split "`r`n"
+        $MaximumDepth        = $HuntTheBadStuffFileSearchMaxDepthTextbox.text
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+            if (!$Credential) {              
+                $script:Credential = Get-Credential
+            }
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$Credential)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'AboveNormal'
+
+                $FilesFoundList = @()
+                                                            
+                foreach ($DirectoryPath in $DirectoriesToSearch) {
+                    foreach ($Filename in $FilesToSearch) {
+                        $FilesFound = Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                            param($DirectoryPath,$Filename,$MaximumDepth)
+   
+                            function Get-FileHash{
+                                param ([string] $Path ) 
+                                $HashAlgorithm = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+                                $Hash=[System.BitConverter]::ToString($hashAlgorithm.ComputeHash([System.IO.File]::ReadAllBytes($Path)))
+                                $Properties=@{
+                                "Algorithm" = "MD5"
+                                "Path" = $Path
+                                "Hash" = $Hash.Replace("-", "")
+                                }
+                                $Ret=New-Object –TypeName PSObject –Prop $Properties
+                                return $Ret
+                            }
+
+                            Function Get-ChildItemRecurse {
+                                Param(
+                                [String]$Path = $PWD,
+                                [String]$Filter = "*",
+                                [Byte]$Depth = $MaxDepth
+                                )
+
+                                $CurrentDepth++
+                                $RecursiveListing = New-Object PSObject
+                                Get-ChildItem $Path -Filter $Filter -Force | Foreach { 
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer -Force
+                                    #$RecursiveListing | Add-Member -MemberType NoteProperty -Name DirectoryName -Value $_.DirectoryName -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Directory -Value $_.Directory -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Name -Value $_.Name -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name BaseName -Value $_.BaseName -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Extension -Value $_.Extension -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Hash -Value $_.Hash -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Algorithm -Value $_.Algorithm -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Attributes -Value $_.Attributes -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name CreationTime -Value $_.CreationTime -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name LastWriteTime -Value $_.LastWriteTime -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name LastAccessTime -Value $_.LastAccessTime -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name FullName -Value $_.FullName -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name PSIsContainer -Value $_.PSIsContainer -Force
+                                    $RecursiveListing
+                                    If ($_.PsIsContainer) {
+                                        If ($CurrentDepth -le $Depth) {                
+                                            # Callback to this function
+                                            Get-ChildItemRecurse -Path $_.FullName -Filter $Filter -Depth $MaxDepth -CurrentDepth $CurrentDepth
+                                        }
+                                    }
+                                }
+                            }
+                        $MaxDepth = $MaximumDepth
+                        $Path = $DirectoryPath
+                        Get-ChildItemRecurse -Path $Path -Depth $MaxDepth `
+                        | Where-Object { ($_.PSIsContainer -eq $false) -and ($_.Name -match "$Filename") }
+
+                        } -ArgumentList @($DirectoryPath,$Filename,$MaximumDepth)
+                        
+                        # Hash the file found
+                        $FileFoundHash = Get-FileHash ($FilesFound).FullName
+
+                        # Add the PSComputerName Property and Host name; then save the file
+                        $FilesFound | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer
+                        $FilesFound | Add-Member -MemberType NoteProperty -Name Hash -Value $FileFoundHash.Hash
+                        $FilesFound | Add-Member -MemberType NoteProperty -Name Algorithm -Value $FileFoundHash.Algorithm                        
+                        $FilesFoundList += $FilesFound | Select-Object -Property PSComputerName, Directory, Name, BaseName, Extension, Hash, Algorithm, Attributes, CreationTime, LastWriteTime, LastAccessTime, FullName
+                    }
+                }
+                $FilesFoundList | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                $FilesFoundListAddHeader = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Header "PSComputerName","Directory","Name","BaseName","Extension","Hash","Algorithm","Attributes","CreationTime","LastWriteTime","LastAccessTime","FullName"
+                Remove-Item -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                $FilesFoundListAddHeader | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$Credential)
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth)
+                # Available priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest
+                [System.Threading.Thread]::CurrentThread.Priority = 'RealTime'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'RealTime'
+                #polo
+
+                $FilesFoundList = @()
+                                                            
+                foreach ($DirectoryPath in $DirectoriesToSearch) {
+                    foreach ($Filename in $FilesToSearch) {
+
+
+                        #Get-WmiObject -class Win32_Directory -ComputerName $TargetComputer
+
+
+                        $FilesFound = Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                            param($DirectoryPath,$Filename,$MaximumDepth)
+
+                            Function Get-ChildItemRecurse {
+                                Param(
+                                [String]$Path = $PWD,
+                                [String]$Filter = "*",
+                                [Byte]$Depth = $MaxDepth
+                                )
+                                $CurrentDepth++
+                                $RecursiveListing = New-Object PSObject
+                                Get-ChildItem $Path -Filter $Filter -Force | Foreach { 
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer -Force
+                                    #$RecursiveListing | Add-Member -MemberType NoteProperty -Name DirectoryName -Value $_.DirectoryName -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Directory -Value $_.Directory -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Name -Value $_.Name -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name BaseName -Value $_.BaseName -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Extension -Value $_.Extension -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name Attributes -Value $_.Attributes -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name CreationTime -Value $_.CreationTime -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name LastWriteTime -Value $_.LastWriteTime -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name LastAccessTime -Value $_.LastAccessTime -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name FullName -Value $_.FullName -Force
+                                    $RecursiveListing | Add-Member -MemberType NoteProperty -Name PSIsContainer -Value $_.PSIsContainer -Force
+                                    $RecursiveListing
+                                    If ($_.PsIsContainer) {
+                                        If ($CurrentDepth -le $Depth) {                
+                                            # Callback to this function
+                                            Get-ChildItemRecurse -Path $_.FullName -Filter $Filter -Depth $MaxDepth -CurrentDepth $CurrentDepth
+                                        }
+                                    }
+                                }
+                            }
+                        $MaxDepth = $MaximumDepth
+                        $Path = $DirectoryPath
+                        
+                        Get-ChildItemRecurse -Path $Path -Depth $MaxDepth `
+                        | Where-Object { ($_.PSIsContainer -eq $false) -and ($_.Name -match "$Filename") }
+
+                        } -ArgumentList @($DirectoryPath,$Filename,$MaximumDepth)
+                        
+                        $FilesFoundList += $FilesFound | Select-Object -Property PSComputerName, Directory, Name, BaseName, Extension, Attributes, CreationTime, LastWriteTime, LastAccessTime, FullName
+                    }
+                }
+                $FilesFoundList | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                $FilesFoundListAddHeader = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Header "PSComputerName","Directory","Name","BaseName","Extension","Attributes","CreationTime","LastWriteTime","LastAccessTime","FullName"
+                Remove-Item -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                $FilesFoundListAddHeader | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
+            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth)
+        } 
+    }
+    MonitorJobs
+
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($HuntTheBadStuffFileSearchCheckbox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+
+    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Remove-DuplicateCsvHeaders
+}
+
+$HuntTheBadStuffFileSearchCheckbox.Text     = "$($HuntTheBadStuffFileSearchCheckbox.Name)"
+$HuntTheBadStuffFileSearchCheckbox.TabIndex = 2
+$HuntTheBadStuffFileSearchCheckbox.DataBindings.DefaultDataSourceUpdateMode = 0
+$HuntTheBadStuffFileSearchCheckbox.Location = New-Object System.Drawing.Size(($HuntTheBadStuffRightPosition),($HuntTheBadStuffDownPosition)) 
+$HuntTheBadStuffFileSearchCheckbox.Size     = New-Object System.Drawing.Size((230),$HuntTheBadStuffLableHeight) 
+$Section1HuntTheBadStuffTab.Controls.Add($HuntTheBadStuffFileSearchCheckbox)
+
+
+#--------------------------------------------------
+# Hunt The Bad Stuff - File Search Max Depth Label
+#--------------------------------------------------
+$HuntTheBadStuffFileSearchMaxDepthLabel            = New-Object System.Windows.Forms.Label
+$HuntTheBadStuffFileSearchMaxDepthLabel.Location   = New-Object System.Drawing.Point(($HuntTheBadStuffFileSearchCheckbox.Size.Width + 52),($HuntTheBadStuffDownPosition + 3)) 
+$HuntTheBadStuffFileSearchMaxDepthLabel.Size       = New-Object System.Drawing.Size(100,$HuntTheBadStuffLableHeight) 
+$HuntTheBadStuffFileSearchMaxDepthLabel.Text       = "Recursive Depth"
+#$HuntTheBadStuffFileSearchMaxDepthLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,3,1)
+#$HuntTheBadStuffFileSearchMaxDepthLabel.ForeColor  = "Blue"
+$Section1HuntTheBadStuffTab.Controls.Add($HuntTheBadStuffFileSearchMaxDepthLabel)
+
+
+#----------------------------------------------------
+# Hunt The Bad Stuff - File Search Max Depth Textbox
+#----------------------------------------------------
+$HuntTheBadStuffFileSearchMaxDepthTextbox                = New-Object System.Windows.Forms.TextBox
+$HuntTheBadStuffFileSearchMaxDepthTextbox.Location       = New-Object System.Drawing.Size(($HuntTheBadStuffFileSearchMaxDepthLabel.Location.X + $HuntTheBadStuffFileSearchMaxDepthLabel.Size.Width),($HuntTheBadStuffDownPosition)) 
+$HuntTheBadStuffFileSearchMaxDepthTextbox.Size           = New-Object System.Drawing.Size(50,20)
+$HuntTheBadStuffFileSearchMaxDepthTextbox.MultiLine      = $false
+#$HuntTheBadStuffFileSearchMaxDepthTextbox.ScrollBars    = "Vertical"
+$HuntTheBadStuffFileSearchMaxDepthTextbox.WordWrap       = false
+#$HuntTheBadStuffFileSearchMaxDepthTextbox.AcceptsTab    = false
+#$HuntTheBadStuffFileSearchMaxDepthTextbox.AcceptsReturn = false
+$HuntTheBadStuffFileSearchMaxDepthTextbox.Font           = New-Object System.Drawing.Font("$Font",9,0,3,1)
+$HuntTheBadStuffFileSearchMaxDepthTextbox.DataBindings.DefaultDataSourceUpdateMode = 0
+$HuntTheBadStuffFileSearchMaxDepthTextbox.Text           = 0
+#$HuntTheBadStuffFileSearchMaxDepthTextbox.Add_KeyDown({          })
+$Section1HuntTheBadStuffTab.Controls.Add($HuntTheBadStuffFileSearchMaxDepthTextbox)
+
+
+
+# Shift the fields
+$HuntTheBadStuffDownPosition += $HuntTheBadStuffDownPositionShift
+
+
+#----------------------------------------
+# Hunt The Bad Stuff - File Search Label
+#----------------------------------------
+$HuntTheBadStuffFileSearchLabel           = New-Object System.Windows.Forms.Label
+$HuntTheBadStuffFileSearchLabel.Location  = New-Object System.Drawing.Point($HuntTheBadStuffRightPosition,$HuntTheBadStuffDownPosition) 
+$HuntTheBadStuffFileSearchLabel.Size      = New-Object System.Drawing.Size($HuntTheBadStuffLableWidth,$HuntTheBadStuffLableHeight) 
+$HuntTheBadStuffFileSearchLabel.Text      = "Collection time depends on the number of files and directories, plus recursive depth."
+#$HuntTheBadStuffFileSearchLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,3,1)
+$HuntTheBadStuffFileSearchLabel.ForeColor = "Blue"
+$Section1HuntTheBadStuffTab.Controls.Add($HuntTheBadStuffFileSearchLabel)
+
+
+# Shift the fields
+$HuntTheBadStuffDownPosition += $HuntTheBadStuffDownPositionShift - 3
+
+
+#------------------------------------------------
+# Hunt The Bad Stuff - File Search Files Textbox
+#------------------------------------------------
+$HuntTheBadStuffFileSearchFileTextbox               = New-Object System.Windows.Forms.TextBox
+$HuntTheBadStuffFileSearchFileTextbox.Location      = New-Object System.Drawing.Size($HuntTheBadStuffRightPosition,($HuntTheBadStuffDownPosition)) 
+$HuntTheBadStuffFileSearchFileTextbox.Size          = New-Object System.Drawing.Size(430,(80))
+$HuntTheBadStuffFileSearchFileTextbox.MultiLine     = $True
+$HuntTheBadStuffFileSearchFileTextbox.ScrollBars    = "Vertical"
+$HuntTheBadStuffFileSearchFileTextbox.WordWrap      = True
+$HuntTheBadStuffFileSearchFileTextbox.AcceptsTab    = false    # Allows you to enter in tabs into the textbox
+$HuntTheBadStuffFileSearchFileTextbox.AcceptsReturn = false # Allows you to enter in tabs into the textbox
+$HuntTheBadStuffFileSearchFileTextbox.Font          = New-Object System.Drawing.Font("$Font",9,0,3,1)
+$HuntTheBadStuffFileSearchFileTextbox.DataBindings.DefaultDataSourceUpdateMode = 0
+$HuntTheBadStuffFileSearchFileTextbox.Text          = "Enter FileNames; One Per Line"
+#$HuntTheBadStuffFileSearchFileTextbox.Add_KeyDown({          })
+$Section1HuntTheBadStuffTab.Controls.Add($HuntTheBadStuffFileSearchFileTextbox)
+
+
+# Shift the fields
+$HuntTheBadStuffDownPosition += $HuntTheBadStuffFileSearchFileTextbox.Size.Height + 5
+
+
+#----------------------------------------------------
+# Hunt The Bad Stuff - File Search Directory Textbox
+#----------------------------------------------------
+$HuntTheBadStuffFileSearchDirectoryTextbox               = New-Object System.Windows.Forms.TextBox
+$HuntTheBadStuffFileSearchDirectoryTextbox.Location      = New-Object System.Drawing.Size($HuntTheBadStuffRightPosition,($HuntTheBadStuffDownPosition)) 
+$HuntTheBadStuffFileSearchDirectoryTextbox.Size          = New-Object System.Drawing.Size(430,(80))
+$HuntTheBadStuffFileSearchDirectoryTextbox.MultiLine     = $True
+$HuntTheBadStuffFileSearchDirectoryTextbox.ScrollBars    = "Vertical"
+$HuntTheBadStuffFileSearchDirectoryTextbox.WordWrap      = True
+$HuntTheBadStuffFileSearchDirectoryTextbox.AcceptsTab    = false    # Allows you to enter in tabs into the textbox
+$HuntTheBadStuffFileSearchDirectoryTextbox.AcceptsReturn = false # Allows you to enter in tabs into the textbox
+$HuntTheBadStuffFileSearchDirectoryTextbox.DataBindings.DefaultDataSourceUpdateMode = 0
+$HuntTheBadStuffFileSearchDirectoryTextbox.Text          = "Enter Directories; One Per Line"
+#$HuntTheBadStuffFileSearchDirectoryTextbox.Add_KeyDown({          })
+$Section1HuntTheBadStuffTab.Controls.Add($HuntTheBadStuffFileSearchDirectoryTextbox)
+
     
 
 ##############################################################################################################################################################
@@ -4314,17 +8630,24 @@ $Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel)
 $SysinternalsRightPosition     = 3
 $SysinternalsDownPosition      = -10
 $SysinternalsDownPositionShift = 22
-$SysinternalsBoxWidth          = 450
-$SysinternalsBoxHeight         = 25
+$SysinternalsLableWidth        = 450
+$SysinternalsLableHeight       = 25
+$SysinternalsButtonWidth       = 110
+$SysinternalsButtonHeight      = 22
+
 
 $Section1SysinternalsTab          = New-Object System.Windows.Forms.TabPage
 $Section1SysinternalsTab.Location = $System_Drawing_Point
 $Section1SysinternalsTab.Text     = "Sysinternals"
 $Section1SysinternalsTab.Location = New-Object System.Drawing.Size($SysinternalsRightPosition,$SysinternalsDownPosition) 
-$Section1SysinternalsTab.Size     = New-Object System.Drawing.Size($SysinternalsBoxWidth,$SysinternalsBoxHeight) 
+$Section1SysinternalsTab.Size     = New-Object System.Drawing.Size($SysinternalsLableWidth,$SysinternalsLableHeight) 
 $Section1SysinternalsTab.TabIndex = 0
 $Section1SysinternalsTab.UseVisualStyleBackColor = $True
-$Section1CollectionsTabControl.Controls.Add($Section1SysinternalsTab)
+
+# Test if the SysinternalsSuite Directory is there; if it's there load the tab
+if (Test-Path $PoShHome\SysinternalsSuite) {
+    $Section1CollectionsTabControl.Controls.Add($Section1SysinternalsTab)
+}
 
 
 # Shift the fields
@@ -4334,7 +8657,7 @@ $SysinternalsDownPosition += $SysinternalsDownPositionShift
 # Sysinternals Tab Label
 $SysinternalsTabLabel           = New-Object System.Windows.Forms.Label
 $SysinternalsTabLabel.Location  = New-Object System.Drawing.Point($SysinternalsRightPosition,$SysinternalsDownPosition) 
-$SysinternalsTabLabel.Size      = New-Object System.Drawing.Size($SysinternalsBoxWidth,$SysinternalsBoxHeight) 
+$SysinternalsTabLabel.Size      = New-Object System.Drawing.Size($SysinternalsLableWidth,$SysinternalsLableHeight) 
 $SysinternalsTabLabel.Text      = "Options here drop/remove files to the target host's temp dir."
 $SysinternalsTabLabel.Font      = New-Object System.Drawing.Font("$Font",10,1,3,1)
 $SysinternalsTabLabel.ForeColor = "Red"
@@ -4347,14 +8670,172 @@ $SysinternalsDownPosition += $SysinternalsDownPositionShift
 $SysinternalsDownPosition += $SysinternalsDownPositionShift
 
 
+
+
+# ============================================================================================================================================================
+# Sysinternals Autoruns
+# ============================================================================================================================================================
+
+
+
+#-----------------------------
+# Sysinternals Autoruns Label
+#-----------------------------
+$SysinternalsAutorunsLabel           = New-Object System.Windows.Forms.Label
+$SysinternalsAutorunsLabel.Location  = New-Object System.Drawing.Point($SysinternalsRightPosition,$SysinternalsDownPosition) 
+$SysinternalsAutorunsLabel.Size      = New-Object System.Drawing.Size(($SysinternalsLableWidth),$SysinternalsLableHeight) 
+$SysinternalsAutorunsLabel.Text      = "Autoruns - Obtains More Startup Information than Native WMI and other Windows Commands, like various built-in Windows Applications."
+#$SysinternalsAutorunsLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,3,1)
+$SysinternalsAutorunsLabel.ForeColor = "Blue"
+$Section1SysinternalsTab.Controls.Add($SysinternalsAutorunsLabel)
+
+
+# Shift the fields
+$SysinternalsDownPosition += $SysinternalsDownPositionShift
+
+
+#--------------------------------
+# Sysinternals - Autoruns Button
+#--------------------------------
+$SysinternalsAutorunsButton          = New-Object System.Windows.Forms.Button
+$SysinternalsAutorunsButton.Text     = "Open Autoruns"
+$SysinternalsAutorunsButton.Location = New-Object System.Drawing.Size($SysinternalsRightPosition,($SysinternalsDownPosition + 5)) 
+$SysinternalsAutorunsButton.Size     = New-Object System.Drawing.Size($SysinternalsButtonWidth,$SysinternalsButtonHeight) 
+$SysinternalsAutorunsButton.add_click({
+    [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+    $SysinternalsAutorunsOpenFileDialog.Title = "Open Autoruns File"
+    $SysinternalsAutorunsOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $SysinternalsAutorunsOpenFileDialog.filter = "Autoruns File (*.arn)| *.arn|All files (*.*)|*.*"
+    $SysinternalsAutorunsOpenFileDialog.ShowHelp = $true
+    if (Test-Path -Path $PoShLocation) {
+        $SysinternalsAutorunsOpenFileDialog.InitialDirectory = "$PoShLocation\$CollectedResultsUncompiled\$($SysinternalsAutorunsCheckbox.Name)"
+        $SysinternalsAutorunsOpenFileDialog.ShowDialog() | Out-Null
+        $ProcMonFileLocation = "$PoShLocation"
+    }
+    else {
+        $SysinternalsAutorunsOpenFileDialog.InitialDirectory = "$PoShHome\$CollectedData"   
+        $SysinternalsAutorunsOpenFileDialog.ShowDialog() | Out-Null
+        $ProcMonFileLocation = "$PoShHome\$CollectedData"
+    }
+    if ($($SysinternalsAutorunsOpenFileDialog.filename)) {
+        Start-Process "$PoShHome\SysinternalsSuite\Autoruns.exe" -ArgumentList "`"$($SysinternalsAutorunsOpenFileDialog.filename)`""
+    }
+})
+$Section1SysinternalsTab.Controls.Add($SysinternalsAutorunsButton) 
+
+
+#--------------------------------
+# Sysinternals Autoruns CheckBox
+#--------------------------------
+$SysinternalsAutorunsCheckbox = New-Object System.Windows.Forms.CheckBox
+$SysinternalsAutorunsCheckbox.Name = "Autoruns"
+
+# Command Execution
+function SysinternalsAutorunsCommand {
+        $Message1            = "Collecting Data:  $($SysinternalsAutorunsCheckbox.Name)"
+        $MainListBox.Items.Insert(0,"")
+        $MainListBox.Items.Insert(0,$Message1)
+    foreach ($TargetComputer in $ComputerList) {
+        $CollectionName      = "$($SysinternalsAutorunsCheckbox.Name)"
+        $CollectionDirectory = $CollectionName
+        $CollectionShortName = $CollectionName -replace ' ',''
+        $Message1            = "Collecting Data:  $($SysinternalsAutorunsCheckbox.Name) from $TargetComputer"
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Insert(0,$Message1)
+        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
+        $LogMessage          | Add-Content -Path $LogFile
+
+        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null                      
+        Function SysinternalsAutorunsData {
+            $SysinternalsExecutable     = 'Autoruns.exe'
+            $ToolName                   = 'Autoruns'
+            $AdminShare                 = 'c$'
+            $LocalDrive                 = 'c:'
+            $PSExecPath                 = "$PoShHome\SysinternalsSuite\PSExec.exe"
+            $SysinternalsExecutablePath = "$PoShHome\SysinternalsSuite\Autoruns.exe"
+            $TargetFolder               = "Windows\Temp"
+            
+            $MainListBox.Items.Insert(2,"Copying $ToolName to $TargetComputer temporarily for use by PSExec.")
+            try { Copy-Item $SysinternalsExecutablePath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -Verbose -ErrorAction Stop } catch { $MainListBox.Items.Insert(2,$_.Exception); break }
+
+            # Process monitor must be launched as a separate process otherwise the sleep and terminate commands below would never execute and fill the disk
+            $MainListBox.Items.Insert(2,"Starting process monitor on $TargetComputer")
+            Start-Process -WindowStyle Hidden -FilePath $PSExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysinternalsExecutable /AcceptEula -a $LocalDrive\$TargetFolder\Autoruns-$TargetComputer.arn" -PassThru | Out-Null   
+
+            #$MainListBox.Items.Insert(2,"Terminating $ToolName process on $TargetComputer")
+            #Start-Process -WindowStyle Hidden -FilePath $PSExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$procmon /accepteula /terminate /quiet" -PassThru | Out-Null
+            Start-Sleep -Seconds 30
+
+            # Checks to see if the process is still running
+            while ($true) {
+                if ($(Get-WmiObject -Class Win32_Process -ComputerName "$TargetComputer" | Where-Object {$_.ProcessName -match "Autoruns"})) {  
+                    #$RemoteFileSize = "$(Get-ChildItem -Path `"C:\$TempPath`" | Where-Object {$_.Name -match `"$MemoryCaptureFile`"} | Select-Object -Property Length)" #-replace "@{Length=","" -replace "}",""
+                    
+                    $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Checking Autoruns Status on $TargetComputer"
+                    #$MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+                    $MainListBox.Items.Insert(0,$Message)
+                    Start-Sleep -Seconds 30
+                }
+                else {
+                    Start-Sleep -Seconds 5
+
+                    $MainListBox.Items.Insert(2,"Copy $ToolName data to local machine for analysis")
+                    try { Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\Autoruns-$TargetComputer.arn" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force -Verbose -ErrorAction Stop }
+                    catch { $_ ; }
+
+                    $MainListBox.Items.Insert(2,"Remove temporary $ToolName executable and data file from target system")
+                 
+                    Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\Autoruns-$TargetComputer.arn" -Verbose -Force
+                    Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$SysinternalsExecutable" -Verbose -Force
+
+                    $MainListBox.Items.Insert(2,"Launching $ToolName and loading collected log data")
+                    if(Test-Path("$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.arn")) { & $procmonPath /openlog $PoShHome\Sysinternals\$TargetComputer.arn }
+
+                    $FileSize = [math]::round(((Get-Item "$PoShHome\$TargetComputer.arn").Length/1mb),2)    
+                    $MainListBox.Items.Insert(2,"$PoShLocation\$TargetComputer.arn is $FileSize MB. Remember to delete it when finished.")
+
+                    break
+                }
+            }
+        }
+
+        SysinternalsAutorunsData -TargetComputer $TargetComputer
+    }
+
+    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed: $($SysinternalsAutorunsCheckbox.Name)"
+    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+    $MainListBox.Items.Insert(0,$Message2)
+    $Message3 = "Finished Collecting Data!"
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add($Message3)
+}
+
+$SysinternalsAutorunsCheckbox.Text     = "$($SysinternalsAutorunsCheckbox.Name)"
+$SysinternalsAutorunsCheckbox.TabIndex = 2
+$SysinternalsAutorunsCheckbox.DataBindings.DefaultDataSourceUpdateMode = 0
+$SysinternalsAutorunsCheckbox.Location = New-Object System.Drawing.Size(($SysinternalsRightPosition + $SysinternalsButtonWidth + 5),($SysinternalsDownPosition + 5)) 
+$SysinternalsAutorunsCheckbox.Size     = New-Object System.Drawing.Size(($SysinternalsLableWidth - 130),$SysinternalsLableHeight) 
+$Section1SysinternalsTab.Controls.Add($SysinternalsAutorunsCheckbox)
+
+
+
+# Shift the fields
+$SysinternalsDownPosition += $SysinternalsDownPositionShift
+# Shift the fields
+$SysinternalsDownPosition += $SysinternalsDownPositionShift
+
+
+
 # ============================================================================================================================================================
 # Sysinternals Process Monitor
 # ============================================================================================================================================================
 
-# Sysinternals Process Monitor Label
+#------------------------------
+# Sysinternals - ProcMon Label
+#------------------------------
 $SysinternalsProcessMonitorLabel           = New-Object System.Windows.Forms.Label
 $SysinternalsProcessMonitorLabel.Location  = New-Object System.Drawing.Point($SysinternalsRightPosition,$SysinternalsDownPosition) 
-$SysinternalsProcessMonitorLabel.Size      = New-Object System.Drawing.Size($SysinternalsBoxWidth,$SysinternalsBoxHeight) 
+$SysinternalsProcessMonitorLabel.Size      = New-Object System.Drawing.Size($SysinternalsLableWidth,$SysinternalsLableHeight) 
 $SysinternalsProcessMonitorLabel.Text      = "Procmon data will be megabytes of data per target host; Command will not run if there is less than 500MB on the local and target hosts."
 #$SysinternalsProcessMonitorLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,3,1)
 $SysinternalsProcessMonitorLabel.ForeColor = "Blue"
@@ -4365,10 +8846,43 @@ $Section1SysinternalsTab.Controls.Add($SysinternalsProcessMonitorLabel)
 $SysinternalsDownPosition += $SysinternalsDownPositionShift
 
 
-$SysinternalsProcessMonitorCheckbox = New-Object System.Windows.Forms.CheckBox
-$SysinternalsProcessMonitorCheckbox.Name = "Process Monitor (60 Second Capture)"
+#-------------------------------
+# Sysinternals - ProcMon Button
+#-------------------------------
+$SysinternalsProcmonButton          = New-Object System.Windows.Forms.Button
+$SysinternalsProcmonButton.Text     = "Open ProcMon"
+$SysinternalsProcmonButton.Location = New-Object System.Drawing.Size($SysinternalsRightPosition,($SysinternalsDownPosition + 5)) 
+$SysinternalsProcmonButton.Size     = New-Object System.Drawing.Size($SysinternalsButtonWidth,$SysinternalsButtonHeight) 
+$SysinternalsProcmonButton.add_click({
+    [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+    $SysinternalsProcmonOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $SysinternalsProcmonOpenFileDialog.Title = "Open ProcMon File"
+    $SysinternalsProcmonOpenFileDialog.filter = "ProcMon Log File (*.pml)| *.pml|All files (*.*)|*.*"
+    $SysinternalsProcmonOpenFileDialog.ShowHelp = $true
+    if (Test-Path -Path $PoShLocation) {
+        $SysinternalsProcmonOpenFileDialog.InitialDirectory = "$PoShLocation\$CollectedResultsUncompiled\$($SysinternalsProcessMonitorCheckbox.Name)"
+        $SysinternalsProcmonOpenFileDialog.ShowDialog() | Out-Null
+    }
+    else {
+        $SysinternalsProcmonOpenFileDialog.InitialDirectory = "$PoShHome\$CollectedData"   
+        $SysinternalsProcmonOpenFileDialog.ShowDialog() | Out-Null
+    }
+    if ($($SysinternalsProcmonOpenFileDialog.filename)) {
+        Start-Process "$PoShHome\SysinternalsSuite\Procmon.exe" -ArgumentList "`"$($SysinternalsProcmonOpenFileDialog.filename)`""
+    }
+})
+$Section1SysinternalsTab.Controls.Add($SysinternalsProcmonButton) 
 
-# Command Execution
+
+#------------------------------
+# Sysinternals Procmon Command
+#------------------------------
+$SysinternalsProcessMonitorCheckbox = New-Object System.Windows.Forms.CheckBox
+$SysinternalsProcessMonitorCheckbox.Name = "Process Monitor"
+
+# Default Procmon Time
+$Script:SysinternalsProcessMonitorTime = 10
+
 function SysinternalsProcessMonitorCommand {
         $Message1            = "Collecting Data:  $($SysinternalsProcessMonitorCheckbox.Name)"
         $MainListBox.Items.Insert(0,"")
@@ -4376,6 +8890,7 @@ function SysinternalsProcessMonitorCommand {
     foreach ($TargetComputer in $ComputerList) {
         $CollectionName      = "$($SysinternalsProcessMonitorCheckbox.Name)"
         $CollectionDirectory = $CollectionName
+        $CollectionShortName = $CollectionName -replace ' ',''
         $Message1            = "Collecting Data:  $($SysinternalsProcessMonitorCheckbox.Name) from $TargetComputer"
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Insert(0,$Message1)
@@ -4402,25 +8917,17 @@ function SysinternalsProcessMonitorCommand {
             Param(
                 [Parameter(Mandatory=$true)][string]$TargetComputer, 
                 [Parameter(Mandatory=$true,
-                    HelpMessage="Enter a duration from 10 to 100 seconds (limited due to disk space requriements")]
-                    [ValidateRange(10,100)][int]$Duration
+                    HelpMessage="Enter a duration from 10 to 300 seconds (limited due to disk space requriements")]
+                    [ValidateRange(10,300)][int]$Duration
             )
-
-            $Procmon      = 'procmon.exe'
-            $AdminShare   = 'c$'
-            $LocalDrive   = 'c:'
-            $PSExecPath   = "$PoShHome\SysinternalsSuite\PSExec.exe"
-            $procmonPath  = "$PoShHome\SysinternalsSuite\Procmon.exe"
-            $TargetFolder = "Windows\Temp"
-            
-            
-            $MainListBox.Items.Insert(2,"Verifing connection to $TargetComputer, checking for PSExec and Procmon.")
-    
-            if(Test-Path("$PoShHome\$TargetComputer.pml")) { try { Remove-Item "$PoShHome\$TargetComputer.pml" -ErrorAction Stop} catch { $MainListBox.Items.Insert(2,$_.Exception); break }}
-    
-            #if (!(Test-Connection $TargetComputer -ErrorAction Stop)) { $MainListBox.Items.Insert(2,"Cannot ping $TargetComputer"); break } 
-            if (!(Test-Path $PSExecPath -ErrorAction Stop)) { $MainListBox.Items.Insert(2,"Cannot find $PSExecPath"); break }
-            if (!(Test-Path $procmonPath -ErrorAction Stop)) { $MainListBox.Items.Insert(2,"Cannot find $procmonPath"); break }
+            $SysinternalsExecutable      = 'procmon.exe'
+            $ToolName                    = 'ProcMon'
+            $AdminShare                  = 'c$'
+            $LocalDrive                  = 'c:'
+            $PSExecPath                  = "$PoShHome\SysinternalsSuite\PSExec.exe"
+            $SysinternalsExecutablePath  = "$PoShHome\SysinternalsSuite\Procmon.exe"
+            $TargetFolder                = "Windows\Temp"            
+           
 
             # Process monitor generates enormous amounts of data.  
             # To try and offer some protections, the script won't run if the source or target have less than 500MB free
@@ -4432,40 +8939,54 @@ function SysinternalsProcessMonitorCommand {
                 { $MainListBox.Items.Insert(2,"Local computer has less than 500MB free - aborting to avoid filling the disk."); break }
 
             $MainListBox.Items.Insert(2,"Copying Procmon to the target system temporarily for use by PSExec.")
-            try { Copy-Item $procmonPath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -Verbose -ErrorAction Stop } catch { $MainListBox.Items.Insert(2,$_.Exception); break }
+            try { Copy-Item $SysinternalsExecutablePath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -Verbose -ErrorAction Stop } catch { $MainListBox.Items.Insert(2,$_.Exception); break }
 
             # Process monitor must be launched as a separate process otherwise the sleep and terminate commands below would never execute and fill the disk
             $MainListBox.Items.Insert(2,"Starting process monitor on $TargetComputer")
-            #$Command = Start-Process -WindowStyle Hidden -FilePath $PSExecPath -ArgumentList "/accepteula $Credentials -s \\$TargetComputer $LocalDrive\$TargetFolder\$procmon /AcceptEula /BackingFile $LocalDrive\$TargetFolder\$TargetComputer /RunTime 10 /Quiet" -PassThru | Out-Null
-            $Command = Start-Process -WindowStyle Hidden -FilePath $PSExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$procmon /AcceptEula /BackingFile $LocalDrive\$TargetFolder\$TargetComputer /RunTime 10 /Quiet" -PassThru | Out-Null
+            #$Command = Start-Process -WindowStyle Hidden -FilePath $PSExecPath -ArgumentList "/accepteula $Credentials -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysinternalsExecutable /AcceptEula /BackingFile $LocalDrive\$TargetFolder\$TargetComputer /RunTime 10 /Quiet" -PassThru | Out-Null
+            $Command = Start-Process -WindowStyle Hidden -FilePath $PSExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysinternalsExecutable /AcceptEula /BackingFile `"$LocalDrive\$TargetFolder\ProcMon-$TargetComputer`" /RunTime $Duration /Quiet" -PassThru | Out-Null
             $Command
             $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $TargetComputer $($SysinternalsProcessMonitorCheckbox.Name)"
             $Message | Add-Content -Path $LogFile
             $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $TargetComputer $Command"
             $Message | Add-Content -Path $LogFile
 
-            Start-Sleep -Seconds $Duration
+            Start-Sleep -Seconds ($Duration + 5)
 
-            #$MainListBox.Items.Insert(2,"Terminating Procmon process on $TargetComputer")
-            #Start-Process -WindowStyle Hidden -FilePath $PSExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$procmon /accepteula /terminate /quiet" -PassThru | Out-Null
-        
-            $MainListBox.Items.Insert(2,"Copy Procmon data to local machine for analysis")
-            try { Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$TargetComputer.pml" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\" -Force -Verbose -ErrorAction Stop }
-            catch { $_ ; }
+            while ($true) {
+                if ($(Get-WmiObject -Class Win32_Process -ComputerName "$TargetComputer" | Where-Object {$_.ProcessName -match "Procmon"})) {  
+                    #$RemoteFileSize = "$(Get-ChildItem -Path `"C:\$TempPath`" | Where-Object {$_.Name -match `"$MemoryCaptureFile`"} | Select-Object -Property Length)" #-replace "@{Length=","" -replace "}",""
+                    
+                    $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Checking ProcMon Status on $TargetComputer"
+                    #$MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
+                    $MainListBox.Items.Insert(0,$Message)
+                    Start-Sleep -Seconds 30
+                }
+                else {
+                    Start-Sleep -Seconds 5
 
-            $MainListBox.Items.Insert(2,"Remove temporary Procmon executable and data file from target system")
+                    $MainListBox.Items.Insert(2,"Copy $ToolName data to local machine for analysis")
+                    try { Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\ProcMon-$TargetComputer.pml" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force -Verbose -ErrorAction Stop }
+                    catch { $_ ; }
 
-            Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$TargetComputer.pml" -Verbose -Force
-            Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$Procmon" -Verbose -Force
+                    $MainListBox.Items.Insert(2,"Remove temporary $ToolName executable and data file from target system")
+                 
+                    Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\ProcMon-$TargetComputer.pml" -Verbose -Force
+                    Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$SysinternalsExecutable" -Verbose -Force
 
-            #$MainListBox.Items.Insert(2,"Launching Process Monitor and loading collected log data")
-            #if(Test-Path("$PoShHome\$TargetComputer.pml")) { & $procmonPath /openlog $PoShHome\Sysinternals\$TargetComputer.pml }
+                    $MainListBox.Items.Insert(2,"Launching $ToolName and loading collected log data")
+                    if(Test-Path("$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.pml")) { & $SysinternalsExecutablePath /openlog $PoShHome\Sysinternals\$TargetComputer.pml }
 
-            $FileSize = [math]::round(((Get-Item "$PoShHome\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.pml").Length/1mb),2)    
-            $MainListBox.Items.Insert(2,"$TargetComputer.pml is $FileSize MB. Remember to delete it when finished.")
+                    $FileSize = [math]::round(((Get-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.pml").Length/1mb),2)    
+                    $MainListBox.Items.Insert(2,"$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.pml is $FileSize MB. Remember to delete it when finished.")
+
+                    break
+                }
+            }
+
         }
 
-        SysinternalsProcessMonitorData -TargetComputer $TargetComputer -Duration 65
+        SysinternalsProcessMonitorData -TargetComputer $TargetComputer -Duration $Script:SysinternalsProcessMonitorTime
     }
 
     $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed: $($SysinternalsProcessMonitorCheckbox.Name)"
@@ -4479,121 +9000,52 @@ function SysinternalsProcessMonitorCommand {
 $SysinternalsProcessMonitorCheckbox.Text     = "$($SysinternalsProcessMonitorCheckbox.Name)"
 $SysinternalsProcessMonitorCheckbox.TabIndex = 2
 $SysinternalsProcessMonitorCheckbox.DataBindings.DefaultDataSourceUpdateMode = 0
-$SysinternalsProcessMonitorCheckbox.Location = New-Object System.Drawing.Size($SysinternalsRightPosition,$SysinternalsDownPosition) 
-$SysinternalsProcessMonitorCheckbox.Size     = New-Object System.Drawing.Size($SysinternalsBoxWidth,$SysinternalsBoxHeight) 
-
+$SysinternalsProcessMonitorCheckbox.Location = New-Object System.Drawing.Size(($SysinternalsRightPosition + $SysinternalsButtonWidth + 5),($SysinternalsDownPosition + 5)) 
+$SysinternalsProcessMonitorCheckbox.Size     = New-Object System.Drawing.Size(($SysinternalsLableWidth - 330),$SysinternalsLableHeight) 
 $Section1SysinternalsTab.Controls.Add($SysinternalsProcessMonitorCheckbox)
 
 
-# ============================================================================================================================================================
-# Sysinternals Autoruns
-# ============================================================================================================================================================
-
-
-# Shift the fields
-$SysinternalsDownPosition += $SysinternalsDownPositionShift
-# Shift the fields
-$SysinternalsDownPosition += $SysinternalsDownPositionShift
-
-
-# Sysinternals Autoruns
-$SysinternalsAutorunsLabel           = New-Object System.Windows.Forms.Label
-$SysinternalsAutorunsLabel.Location  = New-Object System.Drawing.Point($SysinternalsRightPosition,$SysinternalsDownPosition) 
-$SysinternalsAutorunsLabel.Size      = New-Object System.Drawing.Size($SysinternalsBoxWidth,$SysinternalsBoxHeight) 
-$SysinternalsAutorunsLabel.Text      = "Autoruns - Obtains More Startup Information than WMI and Other Native Windows Commands, to include various built-in Windows Applications."
-#$SysinternalsAutorunsLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,3,1)
-$SysinternalsAutorunsLabel.ForeColor = "Blue"
-$Section1SysinternalsTab.Controls.Add($SysinternalsAutorunsLabel)
-
-
-# Shift the fields
-$SysinternalsDownPosition += $SysinternalsDownPositionShift
-
-
-$SysinternalsAutorunsCheckbox = New-Object System.Windows.Forms.CheckBox
-$SysinternalsAutorunsCheckbox.Name = "Autoruns"
-
-# Command Execution
-function SysinternalsAutorunsCommand {
-        $Message1            = "Collecting Data:  $($SysinternalsAutorunsCheckbox.Name)"
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,$Message1)
-    foreach ($TargetComputer in $ComputerList) {
-        $CollectionName      = "$($SysinternalsAutorunsCheckbox.Name)"
-        $CollectionDirectory = $CollectionName
-        $Message1            = "Collecting Data:  $($SysinternalsAutorunsCheckbox.Name) from $TargetComputer"
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Insert(0,$Message1)
-        $LogMessage          = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $Message1"
-        $LogMessage          | Add-Content -Path $LogFile
-
-        New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force | Out-Null
-                      
-        Function SysinternalsAutorunsData {
-
-            $SysinternalsExecutable     = 'Autoruns.exe'
-            $ToolName                   = 'Autoruns'
-            $AdminShare                 = 'c$'
-            $LocalDrive                 = 'c:'
-            $PSExecPath                 = "$PoShHome\SysinternalsSuite\PSExec.exe"
-            $SysinternalsExecutablePath = "$PoShHome\SysinternalsSuite\Autoruns.exe"
-            $TargetFolder               = "Windows\Temp"
-            
-            
-            $MainListBox.Items.Insert(2,"Verifing connection to $TargetComputer, checking for PSExec and $ToolName.")
-    
-            if(Test-Path("$PoShHome\$TargetComputer.arn")) { try { Remove-Item "$PoShHome\$TargetComputer.arn" -ErrorAction Stop} catch { $MainListBox.Items.Insert(2,$_.Exception); break }}
-    
-            if (!(Test-Connection $TargetComputer -ErrorAction Stop)) { $MainListBox.Items.Insert(2,"Cannot ping $TargetComputer"); break } 
-            if (!(Test-Path $PSExecPath -ErrorAction Stop)) { $MainListBox.Items.Insert(2,"Cannot find $PSExecPath"); break }
-            if (!(Test-Path $SysinternalsExecutablePath -ErrorAction Stop)) { $MainListBox.Items.Insert(2,"Cannot find $SysinternalsExecutablePath"); break }
-
-            $MainListBox.Items.Insert(2,"Copying $ToolName to $TargetComputer temporarily for use by PSExec.")
-            try { Copy-Item $SysinternalsExecutablePath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -Verbose -ErrorAction Stop } catch { $MainListBox.Items.Insert(2,$_.Exception); break }
-
-            # Process monitor must be launched as a separate process otherwise the sleep and terminate commands below would never execute and fill the disk
-            $MainListBox.Items.Insert(2,"Starting process monitor on $TargetComputer")
-            Start-Process -WindowStyle Hidden -FilePath $PSExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysinternalsExecutable /AcceptEula -a $LocalDrive\$TargetFolder\$TargetComputer.arn" -PassThru | Out-Null
-            #polo make switch for virus total        
-
-            #$MainListBox.Items.Insert(2,"Terminating $ToolName process on $TargetComputer")
-            #Start-Process -WindowStyle Hidden -FilePath $PSExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$procmon /accepteula /terminate /quiet" -PassThru | Out-Null
-            Start-Sleep -Seconds 30
-
-            $MainListBox.Items.Insert(2,"Copy $ToolName data to local machine for analysis")
-            try { Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$TargetComputer.arn" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force -Verbose -ErrorAction Stop }
-            catch { $_ ; }
-
-            $MainListBox.Items.Insert(2,"Remove temporary $ToolName executable and data file from target system")
-                 
-            Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$TargetComputer.arn" -Verbose -Force
-            Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$SysinternalsExecutable" -Verbose -Force
-
-            $MainListBox.Items.Insert(2,"Launching $ToolName and loading collected log data")
-            if(Test-Path("$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.arn")) { & $procmonPath /openlog $PoShHome\Sysinternals\$TargetComputer.arn }
-
-            $FileSize = [math]::round(((Get-Item "$PoShHome\$TargetComputer.arn").Length/1mb),2)    
-            $MainListBox.Items.Insert(2,"$PoShLocation\$TargetComputer.arn is $FileSize MB. Remember to delete it when finished.")
+#------------------------
+# Procmon - Time TextBox
+#------------------------
+$SysinternalsProcessMonitorTimeTextBox          = New-Object System.Windows.Forms.TextBox
+$SysinternalsProcessMonitorTimeTextBox.Location = New-Object System.Drawing.Size(($SysinternalsRightPosition + $SysinternalsButtonWidth + 150),($SysinternalsDownPosition + 6)) 
+$SysinternalsProcessMonitorTimeTextBox.Size     = New-Object System.Drawing.Size((160),$SysinternalsLableHeight) 
+$SysinternalsProcessMonitorTimeTextBox.TabIndex = 2
+$SysinternalsProcessMonitorTimeTextBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$SysinternalsProcessMonitorTimeTextBox.Text     = "Default = 10 Seconds"
+# Press Enter to Input Data
+$SysinternalsProcessMonitorTimeTextBox.Add_KeyDown({
+    if ($_.KeyCode -eq "Enter") {
+        # Enter a capture time between 10 and 300 seconds
+        if (($SysinternalsProcessMonitorTimeTextBox.Text -ge 10) -and ($SysinternalsProcessMonitorTimeTextBox.Text -le 300)) {
+            $Script:SysinternalsProcessMonitorTime = $SysinternalsProcessMonitorTimeTextBox.Text
+            $Success=[System.Windows.Forms.MessageBox]::Show(`
+                "Success! The capture time has been set for $SysinternalsProcessMonitorTime seconds.",`
+                "PoSh-ACME",`
+                [System.Windows.Forms.MessageBoxButtons]::OK)
+                switch ($Success){
+                "OK" {
+                    #write-host "You pressed OK"
+                }
+            }
         }
-
-        SysinternalsAutorunsData -TargetComputer $TargetComputer
+        else {
+            $OhDarn=[System.Windows.Forms.MessageBox]::Show(`
+                "Enter a capture time between 10 and 300 seconds.",`
+                "PoSh-ACME",`
+                [System.Windows.Forms.MessageBoxButtons]::OK)
+                switch ($OhDarn){
+                "OK" {
+                    #write-host "You pressed OK"
+                }
+            }
+        
+        }
     }
+})
+$Section1SysinternalsTab.Controls.Add($SysinternalsProcessMonitorTimeTextBox)
 
-    $Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed: $($SysinternalsAutorunsCheckbox.Name)"
-    $MainListBox.Items.RemoveAt(0) ; $MainListBox.Items.RemoveAt(0)
-    $MainListBox.Items.Insert(0,$Message2)
-    $Message3 = "Finished Collecting Data!"
-    $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add($Message3)
-}
-
-$SysinternalsAutorunsCheckbox.Text     = "$($SysinternalsAutorunsCheckbox.Name)"
-$SysinternalsAutorunsCheckbox.TabIndex = 2
-$SysinternalsAutorunsCheckbox.DataBindings.DefaultDataSourceUpdateMode = 0
-$SysinternalsAutorunsCheckbox.Location = New-Object System.Drawing.Size($SysinternalsRightPosition,$SysinternalsDownPosition) 
-$SysinternalsAutorunsCheckbox.Size     = New-Object System.Drawing.Size($SysinternalsBoxWidth,$SysinternalsBoxHeight) 
-
-$Section1SysinternalsTab.Controls.Add($SysinternalsAutorunsCheckbox)
 
 
 
@@ -4610,8 +9062,11 @@ $Section1ChecklistTab.Text     = "Checklist"
 $Section1ChecklistTab.Name     = "Checklist Tab"
 $Section1ChecklistTab.TabIndex = 0
 $Section1ChecklistTab.UseVisualStyleBackColor = $True
-$Section1TabControl.Controls.Add($Section1ChecklistTab)
 
+#Checks if the Resources Directory is there and loads it if it is
+if (Test-Path $PoShHome\Resources\Checklists) {
+    $Section1TabControl.Controls.Add($Section1ChecklistTab)
+}
 
 # Variable Sizes
 $TabRightPosition     = 3
@@ -4714,8 +9169,11 @@ $Section1ProcessesTab.Text     = "Processes"
 $Section1ProcessesTab.Name     = "Processes Tab"
 $Section1ProcessesTab.TabIndex = 0
 $Section1ProcessesTab.UseVisualStyleBackColor = $True
-$Section1TabControl.Controls.Add($Section1ProcessesTab)
 
+#Checks if the Resources Directory is there and loads it if it is
+if (Test-Path "$PoShHome\Resources\Process Info") {
+    $Section1TabControl.Controls.Add($Section1ProcessesTab)
+}
 
 # Variable Sizes
 $TabRightPosition       = 3
@@ -4839,17 +9297,12 @@ function OpNotesSaveScript {
     }
 
     # Saves all OpNotes to file
-    Set-Content -Path $OpNotesFile -Value ($OpNotesListBox.SelectedItems) -Force
+    Set-Content -Path $OpNotesFile          -Value ($OpNotesListBox.SelectedItems) -Force
 
     # Unselects Fields
     for($i = 0; $i -lt $OpNotesListBox.Items.Count; $i++) {
         $OpNotesListBox.SetSelected($i, $false)
     }
-
-    # Work around for keeping the scrollbar at the top
-    #$OpNotesListBox.SetSelected(0, $true)
-    #$OpNotesListBox.SetSelected(0, $false)
-
 }
 
 
@@ -5157,8 +9610,11 @@ $Section1CommandsTab.Text     = "Commands"
 $Section1CommandsTab.Name     = "Commands Tab"
 $Section1CommandsTab.TabIndex = 0
 $Section1CommandsTab.UseVisualStyleBackColor = $True
-$Section1TabControl.Controls.Add($Section1CommandsTab)
 
+#Checks if the Resources Directory is there and loads it if it is
+if (Test-Path $PoShHome\Resources\Commands) {
+    $Section1TabControl.Controls.Add($Section1CommandsTab)
+}
 
 # Variable Sizes
 $TabRightPosition       = 3
@@ -5245,8 +9701,11 @@ $Section1AboutTab.Text     = "About"
 $Section1AboutTab.Name     = "About Tab"
 $Section1AboutTab.TabIndex = 0
 $Section1AboutTab.UseVisualStyleBackColor = $True
-$Section1TabControl.Controls.Add($Section1AboutTab)
 
+#Checks if the Resources Directory is there and loads it if it is
+if (Test-Path $PoShHome\Resources\About) {
+    $Section1TabControl.Controls.Add($Section1AboutTab)
+}
 
 # Variable Sizes
 $TabRightPosition       = 3
@@ -5332,13 +9791,13 @@ $Column3DownPositionShift = 26
 # Select How To Collect Data - Main Section
 #-------------------------------------------
 
-$SingleTargetLabel           = New-Object System.Windows.Forms.Label
-$SingleTargetLabel.Location  = New-Object System.Drawing.Size(($Column3RightPosition - 2),($Column3DownPosition)) 
-$SingleTargetLabel.Size      = New-Object System.Drawing.Size(300,$Column3BoxHeight)
-$SingleTargetLabel.Text      = "Select How To Collect Data:"
-$SingleTargetLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,3,1)
-$SingleTargetLabel.ForeColor = "Blue"
-$PoShACME.Controls.Add($SingleTargetLabel)  
+$SelectedTargetLabel           = New-Object System.Windows.Forms.Label
+$SelectedTargetLabel.Location  = New-Object System.Drawing.Size(($Column3RightPosition - 2),($Column3DownPosition)) 
+$SelectedTargetLabel.Size      = New-Object System.Drawing.Size(300,$Column3BoxHeight)
+$SelectedTargetLabel.Text      = "Select How To Collect Data:"
+$SelectedTargetLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,3,1)
+$SelectedTargetLabel.ForeColor = "Blue"
+$PoShACME.Controls.Add($SelectedTargetLabel)  
 
 
 # Shift Row Location
@@ -5346,46 +9805,46 @@ $Column3DownPosition += $Column3DownPositionShift
 
 
 #-------------------------------------------------------
-# Single Host - Select Hostnames/IPs From List Checkbox
+# Selected - Select Hostnames/IPs From List Checkbox
 #-------------------------------------------------------
 # This checkbox highlights when selecing computers from the ComputerList
-$SingleHostIPSelectCheckBox                  = New-Object System.Windows.Forms.Checkbox
-$SingleHostIPSelectCheckBox.Name             = "Select Hostnames / IPs From List:"
-$SingleHostIPSelectCheckBox.Text             = "$($SingleHostIPSelectCheckBox.Name)"
-$SingleHostIPSelectCheckBox.TabIndex         = 2
-$SingleHostIPSelectCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
-$SingleHostIPSelectCheckBox.Location         = New-Object System.Drawing.Size($Column3RightPosition,($Column3DownPosition + 2)) 
-$SingleHostIPSelectCheckBox.Size             = New-Object System.Drawing.Size(220,$Column3BoxHeight)
-$SingleHostIPSelectCheckBox.Enabled          = $false
-$SingleHostIPSelectCheckBox.Font             = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
-$SingleHostIPSelectCheckBox.Add_Click({
-    If ($SingleHostIPSelectCheckBox.Checked -eq $true){
+$SelectedTargetCheckBox                  = New-Object System.Windows.Forms.Checkbox
+$SelectedTargetCheckBox.Name             = "Select Hostnames / IPs From List:"
+$SelectedTargetCheckBox.Text             = "$($SelectedTargetCheckBox.Name)"
+$SelectedTargetCheckBox.TabIndex         = 2
+$SelectedTargetCheckBox.DataBindings.DefaultDataSourceUpdateMode = 0
+$SelectedTargetCheckBox.Location         = New-Object System.Drawing.Size($Column3RightPosition,($Column3DownPosition + 2)) 
+$SelectedTargetCheckBox.Size             = New-Object System.Drawing.Size(220,$Column3BoxHeight)
+$SelectedTargetCheckBox.Enabled          = $false
+$SelectedTargetCheckBox.Font             = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
+$SelectedTargetCheckBox.Add_Click({
+    If ($SelectedTargetCheckBox.Checked -eq $true){
         # Auto checks/unchecks various checkboxes for visual status indicators
         $ImportListCheckBox.Checked          = $false
         $DomainGeneratedCheckBox.Checked     = $false
         $DomainGeneratedAutoCheckBox.Checked = $false
         $SingleHostIPCheckBox.Checked        = $false
     }
-    else {$SingleHostIPSelectCheckBox.Checked  = $true}
+    else {$SelectedTargetCheckBox.Checked  = $true}
 })
-$PoShACME.Controls.Add($SingleHostIPSelectCheckBox)
+$PoShACME.Controls.Add($SelectedTargetCheckBox)
 
 
 #------------------------------------------
 # Single Host - Collect On Selected Button
 #------------------------------------------
-$SingleTargetSelectButton                = New-Object System.Windows.Forms.Button
-$SingleTargetSelectButton.Location       = New-Object System.Drawing.Size(($Column3RightPosition + 220),($Column3DownPosition + 2))
-$SingleTargetSelectButton.Size           = New-Object System.Drawing.Size(110,$Column3BoxHeight)
-$SingleTargetSelectButton.Text           = 'Collect From List'
-$SingleTargetSelectButton.add_click({
-    $SingleHostIPSelectCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
-    $SingleHostIPSelectCheckBox.Enabled  = $true
+$SelectedTargetSelectButton                = New-Object System.Windows.Forms.Button
+$SelectedTargetSelectButton.Location       = New-Object System.Drawing.Size(($Column3RightPosition + 220),($Column3DownPosition + 2))
+$SelectedTargetSelectButton.Size           = New-Object System.Drawing.Size(110,$Column3BoxHeight)
+$SelectedTargetSelectButton.Text           = 'Select From List'
+$SelectedTargetSelectButton.add_click({
+    $SelectedTargetCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
+    $SelectedTargetCheckBox.Enabled  = $true
     $ImportListCheckBox.Enabled          = $false
     $DomainGeneratedCheckBox.Enabled     = $false
     $SingleHostIPCheckBox.Enabled        = $false
 
-    $SingleHostIPSelectCheckBox.Checked  = $true
+    $SelectedTargetCheckBox.Checked  = $true
     $ImportListCheckBox.Checked          = $false
     $DomainGeneratedCheckBox.Checked     = $false
     $DomainGeneratedAutoCheckBox.Checked = $false
@@ -5399,8 +9858,8 @@ $SingleTargetSelectButton.add_click({
         [void] $MainListBox.Items.Add("$Computer")
     }
 })
-#$PoShACME.AcceptButton = $SingleTargetSelectButton
-$PoShACME.Controls.Add($SingleTargetSelectButton) 
+#$PoShACME.AcceptButton = $SelectedTargetSelectButton
+$PoShACME.Controls.Add($SelectedTargetSelectButton) 
 
 
 
@@ -5431,7 +9890,7 @@ $ImportListCheckBox.Add_Click({
         $DomainGeneratedCheckBox.Checked     = $false
         $DomainGeneratedAutoCheckBox.Checked = $false
         $SingleHostIPCheckBox.Checked        = $false
-        $SingleHostIPSelectCheckBox.Checked  = $false
+        $SelectedTargetCheckBox.Checked  = $false
     }
     else {$ImportListCheckBox.Checked = $true}
 })
@@ -5453,14 +9912,14 @@ $ImportListButton.add_click({
     $ImportListCheckBox.Enabled          = $true
     $DomainGeneratedCheckBox.Enabled     = $false
     $SingleHostIPCheckBox.Enabled        = $false
-    $SingleHostIPSelectCheckBox.Enabled  = $false
+    $SelectedTargetCheckBox.Enabled  = $false
 
     # Auto checks/unchecks various checkboxes for visual status indicators
     $ImportListCheckBox.Checked          = $true
     $DomainGeneratedCheckBox.Checked     = $false
     $DomainGeneratedAutoCheckBox.Checked = $false
     $SingleHostIPCheckBox.Checked        = $false
-    $SingleHostIPSelectCheckBox.Checked  = $false
+    $SelectedTargetCheckBox.Checked  = $false
 
     . ListTextFile
 
@@ -5495,13 +9954,13 @@ function DomainGeneratedInputCheck {
         $DomainGeneratedCheckBox.Enabled     = $true
         $ImportListCheckBox.Enabled          = $false
         $SingleHostIPCheckBox.Enabled        = $false
-        $SingleHostIPSelectCheckBox.Enabled  = $false
+        $SelectedTargetCheckBox.Enabled  = $false
 
         # Auto checks/unchecks various checkboxes for visual status indicators
         $DomainGeneratedCheckBox.Checked     = $true
         $ImportListCheckBox.Checked          = $false
         $SingleHostIPCheckBox.Checked        = $false
-        $SingleHostIPSelectCheckBox.Checked  = $false
+        $SelectedTargetCheckBox.Checked  = $false
 
         # Checks if the domain input field is either blank or contains the default info
         If ($DomainGeneratedAutoCheckBox.Checked  -eq $true){. ListComputers "Auto"}
@@ -5543,7 +10002,7 @@ $DomainGeneratedCheckBox.Add_Click({
         $DomainGeneratedAutoCheckBox.Checked = $true
         $ImportListCheckBox.Checked          = $false
         $SingleHostIPCheckBox.Checked        = $false
-        $SingleHostIPSelectCheckBox.Checked  = $false
+        $SelectedTargetCheckBox.Checked  = $false
     }
     else {$DomainGeneratedCheckBox.Checked   = $true}
     If ($DomainGeneratedCheckBox.Checked   -eq $false){
@@ -5569,13 +10028,13 @@ $DomainGeneratedAutoCheckBox.Add_Click({
         $DomainGeneratedCheckBox.Enabled    = $true
         $ImportListCheckBox.Enabled         = $false
         $SingleHostIPCheckBox.Enabled       = $false
-        $SingleHostIPSelectCheckBox.Enabled = $false
+        $SelectedTargetCheckBox.Enabled = $false
 
         # Auto checks/unchecks various checkboxes for visual status indicators
         $DomainGeneratedCheckBox.Checked    = $true
         $ImportListCheckBox.Checked         = $false
         $SingleHostIPCheckBox.Checked       = $false
-        $SingleHostIPSelectCheckBox.Checked = $false
+        $SelectedTargetCheckBox.Checked = $false
     }
     If ($DomainGeneratedAutoCheckBox.Checked -eq $false){
         $DomainGeneratedAutoCheckBox.Checked = $false
@@ -5637,14 +10096,14 @@ function SingleHostInputCheck {
         $SingleHostIPCheckBox.Enabled        = $true
         $ImportListCheckBox.Enabled          = $false
         $DomainGeneratedCheckBox.Enabled     = $false
-        $SingleHostIPSelectCheckBox.Enabled  = $false
+        $SelectedTargetCheckBox.Enabled      = $false
 
         # Auto checks/unchecks various checkboxes for visual status indicators
         $SingleHostIPCheckBox.Checked        = $true
         $ImportListCheckBox.Checked          = $false
         $DomainGeneratedCheckBox.Checked     = $false
         $DomainGeneratedAutoCheckBox.Checked = $false
-        $SingleHostIPSelectCheckBox.Checked  = $false
+        $SelectedTargetCheckBox.Checked      = $false
 
         . SingleEntry
 
@@ -5678,7 +10137,7 @@ $SingleHostIPCheckBox.Add_Click({
         $ImportListCheckBox.Checked          = $false
         $DomainGeneratedCheckBox.Checked     = $false
         $DomainGeneratedAutoCheckBox.Checked = $false
-        $SingleHostIPSelectCheckBox.Checked  = $false
+        $SelectedTargetCheckBox.Checked  = $false
     }
     else {$SingleHostIPCheckBox.Checked      = $true}
 
@@ -5708,14 +10167,14 @@ $SingleHostIPAddButton.add_click({
         $SingleHostIPCheckBox.Enabled        = $true
         $ImportListCheckBox.Enabled          = $false
         $DomainGeneratedCheckBox.Enabled     = $false
-        $SingleHostIPSelectCheckBox.Enabled  = $false
+        $SelectedTargetCheckBox.Enabled  = $false
 
         # Auto checks/unchecks various checkboxes for visual status indicators
         $SingleHostIPCheckBox.Checked        = $true
         $ImportListCheckBox.Checked          = $false
         $DomainGeneratedCheckBox.Checked     = $false
         $DomainGeneratedAutoCheckBox.Checked = $false
-        $SingleHostIPSelectCheckBox.Checked  = $false
+        $SelectedTargetCheckBox.Checked  = $false
     }
     }
 })
@@ -5801,14 +10260,14 @@ $PoShACME.Controls.Add($DirectoryOpenListBox)
 #-------------------------------------------
 # Directory Location - New Timestamp Button
 #-------------------------------------------
-$DirectoryUpdateListBox          = New-Object System.Windows.Forms.Button
-$DirectoryUpdateListBox.Text     = "New Timestamp"
-$DirectoryUpdateListBox.Location = New-Object System.Drawing.Size(($Column3RightPosition + 140 + 80),$Column3DownPosition)
-$DirectoryUpdateListBox.Size     = New-Object System.Drawing.Size(110,$Column3BoxHeight) 
+$DirectoryUpdateListBox              = New-Object System.Windows.Forms.Button
+$DirectoryUpdateListBox.Text         = "New Timestamp"
+$DirectoryUpdateListBox.Location     = New-Object System.Drawing.Size(($Column3RightPosition + 140 + 80),$Column3DownPosition)
+$DirectoryUpdateListBox.Size         = New-Object System.Drawing.Size(110,$Column3BoxHeight) 
 $DirectoryUpdateListBox.add_click({
-    $global:PoShLocation                = "$PoShHome\Collected Data\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+    $Script:PoShLocation                    = "$PoShHome\$CollectedData\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
     $DirectoryListBox.Items.Clear();   
-    $DirectoryListBox.Items.Add("....\Collected Data\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))")
+    $DirectoryListBox.Items.Add("....\$CollectedData\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))")
 })
 $PoShACME.Controls.Add($DirectoryUpdateListBox) 
 
@@ -5829,7 +10288,7 @@ $DirectoryListBox.Location = New-Object System.Drawing.Size($Column3RightPositio
 $DirectoryListBox.Size     = New-Object System.Drawing.Size(330,$Column3BoxHeight)
 $DirectoryListBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $DirectoryListBox.TabIndex = 3
-$DirectoryListBox.Items.Add("....\Collected Data\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))") | Out-Null
+$DirectoryListBox.Items.Add("....\$CollectedData\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))") | Out-Null
 $PoShACME.Controls.Add($DirectoryListBox)
 
 
@@ -5954,17 +10413,19 @@ $OpenResultsButton.Location = New-Object System.Drawing.Size($Column5RightPositi
 $OpenResultsButton.Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
 $OpenResultsButton.add_click({
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
-    $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
-    $OpenFileDialog.InitialDirectory = "$PoShHome\Collected Data"
-    $OpenFileDialog.filter = "CSV (*.csv)| *.csv|Excel (*.xlsx)| *.xlsx|Excel (*.xls)| *.xls|All files (*.*)|*.*"
-    $OpenFileDialog.ShowDialog() | Out-Null
-    $OpenFileDialog.ShowHelp = $true
-    Import-Csv $($OpenFileDialog.filename) | Out-GridView -OutputMode Multiple | Set-Variable -Name ViewImportResults
+    $ViewCSVResultsOpenResultsOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $ViewCSVResultsOpenResultsOpenFileDialog.Title = "View Collection CSV Results"
+    $ViewCSVResultsOpenResultsOpenFileDialog.InitialDirectory = "$PoShHome\$CollectedData"
+    $ViewCSVResultsOpenResultsOpenFileDialog.filter = "CSV (*.csv)| *.csv|Excel (*.xlsx)| *.xlsx|Excel (*.xls)| *.xls|All files (*.*)|*.*"
+    $ViewCSVResultsOpenResultsOpenFileDialog.ShowDialog() | Out-Null
+    $ViewCSVResultsOpenResultsOpenFileDialog.ShowHelp = $true
+    Import-Csv $($ViewCSVResultsOpenResultsOpenFileDialog.filename) | Out-GridView -OutputMode Multiple | Set-Variable -Name ViewImportResults
     
     if ($ViewImportResults) {
-        $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) View CSV File:  $($OpenFileDialog.filename)")
+        $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) View CSV File:  $($ViewCSVResultsOpenResultsOpenFileDialog.filename)")
         foreach ($Selection in $ViewImportResults) {
-            $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Selection:      $($Selection)")
+            $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Selection:  $($Selection)")
+            Add-Content -Path $OpNotesWriteOnlyFile -Value ($OpNotesListBox.SelectedItems) -Force
         }
     }
     OpNotesSaveScript
@@ -5979,7 +10440,7 @@ $Column5DownPosition += $Column5DownPositionShift
 # Compare CSV Button
 #--------------------
 $CompareButton          = New-Object System.Windows.Forms.Button
-$CompareButton.Name     = "Compare"
+$CompareButton.Name     = "Compare CSVs"
 $CompareButton.Text     = "$($CompareButton.Name)"
 $CompareButton.TabIndex = 4
 $CompareButton.DataBindings.DefaultDataSourceUpdateMode = 0
@@ -5992,7 +10453,7 @@ $CompareButton.add_click({
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $OpenCompareReferenceObjectFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $OpenCompareReferenceObjectFileDialog.Title = "Compare Reference Object"
-    $OpenCompareReferenceObjectFileDialog.InitialDirectory = "$PoShHome\Collected Data"
+    $OpenCompareReferenceObjectFileDialog.InitialDirectory = "$PoShHome\$CollectedData"
     $OpenCompareReferenceObjectFileDialog.filter = "CSV (*.csv)| *.csv|Excel (*.xlsx)| *.xlsx|Excel (*.xls)| *.xls|All files (*.*)|*.*"
     $OpenCompareReferenceObjectFileDialog.ShowDialog() | Out-Null
     $OpenCompareReferenceObjectFileDialog.ShowHelp = $true
@@ -6001,26 +10462,91 @@ $CompareButton.add_click({
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $OpenCompareDifferenceObjectFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $OpenCompareDifferenceObjectFileDialog.Title = "Compare Difference Object"
-    $OpenCompareDifferenceObjectFileDialog.InitialDirectory = "$PoShHome\Collected Data"
+    $OpenCompareDifferenceObjectFileDialog.InitialDirectory = "$PoShHome\$CollectedData"
     $OpenCompareDifferenceObjectFileDialog.filter = "CSV (*.csv)| *.csv|Excel (*.xlsx)| *.xlsx|Excel (*.xls)| *.xls|All files (*.*)|*.*"
     $OpenCompareDifferenceObjectFileDialog.ShowDialog() | Out-Null
     $OpenCompareDifferenceObjectFileDialog.ShowHelp = $true
 
-    # What to compare
-    [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
-    $OpenCompareWhatToCompare = [Microsoft.VisualBasic.Interaction]::InputBox(`
-        "What Property Field Do You Want To Compare?`n  <=   Found in the Reference File`n  =>   Found in the Difference File`n`nReplace the 'Name' property as necessary...", `
-        "Compare CSV Files", `
-        "Name")
-    $OpenCompareWhatToCompare.ShowDialog()
+    # Imports Csv file headers
+    [array]$DropDownArrayItems = Import-Csv $OpenCompareReferenceObjectFileDialog.FileName | Get-Member -MemberType NoteProperty | Select-Object -Property Name -ExpandProperty Name
+    [array]$DropDownArray = $DropDownArrayItems | sort
+
+    # This Function Returns the Selected Value and Closes the Form
+    function CompareCsvFilesFormReturn-DropDown {
+        if ($DropDownField.SelectedItem -eq $null){
+            $DropDownField.SelectedItem = $DropDownField.Items[0]
+            $script:Choice = $DropDownField.SelectedItem.ToString()
+            $CompareCsvFilesForm.Close()
+        }
+        else{
+            $script:Choice = $DropDownField.SelectedItem.ToString()
+            $CompareCsvFilesForm.Close()
+        }
+    }
+
+    function SelectProperty{
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+        [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
+
+        #------------------------
+        # Compare Csv Files Form
+        #------------------------
+        $CompareCsvFilesForm = New-Object System.Windows.Forms.Form
+        $CompareCsvFilesForm.width = 330
+        $CompareCsvFilesForm.height = 160
+        $CompareCsvFilesForm.Text = ”Compare Two CSV Files”
+        $CompareCsvFilesForm.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen
+        $CompareCsvFilesForm.ControlBox = $true
+        #$CompareCsvFilesForm.Add_Shown({$CompareCsvFilesForm.Activate()})
+
+        #-----------------
+        # Drop Down Label
+        #-----------------
+        $DropDownLabel          = New-Object System.Windows.Forms.Label
+        $DropDownLabel.Location = New-Object System.Drawing.Size(10,10) 
+        $DropDownLabel.size     = New-Object System.Drawing.Size(290,45) 
+        $DropDownLabel.Text     = "What Property Field Do You Want To Compare?`n  <=   Found in the Reference File`n  =>   Found in the Difference File`n`nReplace the 'Name' property as necessary..."
+        $CompareCsvFilesForm.Controls.Add($DropDownLabel)
+
+        #-----------------
+        # Drop Down Field
+        #-----------------
+        $DropDownField          = New-Object System.Windows.Forms.ComboBox
+        $DropDownField.Location = New-Object System.Drawing.Size(10,($DropDownLabel.Location.y + $DropDownLabel.Size.Height))
+        $DropDownField.Size     = New-Object System.Drawing.Size(290,30)
+        ForEach ($Item in $DropDownArray) {
+         [void] $DropDownField.Items.Add($Item)
+        }
+        $CompareCsvFilesForm.Controls.Add($DropDownField)
+
+        #------------------
+        # Drop Down Button
+        #------------------
+        $DropDownButton          = New-Object System.Windows.Forms.Button
+        $DropDownButton.Location = New-Object System.Drawing.Size(10,($DropDownField.Location.y + $DropDownField.Size.Height + 10))
+        $DropDownButton.Size     = New-Object System.Drawing.Size(100,20)
+        $DropDownButton.Text     = "Execute"
+        $DropDownButton.Add_Click({CompareCsvFilesFormReturn-DropDown})
+        $CompareCsvFilesForm.Controls.Add($DropDownButton)   
+
+        [void] $CompareCsvFilesForm.ShowDialog()
+        return $script:choice
+    }
+    $Property = $null
+    $Property = SelectProperty
+
+   
+    #--------------------------------
+    # Compares two Csv files Command
+    #--------------------------------
+    Compare-Object -ReferenceObject (Import-Csv $OpenCompareReferenceObjectFileDialog.FileName) -DifferenceObject (Import-Csv $OpenCompareDifferenceObjectFileDialog.FileName) -Property $Property `
+        | Out-GridView -OutputMode Multiple | Set-Variable -Name CompareImportResults
+
+    # Outputs messages to mainlistbox 
     $MainListBox.Items.Clear()
     $MainListBox.Items.Add("Compare Reference File:  $($OpenCompareReferenceObjectFileDialog.FileName)")
     $MainListBox.Items.Add("Compare Difference File: $($OpenCompareDifferenceObjectFileDialog.FileName)")
-    $MainListBox.Items.Add("Compare Property Field:  $($OpenCompareWhatToCompare)")
-
-    # Compare Script
-    Compare-Object (Import-Csv $OpenCompareReferenceObjectFileDialog.FileName) (Import-Csv $OpenCompareDifferenceObjectFileDialog.FileName) -Property $OpenCompareWhatToCompare `
-     | Out-GridView -OutputMode Multiple | Set-Variable -Name CompareImportResults
+    $MainListBox.Items.Add("Compare Property Field:  $($Property)")
 
     # Writes selected fields to OpNotes
     if ($CompareImportResults) {
@@ -6028,7 +10554,8 @@ $CompareButton.add_click({
         $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Compare Difference File: $($OpenCompareDifferenceObjectFileDialog.FileName)")
         $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Compare Property Field:  $($OpenCompareWhatToCompare)")
         foreach ($Selection in $CompareImportResults) {
-            $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Compare Selection:       $($Selection)")
+            $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Compare Selection: $($Selection)")
+            Add-Content -Path $OpNotesWriteOnlyFile -Value ($OpNotesListBox.SelectedItems) -Force
         }
     }
     OpNotesSaveScript
@@ -6090,32 +10617,44 @@ $Section2ActionTab.Controls.Add($ComputerListRDPButton)
 $Column5DownPosition += $Column5DownPositionShift
 
 
-#----------------------------
-# Computer List - SSH (PSv6)
-#----------------------------
-$ComputerListSSHv6Button          = New-Object System.Windows.Forms.Button
-$ComputerListSSHv6Button.Location = New-Object System.Drawing.Size($Column5RightPosition,$Column5DownPosition)
-$ComputerListSSHv6Button.Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
-$ComputerListSSHv6Button.Text     = 'SSH (PSv6)'
-$ComputerListSSHv6Button.add_click({
-    $OhDarn=[System.Windows.Forms.MessageBox]::Show(`
-        "Oh darn! This hasn't been implemented yet...`nThis is just a place holder for now.",`
-        "PoSh-ACME",`
-        [System.Windows.Forms.MessageBoxButtons]::OK)
-        switch ($OhDarn){
-        "OK" {
-            #write-host "You pressed OK"
-        }
-}
-#    $SSHv6 = 
-#    $SSHv6
-#    $MainListBox.Items.Clear()
-#    $MainListBox.Items.Add("Remote Desktop To: $($ComputerListBox.SelectedItem)")
-#    $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Remote Desktop: $mstsc"
-#    $LogMessage | Add-Content -Path $LogFile
-})
-$Section2ActionTab.Controls.Add($ComputerListSSHv6Button) 
+# Shift Row Location
+$Column5DownPosition += $Column5DownPositionShift
 
+
+#-------------------------------
+# Computer List - PSExec Button
+#-------------------------------
+$ComputerListPSExecButton          = New-Object System.Windows.Forms.Button
+$ComputerListPSExecButton.Location = New-Object System.Drawing.Size($Column5RightPosition,$Column5DownPosition)
+$ComputerListPSExecButton.Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
+$ComputerListPSExecButton.Text     = "PsExec"
+$ComputerListPSExecButton.add_click({
+    if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
+        if (!$Credential) {              
+            $script:Credential = Get-Credential
+        }
+        $Username = $Credential.UserName
+        $Password = $Credential.GetNetworkCredential().Password
+        $UseCredential = "-u $Username -p $Password"
+    }
+    else {
+        $Credentials = ""
+    }
+
+    $PSExecPath   = "$PoShHome\SysinternalsSuite\PsExec.exe"
+    $PSExecTarget = "$($ComputerListBox.SelectedItem)"
+
+    Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PSExecPath' -ArgumentList '-accepteula -s \\$PSExecTarget $UseCredential cmd'"
+    
+    $MainListBox.Items.Clear()
+    $MainListBox.Items.Add("Enter-PSSession: $($ComputerListBox.SelectedItem)")
+    $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) PSExec: $($ComputerListBox.SelectedItem)"
+    $LogMessage | Add-Content -Path $LogFile
+})
+# Test if the SysinternalsSuite Directory is there; if it's there load the tab
+if (Test-Path "$PoShHome\SysinternalsSuite\PsExec.exe") {
+    $Section2ActionTab.Controls.Add($ComputerListPSExecButton) 
+}
 
 
 # Shift Row Location
@@ -6133,8 +10672,10 @@ $ComputerListPSSessionButton.add_click({
     $SelectedComputer = "$($ComputerListBox.SelectedItem)"
 
     if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
-        $Credential = Get-Credential
-        Start-Process PowerShell -ArgumentList "-noexit Enter-PSSession -ComputerName $SelectedComputer -Credential $Credential"
+        if (!$Credential) {              
+            $script:Credential = Get-Credential
+        }
+        Start-Process PowerShell -ArgumentList "-noexit Enter-PSSession -ComputerName $SelectedComputer -Credential (Get-Credential)"
     }
     else {
         Start-Process PowerShell -ArgumentList "-noexit Enter-PSSession -ComputerName $SelectedComputer" 
@@ -6146,41 +10687,6 @@ $ComputerListPSSessionButton.add_click({
     $LogMessage | Add-Content -Path $LogFile
 })
 $Section2ActionTab.Controls.Add($ComputerListPSSessionButton) 
-
-
-# Shift Row Location
-$Column5DownPosition += $Column5DownPositionShift
-
-
-#-------------------------------
-# Computer List - PSExec Button
-#-------------------------------
-$ComputerListPSExecButton          = New-Object System.Windows.Forms.Button
-$ComputerListPSExecButton.Location = New-Object System.Drawing.Size($Column5RightPosition,$Column5DownPosition)
-$ComputerListPSExecButton.Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
-$ComputerListPSExecButton.Text     = "PSExec"
-$ComputerListPSExecButton.add_click({
-    if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
-        $GetCredentials = Get-Credential
-        $Username = $GetCredentials.UserName
-        $Password = $GetCredentials.GetNetworkCredential().Password
-        $Credentials = "-u $Username -p $Password"
-    }
-    else {
-        $Credentials = ""
-    }
-
-    $PSExecPath   = "$PoShHome\SysinternalsSuite\PSExec.exe"
-    $PSExecTarget = "$($ComputerListBox.SelectedItem)"
-
-    Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PSExecPath' -ArgumentList '-accepteula \\$PSExecTarget $Credentials cmd'"
-    
-    $MainListBox.Items.Clear()
-    $MainListBox.Items.Add("Enter-PSSession: $($ComputerListBox.SelectedItem)")
-    $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) PSExec: $($ComputerListBox.SelectedItem)"
-    $LogMessage | Add-Content -Path $LogFile
-})
-$Section2ActionTab.Controls.Add($ComputerListPSExecButton) 
 
 
 # Shift Row Location
@@ -6246,7 +10752,10 @@ $Section2TabControl.Controls.Add($Section2ControlTab)
 ## Section 2 Computer List - Control Tab Buttons
 #####################################################################################################################################
 
-<
+# Shift Row Location
+$Column5DownPosition = $Column5DownPositionStart
+
+
 #-----------------------------------
 # Computer List - Clear List Button
 #-----------------------------------
@@ -6261,7 +10770,7 @@ $Section2ControlTab.Controls.Add($ComputerListClearButton)
 
 
 # Shift Row Location
-$Column5DownPosition = $Column5DownPositionStart
+$Column5DownPosition += $Column5DownPositionShift
 
 
 #----------------------------------------
@@ -6403,8 +10912,6 @@ $Section2ControlTab.Controls.Add($ComputerListSaveButton)
 $Column5DownPosition += $Column5DownPositionShift
 # Shift Row Location
 $Column5DownPosition += $Column5DownPositionShift
-# Shift Row Location
-$Column5DownPosition += $Column5DownPositionShift
 
 
 #---------------------------------
@@ -6424,33 +10931,8 @@ $Section2ControlTab.Controls.Add($LogButton)
 
 # Shift Row Location
 $Column5DownPosition += $Column5DownPositionShift
-
-
-#-----------------------------
-# Computer List - Exit Button
-#-----------------------------
-
-$ExitButton          = New-Object System.Windows.Forms.Button
-$ExitButton.Name     = "Exit"
-$ExitButton.Text     = "$($ExitButton.Name)"
-$ExitButton.TabIndex = 5
-$ExitButton.DataBindings.DefaultDataSourceUpdateMode = 0
-$ExitButton.UseVisualStyleBackColor = $True
-$ExitButton.Location = New-Object System.Drawing.Size($Column5RightPosition,$Column5DownPosition)
-$ExitButton.Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
-
-$ExitButton.add_Click({$PoShACME.Close()})
-#$Handle = start-Process notepad.exe
-#$ExitButton.add_Click({$Handle | Stop-Process})
-    # Will close the GUI. It does not close anything else.
-    # $ExitButton.add_Click({$PoShACME.Close()})
-
-    #Will exit the entire PowerShell prompt. If you have launched an executable like Excel, it will still be open in it's own process.
-    #$ExitButton.add_Click({exit})  <-- errors
-$Section2ControlTab.Controls.Add($ExitButton)
-
-
-
+# Shift Row Location
+$Column5DownPosition += $Column5DownPositionShift
 
 
 
@@ -6473,7 +10955,7 @@ $Column6BoxWidth          = 604
 $Column6BoxHeight         = 22
 $Column6DownPositionShift = 25
 $Column6MainBoxWidth      = 664
-$Column6MainBoxHeight     = 230
+$Column6MainBoxHeight     = 240
 
 
 # Shift Row Location
@@ -6528,13 +11010,14 @@ $PoShACME.Controls.Add($ProgressBar1Label)
 # Progress Bar 1 ProgressBar
 #----------------------------
 
-$ProgressBar1Max       = 0
 $ProgressBar1          = New-Object System.Windows.Forms.ProgressBar
-$ProgressBar1.Maximum  = $ProgressBar1Max
+$ProgressBar1.Style    = "Continuous"
+#$ProgressBar1.Maximum  = 10
 $ProgressBar1.Minimum  = 0
 $ProgressBar1.Location = new-object System.Drawing.Size(($Column6RightPosition + 60),($Column6DownPosition - 2))
 $ProgressBar1.size     = new-object System.Drawing.Size($Column6BoxWidth,10)
-$ProgressBar1Count     = 0
+#$ProgressBar1.Value     = 0
+#$ProgressBar1.Step     = 1
 $PoSHACME.Controls.Add($ProgressBar1)
 
 
@@ -6557,13 +11040,12 @@ $PoShACME.Controls.Add($ProgressBar2Label)
 # Progress Bar 2 ProgressBar
 #----------------------------
 
-$ProgressBar2Max       = 0
 $ProgressBar2          = New-Object System.Windows.Forms.ProgressBar
 $ProgressBar2.Maximum  = $ProgressBar2Max
 $ProgressBar2.Minimum  = 0
 $ProgressBar2.Location = new-object System.Drawing.Size(($Column6RightPosition + 60),($Column6DownPosition - 2))
 $ProgressBar2.size     = new-object System.Drawing.Size($Column6BoxWidth,10)
-$ProgressBar2Count      = 0
+$ProgressBar2.Count      = 0
 $PoSHACME.Controls.Add($ProgressBar2)
 
 
@@ -6582,29 +11064,22 @@ $MainListBox.Size     = New-Object System.Drawing.Size($Column6MainBoxWidth,$Col
 $MainListBox.Font     = New-Object System.Drawing.Font("Courier New",8,[System.Drawing.FontStyle]::Regular)
 $MainListBox.DataBindings.DefaultDataSourceUpdateMode = 0
 $MainListBox.TabIndex = 3
-
-#$MainListBox.Items.Add("      ____            _____   __              ___     _____   __   ___  _____") | Out-Null
-#$MainListBox.Items.Add("     / __ \          / ___/  / /             /   |   / ___/  /  | /  / / ___/") | Out-Null
-#$MainListBox.Items.Add("    / / / / _____   / /_    / /_            / /| |  / /     / /||/  / / /_   ") | Out-Null
-#$MainListBox.Items.Add("   / /_/ / / ___ \  \__ \  / __ \  ______  / /_| | / /     / / |_/ / / __/   ") | Out-Null
-#$MainListBox.Items.Add("  / ____/ / /__/ / ___/ / / / / / /_____/ / ____ |/ /___  / /   / / / /___   ") | Out-Null
-#$MainListBox.Items.Add(" /_/      \_____/ /____/ /_/ /_/         /_/   |_|\____/ /_/   /_/ /_____/   ") | Out-Null
-$MainListBox.Items.Add("  ______             ____  __               _____     ____  ___    __  _____  ") | Out-Null
-$MainListBox.Items.Add(" |   _  \           /  __||  |             /  _  \   / ___\ |  \  /  | | ___| ") | Out-Null
-$MainListBox.Items.Add(" |  |_)  | _____   |  (   |  |___   ____  |  (_)  | / /     |   \/   | | |_   ") | Out-Null
-$MainListBox.Items.Add(" |   ___/ /  _  \   \  \  |   _  \ |____| |   _   || |      | |\  /| | |  _|  ") | Out-Null
-$MainListBox.Items.Add(" |  |    |  (_)  | __)  | |  | |  |       |  | |  | \ \____ | | \/ | | | |__  ") | Out-Null
-$MainListBox.Items.Add(" |__|     \_____/ |____/  |__| |__|       |__| |__|  \____/ |_|    |_| |____| ") | Out-Null
+$MainListBox.Items.Add("      ____            _____   __              ___     _____   __   ___  _____ ") | Out-Null
+$MainListBox.Items.Add("     / __ \          / ___/  / /             /   |   / ___/  /  | /  / / ___/ ") | Out-Null
+$MainListBox.Items.Add("    / / / / _____   / /_    / /_            / /| |  / /     / /||/  / / /_    ") | Out-Null
+$MainListBox.Items.Add("   / /_/ / / ___ \  \__ \  / __ \  ______  / /_| | / /     / / |_/ / / __/    ") | Out-Null
+$MainListBox.Items.Add("  / ____/ / /__/ / ___/ / / / / / /_____/ / ____ |/ /___  / /   / / / /___    ") | Out-Null
+$MainListBox.Items.Add(" /_/      \_____/ /____/ /_/ /_/         /_/   |_|\____/ /_/   /_/ /_____/    ") | Out-Null
 $MainListBox.Items.Add("==============================================================================") | Out-Null
 $MainListBox.Items.Add(" PowerShell - Automated Collection Made Easy (ACME) For The Security Analyst! ") | Out-Null
 $MainListBox.Items.Add(" ACME: The Point At Which Something Is The Best, Perfect, Or Most Successful. ") | Out-Null
 $MainListBox.Items.Add("==============================================================================") | Out-Null
 $MainListBox.Items.Add(" File Name      : PoSh-ACME.ps1                                               ") | Out-Null
-$MainListBox.Items.Add(" Version        : v.2.1                                                       ") | Out-Null
+$MainListBox.Items.Add(" Version        : v2.02                                                       ") | Out-Null
 $MainListBox.Items.Add(" Author         : high101bro                                                  ") | Out-Null
 $MainListBox.Items.Add(" Website        : https://github.com/high101bro/PoSH-ACME                     ") | Out-Null
-$MainListBox.Items.Add(" Requirements   : PowerShell v2 or Higher                                     ") | Out-Null
-$MainListBox.Items.Add("                : WinRM  (Default Port 5986)                                  ") | Out-Null
+$MainListBox.Items.Add(" Requirements   : PowerShell v2 or Higher    - Works best with PowerShell v3+ ") | Out-Null
+$MainListBox.Items.Add("                : WinRM  (Default Port 5986) - Works best on a domain server  ") | Out-Null
 $MainListBox.Items.Add("                : PSExec.exe, Procmon.exe, Autoruns.exe                       ") | Out-Null
 $MainListBox.Items.Add("") | Out-Null
 $PoShACME.Controls.Add($MainListBox)
@@ -6613,26 +11088,108 @@ $PoShACME.Controls.Add($MainListBox)
 # ============================================================================================================================================================
 # Compile CSV Files
 # ============================================================================================================================================================
-function CompileCsvFiles([string]$LocationOfCSVsToCompile, [string]$LocationToSaveCompiledCSV) {
+function Compile-CsvFiles([string]$LocationOfCSVsToCompile, [string]$LocationToSaveCompiledCSV) {
     # This function compiles the .csv files in the collection directory which outputs in the parent directory
-    # The first line (collumn headers) is only copied once from the first file compiled, then skipped for the rest
+    # The first line (collumn headers) is only copied once from the first file compiled, then skipped for the rest  
+    Remove-Item "$LocationToSaveCompiledCSV" -Force
+
     $getFirstLine = $true
-    get-childItem "$LocationOfCSVsToCompile\*.csv" | foreach {
-        $filePath = $_
-        $Lines =  $Lines = Get-Content $filePath  
-        $LinesToWrite = switch($getFirstLine) {
-            $true  {$Lines}
-            $false {$Lines | Select -Skip 1}
+    Get-ChildItem "$LocationOfCSVsToCompile\*.csv" | foreach {
+        if ((Get-Content $PSItem).Length -eq 0){
+            Remove-Item $PSItem
         }
-        $getFirstLine = $false
-        Add-Content -Path "$LocationToSaveCompiledCSV" $LinesToWrite -Force
+        else {
+            $filePath = $_
+            $Lines =  $Lines = Get-Content $filePath  
+            $LinesToWrite = switch($getFirstLine) {
+                $true  {$Lines}
+                $false {$Lines | Select -Skip 1}
+            }
+            $getFirstLine = $false
+            Add-Content -Path "$LocationToSaveCompiledCSV" $LinesToWrite -Force
+        }
     }  
 }
 
+# ============================================================================================================================================================
+# Removes Duplicate CSV Headers
+# ============================================================================================================================================================
+function Remove-DuplicateCsvHeaders {
+    $count = 1
+    $output = @()
+    $Contents = Get-Content "$PoShLocation\$CollectionName.csv" 
+    $Header = $Contents | Select-Object -First 1
+    foreach ($line in $Contents) {
+        if ($line -match $Header -and $count -eq 1) {
+            $output = $line + "`r`n"
+            $count ++
+        }
+        elseif ($line -notmatch $Header) {
+            $output += $line + "`r`n"
+        }
+    }
+    Remove-Item -Path "$PoShLocation\$CollectionName.csv"
+    $output | Out-File -FilePath "$PoShLocation\$CollectionName.csv"
+}
 
-#-------------------------
+
+
+# ============================================================================================================================================================
+# Monitor Jobs of Individual Queries
+# ============================================================================================================================================================
+function MonitorJobs {
+    $ProgressBar1.Value   = 0
+    $JobsLaunch = Get-Date
+        do {
+        Clear-Host
+
+        $myjobs = Get-Job
+        #$myjobs | Out-File $env:TEMP\scrapjobs.txt
+        #Get-Content $env:TEMP\scrapjobs.txt
+        $jobscount = $myjobs.count                  
+        $ProgressBar1.Maximum = $jobscount
+
+        $done = 0
+        foreach ($job in $myjobs) {
+            $mystate = $job.state
+            if ($mystate -eq "Completed") {$done = $done +1}
+        }
+        $ProgressBar1.Value = $done + 1
+
+        $currentTime = Get-Date
+        $Timecount = $JobsLaunch - $currentTime
+        $Timecount = [math]::Round(($Timecount.TotalMinutes),2)
+
+        #$Message2 = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Completed:  $($ProcessesEnhancedCheckBox.Name)"                
+        #$MainListBox.Items.Insert(0,"Jobs Running:  $jobscount")
+        $MainListBox.Items.Insert(0,"Jobs Running:  $($jobscount - $done)")        
+        #$MainListBox.Items.Insert(1,"Jobs Started:  $jobslaunch")
+        $MainListBox.Items.Insert(1,"Current time:  $currentTime")
+        $MainListBox.Items.Insert(2,"Elasped time:  $Timecount minutes")
+        $MainListBox.Items.Insert(3,"")
+
+        Start-Sleep -Seconds 1
+        #$MainListBox.Items.RemoveAt(0)
+        #$MainListBox.Items.RemoveAt(0)
+        $MainListBox.Items.RemoveAt(0)
+        $MainListBox.Items.RemoveAt(0)
+        $MainListBox.Items.RemoveAt(0)
+        $MainListBox.Items.RemoveAt(0)
+    } while ( $done -lt $jobscount)
+    
+    Get-Job | Remove-Job -ErrorAction SilentlyContinue
+    Start-Sleep -Seconds 1
+    $ProgressBar1.Value   = 0
+}
+
+
+
+
+# ============================================================================================================================================================
+# ============================================================================================================================================================
 # CheckBox Script Handler
-#-------------------------
+# ============================================================================================================================================================
+# ============================================================================================================================================================
 $ExecuteScriptHandler= {
     if (!$TestConnectionsCheckbox.Checked -and `
         !$ARPCacheCheckBox.Checked -and `
@@ -6656,7 +11213,8 @@ $ExecuteScriptHandler= {
         !$FirewallStatusCheckBox.Checked -and `
         !$GroupInfoCheckBox.Checked -and `
         !$LogonInfoCheckBox.Checked -and `
-        !$LogonStatusCheckBox.Checked -and `
+        !$LogonSessionsCheckBox.Checked -and `
+        !$LogonUserStatusCheckBox.Checked -and `
         !$MappedDrivesCheckBox.Checked -and `
         !$MemoryCapacityInfoCheckBox.Checked -and `
         !$MemoryPerformanceDataCheckBox.Checked -and `
@@ -6676,6 +11234,7 @@ $ExecuteScriptHandler= {
         !$PlugAndPlayCheckBox.Checked -and `
         !$PortProxyRulesCheckBox.Checked -and `
         !$PrefetchFilesCheckBox.Checked -and `
+        !$ProcessTreeLineageCheckBox.Checked -and `
         !$ProcessesEnhancedCheckBox.Checked -and `
         !$ProcessesStandardCheckBox.Checked -and `
         !$ProcessorCPUInfoCheckBox.Checked -and `
@@ -6687,9 +11246,28 @@ $ExecuteScriptHandler= {
         !$SoftwareInstalledCheckBox.Checked -and `
         !$SystemInfoCheckBox.Checked -and `
         !$USBControllerDevicesCheckBox.Checked -and `
+        !$HuntTheBadStuffDirectoryListingCheckbox.Checked -and `
+        !$HuntTheBadStuffFileSearchCheckbox.Checked -and `
+        !$RekallWinPmemMemoryCaptureCheckBox.Checked -and `
         !$SysinternalsAutorunsCheckbox.Checked -and `
-        !$SysinternalsProcessMonitorCheckbox.Checked -and `
-        !$ActiveDirectoryCheckBox.Checked ) {
+        !$SysinternalsProcessMonitorCheckbox.Checked -and `        
+        !$ActiveDirectoryAccountDetailsAndUserInfoCheckBox.Checked -and `
+        !$ActiveDirectoryAccountLogonAndPassowrdPolicyCheckBox.Checked -and `
+        !$ActiveDirectoryAccountContactInfoCheckBox.Checked -and `
+        !$ActiveDirectoryAccountEmailAddressesCheckBox.Checked -and `
+        !$ActiveDirectoryAccountPhoneNumbersCheckBox.Checked -and `
+        !$ActiveDirectoryComputersCheckBox.Checked -and `
+        !$ActiveDirectoryDefaultDomainPasswordPolicyCheckBox.Checked -and `
+        !$ActiveDirectoryGroupsCheckBox.Checked -and `
+        !$ActiveDirectoryGroupMembershipByGroupsCheckBox.Checked -and `
+        !$ActiveDirectoryGroupMembershipByUsersCheckBox.Checked -and `
+        !$ActiveDirectoryGroupsWithoutAccountMembersCheckBox.Checked -and `
+        !$DNSAllRecordsServer2008CheckBox.Checked -and `
+        !$DomainDNSAllRecordsServer2008CheckBox.Checked -and `
+        !$DomainDNSRootHintsServer2008CheckBox.Checked -and `
+        !$DomainDNSZonesServer2008CheckBox.Checked -and `
+        !$DomainDNSStatisticsServer2008CheckBox.Checked ) {
+
         $MainListBox.Items.Clear()
         $MainListBox.Items.Insert(0,"Error: No Collection CheckBoxes Were Selected...")
         $MainListBox.Items.Insert(0,"")
@@ -6705,226 +11283,100 @@ $ExecuteScriptHandler= {
     else {
         $MainListBox.Items.Clear();
         $CollectionTimerStart = Get-Date
-        $MainListBox.Items.Insert(0,"Script Start Time:  $(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss'))")    
+        $MainListBox.Items.Insert(0,"$(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss')) - Collection Start Time")    
         $MainListBox.Items.Insert(0,"")
-
-        # For the Progress Bar
-        if ($TestConnectionsCheckbox.Checked){$ProgressBar2 += 1}
-        if ($ProcessesStandardCheckBox.Checked){$ProgressBar2 += 1}
-        if ($ProcessInfoCheckBox.Checked){$ProgressBar += 1}
-        if ($ProcessesEnhancedCheckBox.Checked){$ProgressBar2 += 1}
-        if ($ServicesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($ScreenSaverInfoCheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkConnectionsTCPCheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkConnectionsUDPCheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkSettingsCheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkStatisticsIPv4CheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkStatisticsIPv4TCPCheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkStatisticsIPv4UDPCheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkStatisticsIPv4ICMPCheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkStatisticsIPv6CheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkStatisticsIPv6TCPCheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkStatisticsIPv6UDPCheckBox.Checked){$ProgressBar2 += 1}
-        if ($NetworkStatisticsIPv6ICMPCheckBox.Checked){$ProgressBar2 += 1}
-        if ($ComputerInfoCheckBox.Checked){$ProgressBar2 += 1}
-        if ($SecurityPatchesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($LogonInfoCheckBox.Checked){$ProgressBar2 += 1}
-        if ($LogonStatusCheckBox.Checked){$ProgressBar2 += 1}
-        if ($CheckBoxNum09.Checked){$ProgressBar2 += 1}
-        if ($CheckBoxNum10.Checked){$ProgressBar2 += 1}
-        if ($GroupInfoCheckBox.Checked){$ProgressBar2 += 1}
-        if ($ARPCacheCheckBox.Checked) {$ProgressBar2 += 1}
-        if ($AutorunsCheckBox.Checked){$ProgressBar2 += 1}
-        if ($DatesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($EnvironmentalVariablesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($BIOSInfoCheckBox.Checked){$ProgressBar2 += 1}
-        if ($DNSCacheCheckBox.Checked) {$ProgressBar2 += 1}
-        if ($DriversDetailedCheckBox.Checked){$ProgressBar2 += 1}
-        if ($DriversValidSignaturesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($MemoryCapacityInfoCheckBox.Checked){$ProgressBar2 += 1}
-        if ($MemoryPhysicalInfoCheckBox.Checked){$ProgressBar2 += 1}
-        if ($MemoryUtilizationCheckBox.Checked){$ProgressBar2 += 1}
-        if ($MemoryPerformanceDataCheckBox.Checked){$ProgressBar2 += 1}
-        if ($DiskInfoCheckBox.Checked){$ProgressBar2 += 1}
-        if ($MappedDrivesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($CheckBoxNum24.Checked){$ProgressBar2 += 1}
-        if ($SharesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($PlugAndPlayCheckBox.Checked){$ProgressBar2 += 1}
-        if ($USBControllerDevicesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($SoftwareInstalledCheckBox.Checked){$ProgressBar2 += 1}
-        if ($EventLogsSecurityCheckBox.Checked){$ProgressBar2 += 1}
-        if ($EventLogsSystemCheckBox.Checked){$ProgressBar2 += 1}
-        if ($EventLogsApplicationCheckBox.Checked){$ProgressBar2 += 1}
-        if ($EventLogsSystemErrorsCheckBox.Checked){$ProgressBar2 += 1}
-        if ($EventLogsApplicationErrorsCheckBox.Checked){$ProgressBar2 += 1}
-        if ($PrefetchFilesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($FirewallStatusCheckBox.Checked){$ProgressBar2 += 1}
-        if ($FirewallRulesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($PortProxyRulesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($ScheduledTasksCheckBox.Checked){$ProgressBar2 += 1}
-        if ($DLLsLoadedByProcessesCheckBox.Checked){$ProgressBar2 += 1}
-        if ($DriversSignedInfoCheckBox.Checked){$ProgressBar2 += 1}
-        if ($SystemInfoCheckBox.Checked){$ProgressBar2 += 1}
-        
+ 
         # Runs the Commands
         if ($TestConnectionsCheckbox.Checked){TestConnectionsCheckbox ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
 
-        if ($ARPCacheCheckBox.Checked){ARPCacheCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($AutorunsCheckBox.Checked){AutorunsCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($BIOSInfoCheckBox.Checked){BIOSInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($ComputerInfoCheckBox.Checked){ComputerInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($DatesCheckBox.Checked){DatesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($DiskInfoCheckBox.Checked){DiskInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($DNSCacheCheckBox.Checked){DNSCacheCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($DLLsLoadedByProcessesCheckBox.Checked){DLLsLoadedByProcessesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($DriversDetailedCheckBox.Checked){DriversDetailedCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($DriversSignedInfoCheckBox.Checked){DriversSignedCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($DriversValidSignaturesCheckBox.Checked){DriversValidSignaturesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($EnvironmentalVariablesCheckBox.Checked){EnvironmentalVariablesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($EventLogsApplicationCheckBox.Checked){EventLogsApplicationCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($EventLogsApplicationErrorsCheckBox.Checked){EventLogsApplicationErrorsCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($EventLogsSecurityCheckBox.Checked){EventLogsSecurityCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($EventLogsSystemCheckBox.Checked){EventLogsSystemCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($EventLogsSystemErrorsCheckBox.Checked){EventLogsSystemErrorsCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($FirewallRulesCheckBox.Checked){FirewallRulesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($FirewallStatusCheckBox.Checked){FirewallStatusCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($GroupInfoCheckBox.Checked){GroupInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($LogonInfoCheckBox.Checked){LogonInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($LogonStatusCheckBox.Checked){LogonStatusCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($MappedDrivesCheckBox.Checked){MappedDrivesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($MemoryCapacityInfoCheckBox.Checked){MemoryCapacityInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($MemoryPerformanceDataCheckBox.Checked){MemoryPerformanceDataCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($MemoryPhysicalInfoCheckBox.Checked){MemoryPhysicalInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($MemoryUtilizationCheckBox.Checked){MemoryUtilizationCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkConnectionsTCPCheckBox.Checked){NetworkConnectionsTCPCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkConnectionsUDPCheckBox.Checked){NetworkConnectionsUDPCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkSettingsCheckBox.Checked){NetworkSettingsCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkStatisticsIPv4CheckBox.Checked){NetworkStatisticsIPv4Command ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkStatisticsIPv4TCPCheckBox.Checked){NetworkStatisticsIPv4TCPCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkStatisticsIPv4UDPCheckBox.Checked){NetworkStatisticsIPv4UDPCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkStatisticsIPv4ICMPCheckBox.Checked){NetworkStatisticsIPv4ICMPCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkStatisticsIPv6CheckBox.Checked){NetworkStatisticsIPv6Command ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkStatisticsIPv6TCPCheckBox.Checked){NetworkStatisticsIPv6TCPCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkStatisticsIPv6UDPCheckBox.Checked){NetworkStatisticsIPv6UDPCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($NetworkStatisticsIPv6ICMPCheckBox.Checked){NetworkStatisticsIPv6ICMPCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($PlugAndPlayCheckBox.Checked){PlugAndPlayCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($PortProxyRulesCheckBox.Checked){PortProxyRulesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($PrefetchFilesCheckBox.Checked){PrefetchFilesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($ProcessesEnhancedCheckBox.Checked){ProcessesEnhancedCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($ProcessesStandardCheckBox.Checked){ProcessesStandardCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($ProcessInfoCheckBox.Checked){ProcessorCPUInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($ScheduledTasksCheckBox.Checked){ScheduledTasksCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($ScreenSaverInfoCheckBox.Checked){ScreenSaverInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($SecurityPatchesCheckBox.Checked){SecurityPatchesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($ServicesCheckBox.Checked){ServicesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($SharesCheckBox.Checked){SharesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($SoftwareInstalledCheckBox.Checked){SoftwareInstalledCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($SystemInfoCheckBox.Checked){SystemInfoCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($USBControllerDevicesCheckBox.Checked){USBControllerDevicesCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($SysinternalsAutorunsCheckbox.Checked){SysinternalsAutorunsCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($SysinternalsProcessMonitorCheckbox.Checked){SysinternalsProcessMonitorCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        if ($ActiveDirectoryCheckbox.Checked){ActiveDirectoryCommand ; $ProgressBar2.Value = $ProgressBar2Count ;  $ProgressBar2Count += 1}
-        
+        if ($ARPCacheCheckBox.Checked){ARPCacheCommand}
+        if ($AutorunsCheckBox.Checked){AutorunsCommand}
+        if ($BIOSInfoCheckBox.Checked){BIOSInfoCommand}
+        if ($ComputerInfoCheckBox.Checked){ComputerInfoCommand}
+        if ($DatesCheckBox.Checked){DatesCommand}
+        if ($DiskInfoCheckBox.Checked){DiskInfoCommand}
+        if ($DNSCacheCheckBox.Checked){DNSCacheCommand}
+        if ($DLLsLoadedByProcessesCheckBox.Checked){DLLsLoadedByProcessesCommand}
+        if ($DriversDetailedCheckBox.Checked){DriversDetailedCommand}
+        if ($DriversSignedInfoCheckBox.Checked){DriversSignedCommand}
+        if ($DriversValidSignaturesCheckBox.Checked){DriversValidSignaturesCommand}
+        if ($EnvironmentalVariablesCheckBox.Checked){EnvironmentalVariablesCommand}
+        if ($EventLogsApplicationCheckBox.Checked){EventLogsApplicationCommand}
+        if ($EventLogsApplicationErrorsCheckBox.Checked){EventLogsApplicationErrorsCommand}
+        if ($EventLogsSecurityCheckBox.Checked){EventLogsSecurityCommand}
+        if ($EventLogsSystemCheckBox.Checked){EventLogsSystemCommand}
+        if ($EventLogsSystemErrorsCheckBox.Checked){EventLogsSystemErrorsCommand}
+        if ($FirewallRulesCheckBox.Checked){FirewallRulesCommand}
+        if ($FirewallStatusCheckBox.Checked){FirewallStatusCommand}
+        if ($GroupInfoCheckBox.Checked){GroupInfoCommand}
+        if ($LogonInfoCheckBox.Checked){LogonInfoCommand}
+        if ($LogonSessionsCheckBox.Checked){LogonSessionsCommand}
+        if ($LogonUserStatusCheckBox.Checked){LogonUserStatusCommand}
+        if ($MappedDrivesCheckBox.Checked){MappedDrivesCommand}
+        if ($MemoryCapacityInfoCheckBox.Checked){MemoryCapacityInfoCommand}
+        if ($MemoryPerformanceDataCheckBox.Checked){MemoryPerformanceDataCommand}
+        if ($MemoryPhysicalInfoCheckBox.Checked){MemoryPhysicalInfoCommand}
+        if ($MemoryUtilizationCheckBox.Checked){MemoryUtilizationCommand}
+        if ($NetworkConnectionsTCPCheckBox.Checked){NetworkConnectionsTCPCommand}
+        if ($NetworkConnectionsUDPCheckBox.Checked){NetworkConnectionsUDPCommand}
+        if ($NetworkSettingsCheckBox.Checked){NetworkSettingsCommand}
+        if ($NetworkStatisticsIPv4CheckBox.Checked){NetworkStatisticsIPv4Command}
+        if ($NetworkStatisticsIPv4TCPCheckBox.Checked){NetworkStatisticsIPv4TCPCommand}
+        if ($NetworkStatisticsIPv4UDPCheckBox.Checked){NetworkStatisticsIPv4UDPCommand}
+        if ($NetworkStatisticsIPv4ICMPCheckBox.Checked){NetworkStatisticsIPv4ICMPCommand}
+        if ($NetworkStatisticsIPv6CheckBox.Checked){NetworkStatisticsIPv6Command}
+        if ($NetworkStatisticsIPv6TCPCheckBox.Checked){NetworkStatisticsIPv6TCPCommand}
+        if ($NetworkStatisticsIPv6UDPCheckBox.Checked){NetworkStatisticsIPv6UDPCommand}
+        if ($NetworkStatisticsIPv6ICMPCheckBox.Checked){NetworkStatisticsIPv6ICMPCommand}
+        if ($PlugAndPlayCheckBox.Checked){PlugAndPlayCommand}
+        if ($PortProxyRulesCheckBox.Checked){PortProxyRulesCommand}
+        if ($PrefetchFilesCheckBox.Checked){PrefetchFilesCommand}
+        if ($ProcessTreeLineageCheckBox.Checked){ProcessTreeLineageCommand}
+        if ($ProcessesEnhancedCheckBox.Checked){ProcessesEnhancedCommand}
+        if ($ProcessesStandardCheckBox.Checked){ProcessesStandardCommand}
+        if ($ProcessorCPUInfoCheckBox.Checked){ProcessorCPUInfoCommand}
+        if ($ScheduledTasksCheckBox.Checked){ScheduledTasksCommand}
+        if ($ScreenSaverInfoCheckBox.Checked){ScreenSaverInfoCommand}
+        if ($SecurityPatchesCheckBox.Checked){SecurityPatchesCommand}
+        if ($ServicesCheckBox.Checked){ServicesCommand}
+        if ($SharesCheckBox.Checked){SharesCommand}
+        if ($SoftwareInstalledCheckBox.Checked){SoftwareInstalledCommand}
+        if ($SystemInfoCheckBox.Checked){SystemInfoCommand}
+        if ($USBControllerDevicesCheckBox.Checked){USBControllerDevicesCommand}       
+        if ($HuntTheBadStuffDirectoryListingCheckbox.Checked) {HuntTheBadStuffDirectoryListingCommand}
+        if ($HuntTheBadStuffFileSearchCheckbox.Checked){HuntTheBadStuffFileSearchCommand}
+        if ($RekallWinPmemMemoryCaptureCheckbox.Checked){RekallWinPmemMemoryCaptureCommand}
+        if ($SysinternalsAutorunsCheckbox.Checked){SysinternalsAutorunsCommand}
+        if ($SysinternalsProcessMonitorCheckbox.Checked){SysinternalsProcessMonitorCommand}
+        if ($ActiveDirectoryCheckbox.Checked){ActiveDirectoryCommand}
+        if ($ActiveDirectoryAccountDetailsAndUserInfoCheckbox.Checked){ActiveDirectoryAccountDetailsAndUserInfoCommand}
+        if ($ActiveDirectoryAccountLogonAndPassowrdPolicyCheckbox.Checked){ActiveDirectoryAccountLogonAndPassowrdPolicyCommand}
+        if ($ActiveDirectoryAccountContactInfoCheckbox.Checked){ActiveDirectoryAccountContactInfoCommand}
+        if ($ActiveDirectoryAccountEmailAddressesCheckbox.Checked){ActiveDirectoryAccountEmailAddressesCommand}
+        if ($ActiveDirectoryAccountPhoneNumbersCheckbox.Checked){ActiveDirectoryAccountPhoneNumbersCommand}
+        if ($ActiveDirectoryComputersCheckbox.Checked){ActiveDirectoryComputersCommand}
+        if ($ActiveDirectoryDefaultDomainPasswordPolicyCheckbox.Checked){ActiveDirectoryDefaultDomainPasswordPolicyCommand}
+        if ($ActiveDirectoryGroupsCheckbox.Checked){ActiveDirectoryGroupsCommand}
+        if ($ActiveDirectoryGroupMembershipByGroupsCheckbox.Checked){ActiveDirectoryGroupMembershipByGroupsCommand}
+        if ($ActiveDirectoryGroupMembershipByUsersCheckbox.Checked){ActiveDirectoryGroupMembershipByUsersCommand}
+        if ($ActiveDirectoryGroupsWithoutAccountMembersCheckbox.Checked){ActiveDirectoryGroupsWithoutAccountMembersCommand}
+        if ($DNSAllRecordsServer2008Checkbox.Checked){DNSAllRecordsServer2008Command}
+        if ($DomainDNSAllRecordsServer2008Checkbox.Checked){DomainDNSAllRecordsServer2008Command}
+        if ($DomainDNSRootHintsServer2008Checkbox.Checked){DomainDNSRootHintsServer2008Command}
+        if ($DomainDNSZonesServer2008Checkbox.Checked){DomainDNSZonesServer2008Command}
+        if ($DomainDNSStatisticsServer2008Checkbox.Checked){DomainDNSStatisticsServer2008Command}
 
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"Finished Collecting Data!")
- 
         $CollectionTimerStop = Get-Date
-        $MainListBox.Items.Insert(0,"Script Stop Time:  $(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))")
+        $MainListBox.Items.Insert(0,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss')) - Finished Collecting Data!")
 
-        $CollectionTime = New-TimeSpan -Start $CollectionTimerStart -End $CollectionTimerStop
-        $MainListBox.Items.Insert(0,"Total Collection Time: $CollectionTime")
+        $CollectionTime      = New-TimeSpan -Start $CollectionTimerStart -End $CollectionTimerStop
+        $MainListBox.Items.Insert(1,"   $CollectionTime - Total Elapsed Time")
+        $MainListBox.Items.Insert(2,"====================================================================================================")
+        $MainListBox.Items.Insert(3,"")        
 
-
-        # ============================================================================================================================================================
-        # Unique Findings
-        # ============================================================================================================================================================
-        # Creates the directory for Unique Findings
-        $UniqueFindings = "Unique Findings"
-        New-Item -ItemType Directory "$PoShLocation\$UniqueFindings" -Force | Out-Null 
-
-        function UniqueData ([string]$CollectionToUnique, [string]$PropertyToUniqueOn) {    
-            # unique process file paths running on systems
-            $CollectionName = $CollectionToUnique
-            $Files = Get-ChildItem "$PoShLocation\$CollectedResultsUncompiled\$CollectionName\$CollectionName*.csv"
-
-            $AllData = @()
-            Foreach ($file in $Files) {$AllData += Import-Csv ($file).FullName}
-            $UniqueData = $AllData | Sort-Object -Unique -Property $PropertyToUniqueOn 
-    
-            # '-ErrorAction 0' Older versions of powershell have issues counting 0 or 1 -- this accounts for it
-            # 'Where-Object {$_.PSComputerName -ne ""}' removes any entires where there is no computer name, typically bank lines
-            $UniqueCount = @($UniqueData | Where-Object {$_.PSComputerName -ne ""} -ErrorAction 0).count
-        
-            $UniqueData | Sort-Object -Property $PropertyToUniqueOn | Export-Csv "$PoShLocation\$UniqueFindings\$CollectionName - Uniqued by $PropertyToUniqueOn ($UniqueCount).csv" -NoTypeInformation
-        }
-
-
-
-
-        # Unique Data "<Uncompiled Directory Collection Name>" "<Property used to Unique>" "<Properties to Sort By>" 
-        # Example: UniqueData 'Processes (Improved with Hashes and Parent Process Names)' 'Pathname' 'PSComputerName, Name'
-        UniqueData "$($AutorunsCheckBox.Name)" 'Command'
-        #UniqueData 'BIOS''--'
-        #UniqueData 'Computer Information''--'
-        UniqueData "$($DatesCheckBox.Name)" 'LocalDateTime'
-        UniqueData "$($DiskInfoCheckBox.Name)" 'ProviderName' 
-        ###############UniqueData 'DLLs Loaded by `' 'Modules'
-        UniqueData "$($DriversDetailedCheckBox.Name)" 'DisplayName'
-        UniqueData "$($DriversDetailedCheckBox.Name)" 'PathName'
-        #UniqueData 'Drivers - Signed Information''--'
-        UniqueData "$($DriversValidSignaturesCheckBox.Name)" 'Path'
-        UniqueData "$($EnvironmentalVariablesCheckBox.Name)" 'VariableValue'
-        ###############UniqueData 'Firewall Rules' '"Rule Name"'
-        ###############UniqueData 'Firewall Rules' 'LocalIP'
-        ###############UniqueData 'Firewall Rules' 'LocalPort'
-        ###############UniqueData 'Firewall Rules' 'RemoteIP'
-        ###############UniqueData 'Firewall Rules' 'RemotePort'
-        UniqueData "$($GroupInfoCheckBox.Name)" 'Name'
-        #UniqueData 'Logged-On User Information''--'
-        #UniqueData 'Logon-Information''--'
-        UniqueData "$($MappedDrivesCheckBox.Name)" 'ProviderName'
-        #UniqueData 'Memory (RAM) Capacity Information''--'
-        #UniqueData 'Memory (RAM) Physical Information''--'
-        #UniqueData 'Memory (RAM) Utilization''--'
-        #UniqueData 'Memory Performance Monitoring Data''--'
-        UniqueData "$($NetworkConnectionsTCPCheckBox.Name)" '"Executed Process"'
-        UniqueData "$($NetworkConnectionsUDPCheckBox.Name)" '"Executed Process"'
-        UniqueData "$($NetworkConnectionsTCPCheckBox.Name)" '"Foreign Address"'
-        UniqueData "$($NetworkConnectionsUDPCheckBox.Name)" '"Foreign Address"'
-        UniqueData "$($NetworkSettingsCheckBox.Name)" 'DNSDomainSuffixSearchOrder'
-        UniqueData "$($PlugAndPlayCheckBox.Name)" 'Manufacturer' 
-        UniqueData "$($PlugAndPlayCheckBox.Name)" 'Description'
-        UniqueData "$($PlugAndPlayCheckBox.Name)" 'HardwareID'
-        ##################UniqueData 'Printers' 'Name'
-        # Processes (Advanced)
-        UniqueData "$($ProcessesEnhancedCheckBox.Name)" 'Pathname'
-        UniqueData "$($ProcessesEnhancedCheckBox.Name)" 'Hash'
-        UniqueData "$($ProcessesEnhancedCheckBox.Name)" 'CommandLine'
-        UniqueData "$($ProcessesEnhancedCheckBox.Name)" 'ParentProcessName'
-        # Processes (Basic)
-        UniqueData "$($ProcessesStandardCheckBox.Name)" 'Name'
-        UniqueData "$($ProcessesStandardCheckBox.Name)" 'Path'
-        #UniqueData 'Proxy Rules''--'
-        ##################UniqueData 'Scheduled Tasks (schtasks)' 'TaskName'
-        ################UniqueData 'Scheduled Tasks (schtasks)' '"Task To Run"'
-        #UniqueData 'Security Patches''--'
-        UniqueData "$($ServicesCheckBox.Name)" 'PathName'
-        UniqueData "$($ServicesCheckBox.Name)" 'Name'
-        UniqueData "$($SharesCheckBox.Name)" 'Path'
-        UniqueData "$($SoftwareInstalledCheckBox.Name)" 'Name'
-        UniqueData "$($SoftwareInstalledCheckBox.Name)" 'Vendor'
-        UniqueData "$($SoftwareInstalledCheckBox.Name)" 'PackageName'
-        ###############UniqueData 'System Information' '"OS Name"'
-        ###############UniqueData 'System Information' '"OS Version"'
-        ###############UniqueData 'System Information' '"System Manufacturer"'
-        ###############UniqueData 'System Information' '"Hotfix(s)"'
-        UniqueData "$($USBControllerDevicesCheckBox.Name)" 'Antecedent'
-        UniqueData "$($USBControllerDevicesCheckBox.Name)" 'Dependent'
-        #UniqueData 'User Information''--'
-        #UniqueData '' ''
-
-        #Plays a Sound When Finished
+        #-----------------------------
+        # Plays a Sound When Finished
+        #-----------------------------
         [system.media.systemsounds]::Exclamation.play()
     }
 }
@@ -6946,4 +11398,3 @@ $PoShACME.ShowDialog()| Out-Null
 
 #Call the Function
 PoSh-ACME_GUI
-
