@@ -1,10 +1,9 @@
-
 Various Bug Fixes
 Added more Workstation queries
 Optimizes a various older workstation queries
 Added Parallel processes
- - Queries to numerous target computers are now detached threads as jobs
- - Added status update for jobs in main status box
+- Queries to numerous target computers are now detached threads as jobs
+- Added status update for jobs in main status box
 Added visual Progress Bar
 Added chime for when all queries are completed
 Added Active Directory Queries for Domain Controllers
