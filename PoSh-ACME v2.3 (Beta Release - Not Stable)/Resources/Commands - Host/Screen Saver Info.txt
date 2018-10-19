@@ -1,0 +1,12 @@
+====================================================================================================
+Screen Saver Info
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_Desktop
+====================================================================================================
+Obtains the following information:
+ - Name
+ - Screen Saver Active
+ - Screen Saver Timeout
+ - Screen Saver Executable
+ - Wallpaper

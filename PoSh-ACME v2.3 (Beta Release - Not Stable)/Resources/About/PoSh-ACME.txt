@@ -1,0 +1,37 @@
+      ____            _____   __              ___     _____   __   ___  _____
+     / __ \          / ___/  / /             /   |   / ___/  /  | /  / / ___/
+    / / / / _____   / /_    / /_            / /| |  / /     / /||/  / / /_   
+   / /_/ / / ___ \  \__ \  / __ \  ______  / /_| | / /     / / |_/ / / __/   
+  / ____/ / /__/ / ___/ / / / / / /_____/ / ____ |/ /___  / /   / / / /___   
+ /_/      \_____/ /____/ /_/ /_/         /_/   |_|\____/ /_/   /_/ /_____/   
+==============================================================================
+ PowerShell - Automated Collection Made Easy (ACME) For The Security Analyst! 
+ ACME: The Point At Which Something Is The Best, Perfect, Or Most Successful. 
+==============================================================================
+ File Name      : PoSh-ACME.ps1
+ Version        : v.2.3
+
+ Author         : high101bro
+ Email          : high101bro@gmail.com
+ Website        : https://github.com/high101bro/PoSH-ACME
+
+ Requirements   : PowerShell v3 or Higher
+                : WinRM  (Default Port 5986) - Preferably On A Domain Host
+ Optional       : PSExec.exe, Procmon.exe, Autoruns.exe 
+		: Can run standalone, but works best with the Resources folder!
+ Updated        : 18 Oct 18
+ Created        : 21 Aug 18
+
+PoSh-ACME is a tool that allows you to run any number of queries against any number
+of hosts. The queries primarily consist of one liner commands, but several are made
+of scripts that allows for obtaining data on older systems like Server 2008 R2 where
+newer commands are not supported. PoSh-ACME consists of queries speicific for hosts
+and servers, workgroups and domains, registry and Event Logs. It provides a simple
+way to view data in CSV format using PowerShell's built in Out-GridView, as well as
+displays the data in various chart formats. Other add-on features includes a spread
+of external applications like various Sysinternals tools, and basic reference info
+for quick use when not on the web.
+
+As the name indicates, PoSh-ACME is writen in PowerShell. The GUI utilizes the .net 
+frame work to access Windows built in WinForms.
+

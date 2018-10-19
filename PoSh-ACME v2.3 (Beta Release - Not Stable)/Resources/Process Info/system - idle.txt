@@ -1,0 +1,23 @@
+idle / system
+
+Image Path:	N/A - Not generated from an executable image
+
+Parent Process:	None
+
+Child Processes:
+
+Number of Instances:	One
+
+User Account:	Local System
+
+Start Time:	At boot time
+
+Description:	The system process is responsible for most kernel-mode threads. Modules run under system are primarily drivers (.sys files), but also several important DLLs as well as the kernel executable, ntoskrnl.exe.
+These are created by the Windows kernel as your system starts. They're not regular processes -- they don't have an image name or an address space -- but it’s normal for them to generate CPU and other activity.
+System Idle Process should have a PID (Process ID) of 0, System will be 4, and both will be running as SYSTEM (User will be displayed as NT AUTHORITY\SYSTEM or just SYSTEM, depending what you’re using).
+Neither System or System Idle Process have a parent, but System will be the parent for smss.exe and Interrupts.
+Created by ntoskrnl.exe via the process manager function, which creates and terminates processes and threads.
+No visible parent processes
+System has a static PID of 4
+System creates smss.exe
+There should only be one system process running

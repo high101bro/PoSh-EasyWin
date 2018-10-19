@@ -1,0 +1,17 @@
+====================================================================================================
+Logon & Logoff Events (Other)
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4649') OR (EventCode='4778') OR (EventCode='4779') OR (EventCode='4800') OR (EventCode='4801') OR (EventCode='4802') OR (EventCode='4803') OR (EventCode='5378') OR (EventCode='5632') OR (EventCode='5633'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-other-logonlogoff-events
+4649(S): A replay attack was detected.
+4778(S): A session was reconnected to a Window Station.
+4779(S): A session was disconnected from a Window Station.
+4800(S): The workstation was locked.
+4801(S): The workstation was unlocked.
+4802(S): The screen saver was invoked.
+4803(S): The screen saver was dismissed.
+5378(F): The requested credentials delegation was disallowed by policy.
+5632(S): A request was made to authenticate to a wireless network.
+5633(S): A request was made to authenticate to a wired network.

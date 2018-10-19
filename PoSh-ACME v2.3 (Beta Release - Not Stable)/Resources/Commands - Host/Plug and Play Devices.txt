@@ -1,0 +1,16 @@
+====================================================================================================
+Plug and Play Devices
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_PnPEntity
+====================================================================================================
+Gets information on plug and play devices in the device manager.
+
+Obtains the following information:
+ - Install Date
+ - Status
+ - Description
+ - Service
+ - DeviceID
+ - HardwareID
+ - Manufacturer

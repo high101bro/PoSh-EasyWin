@@ -1,0 +1,32 @@
+explorer.exe (Windows Explorer)
+
+Image Path:
+	%SystemRoot%\explorer.exe
+
+Parent Process:
+	Created by an instance of userinit.exe that exits, so analysis tools usually do not provide the parent process name.
+
+Child Processes:
+
+Number of Instances:
+	One per interactively logged-on user
+
+User Account:
+	<logged-on user(s)>
+
+Start Time:
+	Starts when the owner's interactive logon begins
+
+Description: At its core, Exploer provides users access to files. Functionally though, it is both a file browser via Windows Explorer (though still explorer.exe) and a user interface providing features such as the user's Desktop, the Start Menu, the Taskbar, the Control Panel, application launching via file extension association, and shortcut files. Note that there should be just one running instance of explorer.exe per interactive logon, regardless of multiple Windows Explorer windows opened by the user. Also notice that the legitimate explorer.exe resides in the %SystemRoot% directory rather than %SystemRoot%\System32. Attachkers often name their maleware explorer.exe and place it in System32 or misspell explorer.exe as explore.exe.
+The end result of all this activity is the EXPLORER process, the front end for much of your PC activity.
+It’s launched from the Windows folder, in session 1, and in your own user account.
+EXPLORER has no parent, but just about every program you’ve launched -- manually, or as a startup application – will appear as a child.
+There are no simple process rules to detect EXPLORER attacks, and that’s outside the scope of this list anyway, but a good place to start is by looking for infected modules.
+In Process Explorer, click View > Show Lower Pane, then View > Lower Pane View > DLLs.
+Click EXPLORER.EXE and browse the lower pane, checking each file for its VirusTotal score.
+No parent process since Userinit.exe exits
+The value 'Explorer.exe' is stored in shell value within the registry. The registry location is here: Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Shell
+Base Priority of 8
+This will contain multiple child processes.
+Some of you might know this better as, 'Windows Explorer'
+This process is often targeted by malware. Malware will often times inject this process. One indication of this is if Explorer.exe is connecting out to the internet. There are other indicators, but that's another post. We are keeping it simple here.

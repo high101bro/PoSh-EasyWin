@@ -1,0 +1,19 @@
+====================================================================================================
+Authentication Policy Change
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4670') OR (EventCode='4706') OR (EventCode='4707') OR (EventCode='4716') OR (EventCode='4713') OR (EventCode='4717') OR (EventCode='4718') OR (EventCode='4739') OR (EventCode='4864') OR (EventCode='4865') OR (EventCode='4866') OR (EventCode='4867'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-authentication-policy-change    
+4670(S): Permissions on an object were changed
+4706(S): A new trust was created to a domain.
+4707(S): A trust to a domain was removed.
+4716(S): Trusted domain information was modified.
+4713(S): Kerberos policy was changed.
+4717(S): System security access was granted to an account.
+4718(S): System security access was removed from an account.
+4739(S): Domain Policy was changed.
+4864(S): A namespace collision was detected.
+4865(S): A trusted forest information entry was added.
+4866(S): A trusted forest information entry was removed.
+4867(S): A trusted forest information entry was modified.

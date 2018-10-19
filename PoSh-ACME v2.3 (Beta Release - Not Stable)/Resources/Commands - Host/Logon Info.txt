@@ -1,0 +1,15 @@
+====================================================================================================
+Logon Info
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NetworkLoginProfile
+Similar Commmands:
+   net user
+   Get-LocalUser
+====================================================================================================
+Obtains the following information:
+ - Name
+ - Last Logon
+ - Last Logoff
+ - Number Of Logons
+ - Password Age

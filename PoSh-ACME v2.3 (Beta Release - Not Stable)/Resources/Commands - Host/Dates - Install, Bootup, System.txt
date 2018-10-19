@@ -1,0 +1,13 @@
+====================================================================================================
+Dates - Install, Bootup, System
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_OperatingSystem | Select InstallDate, LastBootUpTime, LocalDateTime
+Similar Commands:
+   date /t
+   Get-Date
+====================================================================================================
+Obtains the following information:
+ - Install Date
+ - Last Boot Up Time
+ - Local Date Time
