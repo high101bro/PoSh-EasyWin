@@ -1,0 +1,70 @@
+
+Processes
+PowerShell:	Get-Process -ComputerName $TargetComputer
+PS WMI:		Get-WmiObject -Class Win32_Process -ComputerName $TargetComputer
+cmd:		tasklist
+
+Services
+PowerShell:	Get-Service -ComputerName $TargetComputer
+PS WMI:		Get-WmiObject -Class Win32_Service -ComputerName $TargetComputer
+cmd:		sc query state=all
+
+Network Connections
+Get-NetTCPConnection 
+cmd:		netstat -anob
+
+Network Interface Information
+PowerShell:	Get-NetIPAddress
+PS WMI:		Get-WmiObject -Class Win32_NetworkAdapterConfiguration
+cmd:		ipconfig /all
+
+System Information
+PowerShell:	Get-ComputerInfo
+PS WMI:		Get-WmiObject -Class Win32_ComputerSystem -ComputerName $TargetComputer
+cmd:		systeminfo
+
+Security Patches
+PowerShell:	Get-HotFix -ComputerName $TargetComputer
+PS WMI:		Get-WmiObject -Class Win32_QuickFixEngineering -ComputerName $TargetComputer
+cmd:		wmic qfe
+
+User Information
+PowerShell:	Get-LocalUser
+PowerShell:	Get-ADUser
+PS WMI:		Get-WmiObject -Class Win32_NetworkLoginProfile -ComputerName $TargetComputer
+cmd:		net user
+cmd:		query user
+
+Group Information
+PowerShell:	Get-LocalGroup
+PowerShell:	Get-ADGroup
+PS WMI:		Get-WmiObject -Class Win32_Group -ComputerName $TargetComputer
+cmd:		
+
+Autoruns
+PowerShell:	Get-StartApps
+PS WMI:		Get-WmiObject -Class Win32_StartupCommand -ComputerName $TargetComputer
+cmd:		wmic startup
+
+Dates
+PowerShell:	Get-Date
+cmd:		date /t
+
+Environmental Variables
+PowerShell:	Get-ChildItem Env:
+WMI:		Get-WmiObject -Class Win32_Environment -ComputerName $TargetComputer
+cmd:		set
+
+BIOS Information
+PS WMI:		Get-WmiObject -Class Win32_BIOS -ComputerName $TargetComputer
+cmd:		wmic bios get smbiosbiosversion
+
+Driver Information
+PowerShell:	Get-WindowsDriver -Online -all
+WMI:		Get-WmiObject -Class Win32_Systemdriver -ComputerName $TargetComputer
+cmd:		driverquery
+
+Disk Information
+PowerShell:	
+WMI:		Get-WmiObject -Class Win32_LogicalDisk -ComputerName $TargetComputer
+cmd:		

@@ -1,0 +1,22 @@
+
+PowerShell - Automated Collection Made Easy (ACME)
+ACME: The Point At Which Something Is The Best, Perfect, Or Most Successful.
+
+ File Name      : PoSh-ACME.ps1
+ Version        : v2.02
+
+ Author         : high101bro
+ Email          : high101bro@gmail.com
+ Website        : https://github.com/high101bro/PoSH-ACME
+
+ Prerequisite   : PowerShell v2 or Higher
+ Requirements   : PowerShell v2 or Higher    - Works best with PowerShell v3+
+                : WinRM  (Default Port 5986) - Works best on a domain server
+                : PSExec.exe, Procmon.exe, Autoruns.exe                       
+ Updated        :  1 Oct 18
+ Created        : 21 Aug 18
+
+PoSh-ACME was originally created to be a script that used WMI for remote collection of data using just native commands. Its limitiations was that it primarily ran all commands against all targets with limited feedback. It has since then grown to havea GUI, which allows for easy selection of indiviual commands and targets. It's features are growing as requests come in, leading to the inclusion of some Sysinternals tools.
+
+As the name indicates, PoSh-ACME is writen in PowerShell. The GUI utilizes the .net frame work to access Windows built in WinForms.
+

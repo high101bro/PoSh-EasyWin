@@ -1,0 +1,22 @@
+CSVDE – Allows you to import new objects into Active Directory using a CSV source file; it also provides you with the ability to export existing objects to a CSV file – replaced with Get-QADUser / New-QADUser cmdlets (and other get/new cmdlets for other kinds of objects).
+
+LDIFDE – In addition to creating new objects, can also modify and delete existing objects – same as above and Set-QADUser and other Set- cmdlets.
+
+Dsadd – Create an instance of an Active Directory object class – New-QADUser, New-QADGroup, etc.
+
+Dsmod – Modify an existing object – Set-QADUser, Set-QADGroup, etc.
+
+Dsrm – Delete an object – Remove-QADObject.
+
+Dsmove – Move or rename an object – Rename-QADObject, Move-QADObject.
+
+Dsget – Takes an object’s DN as input and provides you with the value of the attributes you specify – Get-QADUser and other Get- cmdlets.
+
+Dsquery – Returns a list of Active Directory objects that meet criteria you specify – same as above – Get-QADUser and other Get- cmdlets.
+
+Adfind – Returns a list of Active Directory objects that meet criteria you specify – same as above – Get-QADUser and other Get- cmdlets.
+
+Admod – Modify existing objects – Set-QADUser, Set-QADGroup, etc.
+
+Oldcmp – Scans your Active Directory database for computer accounts that have not been used in a specified number of weeks – Get-QADComputer. [UPDATE] Here’s how you locate outdated computer accounts in Active Directory.
+

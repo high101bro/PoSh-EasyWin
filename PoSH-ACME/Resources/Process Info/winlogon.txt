@@ -1,0 +1,32 @@
+winlogon.exe (Windows Logon Process)
+
+Image Path:	%SystemRoot%\System32\winlogon.exe
+
+Parent Process:	Created by an instance of smss.exe that exits, so analysis tools usually do not provide the parent process name.
+
+Child Processes:
+
+Number of Instances:	One or more
+
+User Account:	Local System
+
+Start Time:	Within seconds of boot time for the first instance (for Session 1). Start times for additional instances occur as new sessions are created, typically thorugh Remote Desktop or Fast User Switching logons.
+
+Description:	Winlogon handles interactive suer logons and logoffs. It launches LogonUI.exe, which accepts the username and password at the logon screen and passes the credentials to lsass.exe to validate the credentials. Once the user is authenticated, Windogon loads the user's ntuser.dat into HKCU and starts the user's shell (explorer.exe) via Userinit.exe.
+WINLOGON is the Windows Log-on Application, the process which manages access to your desktop(s).
+WINLOGON runs as SYSTEM in Session 1, and will appear again if you have any additional sessions (although if you do, as we mentioned before, it’s worth investigating why).
+The process may have a child process of LogonUI if authentication is ongoing, or DWM.EXE – the Desktop Window Manager – on Windows 8 or later, with a user of DWM-1.
+Once you’ve authenticated, WINLOGON checks the Registry key HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon for the name of any initialisation processes it needs to run next.
+Normally this specifies only one -- C:\Windows\system32\userinit.exe, -- but malware may add others after the comma. Check if you’re in any doubt.
+No parent process
+Could have a child process of LogonUI if smartcard, etc. are used to authenticate
+LogonUI will terminate once the user enters their password. Once password is entered the verification is sent over to LSASS and it's verified via Active Directory or SAM (the registry hive SAM), which stores local users and group information.
+Base Priority of 13
+Runs within session one
+Handles interactive user logons/logoffs when SAS keystroke combination is entered (Ctrl+Alt+Delete)
+Loads Userinit within Software\Microsoft\Windows NT\CurrentVersion\Winlogon
+The userinit value in the registry should be: Userinit.exe, (note the comma). Malware will sometimes add additional values to this key, which will load malware upon successful logons.
+Userinit.exe exits once it runs so you wont see this process running when you look.
+Userinit initializes the user environment. This includes running GPOs and logon scripts.
+Will run Shell value located at Software\Microsoft\Windows NT\CurrentVersion\Winlogon within the registry. The value of shell should be Explorer.exe. Malware will also use this sometimes to execute malware by adding values.
+Since Userinit exists this is also why Explorer.exe doesn't have a parent process.
