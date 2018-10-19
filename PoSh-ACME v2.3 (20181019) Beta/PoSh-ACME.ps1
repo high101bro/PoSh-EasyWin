@@ -731,28 +731,16 @@ $Column1BoxHeight         = 20
 
 
 #------------------------------
-# Select What to Collect Label
+# Quck Pick Label
 #------------------------------
 
-$QueryLabel           = New-Object System.Windows.Forms.Label
-$QueryLabel.Location  = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
-$QueryLabel.Size      = New-Object System.Drawing.Size(180,$Column1BoxHeight) 
-$QueryLabel.Text      = "Select What To Collect:"
-$QueryLabel.Font = New-Object System.Drawing.Font("$Font",11,1,3,1)
-$QueryLabel.ForeColor = "Blue"
-$Section1QueriesTab.Controls.Add($QueryLabel)
-
-
-$QueryLabel2           = New-Object System.Windows.Forms.Label
-$QueryLabel2.Location  = New-Object System.Drawing.Size(($Column1RightPosition + 180),($Column1DownPosition + 4)) 
-$QueryLabel2.Size      = New-Object System.Drawing.Size(400,($Column1BoxHeight - 4)) 
-$QueryLabel2.Text      = "* = Needs to be on the Domain"
-$QueryLabel2.Font = New-Object System.Drawing.Font("$Font",8,0,3,0)
-$QueryLabel2.ForeColor = "Blue"
-$Section1QueriesTab.Controls.Add($QueryLabel2)  
-
-# Shift the Text and Button's Locaiton
-$Column1DownPosition   += $Column1DownPositionShift
+$QuickPickLabel           = New-Object System.Windows.Forms.Label
+$QuickPickLabel.Location  = New-Object System.Drawing.Size($Column1RightPosition,($Column1DownPosition + 5)) 
+$QuickPickLabel.Size      = New-Object System.Drawing.Size(180,$Column1BoxHeight) 
+$QuickPickLabel.Text      = "Quick Selection"
+$QuickPickLabel.Font = New-Object System.Drawing.Font("$Font",13,1,2,1)
+$QuickPickLabel.ForeColor = "Blue"
+$Section1QueriesTab.Controls.Add($QuickPickLabel)
 
 #============================================================================================================================================================
 # Commands Quick Pick Checkedlistbox 
@@ -761,18 +749,22 @@ $Column1DownPosition   += $Column1DownPositionShift
 $CommandsQuickPickCheckedlistbox          = New-Object -TypeName System.Windows.Forms.CheckedListBox
 $CommandsQuickPickCheckedlistbox.Name     = "New Checklistbox"
 $CommandsQuickPickCheckedlistbox.Text     = "$($CommandsQuickPickCheckedlistbox.Name)"
-$CommandsQuickPickCheckedlistbox.Location = New-Object System.Drawing.Size($Column1RightPosition,($Column1DownPosition + 3)) 
-$CommandsQuickPickCheckedlistbox.Size     = New-Object System.Drawing.Size(430,60)
+$CommandsQuickPickCheckedlistbox.Location = New-Object System.Drawing.Size($Column1RightPosition,($QuickPickLabel.Location.Y + $QuickPickLabel.Size.Height + 3)) 
+$CommandsQuickPickCheckedlistbox.Size     = New-Object System.Drawing.Size(430,80)
 $CommandsQuickPickCheckedlistbox.ScrollAlwaysVisible = $true
 $CommandsQuickPickCheckedlistbox.Items.Add("Clear")
 $CommandsQuickPickCheckedlistbox.Items.Add("Select All")
+$CommandsQuickPickCheckedlistbox.Items.Add("WMI Commands")
 $CommandsQuickPickCheckedlistbox.Items.Add("Hunt the Bad Stuff")
+$CommandsQuickPickCheckedlistbox.Items.Add("Hardware Info")
 $CommandsQuickPickCheckedlistbox.Add_Click({
     If ($CommandsQuickPickCheckedlistbox.SelectedItem -eq 'Clear') {
         # Checks only the desired quick boxes
         $CommandsQuickPickCheckedlistbox.SetItemchecked(0,$True)
         $CommandsQuickPickCheckedlistbox.SetItemchecked(1,$False)
         $CommandsQuickPickCheckedlistbox.SetItemchecked(2,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(3,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(4,$False)
         # Clears the commands selected
         For ($i=0;$i -lt $CommandsSelectionCheckedlistbox.Items.count;$i++) {
             $CommandsSelectionCheckedlistbox.SetSelected($i,$False)
@@ -785,6 +777,8 @@ $CommandsQuickPickCheckedlistbox.Add_Click({
         $CommandsQuickPickCheckedlistbox.SetItemchecked(0,$False)
         $CommandsQuickPickCheckedlistbox.SetItemchecked(1,$True)
         $CommandsQuickPickCheckedlistbox.SetItemchecked(2,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(3,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(4,$False)
         # Selects all the commands
         For ($i=0;$i -lt $CommandsSelectionCheckedlistbox.Items.count;$i++) {
             $CommandsSelectionCheckedlistbox.SetSelected($i,$True)
@@ -792,11 +786,55 @@ $CommandsQuickPickCheckedlistbox.Add_Click({
             $CommandsSelectionCheckedlistbox.SetItemCheckState($i,$True)
         }
     }
-    If ($CommandsQuickPickCheckedlistbox.SelectedItem -eq 'Hunt the Bad Stuff') {
+    If ($CommandsQuickPickCheckedlistbox.SelectedItem -eq 'WMI Commands') {
         # Checks only the desired quick boxes
         $CommandsQuickPickCheckedlistbox.SetItemchecked(0,$False)
         $CommandsQuickPickCheckedlistbox.SetItemchecked(1,$False)
         $CommandsQuickPickCheckedlistbox.SetItemchecked(2,$True)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(3,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(4,$False)
+
+        # Initially clears the command list
+        For ($i=0;$i -lt $CommandsSelectionCheckedlistbox.Items.count;$i++) {
+            $CommandsSelectionCheckedlistbox.SetSelected($i,$False)
+            $CommandsSelectionCheckedlistbox.SetItemChecked($i,$False)
+            $CommandsSelectionCheckedlistbox.SetItemCheckState($i,$False)
+        }
+        $CommandsSelectionCheckedlistbox.SetItemChecked(0,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(2,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(3,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(4,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(5,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(8,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(10,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(11,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(14,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(15,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(18,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(19,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(20,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(21,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(22,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(23,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(26,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(35,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(40,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(41,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(44,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(45,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(46,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(47,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(49,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(51,$True)
+    }
+    If ($CommandsQuickPickCheckedlistbox.SelectedItem -eq 'Hunt the Bad Stuff') {
+        # Checks only the desired quick boxes
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(0,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(1,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(2,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(3,$True)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(4,$False)
+
         # Initially clears the command list
         For ($i=0;$i -lt $CommandsSelectionCheckedlistbox.Items.count;$i++) {
             $CommandsSelectionCheckedlistbox.SetSelected($i,$False)
@@ -819,57 +857,95 @@ $CommandsQuickPickCheckedlistbox.Add_Click({
         $CommandsSelectionCheckedlistbox.SetItemChecked(49,$True)
         $CommandsSelectionCheckedlistbox.SetItemChecked(50,$True)
     }
+    If ($CommandsQuickPickCheckedlistbox.SelectedItem -eq 'Hardware Info') {
+        # Checks only the desired quick boxes
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(0,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(1,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(2,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(3,$False)
+        $CommandsQuickPickCheckedlistbox.SetItemchecked(4,$True)
+
+        # Initially clears the command list
+        For ($i=0;$i -lt $CommandsSelectionCheckedlistbox.Items.count;$i++) {
+            $CommandsSelectionCheckedlistbox.SetSelected($i,$False)
+            $CommandsSelectionCheckedlistbox.SetItemChecked($i,$False)
+            $CommandsSelectionCheckedlistbox.SetItemCheckState($i,$False)
+        }
+        $CommandsSelectionCheckedlistbox.SetItemChecked(2,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(3,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(5,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(8,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(19,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(21,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(23,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(35,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(41,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(50,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(51,$True)
+    }
 })
 $Section1QueriesTab.Controls.Add($CommandsQuickPickCheckedlistbox)
 
-# Shift the Text and Button's Locaiton
-$Column1DownPosition   += $Column1DownPositionShift
-
-# Shift the Text and Button's Locaiton
-$Column1DownPosition   += $Column1DownPositionShift
-
-# Shift the Text and Button's Locaiton
-$Column1DownPosition   += $Column1DownPositionShift
-
 #============================================================================================================================================================
+# Commands Selection
+#============================================================================================================================================================
+
+#--------------------
+# Host Queries Label
+#--------------------
+$HostQueriesLabel           = New-Object System.Windows.Forms.Label
+$HostQueriesLabel.Location  = New-Object System.Drawing.Size($Column1RightPosition,($CommandsQuickPickCheckedlistbox.Location.Y + $CommandsQuickPickCheckedlistbox.Size.Height + 4)) 
+$HostQueriesLabel.Size      = New-Object System.Drawing.Size(180,$Column1BoxHeight) 
+$HostQueriesLabel.Text      = "Host Queries"
+$HostQueriesLabel.Font = New-Object System.Drawing.Font("$Font",13,1,2,1)
+$HostQueriesLabel.ForeColor = "Blue"
+$Section1QueriesTab.Controls.Add($HostQueriesLabel)
+
+$QueryLabel2           = New-Object System.Windows.Forms.Label
+$QueryLabel2.Location  = New-Object System.Drawing.Size(($Column1RightPosition + 180),($CommandsQuickPickCheckedlistbox.Location.Y + $CommandsQuickPickCheckedlistbox.Size.Height + 8)) 
+$QueryLabel2.Size      = New-Object System.Drawing.Size(400,($Column1BoxHeight - 4)) 
+$QueryLabel2.Text      = "* = Utilizes WMI"
+$QueryLabel2.Font = New-Object System.Drawing.Font("$Font",8,0,3,0)
+$QueryLabel2.ForeColor = "Blue"
+$Section1QueriesTab.Controls.Add($QueryLabel2) 
+
+#-----------------------------------
 # Commands Selection Checkedlistbox
-#============================================================================================================================================================
-
+#-----------------------------------
 $CommandsSelectionCheckedlistbox          = New-Object -TypeName System.Windows.Forms.CheckedListBox
 $CommandsSelectionCheckedlistbox.Name     = "Command Selection"
 #$CommandsSelectionCheckedlistbox.Text     = "$($CommandsSelectionCheckedlistbox.Name)"
-$CommandsSelectionCheckedlistbox.Location = New-Object System.Drawing.Size($Column1RightPosition,($Column1DownPosition + 8)) 
-$CommandsSelectionCheckedlistbox.Size     = New-Object System.Drawing.Size(430,455)
+$CommandsSelectionCheckedlistbox.Location = New-Object System.Drawing.Size($Column1RightPosition,($HostQueriesLabel.Location.Y + $HostQueriesLabel.Size.Height + 3)) 
+$CommandsSelectionCheckedlistbox.Size     = New-Object System.Drawing.Size(430,405)
 $CommandsSelectionCheckedlistbox.checked = $true
 $CommandsSelectionCheckedlistbox.ScrollAlwaysVisible = $true
-
-$CommandsSelectionCheckedlistbox.Items.Add('Accounts - Local')
+$CommandsSelectionCheckedlistbox.Items.Add('Accounts - Local  *')
 $CommandsSelectionCheckedlistbox.Items.Add('ARP Cache')
-$CommandsSelectionCheckedlistbox.Items.Add('BIOS Info')
-$CommandsSelectionCheckedlistbox.Items.Add('Computer Info')
-$CommandsSelectionCheckedlistbox.Items.Add('Dates - Install, Bootup, System')
-$CommandsSelectionCheckedlistbox.Items.Add('Disk Info')
+$CommandsSelectionCheckedlistbox.Items.Add('BIOS Info  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Computer Info  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Dates - Install, Bootup, System  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Disk Info  *')
 $CommandsSelectionCheckedlistbox.Items.Add('DLLs Loaded by Processes')
 $CommandsSelectionCheckedlistbox.Items.Add('DNS Cache')
-$CommandsSelectionCheckedlistbox.Items.Add('Drivers - Detailed')
+$CommandsSelectionCheckedlistbox.Items.Add('Drivers - Detailed  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Drivers - Signed Info')
-$CommandsSelectionCheckedlistbox.Items.Add('Drivers - Valid Signatures (slow)')
-$CommandsSelectionCheckedlistbox.Items.Add('Environmental Variables')
+$CommandsSelectionCheckedlistbox.Items.Add('Drivers - Valid Signatures  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Environmental Variables  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Firewall Rules')
 $CommandsSelectionCheckedlistbox.Items.Add('Firewall Status')
-$CommandsSelectionCheckedlistbox.Items.Add('Groups - Local')
-$CommandsSelectionCheckedlistbox.Items.Add('Logon Info')
+$CommandsSelectionCheckedlistbox.Items.Add('Groups - Local  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Logon Info  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Logon Sessions')
 $CommandsSelectionCheckedlistbox.Items.Add('Logon User Status')
-$CommandsSelectionCheckedlistbox.Items.Add('Mapped Drives')
-$CommandsSelectionCheckedlistbox.Items.Add('Memory - Capacity Info')
-$CommandsSelectionCheckedlistbox.Items.Add('Memory - Physical Info')
-$CommandsSelectionCheckedlistbox.Items.Add('Memory - Performance Data')
-$CommandsSelectionCheckedlistbox.Items.Add('Memory - Utilization')
-$CommandsSelectionCheckedlistbox.Items.Add('Motherboard Info')
+$CommandsSelectionCheckedlistbox.Items.Add('Mapped Drives  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Memory - Capacity Info  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Memory - Performance Data  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Memory - Physical Info  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Memory - Utilization  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Motherboard Info  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Network Connections TCP')
 $CommandsSelectionCheckedlistbox.Items.Add('Network Connections UDP')
-$CommandsSelectionCheckedlistbox.Items.Add('Network Settings')
+$CommandsSelectionCheckedlistbox.Items.Add('Network Settings  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Network Statistics IPv4 All')
 $CommandsSelectionCheckedlistbox.Items.Add('Network Statistics IPv4 TCP')
 $CommandsSelectionCheckedlistbox.Items.Add('Network Statistics IPv4 UDP')
@@ -878,23 +954,23 @@ $CommandsSelectionCheckedlistbox.Items.Add('Network Statistics IPv6 All')
 $CommandsSelectionCheckedlistbox.Items.Add('Network Statistics IPv6 TCP')
 $CommandsSelectionCheckedlistbox.Items.Add('Network Statistics IPv6 UDP')
 $CommandsSelectionCheckedlistbox.Items.Add('Network Statistics IPv6 ICMP')
-$CommandsSelectionCheckedlistbox.Items.Add('Plug and Play Devices')
+$CommandsSelectionCheckedlistbox.Items.Add('Plug and Play Devices  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Port Proxy Rules')
 $CommandsSelectionCheckedlistbox.Items.Add('Prefetch Files')
 $CommandsSelectionCheckedlistbox.Items.Add('Process Tree - Lineage')
 $CommandsSelectionCheckedlistbox.Items.Add('Processes - Enhanced with Hashes')
-$CommandsSelectionCheckedlistbox.Items.Add('Processes - Standard')
-$CommandsSelectionCheckedlistbox.Items.Add('Processor - CPU Info')
+$CommandsSelectionCheckedlistbox.Items.Add('Processes - Standard  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Processor - CPU Info  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Remote Capability Check')
 $CommandsSelectionCheckedlistbox.Items.Add('Scheduled Tasks - schtasks')
-$CommandsSelectionCheckedlistbox.Items.Add('Screen Saver Info')
-$CommandsSelectionCheckedlistbox.Items.Add('Security Patches')
-$CommandsSelectionCheckedlistbox.Items.Add('Services')
-$CommandsSelectionCheckedlistbox.Items.Add('Shares')
+$CommandsSelectionCheckedlistbox.Items.Add('Screen Saver Info  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Security Patches  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Services  *')
+$CommandsSelectionCheckedlistbox.Items.Add('Shares  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Software Installed')
-$CommandsSelectionCheckedlistbox.Items.Add('Startup Commands')
+$CommandsSelectionCheckedlistbox.Items.Add('Startup Commands  *')
 $CommandsSelectionCheckedlistbox.Items.Add('System Info')
-$CommandsSelectionCheckedlistbox.Items.Add('USB Controller Devices')
+$CommandsSelectionCheckedlistbox.Items.Add('USB Controller Devices  *')
 $CommandsSelectionCheckedlistbox.Add_Click({
     If ($CommandsSelectionCheckedlistbox.SelectedItem -match 'Accounts - Local') {
         $MainListBox.Items.Clear()
@@ -1900,7 +1976,11 @@ function DriversValidSignaturesCommand {
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_SystemDriver -ComputerName $TargetComputer `
-                | ForEach-Object {Get-AuthenticodeSignature $_.pathname} `
+                | ForEach-Object {
+                    $Buffer = Get-AuthenticodeSignature $_.pathname
+                    $Buffer | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer
+                    $Buffer
+                    } `
                 | Select-Object PSComputerName, Status, Path, @{Name="SignerCertificate";Expression={$_.SignerCertificate -join "; "}} `
                 | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
@@ -1912,15 +1992,22 @@ function DriversValidSignaturesCommand {
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
-                            
+
+                # Old
+                #Get-WmiObject -Class Win32_SystemDriver -ComputerName $TargetComputer `
+                #| ForEach-Object {Get-AuthenticodeSignature $_.pathname} `
+                #| Select-Object PSComputerName, Status, Path, @{Name="SignerCertificate";Expression={$_.SignerCertificate -join "; "}} `
+                #| Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation                            
+                
                 Get-WmiObject -Class Win32_SystemDriver -ComputerName $TargetComputer `
                 | ForEach-Object {
-                    $Buffer = Get-AuthenticodeSignature $_.pathname
-                    $Buffer | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer
-                    $Buffer
+                    $SystemDrivers = Get-AuthenticodeSignature $_.pathname
+                    $SystemDrivers | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer
+                    $SystemDrivers
                     } `
                 | Select-Object PSComputerName, Status, Path, @{Name="SignerCertificate";Expression={$_.SignerCertificate -join "; "}} `
                 | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+
 
             } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
@@ -2689,7 +2776,7 @@ function MotherboardInfoCommand {
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
-                Get-WmiObject -Class Win32_BIOS -ComputerName $TargetComputer `
+                Get-WmiObject -Class Win32_BaseBoard -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Manufacturer, Model, Name, SerialNumber, SKU, Product `
                 | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
@@ -5090,7 +5177,7 @@ function SharesCommand {
 #============================================================================================================================================================
 
 function SoftwareInstalledCommand {
-    $CollectionName = "Software Installed"
+    $CollectionName = "Software Installed *"
     Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
@@ -5191,12 +5278,11 @@ function SoftwareInstalledCommand {
                 | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
                 # If the above doesn't provide any results, it will try to get the installed software using WMI... though obtaining results from Win32_Product class is painfully slow process
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv").length -eq $null) {
-                    Get-WmiObject -Credential $Credential Win32_Product -ComputerName $TargetComputer `
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -ErrorAction SilentlyContinue).length -lt 1) {
+                    Get-WmiObject Win32_Product -ComputerName $TargetComputer `
                     | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber `
-                    | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation                    
+                    | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation      
                 }
-
             } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
@@ -5324,12 +5410,12 @@ function SoftwareInstalledCommand {
                 Get-Software -Computername $TargetComputer `
                 | Select-Object -Property @{Name = 'PSComputerName'; Expression = {$_.ComputerName}}, DisplayName, Version, InstallDate, Publisher, EstimatedSizeMB, UninstallString, InstallLocation, InstallSource, HelpLink `
                 | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-
+                
                 # If the above doesn't provide any results, it will try to get the installed software using WMI... though obtaining results from Win32_Product class is painfully slow process
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv").length -eq $null) {
+                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -ErrorAction SilentlyContinue).length -lt 1) {
                     Get-WmiObject Win32_Product -ComputerName $TargetComputer `
                     | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber `
-                    | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation                    
+                    | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation      
                 }
             } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }  
@@ -5533,13 +5619,11 @@ $LimitNumberOfEventLogsCollectToChoice = 100
 #----------------
 # Event Logs Tab
 #----------------
-
 $Section1EventLogsTab          = New-Object System.Windows.Forms.TabPage
 $Section1EventLogsTab.Location = $System_Drawing_Point
 $Section1EventLogsTab.Text     = "Event Logs"
-
-$Section1EventLogsTab.Location  = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
-$Section1EventLogsTab.Size      = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
+$Section1EventLogsTab.Location = New-Object System.Drawing.Size($Column1RightPosition,$Column1DownPosition) 
+$Section1EventLogsTab.Size     = New-Object System.Drawing.Size($Column1BoxWidth,$Column1BoxHeight) 
 $Section1EventLogsTab.UseVisualStyleBackColor = $True
 $Section1CollectionsTabControl.Controls.Add($Section1EventLogsTab)
 
@@ -5547,12 +5631,11 @@ $Section1CollectionsTabControl.Controls.Add($Section1EventLogsTab)
 #-------------------------
 # Event Logs - Main Label
 #-------------------------
-
 $EventLogsMainLabel           = New-Object System.Windows.Forms.Label
 $EventLogsMainLabel.Text      = "Event Logs can be obtained from hosts and servers."
 $EventLogsMainLabel.Location  = New-Object System.Drawing.Point(5,5) 
 $EventLogsMainLabel.Size      = New-Object System.Drawing.Size($EventLogsBoxWidth,$EventLogsBoxHeight) 
-$EventLogsMainLabel.Font = New-Object System.Drawing.Font("$Font",11,1,3,1)
+$EventLogsMainLabel.Font      = New-Object System.Drawing.Font("$Font",11,1,3,1)
 $EventLogsMainLabel.ForeColor = "Blue"
 $Section1EventLogsTab.Controls.Add($EventLogsMainLabel)
 
@@ -5564,7 +5647,7 @@ $Section1EventLogsTab.Controls.Add($EventLogsMainLabel)
 # Event Logs - Event IDs Manual Entry CheckBox
 #-----------------------------------------------
 $EventLogsEventIDsManualEntryCheckbox          = New-Object System.Windows.Forms.CheckBox
-$EventLogsEventIDsManualEntryCheckbox.Name     = "Event IDs Manual Entry"
+$EventLogsEventIDsManualEntryCheckbox.Name     = "Event IDs Manual Entry  *"
 $EventLogsEventIDsManualEntryCheckbox.Text     = "$($EventLogsEventIDsManualEntryCheckbox.Name)"
 $EventLogsEventIDsManualEntryCheckbox.Location = New-Object System.Drawing.Size(5,($EventLogsMainLabel.Location.Y + $EventLogsMainLabel.Size.Height + 2)) 
 $EventLogsEventIDsManualEntryCheckbox.Size     = New-Object System.Drawing.Size(200,$EventLogsBoxHeight) 
@@ -5634,7 +5717,7 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryTextbox)
 # Event Logs - Event IDs Individual Selection CheckBox
 #-------------------------------------------------------
 $EventLogsEventIDsIndividualSelectionCheckbox          = New-Object System.Windows.Forms.CheckBox
-$EventLogsEventIDsIndividualSelectionCheckbox.Name     = "Event IDs Individual Selection"
+$EventLogsEventIDsIndividualSelectionCheckbox.Name     = "Event IDs Individual Selection  *"
 $EventLogsEventIDsIndividualSelectionCheckbox.Text     = "$($EventLogsEventIDsIndividualSelectionCheckbox.Name)"
 $EventLogsEventIDsIndividualSelectionCheckbox.Location = New-Object System.Drawing.Size(5,($EventLogsEventIDsManualEntryTextbox.Location.Y + $EventLogsEventIDsManualEntryTextbox.Size.Height + 8)) 
 $EventLogsEventIDsIndividualSelectionCheckbox.Size     = New-Object System.Drawing.Size(350,$EventLogsBoxHeight) 
@@ -5663,7 +5746,7 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsIndividualSelectionClearBut
 $EventLogsEventIDsIndividualSelectionLabel           = New-Object System.Windows.Forms.Label
 $EventLogsEventIDsIndividualSelectionLabel.Location  = New-Object System.Drawing.Point(5,($EventLogsEventIDsIndividualSelectionCheckbox.Location.Y + $EventLogsEventIDsIndividualSelectionCheckbox.Size.Height))
 $EventLogsEventIDsIndividualSelectionLabel.Size      = New-Object System.Drawing.Size($EventLogsBoxWidth,$EventLogsBoxHeight) 
-$EventLogsEventIDsIndividualSelectionLabel.Text      = "Events to Monitor for Signs of Compromise"
+$EventLogsEventIDsIndividualSelectionLabel.Text      = "Events to Monitor for Signs of Compromise and their Severity"
 $EventLogsEventIDsIndividualSelectionLabel.Font      = New-Object System.Drawing.Font("$Font",9,0,3,0)
 $EventLogsEventIDsIndividualSelectionLabel.ForeColor = "Black"
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsIndividualSelectionLabel)
@@ -6066,7 +6149,7 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsIndividualSelectionChecklis
 # Event Logs - Event IDs Quick Pick CheckBox
 #---------------------------------------------
 $EventLogsQuickPickSelectionCheckbox          = New-Object System.Windows.Forms.CheckBox
-$EventLogsQuickPickSelectionCheckbox.Name     = "Event IDs Quick Pick"
+$EventLogsQuickPickSelectionCheckbox.Name     = "Event IDs Quick Selection  *"
 $EventLogsQuickPickSelectionCheckbox.Text     = "$($EventLogsQuickPickSelectionCheckbox.Name)"
 $EventLogsQuickPickSelectionCheckbox.Location = New-Object System.Drawing.Size(5,($EventLogsEventIDsIndividualSelectionChecklistbox.Location.Y + $EventLogsEventIDsIndividualSelectionChecklistbox.Size.Height + 7)) 
 $EventLogsQuickPickSelectionCheckbox.Size     = New-Object System.Drawing.Size(350,$EventLogsBoxHeight) 
@@ -6878,7 +6961,7 @@ $ActiveDirectoryTabLabel1           = New-Object System.Windows.Forms.Label
 $ActiveDirectoryTabLabel1.Location  = New-Object System.Drawing.Point(($ActiveDirectoryRightPosition),$ActiveDirectoryDownPositionStart) 
 $ActiveDirectoryTabLabel1.Size      = New-Object System.Drawing.Size($ActiveDirectoryBoxWidth,$ActiveDirectoryBoxHeight) 
 $ActiveDirectoryTabLabel1.Text      = "These options need to be ran on a Domain Controller Server."
-$ActiveDirectoryTabLabel1.Font      = New-Object System.Drawing.Font("$Font",9,0,3,0)
+$ActiveDirectoryTabLabel1.Font      = New-Object System.Drawing.Font("$Font",13,1,2,1)
 $ActiveDirectoryTabLabel1.ForeColor = "Red"
 $Section1ActiveDirectoryTab.Controls.Add($ActiveDirectoryTabLabel1)
 
@@ -6908,10 +6991,10 @@ $ActiveDirectorySelectionCheckedlistbox.Items.Add('Active Directory - Groups')
 $ActiveDirectorySelectionCheckedlistbox.Items.Add('Active Directory - Group Membership By Groups')
 $ActiveDirectorySelectionCheckedlistbox.Items.Add('Active Directory - Group Membership by Users')
 $ActiveDirectorySelectionCheckedlistbox.Items.Add('Active Directory - Groups Without Account Members')
-$ActiveDirectorySelectionCheckedlistbox.Items.Add('DNS All Records (Server 2008)')
-$ActiveDirectorySelectionCheckedlistbox.Items.Add('DNS Root Hints (Server 2008)')
-$ActiveDirectorySelectionCheckedlistbox.Items.Add('DNS Zones (Server 2008)')
-$ActiveDirectorySelectionCheckedlistbox.Items.Add('DNS Statistics (Server 2008)')
+$ActiveDirectorySelectionCheckedlistbox.Items.Add('DNS All Records (Server 2008)  *')
+$ActiveDirectorySelectionCheckedlistbox.Items.Add('DNS Root Hints (Server 2008)  *')
+$ActiveDirectorySelectionCheckedlistbox.Items.Add('DNS Zones (Server 2008)  *')
+$ActiveDirectorySelectionCheckedlistbox.Items.Add('DNS Statistics (Server 2008)  *')
 $ActiveDirectorySelectionCheckedlistbox.Add_Click({
     If ($ActiveDirectorySelectionCheckedlistbox.SelectedItem -match 'Active Directory - Account Details and User Information') {
         $MainListBox.Items.Clear()
@@ -10831,7 +10914,7 @@ $ExecuteScriptHandler= {
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'DNS Cache') {DNSCacheCommand}
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Detailed') {DriversDetailedCommand}
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Signed Info') {DriversSignedCommand}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Valid Signatures (slow)') {DriversValidSignaturesCommand}
+        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Valid Signatures') {DriversValidSignaturesCommand}
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Environmental Variables') {EnvironmentalVariablesCommand}
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Firewall Rules') {FirewallRulesCommand}
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Firewall Status') {FirewallStatusCommand}
@@ -10844,7 +10927,7 @@ $ExecuteScriptHandler= {
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Physical Info') {MemoryPerformanceDataCommand}
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Performance Data') {MemoryPhysicalInfoCommand}
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Utilization') {MemoryUtilizationCommand}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Motherboard Info') {MotherboardSInfoCommand}
+        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Motherboard Info') {MotherboardInfoCommand}                                                                                      
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Connections TCP') {NetworkConnectionsTCPCommand}
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Connections UDP') {NetworkConnectionsUDPCommand}
         if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Settings') {NetworkSettingsCommand}

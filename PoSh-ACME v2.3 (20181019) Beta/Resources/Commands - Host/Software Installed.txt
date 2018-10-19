@@ -2,8 +2,10 @@
 Software Installed
 ====================================================================================================
 Base Command Ran:
-   A script beneath the Description.    <-- Optimized Performance
-   View the script at the bottom.
+   First attempts a script which is optimized for performance.
+	View the script below.
+   If the script doesn't provide results, it will use:
+	Get-WmiObject Win32_Product
 Similar Commands:
    wmic product list brief
    Get-WmiObject Win32_Product
