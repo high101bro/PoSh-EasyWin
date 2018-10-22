@@ -1,0 +1,9 @@
+====================================================================================================
+Special Logon
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4964') OR (EventCode='4672'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-special-logon
+4964(S): Special groups have been assigned to a new logon.
+4672(S): Special privileges assigned to new logon.

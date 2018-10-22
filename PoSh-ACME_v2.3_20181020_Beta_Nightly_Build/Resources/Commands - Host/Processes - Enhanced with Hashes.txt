@@ -1,0 +1,75 @@
+====================================================================================================
+Processes - Enhanced with Hashes
+====================================================================================================
+Base Command Ran:
+   A script that primarily uses 'Get-WmiObject Win32_Process' and 'Get-Process'
+   View the script at the bottom.
+Similar Commands:
+   tasklist /v
+   wmic process list brief
+   Get-WmiObject Win32_Process
+   Get-Process
+====================================================================================================
+This script obtains more information than the standing get process or tasklist command.
+
+Obtains the following information:
+ - Process Name
+ - Process ID
+ - Parent Process Name
+ - Parent Process ID
+ - Memory KiloBytes
+ - Command Line
+ - Path Name
+ - Hash
+ - Algorithm
+ - Creation Date
+ - Owner
+ - Owner SID
+ - Session Id
+====================================================================================================
+Script:
+$ErrorActionPreference="SilentlyContinue"
+function Get-FileHash{
+    param ([string] $Path ) $HashAlgorithm = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+    $Hash=[System.BitConverter]::ToString($hashAlgorithm.ComputeHash([System.IO.File]::ReadAllBytes($Path)))
+    $Properties=@{"Algorithm" = "MD5"
+    "Path" = $Path
+    "Hash" = $Hash.Replace("-", "")
+    }
+$Ret=New-Object –TypeName PSObject –Prop $Properties
+return $Ret
+}
+function Get-Processes {
+    Write-Verbose "Getting ProcessList"
+    $processes = Get-WmiObject -Class Win32_Process
+    $processList = @()
+    foreach ($process in $processes) {
+        try {
+            $Owner = $process.GetOwner().Domain.ToString() + "\"+ $process.GetOwner().User.ToString()
+            $OwnerSID = $process.GetOwnerSid().Sid
+        } 
+        catch {}
+    $thisProcess=New-Object PSObject -Property @{
+        PSComputerName=$process.PSComputerName
+        OSName=$process.OSName
+        Name=$process.Caption
+        ProcessId=[int]$process.ProcessId
+        ParentProcessName=($processes | where {$_.ProcessID -eq $process.ParentProcessId}).Caption
+        ParentProcessId=[int]$process.ParentProcessId
+        MemoryKiloBytes=[int]$process.WorkingSetSize/1000
+        SessionId=[int]$process.SessionId
+        Owner=$Owner
+        OwnerSID=$OwnerSID
+        PathName=$process.ExecutablePath
+        CommandLine=$process.CommandLine
+        CreationDate=$process.ConvertToDateTime($process.CreationDate)
+    }
+    if ($process.ExecutablePath) {
+        $Signature = Get-FileHash $process.ExecutablePath | Select-Object -Property Hash, Algorithm
+        $Signature.PSObject.Properties | Foreach-Object {
+            $thisProcess | Add-Member -type NoteProperty -Name $_.Name -Value $_.Value -Force}
+    } 
+    $processList += $thisProcess
+} 
+return $processList}
+Get-Processes

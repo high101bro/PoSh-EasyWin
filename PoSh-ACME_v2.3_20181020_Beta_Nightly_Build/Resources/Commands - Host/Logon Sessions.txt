@@ -1,0 +1,15 @@
+====================================================================================================
+Logon Sessions
+====================================================================================================
+Base Command Ran:
+   query session
+====================================================================================================
+Display information about user logon sessions.
+
+Obtains the following information:
+ - Session Name
+ - Username
+ - ID
+ - State
+ - Type
+ - Device

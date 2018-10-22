@@ -1,0 +1,7 @@
+Investigate network connecitons that...
+......have inbound connections when they're not servers
+......have outbound connections to known/suspicious IPs/domains
+......programs listening over unexprect ports
+......unexpected programs communicating out over known/unknown ports
+......are executed by suspicious programs
+......have command line parameters indicating shells

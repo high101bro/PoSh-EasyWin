@@ -1,0 +1,26 @@
+====================================================================================================
+Network Settings
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NetworkAdapterConfiguration
+Similar Commands:
+   ipconfig /all
+   Get-NetIPAddress
+====================================================================================================
+Gets attributes and behaviors of a network adapter:
+
+Obtains the following information:
+ - MAC Address
+ - IP Address
+ - IP Subnet
+ - Default IP Gateway
+ - Description
+ - Service Name
+ - IP Enabled
+ - DHCP Enabled
+ - DNS Hostname
+ - DNS Domain Suffix Search Order
+ - DNS Enabled For WINS Resolution
+ - DNS Server Search Order 
+ - WINS Primary Server
+ - WINS Secondary Server

@@ -1,0 +1,13 @@
+====================================================================================================
+Environmental Variables
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_Environment
+Similar Commands:
+   set
+   Get-ChildItem Env:
+====================================================================================================
+Obtains the following information:
+ - User Name
+ - Name
+ - Variable Value

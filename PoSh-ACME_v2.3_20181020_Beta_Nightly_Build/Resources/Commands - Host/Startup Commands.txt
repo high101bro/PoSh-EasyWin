@@ -1,0 +1,26 @@
+====================================================================================================
+Startup Commands
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject -Class Win32_StartupCommand
+Similar Commands:
+   wmic startup list brief
+   Get-StartApps
+   msconfig		(GUI)
+   Autoruns.exe		(Sysinternals)
+====================================================================================================
+Shows commands that run automatically when a user logs onto a computer system.
+
+Data is gathered from the registry keys:
+   HKLM\Software\Microsoft\Windows\CurrentVersion\Run
+   HKLM\Software\Microsoft\Windows\CurrentVersion\RunOnce
+   HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+   HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce
+   HKLM\Software\Microsoft\Windows\CurrentVersion\RunServices
+   HKU\<ProgID>\Software\Microsoft\Windows\CurrentVersion\Run
+
+Obtains the following information:
+ - Name
+ - Location
+ - Command
+ - User

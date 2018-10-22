@@ -1,0 +1,12 @@
+====================================================================================================
+File Share
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='5140') OR (EventCode='5142') OR (EventCode='5143') OR (EventCode='5144') OR (EventCode='5168'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-file-share
+5140(S, F): A network share object was accessed.
+5142(S): A network share object was added.
+5143(S): A network share object was modified.
+5144(S): A network share object was deleted.
+5168(F): SPN check for SMB/SMB2 failed.

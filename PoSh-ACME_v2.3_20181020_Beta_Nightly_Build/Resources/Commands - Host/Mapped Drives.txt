@@ -1,0 +1,15 @@
+====================================================================================================
+Mapped Drives
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_MappedLogicalDisk
+====================================================================================================
+Gets information on network storage devices that are mapped as logical disks.
+
+Obtains the following information:
+ - Name
+ - Provider Name
+ - File System
+ - Size
+ - Free Space
+ - Compressed
