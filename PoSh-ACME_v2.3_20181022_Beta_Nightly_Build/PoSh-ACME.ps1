@@ -11,7 +11,7 @@
      ACME: The Point At Which Something Is The Best, Perfect, Or Most Successful. 
     ==============================================================================
      File Name      : PoSh-ACME.ps1
-     Version        : v.2.3 Beta
+     Version        : v.2.3 Beta Nightly Build
 
      Author         : high101bro
      Email          : high101bro@gmail.com
@@ -21,7 +21,7 @@
                     : WinRM  (Default Port 5986) - Preferably On A Domain Host
      Optional       : PSExec.exe, Procmon.exe, Autoruns.exe 
         		    : Can run standalone, but works best with the Resources folder!
-     Updated        : 21 Oct 18
+     Updated        : 22 Oct 18
      Created        : 21 Aug 18
 
     PoSh-ACME is a tool that allows you to run any number of queries against any number
@@ -108,13 +108,12 @@ $PoShHome = Split-Path -parent $MyInvocation.MyCommand.Definition
     $OpNotesWriteOnlyFile = "$PoShHome\OpNotes (Write Only).txt"
 
     # Name of Collected Data Directory
-    $CollectedData        = "Collected Data"
+    $CollectedDataDirectory              = "$PoShHome\Collected Data"
         # Location of separate queries
-        $PoShLocation         = "$PoShHome\$CollectedData\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
-
-    # Location of Uncompiled Results
-    $CollectedResultsUncompiled = "Individual Host Results"
-
+        $CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+        # Location of Uncompiled Results
+        $IndividualHostResults = "$CollectedDataTimeStampDirectory\Individual Host Results"
+    
     # Location of Resources directory
     $ResourcesDirectory = "$PoShHome\Resources"
         # Location of Host Commands directory
@@ -123,7 +122,8 @@ $PoShHome = Split-Path -parent $MyInvocation.MyCommand.Definition
         $CommandsEventLogsDirectory = "$ResourcesDirectory\Commands - Event Logs"
         # Location of Active Directory Commands directory
         $CommandsActiveDirectory = "$ResourcesDirectory\Commands - Active Directory"
-
+        # Location of External Programs directory
+        $ExternalPrograms = "$ResourcesDirectory\External Programs"
 
 # Logs what account ran the script and when
 $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - PoSh-ACME executed by: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
@@ -630,14 +630,14 @@ $TextBoxHeight        = 536
 # Functions used for commands/queries
 #============================================================================================================================================================
 function Conduct-PreCommandExecution {
-    param($PoShLocation,$CollectedResultsUncompiled,$CollectionName)
+    param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName)
 
     # Creates variables used for saving files
     $Global:CollectionDirectory = $CollectionName
     $Global:CollectionShortName = $CollectionName -replace ' ',''
 
     # Creates directory for the collection
-    New-Item -ItemType Directory "$PoShLocation\$CollectedResultsUncompiled\$CollectionName" -Force | Out-Null
+    New-Item -ItemType Directory "$IndividualHostResults\$CollectionName" -Force | Out-Null
 
     # Provides updates to the status and main listbox
     $StatusListBox.Items.Clear()
@@ -647,13 +647,13 @@ function Conduct-PreCommandExecution {
 }
 
 function Conduct-PreCommandCheck {
-    param($PoShLocation,$CollectedResultsUncompiled,$CollectionDirectory,$CollectionName,$TargetComputer)
+    param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionDirectory,$CollectionName,$TargetComputer)
 
     # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
     # Removes the individual results
-    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
+    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Force -ErrorAction SilentlyContinue
     # Removes the compiled results
-    Remove-Item "$PoShLocation\$CollectionName.csv" -Force -ErrorAction SilentlyContinue
+    Remove-Item "$CollectedDataTimeStampDirectory\$CollectionName.csv" -Force -ErrorAction SilentlyContinue
 }
 
 function Create-LogEntry {
@@ -825,6 +825,7 @@ $CommandsQuickPickCheckedlistbox.Add_Click({
         $CommandsSelectionCheckedlistbox.SetItemChecked(46,$True)
         $CommandsSelectionCheckedlistbox.SetItemChecked(47,$True)
         $CommandsSelectionCheckedlistbox.SetItemChecked(48,$True)
+        $CommandsSelectionCheckedlistbox.SetItemChecked(49,$True)
         $CommandsSelectionCheckedlistbox.SetItemChecked(50,$True)
         $CommandsSelectionCheckedlistbox.SetItemChecked(52,$True)
     }
@@ -971,7 +972,7 @@ $CommandsSelectionCheckedlistbox.Items.Add('Screen Saver Info  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Security Patches  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Services  *')
 $CommandsSelectionCheckedlistbox.Items.Add('Shares  *')
-$CommandsSelectionCheckedlistbox.Items.Add('Software Installed')
+$CommandsSelectionCheckedlistbox.Items.Add('Software Installed *')
 $CommandsSelectionCheckedlistbox.Items.Add('Startup Commands  *')
 $CommandsSelectionCheckedlistbox.Items.Add('System Info')
 $CommandsSelectionCheckedlistbox.Items.Add('USB Controller Devices  *')
@@ -1254,10 +1255,10 @@ $Column1DownPosition   += $Column1DownPositionShift
 
 function AccountsLocalCommand {
     $CollectionName = "Accounts - Local"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1265,34 +1266,34 @@ function AccountsLocalCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_UserAccount -Filter "LocalAccount='True'" -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Disabled, AccountType, Lockout, PasswordChangeable, PasswordRequired, SID, SIDType, LocalAccount, Domain, Caption, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='True'" -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Disabled, AccountType, Lockout, PasswordChangeable, PasswordRequired, SID, SIDType, LocalAccount, Domain, Caption, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -1301,35 +1302,32 @@ function AccountsLocalCommand {
 
 function ARPCacheCommand {
     $CollectionName = "ARP Cache"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
             if (!$Credential) {              
                 $script:Credential = Get-Credential
-            }
-            
-        }
-        else {
+            }            
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
-                            
-                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
-                    cmd /c arp -a
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c arp -a
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {                                           
                     # Imports the text file
-                    $ARPCache = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
+                    $ARPCache = (Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
 
                     # Creates the fields that become the file headers
                     $ARPCacheHeader = "Interface,Internet Address,Physical Address,Type"
@@ -1356,19 +1354,71 @@ function ARPCacheCommand {
                     foreach ($line in $ARPCacheCombined) {
                         $ARPCacheBuffer += $line -replace " {2,}","," -replace ",$","" -replace "Interface: ",""
                     }
-                    $ARPCacheBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $ARPCacheBuffer | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
         
                     # Add PSComputerName header and host/ip name
-                    $ARPCacheFile = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $ARPCacheFile = Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                     $ARPCacheFile | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
-                    $ARPCacheFile | Select-Object "PSComputerName",*| Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $ARPCacheFile | Select-Object "PSComputerName",*| Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
+                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+
+                Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
+                    cmd /c arp -a
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                }
+                else {                                           
+                    # Imports the text file
+                    $ARPCache = (Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
+
+                    # Creates the fields that become the file headers
+                    $ARPCacheHeader = "Interface,Internet Address,Physical Address,Type"
+
+                    # Extracts the data 
+                    $ARPCacheData = @()
+                    $ARPCacheInterface = ""
+                    foreach ($line in $ARPCache) {
+                        if ($line -match "---") {
+                            $ARPCacheInterface = $line
+                        }
+                        if (($line -notmatch "---") -and ($line -notmatch "Type") -and ($line -match "  ")) {
+                            $ARPCacheData += "$ARPCacheInterface   $line"
+                        }
+                    }
+                    #Combines the File Header and Data
+                    $ARPCacheCombined = @()
+                    $ARPCacheCombined += $ARPCacheHeader
+                    $ARPCacheCombined += $ARPCacheData
+        
+                    # Converts to CSV and removes unneeded data
+                    $ARPCacheBuffer = @()
+
+                    foreach ($line in $ARPCacheCombined) {
+                        $ARPCacheBuffer += $line -replace " {2,}","," -replace ",$","" -replace "Interface: ",""
+                    }
+                    $ARPCacheBuffer | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+        
+                    # Add PSComputerName header and host/ip name
+                    $ARPCacheFile = Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $ARPCacheFile | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
+                    $ARPCacheFile | Select-Object "PSComputerName",*| Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                }
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
     Remove-DuplicateCsvHeaders
 }
 
@@ -1378,10 +1428,10 @@ function ARPCacheCommand {
 
 function BIOSInfoCommand {
     $CollectionName = "BIOS Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1389,34 +1439,34 @@ function BIOSInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_BIOS -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName,  SMBIOSBIOSVersion, Name, Manufacturer, SerialNumber, Version, Description, ReleaseDate, InstallDate `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_BIOS -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName,  SMBIOSBIOSVersion, Name, Manufacturer, SerialNumber, Version, Description, ReleaseDate, InstallDate `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -1425,10 +1475,10 @@ function BIOSInfoCommand {
 
 function ComputerInfoCommand {
     $CollectionName = "Computer Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1436,34 +1486,34 @@ function ComputerInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_ComputerSystem -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Description, Manufacturer, Model, SystemType, NumberOfProcessors, TotalPhysicalMemory, EnableDaylightSavingsTime, BootupState, PartOfDomain, Domain, Username, PrimaryOwnerName `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_ComputerSystem -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Description, Manufacturer, Model, SystemType, NumberOfProcessors, TotalPhysicalMemory, EnableDaylightSavingsTime, BootupState, PartOfDomain, Domain, Username, PrimaryOwnerName `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -1472,10 +1522,10 @@ function ComputerInfoCommand {
 
 function DatesCommand {
     $CollectionName = "Dates - Install, Bootup, System"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1483,7 +1533,7 @@ function DatesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -1503,12 +1553,12 @@ function DatesCommand {
                         $DateTimeOutput
                     }
                 }
-                CollectDateTimes | Select-Object -Property PSComputerName, * | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                CollectDateTimes | Select-Object -Property PSComputerName, * | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -1528,13 +1578,13 @@ function DatesCommand {
                         $DateTimeOutput
                     }
                 }
-                CollectDateTimes | Select-Object -Property PSComputerName, * | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                CollectDateTimes | Select-Object -Property PSComputerName, * | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -1543,10 +1593,10 @@ function DatesCommand {
 
 function DiskLogicalInfoCommand {
     $CollectionName = "Disk - Logical Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1554,34 +1604,34 @@ function DiskLogicalInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_LogicalDisk -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, DeviceID, Description, ProviderName, FreeSpace, Size, DriveType `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_LogicalDisk -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, DeviceID, Description, ProviderName, FreeSpace, Size, DriveType `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -1590,10 +1640,10 @@ function DiskLogicalInfoCommand {
 
 function DiskPhysicalInfoCommand {
     $CollectionName = "Disk - Physical Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1601,34 +1651,34 @@ function DiskPhysicalInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_DiskDrive -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Status, Name, Caption, Description, Model, Manufacturer, SerialNumber, Signature, InterfaceType, MediaType, FirmwareRevision, SectorsPerTrack, Size, TotalCylinders, TotalHeads, TotalSectors, TotalTracks, TracksPerCylinder `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_DiskDrive -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Status, Name, Caption, Description, Model, Manufacturer, SerialNumber, Signature, InterfaceType, MediaType, FirmwareRevision, SectorsPerTrack, Size, TotalCylinders, TotalHeads, TotalSectors, TotalTracks, TracksPerCylinder `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -1637,10 +1687,10 @@ function DiskPhysicalInfoCommand {
 
 function DLLsLoadedByProcessesCommand {
     $CollectionName = "DLLs Loaded by Processes"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1648,7 +1698,7 @@ function DLLsLoadedByProcessesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -1675,15 +1725,15 @@ function DLLsLoadedByProcessesCommand {
                         }
                     }
                     $LoadedModules 
-                } -ArgumentList @($TargetComputer) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                } -ArgumentList @($TargetComputer) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -1710,16 +1760,16 @@ function DLLsLoadedByProcessesCommand {
                         }
                     }
                     $LoadedModules 
-                } -ArgumentList @($TargetComputer) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                } -ArgumentList @($TargetComputer) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -1728,10 +1778,10 @@ function DLLsLoadedByProcessesCommand {
 
 function DNSCacheCommand {
     $CollectionName = "DNS Cache"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1739,21 +1789,21 @@ function DNSCacheCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c ipconfig /displaydns
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Imports the text file
-                    $DNSCache = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
+                    $DNSCache = (Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
 
                     # Creates the fields that become the file headers
                     $DNSCacheHeader = "RecordName,RecordType,TimeToLive,DataLength,Section,A(Host)/CNAMERecord"
@@ -1806,32 +1856,32 @@ function DNSCacheCommand {
                     foreach ($line in $DNSCacheCombined) {
                         $DNSCacheBuffer += $line 
                     }
-                    $DNSCacheBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $DNSCacheBuffer | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
    
                     # Add PSComputerName header and host/ip name
-                    $DNSCacheFile = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" | Select-Object -Skip 1 | Where-Object {$_.PSObject.Properties.Value -ne $null}
+                    $DNSCacheFile = Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" | Select-Object -Skip 1 | Where-Object {$_.PSObject.Properties.Value -ne $null}
                     $DNSCacheFile | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
-                    $DNSCacheFile | Select-Object "PSComputerName",* | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $DNSCacheFile | Select-Object "PSComputerName",* | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
 
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c ipconfig /displaydns
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Imports the text file
-                    $DNSCache = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
+                    $DNSCache = (Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") 
 
                     # Creates the fields that become the file headers
                     $DNSCacheHeader = "RecordName,RecordType,TimeToLive,DataLength,Section,A(Host)/CNAMERecord"
@@ -1884,19 +1934,19 @@ function DNSCacheCommand {
                     foreach ($line in $DNSCacheCombined) {
                         $DNSCacheBuffer += $line 
                     }
-                    $DNSCacheBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $DNSCacheBuffer | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
    
                     # Add PSComputerName header and host/ip name
-                    $DNSCacheFile = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" | Select-Object -Skip 1 | Where-Object {$_.PSObject.Properties.Value -ne $null}
+                    $DNSCacheFile = Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" | Select-Object -Skip 1 | Where-Object {$_.PSObject.Properties.Value -ne $null}
                     $DNSCacheFile | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
-                    $DNSCacheFile | Select-Object "PSComputerName",* | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $DNSCacheFile | Select-Object "PSComputerName",* | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -1905,10 +1955,10 @@ function DNSCacheCommand {
 
 function DriversDetailedCommand {
     $CollectionName = "Drivers - Detailed"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1916,34 +1966,34 @@ function DriversDetailedCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Systemdriver -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_Systemdriver -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -1952,10 +2002,10 @@ function DriversDetailedCommand {
 
 function DriversSignedCommand {
     $CollectionName = "Drivers - Signed Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -1963,50 +2013,50 @@ function DriversSignedCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c driverquery /si /FO CSV
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                 }
                 else {
-                    $DriverSignedInfo = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") 
+                    $DriverSignedInfo = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv") 
                     $DriverSignedInfo | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
-                    $DriverSignedInfo | Select-Object PSComputerName, IsSigned, Manufacturer, DeviceName, InfName | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $DriverSignedInfo | Select-Object PSComputerName, IsSigned, Manufacturer, DeviceName, InfName | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c driverquery /si /FO CSV
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                 }
                 else {
-                    $DriverSignedInfo = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") 
+                    $DriverSignedInfo = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv") 
                     $DriverSignedInfo | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
-                    $DriverSignedInfo | Select-Object PSComputerName, IsSigned, Manufacturer, DeviceName, InfName | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $DriverSignedInfo | Select-Object PSComputerName, IsSigned, Manufacturer, DeviceName, InfName | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }  
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2015,10 +2065,10 @@ function DriversSignedCommand {
 
 function DriversValidSignaturesCommand {
     $CollectionName = "Drivers - Valid Signatures"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2026,7 +2076,7 @@ function DriversValidSignaturesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -2038,13 +2088,13 @@ function DriversValidSignaturesCommand {
                     $Buffer
                     } `
                 | Select-Object PSComputerName, Status, Path, @{Name="SignerCertificate";Expression={$_.SignerCertificate -join "; "}} `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -2053,7 +2103,7 @@ function DriversValidSignaturesCommand {
                 #Get-WmiObject -Class Win32_SystemDriver -ComputerName $TargetComputer `
                 #| ForEach-Object {Get-AuthenticodeSignature $_.pathname} `
                 #| Select-Object PSComputerName, Status, Path, @{Name="SignerCertificate";Expression={$_.SignerCertificate -join "; "}} `
-                #| Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation                            
+                #| Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation                            
                 
                 Get-WmiObject -Class Win32_SystemDriver -ComputerName $TargetComputer `
                 | ForEach-Object {
@@ -2062,15 +2112,15 @@ function DriversValidSignaturesCommand {
                     $SystemDrivers
                     } `
                 | Select-Object PSComputerName, Status, Path, @{Name="SignerCertificate";Expression={$_.SignerCertificate -join "; "}} `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2079,10 +2129,10 @@ function DriversValidSignaturesCommand {
 
 function EnvironmentalVariablesCommand {
     $CollectionName = "Environmental Variables"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2090,34 +2140,34 @@ function EnvironmentalVariablesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Environment -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, UserName, Name, VariableValue `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_Environment -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, UserName, Name, VariableValue `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 
@@ -2127,10 +2177,10 @@ function EnvironmentalVariablesCommand {
 
 function FirewallRulesCommand {
     $CollectionName = "Firewall Rules"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2138,23 +2188,23 @@ function FirewallRulesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh advfirewall firewall show rule name=all
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item  "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item  "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
-                elseif ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt").Length -le 5) {
-                    Remove-Item      "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                elseif ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt").Length -le 5) {
+                    Remove-Item      "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {                            
-                    $FirewallRules = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
+                    $FirewallRules = (Get-Content -Path "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
 
                     $FileHeader = "Rule Name,Enabled,Direction,Profiles,Grouping,LocalIP,RemoteIP,Protocol,LocalPort,RemotePort,Edge Traversal,Action"
 
@@ -2167,29 +2217,29 @@ function FirewallRulesCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,$FileHeader`n"
                     foreach ($Rule in $FileData) {$ConvertedToCsv += "$TargetComputer,$Rule`n"}
-                    $ConvertedToCsv | Where-Object {$_.trim() -ne ""} | Where-Object {$_.PSComputerName -ne ""}| Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $ConvertedToCsv | Where-Object {$_.trim() -ne ""} | Where-Object {$_.PSComputerName -ne ""}| Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh advfirewall firewall show rule name=all
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item  "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item  "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
-                elseif ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt").Length -le 5) {
-                    Remove-Item      "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                elseif ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt").Length -le 5) {
+                    Remove-Item      "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {                            
-                    $FirewallRules = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
+                    $FirewallRules = (Get-Content -Path "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
 
                     $FileHeader = "Rule Name,Enabled,Direction,Profiles,Grouping,LocalIP,RemoteIP,Protocol,LocalPort,RemotePort,Edge Traversal,Action"
 
@@ -2202,14 +2252,14 @@ function FirewallRulesCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,$FileHeader`n"
                     foreach ($Rule in $FileData) {$ConvertedToCsv += "$TargetComputer,$Rule`n"}
-                    $ConvertedToCsv | Where-Object {$_.trim() -ne ""} | Where-Object {$_.PSComputerName -ne ""}| Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $ConvertedToCsv | Where-Object {$_.trim() -ne ""} | Where-Object {$_.PSComputerName -ne ""}| Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2218,10 +2268,10 @@ function FirewallRulesCommand {
 
 function FirewallStatusCommand {
     $CollectionName = "Firewall Status"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2229,20 +2279,20 @@ function FirewallStatusCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh advfirewall show allprofiles state
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
-                    $FirewallStatus = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
+                    $FirewallStatus = (Get-Content -Path "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
 
                     # Creates the fields that become the file headers
                     $FileHeader = "Firewall Profile,State"
@@ -2253,31 +2303,31 @@ function FirewallStatusCommand {
                     $Combined = @()
                     $Combined += $FileHeader
                     $Combined += $FileData
-                    $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $Combined | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh advfirewall show allprofiles state
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
-                    $FirewallStatus = (Get-Content -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
+                    $FirewallStatus = (Get-Content -Path "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -replace '-{2,}','' -replace ',',';' -replace '^ {3,}',':  ' | Where-Object {$_.trim() -ne ''} 
 
                     # Creates the fields that become the file headers
                     $FileHeader = "Firewall Profile,State"
@@ -2288,19 +2338,19 @@ function FirewallStatusCommand {
                     $Combined = @()
                     $Combined += $FileHeader
                     $Combined += $FileData
-                    $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $Combined | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2309,10 +2359,10 @@ function FirewallStatusCommand {
 
 function GroupLocalCommand {
     $CollectionName = "Groups - Local"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2320,34 +2370,34 @@ function GroupLocalCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Group -Filter "LocalAccount='True'" -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LocalAccount, Domain, SID, SIDType, Caption, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_Group -filter "LocalAccount='True'" -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LocalAccount, Domain, SID, SIDType, Caption, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2356,10 +2406,10 @@ function GroupLocalCommand {
 
 function LogonInfoCommand {
     $CollectionName = "Logon Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2367,34 +2417,34 @@ function LogonInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_NetworkLoginProfile -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LastLogon, LastLogoff, NumberOfLogons, PasswordAge `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_NetworkLoginProfile -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LastLogon, LastLogoff, NumberOfLogons, PasswordAge `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2403,10 +2453,10 @@ function LogonInfoCommand {
 
 function LogonSessionsCommand {
     $CollectionName = "Logon Sessions"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2414,68 +2464,68 @@ function LogonSessionsCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c query session
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $LogonStatusInfo   = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $LogonStatusInfo   = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                     $LogonStatusBuffer = @()
                     foreach ($line in $LogonStatusInfo) { 
                         $LogonStatusBuffer += $line -replace " {2,}",","
                     }
-                    $LogonStatusBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $LogonStatusBuffer | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c query session
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $LogonStatusInfo   = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $LogonStatusInfo   = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                     $LogonStatusBuffer = @()
                     foreach ($line in $LogonStatusInfo) { 
                         $LogonStatusBuffer += $line -replace " {2,}",","
                     }
-                    $LogonStatusBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $LogonStatusBuffer | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
     Remove-DuplicateCsvHeaders
 }
 
@@ -2485,10 +2535,10 @@ function LogonSessionsCommand {
 
 function LogonUserStatusCommand {
     $CollectionName = "Logon User Status"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2496,68 +2546,68 @@ function LogonUserStatusCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c query user
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $LogonStatusInfo   = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $LogonStatusInfo   = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                     $LogonStatusBuffer = @()
                     foreach ($line in $LogonStatusInfo) { 
                         $LogonStatusBuffer += $line -replace " {2,}",","
                     }
-                    $LogonStatusBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $LogonStatusBuffer | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                    
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c query user
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $LogonStatusInfo   = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $LogonStatusInfo   = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                     $LogonStatusBuffer = @()
                     foreach ($line in $LogonStatusInfo) { 
                         $LogonStatusBuffer += $line -replace " {2,}",","
                     }
-                    $LogonStatusBuffer | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $LogonStatusBuffer | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
     Remove-DuplicateCsvHeaders
 }
 
@@ -2567,10 +2617,10 @@ function LogonUserStatusCommand {
 
 function MappedDrivesCommand {
     $CollectionName = "Mapped Drives"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2578,34 +2628,34 @@ function MappedDrivesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_MappedLogicalDisk -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, ProviderName, FileSystem, Size, FreeSpace, Compressed `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_MappedLogicalDisk -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, ProviderName, FileSystem, Size, FreeSpace, Compressed `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2614,10 +2664,10 @@ function MappedDrivesCommand {
 
 function MemoryCapacityInfoCommand {
     $CollectionName = "Memory - Capacity Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2625,34 +2675,34 @@ function MemoryCapacityInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_PhysicalMemoryArray -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Model, Name, MaxCapacity, MemoryDevices `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_PhysicalMemoryArray -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Model, Name, MaxCapacity, MemoryDevices `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2661,10 +2711,10 @@ function MemoryCapacityInfoCommand {
 
 function MemoryPhysicalInfoCommand {
     $CollectionName = "Memory - Physical Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2672,34 +2722,34 @@ function MemoryPhysicalInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_PhysicalMemory -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Tag, Capacity, Speed, Manufacturer, PartNumber, SerialNumber `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_PhysicalMemory -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Tag, Capacity, Speed, Manufacturer, PartNumber, SerialNumber `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }  
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2708,10 +2758,10 @@ function MemoryPhysicalInfoCommand {
 
 function MemoryUtilizationCommand {
     $CollectionName = "Memory - Utilization"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2719,34 +2769,34 @@ function MemoryUtilizationCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_OperatingSystem -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, FreePhysicalMemory, TotalVisibleMemorySize, FreeVirtualMemory, TotalVirtualMemorySize `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_OperatingSystem -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, FreePhysicalMemory, TotalVisibleMemorySize, FreeVirtualMemory, TotalVirtualMemorySize `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2755,10 +2805,10 @@ function MemoryUtilizationCommand {
 
 function MemoryPerformanceDataCommand {
     $CollectionName = "Memory - Performance Data"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2766,34 +2816,34 @@ function MemoryPerformanceDataCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_PerfRawData_PerfOS_Memory -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, AvaiLabelBytes, AvaiLabelKBytes, AvaiLabelMBytes, CacheBytes, CacheBytesPeak, CacheFaultsPersec, Caption, CommitLimit, CommittedBytes, DemandZeroFaultsPersec, FreeAndZeroPageListBytes, FreeSystemPageTableEntries, Frequency_Object, Frequency_PerfTime, Frequency_Sys100NS, LongTermAverageStandbyCacheLifetimes, ModifiedPageListBytes, PageFaultsPersec, PageReadsPersec, PagesInputPersec, PagesOutputPersec, PagesPersec, PageWritesPersec, PercentCommittedBytesInUse, PercentCommittedBytesInUse_Base, PoolNonpagedAllocs, PoolNonpagedBytes, PoolPagedAllocs, PoolPagedBytes, PoolPagedResidentBytes, StandbyCacheCoreBytes, StandbyCacheNormalPriorityBytes, StandbyCacheReserveBytes, SystemCacheResidentBytes, SystemCodeResidentBytes, SystemCodeTotalBytes, SystemDriverResidentBytes, SystemDriverTotalBytes, Timestamp_Object, Timestamp_PerfTime, Timestamp_Sys100NS, TransitionFaultsPersec, TransitionPagesRePurposedPersec, WriteCopiesPersec `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_PerfRawData_PerfOS_Memory -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, AvaiLabelBytes, AvaiLabelKBytes, AvaiLabelMBytes, CacheBytes, CacheBytesPeak, CacheFaultsPersec, Caption, CommitLimit, CommittedBytes, DemandZeroFaultsPersec, FreeAndZeroPageListBytes, FreeSystemPageTableEntries, Frequency_Object, Frequency_PerfTime, Frequency_Sys100NS, LongTermAverageStandbyCacheLifetimes, ModifiedPageListBytes, PageFaultsPersec, PageReadsPersec, PagesInputPersec, PagesOutputPersec, PagesPersec, PageWritesPersec, PercentCommittedBytesInUse, PercentCommittedBytesInUse_Base, PoolNonpagedAllocs, PoolNonpagedBytes, PoolPagedAllocs, PoolPagedBytes, PoolPagedResidentBytes, StandbyCacheCoreBytes, StandbyCacheNormalPriorityBytes, StandbyCacheReserveBytes, SystemCacheResidentBytes, SystemCodeResidentBytes, SystemCodeTotalBytes, SystemDriverResidentBytes, SystemDriverTotalBytes, Timestamp_Object, Timestamp_PerfTime, Timestamp_Sys100NS, TransitionFaultsPersec, TransitionPagesRePurposedPersec, WriteCopiesPersec `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 
@@ -2803,10 +2853,10 @@ function MemoryPerformanceDataCommand {
 
 function MotherboardInfoCommand {
     $CollectionName = "Motherboard Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2814,34 +2864,34 @@ function MotherboardInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_BaseBoard -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Manufacturer, Model, Name, SerialNumber, SKU, Product `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_BaseBoard -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Manufacturer, Model, Name, SerialNumber, SKU, Product `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2850,10 +2900,10 @@ function MotherboardInfoCommand {
 
 function NetworkConnectionsTCPCommand {
     $CollectionName = "Network Connections TCP"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2861,21 +2911,21 @@ function NetworkConnectionsTCPCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -anob -p tcp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {                
                     # Processes collection to format it from txt to csv
-                    $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
+                    $Connections = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
                     $TCPdata = @()
                     $Connections.trim() | Out-String | ForEach-Object {$TCPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;TCP","`r`nTCP" -replace ";;","  " -replace " {2,}","," -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
                     $format = $TCPdata -split "`r`n" -replace " {1,1}",""
@@ -2885,31 +2935,31 @@ function NetworkConnectionsTCPCommand {
                         if ($line -match "\d,\[") {$TCPnetstatTxt += $line}
                         if ($line -notmatch "\d,\[") {$TCPnetstatTxt += $line -replace ",\["," ["}
                     }
-                    $TCPnetstatTxt | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
-                    $TCPnetstatCsv = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv")
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
+                    $TCPnetstatTxt | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
+                    $TCPnetstatCsv = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv")
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
                     $TCPnetstatCsv | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
-                    $TCPnetstatCsv | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $TCPnetstatCsv | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
 
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -anob -p tcp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {                
                     # Processes collection to format it from txt to csv
-                    $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
+                    $Connections = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
                     $TCPdata = @()
                     $Connections.trim() | Out-String | ForEach-Object {$TCPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;TCP","`r`nTCP" -replace ";;","  " -replace " {2,}","," -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
                     $format = $TCPdata -split "`r`n" -replace " {1,1}",""
@@ -2919,18 +2969,18 @@ function NetworkConnectionsTCPCommand {
                         if ($line -match "\d,\[") {$TCPnetstatTxt += $line}
                         if ($line -notmatch "\d,\[") {$TCPnetstatTxt += $line -replace ",\["," ["}
                     }
-                    $TCPnetstatTxt | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
-                    $TCPnetstatCsv = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv")
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
+                    $TCPnetstatTxt | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
+                    $TCPnetstatCsv = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv")
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer-temp.csv"
                     $TCPnetstatCsv | Add-Member -MemberType NoteProperty -Name "PSComputerName" -Value "$TargetComputer"
-                    $TCPnetstatCsv | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $TCPnetstatCsv | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -2939,10 +2989,10 @@ function NetworkConnectionsTCPCommand {
 
 function NetworkConnectionsUDPCommand {
     $CollectionName = "Network Connections UDP"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -2950,21 +3000,21 @@ function NetworkConnectionsUDPCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -anob -p udp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {                
                     # Processes collection to format it from txt to csv
-                    $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
+                    $Connections = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
                     $UDPdata = @()
                     $Connections.trim()  | Out-String |   ForEach-Object {$UDPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;UDP","`r`nUDP" -replace ";;","  " -replace " {2,}","," -replace "State,","" -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
 
@@ -2975,32 +3025,32 @@ function NetworkConnectionsUDPCommand {
                         if ($line -match "\d,\[") {$UDPnetstat += $line}
                         if ($line -notmatch "\d,\[") {$UDPnetstat += $line -replace ",\["," ["}
                     }
-                    $UDPnetstat | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $UDPnetstat | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -anob -p udp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {                
                     # Processes collection to format it from txt to csv
-                    $Connections = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
+                    $Connections = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 3
                     $UDPdata = @()
                     $Connections.trim()  | Out-String |   ForEach-Object {$UDPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;UDP","`r`nUDP" -replace ";;","  " -replace " {2,}","," -replace "State,","" -creplace "PID","PID,Executed Process" -replace "^,|,$",""}
 
@@ -3011,19 +3061,19 @@ function NetworkConnectionsUDPCommand {
                         if ($line -match "\d,\[") {$UDPnetstat += $line}
                         if ($line -notmatch "\d,\[") {$UDPnetstat += $line -replace ",\["," ["}
                     }
-                    $UDPnetstat | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $UDPnetstat | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3032,10 +3082,10 @@ function NetworkConnectionsUDPCommand {
 
 function NetworkSettingsCommand {
     $CollectionName = "Network Settings"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3043,7 +3093,7 @@ function NetworkSettingsCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -3060,13 +3110,13 @@ function NetworkSettingsCommand {
                     @{Name="DNSServerSearchOrder";Expression={$_.DNSServerSearchOrder -join "; "}}, `
                     @{Name="WinsPrimaryServer";Expression={$_.WinsPrimaryServer -join "; "}}, `
                     @{Name="WINSSecondaryServer";Expression={$_.WINSSecondaryServer -join "; "}} `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -3083,13 +3133,13 @@ function NetworkSettingsCommand {
                     @{Name="DNSServerSearchOrder";Expression={$_.DNSServerSearchOrder -join "; "}}, `
                     @{Name="WinsPrimaryServer";Expression={$_.WinsPrimaryServer -join "; "}}, `
                     @{Name="WINSSecondaryServer";Expression={$_.WINSSecondaryServer -join "; "}} `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3098,10 +3148,10 @@ function NetworkSettingsCommand {
 
 function NetworkStatisticsIPv4Command {
     $CollectionName             = "Network Statistics IPv4 All"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3109,21 +3159,21 @@ function NetworkStatisticsIPv4Command {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p ip
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
    
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") | Select-Object -skip 4 -First 6
+                    $Statistics = (Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3138,27 +3188,27 @@ function NetworkStatisticsIPv4Command {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p ip
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
    
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = (Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") | Select-Object -skip 4 -First 6
+                    $Statistics = (Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3173,14 +3223,14 @@ function NetworkStatisticsIPv4Command {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3189,10 +3239,10 @@ function NetworkStatisticsIPv4Command {
 
 function NetworkStatisticsIPv4TCPCommand {
     $CollectionName             = "Network Statistics IPv4 TCP"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3200,21 +3250,21 @@ function NetworkStatisticsIPv4TCPCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p tcp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3229,27 +3279,27 @@ function NetworkStatisticsIPv4TCPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p tcp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3264,14 +3314,14 @@ function NetworkStatisticsIPv4TCPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"                         
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3280,10 +3330,10 @@ function NetworkStatisticsIPv4TCPCommand {
 
 function NetworkStatisticsIPv4UDPCommand {
     $CollectionName             = "Network Statistics IPv4 UDP"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3291,21 +3341,21 @@ function NetworkStatisticsIPv4UDPCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p udp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3320,27 +3370,27 @@ function NetworkStatisticsIPv4UDPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"             
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"             
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p udp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3355,14 +3405,14 @@ function NetworkStatisticsIPv4UDPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"             
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"             
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3371,10 +3421,10 @@ function NetworkStatisticsIPv4UDPCommand {
 
 function NetworkStatisticsIPv4ICMPCommand {
     $CollectionName             = "Network Statistics IPv4 ICMP"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3382,21 +3432,21 @@ function NetworkStatisticsIPv4ICMPCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p icmp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {            
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                     
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3411,27 +3461,27 @@ function NetworkStatisticsIPv4ICMPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p icmp
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {            
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                     
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3446,14 +3496,14 @@ function NetworkStatisticsIPv4ICMPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3462,10 +3512,10 @@ function NetworkStatisticsIPv4ICMPCommand {
 
 function NetworkStatisticsIPv6Command {
     $CollectionName             = "Network Statistics IPv6 All"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3473,21 +3523,21 @@ function NetworkStatisticsIPv6Command {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p ipv6
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3502,27 +3552,27 @@ function NetworkStatisticsIPv6Command {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p ipv6
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3537,14 +3587,14 @@ function NetworkStatisticsIPv6Command {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }  
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3553,10 +3603,10 @@ function NetworkStatisticsIPv6Command {
 
 function NetworkStatisticsIPv6TCPCommand {
     $CollectionName             = "Network Statistics IPv6 TCP"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3564,21 +3614,21 @@ function NetworkStatisticsIPv6TCPCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p tcpv6
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3593,27 +3643,27 @@ function NetworkStatisticsIPv6TCPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p tcpv6
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3628,14 +3678,14 @@ function NetworkStatisticsIPv6TCPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3644,10 +3694,10 @@ function NetworkStatisticsIPv6TCPCommand {
 
 function NetworkStatisticsIPv6UDPCommand {
     $CollectionName             = "Network Statistics IPv6 UDP"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3655,21 +3705,21 @@ function NetworkStatisticsIPv6UDPCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p udpv6
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3684,27 +3734,27 @@ function NetworkStatisticsIPv6UDPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p udpv6
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {        
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3719,14 +3769,14 @@ function NetworkStatisticsIPv6UDPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"  
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3735,10 +3785,10 @@ function NetworkStatisticsIPv6UDPCommand {
 
 function NetworkStatisticsIPv6ICMPCommand {
     $CollectionName             = "Network Statistics IPv6 ICMP"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3746,21 +3796,21 @@ function NetworkStatisticsIPv6ICMPCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p icmpv6
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3775,27 +3825,27 @@ function NetworkStatisticsIPv6ICMPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p icmpv6
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
-                    $Statistics = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
+                    $Statistics = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt" | Select-Object -skip 4 -First 6
                 
                     # This data is formated differently the the others for TCP and UDP as it as sent and recieve metrics in columns
                     $StatisticsData = $Statistics -replace " {2,}","," -replace "^,|,$",""
@@ -3810,14 +3860,14 @@ function NetworkStatisticsIPv6ICMPCommand {
                     $ConvertedToCsv = ""
                     $ConvertedToCsv += "PSComputerName,"  + $FileHeader -replace ",$","`r`n"
                     $ConvertedToCsv += "$TargetComputer," + $FileData   -replace ",$",""
-                    $ConvertedToCsv | Out-File -FilePath "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
+                    $ConvertedToCsv | Out-File -FilePath "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"   
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }  
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3826,10 +3876,10 @@ function NetworkStatisticsIPv6ICMPCommand {
 
 function PlugAndPlayCommand {
     $CollectionName = "Plug and Play Devices"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3837,34 +3887,34 @@ function PlugAndPlayCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_PnPEntity -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, InstallDate, Status, Description, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID -join "; "}}, Manufacturer `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_PnPEntity -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, InstallDate, Status, Description, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID -join "; "}}, Manufacturer `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3873,10 +3923,10 @@ function PlugAndPlayCommand {
 
 function PortProxyRulesCommand {
     $CollectionName = "Port Proxy Rules"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3884,24 +3934,24 @@ function PortProxyRulesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh interface portproxy show all
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Extracts the fields that become the file headers
                     $FileHeader = "Listen on IPv4 Address,Listen on IPv4 Port,Connect to IPv4 Address,Connect to IPv4 Port"
 
                     # Extracts the fields that contain data
-                    $ProxyRules = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $ProxyRules = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
                     $FileData = @()
                     foreach ($line in ($ProxyRules | Select-Object -Skip 5)) {$FileData += "`n$($line -replace ' {2,}',',')"}
@@ -3912,28 +3962,28 @@ function PortProxyRulesCommand {
                     $Combined = @()
                     $Combined += $FileHeader
                     $Combined += $FileData
-                    $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $Combined | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh interface portproxy show all
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Extracts the fields that become the file headers
@@ -3942,7 +3992,7 @@ function PortProxyRulesCommand {
                     $FileHeader = "Listen on IPv4 Address,Listen on IPv4 Port,Connect to IPv4 Address,Connect to IPv4 Port"
 
                     # Extracts the fields that contain data
-                    $ProxyRules = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                    $ProxyRules = Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
                     $FileData = @()
                     foreach ($line in ($ProxyRules | Select-Object -Skip 5)) {$FileData += "`n$($line -replace ' {2,}',',')"}
@@ -3953,19 +4003,19 @@ function PortProxyRulesCommand {
                     $Combined = @()
                     $Combined += $FileHeader
                     $Combined += $FileData
-                    $Combined | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                    $Combined | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
                     # Add PSComputerName header and host/ip name
-                    $AddTargetHost = (Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
+                    $AddTargetHost = (Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv")
                     $AddTargetHost | Add-Member -MemberType NoteProperty "PSComputerName" -Value "$TargetComputer"
-                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                    $AddTargetHost | Select-Object -Property PSComputerName, * | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -3974,10 +4024,10 @@ function PortProxyRulesCommand {
 
 function PrefetchFilesCommand {
     $CollectionName = "Prefetch Files"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -3985,7 +4035,7 @@ function PrefetchFilesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -3994,12 +4044,12 @@ function PrefetchFilesCommand {
                         Get-ChildItem C:\Windows\Prefetch -Force
                     } -ArgumentList @($null) `
                     | Select-Object -Property PSComputerName, Directory, Name, Length, CreationTime, LastWriteTime, LastAccessTime, Attributes, Mode `
-                    | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                    | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -4008,14 +4058,14 @@ function PrefetchFilesCommand {
                     Get-ChildItem C:\Windows\Prefetch -Force
                 } -ArgumentList @($null) `
                 | Select-Object -Property PSComputerName, Directory, Name, Length, CreationTime, LastWriteTime, LastAccessTime, Attributes, Mode `
-                | Export-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -4024,10 +4074,10 @@ function PrefetchFilesCommand {
 
 function ProcessTreeLineageCommand {
     $CollectionName = "Process Tree - Lineage"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -4035,7 +4085,7 @@ function ProcessTreeLineageCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -4063,12 +4113,12 @@ function ProcessTreeLineageCommand {
                         }
                     } 
                     Get-ProcessTree
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"                    
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"                    
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -4096,14 +4146,14 @@ function ProcessTreeLineageCommand {
                         }
                     } 
                     Get-ProcessTree
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
     ### No Compile-CsvFiles as this is just text
-    "You have to go into each 'Individual Host Results' to view their Process Trees (Lineage)" | Out-File "$PoShLocation\$CollectionName.txt"
+    "You have to go into each 'Individual Host Results' to view their Process Trees (Lineage)" | Out-File "$CollectedDataTimeStampDirectory\$CollectionName.txt"
 }
 
 #============================================================================================================================================================
@@ -4112,10 +4162,10 @@ function ProcessTreeLineageCommand {
 
 function ProcessesEnhancedCommand {
     $CollectionName = "Processes - Enhanced with Hashes"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -4123,7 +4173,7 @@ function ProcessesEnhancedCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -4172,14 +4222,14 @@ function ProcessesEnhancedCommand {
                 } 
                 return $processList}
                 Get-Processes | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessName, ParentProcessId, MemoryKiloBytes, CommandLine, PathName, Hash, Algorithm, CreationDate, Owner, OwnerSID, SessionId `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -4228,14 +4278,14 @@ function ProcessesEnhancedCommand {
                 } 
                 return $processList}
                 Get-Processes | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessName, ParentProcessId, MemoryKiloBytes, CommandLine, PathName, Hash, Algorithm, CreationDate, Owner, OwnerSID, SessionId `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -4244,10 +4294,10 @@ function ProcessesEnhancedCommand {
 
 function ProcessesStandardCommand {
     $CollectionName = "Processes - Standard"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -4255,34 +4305,34 @@ function ProcessesStandardCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Credential $Credential -Class Win32_Process -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Class Win32_Process -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }  
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -4291,10 +4341,10 @@ function ProcessesStandardCommand {
 
 function ProcessorCPUInfoCommand {
     $CollectionName = "Processor - CPU Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -4302,34 +4352,34 @@ function ProcessorCPUInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Processor -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Manufacturer, Caption, DeviceID, SocketDesignation, MaxClockSpeed  `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_Processor -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Manufacturer, Caption, DeviceID, SocketDesignation, MaxClockSpeed  `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -4338,14 +4388,14 @@ function ProcessorCPUInfoCommand {
 
 function RemoteCapabilityCheckCommand {
     $CollectionName = "Remote Capability Check"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-            param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
             # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
             [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
             ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -4977,12 +5027,12 @@ function RemoteCapabilityCheckCommand {
             }
             Invoke-Ping -ComputerName $TargetComputer -Detail * `
             | Select-Object -Property @{Name="PSComputerName";Expression={$_.Name}}, IP, Domain, Ping, WSMAN, RemoteReg, RPC, RDP, SMB `
-            | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-        } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+        } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv" 
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv" 
 }
 
 
@@ -4992,10 +5042,10 @@ function RemoteCapabilityCheckCommand {
 
 function ScheduledTasksCommand {
     $CollectionName = "Scheduled Tasks - schtasks"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -5003,40 +5053,40 @@ function ScheduledTasksCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c schtasks /query /V /FO CSV
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c schtasks /query /V /FO CSV
-                } -ArgumentList @($null) | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                 }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv" 
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv" 
     Remove-DuplicateCsvHeaders
 }
 
@@ -5046,10 +5096,10 @@ function ScheduledTasksCommand {
 
 function ScreenSaverInfoCommand {
     $CollectionName = "Screen Saver Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -5057,34 +5107,34 @@ function ScreenSaverInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Desktop -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, ScreenSaverActive, ScreenSaverTimeout, ScreenSaverExecutable, Wallpaper `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_Desktop -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, ScreenSaverActive, ScreenSaverTimeout, ScreenSaverExecutable, Wallpaper `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -5093,10 +5143,10 @@ function ScreenSaverInfoCommand {
 
 function SecurityPatchesCommand {
     $CollectionName = "Security Patches"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -5104,34 +5154,34 @@ function SecurityPatchesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_QuickFixEngineering -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, HotFixID, Description, InstalledBy, InstalledOn `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_QuickFixEngineering -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, HotFixID, Description, InstalledBy, InstalledOn `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         } 
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -5140,10 +5190,10 @@ function SecurityPatchesCommand {
 
 function ServicesCommand {
     $CollectionName = "Services"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -5151,34 +5201,34 @@ function ServicesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Credential $Credential -Class Win32_Service -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, State, Name, ProcessID, Description, PathName, Started, StartMode, StartName | Sort-Object PSComputerName, State, Name `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Class Win32_Service -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, State, Name, ProcessID, Description, PathName, Started, StartMode, StartName | Sort-Object PSComputerName, State, Name `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -5187,10 +5237,10 @@ function ServicesCommand {
 
 function SharesCommand {
     $CollectionName = "Shares"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -5198,34 +5248,34 @@ function SharesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Share -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Status, Name, Path, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_Share -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Status, Name, Path, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -5233,11 +5283,11 @@ function SharesCommand {
 #============================================================================================================================================================
 
 function SoftwareInstalledCommand {
-    $CollectionName = "Software Installed *"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    $CollectionName = "Software Installed"
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -5245,12 +5295,25 @@ function SoftwareInstalledCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
-                Function Get-Software  {
+                Get-WmiObject -Credential $Credential -Class Win32_Product -ComputerName $TargetComputer `
+                | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber `
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation     
+
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+        }
+        else {
+            Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
+                param($IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer)
+                # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
+                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+
+                <#Function Get-Software  {
                     [OutputType('System.Software.Inventory')]
                     [Cmdletbinding()] 
                     Param( 
@@ -5331,154 +5394,21 @@ function SoftwareInstalledCommand {
                 } 
                 Get-Software -Computername $TargetComputer `
                 | Select-Object -Property @{Name = 'PSComputerName'; Expression = {$_.ComputerName}}, DisplayName, Version, InstallDate, Publisher, EstimatedSizeMB, UninstallString, InstallLocation, InstallSource, HelpLink `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                #>
 
                 # If the above doesn't provide any results, it will try to get the installed software using WMI... though obtaining results from Win32_Product class is painfully slow process
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -ErrorAction SilentlyContinue).length -lt 1) {
-                    Get-WmiObject Win32_Product -ComputerName $TargetComputer `
+                #if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -ErrorAction SilentlyContinue).length -lt 1) {
+                    Get-WmiObject -Class Win32_Product -ComputerName $TargetComputer `
                     | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber `
-                    | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation      
-                }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
-        }
-        else {
-            Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
-                # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
-                            
-                Function Get-Software  {
-                    [OutputType('System.Software.Inventory')]
-                    [Cmdletbinding()] 
-                    Param( 
-                        [Parameter(ValueFromPipeline=$True,ValueFromPipelineByPropertyName=$True)] 
-                        [String[]]$Computername=$env:COMPUTERNAME
-                    )         
-                    Begin {}
-                    Process  {
-                        ForEach  ($Computer in  $Computername){ 
-                            If  (Test-Connection -ComputerName  $Computer -Count  1 -Quiet) {
-                            $Paths  = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall","SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")         
-                                ForEach($Path in $Paths) { 
-                                Write-Verbose  "Checking Path: $Path"
-                                #  Create an instance of the Registry Object and open the HKLM base key 
-                                Try  { 
-                                    $reg=[microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$Computer,'Registry64') 
-                                } 
-                                Catch  { 
-                                    Write-Error $_ 
-                                    Continue 
-                                } 
-                                #  Drill down into the Uninstall key using the OpenSubKey Method 
-                                Try  {
-                                    $regkey=$reg.OpenSubKey($Path)  
-                                    # Retrieve an array of string that contain all the subkey names 
-                                    $subkeys=$regkey.GetSubKeyNames()      
-                                    # Open each Subkey and use GetValue Method to return the required  values for each 
-                                    ForEach ($key in $subkeys){   
-                                        Write-Verbose "Key: $Key"
-                                        $thisKey=$Path+"\\"+$key 
-                                        Try {  
-                                            $thisSubKey=$reg.OpenSubKey($thisKey)   
-                                            # Prevent Objects with empty DisplayName 
-                                            $DisplayName =  $thisSubKey.getValue("DisplayName")
-                                            If ($DisplayName  -AND $DisplayName  -notmatch '^Update  for|rollup|^Security Update|^Service Pack|^HotFix') {
-                                                $Date = $thisSubKey.GetValue('InstallDate')
-                                                If ($Date) {
-                                                    Try {
-                                                        $Date = [datetime]::ParseExact($Date, 'yyyyMMdd', $Null)
-                                                    }
-                                                    Catch{
-                                                        Write-Warning "$($Computer): $_ <$($Date)>"
-                                                        $Date = $Null
-                                                    }
-                                                } 
-                                                # Create New Object with empty Properties 
-                                                $Publisher =  Try {
-                                                    $thisSubKey.GetValue('Publisher').Trim()
-                                                } 
-                                                Catch {
-                                                    $thisSubKey.GetValue('Publisher')
-                                                }
-                                                $Version = Try {
-                                                    #Some weirdness with trailing [char]0 on some strings
-                                                    $thisSubKey.GetValue('DisplayVersion').TrimEnd(([char[]](32,0)))
-                                                } 
-                                                Catch {
-                                                    $thisSubKey.GetValue('DisplayVersion')
-                                                }
-                                                $UninstallString =  Try {
-                                                    $thisSubKey.GetValue('UninstallString').Trim()
-                                                } 
-                                                Catch {
-                                                    $thisSubKey.GetValue('UninstallString')
-                                                }
-                                                $InstallLocation =  Try {
-                                                    $thisSubKey.GetValue('InstallLocation').Trim()
-                                                } 
-                                                Catch {
-                                                    $thisSubKey.GetValue('InstallLocation')
-                                                }
-                                                $InstallSource =  Try {
-                                                    $thisSubKey.GetValue('InstallSource').Trim()
-                                                } 
-                                                Catch {
-                                                    $thisSubKey.GetValue('InstallSource')
-                                                }
-                                                $HelpLink = Try {
-                                                    $thisSubKey.GetValue('HelpLink').Trim()
-                                                } 
-                                                Catch {
-                                                    $thisSubKey.GetValue('HelpLink')
-                                                }
-                                                $Object = [pscustomobject]@{
-                                                    Computername = $Computer
-                                                    DisplayName = $DisplayName
-                                                    Version  = $Version
-                                                    InstallDate = $Date
-                                                    Publisher = $Publisher
-                                                    UninstallString = $UninstallString
-                                                    InstallLocation = $InstallLocation
-                                                    InstallSource  = $InstallSource
-                                                    HelpLink = $thisSubKey.GetValue('HelpLink')
-                                                    EstimatedSizeMB = [decimal]([math]::Round(($thisSubKey.GetValue('EstimatedSize')*1024)/1MB,2))
-                                                }
-                                                $Object.pstypenames.insert(0,'System.Software.Inventory')
-                                                    Write-Output $Object
-                                                }
-                                            } 
-                                            Catch {
-                                                Write-Warning "$Key : $_"
-                                            }   
-                                        }
-                                    } 
-                                    Catch  {}   
-                                    $reg.Close() 
-                                }                  
-                            } 
-                            Else  {
-                                Write-Error  "$($Computer): unable to reach remote system!"
-                            }
-                        } 
-                    } 
-                } 
-                Get-Software -Computername $TargetComputer `
-                | Select-Object -Property @{Name = 'PSComputerName'; Expression = {$_.ComputerName}}, DisplayName, Version, InstallDate, Publisher, EstimatedSizeMB, UninstallString, InstallLocation, InstallSource, HelpLink `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-                
-                # If the above doesn't provide any results, it will try to get the installed software using WMI... though obtaining results from Win32_Product class is painfully slow process
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -ErrorAction SilentlyContinue).length -lt 1) {
-                    Get-WmiObject Win32_Product -ComputerName $TargetComputer `
-                    | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber `
-                    | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation      
-                }
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                    | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                #}
+            } -ArgumentList @($IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer)
         }  
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -5487,10 +5417,10 @@ function SoftwareInstalledCommand {
 
 function StartupCommandsCommand {
     $CollectionName = "Startup Commands"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -5498,34 +5428,34 @@ function StartupCommandsCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
 
                 Get-WmiObject -Credential $Credential -Class Win32_StartupCommand -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, Location, Command, User `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_StartupCommand -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, Location, Command, User `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -5534,10 +5464,10 @@ function StartupCommandsCommand {
 
 function SystemInfoCommand {
     $CollectionName = "System Info"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -5545,62 +5475,62 @@ function SystemInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
-                Invoke-WmiMethod -Credential $Credential -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c systeminfo /fo csv > `"C:\Windows\Temp\$CollectionShortName-$TargetComputer.csv`"" | Out-Null
+                Invoke-WmiMethod -Credential $Credential -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c systeminfo /fo csv > `"C:\Windows\Temp\SystemInfo-$TargetComputer.csv`"" | Out-Null
     
                 # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
                 Start-Sleep -Seconds $SleepTime
 
                 # This copies the data from the target then removes the copy
-                Copy-Item  -Credential $Credential "\\$TargetComputer\c$\Windows\Temp\$CollectionShortName-$TargetComputer.csv" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-                Remove-Item -Credential $Credential "\\$TargetComputer\c$\Windows\Temp\$CollectionShortName-$TargetComputer.csv"
+                Copy-Item   "\\$TargetComputer\c$\Windows\Temp\SystemInfo-$TargetComputer.csv" "$IndividualHostResults\$CollectionDirectory"
+                Remove-Item "\\$TargetComputer\c$\Windows\Temp\SystemInfo-$TargetComputer.csv"
     
                 # Adds the addtional column header, PSComputerName, and target computer to each connection
-                $SystemInfo = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.csv"
+                $SystemInfo = Get-Content "$IndividualHostResults\$CollectionDirectory\SystemInfo-$TargetComputer.csv"
                 $SystemInfo | ForEach-Object {
                     if ($_ -match '"Host Name","OS Name"') {"PSComputerName," + "$_"}
                     else {"$TargetComputer," + "$_"}
-                } | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                } | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
     
-                Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.csv"
+                Remove-Item "$IndividualHostResults\$CollectionDirectory\SystemInfo-$TargetComputer.csv"
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
-                Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c systeminfo /fo csv > `"C:\Windows\Temp\$CollectionShortName-$TargetComputer.csv`"" | Out-Null
+                Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c systeminfo /fo csv > `"C:\Windows\Temp\SystemInfo-$TargetComputer.csv`"" | Out-Null
     
                 # This deleay is introduced to allow the collection command to complete gathering data before it pulls back the data
                 Start-Sleep -Seconds $SleepTime
 
                 # This copies the data from the target then removes the copy
-                Copy-Item   "\\$TargetComputer\c$\Windows\Temp\$CollectionShortName-$TargetComputer.csv" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory"
-                Remove-Item "\\$TargetComputer\c$\Windows\Temp\$CollectionShortName-$TargetComputer.csv"
+                Copy-Item   "\\$TargetComputer\c$\Windows\Temp\SystemInfo-$TargetComputer.csv" "$IndividualHostResults\$CollectionDirectory"
+                Remove-Item "\\$TargetComputer\c$\Windows\Temp\SystemInfo-$TargetComputer.csv"
     
                 # Adds the addtional column header, PSComputerName, and target computer to each connection
-                $SystemInfo = Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.csv"
+                $SystemInfo = Get-Content "$IndividualHostResults\$CollectionDirectory\SystemInfo-$TargetComputer.csv"
                 $SystemInfo | ForEach-Object {
                     if ($_ -match '"Host Name","OS Name"') {"PSComputerName," + "$_"}
                     else {"$TargetComputer," + "$_"}
-                } | Out-File "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                } | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
     
-                Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionShortName-$TargetComputer.csv"
+                Remove-Item "$IndividualHostResults\$CollectionDirectory\SystemInfo-$TargetComputer.csv"
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -5609,10 +5539,10 @@ function SystemInfoCommand {
 
 function USBControllerDevicesCommand {
     $CollectionName = "USB Controller Devices"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -5620,7 +5550,7 @@ function USBControllerDevicesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -5628,32 +5558,32 @@ function USBControllerDevicesCommand {
                 Get-WmiObject -Class Win32_USBControllerDevice -ComputerName $TargetComputer `
                 | Foreach {[wmi]($_.Dependent)} `
                 | Select-Object -Property PSComputerName, Name, Manufacturer, Status, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID}} `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 #Get-WmiObject -Class Win32_USBControllerDevice -ComputerName $TargetComputer `
                 #| Select-Object PSComputerName, Antecedent, Dependent `
-                #| Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                #| Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
                 
                 Get-WmiObject -Class Win32_USBControllerDevice -ComputerName $TargetComputer `
                 | Foreach {[wmi]($_.Dependent)} `
                 | Select-Object -Property PSComputerName, Name, Manufacturer, Status, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID}} `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }  
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 ##############################################################################################################################################################
@@ -6611,10 +6541,10 @@ $Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionCheckedlistbox)
 function EventLogQuery {
     param($CollectionName,$Filter)
     $CollectionName = $CollectionName
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -6622,7 +6552,7 @@ function EventLogQuery {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -6630,13 +6560,13 @@ function EventLogQuery {
                 Get-WmiObject -Credential $Credential -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter $Filter `
                 | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
                 | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -6644,14 +6574,14 @@ function EventLogQuery {
                 Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter $Filter `
                 | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
                 | Select-Object -first $LimitNumberOfEventLogsCollectToChoice `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7137,10 +7067,10 @@ $Section1ActiveDirectoryTab.Controls.Add($ActiveDirectorySelectionCheckedlistbox
 #============================================================================================================================================================
 function ActiveDirectoryAccountsCommand {
     $CollectionName = "Active Directory - Accounts"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7148,33 +7078,34 @@ function ActiveDirectoryAccountsCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Credential $Credential -Class Win32_UserAccount -Filter "LocalAccount='False'" -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Disabled, AccountType, Lockout, PasswordChangeable, PasswordRequired, SID, SIDType, LocalAccount, Domain, Caption, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='False'" -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Disabled, AccountType, Lockout, PasswordChangeable, PasswordRequired, SID, SIDType, LocalAccount, Domain, Caption, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7182,10 +7113,10 @@ function ActiveDirectoryAccountsCommand {
 #============================================================================================================================================================
 function ActiveDirectoryAccountDetailsAndUserInfoCommand {
     $CollectionName = "Active Directory - Account Details and User Information"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7193,7 +7124,7 @@ function ActiveDirectoryAccountDetailsAndUserInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7201,13 +7132,13 @@ function ActiveDirectoryAccountDetailsAndUserInfoCommand {
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
                     | Select-Object Name, CanonicalName, SID, Enabled, LockedOut, AccountLockoutTime, Created, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7215,21 +7146,22 @@ function ActiveDirectoryAccountDetailsAndUserInfoCommand {
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
                     | Select-Object Name, CanonicalName, SID, Enabled, LockedOut, AccountLockoutTime, Created, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-                if ((Get-Content "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
-                    Remove-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv") -eq $null) {
+                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
                 
                     Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                         net users /domain
-                    } | Export-CSV "$PoShLocation\$CollectionName-$TargetComputer.txt" -NoTypeInformation -Force
+                    } | Export-CSV "$CollectedDataTimeStampDirectory\$CollectionName-$TargetComputer.txt" -NoTypeInformation -Force
                 }
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7237,10 +7169,10 @@ function ActiveDirectoryAccountDetailsAndUserInfoCommand {
 #============================================================================================================================================================
 function ActiveDirectoryAccountLogonAndPassowrdPolicyCommand {
     $CollectionName = "Active Directory - Account Logon and Passowrd Policy"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7248,7 +7180,7 @@ function ActiveDirectoryAccountLogonAndPassowrdPolicyCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7256,13 +7188,13 @@ function ActiveDirectoryAccountLogonAndPassowrdPolicyCommand {
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
                     | Select-Object Name, Enabled, LockedOut, AccountLockoutTime, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7270,13 +7202,14 @@ function ActiveDirectoryAccountLogonAndPassowrdPolicyCommand {
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
                     | Select-Object Name, Enabled, LockedOut, AccountLockoutTime, LogonWorkStations, LastLogonDate, LastBadPasswordAttempt, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7284,10 +7217,10 @@ function ActiveDirectoryAccountLogonAndPassowrdPolicyCommand {
 #============================================================================================================================================================
 function ActiveDirectoryAccountContactInfoCommand {
     $CollectionName = "Active Directory - Account Contact Information"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7295,7 +7228,7 @@ function ActiveDirectoryAccountContactInfoCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7303,13 +7236,13 @@ function ActiveDirectoryAccountContactInfoCommand {
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
                     | Select-Object Name, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7317,13 +7250,14 @@ function ActiveDirectoryAccountContactInfoCommand {
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
                     | Select-Object Name, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
                     
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7331,10 +7265,10 @@ function ActiveDirectoryAccountContactInfoCommand {
 #============================================================================================================================================================
 function ActiveDirectoryAccountEmailAddressesCommand {
     $CollectionName = "Active Directory - Account Email Addresses"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7342,7 +7276,7 @@ function ActiveDirectoryAccountEmailAddressesCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7351,13 +7285,13 @@ function ActiveDirectoryAccountEmailAddressesCommand {
                     Get-ADUser -Filter * -Properties * `
                     | Where-Object {$_.EmailAddress -ne $null} `
                     | Select-Object Name, EmailAddress
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7366,11 +7300,14 @@ function ActiveDirectoryAccountEmailAddressesCommand {
                     Get-ADUser -Filter * -Properties * `
                     | Where-Object {$_.EmailAddress -ne $null} `
                     | Select-Object Name, EmailAddress
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
+    Monitor-Jobs $CollectionName
+    Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7378,10 +7315,10 @@ function ActiveDirectoryAccountEmailAddressesCommand {
 #============================================================================================================================================================
 function ActiveDirectoryAccountPhoneNumbersCommand {
     $CollectionName = "Active Directory - Account Phone Numbers"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7389,7 +7326,7 @@ function ActiveDirectoryAccountPhoneNumbersCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7398,13 +7335,13 @@ function ActiveDirectoryAccountPhoneNumbersCommand {
                     Get-ADUser -Filter * -Properties * `
                     | Where-Object {($_.OfficePhone -ne $null) -or ($_.HomePhone -ne $null) -or ($_.MobilePhone -ne $null)} `
                     | Select-Object Name, OfficePhone, HomePhone, MobilePhone
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7413,13 +7350,14 @@ function ActiveDirectoryAccountPhoneNumbersCommand {
                     Get-ADUser -Filter * -Properties * `
                     | Where-Object {($_.OfficePhone -ne $null) -or ($_.HomePhone -ne $null) -or ($_.MobilePhone -ne $null)} `
                     | Select-Object Name, OfficePhone, HomePhone, MobilePhone
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7427,10 +7365,10 @@ function ActiveDirectoryAccountPhoneNumbersCommand {
 #============================================================================================================================================================
 function ActiveDirectoryComputersCommand {
     $CollectionName = "Active Directory - Computers"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7438,7 +7376,7 @@ function ActiveDirectoryComputersCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7446,13 +7384,13 @@ function ActiveDirectoryComputersCommand {
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADComputer -Filter * -Properties *  `
                     | Select-Object -Property Enabled, Name, OperatingSystem, OperatingSystemServicePack, OperatingSystemHotfix, OperatingSystemVersion, IPv4Address, IPv6Address, LastLogonDate, Created, ObjectClass, SID, SIDHistory, DistinguishedName, DNSHostName, SamAccountName, CannotChangePassword
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7460,11 +7398,14 @@ function ActiveDirectoryComputersCommand {
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADComputer -Filter * -Properties *  `
                     | Select-Object -Property Enabled, Name, OperatingSystem, OperatingSystemServicePack, OperatingSystemHotfix, OperatingSystemVersion, IPv4Address, IPv6Address, LastLogonDate, Created, ObjectClass, SID, SIDHistory, DistinguishedName, DNSHostName, SamAccountName, CannotChangePassword
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
+    Monitor-Jobs $CollectionName
+    Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7472,10 +7413,10 @@ function ActiveDirectoryComputersCommand {
 #============================================================================================================================================================
 function ActiveDirectoryDefaultDomainPasswordPolicyCommand {
     $CollectionName = "Active Directory - Default Domain Password Policy"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7483,33 +7424,34 @@ function ActiveDirectoryDefaultDomainPasswordPolicyCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADDefaultDomainPasswordPolicy
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADDefaultDomainPasswordPolicy
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7517,10 +7459,10 @@ function ActiveDirectoryDefaultDomainPasswordPolicyCommand {
 #============================================================================================================================================================
 function ActiveDirectoryGroupsCommand {
     $CollectionName = "Active Directory - Groups"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7528,34 +7470,34 @@ function ActiveDirectoryGroupsCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Group -Filter "LocalAccount='False'" -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LocalAccount, Domain, SID, SIDType, Caption, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                             
                 Get-WmiObject -Class Win32_Group -filter "LocalAccount='False'" -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LocalAccount, Domain, SID, SIDType, Caption, Description `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 <#
@@ -7564,10 +7506,10 @@ function ActiveDirectoryGroupsCommand {
 #============================================================================================================================================================
 function ActiveDirectoryGroupsCommand {
     $CollectionName = "Active Directory - Groups [PS]"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7575,7 +7517,7 @@ function ActiveDirectoryGroupsCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7583,13 +7525,13 @@ function ActiveDirectoryGroupsCommand {
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADGroup -Filter * `
                     | Select-Object -Property Name, SID, GroupCategory, GroupScope, DistinguishedName
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7597,13 +7539,14 @@ function ActiveDirectoryGroupsCommand {
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADGroup -Filter * `
                     | Select-Object -Property Name, SID, GroupCategory, GroupScope, DistinguishedName
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 #>
 
@@ -7612,10 +7555,10 @@ function ActiveDirectoryGroupsCommand {
 #============================================================================================================================================================
 function ActiveDirectoryGroupMembershipByGroupsCommand {
     $CollectionName = "Active Directory - Group Membership by Groups"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7623,7 +7566,7 @@ function ActiveDirectoryGroupMembershipByGroupsCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7637,13 +7580,13 @@ function ActiveDirectoryGroupMembershipByGroupsCommand {
                         $GroupMemberships | select * -First 1
                         $GroupMemberships | Select-Object -Property PSComputerName, GroupName, SamAccountName, SID, GroupCategory, GroupScope, DistinguishedName 
                     } 
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7657,13 +7600,14 @@ function ActiveDirectoryGroupMembershipByGroupsCommand {
                         $GroupMemberships | select * -First 1
                         $GroupMemberships | Select-Object -Property PSComputerName, GroupName, SamAccountName, SID, GroupCategory, GroupScope, DistinguishedName 
                     } 
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7671,10 +7615,10 @@ function ActiveDirectoryGroupMembershipByGroupsCommand {
 #============================================================================================================================================================
 function ActiveDirectoryGroupMembershipByUsersCommand {
     $CollectionName = "Active Directory - Group Membership by Users"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7682,7 +7626,7 @@ function ActiveDirectoryGroupMembershipByUsersCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7695,13 +7639,13 @@ function ActiveDirectoryGroupMembershipByUsersCommand {
                         $GroupMemberships | Add-Member -MemberType NoteProperty -Name SamAccountName -Value $SamAccountName -Force
                         $GroupMemberships | Select-Object -Property SamAccountName, @{Name="Group Name";Expression={$_.Name}}, SID, GroupCategory, GroupScope, DistinguishedName
                     } 
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7714,13 +7658,14 @@ function ActiveDirectoryGroupMembershipByUsersCommand {
                         $GroupMemberships | Add-Member -MemberType NoteProperty -Name SamAccountName -Value $SamAccountName -Force
                         $GroupMemberships | Select-Object -Property SamAccountName, @{Name="Group Name";Expression={$_.Name}}, SID, GroupCategory, GroupScope, DistinguishedName
                     } 
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7728,10 +7673,10 @@ function ActiveDirectoryGroupMembershipByUsersCommand {
 #============================================================================================================================================================
 function ActiveDirectoryGroupsWithoutAccountMembersCommand {
     $CollectionName = "Active Directory - Groups Without Account Members"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7739,7 +7684,7 @@ function ActiveDirectoryGroupsWithoutAccountMembersCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7747,13 +7692,13 @@ function ActiveDirectoryGroupsWithoutAccountMembersCommand {
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADGroup -filter * `
                     | Where-Object {-Not ($_ | Get-ADGroupMember)} 
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7761,13 +7706,14 @@ function ActiveDirectoryGroupsWithoutAccountMembersCommand {
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADGroup -filter * `
                     | Where-Object {-Not ($_ | Get-ADGroupMember)} 
-                } | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
+                } | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7775,10 +7721,10 @@ function ActiveDirectoryGroupsWithoutAccountMembersCommand {
 #============================================================================================================================================================
 function DomainDNSAllRecordsServer2008Command {
     $CollectionName = "DNS All Records (Server 2008)"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7786,33 +7732,34 @@ function DomainDNSAllRecordsServer2008Command {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Credential $Credential -ComputerName $TargetComputer -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
                 | Select-Object PSComputerName, __Class, ContainerName, DomainName, RecordData, OwnerName `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -ComputerName $TargetComputer -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
                 | Select-Object PSComputerName, __Class, ContainerName, DomainName, RecordData, OwnerName `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7820,10 +7767,10 @@ function DomainDNSAllRecordsServer2008Command {
 #============================================================================================================================================================
 function DomainDNSRootHintsServer2008Command {
     $CollectionName = "DNS Root Hints (Server 2008)"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7831,7 +7778,7 @@ function DomainDNSRootHintsServer2008Command {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7839,13 +7786,13 @@ function DomainDNSRootHintsServer2008Command {
                 Get-WmiObject -Credential $Credential -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
                 | Where-Object {$_.domainname -eq "..roothints"} `
                 | Select-Object PSComputerName, * `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -7853,14 +7800,15 @@ function DomainDNSRootHintsServer2008Command {
                 Get-WmiObject -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
                 | Where-Object {$_.domainname -eq "..roothints"} `
                 | Select-Object PSComputerName, * `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7868,10 +7816,10 @@ function DomainDNSRootHintsServer2008Command {
 #============================================================================================================================================================
 function DomainDNSZonesServer2008Command {
     $CollectionName = "DNS Zones (Server 2008)"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7879,33 +7827,34 @@ function DomainDNSZonesServer2008Command {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Credential $Credential -Namespace "root\MicrosoftDNS" -Class MicrosoftDNS_Zone `
                 | Select-Object PSComputerName, Name `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Namespace "root\MicrosoftDNS" -Class MicrosoftDNS_Zone `
                 | Select-Object PSComputerName, Name `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 #============================================================================================================================================================
@@ -7913,10 +7862,10 @@ function DomainDNSZonesServer2008Command {
 #============================================================================================================================================================
 function DomainDNSStatisticsServer2008Command {
     $CollectionName = "DNS Statistics (Server 2008)"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {
@@ -7924,33 +7873,34 @@ function DomainDNSStatisticsServer2008Command {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Credential $Credential -Namespace root\MicrosoftDNS -Class MicrosoftDNS_Statistic `
                 | Select-Object PSComputerName, Name, Value `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
                                             
                 Get-WmiObject -Namespace root\MicrosoftDNS -Class MicrosoftDNS_Statistic `
                 | Select-Object PSComputerName, Name, Value `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 ##############################################################################################################################################################
@@ -7993,10 +7943,10 @@ $FileSearchDirectoryListingCheckbox.Name = "Directory Listing"
 
 function FileSearchDirectoryListingCommand {
     $CollectionName = "Directory Listing"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         $ListDirectory = $FileSearchDirectoryListingTextbox.Text
@@ -8006,8 +7956,8 @@ function FileSearchDirectoryListingCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                #param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$Credential)
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory,$Credential)
+                #param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -8020,14 +7970,14 @@ function FileSearchDirectoryListingCommand {
                 # Add the PSComputerName Property and Host name; then save the file
                 $DirectoryListing | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer
                 $DirectoryListing | Select-Object -Property PSComputerName, FullName, Name, Extension, Attributes, CreationTime, LastWriteTime, LastAccessTime `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            #} -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$Credential)
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory,$Credential)
+            #} -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -8040,14 +7990,14 @@ function FileSearchDirectoryListingCommand {
                 # Add the PSComputerName Property and Host name; then save the file
                 $DirectoryListing | Add-Member -MemberType NoteProperty -Name PSComputerName -Value $TargetComputer
                 $DirectoryListing | Select-Object -Property PSComputerName, FullName, Name, Extension, Attributes, CreationTime, LastWriteTime, LastAccessTime `
-                | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation      
+                | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation      
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory)
         }   
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
     Remove-DuplicateCsvHeaders
 }
 
@@ -8108,10 +8058,10 @@ $FileSearchFileSearchCheckbox.Name = "File Search"
 
 function FileSearchFileSearchCommand {
     $CollectionName = "File Search"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         $DirectoriesToSearch = $FileSearchFileSearchDirectoryTextbox.Text -split "`r`n"
@@ -8123,7 +8073,7 @@ function FileSearchFileSearchCommand {
                 $script:Credential = Get-Credential
             }
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$Credential)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'AboveNormal'
@@ -8198,16 +8148,16 @@ function FileSearchFileSearchCommand {
                         $FilesFoundList += $FilesFound | Select-Object -Property PSComputerName, Directory, Name, BaseName, Extension, Hash, Algorithm, Attributes, CreationTime, LastWriteTime, LastAccessTime, FullName
                     }
                 }
-                $FilesFoundList | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-                $FilesFoundListAddHeader = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Header "PSComputerName","Directory","Name","BaseName","Extension","Hash","Algorithm","Attributes","CreationTime","LastWriteTime","LastAccessTime","FullName"
-                Remove-Item -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-                $FilesFoundListAddHeader | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                $FilesFoundList | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                $FilesFoundListAddHeader = Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Header "PSComputerName","Directory","Name","BaseName","Extension","Hash","Algorithm","Attributes","CreationTime","LastWriteTime","LastAccessTime","FullName"
+                Remove-Item -Path "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                $FilesFoundListAddHeader | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$Credential)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$Credential)
         }
         else {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
-                param($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth)
+                param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
                 [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
@@ -8260,17 +8210,17 @@ function FileSearchFileSearchCommand {
                         $FilesFoundList += $FilesFound | Select-Object -Property PSComputerName, Directory, Name, BaseName, Extension, Attributes, CreationTime, LastWriteTime, LastAccessTime, FullName
                     }
                 }
-                $FilesFoundList | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
-                $FilesFoundListAddHeader = Import-Csv "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Header "PSComputerName","Directory","Name","BaseName","Extension","Attributes","CreationTime","LastWriteTime","LastAccessTime","FullName"
-                Remove-Item -Path "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
-                $FilesFoundListAddHeader | Export-CSV "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                $FilesFoundList | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
+                $FilesFoundListAddHeader = Import-Csv "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -Header "PSComputerName","Directory","Name","BaseName","Extension","Attributes","CreationTime","LastWriteTime","LastAccessTime","FullName"
+                Remove-Item -Path "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv"
+                $FilesFoundListAddHeader | Export-CSV "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation
 
-            } -ArgumentList @($PoShHome,$PoShLocation,$CollectedResultsUncompiled,$CollectionName,$CollectionShortName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth)
+            } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth)
         } 
     }
     Monitor-Jobs $CollectionName
     Conduct-PostCommandExecution $CollectionName
-    Compile-CsvFiles "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" "$PoShLocation\$CollectionName.csv"
+    Compile-CsvFiles "$IndividualHostResults\$CollectionDirectory" "$CollectedDataTimeStampDirectory\$CollectionName.csv"
     Remove-DuplicateCsvHeaders
 }
 
@@ -8386,8 +8336,8 @@ $Section1SysinternalsTab.Location = New-Object System.Drawing.Size($Sysinternals
 $Section1SysinternalsTab.Size     = New-Object System.Drawing.Size($SysinternalsLabelWidth,$SysinternalsLabelHeight) 
 $Section1SysinternalsTab.UseVisualStyleBackColor = $True
 
-# Test if the SysinternalsSuite Directory is there; if it's there load the tab
-if (Test-Path $PoShHome\SysinternalsSuite) {
+# Test if the External Programs directory is present; if it's there load the tab
+if (Test-Path $ExternalPrograms) {
     $Section1CollectionsTabControl.Controls.Add($Section1SysinternalsTab)
 }
 
@@ -8441,18 +8391,18 @@ $SysinternalsAutorunsButton.add_click({
     $SysinternalsAutorunsOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $SysinternalsAutorunsOpenFileDialog.filter = "Autoruns File (*.arn)| *.arn|All files (*.*)|*.*"
     $SysinternalsAutorunsOpenFileDialog.ShowHelp = $true
-    if (Test-Path -Path $PoShLocation) {
-        $SysinternalsAutorunsOpenFileDialog.InitialDirectory = "$PoShLocation\$CollectedResultsUncompiled\$($SysinternalsAutorunsCheckbox.Name)"
+    if (Test-Path -Path $CollectedDataTimeStampDirectory) {
+        $SysinternalsAutorunsOpenFileDialog.InitialDirectory = "$IndividualHostResults\$($SysinternalsAutorunsCheckbox.Name)"
         $SysinternalsAutorunsOpenFileDialog.ShowDialog() | Out-Null
-        $ProcMonFileLocation = "$PoShLocation"
+        $ProcMonFileLocation = "$CollectedDataTimeStampDirectory"
     }
     else {
-        $SysinternalsAutorunsOpenFileDialog.InitialDirectory = "$PoShHome\$CollectedData"   
+        $SysinternalsAutorunsOpenFileDialog.InitialDirectory = "$CollectedDataDirectory"   
         $SysinternalsAutorunsOpenFileDialog.ShowDialog() | Out-Null
-        $ProcMonFileLocation = "$PoShHome\$CollectedData"
+        $ProcMonFileLocation = "$CollectedDataDirectory"
     }
     if ($($SysinternalsAutorunsOpenFileDialog.filename)) {
-        Start-Process "$PoShHome\SysinternalsSuite\Autoruns.exe" -ArgumentList "`"$($SysinternalsAutorunsOpenFileDialog.filename)`""
+        Start-Process "$ExternalPrograms\Autoruns.exe" -ArgumentList "`"$($SysinternalsAutorunsOpenFileDialog.filename)`""
     }
 })
 $Section1SysinternalsTab.Controls.Add($SysinternalsAutorunsButton) 
@@ -8467,10 +8417,10 @@ $SysinternalsAutorunsCheckbox.Name = "Autoruns"
 # Command Execution
 function SysinternalsAutorunsCommand {
     $CollectionName = "Autoruns"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
 
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
 
         Function SysinternalsAutorunsData {
@@ -8478,8 +8428,8 @@ function SysinternalsAutorunsCommand {
             $ToolName                   = 'Autoruns'
             $AdminShare                 = 'c$'
             $LocalDrive                 = 'c:'
-            $PSExecPath                 = "$PoShHome\SysinternalsSuite\PSExec.exe"
-            $SysinternalsExecutablePath = "$PoShHome\SysinternalsSuite\Autoruns.exe"
+            $PSExecPath                 = "$ExternalPrograms\PSExec.exe"
+            $SysinternalsExecutablePath = "$ExternalPrograms\Autoruns.exe"
             $TargetFolder               = "Windows\Temp"
             
             $MainListBox.Items.Insert(2,"Copying $ToolName to $TargetComputer temporarily for use by PSExec.")
@@ -8507,7 +8457,7 @@ function SysinternalsAutorunsCommand {
                     Start-Sleep -Seconds 5
 
                     $MainListBox.Items.Insert(2,"Copy $ToolName data to local machine for analysis")
-                    try { Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\Autoruns-$TargetComputer.arn" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force -Verbose -ErrorAction Stop }
+                    try { Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\Autoruns-$TargetComputer.arn" "$IndividualHostResults\$CollectionDirectory" -Force -Verbose -ErrorAction Stop }
                     catch { $_ ; }
 
                     $MainListBox.Items.Insert(2,"Remove temporary $ToolName executable and data file from target system")
@@ -8516,10 +8466,10 @@ function SysinternalsAutorunsCommand {
                     Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$SysinternalsExecutable" -Verbose -Force
 
                     $MainListBox.Items.Insert(2,"Launching $ToolName and loading collected log data")
-                    if(Test-Path("$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.arn")) { & $procmonPath /openlog $PoShHome\Sysinternals\$TargetComputer.arn }
+                    if(Test-Path("$IndividualHostResults\$CollectionDirectory\$TargetComputer.arn")) { & $procmonPath /openlog $PoShHome\Sysinternals\$TargetComputer.arn }
 
                     $FileSize = [math]::round(((Get-Item "$PoShHome\$TargetComputer.arn").Length/1mb),2)    
-                    $MainListBox.Items.Insert(2,"$PoShLocation\$TargetComputer.arn is $FileSize MB. Remember to delete it when finished.")
+                    $MainListBox.Items.Insert(2,"$CollectedDataTimeStampDirectory\$TargetComputer.arn is $FileSize MB. Remember to delete it when finished.")
 
                     break
                 }
@@ -8575,16 +8525,16 @@ $SysinternalsProcmonButton.add_click({
     $SysinternalsProcmonOpenFileDialog.Title = "Open ProcMon File"
     $SysinternalsProcmonOpenFileDialog.filter = "ProcMon Log File (*.pml)| *.pml|All files (*.*)|*.*"
     $SysinternalsProcmonOpenFileDialog.ShowHelp = $true
-    if (Test-Path -Path $PoShLocation) {
-        $SysinternalsProcmonOpenFileDialog.InitialDirectory = "$PoShLocation\$CollectedResultsUncompiled\$($SysinternalsProcessMonitorCheckbox.Name)"
+    if (Test-Path -Path $CollectedDataTimeStampDirectory) {
+        $SysinternalsProcmonOpenFileDialog.InitialDirectory = "$IndividualHostResults\$($SysinternalsProcessMonitorCheckbox.Name)"
         $SysinternalsProcmonOpenFileDialog.ShowDialog() | Out-Null
     }
     else {
-        $SysinternalsProcmonOpenFileDialog.InitialDirectory = "$PoShHome\$CollectedData"   
+        $SysinternalsProcmonOpenFileDialog.InitialDirectory = "$CollectedDataDirectory"   
         $SysinternalsProcmonOpenFileDialog.ShowDialog() | Out-Null
     }
     if ($($SysinternalsProcmonOpenFileDialog.filename)) {
-        Start-Process "$PoShHome\SysinternalsSuite\Procmon.exe" -ArgumentList "`"$($SysinternalsProcmonOpenFileDialog.filename)`""
+        Start-Process "$ExternalPrograms\Procmon.exe" -ArgumentList "`"$($SysinternalsProcmonOpenFileDialog.filename)`""
     }
 })
 $Section1SysinternalsTab.Controls.Add($SysinternalsProcmonButton) 
@@ -8601,9 +8551,9 @@ $Script:SysinternalsProcessMonitorTime = 10
 
 function SysinternalsProcessMonitorCommand {
     $CollectionName = "Process Monitor"
-    Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
+    Conduct-PreCommandExecution $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionName
     foreach ($TargetComputer in $ComputerList) {
-        Conduct-PreCommandCheck $PoShLocation $CollectedResultsUncompiled $CollectionDirectory $CollectionName $TargetComputer
+        Conduct-PreCommandCheck $CollectedDataTimeStampDirectory $IndividualHostResults $CollectionDirectory $CollectionName $TargetComputer
         Create-LogEntry $LogFile
                 
         # Collect Remote host Disk Space       
@@ -8631,8 +8581,8 @@ function SysinternalsProcessMonitorCommand {
             $ToolName                    = 'ProcMon'
             $AdminShare                  = 'c$'
             $LocalDrive                  = 'c:'
-            $PSExecPath                  = "$PoShHome\SysinternalsSuite\PSExec.exe"
-            $SysinternalsExecutablePath  = "$PoShHome\SysinternalsSuite\Procmon.exe"
+            $PSExecPath                  = "$ExternalPrograms\PSExec.exe"
+            $SysinternalsExecutablePath  = "$ExternalPrograms\Procmon.exe"
             $TargetFolder                = "Windows\Temp"            
            
             $MainListBox.Items.Insert(2,"Verifing connection to $TargetComputer, checking for PSExec and Procmon.")
@@ -8671,7 +8621,7 @@ function SysinternalsProcessMonitorCommand {
                     Start-Sleep -Seconds 5
 
                     $MainListBox.Items.Insert(2,"Copy $ToolName data to local machine for analysis")
-                    try { Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\ProcMon-$TargetComputer.pml" "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory" -Force -Verbose -ErrorAction Stop }
+                    try { Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\ProcMon-$TargetComputer.pml" "$IndividualHostResults\$CollectionDirectory" -Force -Verbose -ErrorAction Stop }
                     catch { $_ ; }
 
                     $MainListBox.Items.Insert(2,"Remove temporary $ToolName executable and data file from target system")
@@ -8680,10 +8630,10 @@ function SysinternalsProcessMonitorCommand {
                     Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$SysinternalsExecutable" -Verbose -Force
 
                     $MainListBox.Items.Insert(2,"Launching $ToolName and loading collected log data")
-                    if(Test-Path("$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.pml")) { & $SysinternalsExecutablePath /openlog $PoShHome\Sysinternals\$TargetComputer.pml }
+                    if(Test-Path("$IndividualHostResults\$CollectionDirectory\$TargetComputer.pml")) { & $SysinternalsExecutablePath /openlog $PoShHome\Sysinternals\$TargetComputer.pml }
 
-                    $FileSize = [math]::round(((Get-Item "$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.pml").Length/1mb),2)    
-                    $MainListBox.Items.Insert(2,"$PoShLocation\$CollectedResultsUncompiled\$CollectionDirectory\$TargetComputer.pml is $FileSize MB. Remember to delete it when finished.")
+                    $FileSize = [math]::round(((Get-Item "$IndividualHostResults\$CollectionDirectory\$TargetComputer.pml").Length/1mb),2)    
+                    $MainListBox.Items.Insert(2,"$IndividualHostResults\$CollectionDirectory\$TargetComputer.pml is $FileSize MB. Remember to delete it when finished.")
 
                     break
                 }
@@ -9750,7 +9700,7 @@ $DirectoryOpenListBox.Text     = "Open"
 $DirectoryOpenListBox.Location = New-Object System.Drawing.Size(($Column3RightPosition + 130),$Column3DownPosition)
 $DirectoryOpenListBox.Size     = New-Object System.Drawing.Size(80,$Column3BoxHeight) 
 $DirectoryOpenListBox.add_click({
-    if (Test-Path -Path $PoShLocation) {Invoke-Item -Path $PoShLocation}
+    if (Test-Path -Path $CollectedDataTimeStampDirectory) {Invoke-Item -Path $CollectedDataTimeStampDirectory}
     else {Invoke-Item -Path $PoShHome}
 })
 $PoShACME.Controls.Add($DirectoryOpenListBox)
@@ -9764,7 +9714,7 @@ $DirectoryUpdateListBox.Text         = "New Timestamp"
 $DirectoryUpdateListBox.Location     = New-Object System.Drawing.Size(($Column3RightPosition + 140 + 80),$Column3DownPosition)
 $DirectoryUpdateListBox.Size         = New-Object System.Drawing.Size(110,$Column3BoxHeight) 
 $DirectoryUpdateListBox.add_click({
-    $Script:PoShLocation                    = "$PoShHome\$CollectedData\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+    $Script:PoShLocation             = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
     $DirectoryListBox.Items.Clear();   
     $DirectoryListBox.Items.Add("....\$CollectedData\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))")
 })
@@ -9904,7 +9854,7 @@ $OpenResultsButton.add_click({
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $ViewCSVResultsOpenResultsOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $ViewCSVResultsOpenResultsOpenFileDialog.Title = "View Collection CSV Results"
-    $ViewCSVResultsOpenResultsOpenFileDialog.InitialDirectory = "$PoShHome\$CollectedData"
+    $ViewCSVResultsOpenResultsOpenFileDialog.InitialDirectory = "$CollectedDataDirectory"
     $ViewCSVResultsOpenResultsOpenFileDialog.filter = "CSV (*.csv)| *.csv|Excel (*.xlsx)| *.xlsx|Excel (*.xls)| *.xls|All files (*.*)|*.*"
     $ViewCSVResultsOpenResultsOpenFileDialog.ShowDialog() | Out-Null
     $ViewCSVResultsOpenResultsOpenFileDialog.ShowHelp = $true
@@ -9944,7 +9894,7 @@ $CompareButton.add_click({
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $OpenCompareReferenceObjectFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $OpenCompareReferenceObjectFileDialog.Title = "Compare Reference Csv"
-    $OpenCompareReferenceObjectFileDialog.InitialDirectory = "$PoShHome\$CollectedData"
+    $OpenCompareReferenceObjectFileDialog.InitialDirectory = "$CollectedDataDirectory"
     $OpenCompareReferenceObjectFileDialog.filter = "CSV (*.csv)| *.csv|Excel (*.xlsx)| *.xlsx|Excel (*.xls)| *.xls|All files (*.*)|*.*"
     $OpenCompareReferenceObjectFileDialog.ShowDialog() | Out-Null
     $OpenCompareReferenceObjectFileDialog.ShowHelp = $true
@@ -9955,7 +9905,7 @@ $CompareButton.add_click({
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $OpenCompareDifferenceObjectFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $OpenCompareDifferenceObjectFileDialog.Title = "Compare Difference Csv"
-    $OpenCompareDifferenceObjectFileDialog.InitialDirectory = "$PoShHome\$CollectedData"
+    $OpenCompareDifferenceObjectFileDialog.InitialDirectory = "$CollectedDataDirectory"
     $OpenCompareDifferenceObjectFileDialog.filter = "CSV (*.csv)| *.csv|Excel (*.xlsx)| *.xlsx|Excel (*.xls)| *.xls|All files (*.*)|*.*"
     $OpenCompareDifferenceObjectFileDialog.ShowDialog() | Out-Null
     $OpenCompareDifferenceObjectFileDialog.ShowHelp = $true
@@ -10083,7 +10033,7 @@ $ViewChartButton.add_click({
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $ViewChartOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $ViewChartOpenFileDialog.Title = "Open File To View As A Chart"
-    $ViewChartOpenFileDialog.InitialDirectory = "$PoShHome\$CollectedData"
+    $ViewChartOpenFileDialog.InitialDirectory = "$CollectedDataDirectory"
     $ViewChartOpenFileDialog.filter = "CSV (*.csv)| *.csv|Excel (*.xlsx)| *.xlsx|Excel (*.xls)| *.xls|All files (*.*)|*.*"
     $ViewChartOpenFileDialog.ShowDialog() | Out-Null
     $ViewChartOpenFileDialog.ShowHelp = $true
@@ -10678,7 +10628,7 @@ $ComputerListPSExecButton.add_click({
         $Credentials = ""
     }
 
-    $PSExecPath   = "$PoShHome\SysinternalsSuite\PsExec.exe"
+    $PSExecPath   = "$ExternalPrograms\PsExec.exe"
     $PSExecTarget = "$($ComputerListBox.SelectedItem)"
 
     Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PSExecPath' -ArgumentList '-accepteula -s \\$PSExecTarget $UseCredential cmd'"
@@ -10688,8 +10638,8 @@ $ComputerListPSExecButton.add_click({
     $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) PSExec: $($ComputerListBox.SelectedItem)"
     $LogMessage | Add-Content -Path $LogFile
 })
-# Test if the SysinternalsSuite Directory is there; if it's there load the tab
-if (Test-Path "$PoShHome\SysinternalsSuite\PsExec.exe") {
+# Test if the External Programs directory is present; if it's there load the tab
+if (Test-Path "$ExternalPrograms\PsExec.exe") {
     $Section2ActionTab.Controls.Add($ComputerListPSExecButton) 
 }
 
@@ -11130,7 +11080,7 @@ function Compile-CsvFiles([string]$LocationOfCSVsToCompile, [string]$LocationToS
 function Remove-DuplicateCsvHeaders {
     $count = 1
     $output = @()
-    $Contents = Get-Content "$PoShLocation\$CollectionName.csv" 
+    $Contents = Get-Content "$CollectedDataTimeStampDirectory\$CollectionName.csv" 
     $Header = $Contents | Select-Object -First 1
     foreach ($line in $Contents) {
         if ($line -match $Header -and $count -eq 1) {
@@ -11141,8 +11091,8 @@ function Remove-DuplicateCsvHeaders {
             $output += $line + "`r`n"
         }
     }
-    Remove-Item -Path "$PoShLocation\$CollectionName.csv"
-    $output | Out-File -FilePath "$PoShLocation\$CollectionName.csv"
+    Remove-Item -Path "$CollectedDataTimeStampDirectory\$CollectionName.csv"
+    $output | Out-File -FilePath "$CollectedDataTimeStampDirectory\$CollectionName.csv"
 }
 
 
