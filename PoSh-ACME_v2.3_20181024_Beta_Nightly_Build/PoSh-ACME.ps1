@@ -1,17 +1,17 @@
 ﻿<#
     .SYNOPSIS  
-          ____            _____   __              ___     _____   __   ___  _____
-         / __ \          / ___/  / /             /   |   / ___/  /  | /  / / ___/
-        / / / / _____   / /_    / /_            / /| |  / /     / /||/  / / /_   
-       / /_/ / / ___ \  \__ \  / __ \  ______  / /_| | / /     / / |_/ / / __/   
-      / ____/ / /__/ / ___/ / / / / / /_____/ / ____ |/ /___  / /   / / / /___   
-     /_/      \_____/ /____/ /_/ /_/         /_/   |_|\____/ /_/   /_/ /_____/   
-    ==============================================================================
+     _______             ____  __               _____     ____  ___    __  _____ 
+     |   _  \           /  __||  |             /  _  \   / ___\ |  \  /  | | ___|
+     |  |_)  | _____   |  (   |  |___   ____  |  (_)  | / /     |   \/   | | |_  
+     |   ___/ /  _  \   \  \  |   _  \ |____| |   _   || |      | |\  /| | |  _| 
+     |  |    |  (_)  | __)  | |  | |  |       |  | |  | \ \____ | | \/ | | | |__ 
+     |__|     \_____/ |____/  |__| |__|       |__| |__|  \____/ |_|    |_| |____|
+     ============================================================================
      PowerShell - Automated Collection Made Easy (ACME) For The Security Analyst! 
      ACME: The Point At Which Something Is The Best, Perfect, Or Most Successful. 
-    ==============================================================================
+     ============================================================================
      File Name      : PoSh-ACME.ps1
-     Version        : v.2.3 Beta Nightly Build
+     Version        : v.2.3 Beta
 
      Author         : high101bro
      Email          : high101bro@gmail.com
@@ -21,7 +21,7 @@
                     : WinRM  (Default Port 5986) - Preferably On A Domain Host
      Optional       : PSExec.exe, Procmon.exe, Autoruns.exe 
         		    : Can run standalone, but works best with the Resources folder!
-     Updated        : 22 Oct 18
+     Updated        : 21 Oct 18
      Created        : 21 Aug 18
 
     PoSh-ACME is a tool that allows you to run any number of queries against any number
@@ -9716,7 +9716,7 @@ $DirectoryUpdateListBox.Size         = New-Object System.Drawing.Size(110,$Colum
 $DirectoryUpdateListBox.add_click({
     $Script:PoShLocation             = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
     $DirectoryListBox.Items.Clear();   
-    $DirectoryListBox.Items.Add("....\$CollectedData\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))")
+    $DirectoryListBox.Items.Add("....\$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))")
 })
 $PoShACME.Controls.Add($DirectoryUpdateListBox) 
 
@@ -9748,6 +9748,520 @@ $TextToSpeachCheckBox.Checked  = $False
 $TextToSpeachCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
 #$TextToSpeachCheckBox.Add_Click({ })
 $PoShACME.Controls.Add($TextToSpeachCheckBox)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#polo
+#============================================================================================================================================================
+# View Results As Charts
+#============================================================================================================================================================
+
+#-------------------
+# View Results As Charts Button
+#-------------------
+$ViewResultsAsChartsButton          = New-Object System.Windows.Forms.Button
+$ViewResultsAsChartsButton.Name     = "View Results As Charts"
+$ViewResultsAsChartsButton.Text     = "$($ViewResultsAsChartsButton.Name)"
+$ViewResultsAsChartsButton.UseVisualStyleBackColor = $True
+$ViewResultsAsChartsButton.Location = New-Object System.Drawing.Size(($DirectoryListBox.Location.X),($DirectoryListBox.Location.Y + $DirectoryListBox.Size.Height + 25))
+$ViewResultsAsChartsButton.Size     = New-Object System.Drawing.Size(200,$Column3BoxHeight) 
+$PoShACME.Controls.Add($ViewResultsAsChartsButton)
+$ViewResultsAsChartsButton.add_click({
+    # Open File
+    [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+    $ViewResultsAsChartsOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $ViewResultsAsChartsOpenFileDialog.Title = "Open File To View As A Chart"
+    $ViewResultsAsChartsOpenFileDialog.InitialDirectory = "$CollectedDataDirectory"
+    $ViewResultsAsChartsOpenFileDialog.filter = "CSV (*.csv)| *.csv|Excel (*.xlsx)| *.xlsx|Excel (*.xls)| *.xls|All files (*.*)|*.*"
+    $ViewResultsAsChartsOpenFileDialog.ShowDialog() | Out-Null
+    $ViewResultsAsChartsOpenFileDialog.ShowHelp = $true
+
+    #====================================
+    # View Results As Charts Command Function
+    #====================================
+    function ViewResultsAsChartsCommand {
+        #https://bytecookie.wordpress.com/2012/04/13/tutorial-powershell-and-microsoft-chart-controls-or-how-to-spice-up-your-reports/
+        # PowerShell v3+ OR PowerShell v2 with Microsoft Chart Controls for Microsoft .NET Framework 3.5 Installed
+
+        Function Invoke-SaveDialog {
+            $FileTypes = [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')| ForEach {
+                $_.Insert(0,'*.')
+            }
+            $SaveFileDlg = New-Object System.Windows.Forms.SaveFileDialog
+            $SaveFileDlg.DefaultExt='PNG'
+            $SaveFileDlg.Filter="Image Files ($($FileTypes)) | All Files (*.*)|*.*"
+            $return = $SaveFileDlg.ShowDialog()
+            If ($Return -eq 'OK') {
+                [pscustomobject]@{
+                    FileName = $SaveFileDlg.FileName
+                    Extension = $SaveFileDlg.FileName -replace '.*\.(.*)','$1'
+                }
+            }
+        }
+
+        Add-Type -AssemblyName System.Windows.Forms
+        Add-Type -AssemblyName System.Windows.Forms.DataVisualization
+
+        #-----------------------------------------
+        # View Results As Charts - Obtains source data
+        #-----------------------------------------
+        # Checks how to sort data by Ascending or Decending
+        if ($Script:ViewResultsAsChartsChoice[4] -eq $True) {
+            $DataSource = $ViewResultsAsChartsFile | Sort-Object $Script:ViewResultsAsChartsChoice[1] | Select-Object -First $Script:ViewResultsAsChartsChoice[3] -Property $Script:ViewResultsAsChartsChoice[0], $Script:ViewResultsAsChartsChoice[1]
+        }
+        elseif ($Script:ViewResultsAsChartsChoice[5] -eq $True) {
+            $DataSource = $ViewResultsAsChartsFile | Sort-Object $Script:ViewResultsAsChartsChoice[1] -Descending | Select-Object -First $Script:ViewResultsAsChartsChoice[3] -Property $Script:ViewResultsAsChartsChoice[0], $Script:ViewResultsAsChartsChoice[1]
+        }
+        #--------------------------
+        # View Results As Charts Object
+        #--------------------------
+            $Chart = New-object System.Windows.Forms.DataVisualization.Charting.Chart
+            $Chart.Width           = 700
+            $Chart.Height          = 400
+            $Chart.Left            = 10
+            $Chart.Top             = 10
+            $Chart.BackColor       = [System.Drawing.Color]::White
+            $Chart.BorderColor     = 'Black'
+            $Chart.BorderDashStyle = 'Solid'
+            $Chart.Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
+        #-------------------------
+        # View Results As Charts Title 
+        #-------------------------
+            $ChartTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title
+            $ChartTitle.text      = ($ViewResultsAsChartsOpenFileDialog.FileName.split('\'))[-1] -replace '.csv',''
+            $ChartTitle.Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
+            $ChartTitle.ForeColor = "black"
+            $ChartTitle.Alignment = "topcenter" #"topLeft"
+            $Chart.Titles.Add($ChartTitle)
+        #------------------------
+        # View Results As Charts Area
+        #------------------------
+            $ChartArea                = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+            $ChartArea.Name           = "Chart Area"
+            $ChartArea.AxisX.Title    = $Script:ViewResultsAsChartsChoice[0]
+            $ChartArea.AxisY.Title    = $Script:ViewResultsAsChartsChoice[1]
+            $ChartArea.AxisX.Interval = 1
+            #$ChartArea.AxisY.Interval = 100
+            $ChartArea.AxisY.IntervalAutoMode = $true
+
+            # Option to enable 3D Charts
+            if ($Script:ViewResultsAsChartsChoice[7] -eq $true) {
+                $ChartArea.Area3DStyle.Enable3D=$True
+                $ChartArea.Area3DStyle.Inclination = 50
+            }
+            $Chart.ChartAreas.Add($ChartArea)
+        #--------------------------
+        # View Results As Charts Legend 
+        #--------------------------
+            $Legend = New-Object system.Windows.Forms.DataVisualization.Charting.Legend
+            $Legend.Enabled = $Script:ViewResultsAsChartsChoice[6]
+            $Legend.Name = "Legend"
+            $Legend.Title = $Script:ViewResultsAsChartsChoice[1]
+            $Legend.TitleAlignment = "topleft"
+            $Legend.TitleFont = New-Object System.Drawing.Font @('Microsoft Sans Serif','11', [System.Drawing.FontStyle]::Bold)
+            $Legend.IsEquallySpacedItems = $True
+            $Legend.BorderColor = 'Black'
+            $Chart.Legends.Add($Legend)
+        #---------------------------------
+        # View Results As Charts Data Series 1
+        #---------------------------------
+            $Series01Name = $Script:ViewResultsAsChartsChoice[1]
+            $Chart.Series.Add("$Series01Name")
+            $Chart.Series["$Series01Name"].ChartType = $Script:ViewResultsAsChartsChoice[2]
+            $Chart.Series["$Series01Name"].BorderWidth  = 1
+            $Chart.Series["$Series01Name"].IsVisibleInLegend = $true
+            $Chart.Series["$Series01Name"].Chartarea = "Chart Area"
+            $Chart.Series["$Series01Name"].Legend = "Legend"
+            $Chart.Series["$Series01Name"].Color = "#62B5CC"
+            $Chart.Series["$Series01Name"].Font = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+            # Pie Charts - Moves text off pie
+            $Chart.Series["$Series01Name"]['PieLineColor'] = 'Black'
+            $Chart.Series["$Series01Name"]['PieLabelStyle'] = 'Outside'
+
+        <# # data series 2
+           $Chart.Series.Add("Series02")
+           $Chart.Series["Series02"].ChartType = "$ChartTypeChosen"
+           $Chart.Series["Series02"].IsVisibleInLegend = $true
+           $Chart.Series["Series02"].BorderWidth  = 3
+           $Chart.Series["Series02"].Chartarea = "ChartArea1"
+           $Chart.Series["Series02"].Legend = "Legend1"
+           $Chart.Series["Series02"].color = "#E3B64C"
+           $datasource | ForEach-Object {$Chart.Series["Series02"].Points.addxy( $_.Name , ($_.PrivateMemorySize / 1000000)) }
+        #>
+
+        <# # data series 3
+           $Chart.Series.Add("Series02")
+           $Chart.Series["Series02"].ChartType = "$ChartTypeChosen"
+           $Chart.Series["Series02"].IsVisibleInLegend = $true
+           $Chart.Series["Series02"].BorderWidth  = 3
+           $Chart.Series["Series02"].Chartarea = "ChartArea1"
+           $Chart.Series["Series02"].Legend = "Legend1"
+           $Chart.Series["Series02"].color = "#E3B64C"
+           $datasource | ForEach-Object {$Chart.Series["Series02"].Points.addxy( $_.Name , ($_.PrivateMemorySize / 1000000)) }
+        #>
+
+        #-----------------------------------------------------------
+        # View Results As Charts - Code that counts computers that match
+        #-----------------------------------------------------------
+            # If the Second field/Y Axis equals PSComputername, it counts it
+            if ($Script:ViewResultsAsChartsChoice[1] -eq "PSComputerName") {
+                $Script:ViewResultsAsChartsChoice0 = "Name"
+                $Script:ViewResultsAsChartsChoice1 = "PSComputerName"                
+                #$DataSource = Import-Csv "C:\Users\Dan\Documents\GitHub\Dev Ops\Collected Data\2018-10-23 @ 2246 51\Processes - Standard.csv"
+                $UniqueDataFields = $DataSource | Select-Object -Property $Script:ViewResultsAsChartsChoice0 | Sort-Object -Property $Script:ViewResultsAsChartsChoice0 -Unique                
+                $ComputerWithDataResults = @()
+                foreach ($DataField in $UniqueDataFields) {
+                    $Count = 0
+                    $Computers = @()
+                    foreach ( $Line in $DataSource ) { 
+                        if ( $Line.Name -eq $DataField.Name ) {
+                            $Count += 1
+                            if ( $Computers -notcontains $Line.PSComputerName ) { $Computers += $Line.PSComputerName }
+                        }
+                    }
+                    $UniqueCount = $Computers.Count
+                    $ComputersWithData =  New-Object PSObject -Property @{
+                        DataField    = $DataField
+                        TotalCount   = $Count
+                        UniqueCount  = $UniqueCount
+                        ComputerHits = $Computers 
+                    }
+                    $ComputerWithDataResults += $ComputersWithData
+                    #"$DataField"
+                    #"Count: $Count"
+                    #"Computers: $Computers"
+                    #"------------------------------"
+                }
+
+                #$ComputerWithDataResults | Select-Object -Property DataField, TotalCount, UniqueCount, ComputerHits -ExpandProperty DataField | Select-Object Name, @{Name="ComputerHits";Expression={$_.ComputerHits -join ", "}}, TotalCount, UniqueCount
+                $DataSourceX = '$_.DataField.Name'
+                $DataSourceY = '$_.UniqueCount'
+                $ComputerWithDataResults | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}          
+            }
+            else {
+                $DataSourceX = '$_.($Script:ViewResultsAsChartsChoice[0])'
+                $DataSourceY = '$_.($Script:ViewResultsAsChartsChoice[1])'
+                $DataSource | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}
+            }
+        
+        #------------------------
+        # View Results As Charts Form 
+        #------------------------
+            $AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
+                [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
+            $ViewResultsAsChartsForm        = New-Object Windows.Forms.Form
+            $ViewResultsAsChartsForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\favicon.ico")
+            $ViewResultsAsChartsForm.Width  = 740
+            $ViewResultsAsChartsForm.Height = 490
+            $ViewResultsAsChartsForm.controls.add($Chart)
+            $Chart.Anchor = $AnchorAll
+        #-------------------------------
+        # View Results As Charts Save Button
+        #-------------------------------
+            $SaveButton        = New-Object Windows.Forms.Button
+            $SaveButton.Text   = "Save"
+            $SaveButton.Top    = 420
+            $SaveButton.Left   = 600
+            $SaveButton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+             [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
+            $SaveButton.add_click({
+                $Result = Invoke-SaveDialog
+                If ($Result) { $Chart.SaveImage($Result.FileName, $Result.Extension) }
+            }) 
+        $ViewResultsAsChartsForm.controls.add($SaveButton)
+        $ViewResultsAsChartsForm.Add_Shown({$ViewResultsAsChartsForm.Activate()})
+        [void]$ViewResultsAsChartsForm.ShowDialog()
+        #---------------------------------------
+        # View Results As Charts - Autosave an Image
+        #---------------------------------------
+        #$Chart.SaveImage('C:\temp\chart.jpeg', 'jpeg')
+    }
+
+    #=================================================
+    # View Results As Charts Select Property Form Function
+    #=================================================
+    # This following 'if statement' is used for when canceling out of a window
+    if ($ViewResultsAsChartsOpenFileDialog.FileName) {
+        # Imports the file chosen
+        $ViewResultsAsChartsFile = Import-Csv $ViewResultsAsChartsOpenFileDialog.FileName
+        [array]$ViewResultsAsChartsArrayItems = $ViewResultsAsChartsFile | Get-Member -MemberType NoteProperty | Select-Object -Property Name -ExpandProperty Name
+        [array]$ViewResultsAsChartsArray = $ViewResultsAsChartsArrayItems | Sort-Object
+
+        function ViewResultsAsChartsSelectProperty{
+            [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+            [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
+
+            #------------------------------------
+            # View Results As Charts Execute Function
+            #------------------------------------
+            # This Function Returns the Selected Value from the Drop Down and then Closes the Form
+            function ViewResultsAsChartsExecute {
+                if ($ViewResultsAsChartsXComboBox.SelectedItem -eq $null){
+                    #$ViewResultsAsChartsXComboBox.SelectedItem = $ViewResultsAsChartsXComboBox.Items[0]
+                    $ViewResultsAsChartsXComboBox.SelectedItem = "Name"
+                    $Script:ViewResultsAsChartsXChoice = $ViewResultsAsChartsXComboBox.SelectedItem.ToString()
+                    #$ViewResultsAsChartsSelectionForm.Close()
+                }
+                if ($ViewResultsAsChartsYComboBox.SelectedItem -eq $null){
+                    #$ViewResultsAsChartsYComboBox.SelectedItem = $ViewResultsAsChartsYComboBox.Items[0]
+                    $ViewResultsAsChartsYComboBox.SelectedItem = "PSComputerName"
+                    $Script:ViewResultsAsChartsYChoice = $ViewResultsAsChartsYComboBox.SelectedItem.ToString()
+                    #$ViewResultsAsChartsSelectionForm.Close()
+                }
+                if ($ViewResultsAsChartsChartTypesComboBox.SelectedItem -eq $null){
+                    #$ViewResultsAsChartsChartTypesComboBox.SelectedItem = $ViewResultsAsChartsChartTypesComboBox.Items[0]
+                    $ViewResultsAsChartsChartTypesComboBox.SelectedItem = "Column"
+                    $Script:ViewResultsAsChartsChartTypesChoice = $ViewResultsAsChartsChartTypesComboBox.SelectedItem.ToString()
+                    #$ViewResultsAsChartsSelectionForm.Close()
+                }
+                else{
+                    $Script:ViewResultsAsChartsXChoice = $ViewResultsAsChartsXComboBox.SelectedItem.ToString()
+                    $Script:ViewResultsAsChartsYChoice = $ViewResultsAsChartsYComboBox.SelectedItem.ToString()
+                    $Script:ViewResultsAsChartsChartTypesChoice = $ViewResultsAsChartsChartTypesComboBox.SelectedItem.ToString()
+                    ViewResultsAsChartsCommand
+                    #$ViewResultsAsChartsSelectionForm.Close()
+                }
+                # This array outputs the multiple results and is later used in the charts
+                $Script:ViewResultsAsChartsChoice = @($Script:ViewResultsAsChartsXChoice, $Script:ViewResultsAsChartsYChoice, $Script:ViewResultsAsChartsChartTypesChoice, $ViewResultsAsChartsLimitResultsTextBox.Text, $ViewResultsAsChartsAscendingRadioButton.Checked, $ViewResultsAsChartsDescendingRadioButton.Checked, $ViewResultsAsChartsLegendCheckBox.Checked, $ViewResultsAsCharts3DChartCheckBox.Checked)
+                <# Notes:
+                    $Script:ViewResultsAsChartsChoice[0] = $Script:ViewResultsAsChartsXChoice
+                    $Script:ViewResultsAsChartsChoice[1] = $Script:ViewResultsAsChartsYChoice
+                    $Script:ViewResultsAsChartsChoice[2] = $Script:ViewResultsAsChartsChartTypesChoice
+                    $Script:ViewResultsAsChartsChoice[3] = $ViewResultsAsChartsLimitResultsTextBox.Text
+                    $Script:ViewResultsAsChartsChoice[4] = $ViewResultsAsChartsAscendingRadioButton.Checked
+                    $Script:ViewResultsAsChartsChoice[5] = $ViewResultsAsChartsDescendingRadioButton.Checked
+                    $Script:ViewResultsAsChartsChoice[6] = $ViewResultsAsChartsLegendCheckBox.Checked
+                    $Script:ViewResultsAsChartsChoice[7] = $ViewResultsAsCharts3DChartCheckBox.Checked
+                #>
+                return $Script:ViewResultsAsChartsChoice
+            }
+
+            #----------------------------------
+            # View Results As Charts Selection Form
+            #----------------------------------
+            $ViewResultsAsChartsSelectionForm        = New-Object System.Windows.Forms.Form
+            $ViewResultsAsChartsSelectionForm.width  = 327
+            $ViewResultsAsChartsSelectionForm.height = 287 
+            $ViewResultsAsChartsSelectionForm.Text   = ”View Results As Charts - Select Fields ”
+            $ViewResultsAsChartsSelectionForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\favicon.ico")
+
+            $ViewResultsAsChartsSelectionForm.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen
+            $ViewResultsAsChartsSelectionForm.ControlBox = $true
+            #$ViewResultsAsChartsSelectionForm.Add_Shown({$ViewResultsAsChartsSelectionForm.Activate()})
+
+            #------------------------------
+            # View Results As Charts Main Label
+            #------------------------------
+            $ViewResultsAsChartsMainLabel          = New-Object System.Windows.Forms.Label
+            $ViewResultsAsChartsMainLabel.Location = New-Object System.Drawing.Size(10,10) 
+            $ViewResultsAsChartsMainLabel.size     = New-Object System.Drawing.Size(290,25) 
+            $ViewResultsAsChartsMainLabel.Text     = "Fill out the bellow to view a chart of a csv file:`nNote: Currently some limitations with compiled results files."
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsMainLabel)
+
+            #------------------------------
+            # View Results As Charts X ComboBox
+            #------------------------------
+            $ViewResultsAsChartsXComboBox          = New-Object System.Windows.Forms.ComboBox
+            $ViewResultsAsChartsXComboBox.Location = New-Object System.Drawing.Size(10,($ViewResultsAsChartsMainLabel.Location.y + $ViewResultsAsChartsMainLabel.Size.Height + 5))
+            $ViewResultsAsChartsXComboBox.Size     = New-Object System.Drawing.Size(185,25)
+            $ViewResultsAsChartsXComboBox.Text     = "Field 1 - X Axis"
+            $ViewResultsAsChartsXComboBox.AutoCompleteSource = "ListItems"
+            $ViewResultsAsChartsXComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+            $ViewResultsAsChartsXComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewResultsAsChartsExecute} })
+            ForEach ($Item in $ViewResultsAsChartsArray) { $ViewResultsAsChartsXComboBox.Items.Add($Item) }
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsXComboBox)
+
+            #------------------------------
+            # View Results As Charts Y ComboBox
+            #------------------------------
+            $ViewResultsAsChartsYComboBox          = New-Object System.Windows.Forms.ComboBox
+            $ViewResultsAsChartsYComboBox.Location = New-Object System.Drawing.Size(10,($ViewResultsAsChartsXComboBox.Location.y + $ViewResultsAsChartsXComboBox.Size.Height + 5))
+            $ViewResultsAsChartsYComboBox.Size     = New-Object System.Drawing.Size(185,25)
+            $ViewResultsAsChartsYComboBox.Text     = "Field 2 - Y Axis"
+            $ViewResultsAsChartsYComboBox.AutoCompleteSource = "ListItems"
+            $ViewResultsAsChartsYComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+            $ViewResultsAsChartsYComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewResultsAsChartsExecute} })
+            ForEach ($Item in $ViewResultsAsChartsArray) { $ViewResultsAsChartsYComboBox.Items.Add($Item) }
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsYComboBox)
+
+            #----------------------------------
+            # View Results As Charts Types ComboBox
+            #----------------------------------
+            $ViewResultsAsChartsChartTypesComboBox          = New-Object System.Windows.Forms.ComboBox
+            $ViewResultsAsChartsChartTypesComboBox.Location = New-Object System.Drawing.Size(10,($ViewResultsAsChartsYComboBox.Location.y + $ViewResultsAsChartsYComboBox.Size.Height + 5))
+            $ViewResultsAsChartsChartTypesComboBox.Size     = New-Object System.Drawing.Size(185,25)
+            $ViewResultsAsChartsChartTypesComboBox.Text     = "Chart Types"
+            $ViewResultsAsChartsChartTypesComboBox.AutoCompleteSource = "ListItems"
+            $ViewResultsAsChartsChartTypesComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+            $ViewResultsAsChartsChartTypesComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewResultsAsChartsExecute} })
+            $ChartTypesAvailable = @('Pie','Column','Line','Bar','Doughnut','Area','--- Less Commonly Used Below ---','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointSndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+            ForEach ($Item in $ChartTypesAvailable) {
+             [void] $ViewResultsAsChartsChartTypesComboBox.Items.Add($Item)
+            }
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsChartTypesComboBox) 
+
+            #---------------------------------------
+            # View Results As Charts Limit Results Label
+            #---------------------------------------
+            $ViewResultsAsChartsLimitResultsLabel          = New-Object System.Windows.Forms.Label
+            $ViewResultsAsChartsLimitResultsLabel.Location = New-Object System.Drawing.Size(10,($ViewResultsAsChartsChartTypesComboBox.Location.y + $ViewResultsAsChartsChartTypesComboBox.Size.Height + 8)) 
+            $ViewResultsAsChartsLimitResultsLabel.size     = New-Object System.Drawing.Size(120,25) 
+            $ViewResultsAsChartsLimitResultsLabel.Text     = "Limit Results to:"
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsLimitResultsLabel)
+
+            #-----------------------------------------
+            # View Results As Charts Limit Results Textbox
+            #-----------------------------------------
+            $ViewResultsAsChartsLimitResultsTextBox          = New-Object System.Windows.Forms.TextBox
+            $ViewResultsAsChartsLimitResultsTextBox.Text     = 100
+            $ViewResultsAsChartsLimitResultsTextBox.Location = New-Object System.Drawing.Size(135,($ViewResultsAsChartsChartTypesComboBox.Location.y + $ViewResultsAsChartsChartTypesComboBox.Size.Height + 5))
+            $ViewResultsAsChartsLimitResultsTextBox.Size     = New-Object System.Drawing.Size(60,25)
+            $ViewResultsAsChartsLimitResultsTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewResultsAsChartsExecute} })
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsLimitResultsTextBox)
+
+            #---------------------------------------
+            # View Results As Charts Sort Order GroupBox
+            #---------------------------------------
+            # Create a group that will contain your radio buttons
+            $ViewResultsAsChartsSortOrderGroupBox          = New-Object System.Windows.Forms.GroupBox
+            $ViewResultsAsChartsSortOrderGroupBox.Location = New-Object System.Drawing.Size(10,($ViewResultsAsChartsLimitResultsTextBox.Location.y + $ViewResultsAsChartsLimitResultsTextBox.Size.Height + 7))
+            $ViewResultsAsChartsSortOrderGroupBox.size     = '290,65'
+            $ViewResultsAsChartsSortOrderGroupBox.text     = "Select how to Sort Data:"
+
+                ### Ascending Radio Button
+                $ViewResultsAsChartsAscendingRadioButton          = New-Object System.Windows.Forms.RadioButton
+                $ViewResultsAsChartsAscendingRadioButton.Location = New-Object System.Drawing.Size(20,15)
+                $ViewResultsAsChartsAscendingRadioButton.size     = '250,25'
+                $ViewResultsAsChartsAscendingRadioButton.Checked  = $true 
+                $ViewResultsAsChartsAscendingRadioButton.Text     = "Ascending / Lowest to Highest"
+                
+                ### Descending Radio Button
+                $ViewResultsAsChartsDescendingRadioButton          = New-Object System.Windows.Forms.RadioButton
+                $ViewResultsAsChartsDescendingRadioButton.Location = New-Object System.Drawing.Size(20,38)
+                $ViewResultsAsChartsDescendingRadioButton.size     = '250,25'
+                $ViewResultsAsChartsDescendingRadioButton.Checked  = $false
+                $ViewResultsAsChartsDescendingRadioButton.Text     = "Descending / Highest to Lowest"
+                
+                $ViewResultsAsChartsSortOrderGroupBox.Controls.AddRange(@($ViewResultsAsChartsAscendingRadioButton,$ViewResultsAsChartsDescendingRadioButton))
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsSortOrderGroupBox) 
+
+            #------------------------------------
+            # View Results As Charts Options GroupBox
+            #------------------------------------
+            # Create a group that will contain your radio buttons
+            $ViewResultsAsChartsOptionsGroupBox          = New-Object System.Windows.Forms.GroupBox
+            $ViewResultsAsChartsOptionsGroupBox.Location = New-Object System.Drawing.Size(($ViewResultsAsChartsXComboBox.Location.X + $ViewResultsAsChartsXComboBox.Size.Width + 5),$ViewResultsAsChartsXComboBox.Location.Y)
+             $ViewResultsAsChartsOptionsGroupBox.size     = '100,105'
+            $ViewResultsAsChartsOptionsGroupBox.text     = "Options:"
+
+                ### View Results As Charts Legend CheckBox
+                $ViewResultsAsChartsLegendCheckBox          = New-Object System.Windows.Forms.Checkbox
+                $ViewResultsAsChartsLegendCheckBox.Location = New-Object System.Drawing.Size(10,15)
+                $ViewResultsAsChartsLegendCheckBox.Size     = '85,25'
+                $ViewResultsAsChartsLegendCheckBox.Checked  = $false
+                $ViewResultsAsChartsLegendCheckBox.Enabled  = $true
+                $ViewResultsAsChartsLegendCheckBox.Text     = "Legend"
+                $ViewResultsAsChartsLegendCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
+
+                ### View Results As Charts 3D Chart CheckBox
+                $ViewResultsAsCharts3DChartCheckBox          = New-Object System.Windows.Forms.Checkbox
+                $ViewResultsAsCharts3DChartCheckBox.Location = New-Object System.Drawing.Size(10,38)
+                $ViewResultsAsCharts3DChartCheckBox.Size     = '85,25'
+                $ViewResultsAsCharts3DChartCheckBox.Checked  = $false
+                $ViewResultsAsCharts3DChartCheckBox.Enabled  = $true
+                $ViewResultsAsCharts3DChartCheckBox.Text     = "3D Chart"
+                $ViewResultsAsCharts3DChartCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
+                
+                $ViewResultsAsChartsOptionsGroupBox.Controls.AddRange(@($ViewResultsAsChartsLegendCheckBox,$ViewResultsAsCharts3DChartCheckBox))
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsOptionsGroupBox) 
+            #----------------------------------
+            # View Results As Charts Execute Button
+            #----------------------------------
+            $ViewResultsAsChartsExecuteButton          = New-Object System.Windows.Forms.Button
+            $ViewResultsAsChartsExecuteButton.Location = New-Object System.Drawing.Size(200,($ViewResultsAsChartsSortOrderGroupBox.Location.y + $ViewResultsAsChartsSortOrderGroupBox.Size.Height + 8))
+            $ViewResultsAsChartsExecuteButton.Size     = New-Object System.Drawing.Size(100,23)
+            $ViewResultsAsChartsExecuteButton.Text     = "Execute"
+            $ViewResultsAsChartsExecuteButton.Add_Click({ ViewResultsAsChartsExecute })            
+            #---------------------------------------------
+            # View Results As Charts Execute Button Note Label
+            #---------------------------------------------
+            $ViewResultsAsChartsExecuteButtonNoteLabel          = New-Object System.Windows.Forms.Label
+            $ViewResultsAsChartsExecuteButtonNoteLabel.Location = New-Object System.Drawing.Size(10,($ViewResultsAsChartsSortOrderGroupBox.Location.y + $ViewResultsAsChartsSortOrderGroupBox.Size.Height + 8)) 
+            $ViewResultsAsChartsExecuteButtonNoteLabel.size     = New-Object System.Drawing.Size(190,25) 
+            $ViewResultsAsChartsExecuteButtonNoteLabel.Text     = "Note: Press execute again if the desired chart did not appear."
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsExecuteButtonNoteLabel)
+
+
+            $ViewResultsAsChartsSelectionForm.Controls.Add($ViewResultsAsChartsExecuteButton)   
+            [void] $ViewResultsAsChartsSelectionForm.ShowDialog()
+        }
+        $Property = $null
+        $Property = ViewResultsAsChartsSelectProperty
+    }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #============================================================================================================================================================
@@ -9937,9 +10451,10 @@ $CompareButton.add_click({
         # Compare Csv Files Form
         #------------------------
         $CompareCsvFilesForm = New-Object System.Windows.Forms.Form
-        $CompareCsvFilesForm.width = 330
+        $CompareCsvFilesForm.width  = 330
         $CompareCsvFilesForm.height = 160
-        $CompareCsvFilesForm.Text = ”Compare Two CSV Files”
+        $CompareCsvFilesForm.Text   = ”Compare Two CSV Files”
+        $CompareCsvFilesForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\favicon.ico")
         $CompareCsvFilesForm.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen
         $CompareCsvFilesForm.ControlBox = $true
         #$CompareCsvFilesForm.Add_Shown({$CompareCsvFilesForm.Activate()})
@@ -10015,7 +10530,7 @@ $Column5DownPosition += $Column5DownPositionShift
 
 
 #============================================================================================================================================================
-# View Chart
+# Custom View Chart
 #============================================================================================================================================================
 
 #-------------------
@@ -10038,9 +10553,9 @@ $ViewChartButton.add_click({
     $ViewChartOpenFileDialog.ShowDialog() | Out-Null
     $ViewChartOpenFileDialog.ShowHelp = $true
 
-    #-----------------------------
-    # View Chart Command function
-    #-----------------------------
+    #====================================
+    # Custom View Chart Command Function
+    #====================================
     function ViewChartCommand {
         #https://bytecookie.wordpress.com/2012/04/13/tutorial-powershell-and-microsoft-chart-controls-or-how-to-spice-up-your-reports/
         # PowerShell v3+ OR PowerShell v2 with Microsoft Chart Controls for Microsoft .NET Framework 3.5 Installed
@@ -10064,19 +10579,14 @@ $ViewChartButton.add_click({
         Add-Type -AssemblyName System.Windows.Forms
         Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
-        #---------------------
-        # Obtains source data
-        #---------------------
-        # Checks how to sort data by Ascending or Decending
-        if ($Script:ViewChartChoice[4] -eq $True) {
-            $DataSource = $ViewChartFile | Sort-Object $Script:ViewChartChoice[1] | Select-Object -First $Script:ViewChartChoice[3] -Property $Script:ViewChartChoice[0], $Script:ViewChartChoice[1]
-        }
-        elseif ($Script:ViewChartChoice[5] -eq $True) {
-            $DataSource = $ViewChartFile | Sort-Object $Script:ViewChartChoice[1] -Descending | Select-Object -First $Script:ViewChartChoice[3] -Property $Script:ViewChartChoice[0], $Script:ViewChartChoice[1]
-        }
-        #--------------
-        # chart object
-        #--------------
+        #-----------------------------------------
+        # Custom View Chart - Obtains source data
+        #-----------------------------------------
+            $DataSource = $ViewChartFile | Select-Object -Property $Script:ViewChartChoice[0], $Script:ViewChartChoice[1]
+
+        #--------------------------
+        # Custom View Chart Object
+        #--------------------------
             $Chart = New-object System.Windows.Forms.DataVisualization.Charting.Chart
             $Chart.Width           = 700
             $Chart.Height          = 400
@@ -10086,24 +10596,25 @@ $ViewChartButton.add_click({
             $Chart.BorderColor     = 'Black'
             $Chart.BorderDashStyle = 'Solid'
             $Chart.Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
-        #-------
-        # title 
-        #-------
+        #-------------------------
+        # Custom View Chart Title 
+        #-------------------------
             $ChartTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title
             $ChartTitle.text      = ($ViewChartOpenFileDialog.FileName.split('\'))[-1] -replace '.csv',''
             $ChartTitle.Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
             $ChartTitle.ForeColor = "black"
             $ChartTitle.Alignment = "topcenter" #"topLeft"
             $Chart.Titles.Add($ChartTitle)
-        #------------
-        # chart area
-        #------------
+        #------------------------
+        # Custom View Chart Area
+        #------------------------
             $ChartArea                = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
             $ChartArea.Name           = "Chart Area"
             $ChartArea.AxisX.Title    = $Script:ViewChartChoice[0]
-            $ChartArea.AxisY.Title    = $Script:ViewChartChoice[1]
+            if ($Script:ViewChartChoice[1] -eq "PSComputername") {$ChartArea.AxisY.Title = "Number of Computers"}
+            else {$ChartArea.AxisY.Title    = $Script:ViewChartChoice[1]}
             $ChartArea.AxisX.Interval = 1
-            #$ChartArea.AxisY.Interval = 100
+            #$ChartArea.AxisY.Interval = 1
             $ChartArea.AxisY.IntervalAutoMode = $true
 
             # Option to enable 3D Charts
@@ -10112,9 +10623,9 @@ $ViewChartButton.add_click({
                 $ChartArea.Area3DStyle.Inclination = 50
             }
             $Chart.ChartAreas.Add($ChartArea)
-        #--------
-        # legend 
-        #--------
+        #--------------------------
+        # Custom View Chart Legend 
+        #--------------------------
             $Legend = New-Object system.Windows.Forms.DataVisualization.Charting.Legend
             $Legend.Enabled = $Script:ViewChartChoice[6]
             $Legend.Name = "Legend"
@@ -10124,9 +10635,9 @@ $ViewChartButton.add_click({
             $Legend.IsEquallySpacedItems = $True
             $Legend.BorderColor = 'Black'
             $Chart.Legends.Add($Legend)
-        #-------------
-        # data series
-        #-------------
+        #---------------------------------
+        # Custom View Chart Data Series 1
+        #---------------------------------
             $Series01Name = $Script:ViewChartChoice[1]
             $Chart.Series.Add("$Series01Name")
             $Chart.Series["$Series01Name"].ChartType = $Script:ViewChartChoice[2]
@@ -10139,6 +10650,7 @@ $ViewChartButton.add_click({
             # Pie Charts - Moves text off pie
             $Chart.Series["$Series01Name"]['PieLineColor'] = 'Black'
             $Chart.Series["$Series01Name"]['PieLabelStyle'] = 'Outside'
+
 
         <# # data series 2
            $Chart.Series.Add("Series02")
@@ -10162,47 +10674,26 @@ $ViewChartButton.add_click({
            $datasource | ForEach-Object {$Chart.Series["Series02"].Points.addxy( $_.Name , ($_.PrivateMemorySize / 1000000)) }
         #>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        #-----------------------------------------------------------
+        # Custom View Chart - Code that counts computers that match
+        #-----------------------------------------------------------
+            # If the Second field/Y Axis equals PSComputername, it counts it
             if ($Script:ViewChartChoice[1] -eq "PSComputerName") {
-                #$DataSource = import-csv "Z:\Collected Data\2018-10-18 @ 1559 29\Processes - Standard.csv"
-                $UniqueDataFields = $DataSource | Select-Object -Property $Script:ViewChartChoice[0] | Sort-Object -Unique
-
+                $Script:ViewChartChoice0 = "Name"
+                $Script:ViewChartChoice1 = "PSComputerName"                
+                #$DataSource = Import-Csv "C:\Users\Dan\Documents\GitHub\Dev Ops\Collected Data\2018-10-23 @ 2246 51\Processes - Standard.csv"
+                $UniqueDataFields = $DataSource | Select-Object -Property $Script:ViewChartChoice0 | Sort-Object -Property $Script:ViewChartChoice0 -Unique                
                 $ComputerWithDataResults = @()
                 foreach ($DataField in $UniqueDataFields) {
                     $Count = 0
                     $Computers = @()
-                    foreach ($Line in $DataSource) {
-                        if ($Line.name -eq $DataField) {
+                    foreach ( $Line in $DataSource ) { 
+                        if ( $Line.Name -eq $DataField.Name ) {
                             $Count += 1
-                            if ($Computers -notcontains $Line.PSComputerName) {
-                                $Computers += $Line.PSComputerName
-                            }
+                            if ( $Computers -notcontains $Line.PSComputerName ) { $Computers += $Line.PSComputerName }
                         }
                     }
                     $UniqueCount = $Computers.Count
-
                     $ComputersWithData =  New-Object PSObject -Property @{
                         DataField    = $DataField
                         TotalCount   = $Count
@@ -10215,108 +10706,56 @@ $ViewChartButton.add_click({
                     #"Computers: $Computers"
                     #"------------------------------"
                 }
-
-                #$ComputerWithDataResults | Select DataField, TotalCount, UniqueCount, ComputerHits
-                $ComputerWithDataResults | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $_.DataField, $_.UniqueCount )}
-            }
-            else {
-                $DataSourceX = '$_.($Script:ViewChartChoice[0])'
-                $DataSourceY = '$_.($Script:ViewChartChoice[1])'
-                $DataSource | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}
-            }
-
-
-
-
-<#
-            if ($Script:ViewChartChoice[1] -eq "PSComputerName") {
-                #$DataSource = import-csv "Z:\Collected Data\2018-10-18 @ 1559 29\Processes - Standard.csv"
-                $UniqueDataFields = $DataSource | Select-Object -Property $Script:ViewChartChoice[0] | Sort-Object -Unique
-
-                $ComputerWithDataResults = @()
-                foreach ($DataField in $UniqueDataFields) {
-                    $Count = 0
-                    $Computers = @()
-                    foreach ($Line in $DataSource) {
-                        if ($Line.name -eq $DataField) {
-                            $Count += 1
-                            if ($Computers -notcontains $Line.PSComputerName) {
-                                $Computers += $Line.PSComputerName
-                            }
-                        }
-                    }
-                    $UniqueCount = $Computers.Count
-
-                    $ComputersWithData =  New-Object PSObject -Property @{
-                        DataField    = $DataField
-                        TotalCount   = $Count
-                        UniqueCount  = $UniqueCount
-                        ComputerHits = $Computers 
-                    }
-                    $ComputerWithDataResults += $ComputersWithData
-                    #"$DataField"
-                    #"Count: $Count"
-                    #"Computers: $Computers"
-                    #"------------------------------"
+                $DataSourceX = '$_.DataField.Name'
+                $DataSourceY = '$_.UniqueCount'
+                if ($Script:ViewChartChoice[5]) {
+                    $ComputerWithDataResults `
+                        | Sort-Object -Property UniqueCount -Descending `
+                        | Select-Object -First $Script:ViewChartChoice[3] `
+                        | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
                 }
-
-                #$ComputerWithDataResults | Select DataField, TotalCount, UniqueCount, ComputerHits
-                $ComputerWithDataResults | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $_.DataField, $_.UniqueCount )}
+                else {
+                    $ComputerWithDataResults `
+                        | Sort-Object -Property UniqueCount `
+                        | Select-Object -First $Script:ViewChartChoice[3] `
+                        | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+                }
             }
             else {
-                $DataSourceX = '$_.($Script:ViewChartChoice[0])'
-                $DataSourceY = '$_.($Script:ViewChartChoice[1])'
-                $DataSource | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}
+                $DataSourceX = '$_.($Script:ViewChartXChoice)'
+                $DataSourceY = '$_.($Script:ViewChartYChoice)'
+                if ($Script:ViewChartChoice[5]) {
+                    $DataSource `
+                    | Sort-Object -Property $Script:ViewChartChoice[1] -Descending `
+                    | Select-Object -First [int]$ViewChartLimitResultsTextBox.Text `
+                    | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}  
+                }
+                else {
+                    $DataSource `
+                    | Sort-Object -Property $Script:ViewChartChoice[1] `
+                    | Select-Object -First  `
+                    | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}  
+                }
             }
-            $DataSource | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $_.($Script:ViewChartChoice[0]) , $_.($Script:ViewChartChoice[1]))} 
-#>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        #---------------------------
-        # Adds chart, to display it
-        #---------------------------
+        
+        #------------------------
+        # Custom View Chart Form 
+        #------------------------
             $AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
                 [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
-            $ViewChartForm = New-Object Windows.Forms.Form
-            $ViewChartForm.Width = 740
+            $ViewChartForm        = New-Object Windows.Forms.Form
+            $ViewChartForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\favicon.ico")
+            $ViewChartForm.Width  = 740
             $ViewChartForm.Height = 490
             $ViewChartForm.controls.add($Chart)
             $Chart.Anchor = $AnchorAll
-        #-------------------
-        # add a save button
-        #-------------------
-            $SaveButton = New-Object Windows.Forms.Button
-            $SaveButton.Text = "Save"
-            $SaveButton.Top = 420
-            $SaveButton.Left = 600
+        #-------------------------------
+        # Custom View Chart Save Button
+        #-------------------------------
+            $SaveButton        = New-Object Windows.Forms.Button
+            $SaveButton.Text   = "Save"
+            $SaveButton.Top    = 420
+            $SaveButton.Left   = 600
             $SaveButton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
              [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
             $SaveButton.add_click({
@@ -10326,17 +10765,18 @@ $ViewChartButton.add_click({
         $ViewChartForm.controls.add($SaveButton)
         $ViewChartForm.Add_Shown({$ViewChartForm.Activate()})
         [void]$ViewChartForm.ShowDialog()
-        #-------------------
-        # Autosave an Image
-        #-------------------
+        #---------------------------------------
+        # Custom View Chart - Autosave an Image
+        #---------------------------------------
         #$Chart.SaveImage('C:\temp\chart.jpeg', 'jpeg')
     }
 
-    #------------------------------------------
-    # View Chart Select Property Form Function
-    #------------------------------------------
-    # This following if statement is used for when canceling out of a window
+    #=================================================
+    # Custom View Chart Select Property Form Function
+    #=================================================
+    # This following 'if statement' is used for when canceling out of a window
     if ($ViewChartOpenFileDialog.FileName) {
+        # Imports the file chosen
         $ViewChartFile = Import-Csv $ViewChartOpenFileDialog.FileName
         [array]$ViewChartArrayItems = $ViewChartFile | Get-Member -MemberType NoteProperty | Select-Object -Property Name -ExpandProperty Name
         [array]$ViewChartArray = $ViewChartArrayItems | Sort-Object
@@ -10345,23 +10785,26 @@ $ViewChartButton.add_click({
             [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
             [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
 
-            #-----------------------------
-            # View Chart Execute Function
-            #-----------------------------
+            #------------------------------------
+            # Custom View Chart Execute Function
+            #------------------------------------
             # This Function Returns the Selected Value from the Drop Down and then Closes the Form
             function ViewChartExecute {
                 if ($ViewChartXComboBox.SelectedItem -eq $null){
-                    $ViewChartXComboBox.SelectedItem = $ViewChartXComboBox.Items[0]
+                    #$ViewChartXComboBox.SelectedItem = $ViewChartXComboBox.Items[0]
+                    $ViewChartXComboBox.SelectedItem = "Name"
                     $Script:ViewChartXChoice = $ViewChartXComboBox.SelectedItem.ToString()
                     #$ViewChartSelectionForm.Close()
                 }
                 if ($ViewChartYComboBox.SelectedItem -eq $null){
-                    $ViewChartYComboBox.SelectedItem = $ViewChartYComboBox.Items[0]
+                    #$ViewChartYComboBox.SelectedItem = $ViewChartYComboBox.Items[0]
+                    $ViewChartYComboBox.SelectedItem = "PSComputerName"
                     $Script:ViewChartYChoice = $ViewChartYComboBox.SelectedItem.ToString()
                     #$ViewChartSelectionForm.Close()
                 }
                 if ($ViewChartChartTypesComboBox.SelectedItem -eq $null){
-                    $ViewChartChartTypesComboBox.SelectedItem = $ViewChartChartTypesComboBox.Items[0]
+                    #$ViewChartChartTypesComboBox.SelectedItem = $ViewChartChartTypesComboBox.Items[0]
+                    $ViewChartChartTypesComboBox.SelectedItem = "Column"
                     $Script:ViewChartChartTypesChoice = $ViewChartChartTypesComboBox.SelectedItem.ToString()
                     #$ViewChartSelectionForm.Close()
                 }
@@ -10387,29 +10830,31 @@ $ViewChartButton.add_click({
                 return $Script:ViewChartChoice
             }
 
-            #---------------------------
-            # View Chart Selection Form
-            #---------------------------
+            #----------------------------------
+            # Custom View Chart Selection Form
+            #----------------------------------
             $ViewChartSelectionForm        = New-Object System.Windows.Forms.Form
             $ViewChartSelectionForm.width  = 327
             $ViewChartSelectionForm.height = 287 
             $ViewChartSelectionForm.Text   = ”View Chart - Select Fields ”
+            $ViewChartSelectionForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\favicon.ico")
+
             $ViewChartSelectionForm.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen
             $ViewChartSelectionForm.ControlBox = $true
             #$ViewChartSelectionForm.Add_Shown({$ViewChartSelectionForm.Activate()})
 
-            #-----------------------
-            # View Chart Main Label
-            #-----------------------
+            #------------------------------
+            # Custom View Chart Main Label
+            #------------------------------
             $ViewChartMainLabel          = New-Object System.Windows.Forms.Label
             $ViewChartMainLabel.Location = New-Object System.Drawing.Size(10,10) 
             $ViewChartMainLabel.size     = New-Object System.Drawing.Size(290,25) 
             $ViewChartMainLabel.Text     = "Fill out the bellow to view a chart of a csv file:`nNote: Currently some limitations with compiled results files."
             $ViewChartSelectionForm.Controls.Add($ViewChartMainLabel)
 
-            #-----------------------
-            # View Chart X ComboBox
-            #-----------------------
+            #------------------------------
+            # Custom View Chart X ComboBox
+            #------------------------------
             $ViewChartXComboBox          = New-Object System.Windows.Forms.ComboBox
             $ViewChartXComboBox.Location = New-Object System.Drawing.Size(10,($ViewChartMainLabel.Location.y + $ViewChartMainLabel.Size.Height + 5))
             $ViewChartXComboBox.Size     = New-Object System.Drawing.Size(185,25)
@@ -10420,9 +10865,9 @@ $ViewChartButton.add_click({
             ForEach ($Item in $ViewChartArray) { $ViewChartXComboBox.Items.Add($Item) }
             $ViewChartSelectionForm.Controls.Add($ViewChartXComboBox)
 
-            #-----------------------
-            # View Chart Y ComboBox
-            #-----------------------
+            #------------------------------
+            # Custom View Chart Y ComboBox
+            #------------------------------
             $ViewChartYComboBox          = New-Object System.Windows.Forms.ComboBox
             $ViewChartYComboBox.Location = New-Object System.Drawing.Size(10,($ViewChartXComboBox.Location.y + $ViewChartXComboBox.Size.Height + 5))
             $ViewChartYComboBox.Size     = New-Object System.Drawing.Size(185,25)
@@ -10433,9 +10878,9 @@ $ViewChartButton.add_click({
             ForEach ($Item in $ViewChartArray) { $ViewChartYComboBox.Items.Add($Item) }
             $ViewChartSelectionForm.Controls.Add($ViewChartYComboBox)
 
-            #---------------------------------
-            # View Chart Chart Types ComboBox
-            #---------------------------------
+            #----------------------------------
+            # Custom View Chart Types ComboBox
+            #----------------------------------
             $ViewChartChartTypesComboBox          = New-Object System.Windows.Forms.ComboBox
             $ViewChartChartTypesComboBox.Location = New-Object System.Drawing.Size(10,($ViewChartYComboBox.Location.y + $ViewChartYComboBox.Size.Height + 5))
             $ViewChartChartTypesComboBox.Size     = New-Object System.Drawing.Size(185,25)
@@ -10449,28 +10894,28 @@ $ViewChartButton.add_click({
             }
             $ViewChartSelectionForm.Controls.Add($ViewChartChartTypesComboBox) 
 
-            #--------------------------------
-            # View Chart Limit Results Label
-            #--------------------------------
+            #---------------------------------------
+            # Custom View Chart Limit Results Label
+            #---------------------------------------
             $ViewChartLimitResultsLabel          = New-Object System.Windows.Forms.Label
             $ViewChartLimitResultsLabel.Location = New-Object System.Drawing.Size(10,($ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + 8)) 
             $ViewChartLimitResultsLabel.size     = New-Object System.Drawing.Size(120,25) 
             $ViewChartLimitResultsLabel.Text     = "Limit Results to:"
             $ViewChartSelectionForm.Controls.Add($ViewChartLimitResultsLabel)
 
-            #----------------------------------
-            # View Chart Limit Results Textbox
-            #----------------------------------
+            #-----------------------------------------
+            # Custom View Chart Limit Results Textbox
+            #-----------------------------------------
             $ViewChartLimitResultsTextBox          = New-Object System.Windows.Forms.TextBox
-            $ViewChartLimitResultsTextBox.Text     = "10"
+            $ViewChartLimitResultsTextBox.Text     = 100
             $ViewChartLimitResultsTextBox.Location = New-Object System.Drawing.Size(135,($ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + 5))
             $ViewChartLimitResultsTextBox.Size     = New-Object System.Drawing.Size(60,25)
             $ViewChartLimitResultsTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewChartExecute} })
             $ViewChartSelectionForm.Controls.Add($ViewChartLimitResultsTextBox)
 
-            #--------------------------------
-            # View Chart Sort Order GroupBox
-            #--------------------------------
+            #---------------------------------------
+            # Custom View Chart Sort Order GroupBox
+            #---------------------------------------
             # Create a group that will contain your radio buttons
             $ViewChartSortOrderGroupBox          = New-Object System.Windows.Forms.GroupBox
             $ViewChartSortOrderGroupBox.Location = New-Object System.Drawing.Size(10,($ViewChartLimitResultsTextBox.Location.y + $ViewChartLimitResultsTextBox.Size.Height + 7))
@@ -10494,9 +10939,9 @@ $ViewChartButton.add_click({
                 $ViewChartSortOrderGroupBox.Controls.AddRange(@($ViewChartAscendingRadioButton,$ViewChartDescendingRadioButton))
             $ViewChartSelectionForm.Controls.Add($ViewChartSortOrderGroupBox) 
 
-            #-----------------------------
-            # View Chart Options GroupBox
-            #-----------------------------
+            #------------------------------------
+            # Custom View Chart Options GroupBox
+            #------------------------------------
             # Create a group that will contain your radio buttons
             $ViewChartOptionsGroupBox          = New-Object System.Windows.Forms.GroupBox
             $ViewChartOptionsGroupBox.Location = New-Object System.Drawing.Size(($ViewChartXComboBox.Location.X + $ViewChartXComboBox.Size.Width + 5),$ViewChartXComboBox.Location.Y)
@@ -10523,21 +10968,17 @@ $ViewChartButton.add_click({
                 
                 $ViewChartOptionsGroupBox.Controls.AddRange(@($ViewChartLegendCheckBox,$ViewChart3DChartCheckBox))
             $ViewChartSelectionForm.Controls.Add($ViewChartOptionsGroupBox) 
-
-            #---------------------------
-            # View Chart Execute Button
-            #---------------------------
+            #----------------------------------
+            # Custom View Chart Execute Button
+            #----------------------------------
             $ViewChartExecuteButton          = New-Object System.Windows.Forms.Button
             $ViewChartExecuteButton.Location = New-Object System.Drawing.Size(200,($ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + 8))
             $ViewChartExecuteButton.Size     = New-Object System.Drawing.Size(100,23)
             $ViewChartExecuteButton.Text     = "Execute"
-            $ViewChartExecuteButton.Add_Click({
-                ViewChartExecute
-            })
-            
-            #--------------------------------------
-            # View Chart Execute Button Note Label
-            #--------------------------------------
+            $ViewChartExecuteButton.Add_Click({ ViewChartExecute })            
+            #---------------------------------------------
+            # Custom View Chart Execute Button Note Label
+            #---------------------------------------------
             $ViewChartExecuteButtonNoteLabel          = New-Object System.Windows.Forms.Label
             $ViewChartExecuteButtonNoteLabel.Location = New-Object System.Drawing.Size(10,($ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + 8)) 
             $ViewChartExecuteButtonNoteLabel.size     = New-Object System.Drawing.Size(190,25) 
@@ -11148,24 +11589,19 @@ function Monitor-Jobs {
 #============================================================================================================================================================
 $ExecuteScriptHandler= {
     if ($SingleHostIPCheckBox.Checked -eq $false) {
-        # If $SingleHostIPCheckBox.Checked is true, then query a single computer, othewise
-        # query the selected computers in the computerlistbox
+        # If $SingleHostIPCheckBox.Checked is true, then query a single computer, othewise query the selected computers in the computerlistbox
         . SelectListBoxEntry
     }
-    # Checks if any computers were selected
-    if ($ComputerListBox -eq "") {
-        $MainListBox.Items.Clear()
-        $MainListBox.Items.Insert(0,"Error: Select Computers To Collect Data From...")
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"...Whoa now, slow down turbo... Make sure you select hosts to collect from...")        
-    }
     # Checks if any commands were selected
-    if ($($CommandsChecklistboxSelection.CheckedItems).Count -eq "[int]0"){
+    if ($($CommandsSelectionCheckedlistbox.SelectedItems).Count -eq 0){
         $MainListBox.Items.Clear()
-        $MainListBox.Items.Insert(0,"Error: No Collection CheckBoxes Were Selected...")
-        $MainListBox.Items.Insert(0,"")
-        $MainListBox.Items.Insert(0,"...Let me get this straight... You want me to collect nothing?")
+        $MainListBox.Items.Insert(0,"Error: No Queries Were Selected")
         #$PoShACME.Close()
+    }
+    # Checks if any computers were selected
+    if ($ComputerListBox.SelectedItems.Count -eq 0) {
+        $MainListBox.Items.Clear()
+        $MainListBox.Items.Insert(0,"Error: No Computers Were Selected")
     }
     # Runs commands if it passes the above checks
     else {

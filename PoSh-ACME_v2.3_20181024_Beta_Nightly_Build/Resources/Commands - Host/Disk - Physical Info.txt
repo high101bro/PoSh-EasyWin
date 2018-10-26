@@ -1,0 +1,27 @@
+====================================================================================================
+Disk - Physical Info
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_DiskDrive
+====================================================================================================
+Provides information on the local storage device on a computer.
+
+Obtains the following information:
+ - Status
+ - Name
+ - Caption
+ - Description
+ - Model
+ - Manufacturer
+ - Serial Number
+ - Signature
+ - Interface Type
+ - Media Type
+ - Firmware Revision
+ - Sectors Per Track
+ - Size
+ - Total Cylinders
+ - Total Heads
+ - Total Sectors
+ - Total Tracks
+ - Tracks Per Cylinder

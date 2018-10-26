@@ -10,17 +10,15 @@
  ACME: The Point At Which Something Is The Best, Perfect, Or Most Successful. 
 ==============================================================================
  File Name      : PoSh-ACME.ps1
- Version        : v.2.3 Beta Nightly Build
-
+ Version        : v.2.3
  Author         : high101bro
  Email          : high101bro@gmail.com
  Website        : https://github.com/high101bro/PoSH-ACME
-
  Requirements   : PowerShell v3 or Higher
                 : WinRM  (Default Port 5986) - Preferably On A Domain Host
  Optional       : PSExec.exe, Procmon.exe, Autoruns.exe 
 		: Can run standalone, but works best with the Resources folder!
- Updated        : 22 Oct 18
+ Updated        : 23 Oct 18
  Created        : 21 Aug 18
 
 PoSh-ACME is a tool that allows you to run any number of queries against any number
