@@ -137,7 +137,7 @@ $Font = "Courier"
 $SleepTime = 5
 
 # Number of jobs simultaneously when collecting data
-$ThrottleLimit = 100
+$ThrottleLimit = 32
 
 # Clears out Computer List variable
 $ComputerList = ""
@@ -1272,8 +1272,8 @@ function AccountsLocalCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_UserAccount -Filter "LocalAccount='True'" -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Disabled, AccountType, Lockout, PasswordChangeable, PasswordRequired, SID, SIDType, LocalAccount, Domain, Caption, Description `
@@ -1285,8 +1285,8 @@ function AccountsLocalCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='True'" -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Disabled, AccountType, Lockout, PasswordChangeable, PasswordRequired, SID, SIDType, LocalAccount, Domain, Caption, Description `
@@ -1319,8 +1319,8 @@ function ARPCacheCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c arp -a
@@ -1371,8 +1371,8 @@ function ARPCacheCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c arp -a
@@ -1445,8 +1445,8 @@ function BIOSInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_BIOS -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName,  SMBIOSBIOSVersion, Name, Manufacturer, SerialNumber, Version, Description, ReleaseDate, InstallDate `
@@ -1458,8 +1458,8 @@ function BIOSInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_BIOS -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName,  SMBIOSBIOSVersion, Name, Manufacturer, SerialNumber, Version, Description, ReleaseDate, InstallDate `
@@ -1492,8 +1492,8 @@ function ComputerInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_ComputerSystem -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Description, Manufacturer, Model, SystemType, NumberOfProcessors, TotalPhysicalMemory, EnableDaylightSavingsTime, BootupState, PartOfDomain, Domain, Username, PrimaryOwnerName `
@@ -1505,8 +1505,8 @@ function ComputerInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_ComputerSystem -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Description, Manufacturer, Model, SystemType, NumberOfProcessors, TotalPhysicalMemory, EnableDaylightSavingsTime, BootupState, PartOfDomain, Domain, Username, PrimaryOwnerName `
@@ -1539,8 +1539,8 @@ function DatesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 function CollectDateTimes {
                     $DateTimes=Get-WmiObject -Credential $Credential -Class Win32_OperatingSystem -ComputerName $TargetComputer `
@@ -1564,8 +1564,8 @@ function DatesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 function CollectDateTimes {
                     $DateTimes=Get-WmiObject -class Win32_OperatingSystem -ComputerName $TargetComputer `
@@ -1610,8 +1610,8 @@ function DiskLogicalInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_LogicalDisk -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, DeviceID, Description, ProviderName, FreeSpace, Size, DriveType `
@@ -1623,8 +1623,8 @@ function DiskLogicalInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_LogicalDisk -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, DeviceID, Description, ProviderName, FreeSpace, Size, DriveType `
@@ -1657,8 +1657,8 @@ function DiskPhysicalInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_DiskDrive -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Status, Name, Caption, Description, Model, Manufacturer, SerialNumber, Signature, InterfaceType, MediaType, FirmwareRevision, SectorsPerTrack, Size, TotalCylinders, TotalHeads, TotalSectors, TotalTracks, TracksPerCylinder `
@@ -1670,8 +1670,8 @@ function DiskPhysicalInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_DiskDrive -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Status, Name, Caption, Description, Model, Manufacturer, SerialNumber, Signature, InterfaceType, MediaType, FirmwareRevision, SectorsPerTrack, Size, TotalCylinders, TotalHeads, TotalSectors, TotalTracks, TracksPerCylinder `
@@ -1704,8 +1704,8 @@ function DLLsLoadedByProcessesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     param($TargetComputer)
@@ -1739,8 +1739,8 @@ function DLLsLoadedByProcessesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                 
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     param($TargetComputer)
@@ -1795,8 +1795,8 @@ function DNSCacheCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c ipconfig /displaydns
@@ -1873,8 +1873,8 @@ function DNSCacheCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c ipconfig /displaydns
@@ -1972,8 +1972,8 @@ function DriversDetailedCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Systemdriver -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType `
@@ -1985,8 +1985,8 @@ function DriversDetailedCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_Systemdriver -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType `
@@ -2019,8 +2019,8 @@ function DriversSignedCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c driverquery /si /FO CSV
@@ -2040,8 +2040,8 @@ function DriversSignedCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c driverquery /si /FO CSV
@@ -2082,8 +2082,8 @@ function DriversValidSignaturesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_SystemDriver -ComputerName $TargetComputer `
                 | ForEach-Object {
@@ -2100,8 +2100,8 @@ function DriversValidSignaturesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 # Old
                 #Get-WmiObject -Class Win32_SystemDriver -ComputerName $TargetComputer `
@@ -2146,8 +2146,8 @@ function EnvironmentalVariablesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Environment -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, UserName, Name, VariableValue `
@@ -2159,8 +2159,8 @@ function EnvironmentalVariablesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_Environment -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, UserName, Name, VariableValue `
@@ -2194,8 +2194,8 @@ function FirewallRulesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh advfirewall firewall show rule name=all
@@ -2229,8 +2229,8 @@ function FirewallRulesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh advfirewall firewall show rule name=all
@@ -2285,8 +2285,8 @@ function FirewallStatusCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh advfirewall show allprofiles state
@@ -2320,8 +2320,8 @@ function FirewallStatusCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh advfirewall show allprofiles state
@@ -2376,8 +2376,8 @@ function GroupLocalCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Group -Filter "LocalAccount='True'" -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LocalAccount, Domain, SID, SIDType, Caption, Description `
@@ -2389,8 +2389,8 @@ function GroupLocalCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_Group -filter "LocalAccount='True'" -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LocalAccount, Domain, SID, SIDType, Caption, Description `
@@ -2423,8 +2423,8 @@ function LogonInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_NetworkLoginProfile -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LastLogon, LastLogoff, NumberOfLogons, PasswordAge `
@@ -2436,8 +2436,8 @@ function LogonInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_NetworkLoginProfile -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LastLogon, LastLogoff, NumberOfLogons, PasswordAge `
@@ -2470,8 +2470,8 @@ function LogonSessionsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c query session
@@ -2500,8 +2500,8 @@ function LogonSessionsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c query session
@@ -2552,8 +2552,8 @@ function LogonUserStatusCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c query user
@@ -2582,8 +2582,8 @@ function LogonUserStatusCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                    
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c query user
@@ -2634,8 +2634,8 @@ function MappedDrivesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_MappedLogicalDisk -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, ProviderName, FileSystem, Size, FreeSpace, Compressed `
@@ -2647,8 +2647,8 @@ function MappedDrivesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_MappedLogicalDisk -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, ProviderName, FileSystem, Size, FreeSpace, Compressed `
@@ -2681,8 +2681,8 @@ function MemoryCapacityInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_PhysicalMemoryArray -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Model, Name, MaxCapacity, MemoryDevices `
@@ -2694,8 +2694,8 @@ function MemoryCapacityInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_PhysicalMemoryArray -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Model, Name, MaxCapacity, MemoryDevices `
@@ -2728,8 +2728,8 @@ function MemoryPhysicalInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_PhysicalMemory -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Tag, Capacity, Speed, Manufacturer, PartNumber, SerialNumber `
@@ -2741,8 +2741,8 @@ function MemoryPhysicalInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_PhysicalMemory -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Tag, Capacity, Speed, Manufacturer, PartNumber, SerialNumber `
@@ -2775,8 +2775,8 @@ function MemoryUtilizationCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_OperatingSystem -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, FreePhysicalMemory, TotalVisibleMemorySize, FreeVirtualMemory, TotalVirtualMemorySize `
@@ -2788,8 +2788,8 @@ function MemoryUtilizationCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_OperatingSystem -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, FreePhysicalMemory, TotalVisibleMemorySize, FreeVirtualMemory, TotalVirtualMemorySize `
@@ -2822,8 +2822,8 @@ function MemoryPerformanceDataCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_PerfRawData_PerfOS_Memory -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, AvaiLabelBytes, AvaiLabelKBytes, AvaiLabelMBytes, CacheBytes, CacheBytesPeak, CacheFaultsPersec, Caption, CommitLimit, CommittedBytes, DemandZeroFaultsPersec, FreeAndZeroPageListBytes, FreeSystemPageTableEntries, Frequency_Object, Frequency_PerfTime, Frequency_Sys100NS, LongTermAverageStandbyCacheLifetimes, ModifiedPageListBytes, PageFaultsPersec, PageReadsPersec, PagesInputPersec, PagesOutputPersec, PagesPersec, PageWritesPersec, PercentCommittedBytesInUse, PercentCommittedBytesInUse_Base, PoolNonpagedAllocs, PoolNonpagedBytes, PoolPagedAllocs, PoolPagedBytes, PoolPagedResidentBytes, StandbyCacheCoreBytes, StandbyCacheNormalPriorityBytes, StandbyCacheReserveBytes, SystemCacheResidentBytes, SystemCodeResidentBytes, SystemCodeTotalBytes, SystemDriverResidentBytes, SystemDriverTotalBytes, Timestamp_Object, Timestamp_PerfTime, Timestamp_Sys100NS, TransitionFaultsPersec, TransitionPagesRePurposedPersec, WriteCopiesPersec `
@@ -2835,8 +2835,8 @@ function MemoryPerformanceDataCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_PerfRawData_PerfOS_Memory -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, AvaiLabelBytes, AvaiLabelKBytes, AvaiLabelMBytes, CacheBytes, CacheBytesPeak, CacheFaultsPersec, Caption, CommitLimit, CommittedBytes, DemandZeroFaultsPersec, FreeAndZeroPageListBytes, FreeSystemPageTableEntries, Frequency_Object, Frequency_PerfTime, Frequency_Sys100NS, LongTermAverageStandbyCacheLifetimes, ModifiedPageListBytes, PageFaultsPersec, PageReadsPersec, PagesInputPersec, PagesOutputPersec, PagesPersec, PageWritesPersec, PercentCommittedBytesInUse, PercentCommittedBytesInUse_Base, PoolNonpagedAllocs, PoolNonpagedBytes, PoolPagedAllocs, PoolPagedBytes, PoolPagedResidentBytes, StandbyCacheCoreBytes, StandbyCacheNormalPriorityBytes, StandbyCacheReserveBytes, SystemCacheResidentBytes, SystemCodeResidentBytes, SystemCodeTotalBytes, SystemDriverResidentBytes, SystemDriverTotalBytes, Timestamp_Object, Timestamp_PerfTime, Timestamp_Sys100NS, TransitionFaultsPersec, TransitionPagesRePurposedPersec, WriteCopiesPersec `
@@ -2870,8 +2870,8 @@ function MotherboardInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_BaseBoard -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Manufacturer, Model, Name, SerialNumber, SKU, Product `
@@ -2883,8 +2883,8 @@ function MotherboardInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_BaseBoard -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Manufacturer, Model, Name, SerialNumber, SKU, Product `
@@ -2917,8 +2917,8 @@ function NetworkConnectionsTCPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -anob -p tcp
@@ -2951,8 +2951,8 @@ function NetworkConnectionsTCPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -anob -p tcp
@@ -3006,8 +3006,8 @@ function NetworkConnectionsUDPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -anob -p udp
@@ -3042,8 +3042,8 @@ function NetworkConnectionsUDPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -anob -p udp
@@ -3099,8 +3099,8 @@ function NetworkSettingsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_NetworkAdapterConfiguration -ComputerName $TargetComputer `
                 | Select-Object -Property `
@@ -3122,8 +3122,8 @@ function NetworkSettingsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_NetworkAdapterConfiguration -ComputerName $TargetComputer `
                 | Select-Object -Property `
@@ -3165,8 +3165,8 @@ function NetworkStatisticsIPv4Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p ip
@@ -3200,8 +3200,8 @@ function NetworkStatisticsIPv4Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p ip
@@ -3256,8 +3256,8 @@ function NetworkStatisticsIPv4TCPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p tcp
@@ -3291,15 +3291,15 @@ function NetworkStatisticsIPv4TCPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p tcp
                 } -ArgumentList @($null) | Out-File "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
 
                 if ((Get-Content "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt") -eq $null) {
-                    Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
+                     Remove-Item "$IndividualHostResults\$CollectionDirectory\$CollectionName-$TargetComputer.txt"
                 }
                 else {
                     # Processes collection to format it from txt to csv
@@ -3347,8 +3347,8 @@ function NetworkStatisticsIPv4UDPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p udp
@@ -3382,8 +3382,8 @@ function NetworkStatisticsIPv4UDPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p udp
@@ -3438,8 +3438,8 @@ function NetworkStatisticsIPv4ICMPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p icmp
@@ -3473,8 +3473,8 @@ function NetworkStatisticsIPv4ICMPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p icmp
@@ -3529,8 +3529,8 @@ function NetworkStatisticsIPv6Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p ipv6
@@ -3564,8 +3564,8 @@ function NetworkStatisticsIPv6Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p ipv6
@@ -3620,8 +3620,8 @@ function NetworkStatisticsIPv6TCPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p tcpv6
@@ -3655,8 +3655,8 @@ function NetworkStatisticsIPv6TCPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p tcpv6
@@ -3711,8 +3711,8 @@ function NetworkStatisticsIPv6UDPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p udpv6
@@ -3746,8 +3746,8 @@ function NetworkStatisticsIPv6UDPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p udpv6
@@ -3802,8 +3802,8 @@ function NetworkStatisticsIPv6ICMPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p icmpv6
@@ -3837,8 +3837,8 @@ function NetworkStatisticsIPv6ICMPCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netstat -e -p icmpv6
@@ -3893,8 +3893,8 @@ function PlugAndPlayCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_PnPEntity -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, InstallDate, Status, Description, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID -join "; "}}, Manufacturer `
@@ -3906,8 +3906,8 @@ function PlugAndPlayCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_PnPEntity -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, InstallDate, Status, Description, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID -join "; "}}, Manufacturer `
@@ -3940,8 +3940,8 @@ function PortProxyRulesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh interface portproxy show all
@@ -3979,8 +3979,8 @@ function PortProxyRulesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c netsh interface portproxy show all
@@ -4041,8 +4041,8 @@ function PrefetchFilesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                   Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                         Get-ChildItem C:\Windows\Prefetch -Force
@@ -4055,8 +4055,8 @@ function PrefetchFilesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ChildItem C:\Windows\Prefetch -Force
@@ -4091,8 +4091,8 @@ function ProcessTreeLineageCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Function Get-ProcessTree {
@@ -4124,8 +4124,8 @@ function ProcessTreeLineageCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Function Get-ProcessTree {
@@ -4179,8 +4179,8 @@ function ProcessesEnhancedCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 $ErrorActionPreference="SilentlyContinue"
                 function Get-FileHash{
@@ -4235,8 +4235,8 @@ function ProcessesEnhancedCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 $ErrorActionPreference="SilentlyContinue"
                 function Get-FileHash{
@@ -4311,8 +4311,8 @@ function ProcessesStandardCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Credential $Credential -Class Win32_Process -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate `
@@ -4324,8 +4324,8 @@ function ProcessesStandardCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Class Win32_Process -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate `
@@ -4358,8 +4358,8 @@ function ProcessorCPUInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Processor -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Manufacturer, Caption, DeviceID, SocketDesignation, MaxClockSpeed  `
@@ -4371,8 +4371,8 @@ function ProcessorCPUInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_Processor -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Manufacturer, Caption, DeviceID, SocketDesignation, MaxClockSpeed  `
@@ -4401,8 +4401,8 @@ function RemoteCapabilityCheckCommand {
         Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
             param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
             # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-            [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-            ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+            [System.Threading.Thread]::CurrentThread.Priority= 'High'
+            ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
             Function Invoke-Ping {
             <#
@@ -5059,8 +5059,8 @@ function ScheduledTasksCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c schtasks /query /V /FO CSV
@@ -5075,8 +5075,8 @@ function ScheduledTasksCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     cmd /c schtasks /query /V /FO CSV
@@ -5113,8 +5113,8 @@ function ScreenSaverInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Desktop -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, ScreenSaverActive, ScreenSaverTimeout, ScreenSaverExecutable, Wallpaper `
@@ -5126,8 +5126,8 @@ function ScreenSaverInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_Desktop -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, ScreenSaverActive, ScreenSaverTimeout, ScreenSaverExecutable, Wallpaper `
@@ -5160,8 +5160,8 @@ function SecurityPatchesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_QuickFixEngineering -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, @{Name="Name";Expression={$_.HotFixID}}, HotFixID, Description, InstalledBy, InstalledOn `
@@ -5173,8 +5173,8 @@ function SecurityPatchesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_QuickFixEngineering -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, @{Name="Name";Expression={$_.HotFixID}}, HotFixID, Description, InstalledBy, InstalledOn `
@@ -5207,8 +5207,8 @@ function ServicesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Credential $Credential -Class Win32_Service -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, State, Name, ProcessID, Description, PathName, Started, StartMode, StartName | Sort-Object PSComputerName, State, Name `
@@ -5220,8 +5220,8 @@ function ServicesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Class Win32_Service -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, State, Name, ProcessID, Description, PathName, Started, StartMode, StartName | Sort-Object PSComputerName, State, Name `
@@ -5254,8 +5254,8 @@ function SharesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Share -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Status, Name, Path, Description `
@@ -5267,8 +5267,8 @@ function SharesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_Share -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Status, Name, Path, Description `
@@ -5301,8 +5301,8 @@ function SoftwareInstalledCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Product -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber `
@@ -5314,9 +5314,10 @@ function SoftwareInstalledCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
+                ### working on faster script...
                 <#Function Get-Software  {
                     [OutputType('System.Software.Inventory')]
                     [Cmdletbinding()] 
@@ -5434,8 +5435,8 @@ function StartupCommandsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Get-WmiObject -Credential $Credential -Class Win32_StartupCommand -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, Location, Command, User `
@@ -5447,8 +5448,8 @@ function StartupCommandsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_StartupCommand -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, Location, Command, User `
@@ -5481,8 +5482,8 @@ function SystemInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-WmiMethod -Credential $Credential -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c systeminfo /fo csv > `"C:\Windows\Temp\SystemInfo-$TargetComputer.csv`"" | Out-Null
     
@@ -5508,8 +5509,8 @@ function SystemInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Invoke-WmiMethod -Class Win32_Process -Name Create -ComputerName $TargetComputer -ArgumentList "cmd /c systeminfo /fo csv > `"C:\Windows\Temp\SystemInfo-$TargetComputer.csv`"" | Out-Null
     
@@ -5556,8 +5557,8 @@ function USBControllerDevicesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_USBControllerDevice -ComputerName $TargetComputer `
                 | Foreach {[wmi]($_.Dependent)} `
@@ -5570,8 +5571,8 @@ function USBControllerDevicesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 #Get-WmiObject -Class Win32_USBControllerDevice -ComputerName $TargetComputer `
                 #| Select-Object PSComputerName, Antecedent, Dependent `
@@ -6558,8 +6559,8 @@ function EventLogQuery {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 Get-WmiObject -Credential $Credential -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter $Filter `
                 | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
@@ -6572,8 +6573,8 @@ function EventLogQuery {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_NTLogEvent -ComputerName $TargetComputer -Filter $Filter `
                 | Select-Object PSComputerName, EventCode, LogFile, TimeGenerated, Message, InsertionStrings, Type `
@@ -7084,8 +7085,8 @@ function ActiveDirectoryAccountsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Credential $Credential -Class Win32_UserAccount -Filter "LocalAccount='False'" -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Disabled, AccountType, Lockout, PasswordChangeable, PasswordRequired, SID, SIDType, LocalAccount, Domain, Caption, Description `
@@ -7097,8 +7098,8 @@ function ActiveDirectoryAccountsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Class Win32_UserAccount -Filter "LocalAccount='False'" -ComputerName $TargetComputer `
                 | Select-Object -Property PSComputerName, Name, Disabled, AccountType, Lockout, PasswordChangeable, PasswordRequired, SID, SIDType, LocalAccount, Domain, Caption, Description `
@@ -7130,8 +7131,8 @@ function ActiveDirectoryAccountDetailsAndUserInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7144,8 +7145,8 @@ function ActiveDirectoryAccountDetailsAndUserInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7157,7 +7158,7 @@ function ActiveDirectoryAccountDetailsAndUserInfoCommand {
                 
                     Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                         net users /domain
-                    } | Export-CSV "$CollectedDataTimeStampDirectory\$CollectionName-$TargetComputer.txt" -NoTypeInformation -Force
+                    } | Export-CSV "$CollectedDataTimeStampDirectory\$CollectionName-$TargetComputer.csv" -NoTypeInformation -Force
                 }
 
             } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
@@ -7186,8 +7187,8 @@ function ActiveDirectoryAccountLogonAndPassowrdPolicyCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7200,8 +7201,8 @@ function ActiveDirectoryAccountLogonAndPassowrdPolicyCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7234,8 +7235,8 @@ function ActiveDirectoryAccountContactInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7248,8 +7249,8 @@ function ActiveDirectoryAccountContactInfoCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7282,8 +7283,8 @@ function ActiveDirectoryAccountEmailAddressesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7297,8 +7298,8 @@ function ActiveDirectoryAccountEmailAddressesCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7332,8 +7333,8 @@ function ActiveDirectoryAccountPhoneNumbersCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7347,8 +7348,8 @@ function ActiveDirectoryAccountPhoneNumbersCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADUser -Filter * -Properties * `
@@ -7382,8 +7383,8 @@ function ActiveDirectoryComputersCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADComputer -Filter * -Properties *  `
@@ -7396,8 +7397,8 @@ function ActiveDirectoryComputersCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADComputer -Filter * -Properties *  `
@@ -7430,8 +7431,8 @@ function ActiveDirectoryDefaultDomainPasswordPolicyCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADDefaultDomainPasswordPolicy
@@ -7443,8 +7444,8 @@ function ActiveDirectoryDefaultDomainPasswordPolicyCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADDefaultDomainPasswordPolicy
@@ -7476,8 +7477,8 @@ function ActiveDirectoryGroupsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Credential $Credential -Class Win32_Group -Filter "LocalAccount='False'" -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LocalAccount, Domain, SID, SIDType, Caption, Description `
@@ -7489,8 +7490,8 @@ function ActiveDirectoryGroupsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                             
                 Get-WmiObject -Class Win32_Group -filter "LocalAccount='False'" -ComputerName $TargetComputer `
                 | Select-Object PSComputerName, Name, LocalAccount, Domain, SID, SIDType, Caption, Description `
@@ -7523,8 +7524,8 @@ function ActiveDirectoryGroupsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADGroup -Filter * `
@@ -7537,8 +7538,8 @@ function ActiveDirectoryGroupsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADGroup -Filter * `
@@ -7572,8 +7573,8 @@ function ActiveDirectoryGroupMembershipByGroupsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     #Gets a list of all the groups
@@ -7592,8 +7593,8 @@ function ActiveDirectoryGroupMembershipByGroupsCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     #Gets a list of all the groups
@@ -7632,8 +7633,8 @@ function ActiveDirectoryGroupMembershipByUsersCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     ###get-aduser dan -property Memberof | Select -ExpandProperty memberOf
@@ -7651,8 +7652,8 @@ function ActiveDirectoryGroupMembershipByUsersCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {                    
                     ###get-aduser dan -property Memberof | Select -ExpandProperty memberOf
@@ -7690,8 +7691,8 @@ function ActiveDirectoryGroupsWithoutAccountMembersCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -Credential $Credential -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADGroup -filter * `
@@ -7704,8 +7705,8 @@ function ActiveDirectoryGroupsWithoutAccountMembersCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     Get-ADGroup -filter * `
@@ -7738,8 +7739,8 @@ function DomainDNSAllRecordsServer2008Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Credential $Credential -ComputerName $TargetComputer -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
                 | Select-Object PSComputerName, __Class, ContainerName, DomainName, RecordData, OwnerName `
@@ -7751,8 +7752,8 @@ function DomainDNSAllRecordsServer2008Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -ComputerName $TargetComputer -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
                 | Select-Object PSComputerName, __Class, ContainerName, DomainName, RecordData, OwnerName `
@@ -7784,8 +7785,8 @@ function DomainDNSRootHintsServer2008Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Credential $Credential -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
                 | Where-Object {$_.domainname -eq "..roothints"} `
@@ -7798,8 +7799,8 @@ function DomainDNSRootHintsServer2008Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord `
                 | Where-Object {$_.domainname -eq "..roothints"} `
@@ -7833,8 +7834,8 @@ function DomainDNSZonesServer2008Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Credential $Credential -Namespace "root\MicrosoftDNS" -Class MicrosoftDNS_Zone `
                 | Select-Object PSComputerName, Name `
@@ -7846,8 +7847,8 @@ function DomainDNSZonesServer2008Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Namespace "root\MicrosoftDNS" -Class MicrosoftDNS_Zone `
                 | Select-Object PSComputerName, Name `
@@ -7879,8 +7880,8 @@ function DomainDNSStatisticsServer2008Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Credential $Credential -Namespace root\MicrosoftDNS -Class MicrosoftDNS_Statistic `
                 | Select-Object PSComputerName, Name, Value `
@@ -7892,8 +7893,8 @@ function DomainDNSStatisticsServer2008Command {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                             
                 Get-WmiObject -Namespace root\MicrosoftDNS -Class MicrosoftDNS_Statistic `
                 | Select-Object PSComputerName, Name, Value `
@@ -7963,8 +7964,8 @@ function FileSearchDirectoryListingCommand {
                 #param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$Credential)
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                                    
                 $DirectoryListing = Invoke-Command -ComputerName $TargetComputer -Credential $Credential -ScriptBlock {
                     param($ListDirectory)
@@ -7983,8 +7984,8 @@ function FileSearchDirectoryListingCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$ListDirectory)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
                    
                 $DirectoryListing = Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
                     param($ListDirectory)
@@ -8079,7 +8080,7 @@ function FileSearchFileSearchCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$Credential)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'AboveNormal'
 
                 $FilesFoundList = @()
@@ -8163,8 +8164,8 @@ function FileSearchFileSearchCommand {
             Start-Job -Name "ACME-$CollectionName-$TargetComputer" -ScriptBlock {
                 param($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$CollectionDirectory,$TargetComputer,$SleepTime,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth)
                 # AvaiLabel priority values: Lowest, BelowNormal, Normal, AboveNormal, Highest, RealTime
-                [System.Threading.Thread]::CurrentThread.Priority= 'Highest'
-                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'Highest'
+                [System.Threading.Thread]::CurrentThread.Priority= 'High'
+                ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass= 'High'
 
                 $FilesFoundList = @()
                                                             
@@ -10294,7 +10295,7 @@ $ViewChartButton.add_click({
             $ViewChartChartTypesComboBox.AutoCompleteSource = "ListItems"
             $ViewChartChartTypesComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
             $ViewChartChartTypesComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewChartExecute} })
-            $ChartTypesAvailable = @('Pie','Column','Line','Bar','Doughnut','Area','--- Less Commonly Used Below ---','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointSndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+            $ChartTypesAvailable = @('Pie','Column','Line','Bar','Doughnut','Area','--- Less Commonly Used Below ---','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
             ForEach ($Item in $ChartTypesAvailable) {
              [void] $ViewChartChartTypesComboBox.Items.Add($Item)
             }
@@ -10399,12 +10400,28 @@ $ViewChartButton.add_click({
     }
 }) 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#============================================================================================================================================================
 #============================================================================================================================================================
 # Auto Create Charts
 #============================================================================================================================================================
+#============================================================================================================================================================
 # https://bytecookie.wordpress.com/2012/04/13/tutorial-powershell-and-microsoft-chart-controls-or-how-to-spice-up-your-reports/
 # https://blogs.msdn.microsoft.com/alexgor/2009/03/27/aligning-multiple-series-with-categorical-values/
-
 
 #======================================
 # Auto Charts Select Property Function
@@ -10418,7 +10435,7 @@ function AutoChartsSelectOptions {
     #----------------------------------
     $AutoChartsSelectionForm        = New-Object System.Windows.Forms.Form
     $AutoChartsSelectionForm.width  = 327
-    $AutoChartsSelectionForm.height = 287 
+    $AutoChartsSelectionForm.height = 243 
     $AutoChartsSelectionForm.StartPosition = "CenterScreen"
     $AutoChartsSelectionForm.Text   = ”View Chart - Select Fields ”
     $AutoChartsSelectionForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\favicon.ico")
@@ -10433,58 +10450,52 @@ function AutoChartsSelectOptions {
     $AutoChartsMainLabel.Text     = "This Will Auto Create Varios Charts From Past Collections."
     $AutoChartsSelectionForm.Controls.Add($AutoChartsMainLabel)
 
-    #---------------------------------------
-    # Auto Create Charts Limit Results Label
-    #---------------------------------------
-    $AutoChartsLimitResultsLabel          = New-Object System.Windows.Forms.Label
-    $AutoChartsLimitResultsLabel.Location = New-Object System.Drawing.Size(10,($AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 8)) 
-    $AutoChartsLimitResultsLabel.size     = New-Object System.Drawing.Size(120,25) 
-    $AutoChartsLimitResultsLabel.Text     = "Limit Results to:"
-    $AutoChartsSelectionForm.Controls.Add($AutoChartsLimitResultsLabel)
-
-    #-----------------------------------------
-    # Auto Create Charts Limit Results Textbox
-    #-----------------------------------------
-    $AutoChartsLimitResultsTextBox          = New-Object System.Windows.Forms.TextBox
-    $AutoChartsLimitResultsTextBox.Text     = 1000
-    $AutoChartsLimitResultsTextBox.Location = New-Object System.Drawing.Size(135,($AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 5))
-    $AutoChartsLimitResultsTextBox.Size     = New-Object System.Drawing.Size(60,25)
-    #$AutoChartsLimitResultsTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AutoChartsCommand } })
-    $AutoChartsSelectionForm.Controls.Add($AutoChartsLimitResultsTextBox)
-
-    #---------------------------------------
-    # Auto Create Charts Sort Order GroupBox
-    #---------------------------------------
+    #------------------------------------
+    # Auto Create Charts Series GroupBox
+    #------------------------------------
     # Create a group that will contain your radio buttons
-    $AutoChartsSortOrderGroupBox          = New-Object System.Windows.Forms.GroupBox
-    $AutoChartsSortOrderGroupBox.Location = New-Object System.Drawing.Size(10,($AutoChartsLimitResultsTextBox.Location.y + $AutoChartsLimitResultsTextBox.Size.Height + 7))
-    $AutoChartsSortOrderGroupBox.size     = '290,65'
-    $AutoChartsSortOrderGroupBox.text     = "Select how to Sort Data:"
+    $AutoChartsSeriesGroupBox          = New-Object System.Windows.Forms.GroupBox
+    $AutoChartsSeriesGroupBox.Location = New-Object System.Drawing.Size(10,($AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 8))
+    $AutoChartsSeriesGroupBox.size     = '185,90'
+    $AutoChartsSeriesGroupBox.text     = "Select Collection Series to View:`n(if Available)"
 
-        ### Ascending Radio Button
-        $AutoChartsAscendingRadioButton          = New-Object System.Windows.Forms.RadioButton
-        $AutoChartsAscendingRadioButton.Location = New-Object System.Drawing.Size(20,15)
-        $AutoChartsAscendingRadioButton.size     = '250,25'
-        $AutoChartsAscendingRadioButton.Checked  = $true 
-        $AutoChartsAscendingRadioButton.Text     = "Ascending / Lowest to Highest"
-                
-        ### Descending Radio Button
-        $AutoChartsDescendingRadioButton          = New-Object System.Windows.Forms.RadioButton
-        $AutoChartsDescendingRadioButton.Location = New-Object System.Drawing.Size(20,38)
-        $AutoChartsDescendingRadioButton.size     = '250,25'
-        $AutoChartsDescendingRadioButton.Checked  = $false
-        $AutoChartsDescendingRadioButton.Text     = "Descending / Highest to Lowest"
-                
-        $AutoChartsSortOrderGroupBox.Controls.AddRange(@($AutoChartsAscendingRadioButton,$AutoChartsDescendingRadioButton))
-    $AutoChartsSelectionForm.Controls.Add($AutoChartsSortOrderGroupBox) 
+        ### View Chart Legend CheckBox
+        $AutoChartsBaselineCheckBox          = New-Object System.Windows.Forms.Checkbox
+        $AutoChartsBaselineCheckBox.Location = New-Object System.Drawing.Size(10,15)
+        $AutoChartsBaselineCheckBox.Size     = '165,25'
+        $AutoChartsBaselineCheckBox.Checked  = $true
+        $AutoChartsBaselineCheckBox.Enabled  = $true
+        $AutoChartsBaselineCheckBox.Text     = "Baseline"
+        $AutoChartsBaselineCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
+
+        ### View Chart 3D Chart CheckBox
+        $AutoChartsPreviousCheckBox          = New-Object System.Windows.Forms.Checkbox
+        $AutoChartsPreviousCheckBox.Location = New-Object System.Drawing.Size(10,38)
+        $AutoChartsPreviousCheckBox.Size     = '165,25'
+        $AutoChartsPreviousCheckBox.Checked  = $true
+        $AutoChartsPreviousCheckBox.Enabled  = $true
+        $AutoChartsPreviousCheckBox.Text     = "Previous"
+        $AutoChartsPreviousCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
+
+        ### View Chart 3D Chart CheckBox
+        $AutoChartsMostRecentCheckBox          = New-Object System.Windows.Forms.Checkbox
+        $AutoChartsMostRecentCheckBox.Location = New-Object System.Drawing.Size(10,61)
+        $AutoChartsMostRecentCheckBox.Size     = '165,25'
+        $AutoChartsMostRecentCheckBox.Checked  = $true
+        $AutoChartsMostRecentCheckBox.Enabled  = $true
+        $AutoChartsMostRecentCheckBox.Text     = "Most Recent"
+        $AutoChartsMostRecentCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)                
+
+        $AutoChartsSeriesGroupBox.Controls.AddRange(@($AutoChartsBaselineCheckBox,$AutoChartsPreviousCheckBox,$AutoChartsMostRecentCheckBox))
+    $AutoChartsSelectionForm.Controls.Add($AutoChartsSeriesGroupBox) 
 
     #------------------------------------
     # Auto Create Charts Options GroupBox
     #------------------------------------
     # Create a group that will contain your radio buttons
     $AutoChartsOptionsGroupBox          = New-Object System.Windows.Forms.GroupBox
-    $AutoChartsOptionsGroupBox.Location = New-Object System.Drawing.Size(($AutoChartsMainLabel.Location.X + $AutoChartsMainLabel.Size.Width + 5),$AutoChartsMainLabel.Location.Y)
-    $AutoChartsOptionsGroupBox.size     = '100,105'
+    $AutoChartsOptionsGroupBox.Location = New-Object System.Drawing.Size(($AutoChartsSeriesGroupBox.Location.X + $AutoChartsSeriesGroupBox.Size.Width + 5),($AutoChartsSeriesGroupBox.Location.Y))
+    $AutoChartsOptionsGroupBox.size     = '100,90'
     $AutoChartsOptionsGroupBox.text     = "Options:"
 
         ### View Chart Legend CheckBox
@@ -10500,19 +10511,41 @@ function AutoChartsSelectOptions {
         $AutoCharts3DChartCheckBox          = New-Object System.Windows.Forms.Checkbox
         $AutoCharts3DChartCheckBox.Location = New-Object System.Drawing.Size(10,38)
         $AutoCharts3DChartCheckBox.Size     = '85,25'
-        $AutoCharts3DChartCheckBox.Checked  = $true
+        $AutoCharts3DChartCheckBox.Checked  = $false
         $AutoCharts3DChartCheckBox.Enabled  = $true
         $AutoCharts3DChartCheckBox.Text     = "3D Chart"
         $AutoCharts3DChartCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
                 
         $AutoChartsOptionsGroupBox.Controls.AddRange(@($AutoChartsLegendCheckBox,$AutoCharts3DChartCheckBox))
     $AutoChartsSelectionForm.Controls.Add($AutoChartsOptionsGroupBox) 
+
+    #----------------------------------
+    # Auto Chart Select Color ComboBox
+    #----------------------------------
+    $AutoChartColorSchemeSelectionComboBox          = New-Object System.Windows.Forms.ComboBox
+    $AutoChartColorSchemeSelectionComboBox.Location = New-Object System.Drawing.Size(10,($AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 108))
+    $AutoChartColorSchemeSelectionComboBox.Size     = New-Object System.Drawing.Size(185,25)
+    $AutoChartColorSchemeSelectionComboBox.Text     = "Select Alternate Color Scheme"
+    $AutoChartColorSchemeSelectionComboBox.AutoCompleteSource = "ListItems"
+    $AutoChartColorSchemeSelectionComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+    $ColorShcemesAvailable = @(
+        'Blue, Orange, Red',
+        'Light Blue, Orange, Red',
+        'Black, Red, Green',  
+        'Dark Red, Red, Orange',
+        'Dark Blue, Blue, Light Blue',
+        'Dark Green, Green, Light Green',
+        'Dark Gray, Gray, Light Gray')
+    ForEach ($Item in $ColorShcemesAvailable) {
+        [void] $AutoChartColorSchemeSelectionComboBox.Items.Add($Item)
+    }
+    $AutoChartsSelectionForm.Controls.Add($AutoChartColorSchemeSelectionComboBox) 
     
     #----------------------------------
     # Auto Create Charts Execute Button
     #----------------------------------
     $AutoChartsExecuteButton          = New-Object System.Windows.Forms.Button
-    $AutoChartsExecuteButton.Location = New-Object System.Drawing.Size(200,($AutoChartsSortOrderGroupBox.Location.y + $AutoChartsSortOrderGroupBox.Size.Height + 8))
+    $AutoChartsExecuteButton.Location = New-Object System.Drawing.Size(200,($AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 108))
     $AutoChartsExecuteButton.Size     = New-Object System.Drawing.Size(100,23)
     $AutoChartsExecuteButton.Text     = "Execute"
     $AutoChartsExecuteButton.Add_Click({
@@ -10550,12 +10583,13 @@ function AutoChartsSelectOptions {
         $AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
         # Calls the function to create multiple tabs from collections
-        # AutoChartsCommand -QueryName "Drivers - Detailed" -PropertyX Name -PropertyY PSComputerName -ChartType Column
-        AutoChartsCommand -QueryName "Processes - Standard" -PropertyX Name -PropertyY PSComputerName -ChartType Column
-        AutoChartsCommand -QueryName "Security Patches" -PropertyX Name -PropertyY PSComputerName -ChartType Column
-        AutoChartsCommand -QueryName "Services" -PropertyX Name -PropertyY PSComputerName -ChartType Column
-        AutoChartsCommand -QueryName "Software Installed" -PropertyX Name -PropertyY PSComputerName -ChartType Column
-        
+        #AutoChartsCommand -QueryName "Drivers - Detailed"   -PropertyX Name -PropertyY PSComputerName -ChartType $ChartType
+        AutoChartsCommand -QueryName "Processes - Standard" -PropertyX Name      -PropertyY PSComputerName -ChartType $ChartType
+        AutoChartsCommand -QueryName "Security Patches"     -PropertyX Name      -PropertyY PSComputerName -ChartType $ChartType
+        AutoChartsCommand -QueryName "Services"             -PropertyX Name      -PropertyY PSComputerName -ChartType $ChartType
+        AutoChartsCommand -QueryName "Software Installed"   -PropertyX Name      -PropertyY PSComputerName -ChartType $ChartType       
+        AutoChartsCommand -QueryName "Startup Commands"     -PropertyX Name      -PropertyY PSComputerName -ChartType $ChartType       
+        #AutoChartsCommand -QueryName "Network Settings"     -PropertyX PSComputerName -PropertyY IPEnabled -ChartType $ChartType       
         
         # Launches the form
         $AutoChartsForm.Add_Shown({$AutoChartsForm.Activate()})
@@ -10564,22 +10598,12 @@ function AutoChartsSelectOptions {
         #---------------------------------------
         # Auto Create Charts - Autosave an Image
         #---------------------------------------
-        #$Chart.SaveImage('C:\temp\chart.jpeg', 'jpeg')
+        #$AutoChart.SaveImage('C:\temp\chart.jpeg', 'jpeg')
     })
     
-    #---------------------------------------------
-    # Auto Create Charts Execute Button Note Label
-    #---------------------------------------------
-    $AutoChartsExecuteButtonNoteLabel          = New-Object System.Windows.Forms.Label
-    $AutoChartsExecuteButtonNoteLabel.Location = New-Object System.Drawing.Size(10,($AutoChartsSortOrderGroupBox.Location.y + $AutoChartsSortOrderGroupBox.Size.Height + 8)) 
-    $AutoChartsExecuteButtonNoteLabel.size     = New-Object System.Drawing.Size(190,25) 
-    $AutoChartsExecuteButtonNoteLabel.Text     = "Note: Press execute again if the desired chart did not appear."
-    $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButtonNoteLabel)
-
     $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)   
     [void] $AutoChartsSelectionForm.ShowDialog()
 }
-
 
 #=====================================
 # Auto Create Charts Command Function
@@ -10619,10 +10643,18 @@ function AutoChartsCommand {
             }
         }
     }
-    # Selects the very first, previous, and most recent collections 
-    $CSVFileMostRecentCollection = $CSVFileMatch | Select-Object -Last 1
-    $CSVFilePreviousCollection   = $CSVFileMatch | Select-Object -Last 2 | Select-Object -First 1
-    $CSVFileBaselineCollection   = $CSVFileMatch | Select-Object -First 1    
+    # Checkes if the Appropriate Checkbox is selected, if so it selects the very first, previous, and most recent collections respectively
+    if ($AutoChartsBaselineCheckBox.Checked -eq $true) {
+        $CSVFileBaselineCollection   = $CSVFileMatch | Select-Object -First 1
+    }
+    if ($AutoChartsPreviousCheckBox.Checked -eq $true) { 
+        $CSVFilePreviousCollection   = $CSVFileMatch | Select-Object -Last 2 | Select-Object -First 1 
+    }
+    if ($AutoChartsMostRecentCheckBox.Checked -eq $true) { 
+        $CSVFileMostRecentCollection = $CSVFileMatch | Select-Object -Last 1 
+    }
+
+    # Checks if the files selected are identicle, removing series as necessary that are to prevent erroneous double data
     if (($CSVFileMostRecentCollection -eq $CSVFilePreviousCollection) -and ($CSVFileMostRecentCollection -eq $CSVFileBaselineCollection)) {
         $CSVFilePreviousCollection = $null
         $CSVFileBaselineCollection = $null
@@ -10639,202 +10671,302 @@ function AutoChartsCommand {
     #--------------------------
     # Auto Create Charts Object
     #--------------------------
-        $Chart = New-object System.Windows.Forms.DataVisualization.Charting.Chart
-        $Chart.Width           = 1115
-        $Chart.Height          = 552
-        $Chart.Left            = 5
-        $Chart.Top             = 7
-        $Chart.BackColor       = [System.Drawing.Color]::White
-        $Chart.BorderColor     = 'Black'
-        $Chart.BorderDashStyle = 'Solid'
-        #$SeriesNames = @($Series01Name,$Series02Name,$Series03Name) #not working
-        #$Chart.AlignDataPointsByAxisLabel($SeriesNames) #not working
-        #$Chart.DataManipulator.Sort(PointsSortOrder.Descending,$PropertyX,$PropertyY)
-        $Chart.DataManipulator.Sort() = "Descending"
-        $Chart.Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
+    $AutoChart = New-object System.Windows.Forms.DataVisualization.Charting.Chart
+    $AutoChart.Width           = 1115
+    $AutoChart.Height          = 552
+    $AutoChart.Left            = 5
+    $AutoChart.Top             = 7
+    $AutoChart.BackColor       = [System.Drawing.Color]::White
+    $AutoChart.BorderColor     = 'Black'
+    $AutoChart.BorderDashStyle = 'Solid'
+    #$AutoChart.DataManipulator.Sort() = "Descending"
+    $AutoChart.Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
 
     #-------------------------
     # Auto Create Charts Title 
     #-------------------------
-        $ChartTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title
-        $ChartTitle.ForeColor = "black"
-            $FileTitleName    = ($CSVFileMostRecentCollection.split('\'))[-1] -replace '.csv',''
-        $ChartTitle.Text      = if ($FileTitleName) {$FileTitleName} 
-                                else {
-                                    "Missing Data`nRun The Appropriate Query"
-                                    $ChartTitle.ForeColor = "Red"
-                                }        
-        $ChartTitle.Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
-        $ChartTitle.Alignment = "topcenter" #"topLeft"
-        $Chart.Titles.Add($ChartTitle)
+    $AutoChartTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title
+    $AutoChartTitle.ForeColor = "black"
+    if ($AutoChartsMostRecentCheckBox.Checked -eq $true) {
+        $AutoChartTitle.Text = ($CSVFileMostRecentCollection.split('\'))[-1] -replace '.csv',''
+    }
+    elseif ($AutoChartsPreviousCheckBox.Checked -eq $true) {
+        $AutoChartTitle.Text = ($CSVFilePreviousCollection.split('\'))[-1] -replace '.csv',''
+    }
+    elseif ($AutoChartsBaselineCheckBox.Checked -eq $true) {
+        $AutoChartTitle.Text = ($CSVFileMostBaselineCollection.split('\'))[-1] -replace '.csv',''
+    }
+    else {       
+        $AutoChartTitle.Text = "`Missing Data!`n1). Run The Appropriate Query`n2). Ensure To Select At Least One Series"
+        $AutoChartTitle.ForeColor = "Red"
+    }
+    if (-not $CSVFileBaselineCollection -and -not $CSVFilePreviousCollection -and -not $CSVFileMostRecentCollection) {
+        $AutoChartTitle.Text = "`Missing Data!`n1). Run The Appropriate Query`n2). Ensure To Select At Least One Series"
+        $AutoChartTitle.ForeColor = "Red"
+    }
+    $AutoChartTitle.Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
+    $AutoChartTitle.Alignment = "topcenter" #"topLeft"
+    $AutoChart.Titles.Add($AutoChartTitle)
+
     #------------------------
     # Auto Create Charts Area
     #------------------------
-        $ChartArea                = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-        $ChartArea.Name           = "Chart Area"
-        $ChartArea.AxisX.Title    = $PropertyX
-        if ($PropertyY -eq "PSComputername") {$ChartArea.AxisY.Title = "Number of Computers"}
-        else {$ChartArea.AxisY.Title    = $PropertyY}
-        $ChartArea.AxisX.Interval  = 1
-        #$ChartArea.AxisY.Interval = 1
-        $ChartArea.AxisY.IntervalAutoMode = $true
+    $AutoChartArea                        = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+    $AutoChartArea.Name                   = "Chart Area"
+    $AutoChartArea.AxisX.Title            = $PropertyX
+    if ($PropertyY -eq "PSComputername") {$AutoChartArea.AxisY.Title = "Number of Computers"}
+    else {$AutoChartArea.AxisY.Title      = $PropertyY}
+    $AutoChartArea.AxisX.Interval         = 1
+    #$AutoChartArea.AxisY.Interval        = 1
+    $AutoChartArea.AxisY.IntervalAutoMode = $true
 
-        # Option to enable 3D Charts
-        if ($AutoCharts3DChartCheckBox.Checked) {
-            $ChartArea.Area3DStyle.Enable3D=$True
-            $ChartArea.Area3DStyle.Inclination = 75
-        }
-        $Chart.ChartAreas.Add($ChartArea)
+    # Option to enable 3D Charts
+    if ($AutoCharts3DChartCheckBox.Checked) {
+        $AutoChartArea.Area3DStyle.Enable3D=$True
+        $AutoChartArea.Area3DStyle.Inclination = 75
+    }
+    $AutoChart.ChartAreas.Add($AutoChartArea)
+
     #--------------------------
     # Auto Create Charts Legend 
     #--------------------------
-        $Legend = New-Object system.Windows.Forms.DataVisualization.Charting.Legend
-        $Legend.Enabled = $AutoChartsLegendCheckBox.Checked
-        $Legend.Name = "Legend"
-        $Legend.Title = "Legend"
-        $Legend.TitleAlignment = "topleft"
-        $Legend.TitleFont = New-Object System.Drawing.Font @('Microsoft Sans Serif','11', [System.Drawing.FontStyle]::Bold)
-        $Legend.IsEquallySpacedItems = $True
-        $Legend.BorderColor = 'Black'
-        $Chart.Legends.Add($Legend)
+    $Legend                      = New-Object system.Windows.Forms.DataVisualization.Charting.Legend
+    $Legend.Enabled              = $AutoChartsLegendCheckBox.Checked
+    $Legend.Name                 = "Legend"
+    $Legend.Title                = "Legend"
+    $Legend.TitleAlignment       = "topleft"
+    $Legend.TitleFont            = New-Object System.Drawing.Font @('Microsoft Sans Serif','11', [System.Drawing.FontStyle]::Bold)
+    $Legend.IsEquallySpacedItems = $True
+    $Legend.BorderColor          = 'Black'
+    $AutoChart.Legends.Add($Legend)
+
     #-----------------------------------------
     # Auto Create Charts Data Series Baseline
     #-----------------------------------------
-        $Series01Name = 'Baseline'
-        $Chart.Series.Add("$Series01Name")
-        $Chart.Series["$Series01Name"].ChartType = "$ChartType"
-        $Chart.Series["$Series01Name"].BorderWidth  = 1
-        $Chart.Series["$Series01Name"].IsVisibleInLegend = $true
-        $Chart.Series["$Series01Name"].Chartarea = "Chart Area"
-        $Chart.Series["$Series01Name"].Legend = "Legend"
-        $Chart.Series["$Series01Name"].Color = "Blue"
-        $Chart.Series["$Series01Name"].Font = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-        #$Chart.Series["$Series01Name"].SmartLabelStyle.Enabled = $true
-        #$Chart.Series["$Series01Name"].Points.DataBind($CSVFileBaselineCollection,$PropertyX,$PropertyY)
-        #$Chart.Series["$Series01Name"].IsXValueIndexed = $true
-        # Pie Charts - Moves text off pie
-        $Chart.Series["$Series01Name"]['PieLineColor'] = 'Black'
-        $Chart.Series["$Series01Name"]['PieLabelStyle'] = 'Outside'
+    $Series01Name = 'Baseline'
+    $AutoChart.Series.Add("$Series01Name")
+    $AutoChart.Series["$Series01Name"].Enabled           = $True
+    $AutoChart.Series["$Series01Name"].ChartType         = "Column"
+    $AutoChart.Series["$Series01Name"].BorderWidth       = 1
+    $AutoChart.Series["$Series01Name"].IsVisibleInLegend = $true
+    $AutoChart.Series["$Series01Name"].Chartarea         = "Chart Area"
+    $AutoChart.Series["$Series01Name"].Legend            = "Legend"
+    $AutoChart.Series["$Series01Name"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+    # Pie Charts - Moves text off pie
+    $AutoChart.Series["$Series01Name"]['PieLineColor']   = 'Black'
+    $AutoChart.Series["$Series01Name"]['PieLabelStyle']  = 'Outside'
 
     #-----------------------------------------
     # Auto Create Charts Data Series Previous
     #-----------------------------------------
-        $Series02Name = 'Previous'
-        $Chart.Series.Add("$Series02Name")
-        $Chart.Series["$Series02Name"].ChartType = "$ChartType"
-        $Chart.Series["$Series02Name"].BorderWidth  = 1
-        $Chart.Series["$Series02Name"].IsVisibleInLegend = $true
-        $Chart.Series["$Series02Name"].Chartarea = "Chart Area"
-        $Chart.Series["$Series02Name"].Legend = "Legend"
-        $Chart.Series["$Series02Name"].Color = "Red"
-        $Chart.Series["$Series02Name"].Font = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-        #$Chart.Series["$Series02Name"].SmartLabelStyle.Enabled = $true
-        #$Chart.Series["$Series01Name"].Points.DataBind($CSVFilePreviousCollection,$PropertyX,$PropertyY)
-        #$Chart.Series["$Series02Name"].IsXValueIndexed = $true
-        # Pie Charts - Moves text off pie
-        $Chart.Series["$Series02Name"]['PieLineColor'] = 'Black'
-        $Chart.Series["$Series02Name"]['PieLabelStyle'] = 'Outside'
-            
+    $Series02Name = 'Previous'
+    $AutoChart.Series.Add("$Series02Name")
+    $AutoChart.Series["$Series02Name"].Enabled           = $True
+    $AutoChart.Series["$Series02Name"].BorderWidth       = 1
+    $AutoChart.Series["$Series02Name"].IsVisibleInLegend = $true
+    $AutoChart.Series["$Series02Name"].Chartarea         = "Chart Area"
+    $AutoChart.Series["$Series02Name"].Legend            = "Legend"
+    $AutoChart.Series["$Series02Name"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+    # Pie Charts - Moves text off pie
+    #if (-not ($CSVFileMostRecentCollection -eq $CSVFilePreviousCollection) -or -not ($CSVFileMostRecentCollection -eq $CSVFileBaselineCollection)) {
+    #    $AutoChart.Series["$Series03Name"].ChartType         = "Column"
+    #    $AutoChart.Series["$Series03Name"].MarkerColor       = 'Blue'
+    #}
+    $AutoChart.Series["$Series02Name"]['PieLineColor']   = 'Black'
+    $AutoChart.Series["$Series02Name"]['PieLabelStyle']  = 'Outside'
+           
     #---------------------------------------
     # Auto Create Charts Data Series Recent
     #---------------------------------------
-        $Series03Name = 'Most Recent'
-        $Chart.Series.Add("$Series03Name")
-        $Chart.Series["$Series03Name"].ChartType = "$ChartType"
-        $Chart.Series["$Series03Name"].BorderWidth  = 1
-        $Chart.Series["$Series03Name"].IsVisibleInLegend = $true
-        $Chart.Series["$Series03Name"].Chartarea = "Chart Area"
-        $Chart.Series["$Series03Name"].Legend = "Legend"
-        $Chart.Series["$Series03Name"].Color = "Green"
-        $Chart.Series["$Series03Name"].Font = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-        #$Chart.Series["$Series03Name"].SmartLabelStyle.Enabled = $true
-        #$Chart.Series["$Series03Name"].Points.DataBind($CSVFileMostRecentCollection,$PropertyX,$PropertyY)
-        #$Chart.Series["$Series03Name"].IsXValueIndexed = $true
-        # Pie Charts - Moves text off pie
-        $Chart.Series["$Series03Name"]['PieLineColor'] = 'Black'
-        $Chart.Series["$Series03Name"]['PieLabelStyle'] = 'Outside'
+    $Series03Name = 'Most Recent'
+    $AutoChart.Series.Add("$Series03Name")  
+    $AutoChart.Series["$Series03Name"].Enabled           = $True
+    $AutoChart.Series["$Series03Name"].BorderWidth       = 1
+    $AutoChart.Series["$Series03Name"].IsVisibleInLegend = $true
+    $AutoChart.Series["$Series03Name"].Chartarea         = "Chart Area"
+    $AutoChart.Series["$Series03Name"].Legend            = "Legend"
+    $AutoChart.Series["$Series03Name"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+    # Pie Charts - Moves text off pie
+    $AutoChart.Series["$Series03Name"]['PieLineColor']   = 'Black'
+    $AutoChart.Series["$Series03Name"]['PieLabelStyle']  = 'Outside'
 
-    #-----------------------------------------------------------
-    # Auto Create Charts - Code that counts computers that match
-    #-----------------------------------------------------------
-        # If the Second field/Y Axis equals PSComputername, it counts it
-        if ($PropertyY -eq "PSComputerName") {
-            #$Script:AutoChartsChoice0 = "Name"
-            #$Script:AutoChartsChoice1 = "PSComputerName"                
-            function CreateSeriesData {
-                param (
-                    $CSVFileCollection,
-                    $Series
-                    )
-                # Import Data
-                $DataSource = Import-Csv $CSVFileCollection
-                    # Filtering Results for Services to show just running services
-                    #if ($DataSource -like "*Services*") {
-                    #    $DataSource = Import-Csv $CSVFileCollection | Where-Object {$_.State -eq "Running"}
-                    #    $ChartTitle.Text = (($CSVFileMostRecentCollection.split('\'))[-1] -replace '.csv','') + " - Running"
-                    #}
-                    
+    #-------------------------------------------------------
+    # Auto Create Charts - Chart Type and Series Management
+    #-------------------------------------------------------
+    # Controls which series is showing and what type of charts will be displayed
+    if (($CSVFileBaselineCollection) -and ($CSVFilePreviousCollection) -and ($CSVFileMostRecentCollection)) {
+        $AutoChart.Series["$Series01Name"].ChartType     = 'Column'
+        $AutoChart.Series["$Series01Name"].Color         = 'Blue'
+        $AutoChart.Series["$Series02Name"].ChartType     = 'Point'
+        $AutoChart.Series["$Series02Name"].MarkerColor   = 'Orange'  
+        $AutoChart.Series["$Series02Name"].MarkerStyle   = 'Square'
+        $AutoChart.Series["$Series02Name"].MarkerSize    = '10'            
+        $AutoChart.Series["$Series03Name"].ChartType     = 'Point'
+        $AutoChart.Series["$Series03Name"].MarkerColor   = 'Red'  
+        $AutoChart.Series["$Series03Name"].MarkerStyle   = 'Diamond'
+        $AutoChart.Series["$Series03Name"].MarkerSize    = '10'             
+    }
+    else {
+        if (($CSVFileBaselineCollection) -and -not ($CSVFilePreviousCollection) -and -not ($CSVFileMostRecentCollection)) {
+            $AutoChart.Series["$Series01Name"].ChartType     = 'Column'
+            $AutoChart.Series["$Series01Name"].Color         = 'Blue'
+            $AutoChart.Series["$Series02Name"].Enabled       = $False
+            $AutoChart.Series["$Series03Name"].Enabled       = $False
+        }
+        elseif (($CSVFileBaselineCollection) -and ($CSVFilePreviousCollection) -and -not ($CSVFileMostRecentCollection)) {
+            $AutoChart.Series["$Series01Name"].ChartType     = 'Column'
+            $AutoChart.Series["$Series01Name"].Color         = 'Blue'
+            $AutoChart.Series["$Series01Name"].MarkerColor   = 'Blue'              
+            $AutoChart.Series["$Series02Name"].ChartType     = 'Point'
+            $AutoChart.Series["$Series02Name"].MarkerColor   = 'Orange'  
+            $AutoChart.Series["$Series02Name"].MarkerStyle   = 'Square'
+            $AutoChart.Series["$Series02Name"].MarkerSize    = '10'  
+            $AutoChart.Series["$Series03Name"].Enabled       = $False
 
-                $UniqueDataFields = $DataSource | Select-Object -Property $PropertyX | Sort-Object -Property $PropertyX -Unique                
-                $ComputerWithDataResults = @()
-                foreach ($DataField in $UniqueDataFields) {
-                    $Count = 0
-                    $Computers = @()
-                    foreach ( $Line in $DataSource ) { 
-                        if ( $Line.Name -eq $DataField.Name ) {
-                            $Count += 1
-                            if ( $Computers -notcontains $Line.PSComputerName ) { $Computers += $Line.PSComputerName }
-                        }
-                    }
-                    $UniqueCount = $Computers.Count
-                    $ComputersWithData =  New-Object PSObject -Property @{
-                        DataField    = $DataField
-                        TotalCount   = $Count
-                        UniqueCount  = $UniqueCount
-                        ComputerHits = $Computers 
-                    }
-                    $ComputerWithDataResults += $ComputersWithData
-                    #"$DataField"
-                    #"Count: $Count"
-                    #"Computers: $Computers"
-                    #"------------------------------"
-                }
-                $ComputerWithDataResults `
-                | ForEach-Object {$Chart.Series["$Series"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
-                #| Sort-Object -Property UniqueCount `
-                #| Select-Object -First $AutoChartsLimitResultsTextBox.Text `
-                #| ForEach-Object {$Chart.Series["$Series"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
-            }
-                
-            #$ComputerWithDataResults `
-            #    | Sort-Object -Property UniqueCount -Descending `
-            #    | Select-Object -First $Script:AutoChartsChoice[3] `                        <----Limit number
-            #    | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
-                
-            CreateSeriesData -CSVFileCollection $CSVFileBaselineCollection   -Series $Series01Name
-            CreateSeriesData -CSVFileCollection $CSVFilePreviousCollection   -Series $Series02Name
-            CreateSeriesData -CSVFileCollection $CSVFileMostRecentCollection -Series $Series03Name
+        }
+        elseif (($CSVFileBaselineCollection) -and -not ($CSVFilePreviousCollection) -and ($CSVFileMostRecentCollection)) {
+            $AutoChart.Series["$Series01Name"].ChartType     = 'Column'
+            $AutoChart.Series["$Series01Name"].Color         = 'Blue'         
+            $AutoChart.Series["$Series03Name"].ChartType     = 'Point'
+            $AutoChart.Series["$Series03Name"].MarkerColor   = 'Red'  
+            $AutoChart.Series["$Series03Name"].MarkerStyle   = 'Diamond'
+            $AutoChart.Series["$Series03Name"].MarkerSize    = '10'  
+            $AutoChart.Series["$Series02Name"].Enabled       = $False
         }
 
+        if (($CSVFilePreviousCollection) -and -not ($CSVFileBaselineCollection) -and -not ($CSVFileMostRecentCollection)) {
+            $AutoChart.Series["$Series02Name"].ChartType     = 'Column'
+            $AutoChart.Series["$Series02Name"].Color         = 'Orange'
+            $AutoChart.Series["$Series01Name"].Enabled       = $False
+            $AutoChart.Series["$Series03Name"].Enabled       = $False
 
+        }
+        elseif (($CSVFilePreviousCollection) -and -not ($CSVFileBaselineCollection) -and ($CSVFileMostRecentCollection)) {
+            $AutoChart.Series["$Series02Name"].ChartType     = 'Column'
+            $AutoChart.Series["$Series02Name"].Color         = 'Orange'
+            $AutoChart.Series["$Series03Name"].ChartType     = 'Point'
+            $AutoChart.Series["$Series03Name"].MarkerColor   = 'Red'  
+            $AutoChart.Series["$Series03Name"].MarkerStyle   = 'Diamond'
+            $AutoChart.Series["$Series03Name"].MarkerSize    = '10'                     
+            $AutoChart.Series["$Series01Name"].Enabled       = $False
 
-        # If the Second field/Y Axis DOES NOT equals PSComputername, it uses the field provided
-        else {
-            ConvertCSVNumberStringsToIntergers $DataSource
-            if ($AutoChartsDescendingRadioButton) {
-                $DataSource `
-                    | Sort-Object -Property $PropertyY `
-                    | Select-Object -First $AutoChartsLimitResultsTextBox.Text `
-                    | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $PropertyX), $(iex $PropertyY) )}  
+        }
+        if (($CSVFileMostRecentCollection) -and -not ($CSVFilePreviousCollection) -and -not ($CSVFileBaselineCollection)) {
+            $AutoChart.Series["$Series03Name"].ChartType     = 'Column'
+            $AutoChart.Series["$Series03Name"].Color         = 'Red'
+            $AutoChart.Series["$Series01Name"].Enabled       = $False
+            $AutoChart.Series["$Series02Name"].Enabled       = $False
+        }
+    }
+
+    #---------------------------------------------
+    # Auto Create Charts - Alternate Color Scheme
+    #---------------------------------------------
+    if ($AutoChartColorSchemeSelectionComboBox -ne 'Select Alternate Color Scheme') {
+        $AutoChart.Series["$Series01Name"].Color       = ($AutoChartColorSchemeSelectionComboBox.SelectedItem -replace ' ','' -split ',')[0]
+        $AutoChart.Series["$Series01Name"].MarkerColor = ($AutoChartColorSchemeSelectionComboBox.SelectedItem -replace ' ','' -split ',')[0]
+        $AutoChart.Series["$Series02Name"].Color       = ($AutoChartColorSchemeSelectionComboBox.SelectedItem -replace ' ','' -split ',')[1]
+        $AutoChart.Series["$Series02Name"].MarkerColor = ($AutoChartColorSchemeSelectionComboBox.SelectedItem -replace ' ','' -split ',')[1]
+        $AutoChart.Series["$Series03Name"].Color       = ($AutoChartColorSchemeSelectionComboBox.SelectedItem -replace ' ','' -split ',')[2]
+        $AutoChart.Series["$Series03Name"].MarkerColor = ($AutoChartColorSchemeSelectionComboBox.SelectedItem -replace ' ','' -split ',')[2]
+    }
+
+    #------------------------------------------------------------
+    # Auto Create Charts - Code that counts computers that match
+    #------------------------------------------------------------
+    function Merge-CSVFiles { 
+        [cmdletbinding()] 
+        param( 
+            [string[]]$CSVFiles, 
+            [string]$OutputFile = "c:\merged.csv" 
+        ) 
+        $Script:MergedCSVFilesOutput = @(); 
+        foreach($CSV in $CSVFiles) { 
+            if(Test-Path $CSV) {          
+                $FileName = [System.IO.Path]::GetFileName($CSV) 
+                $temp = Import-CSV -Path $CSV | select *, @{Expression={$FileName};Label="FileName"} 
+                $Script:MergedCSVFilesOutput += $temp 
+            } else { 
+                Write-Warning "$CSV : No such file found" 
+            } 
+ 
+        }        
+        #$Script:Output | Export-Csv -Path $OutputFile -NoTypeInformation 
+        #Write-Output "$OutputFile successfully created" 
+        return $Script:MergedCSVFilesOutput
+    }
+
+    # If the Second field/Y Axis equals PSComputername, it counts it
+    if ($PropertyY -eq "PSComputerName") {
+        #$Script:AutoChartsChoice0 = "Name"
+        #$Script:AutoChartsChoice1 = "PSComputerName"
+
+        Merge-CSVFiles -CSVFiles $CSVFileBaselineCollection,$CSVFilePreviousCollection,$CSVFileMostRecentCollection 
+        #$Script:Output
+
+        $CSVFileCollections = @($CSVFileBaselineCollection,$CSVFilePreviousCollection,$CSVFileMostRecentCollection)
+        $SeriesCount = 0
+
+        foreach ($CSVFileCollection in $CSVFileCollections) {
+            $SeriesCount += 1
+
+            # Import Data
+            $DataSource = @()
+            # Filtering Results for Services to show just running services
+            if ($CSVFileCollection -match "Services.csv") {
+                $DataSource += Import-Csv $CSVFileCollection | Where-Object {$_.State -eq "Running"}
+                $DataSource += $Script:MergedCSVFilesOutput  | Where-Object {$_.State -eq "Running"} | Select-Object -Property $PropertyX -Unique
+                $AutoChartTitle.Text = (($CSVFileMostRecentCollection.split('\'))[-1] -replace '.csv','') + " - Running"
             }
             else {
-                $DataSource `
-                    | Sort-Object -Property $PropertyY `
-                    | Select-Object -First $AutoChartsLimitResultsTextBox.Text `
-                    | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $PropertyX), $(iex $PropertyY) )}  
+                #test# $DataSource = Import-Csv $CSVFileCollection
+                $DataSource += Import-Csv $CSVFileCollection
+                $DataSource += $Script:MergedCSVFilesOutput | Select-Object -Property $PropertyX -Unique
             }
-        }       
+                    
+            # Creates a Unique list
+            $UniqueDataFields = $DataSource | Select-Object -Property $PropertyX | Sort-Object -Property $PropertyX -Unique                                
+            $ComputerWithDataResults = @()
 
+            # Generates and Counts the data
+            foreach ($DataField in $UniqueDataFields) {
+                $Count = 0
+                $Computers = @()
+                foreach ( $Line in $DataSource ) { 
+                    if ( $Line.$PropertyX -eq $DataField.$PropertyX ) {
+                        $Count += 1
+                        if ( $Computers -notcontains $Line.$PropertyY ) { $Computers += $Line.$PropertyY }
+                    }
+                }
+                $UniqueCount = $Computers.Count - 1 ### 1 is subtracted to account for the one added when ensuring all data fields are present
+                $ComputersWithData =  New-Object PSObject -Property @{
+                    DataField    = $DataField
+                    TotalCount   = $Count
+                    UniqueCount  = $UniqueCount
+                    ComputerHits = $Computers 
+                }
+                $ComputerWithDataResults += $ComputersWithData
+                #"$DataField"
+                #"Count: $Count"
+                #"Computers: $Computers"
+                #"------------------------------"
+            }
+            $Series = '$Series0' + $SeriesCount + 'Name'
+            $ComputerWithDataResults `
+            | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.UniqueCount)}
+            #| Sort-Object -Property UniqueCount `
+            #| Select-Object -First $AutoChartsLimitResultsTextBox.Text `
+            #| ForEach-Object {$AutoChart.Series["$Series"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+        }
+    }
+
+    # If the Second field/Y Axis DOES NOT equals PSComputername, it uses the field provided
+    #else {
+    #    $DataSource = Import-Csv $CSVFileCollection
+    #    $Series = '$Series0' + $SeriesCount + 'Name'
+    #    $DataSource `
+    #    | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.$PropertyY)}
+    #}       
 
     ############################################################################################################
     # Auto Create Charts Processes
@@ -10846,21 +10978,19 @@ function AutoChartsCommand {
     # Obtains a list of the files in the resources folder
     $ResourceProcessFiles = Get-ChildItem "$PoShHome\Resources\Process Info"
 
-    # Iterates through the files and dynamically creates tabs and imports data
-    #foreach ($File in $ResourceProcessFiles) {
-        #-----------------------------
-        # Creates Tabs From Each File
-        #-----------------------------
-        $TabName                                  = $QueryName
-        $AutoChartsProcessesTab                   = New-Object System.Windows.Forms.TabPage
-        $AutoChartsProcessesTab.Text              = "$TabName"
-        $AutoChartsProcessesTab.UseVisualStyleBackColor = $True
-        $AutoChartsProcessesTab.Anchor            = $AnchorAll
-        $AutoChartsTabControl.Controls.Add($AutoChartsProcessesTab)
+
+    #-----------------------------
+    # Creates Tabs From Each File
+    #-----------------------------
+    $TabName                                  = $QueryName
+    $AutoChartsProcessesTab                   = New-Object System.Windows.Forms.TabPage
+    $AutoChartsProcessesTab.Text              = "$TabName"
+    $AutoChartsProcessesTab.UseVisualStyleBackColor = $True
+    $AutoChartsProcessesTab.Anchor            = $AnchorAll
+    $AutoChartsTabControl.Controls.Add($AutoChartsProcessesTab)
             
-        $AutoChartsProcessesTab.controls.add($Chart)
-        $Chart.Anchor = $AnchorAll
-    #}
+    $AutoChartsProcessesTab.controls.add($AutoChart)
+    $AutoChart.Anchor = $AnchorAll
 
     #-------------------------------
     # Auto Create Charts Save Button
@@ -10876,9 +11006,17 @@ function AutoChartsCommand {
 
         $AutoChartsSaveButton.add_click({
             $Result = Invoke-SaveDialog
-            If ($Result) { $Chart.SaveImage($Result.FileName, $Result.Extension) }
+            If ($Result) { $AutoChart.SaveImage($Result.FileName, $Result.Extension) }
         }) 
-    $Chart.controls.add($AutoChartsSaveButton)
+    $AutoChart.controls.add($AutoChartsSaveButton)
+    $AutoChart.Add_Shown({$ViewChartForm.Activate()})
+    [void]$AutoChart.ShowDialog()
+    
+    #---------------------------------------
+    # Custom View Chart - Autosave an Image
+    #---------------------------------------
+    #$AutoChart.SaveImage('C:\temp\chart.jpeg', 'jpeg')
+    
 }
 
 
