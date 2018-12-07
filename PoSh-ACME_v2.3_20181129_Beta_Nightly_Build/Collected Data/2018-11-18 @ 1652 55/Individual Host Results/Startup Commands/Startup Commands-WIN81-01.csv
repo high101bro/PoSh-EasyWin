@@ -1,2 +1,0 @@
-"PSComputerName","Name","Location","Command","User"
-"WIN81-01","VMware User Process","HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run","""C:\Program Files\VMware\VMware Tools\vmtoolsd.exe"" -n vmusr","Public"

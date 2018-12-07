@@ -21,7 +21,7 @@
                     : WinRM  (Default Port 5986) - Preferably On A Domain Host
      Optional       : PSExec.exe, Procmon.exe, Autoruns.exe 
         		    : Can run standalone, but works best with the Resources folder!
-     Updated        : 21 Oct 18
+     Updated        : 06 Dec 18
      Created        : 21 Aug 18
 
     PoSh-ACME is a tool that allows you to run any number of queries against any number
@@ -77,7 +77,7 @@ If (-NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 {
     [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic")
     $verify = [Microsoft.VisualBasic.Interaction]::MsgBox(`
-        "Attention Under-Privileged User!`n   $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)`n`nThis script requires Administrator privileges in order to remotely collect data corretcly!",`
+        "Attention Under-Privileged User!`n   $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)`n`nThis script requires Administrator privileges in order to remotely collect data correctly!",`
         'YesNoCancel,Question',`
         "PoSH-ACME")
     switch ($verify) {
@@ -196,7 +196,7 @@ Function ListComputers([string]$Choice,[string]$Script:Domain) {
             echo $comp | Out-File $Script:Compute -Append }
         $Script:ComputerList = (Get-Content $Script:Compute) | Sort-Object
     }
-  elseif($Choice -eq "Manual")
+	elseif($Choice -eq "Manual")
     {
         $objOU = New-Object System.DirectoryServices.DirectoryEntry("LDAP://$Script:Domain")
         $objSearcher = New-Object System.DirectoryServices.DirectorySearcher
@@ -217,6 +217,7 @@ Function ListComputers([string]$Choice,[string]$Script:Domain) {
         Write-Host "You did not supply a correct response, Please select a response." -foregroundColor Red
         . ListComputers }
 }
+
 
 #============================================================================================================================================================
 # Function Name 'ListTextFile' - Enumerates Computer Names in a text file
@@ -911,17 +912,17 @@ $Section1QueriesTab.Controls.Add($CommandsQuickPickCheckedlistbox)
 #--------------------
 $HostQueriesLabel           = New-Object System.Windows.Forms.Label
 $HostQueriesLabel.Location  = New-Object System.Drawing.Size($Column1RightPosition,($CommandsQuickPickCheckedlistbox.Location.Y + $CommandsQuickPickCheckedlistbox.Size.Height + 4)) 
-$HostQueriesLabel.Size      = New-Object System.Drawing.Size(180,$Column1BoxHeight) 
+$HostQueriesLabel.Size      = New-Object System.Drawing.Size(100,$Column1BoxHeight) 
 $HostQueriesLabel.Text      = "Host Queries"
-$HostQueriesLabel.Font = New-Object System.Drawing.Font("$Font",13,1,2,1)
+$HostQueriesLabel.Font      = New-Object System.Drawing.Font("$Font",13,1,2,1)
 $HostQueriesLabel.ForeColor = "Blue"
 $Section1QueriesTab.Controls.Add($HostQueriesLabel)
 
 $QueryLabel2           = New-Object System.Windows.Forms.Label
-$QueryLabel2.Location  = New-Object System.Drawing.Size(($Column1RightPosition + 180),($CommandsQuickPickCheckedlistbox.Location.Y + $CommandsQuickPickCheckedlistbox.Size.Height + 8)) 
+$QueryLabel2.Location  = New-Object System.Drawing.Size(($Column1RightPosition + 110),($CommandsQuickPickCheckedlistbox.Location.Y + $CommandsQuickPickCheckedlistbox.Size.Height + 6)) 
 $QueryLabel2.Size      = New-Object System.Drawing.Size(400,($Column1BoxHeight - 4)) 
-$QueryLabel2.Text      = "* = Utilizes WMI"
-$QueryLabel2.Font = New-Object System.Drawing.Font("$Font",8,0,3,0)
+$QueryLabel2.Text      = "* = Utilizes WMI for Backwards with Server 2008 R2 and Windows 7 "
+$QueryLabel2.Font      = New-Object System.Drawing.Font("$Font",10,0,2,0)
 $QueryLabel2.ForeColor = "Blue"
 $Section1QueriesTab.Controls.Add($QueryLabel2) 
 
@@ -8284,7 +8285,7 @@ $EnumerationLabelWidth        = 450
 $EnumerationLabelHeight       = 25
 $EnumerationButtonWidth       = 110
 $EnumerationButtonHeight      = 22
-
+$EnumerationGroupGap          = 15
 
 $Section1EnumerationTab          = New-Object System.Windows.Forms.TabPage
 $Section1EnumerationTab.Location = $System_Drawing_Point
@@ -8294,9 +8295,52 @@ $Section1EnumerationTab.Size     = New-Object System.Drawing.Size($EnumerationLa
 $Section1EnumerationTab.UseVisualStyleBackColor = $True
 $Section1TabControl.Controls.Add($Section1EnumerationTab)
 
+# Shift the fields
+$EnumerationDownPosition += 10
+
+#============================================================================================================================================================
+# Enumeration - Import IP List
+#============================================================================================================================================================
+
+#-----------------------------------------
+# Enumeration - Import IP List - GroupBox
+#-----------------------------------------
+$EnumerationImportListGroupBox           = New-Object System.Windows.Forms.GroupBox
+$EnumerationImportListGroupBox.Location  = New-Object System.Drawing.Size(0,$EnumerationDownPosition)
+$EnumerationImportListGroupBox.size      = New-Object System.Drawing.Size(294,45)
+$EnumerationImportListGroupBox.text      = "Import List From File"
+$EnumerationImportListGroupBox.Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+$EnumerationImportListGroupBox.ForeColor = "Blue"
+
+$EnumerationImportIPListDownPosition = 18
+
+    $EnumerationImportListNote           = New-Object System.Windows.Forms.Label
+    $EnumerationImportListNote.Location  = New-Object System.Drawing.Size($EnumerationRightPosition,($EnumerationImportIPListDownPosition + 4)) 
+    $EnumerationImportListNote.Size      = New-Object System.Drawing.Size(175,22)
+    $EnumerationImportListNote.Text      = "One hostname or IP per line."
+    $EnumerationImportListNote.Font      = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationImportListNote.ForeColor = "Black"
+    $EnumerationImportListGroupBox.Controls.Add($EnumerationImportListNote)  
+
+    $EnumerationImportListButton           = New-Object System.Windows.Forms.Button
+    $EnumerationImportListButton.Location  = New-Object System.Drawing.Size(190,$EnumerationImportIPListDownPosition)
+    $EnumerationImportListButton.Size      = New-Object System.Drawing.Size(100,22) 
+    $EnumerationImportListButton.Text      = "Import List"
+    $EnumerationImportListButton.Font      = New-Object System.Drawing.Font("$Font",12,0,2,1)
+    $EnumerationImportListButton.ForeColor = "Red"
+    $EnumerationImportListButton.add_click({ 
+        . ListTextFile
+        foreach ($Computer in $ComputerList) { [void] $MainListBox.Items.Add("$Computer") }
+        $EnumerationComputerListBox.Items.Clear()
+        foreach ($Computer in $ComputerList) { [void] $EnumerationComputerListBox.Items.Add("$Computer") }
+    })
+    $EnumerationImportListGroupBox.Controls.Add($EnumerationImportListButton) 
+
+$Section1EnumerationTab.Controls.Add($EnumerationImportListGroupBox) 
 
 # Shift the fields
-$EnumerationDownPosition += $EnumerationDownPositionShift
+$EnumerationDownPosition += $EnumerationDownPositionShift + 10
+
 
 #============================================================================================================================================================
 # Enumeration - Domain Generated
@@ -8308,115 +8352,626 @@ $EnumerationDownPosition += $EnumerationDownPositionShift
 
 function EnumerationDomainGeneratedInputCheck {
     if (($EnumerationDomainGeneratedTextBox.Text -ne '<Domain Name>') -or ($EnumerationDomainGeneratedAutoCheckBox.Checked)) {
-    if (($EnumerationDomainGeneratedTextBox.Text -ne '') -or ($EnumerationDomainGeneratedAutoCheckBox.Checked)) {
-        # Checks if the domain input field is either blank or contains the default info
-        If ($EnumerationDomainGeneratedAutoCheckBox.Checked  -eq $true){. ListComputers "Auto"}
-        else {. ListComputers "Manual" "$($EnumerationDomainGeneratedTextBox.Text)"}
+        if (($EnumerationDomainGeneratedTextBox.Text -ne '') -or ($EnumerationDomainGeneratedAutoCheckBox.Checked)) {
+            # Checks if the domain input field is either blank or contains the default info
+            If ($EnumerationDomainGeneratedAutoCheckBox.Checked  -eq $true){. ListComputers "Auto"}
+            else {. ListComputers "Manual" "$($EnumerationDomainGeneratedTextBox.Text)"}
 
-        $EnumerationComputerListBox.Items.Clear()
-        foreach ($Computer in $ComputerList) {
-            [void] $EnumerationComputerListBox.Items.Add("$Computer")
+            $EnumerationComputerListBox.Items.Clear()
+            foreach ($Computer in $ComputerList) {
+                [void] $EnumerationComputerListBox.Items.Add("$Computer")
+            }
         }
-    }
     }
 }
 
-#------------------------------------------------------------------
-# Enumeration - Domain Generated - Generate List from Domain Label
-#------------------------------------------------------------------
-$EnumerationDomainGeneratedLabel           = New-Object System.Windows.Forms.Label
-$EnumerationDomainGeneratedLabel.Name      = "Generate List From Domain:"
-$EnumerationDomainGeneratedLabel.Text      = "$($EnumerationDomainGeneratedLabel.Name)"
-$EnumerationDomainGeneratedLabel.Location  = New-Object System.Drawing.Size($EnumerationRightPosition,$EnumerationDownPosition) 
-$EnumerationDomainGeneratedLabel.Size      = New-Object System.Drawing.Size(185,$EnumerationLabelHeight)
-$EnumerationDomainGeneratedLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
-$EnumerationDomainGeneratedLabel.ForeColor = "Black"
-$Section1EnumerationTab.Controls.Add($EnumerationDomainGeneratedLabel)
+#------------------------------------
+# Enumeration - Port Scan - GroupBox
+#------------------------------------
+$EnumerationDomainGenerateGroupBox           = New-Object System.Windows.Forms.GroupBox
+$EnumerationDomainGenerateGroupBox.Location  = New-Object System.Drawing.Size(0,($EnumerationImportListGroupBox.Location.Y + $EnumerationImportListGroupBox.Size.Height + $EnumerationGroupGap))
+$EnumerationDomainGenerateGroupBox.size      = New-Object System.Drawing.Size(294,100)
+$EnumerationDomainGenerateGroupBox.text      = "Import List From Domain"
+$EnumerationDomainGenerateGroupBox.Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+$EnumerationDomainGenerateGroupBox.ForeColor = "Blue"
 
-#-----------------------------------------------------
-# Enumeration - Domain Generated - Auto Pull Checkbox
-#-----------------------------------------------------
-$EnumerationDomainGeneratedAutoCheckBox          = New-Object System.Windows.Forms.Checkbox
-$EnumerationDomainGeneratedAutoCheckBox.Name     = "Auto Pull"
-$EnumerationDomainGeneratedAutoCheckBox.Text     = "$($EnumerationDomainGeneratedAutoCheckBox.Name)"
-$EnumerationDomainGeneratedAutoCheckBox.Location = New-Object System.Drawing.Size(191,($EnumerationDownPosition - 1))
-$EnumerationDomainGeneratedAutoCheckBox.Size     = New-Object System.Drawing.Size(100,$EnumerationLabelHeight)
-$Section1EnumerationTab.Controls.Add($EnumerationDomainGeneratedAutoCheckBox)
+$EnumerationDomainGenerateDownPosition      = 18
+$EnumerationDomainGenerateDownPositionShift = 25
 
-# Shift the fields
-$EnumerationDownPosition += $EnumerationDownPositionShift
+    $EnumerationDomainGeneratedLabelNote           = New-Object System.Windows.Forms.Label
+    $EnumerationDomainGeneratedLabelNote.Location  = New-Object System.Drawing.Size($EnumerationRightPosition,($EnumerationDomainGenerateDownPosition + 3)) 
+    $EnumerationDomainGeneratedLabelNote.Size      = New-Object System.Drawing.Size(220,22)
+    $EnumerationDomainGeneratedLabelNote.Text      = "This host must be domained for this feature."    
+    $EnumerationDomainGeneratedLabelNote.Font      = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationDomainGeneratedLabelNote.ForeColor = "Black"
+    $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedLabelNote)  
 
-#------------------------------------------------
-# Enumeration - Domain Generated - Input Textbox
-#------------------------------------------------
+    #-----------------------------------------------------
+    # Enumeration - Domain Generated - Auto Pull Checkbox
+    #-----------------------------------------------------
+    $EnumerationDomainGeneratedAutoCheckBox           = New-Object System.Windows.Forms.Checkbox
+    $EnumerationDomainGeneratedAutoCheckBox.Name      = "Auto Pull"
+    $EnumerationDomainGeneratedAutoCheckBox.Text      = "$($EnumerationDomainGeneratedAutoCheckBox.Name)"
+    $EnumerationDomainGeneratedAutoCheckBox.Location  = New-Object System.Drawing.Size(($EnumerationDomainGeneratedLabelNote.Size.Width + 3),($EnumerationDomainGenerateDownPosition - 1))
+    $EnumerationDomainGeneratedAutoCheckBox.Size      = New-Object System.Drawing.Size(100,$EnumerationLabelHeight)
+    $EnumerationDomainGeneratedAutoCheckBox.Font      = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationDomainGeneratedAutoCheckBox.ForeColor = "Black"
+    $EnumerationDomainGeneratedAutoCheckBox.Add_Click({
+        if ($EnumerationDomainGeneratedAutoCheckBox.Checked -eq $true){
+            $EnumerationDomainGeneratedTextBox.Enabled   = $false
+            $EnumerationDomainGeneratedTextBox.BackColor = "lightgray"
+        }
+        elseif ($EnumerationDomainGeneratedAutoCheckBox.Checked -eq $false) {
+            $EnumerationDomainGeneratedTextBox.Text = "<Domain Name>"
+            $EnumerationDomainGeneratedTextBox.Enabled   = $true    
+            $EnumerationDomainGeneratedTextBox.BackColor = "white"
+        }
+    })
+    $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedAutoCheckBox)
 
-$EnumerationDomainGeneratedTextBox          = New-Object System.Windows.Forms.TextBox
-$EnumerationDomainGeneratedTextBox.Text     = "<Domain Name>" #Default Content
-$EnumerationDomainGeneratedTextBox.Location = New-Object System.Drawing.Size($EnumerationRightPosition,$EnumerationDownPosition)
-$EnumerationDomainGeneratedTextBox.Size     = New-Object System.Drawing.Size(180,$EnumerationLabelHeight)
-$EnumerationDomainGeneratedTextBox.Add_KeyDown({
-    if ($_.KeyCode -eq "Enter") {
-        EnumerationDomainGeneratedInputCheck
+    $EnumerationDomainGenerateDownPosition += $EnumerationDomainGenerateDownPositionShift
+
+    #------------------------------------------------
+    # Enumeration - Domain Generated - Input Textbox
+    #------------------------------------------------
+    $EnumerationDomainGeneratedTextBox           = New-Object System.Windows.Forms.TextBox
+    $EnumerationDomainGeneratedTextBox.Text      = "<Domain Name>"
+    $EnumerationDomainGeneratedTextBox.Location  = New-Object System.Drawing.Size($EnumerationRightPosition,$EnumerationDomainGenerateDownPosition)
+    $EnumerationDomainGeneratedTextBox.Size      = New-Object System.Drawing.Size(286,$EnumerationLabelHeight)
+    $EnumerationDomainGeneratedTextBox.Font      = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationDomainGeneratedTextBox.ForeColor = "Black"
+    $EnumerationDomainGeneratedTextBox.Add_KeyDown({
+        if ($_.KeyCode -eq "Enter") { EnumerationDomainGeneratedInputCheck }
+    })
+    $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedTextBox)
+
+    $EnumerationDomainGenerateDownPosition += $EnumerationDomainGenerateDownPositionShift
+
+    #----------------------------------------------------------
+    # Enumeration - Domain Generated - Import Hosts/IPs Button
+    #----------------------------------------------------------
+    $EnumerationDomainGeneratedListButton           = New-Object System.Windows.Forms.Button
+    $EnumerationDomainGeneratedListButton.Text      = "Import Hosts"
+    $EnumerationDomainGeneratedListButton.Location  = New-Object System.Drawing.Size(190,($EnumerationDomainGenerateDownPosition - 1))
+    $EnumerationDomainGeneratedListButton.Size      = New-Object System.Drawing.Size(100,22)
+    $EnumerationDomainGeneratedListButton.Font      = New-Object System.Drawing.Font("$Font",11,0,2,1)
+    $EnumerationDomainGeneratedListButton.ForeColor = "Red"
+    $EnumerationDomainGeneratedListButton.add_click({ EnumerationDomainGeneratedInputCheck })
+    $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedListButton) 
+
+$Section1EnumerationTab.Controls.Add($EnumerationDomainGenerateGroupBox) 
+
+#============================================================================================================================================================
+# Enumeration - Port Scanning
+#============================================================================================================================================================
+
+#marco
+function Conduct-PortScan {
+    param (
+        $Timeout_ms,
+        $TestWithICMPFirst,
+        $SpecificIPsToScan,
+        $Network,
+        $FirstIP,
+        $LastIP,
+        $SpecificPortsToScan,
+        $FirstPort,
+        $LastPort
+    )
+    $IPsToScan = @()
+    $IPsToScan += $SpecificIPsToScan -split "," -replace " ",""
+    if ( $FirstIP -ne "" -and $LastIP -ne "" ) {
+        if ( ($FirstIP -lt [int]0 -or $FirstIP -gt [int]255) -or ($LastIP -lt [int]0 -or $LastIP -gt [int]255) ) {             
+            $MainListBox.Items.Clear()
+            $MainListBox.Items.Add("Error! The First and Last IP Fields must be an interger between 0 and 255")
+            return
+        }
+        $IPRange = $FirstIP..$LastIP
+        foreach ( $IP in $IPRange ) { $IPsToScan += "$Network.$IP" }
     }
-})
-$Section1EnumerationTab.Controls.Add($EnumerationDomainGeneratedTextBox)
+    elseif (( $FirstIP -ne "" -and $LastIP -eq "" ) -or ( $FirstIP -eq "" -and $LastIP -ne "" )) {        
+        $MainListBox.Items.Clear()
+        $MainListBox.Items.Add("Error! You can't have one empty IP range field.")
+        return
+    }
+    
+    # Since sorting IPs in PowerShell easily and accurately can be a pain...
+    # The [System.Version] object is used to represent file and application versions, and we can leverage it to sort IP addresses simply. We sort on a custom calculation, converting the IP addresses to version objects. The conversion is just for sorting purposes.
+    $IPsToScan  = $IPsToScan | Sort-Object { [System.Version]$_ } -Unique | ? {$_ -ne ""}
 
-#----------------------------------------------------------
-# Enumeration - Domain Generated - Import Hosts/IPs Button
-#----------------------------------------------------------
-$EnumerationDomainGeneratedListButton          = New-Object System.Windows.Forms.Button
-$EnumerationDomainGeneratedListButton.Text     = "Import Hosts"
-$EnumerationDomainGeneratedListButton.Location = New-Object System.Drawing.Size(190,($EnumerationDownPosition - 1))
-$EnumerationDomainGeneratedListButton.Size     = New-Object System.Drawing.Size(100,22)
-$EnumerationDomainGeneratedListButton.add_click({
-    EnumerationDomainGeneratedInputCheck
-})
-$Section1EnumerationTab.Controls.Add($EnumerationDomainGeneratedListButton) 
+    $PortsToScan = @()
+    # Adds the user entered specific ports that were comma separated
+    $PortsToScan += $SpecificPortsToScan -split "," -replace " ",""
+    # Adds the user entered ports ranged entered in the port range section
+    $PortsToScan += $FirstPort..$LastPort
+
+    function GeneratePortsStatusMessage {
+        $MainListBox.Items.Clear()
+        $MainListBox.Items.Add("Please wait as the port range is being generated...")
+        Start-Sleep -Seconds 1
+    }
+    # If the respective drop down is selected, the ports will be added to the port scan
+    if ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "Nmap Top 100 Ports") {
+        GeneratePortsStatusMessage
+        $PortsToScan += "7,9,13,21,22,23,25,26,37,53,79,80,81,88,106,110,111,113,119,135,139,143,144,179,199,389,427,443,444,445,465,513,514,515,543,544,548,554,587,631,646,873,990,993,995,1025,1026,1027,1028,1029,1110,1433,1720,1723,1755,1900,2000,2001,2049,2121,2717,3000,3128,3306,3389,3986,4899,5000,5009,5051,5060,5101,5190,5357,5432,5631,5666,5800,5900,6000,6001,6646,7070,8000,8008-8009,8080,8081,8443,8888,9100,9999,10000,32768,49152,49153,49154,49155,49156,49157" -split "," -replace " ",""
+    }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "Nmap Top 1000 Ports") {
+        GeneratePortsStatusMessage
+        $PortsToScan += "1,3,4,6,7,9,13,17,19,20,21,22,23,24,25,26,30,32,33,37,42,43,49,53,70,79,80,81,82,83,84,85,88,89,90,99,100,106,109,110,111,113,119,125,135,139,143,144,146,161,163,179,199,211,212,222,254,255,256,259,264,280,301,306,311,340,366,389,406,407,416,417,425,427,443,444,445,458,464,465,481,497,500,512,513,514,515,524,541,543,544,545,548,554,555,563,587,593,616,617,625,631,636,646,648,666,667,668,683,687,691,700,705,711,714,720,722,726,749,765,777,783,787,800,801,808,843,873,880,888,898,900,901,902,903,911,912,981,987,990,992,993,995,999,1000,1001,1002,1007,1009,1010,1011,1021,1022,1023,1024,1025,1026,1027,1028,1029,1030,1031,1032,1033,1034,1035,1036,1037,1038,1039,1040,1041,1042,1043,1044,1045,1046,1047,1048,1049,1050,1051,1052,1053,1054,1055,1056,1057,1058,1059,1060,1061,1062,1063,1064,1065,1066,1067,1068,1069,1070,1071,1072,1073,1074,1075,1076,1077,1078,1079,1080,1081,1082,1083,1084,1085,1086,1087,1088,1089,1090,1091,1092,1093,1094,1095,1096,1097,1098,1099,1100,1102,1104,1105,1106,1107,1108,1110,1111,1112,1113,1114,1117,1119,1121,1122,1123,1124,1126,1130,1131,1132,1137,1138,1141,1145,1147,1148,1149,1151,1152,1154,1163,1164,1165,1166,1169,1174,1175,1183,1185,1186,1187,1192,1198,1199,1201,1213,1216,1217,1218,1233,1234,1236,1244,1247,1248,1259,1271,1272,1277,1287,1296,1300,1301,1309,1310,1311,1322,1328,1334,1352,1417,1433,1434,1443,1455,1461,1494,1500,1501,1503,1521,1524,1533,1556,1580,1583,1594,1600,1641,1658,1666,1687,1688,1700,1717,1718,1719,1720,1721,1723,1755,1761,1782,1783,1801,1805,1812,1839,1840,1862,1863,1864,1875,1900,1914,1935,1947,1971,1972,1974,1984,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2013,2020,2021,2022,2030,2033,2034,2035,2038,2040,2041,2042,2043,2045,2046,2047,2048,2049,2065,2068,2099,2100,2103,2105,2106,2107,2111,2119,2121,2126,2135,2144,2160,2161,2170,2179,2190,2191,2196,2200,2222,2251,2260,2288,2301,2323,2366,2381,2382,2383,2393,2394,2399,2401,2492,2500,2522,2525,2557,2601,2602,2604,2605,2607,2608,2638,2701,2702,2710,2717,2718,2725,2800,2809,2811,2869,2875,2909,2910,2920,2967,2968,2998,3000,3001,3003,3005,3006,3007,3011,3013,3017,3030,3031,3052,3071,3077,3128,3168,3211,3221,3260,3261,3268,3269,3283,3300,3301,3306,3322,3323,3324,3325,3333,3351,3367,3369,3370,3371,3372,3389,3390,3404,3476,3493,3517,3527,3546,3551,3580,3659,3689,3690,3703,3737,3766,3784,3800,3801,3809,3814,3826,3827,3828,3851,3869,3871,3878,3880,3889,3905,3914,3918,3920,3945,3971,3986,3995,3998,4000,4001,4002,4003,4004,4005,4006,4045,4111,4125,4126,4129,4224,4242,4279,4321,4343,4443,4444,4445,4446,4449,4550,4567,4662,4848,4899,4900,4998,5000,5001,5002,5003,5004,5009,5030,5033,5050,5051,5054,5060,5061,5080,5087,5100,5101,5102,5120,5190,5200,5214,5221,5222,5225,5226,5269,5280,5298,5357,5405,5414,5431,5432,5440,5500,5510,5544,5550,5555,5560,5566,5631,5633,5666,5678,5679,5718,5730,5800,5801,5802,5810,5811,5815,5822,5825,5850,5859,5862,5877,5900,5901,5902,5903,5904,5906,5907,5910,5911,5915,5922,5925,5950,5952,5959,5960,5961,5962,5963,5987,5988,5989,5998,5999,6000,6001,6002,6003,6004,6005,6006,6007,6009,6025,6059,6100,6101,6106,6112,6123,6129,6156,6346,6389,6502,6510,6543,6547,6565,6566,6567,6580,6646,6666,6667,6668,6669,6689,6692,6699,6779,6788,6789,6792,6839,6881,6901,6969,7000,7001,7002,7004,7007,7019,7025,7070,7100,7103,7106,7200,7201,7402,7435,7443,7496,7512,7625,7627,7676,7741,7777,7778,7800,7911,7920,7921,7937,7938,7999,8000,8001,8002,8007,8008,8009,8010,8011,8021,8022,8031,8042,8045,8080,8081,8082,8083,8084,8085,8086,8087,8088,8089,8090,8093,8099,8100,8180,8181,8192,8193,8194,8200,8222,8254,8290,8291,8292,8300,8333,8383,8400,8402,8443,8500,8600,8649,8651,8652,8654,8701,8800,8873,8888,8899,8994,9000,9001,9002,9003,9009,9010,9011,9040,9050,9071,9080,9081,9090,9091,9099,9100,9101,9102,9103,9110,9111,9200,9207,9220,9290,9415,9418,9485,9500,9502,9503,9535,9575,9593,9594,9595,9618,9666,9876,9877,9878,9898,9900,9917,9929,9943,9944,9968,9998,9999,10000,10001,10002,10003,10004,10009,10010,10012,10024,10025,10082,10180,10215,10243,10566,10616,10617,10621,10626,10628,10629,10778,11110,11111,11967,12000,12174,12265,12345,13456,13722,13782,13783,14000,14238,14441,14442,15000,15002,15003,15004,15660,15742,16000,16001,16012,16016,16018,16080,16113,16992,16993,17877,17988,18040,18101,18988,19101,19283,19315,19350,19780,19801,19842,20000,20005,20031,20221,20222,20828,21571,22939,23502,24444,24800,25734,25735,26214,27000,27352,27353,27355,27356,27715,28201,30000,30718,30951,31038,31337,32768,32769,32770,32771,32772,32773,32774,32775,32776,32777,32778,32779,32780,32781,32782,32783,32784,32785,33354,33899,34571,34572,34573,35500,38292,40193,40911,41511,42510,44176,44442,44443,44501,45100,48080,49152,49153,49154,49155,49156,49157,49158,49159,49160,49161,49163,49165,49167,49175,49176,49400,49999,50000,50001,50002,50003,50006,50300,50389,50500,50636,50800,51103,51493,52673,52822,52848,52869,54045,54328,55055,55056,55555,55600,56737,56738,57294,57797,58080,60020,60443,61532,61900,62078,63331,64623,64680,65000,65129,65389" -split "," -replace " ",""
+    }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "Well-Known Ports (0-1023)") {
+        GeneratePortsStatusMessage
+        $PortsToScan += 0..1023
+    }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "Registered Ports (1024-49151)") {
+        GeneratePortsStatusMessage
+        $PortsToScan += 1024..49151
+    }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "Dynamic Ports (49152-65535)") {
+        GeneratePortsStatusMessage
+        $PortsToScan += 49152..65535
+    }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "All Ports (0-65535)") {
+        GeneratePortsStatusMessage
+        $PortsToScan += 0..65535
+    }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "Last Ports Scanned") {
+        $PortsToScan += $null
+    }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "Custom Saved Ports") {
+        $PortsToScan += $null
+    }
+    elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "") {
+        $PortsToScan += $null
+    }
+
+    # Places the Ports to Scan in Numerical Order, removes duplicate entries, and remove possible empty fields
+#    $SortedPorts=@()
+#    foreach ( $Port in $PortsToScan ) { $SortedPorts += [int]$Port }
+#    $PortsToScan = $SortedPorts | ? {$_ -ne ""}
+    $PortsToScan = $PortsToScan | Sort-Object -Unique | ? {$_ -ne ""}
+    #marco
+
+    $NetworkPortScanIPResponded = ""
+    $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  ==================== Port Scan Initiliaztion ===================="
+    $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Ports To Be Scanned:  $PortsToScan"
+    $LogMessage | Add-Content -Path $LogFile
+    $EnumerationComputerListBox.Items.Clear()
+    $MainListBox.Items.Clear()
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add("Conducting Port Scan"); Start-Sleep -Seconds 1
+
+    function PortScan {
+        foreach ($Port in $PortsToScan) {
+            $ErrorActionPreference = 'SilentlyContinue'
+            $socket = New-Object System.Net.Sockets.TcpClient
+            $connect = $socket.BeginConnect($IPAddress, $port, $null, $null)
+            $tryconnect = Measure-Command { $success = $connect.AsyncWaitHandle.WaitOne($Timeout_ms, $true) } | % totalmilliseconds
+            $tryconnect | Out-Null 
+            if ($socket.Connected) {
+                $MainListBox.Items.Add("$(Get-Date)  - $IPAddress is listening on port $Port (Response Time: $tryconnect ms)")
+                $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  - $IPAddress is listening on port $Port (Response Time: $tryconnect ms)"
+                $LogMessage | Add-Content -Path $LogFile
+                $NetworkPortScanIPResponded = $IPAddress
+                $socket.Close()
+                $socket.Dispose()
+                $socket = $null
+            }
+            $ErrorActionPreference = 'Continue'
+            $StatusListBox.Items.Clear()
+            $StatusListBox.Items.Add("Scanning: $IPAddress`:$Port")
+        }
+        if ($NetworkPortScanIPResponded -ne "") {
+            $EnumerationComputerListBox.Items.Add("$NetworkPortScanIPResponded")
+        }
+        $NetworkPortScanResultsIPList = @() # To Clear out the Variable        
+    }
+    foreach ($IPAddress in $IPsToScan) {
+        if ($TestWithICMPFirst -eq $true) {
+            $StatusListBox.Items.Clear()
+            $StatusListBox.Items.Add("Testing Connection (ping): $IPAddress")
+            if (Test-Connection -BufferSize 32 -Count 1 -Quiet -ComputerName $IPAddress) {
+                $MainListBox.Items.Add("$(Get-Date)  Port Scan IP:  $IPAddress")
+                $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  ICMP Connection Test - $IPAddress is UP - Conducting Port Scan:)"
+                $LogMessage | Add-Content -Path $LogFile
+                PortScan
+            }
+            else {
+                $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  ICMP Connection Test - $IPAddress is DOWN - No ports scanned)"
+                $LogMessage | Add-Content -Path $LogFile
+            }
+        }
+        elseif ($TestWithICMPFirst -eq $false) {
+            $MainListBox.Items.Add("$(Get-Date)  Port Scan IP - $IPAddress")
+            $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Port Scan IP:  $IPAddress"
+            $LogMessage | Add-Content -Path $LogFile
+            PortScan
+        } 
+    }
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add("Port Scan Completed - Results Are Saved In The Log File")
+    $MainListBox.Items.Add("$(Get-Date)  ==================== Port Scan Complete ====================")
+}
+
+#------------------------------------
+# Enumeration - Port Scan - GroupBox
+#------------------------------------
+$EnumerationPortScanGroupBox           = New-Object System.Windows.Forms.GroupBox
+$EnumerationPortScanGroupBox.Location  = New-Object System.Drawing.Size(0,($EnumerationDomainGenerateGroupBox.Location.Y + $EnumerationDomainGenerateGroupBox.Size.Height + $EnumerationGroupGap))
+$EnumerationPortScanGroupBox.size      = New-Object System.Drawing.Size(294,270)
+$EnumerationPortScanGroupBox.text      = "Create List From TCP Port Scan"
+$EnumerationPortScanGroupBox.Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+$EnumerationPortScanGroupBox.ForeColor = "Blue"
+
+$EnumerationPortScanGroupDownPosition      = 18
+$EnumerationPortScanGroupDownPositionShift = 25
+
+    #----------------------------------------
+    # Enumeration - Port Scan - Specific IPs
+    #----------------------------------------
+    $EnumerationPortScanIPNote1Label            = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanIPNote1Label.Location   = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanIPNote1Label.Size       = New-Object System.Drawing.Size(170,22) 
+    $EnumerationPortScanIPNote1Label.Text       = "Enter Comma Separated IPs"
+    $EnumerationPortScanIPNote1Label.Font       = New-Object System.Drawing.Font("$Font",10,1,2,1)
+    $EnumerationPortScanIPNote1Label.ForeColor  = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPNote1Label)
+
+    $EnumerationPortScanIPNote2Label            = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanIPNote2Label.Location   = New-Object System.Drawing.Point(($EnumerationPortScanIPNote1Label.Size.Width + 3),($EnumerationPortScanGroupDownPosition + 4)) 
+    $EnumerationPortScanIPNote2Label.Size       = New-Object System.Drawing.Size(110,20) 
+    $EnumerationPortScanIPNote2Label.Text       = "(ex: 10.0.0.1,10.0.0.2)"
+    $EnumerationPortScanIPNote2Label.Font       = New-Object System.Drawing.Font("$Font",9,0,2,1)
+    $EnumerationPortScanIPNote2Label.ForeColor  = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPNote2Label)
+
+    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
+
+    #--------------------------------------------------------------
+    # Enumeration - Port Scan - Enter Specific Comma Separated IPs
+    #--------------------------------------------------------------
+    $EnumerationPortScanSpecificIPTextbox               = New-Object System.Windows.Forms.TextBox
+    $EnumerationPortScanSpecificIPTextbox.Location      = New-Object System.Drawing.Size($EnumerationRightPosition,$EnumerationPortScanGroupDownPosition) 
+    $EnumerationPortScanSpecificIPTextbox.Size          = New-Object System.Drawing.Size(287,22)
+    $EnumerationPortScanSpecificIPTextbox.MultiLine     = $False
+    $EnumerationPortScanSpecificIPTextbox.WordWrap      = True
+    $EnumerationPortScanSpecificIPTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+    $EnumerationPortScanSpecificIPTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
+    $EnumerationPortScanSpecificIPTextbox.Text          = ""
+    $EnumerationPortScanSpecificIPTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanSpecificIPTextbox.ForeColor     = "Black"
+    #$EnumerationPortScanSpecificIPTextbox.Add_KeyDown({ 
+    #    if ($_.KeyCode -eq "Enter") { Conduct-PortScan }
+    #})
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificIPTextbox)
+
+    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
+
+    #------------------------------------
+    # Enumeration - Port Scan - IP Range
+    #------------------------------------
+    $EnumerationPortScanIPRangeNote1Label            = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanIPRangeNote1Label.Location   = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanIPRangeNote1Label.Size       = New-Object System.Drawing.Size(143,22) 
+    $EnumerationPortScanIPRangeNote1Label.Text       = "Network Range:"
+    $EnumerationPortScanIPRangeNote1Label.Font       = New-Object System.Drawing.Font("$Font",10,1,2,1)
+    $EnumerationPortScanIPRangeNote1Label.ForeColor  = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNote1Label)
+
+    $EnumerationPortScanIPRangeNote2Label            = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanIPRangeNote2Label.Location   = New-Object System.Drawing.Point(($EnumerationPortScanIPRangeNote1Label.Size.Width + 3),($EnumerationPortScanGroupDownPosition + 4)) 
+    $EnumerationPortScanIPRangeNote2Label.Size       = New-Object System.Drawing.Size(150,20) 
+    $EnumerationPortScanIPRangeNote2Label.Text       = "(ex: [ 192.168.1 ]   [ 1 ]   [ 100 ])"
+    $EnumerationPortScanIPRangeNote2Label.Font       = New-Object System.Drawing.Font("$Font",9,0,2,1)
+    $EnumerationPortScanIPRangeNote2Label.ForeColor  = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNote2Label)
 
 
-# Shift Row Location
-$EnumerationDownPosition += $EnumerationDownPositionShift + 10
-# Shift Row Location
-$EnumerationDownPosition += $EnumerationDownPositionShift + 10
+    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
+    $RightShift = $EnumerationRightPosition
 
-#----------------------------------------------
-# Enumeration - Ping Sweep - Synchronous Label
-#----------------------------------------------
-$EnumerationPingSweepLabel           = New-Object System.Windows.Forms.Label
-$EnumerationPingSweepLabel.Location  = New-Object System.Drawing.Point($EnumerationRightPosition,$EnumerationDownPosition) 
-$EnumerationPingSweepLabel.Size      = New-Object System.Drawing.Size(250,$EnumerationLabelHeight) 
-$EnumerationPingSweepLabel.Text      = "Ping Sweep - Synchronous"
-$EnumerationPingSweepLabel.Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
-$EnumerationPingSweepLabel.ForeColor = "Black"
-$Section1EnumerationTab.Controls.Add($EnumerationPingSweepLabel)
+    $EnumerationPortScanIPRangeNetworkLabel           = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanIPRangeNetworkLabel.Location  = New-Object System.Drawing.Point($RightShift,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanIPRangeNetworkLabel.Size      = New-Object System.Drawing.Size(45,22) 
+    $EnumerationPortScanIPRangeNetworkLabel.Text      = "Network"
+    $EnumerationPortScanIPRangeNetworkLabel.Font      = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanIPRangeNetworkLabel.ForeColor = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNetworkLabel)
 
-# Shift the fields
-$EnumerationDownPosition += $EnumerationDownPositionShift
+    $RightShift += $EnumerationPortScanIPRangeNetworkLabel.Size.Width
+
+    $EnumerationPortScanIPRangeNetworkTextbox               = New-Object System.Windows.Forms.TextBox
+    $EnumerationPortScanIPRangeNetworkTextbox.Location      = New-Object System.Drawing.Size($RightShift,$EnumerationPortScanGroupDownPosition) 
+    $EnumerationPortScanIPRangeNetworkTextbox.Size          = New-Object System.Drawing.Size(82,22)
+    $EnumerationPortScanIPRangeNetworkTextbox.MultiLine     = $False
+    $EnumerationPortScanIPRangeNetworkTextbox.WordWrap      = True
+    $EnumerationPortScanIPRangeNetworkTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+    $EnumerationPortScanIPRangeNetworkTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
+    $EnumerationPortScanIPRangeNetworkTextbox.Text          = ""
+    $EnumerationPortScanIPRangeNetworkTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanIPRangeNetworkTextbox.ForeColor     = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNetworkTextbox)
+
+    $RightShift += $EnumerationPortScanIPRangeNetworkTextbox.Size.Width
+
+    $EnumerationPortScanIPRangeFirstLabel           = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanIPRangeFirstLabel.Location  = New-Object System.Drawing.Point($RightShift,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanIPRangeFirstLabel.Size      = New-Object System.Drawing.Size(40,22) 
+    $EnumerationPortScanIPRangeFirstLabel.Text      = "First IP"
+    $EnumerationPortScanIPRangeFirstLabel.Font      = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanIPRangeFirstLabel.ForeColor = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeFirstLabel)
+
+    $RightShift += $EnumerationPortScanIPRangeFirstLabel.Size.Width
+
+    $EnumerationPortScanIPRangeFirstTextbox               = New-Object System.Windows.Forms.TextBox
+    $EnumerationPortScanIPRangeFirstTextbox.Location      = New-Object System.Drawing.Size($RightShift,$EnumerationPortScanGroupDownPosition) 
+    $EnumerationPortScanIPRangeFirstTextbox.Size          = New-Object System.Drawing.Size(40,22)
+    $EnumerationPortScanIPRangeFirstTextbox.MultiLine     = $False
+    $EnumerationPortScanIPRangeFirstTextbox.WordWrap      = True
+    $EnumerationPortScanIPRangeFirstTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+    $EnumerationPortScanIPRangeFirstTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
+    $EnumerationPortScanIPRangeFirstTextbox.Text          = ""
+    $EnumerationPortScanIPRangeFirstTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanIPRangeFirstTextbox.ForeColor     = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeFirstTextbox)
+
+    $RightShift += $EnumerationPortScanIPRangeFirstTextbox.Size.Width
+
+    $EnumerationPortScanIPRangeLastLabel           = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanIPRangeLastLabel.Location  = New-Object System.Drawing.Point($RightShift,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanIPRangeLastLabel.Size      = New-Object System.Drawing.Size(40,22) 
+    $EnumerationPortScanIPRangeLastLabel.Text      = "Last IP"
+    $EnumerationPortScanIPRangeLastLabel.Font      = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanIPRangeLastLabel.ForeColor = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeLastLabel)
+
+    $RightShift += $EnumerationPortScanIPRangeLastLabel.Size.Width
+
+    $EnumerationPortScanIPRangeLastTextbox               = New-Object System.Windows.Forms.TextBox
+    $EnumerationPortScanIPRangeLastTextbox.Location      = New-Object System.Drawing.Size($RightShift,$EnumerationPortScanGroupDownPosition) 
+    $EnumerationPortScanIPRangeLastTextbox.Size          = New-Object System.Drawing.Size(40,22)
+    $EnumerationPortScanIPRangeLastTextbox.MultiLine     = $False
+    $EnumerationPortScanIPRangeLastTextbox.WordWrap      = True
+    $EnumerationPortScanIPRangeLastTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+    $EnumerationPortScanIPRangeLastTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
+    $EnumerationPortScanIPRangeLastTextbox.Text          = ""
+    $EnumerationPortScanIPRangeLastTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanIPRangeLastTextbox.ForeColor     = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeLastTextbox)
+
+    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
+
+    #------------------------------------------
+    # Enumeration - Port Scan - Specific Ports
+    #------------------------------------------
+    $EnumerationPortScanPortNote1Label            = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanPortNote1Label.Location   = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanPortNote1Label.Size       = New-Object System.Drawing.Size(170,22) 
+    $EnumerationPortScanPortNote1Label.Text       = "Enter Comma Separated Ports"
+    $EnumerationPortScanPortNote1Label.Font       = New-Object System.Drawing.Font("$Font",10,1,2,1)
+    $EnumerationPortScanPortNote1Label.ForeColor  = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortNote1Label)
+
+    $EnumerationPortScanPortNote2Label            = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanPortNote2Label.Location   = New-Object System.Drawing.Point(($EnumerationPortScanPortNote1Label.Size.Width + 3),($EnumerationPortScanGroupDownPosition + 4)) 
+    $EnumerationPortScanPortNote2Label.Size       = New-Object System.Drawing.Size(110,20)
+    $EnumerationPortScanPortNote2Label.Text       = "(ex: 22,139,80,443,445)"
+    $EnumerationPortScanPortNote2Label.Font       = New-Object System.Drawing.Font("$Font",9,0,2,1)
+    $EnumerationPortScanPortNote2Label.ForeColor  = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortNote2Label)
+
+    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
+
+    $EnumerationPortScanSpecificPortsTextbox               = New-Object System.Windows.Forms.TextBox
+    $EnumerationPortScanSpecificPortsTextbox.Location      = New-Object System.Drawing.Size($EnumerationRightPosition,$EnumerationPortScanGroupDownPosition) 
+    $EnumerationPortScanSpecificPortsTextbox.Size          = New-Object System.Drawing.Size(288,22)
+    $EnumerationPortScanSpecificPortsTextbox.MultiLine     = $False
+    $EnumerationPortScanSpecificPortsTextbox.WordWrap      = True
+    $EnumerationPortScanSpecificPortsTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+    $EnumerationPortScanSpecificPortsTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
+    $EnumerationPortScanSpecificPortsTextbox.Text          = ""
+    $EnumerationPortScanSpecificPortsTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanSpecificPortsTextbox.ForeColor     = "Black"
+    #$EnumerationPortScanSpecificPortsTextbox.Add_KeyDown({ 
+    #    if ($_.KeyCode -eq "Enter") { Conduct-PortScan }
+    #})
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificPortsTextbox)
+
+    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
+
+    #-----------------------------------------------------
+    # Enumeration - Port Scan - Ports Quick Pick ComboBox
+    #-----------------------------------------------------
+
+    $EnumerationPortScanPortQuickPickComboBox               = New-Object System.Windows.Forms.ComboBox
+    $EnumerationPortScanPortQuickPickComboBox.Location      = New-Object System.Drawing.Size($EnumerationRightPosition,$EnumerationPortScanGroupDownPosition) 
+    $EnumerationPortScanPortQuickPickComboBox.Size          = New-Object System.Drawing.Size(183,20)
+    $EnumerationPortScanPortQuickPickComboBox.Text          = "Quick-Pick Port Selection"
+    $EnumerationPortScanPortQuickPickComboBox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanPortQuickPickComboBox.ForeColor     = "Black"
+    $EnumerationPortScanPortQuickPickComboBox.Items.Add("Nmap Top 100 Ports")
+    $EnumerationPortScanPortQuickPickComboBox.Items.Add("Nmap Top 1000 Ports")
+    $EnumerationPortScanPortQuickPickComboBox.Items.Add("Well-Known Ports (0-1023)")
+    $EnumerationPortScanPortQuickPickComboBox.Items.Add("Registered Ports (1024-49151)")
+    $EnumerationPortScanPortQuickPickComboBox.Items.Add("Dynamic Ports (49152-65535)")
+    $EnumerationPortScanPortQuickPickComboBox.Items.Add("All Ports (0-65535)")
+    $EnumerationPortScanPortQuickPickComboBox.Items.Add("Last Ports Scanned")
+    $EnumerationPortScanPortQuickPickComboBox.Items.Add("Custom Saved Ports")
+    #$EnumerationPortScanPortQuickPickComboBox.Add_KeyDown({ 
+    #    if ($_.KeyCode -eq "Enter") { Conduct-PortScan }
+    #})
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortQuickPickComboBox)
+
+    #-------------------------------------------------
+    # Enumeration - Port Scan - Port Selection Button
+    #-------------------------------------------------
+    if (Test-Path "$ResourcesDirectory\Ports, Protocols, and Services.csv") {
+        $EnumerationPortScanPortsSelectionButton           = New-Object System.Windows.Forms.Button
+        $EnumerationPortScanPortsSelectionButton.Text      = "Select Ports"
+        $EnumerationPortScanPortsSelectionButton.Location  = New-Object System.Drawing.Size(($EnumerationPortScanPortQuickPickComboBox.Size.Width + 8),$EnumerationPortScanGroupDownPosition) 
+        $EnumerationPortScanPortsSelectionButton.Size      = New-Object System.Drawing.Size(100,20) 
+        $EnumerationPortScanPortsSelectionButton.Font      = New-Object System.Drawing.Font("$Font",12,0,2,1)
+        $EnumerationPortScanPortsSelectionButton.ForeColor = "Black"
+        $EnumerationPortScanPortsSelectionButton.add_click({
+            Import-Csv "$ResourcesDirectory\Ports, Protocols, and Services.csv" | Out-GridView -OutputMode Multiple | Set-Variable -Name PortManualEntrySelectionContents
+            $PortsColumn = $PortManualEntrySelectionContents | Select-Object -ExpandProperty "Port"
+            $PortsToBeScan = ""
+            Foreach ($Port in $PortsColumn) {
+                $PortsToBeScan += "$Port,"
+            }       
+            $EnumerationPortScanSpecificPortsTextbox.Text += $("," + $PortsToBeScan)
+            $EnumerationPortScanSpecificPortsTextbox.Text = $EnumerationPortScanSpecificPortsTextbox.Text.Trim(",")
+        })
+        $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortsSelectionButton) 
+    }
+
+    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
+
+    #--------------------------------------
+    # Enumeration - Port Scan - Port Range
+    #--------------------------------------
+
+    $EnumerationPortScanRightShift = $EnumerationRightPosition
+
+    $EnumerationPortScanPortRangeNetworkLabel           = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanPortRangeNetworkLabel.Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanPortRangeNetworkLabel.Size      = New-Object System.Drawing.Size(83,22) 
+    $EnumerationPortScanPortRangeNetworkLabel.Text      = "Port Range"
+    $EnumerationPortScanPortRangeNetworkLabel.Font      = New-Object System.Drawing.Font("$Font",10,1,2,1)
+    $EnumerationPortScanPortRangeNetworkLabel.ForeColor = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeNetworkLabel)
+
+    $EnumerationPortScanRightShift += $EnumerationPortScanPortRangeNetworkLabel.Size.Width
+
+    $EnumerationPortScanPortRangeFirstLabel           = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanPortRangeFirstLabel.Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanPortRangeFirstLabel.Size      = New-Object System.Drawing.Size(50,22) 
+    $EnumerationPortScanPortRangeFirstLabel.Text      = "First Port"
+    $EnumerationPortScanPortRangeFirstLabel.Font      = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanPortRangeFirstLabel.ForeColor = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeFirstLabel)
+
+    $EnumerationPortScanRightShift += $EnumerationPortScanPortRangeFirstLabel.Size.Width
+
+    $EnumerationPortScanPortRangeFirstTextbox               = New-Object System.Windows.Forms.TextBox
+    $EnumerationPortScanPortRangeFirstTextbox.Location      = New-Object System.Drawing.Size($EnumerationPortScanRightShift,$EnumerationPortScanGroupDownPosition) 
+    $EnumerationPortScanPortRangeFirstTextbox.Size          = New-Object System.Drawing.Size(50,22)
+    $EnumerationPortScanPortRangeFirstTextbox.MultiLine     = $False
+    $EnumerationPortScanPortRangeFirstTextbox.WordWrap      = True
+    $EnumerationPortScanPortRangeFirstTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+    $EnumerationPortScanPortRangeFirstTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
+    $EnumerationPortScanPortRangeFirstTextbox.Text          = ""
+    $EnumerationPortScanPortRangeFirstTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanPortRangeFirstTextbox.ForeColor     = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeFirstTextbox)
+
+    $EnumerationPortScanRightShift += $EnumerationPortScanPortRangeFirstTextbox.Size.Width + 4
+
+    $EnumerationPortScanPortRangeLastLabel           = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanPortRangeLastLabel.Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanPortRangeLastLabel.Size      = New-Object System.Drawing.Size(50,22) 
+    $EnumerationPortScanPortRangeLastLabel.Text      = "Last Port"
+    $EnumerationPortScanPortRangeLastLabel.Font      = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanPortRangeLastLabel.ForeColor = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeLastLabel)
+
+    $EnumerationPortScanRightShift += $EnumerationPortScanPortRangeLastLabel.Size.Width
+
+    $EnumerationPortScanPortRangeLastTextbox               = New-Object System.Windows.Forms.TextBox
+    $EnumerationPortScanPortRangeLastTextbox.Location      = New-Object System.Drawing.Size($EnumerationPortScanRightShift,$EnumerationPortScanGroupDownPosition) 
+    $EnumerationPortScanPortRangeLastTextbox.Size          = New-Object System.Drawing.Size(50,22)
+    $EnumerationPortScanPortRangeLastTextbox.MultiLine     = $False
+    $EnumerationPortScanPortRangeLastTextbox.WordWrap      = True
+    $EnumerationPortScanPortRangeLastTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+    $EnumerationPortScanPortRangeLastTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
+    $EnumerationPortScanPortRangeLastTextbox.Text          = ""
+    $EnumerationPortScanPortRangeLastTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanPortRangeLastTextbox.ForeColor     = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeLastTextbox)
+
+    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
+
+    #--------------------------------------
+    # Enumeration - Port Scan - Port Range
+    #--------------------------------------
+
+    $EnumerationPortScanRightShift = $EnumerationRightPosition
+
+    $EnumerationPortScanTestICMPFirstCheckBox           = New-Object System.Windows.Forms.CheckBox
+    $EnumerationPortScanTestICMPFirstCheckBox.Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition)) 
+    $EnumerationPortScanTestICMPFirstCheckBox.Size      = New-Object System.Drawing.Size(130,22) 
+    $EnumerationPortScanTestICMPFirstCheckBox.Text      = "Test ICMP First (ping)"
+    $EnumerationPortScanTestICMPFirstCheckBox.Font      = New-Object System.Drawing.Font("$Font",10,1,2,1)
+    $EnumerationPortScanTestICMPFirstCheckBox.ForeColor = "Black"
+    $EnumerationPortScanTestICMPFirstCheckBox.Checked   = $False
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTestICMPFirstCheckBox)
+
+    $EnumerationPortScanRightShift += $EnumerationPortScanTestICMPFirstCheckBox.Size.Width + 32
+
+    $EnumerationPortScanTimeoutLabel           = New-Object System.Windows.Forms.Label
+    $EnumerationPortScanTimeoutLabel.Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition + 3)) 
+    $EnumerationPortScanTimeoutLabel.Size      = New-Object System.Drawing.Size(75,22) 
+    $EnumerationPortScanTimeoutLabel.Text      = "Timeout (ms)"
+    $EnumerationPortScanTimeoutLabel.Font      = New-Object System.Drawing.Font("$Font",10,1,2,1)
+    $EnumerationPortScanTimeoutLabel.ForeColor = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTimeoutLabel)
+
+    $EnumerationPortScanRightShift += $EnumerationPortScanTimeoutLabel.Size.Width
+
+    $EnumerationPortScanTimeoutTextbox               = New-Object System.Windows.Forms.TextBox
+    $EnumerationPortScanTimeoutTextbox.Location      = New-Object System.Drawing.Size($EnumerationPortScanRightShift,$EnumerationPortScanGroupDownPosition) 
+    $EnumerationPortScanTimeoutTextbox.Size          = New-Object System.Drawing.Size(50,22)
+    $EnumerationPortScanTimeoutTextbox.MultiLine     = $False
+    $EnumerationPortScanTimeoutTextbox.WordWrap      = True
+    $EnumerationPortScanTimeoutTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+    $EnumerationPortScanTimeoutTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
+    $EnumerationPortScanTimeoutTextbox.Text          = 50
+    $EnumerationPortScanTimeoutTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPortScanTimeoutTextbox.ForeColor     = "Black"
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTimeoutTextbox)
+
+    $EnumerationPortScanRightShift        += $EnumerationPortScanTimeoutTextbox.Size.Width
+    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
+
+    #------------------------------------------
+    # Enumeration - Port Scan - Execute Button
+    #------------------------------------------
+    $EnumerationPortScanExecutionButton           = New-Object System.Windows.Forms.Button
+    $EnumerationPortScanExecutionButton.Text      = "Execute Scan"
+    $EnumerationPortScanExecutionButton.Location  = New-Object System.Drawing.Size(190,$EnumerationPortScanGroupDownPosition)
+    $EnumerationPortScanExecutionButton.Size      = New-Object System.Drawing.Size(100,22)
+    $EnumerationPortScanExecutionButton.Font      = New-Object System.Drawing.Font("$Font",12,0,2,1)
+    $EnumerationPortScanExecutionButton.ForeColor = "Red"
+    $EnumerationPortScanExecutionButton.add_click({ 
+        Conduct-PortScan -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked -SpecificIPsToScan $EnumerationPortScanSpecificIPTextbox.Text -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text -Network $EnumerationPortScanIPRangeNetworkTextbox.Text -FirstIP $EnumerationPortScanIPRangeFirstTextbox.Text -LastIP $EnumerationPortScanIPRangeLastTextbox.Text -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
+    })
+    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanExecutionButton) 
+                
+$Section1EnumerationTab.Controls.Add($EnumerationPortScanGroupBox) 
 
 #============================================================================================================================================================
 # Enumeration - Ping Sweep
 #============================================================================================================================================================
+
 Function Conduct-PingSweep {
     Function Create-PingList {
         param($IPAddress)
         $Comp = $IPAddress
-        If ($Comp -eq $Null) { . Create-PingList } 
-        ElseIf ($Comp -match "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/\d{1,2}")
-        {
+        if ($Comp -eq $Null) { . Create-PingList } 
+        elseif ($Comp -match "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/\d{1,2}") {
             $Temp = $Comp.Split("/")
             $IP = $Temp[0]
             $Mask = $Temp[1]
             . Get-Subnet-Range $IP $Mask
             $global:PingList = $Script:IPList
         }
-        Else
-        { $global:PingList = $Comp}
+        Else { $global:PingList = $Comp }
     }
-
     . Create-PingList $EnumerationPingSweepIPNetworkCIDRTextbox.Text
     $EnumerationComputerListBox.Items.Clear()
 
-    foreach ($Computer in $PingList){
+    foreach ($Computer in $PingList) {
         #$EnumerationComputerListBox.Items.Add($Computer)
         $ping = Test-Connection $Computer -Count 1
         $StatusListBox.Items.Clear()
@@ -8427,52 +8982,79 @@ Function Conduct-PingSweep {
     }
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Finished with Ping Sweep!")
-    Start-Sleep -Seconds 2
-    $StatusListBox.Items.Clear()
+    #Start-Sleep -Seconds 2
+    #$StatusListBox.Items.Clear()
 }
 
-#-------------------------------------------------
-# Enumeration - Ping Sweep - Network & CIDR Label
-#-------------------------------------------------
-$EnumerationPingSweepIPNetworkCIDRLabel           = New-Object System.Windows.Forms.Label
-$EnumerationPingSweepIPNetworkCIDRLabel.Location  = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationDownPosition + 3)) 
-$EnumerationPingSweepIPNetworkCIDRLabel.Size      = New-Object System.Drawing.Size(185,$EnumerationLabelHeight) 
-$EnumerationPingSweepIPNetworkCIDRLabel.Text      = "Enter Network/CIDR (10.1.1.0/24):"
-$Section1EnumerationTab.Controls.Add($EnumerationPingSweepIPNetworkCIDRLabel)
+#-------------------------------------
+# Enumeration - Ping Sweep - GroupBox
+#-------------------------------------
+# Create a group that will contain your radio buttons
+$EnumerationPingSweepGroupBox           = New-Object System.Windows.Forms.GroupBox
+$EnumerationPingSweepGroupBox.Location  = New-Object System.Drawing.Size(0,($EnumerationPortScanGroupBox.Location.Y + $EnumerationPortScanGroupBox.Size.Height + $EnumerationGroupGap))
+$EnumerationPingSweepGroupBox.size      = New-Object System.Drawing.Size(294,70)
+$EnumerationPingSweepGroupBox.text      = "Create List From Ping Sweep"
+$EnumerationPingSweepGroupBox.Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+$EnumerationPingSweepGroupBox.ForeColor = "Blue"
 
+$EnumerationPingSweepGroupDownPosition      = 18
+$EnumerationPingSweepGroupDownPositionShift = 25
 
-#---------------------------------------------------
-# Enumeration - Ping Sweep - Network & CIDR Textbox
-#---------------------------------------------------
-$EnumerationPingSweepIPNetworkCIDRTextbox               = New-Object System.Windows.Forms.TextBox
-$EnumerationPingSweepIPNetworkCIDRTextbox.Location      = New-Object System.Drawing.Size(190,($EnumerationDownPosition)) 
-$EnumerationPingSweepIPNetworkCIDRTextbox.Size          = New-Object System.Drawing.Size(100,$EnumerationLabelHeight)
-$EnumerationPingSweepIPNetworkCIDRTextbox.MultiLine     = $False
-$EnumerationPingSweepIPNetworkCIDRTextbox.WordWrap      = True
-$EnumerationPingSweepIPNetworkCIDRTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
-$EnumerationPingSweepIPNetworkCIDRTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
-$EnumerationPingSweepIPNetworkCIDRTextbox.Text          = ""
-$EnumerationPingSweepIPNetworkCIDRTextbox.Add_KeyDown({
-    if ($_.KeyCode -eq "Enter") {
+    #-------------------------------------------------
+    # Enumeration - Ping Sweep - Network & CIDR Label
+    #-------------------------------------------------
+    $EnumerationPingSweepNote1Label            = New-Object System.Windows.Forms.Label
+    $EnumerationPingSweepNote1Label.Location   = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationPingSweepGroupDownPosition + 3)) 
+    $EnumerationPingSweepNote1Label.Size       = New-Object System.Drawing.Size(105,22) 
+    $EnumerationPingSweepNote1Label.Text       = "Enter Network/CIDR:"
+    $EnumerationPingSweepNote1Label.Font       = New-Object System.Drawing.Font("$Font",10,1,2,1)
+    $EnumerationPingSweepNote1Label.ForeColor  = "Black"
+    $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepNote1Label)
+
+    $EnumerationPingSweepNote2Label            = New-Object System.Windows.Forms.Label
+    $EnumerationPingSweepNote2Label.Location   = New-Object System.Drawing.Point(($EnumerationPingSweepNote1Label.Size.Width + 5),($EnumerationPingSweepGroupDownPosition + 4)) 
+    $EnumerationPingSweepNote2Label.Size       = New-Object System.Drawing.Size(80,22)
+    $EnumerationPingSweepNote2Label.Text       = "(ex: 10.0.0.0/24)"
+    $EnumerationPingSweepNote2Label.Font       = New-Object System.Drawing.Font("$Font",9,0,2,1)
+    $EnumerationPingSweepNote2Label.ForeColor  = "Black"
+    $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepNote2Label)
+
+    #---------------------------------------------------
+    # Enumeration - Ping Sweep - Network & CIDR Textbox
+    #---------------------------------------------------
+    $EnumerationPingSweepIPNetworkCIDRTextbox               = New-Object System.Windows.Forms.TextBox
+    $EnumerationPingSweepIPNetworkCIDRTextbox.Location      = New-Object System.Drawing.Size(190,($EnumerationPingSweepGroupDownPosition)) 
+    $EnumerationPingSweepIPNetworkCIDRTextbox.Size          = New-Object System.Drawing.Size(100,$EnumerationLabelHeight)
+    $EnumerationPingSweepIPNetworkCIDRTextbox.MultiLine     = $False
+    $EnumerationPingSweepIPNetworkCIDRTextbox.WordWrap      = True
+    $EnumerationPingSweepIPNetworkCIDRTextbox.AcceptsTab    = false # Allows you to enter in tabs into the textbox
+    $EnumerationPingSweepIPNetworkCIDRTextbox.AcceptsReturn = false # Allows you to enter in returnss into the textbox
+    $EnumerationPingSweepIPNetworkCIDRTextbox.Text          = ""
+    $EnumerationPingSweepIPNetworkCIDRTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,2,1)
+    $EnumerationPingSweepIPNetworkCIDRTextbox.ForeColor     = "Black"
+    $EnumerationPingSweepIPNetworkCIDRTextbox.Add_KeyDown({
+        if ($_.KeyCode -eq "Enter") { Conduct-PingSweep }
+    })
+    $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepIPNetworkCIDRTextbox)
+
+    # Shift the fields
+    $EnumerationPingSweepGroupDownPosition += $EnumerationPingSweepGroupDownPositionShift
+
+    #-------------------------------------------
+    # Enumeration - Ping Sweep - Execute Button
+    #-------------------------------------------
+    $EnumerationPingSweepExecutionButton          = New-Object System.Windows.Forms.Button
+    $EnumerationPingSweepExecutionButton.Text     = "Execute Sweep"
+    $EnumerationPingSweepExecutionButton.Location = New-Object System.Drawing.Size(190,$EnumerationPingSweepGroupDownPosition)
+    $EnumerationPingSweepExecutionButton.Size     = New-Object System.Drawing.Size(100,22)
+    $EnumerationPingSweepExecutionButton.Font      = New-Object System.Drawing.Font("$Font",12,0,2,1)
+    $EnumerationPingSweepExecutionButton.ForeColor = "Red"
+    $EnumerationPingSweepExecutionButton.add_click({ 
         Conduct-PingSweep
-    }
-})
-$Section1EnumerationTab.Controls.Add($EnumerationPingSweepIPNetworkCIDRTextbox)
+    })
+    $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepExecutionButton) 
 
-# Shift the fields
-$EnumerationDownPosition += $EnumerationDownPositionShift
-
-#-------------------------------------------
-# Enumeration - Ping Sweep - Execute Button
-#-------------------------------------------
-$EnumerationPingSweepExecutionButton          = New-Object System.Windows.Forms.Button
-$EnumerationPingSweepExecutionButton.Text     = "Execute"
-$EnumerationPingSweepExecutionButton.Location = New-Object System.Drawing.Size(190,$EnumerationDownPosition)
-$EnumerationPingSweepExecutionButton.Size     = New-Object System.Drawing.Size(100,22)
-$EnumerationPingSweepExecutionButton.add_click({ 
-    Conduct-PingSweep
-})
-$Section1EnumerationTab.Controls.Add($EnumerationPingSweepExecutionButton) 
+$Section1EnumerationTab.Controls.Add($EnumerationPingSweepGroupBox) 
 
 #============================================================================================================================================================
 # Enumeration - Computer List ListBox
@@ -9177,19 +9759,18 @@ $SingleHostIPCheckBox.Location = New-Object System.Drawing.Size(3,11)
 $SingleHostIPCheckBox.Size     = New-Object System.Drawing.Size(200,$Column3BoxHeight)
 $SingleHostIPCheckBox.Enabled  = $true
 $SingleHostIPCheckBox.Font     = [System.Drawing.Font]::new("$Font", 8, [System.Drawing.FontStyle]::Bold)
-$Section2MainTab.Controls.Add($SingleHostIPCheckBox)
-
 $SingleHostIPCheckBox.Add_Click({
     if ($SingleHostIPCheckBox.Checked -eq $true){
-        $ComputerListBox.Enabled = $false
+        $ComputerListBox.Enabled   = $false
         $ComputerListBox.BackColor = "lightgray"
     }
     elseif ($SingleHostIPCheckBox.Checked -eq $false) {
-        $SingleHostIPTextBox.Text     = "<Type In A Hostname / IP>"
-        $ComputerListBox.Enabled = $true    
+        $SingleHostIPTextBox.Text  = "<Type In A Hostname / IP>"
+        $ComputerListBox.Enabled   = $true    
         $ComputerListBox.BackColor = "white"
     }
 })
+$Section2MainTab.Controls.Add($SingleHostIPCheckBox)
 
 #----------------------------------
 # Single Host - Add To List Button
@@ -9198,12 +9779,9 @@ $SingleHostIPAddButton          = New-Object System.Windows.Forms.Button
 $SingleHostIPAddButton.Text     = "Add To List"
 $SingleHostIPAddButton.Location = New-Object System.Drawing.Size(($Column3RightPosition + 240),$Column3DownPosition)
 $SingleHostIPAddButton.Size     = New-Object System.Drawing.Size(115,$Column3BoxHeight) 
-$Section2MainTab.Controls.Add($SingleHostIPAddButton) 
-
 $SingleHostIPAddButton.add_click({
     # Conducts a simple input check for default or blank data
-    if ($SingleHostIPTextBox.Text -ne '<Type In A Hostname / IP>') {
-    if ($SingleHostIPTextBox.Text -ne '') {
+    if (($SingleHostIPTextBox.Text -ne '<Type In A Hostname / IP>') -and ($SingleHostIPTextBox.Text -ne '')) {
         # Adds the hostname/ip entered into the collection list box
         $ComputerListBox.Items.Insert(0,$SingleHostIPTextBox.Text)
         # Clears Textbox
@@ -9211,39 +9789,34 @@ $SingleHostIPAddButton.add_click({
         # Auto checks/unchecks various checkboxes for visual status indicators
         $SingleHostIPCheckBox.Checked = $false
     }
-    }
 })
+$Section2MainTab.Controls.Add($SingleHostIPAddButton) 
 
-# Shift Row Location
 $Column3DownPosition += $Column3DownPositionShift
-
 
 #------------------------------------
 # Single Host - Input Check Function
 #------------------------------------
-
 function SingleHostInputCheck {
-    if ($SingleHostIPTextBox.Text -ne '<Type In A Hostname / IP>') {
-    if ($SingleHostIPTextBox.Text -ne '') {
+    if (($SingleHostIPTextBox.Text -ne '<Type In A Hostname / IP>') -and ($SingleHostIPTextBox.Text -ne '') ) {
         # Auto checks/unchecks various checkboxes for visual status indicators
         $SingleHostIPCheckBox.Checked = $true
 
         . SingleEntry
 
-#        $MainListBox.Items.Clear();   
-#        $MainListBox.Items.Add("Collect Data From:")
-#        foreach ($Computer in $ComputerList) {
-#            [void] $MainListBox.Items.Add("$Computer")
-#        }
-    }
+        $MainListBox.Items.Clear()
+        $MainListBox.Items.Add("Collect Data From:")
+        foreach ($Computer in $ComputerList) {
+            $MainListBox.Items.Add("$Computer")
+        }
     }
     if ($SingleHostIPCheckBox.Checked -eq $true){
-        $ComputerListBox.Enabled = $false
+        $ComputerListBox.Enabled   = $false
         $ComputerListBox.BackColor = "lightgray"
     }
     elseif ($SingleHostIPCheckBox.Checked -eq $false) {
-        $SingleHostIPTextBox.Text     = "<Type In A Hostname / IP>"
-        $ComputerListBox.Enabled = $true    
+        $SingleHostIPTextBox.Text  = "<Type In A Hostname / IP>"
+        $ComputerListBox.Enabled   = $true
         $ComputerListBox.BackColor = "white"
     }
 }
@@ -9251,7 +9824,6 @@ function SingleHostInputCheck {
 #-----------------------------------------------
 # Single Host - <Type In A Hostname / IP> Textbox
 #-----------------------------------------------
-
 $SingleHostIPTextBox          = New-Object System.Windows.Forms.TextBox
 $SingleHostIPTextBox.Text     = "<Type In A Hostname / IP>"
 $SingleHostIPTextBox.Location = New-Object System.Drawing.Size($Column3RightPosition,($Column3DownPosition + 1))
@@ -9267,12 +9839,12 @@ $Section2MainTab.Controls.Add($SingleHostIPTextBox)
 #--------------------------------------
 # Single Host - Collect Entered Button
 #--------------------------------------
-
 $SingleHostIPOKButton          = New-Object System.Windows.Forms.Button
 $SingleHostIPOKButton.Text     = "Single Collection"
 $SingleHostIPOKButton.Location = New-Object System.Drawing.Size(($Column3RightPosition + 240),$Column3DownPosition)
 $SingleHostIPOKButton.Size     = New-Object System.Drawing.Size(115,$Column3BoxHeight) 
 $SingleHostIPOKButton.add_click({
+    $SingleHostIPCheckBox.Checked = $true
     SingleHostInputCheck
 })
 $Section2MainTab.Controls.Add($SingleHostIPOKButton) 
@@ -10126,10 +10698,14 @@ function AutoChartsSelectOptions {
     $AutoChartSelectChartComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     $AutoChartSelectChartComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AutoChartsViewCharts }})
     $AutoChartsAvailable = @(
-        "Processes - Standard",
+        #"All Charts",
+        "Logon Info",
+        "Mapped Drives",
         "Network Settings",        
+        "Processes - Standard",
         "Security Patches",
         "Services",
+        "Shares",
         "Software Installed",
         "Startup Commands")
     ForEach ($Item in $AutoChartsAvailable) { [void] $AutoChartSelectChartComboBox.Items.Add($Item) }
@@ -10201,35 +10777,66 @@ function AutoChartsSelectOptions {
             $AutoChartsTabControl.Anchor        = $AnchorAll
             $AutoChartsForm.Controls.Add($AutoChartsTabControl)
             #polo
-        
-            # Calls the function to create multiple tabs from collections
-            #AutoChartsCommand -QueryName "Drivers - Detailed"   -PropertyX Name -PropertyY PSComputerName -ChartType $ChartType
-            #AutoChartsCommand -QueryName "Network Settings"     -PropertyX PSComputerName -PropertyY IPEnabled -ChartType $ChartType       
-            if ($AutoChartSelectChartComboBox.SelectedItem -match "Processes - Standard") {
+
+            # These functions contains the commands to generate specific auto charts        
+            function AutoChartsCommandLogonInfo {
+                AutoChartsCommand -QueryName "Logon Info" -QueryTabName "Logged On Accounts" -PropertyX Name -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Logon Info" -QueryTabName "Number of Accounts Logged In To Computers" -PropertyX PSComputerName -PropertyY Name -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+            }
+            function AutoChartsCommandMappedDrives {
+                AutoChartsCommand -QueryName "Mapped Drives" -QueryTabName "Number of Mapped Drives per Server" -PropertyX PSComputerName -PropertyY ProviderName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Mapped Drives" -QueryTabName "Number of Servers to Mapped Drives" -PropertyX ProviderName -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+            }
+            function AutoChartsCommandNetworkSettings {
+                AutoChartsCommand -QueryName "Network Settings" -QueryTabName "Number of Interfaces with IPs" -PropertyX PSComputerName -PropertyY IPAddress -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Network Settings" -QueryTabName "Number of Hosts with IPs"      -PropertyX IPAddress -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'            
+            }
+            function AutoChartsCommandProcessesStandard {
                 AutoChartsCommand -QueryName "Processes - Standard" -QueryTabName "Process Names" -PropertyX Name -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
                 AutoChartsCommand -QueryName "Processes - Standard" -QueryTabName "Process Paths" -PropertyX Path -PropertyY PSComputerName -ChartType1 'Bar'    -ChartType2_3 'Bar'   -MarkerStyle1 'None' -MarkerStyle2 'None'   -MarkerStyle3 'None'
             }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Network Settings") {
-                AutoChartsCommand -QueryName "Network Settings" -QueryTabName "Number of Interfaces with IPs" -PropertyX PSComputerName -PropertyY IPAddress -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
-                AutoChartsCommand -QueryName "Network Settings" -QueryTabName "Number of Hosts with IPs"      -PropertyX IPAddress -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
-            }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Security Patches") {
+            function AutoChartsCommandSecurityPatches {
                 AutoChartsCommand -QueryName "Security Patches" -QueryTabName "Number of Computers with Security Patches" -PropertyX Name -PropertyY PSComputerName     -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
                 AutoChartsCommand -QueryName "Security Patches" -QueryTabName "Number of Security Patches per Computer"   -PropertyX PSComputerName -PropertyY HotFixID -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
             }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Services") {
+            function AutoChartsCommandServices {
                 AutoChartsCommand -QueryName "Services" -QueryTabName "Service Names" -PropertyX Name     -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
                 AutoChartsCommand -QueryName "Services" -QueryTabName "Service Paths" -PropertyX PathName -PropertyY PSComputerName -ChartType1 'Bar'    -ChartType2_3 'Bar'   -MarkerStyle1 'None' -MarkerStyle2 'None'   -MarkerStyle3 'None'
             }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Software Installed") {
-                AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed" -PropertyX Name -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
-                AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Rename Me" -PropertyX PSComputerName -PropertyY Name -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
-
+            function AutoChartsCommandShares {
+                AutoChartsCommand -QueryName "Shares" -QueryTabName "Shares" -PropertyX Path -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Shares" -QueryTabName "Shares" -PropertyX PSComputerName -PropertyY Path -ChartType1 'Bar'    -ChartType2_3 'Bar'   -MarkerStyle1 'None' -MarkerStyle2 'None'   -MarkerStyle3 'None'
             }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Startup Commands") {
+            function AutoChartsCommandSoftwareInstalled {
+                AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed" -PropertyX Name -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed" -PropertyX PSComputerName -PropertyY Name -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+            }
+            function AutoChartsCommandStartUpCommands {
                 AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startup Names"    -PropertyX Name    -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
                 AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startup Commands" -PropertyX Command -PropertyY PSComputerName -ChartType1 'Bar'    -ChartType2_3 'Bar'   -MarkerStyle1 'None' -MarkerStyle2 'None'   -MarkerStyle3 'None'
             }
+
+            # Calls the functions for the respective commands to generate charts
+            if ($AutoChartSelectChartComboBox.SelectedItem -match "All Charts") {
+                AutoChartsCommandLogonInfo
+                AutoChartsCommandMappedDrives
+                AutoChartsCommandNetworkSettings
+                AutoChartsCommandProcessesStandard
+                AutoChartsCommandSecurityPatches
+                AutoChartsCommandServices
+                AutoChartsCommandShares
+                AutoChartsCommandSoftwareInstalled
+                AutoChartsCommandStartUpCommands
+            }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Logon Info")           { AutoChartsCommandLogonInfo }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Mapped Drives")        { AutoChartsCommandMappedDrives }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Network Settings")     { AutoChartsCommandNetworkSettings }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Processes - Standard") { AutoChartsCommandProcessesStandard }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Security Patches")     { AutoChartsCommandSecurityPatches }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Services")             { AutoChartsCommandServices }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Shares")               { AutoChartsCommandShares }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Software Installed")   { AutoChartsCommandSoftwareInstalled }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Startup Commands")     { AutoChartsCommandStartUpCommands }
         
             # Launches the form
             $AutoChartsForm.Add_Shown({$AutoChartsForm.Activate()})
@@ -10734,55 +11341,63 @@ function AutoChartsCommand {
 
     $ButtonSpacing = 35 
 
-    #------------------------------------
-    # Auto Create Charts Series3 Results
-    #------------------------------------
-    if ($AutoChartsMostRecentCheckBox.Checked -eq $True) {
-        $AutoChartsSeries3Results           = New-Object Windows.Forms.Button
-        $AutoChartsSeries3Results.Text      = "$Series03Name Results"
-        $AutoChartsSeries3Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
-        $AutoChartsSeries3Results.Size      = New-Object System.Drawing.Size(150,25)
-        $AutoChartsSeries3Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-        $AutoChartsSeries3Results.Font      = [System.Drawing.Font]::new("$Font", 10, [System.Drawing.FontStyle]::Bold)
-        $AutoChartsSeries3Results.ForeColor = "Red"
-        $AutoChartsSeries3Results.UseVisualStyleBackColor = $True
-        $AutoChartsSeries3Results.add_click({ Import-CSV $script:CSVFileMostRecentCollection | Out-GridView }) 
-        $AutoChart.controls.add($AutoChartsSeries3Results)
-        $ButtonSpacing += 35
-    }
+    if ($AutoChartSelectChartComboBox.SelectedItem -notmatch "All Charts") {
+        #------------------------------------
+        # Auto Create Charts Series3 Results
+        #------------------------------------
+        if ($AutoChartsMostRecentCheckBox.Checked -eq $True) {
+            if ($script:CSVFileMostRecentCollection) { 
+                $AutoChartsSeries3Results           = New-Object Windows.Forms.Button
+                $AutoChartsSeries3Results.Text      = "$Series03Name Results"
+                $AutoChartsSeries3Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
+                $AutoChartsSeries3Results.Size      = New-Object System.Drawing.Size(150,25)
+                $AutoChartsSeries3Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+                $AutoChartsSeries3Results.Font      = [System.Drawing.Font]::new("$Font", 10, [System.Drawing.FontStyle]::Bold)
+                $AutoChartsSeries3Results.ForeColor = "Red"
+                $AutoChartsSeries3Results.UseVisualStyleBackColor = $True
+                $AutoChartsSeries3Results.add_click({ Import-CSV $script:CSVFileMostRecentCollection | Out-GridView }) 
+                $AutoChart.controls.add($AutoChartsSeries3Results)
+                $ButtonSpacing += 35
+            }
+        }
 
-    #------------------------------------
-    # Auto Create Charts Series2 Results
-    #------------------------------------
-    if ($AutoChartsPreviousCheckBox.Checked -eq $True) {
-        $AutoChartsSeries2Results           = New-Object Windows.Forms.Button
-        $AutoChartsSeries2Results.Text      = "$Series02Name Results"
-        $AutoChartsSeries2Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
-        $AutoChartsSeries2Results.Size      = New-Object System.Drawing.Size(150,25)
-        $AutoChartsSeries2Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-        $AutoChartsSeries2Results.Font      = [System.Drawing.Font]::new("$Font", 10, [System.Drawing.FontStyle]::Bold)
-        $AutoChartsSeries2Results.ForeColor = "Orange"
-        $AutoChartsSeries2Results.UseVisualStyleBackColor = $True
-        $AutoChartsSeries2Results.add_click({ Import-CSV $script:CSVFilePreviousCollection | Out-GridView }) 
-        $AutoChart.controls.add($AutoChartsSeries2Results)
-        $ButtonSpacing += 35
-    }
+        #------------------------------------
+        # Auto Create Charts Series2 Results
+        #------------------------------------
+        if ($AutoChartsPreviousCheckBox.Checked -eq $True) {
+            if ($script:CSVFilePreviousCollection) {
+                $AutoChartsSeries2Results           = New-Object Windows.Forms.Button
+                $AutoChartsSeries2Results.Text      = "$Series02Name Results"
+                $AutoChartsSeries2Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
+                $AutoChartsSeries2Results.Size      = New-Object System.Drawing.Size(150,25)
+                $AutoChartsSeries2Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+                $AutoChartsSeries2Results.Font      = [System.Drawing.Font]::new("$Font", 10, [System.Drawing.FontStyle]::Bold)
+                $AutoChartsSeries2Results.ForeColor = "Orange"
+                $AutoChartsSeries2Results.UseVisualStyleBackColor = $True
+                $AutoChartsSeries2Results.add_click({ Import-CSV $script:CSVFilePreviousCollection | Out-GridView }) 
+                $AutoChart.controls.add($AutoChartsSeries2Results)
+                $ButtonSpacing += 35
+            }
+        }
 
-    #------------------------------------
-    # Auto Create Charts Series1 Results
-    #------------------------------------
-    if ($AutoChartsBaselineCheckBox.Checked -eq $True) {
-        $AutoChartsSeries1Results           = New-Object Windows.Forms.Button
-        $AutoChartsSeries1Results.Text      = "$Series01Name Results"
-        $AutoChartsSeries1Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
-        $AutoChartsSeries1Results.Size      = New-Object System.Drawing.Size(150,25)
-        $AutoChartsSeries1Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-        $AutoChartsSeries1Results.Font      = [System.Drawing.Font]::new("$Font", 10, [System.Drawing.FontStyle]::Bold)
-        $AutoChartsSeries1Results.ForeColor = "Blue"
-        $AutoChartsSeries1Results.UseVisualStyleBackColor = $True
-        $AutoChartsSeries1Results.add_click({ Import-CSV $script:CSVFileBaselineCollection | Out-GridView }) 
-        $AutoChart.controls.add($AutoChartsSeries1Results)
-        $ButtonSpacing += 35
+        #------------------------------------
+        # Auto Create Charts Series1 Results
+        #------------------------------------
+        if ($AutoChartsBaselineCheckBox.Checked -eq $True) {
+            if ($script:CSVFileBaselineCollection) {
+                $AutoChartsSeries1Results           = New-Object Windows.Forms.Button
+                $AutoChartsSeries1Results.Text      = "$Series01Name Results"
+                $AutoChartsSeries1Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
+                $AutoChartsSeries1Results.Size      = New-Object System.Drawing.Size(150,25)
+                $AutoChartsSeries1Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+                $AutoChartsSeries1Results.Font      = [System.Drawing.Font]::new("$Font", 10, [System.Drawing.FontStyle]::Bold)
+                $AutoChartsSeries1Results.ForeColor = "Blue"
+                $AutoChartsSeries1Results.UseVisualStyleBackColor = $True
+                $AutoChartsSeries1Results.add_click({ Import-CSV $script:CSVFileBaselineCollection | Out-GridView }) 
+                $AutoChart.controls.add($AutoChartsSeries1Results)
+                $ButtonSpacing += 35
+            }
+        }
     }
 
     ####$AutoChart.Add_Shown({$ViewChartForm.Activate()})
@@ -11093,12 +11708,13 @@ $Column5DownPosition += $Column5DownPositionShift
 #============================================================================================================================================================
 # Execute Button
 #============================================================================================================================================================
-$ComputerListExecuteButton          = New-Object System.Windows.Forms.Button
-$ComputerListExecuteButton.Name     = "Start`nCollection"
-$ComputerListExecuteButton.Text     = "$($ComputerListExecuteButton.Name)"
+$ComputerListExecuteButton           = New-Object System.Windows.Forms.Button
+$ComputerListExecuteButton.Name      = "Start`nCollection"
+$ComputerListExecuteButton.Text      = "$($ComputerListExecuteButton.Name)"
 #$ComputerListExecuteButton.UseVisualStyleBackColor = $True
-$ComputerListExecuteButton.Location = New-Object System.Drawing.Size($Column5RightPosition,$Column5DownPosition)
-$ComputerListExecuteButton.Size     = New-Object System.Drawing.Size($Column5BoxWidth,($Column5BoxHeight * 2))
+$ComputerListExecuteButton.Location  = New-Object System.Drawing.Size($Column5RightPosition,$Column5DownPosition)
+$ComputerListExecuteButton.Size      = New-Object System.Drawing.Size($Column5BoxWidth,($Column5BoxHeight * 2))
+$ComputerListExecuteButton.ForeColor = "Red"
 ### $ComputerListExecuteButton.add_Click($ExecuteScriptHandler) ### Is located lower in the script
 $Section2ActionTab.Controls.Add($ComputerListExecuteButton)
 
@@ -11211,7 +11827,8 @@ $ComputerListMoveDownButton.add_click({
         # move to current item
         $ComputerListBox.SelectedIndex = ($pos +1)
         $ComputerListBox.EndUpdate()
-    }ELSE{
+    }
+    else{
        #Bottom of list, beep
        [console]::beep(500,100)
     }
@@ -11546,13 +12163,13 @@ $ExecuteScriptHandler= {
         . SelectListBoxEntry
     }
     # Checks if any commands were selected
-    if ($($CommandsSelectionCheckedlistbox.SelectedItems).Count -eq 0){
+    if ($CommandsSelectionCheckedlistbox.SelectedItems.Count -eq 0) {
         $MainListBox.Items.Clear()
         $MainListBox.Items.Insert(0,"Error: No Queries Were Selected")
         #$PoShACME.Close()
     }
     # Checks if any computers were selected
-    if ($ComputerListBox.SelectedItems.Count -eq 0) {
+    if (($ComputerListBox.SelectedItems.Count -eq 0) -and ($SingleHostIPCheckBox.Checked -eq $false)) {
         $MainListBox.Items.Clear()
         $MainListBox.Items.Insert(0,"Error: No Computers Were Selected")
     }
