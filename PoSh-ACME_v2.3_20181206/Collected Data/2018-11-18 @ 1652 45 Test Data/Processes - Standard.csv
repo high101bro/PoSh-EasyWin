@@ -1,88 +1,88 @@
-"PSComputerName","Name","ProcessID","ParentProcessID","Path","WorkingSetSize","Handle","HandleCount","ThreadCount","CreationDate"
-"2012DATA-DC1","m","0","0",,"20480","0","0","1",
-"2012DATA-DC1","System Idle Process","0","0",,"20480","0","0","1",
-"2012DATA-DC1","System","4","0",,"307200","4","654","227","20181118051654.767867-480"
-"2012DATA-DC1","smss.exe","448","4",,"1003520","448","50","3","20181118051654.783289-480"
-"2012DATA-DC1","csrss.exe","536","528","C:\Windows\system32\csrss.exe","4046848","536","322","9","20181118051657.419805-480"
-"2012DATA-DC1","csrss.exe","604","596","C:\Windows\system32\csrss.exe","11034624","604","141","9","20181118051657.716223-480"
-"2012DATA-DC1","wininit.exe","612","528","C:\Windows\system32\wininit.exe","3485696","612","79","2","20181118051657.716223-480"
-"2012DATA-DC1","winlogon.exe","640","596","C:\Windows\system32\winlogon.exe","6070272","640","150","3","20181118051657.747313-480"
-"2012DATA-DC1","services.exe","704","612","C:\Windows\system32\services.exe","7499776","704","264","7","20181118051657.918985-480"
-"2012DATA-DC1","lsass.exe","712","612",,"29691904","712","1259","30","20181118051657.950213-480"
-"2012DATA-DC1","svchost.exe","884","704","C:\Windows\system32\svchost.exe","9027584","884","326","6","20181118051701.008197-480"
-"2012DATA-DC1","vmacthlp.exe","924","704","C:\Program Files\VMware\VMware Tools\vmacthlp.exe","3891200","924","61","2","20181118051701.132580-480"
-"2012DATA-DC1","svchost.exe","948","704","C:\Windows\system32\svchost.exe","6909952","948","333","9","20181118051701.257346-480"
-"2012DATA-DC1","svchost.exe","1020","704","C:\Windows\System32\svchost.exe","16093184","1020","410","14","20181118051701.319788-480"
-"2012DATA-DC1","dwm.exe","516","640","C:\Windows\system32\dwm.exe","27860992","516","181","7","20181118051701.366566-480"
-"2012DATA-DC1","svchost.exe","828","704","C:\Windows\system32\svchost.exe","35536896","828","1453","45","20181118051701.460150-480"
-"2012DATA-DC1","svchost.exe","1072","704","C:\Windows\system32\svchost.exe","11698176","1072","694","16","20181118051702.224579-480"
-"2012DATA-DC1","svchost.exe","1152","704","C:\Windows\system32\svchost.exe","16560128","1152","524","18","20181118051702.989256-480"
-"2012DATA-DC1","svchost.exe","1272","704","C:\Windows\system32\svchost.exe","11304960","1272","352","18","20181118051703.800191-480"
-"2012DATA-DC1","spoolsv.exe","1568","704","C:\Windows\System32\spoolsv.exe","18292736","1568","432","12","20181118051727.949807-480"
-"2012DATA-DC1","Microsoft.ActiveDirectory.WebServices.exe","1596","704","C:\Windows\ADWS\Microsoft.ActiveDirectory.WebServices.exe","38731776","1596","542","12","20181118051728.230082-480"
-"2012DATA-DC1","dfsrs.exe","1632","704","C:\Windows\system32\DFSRs.exe","14917632","1632","250","11","20181118051730.850876-480"
-"2012DATA-DC1","dns.exe","1664","704","C:\Windows\system32\dns.exe","50257920","1664","5221","14","20181118051731.006921-480"
-"2012DATA-DC1","esensor.exe","1692","704",,"151375872","1692","552","37","20181118051731.381354-480"
-"2012DATA-DC1","ismserv.exe","1756","704","C:\Windows\System32\ismserv.exe","4386816","1756","94","7","20181118051731.755800-480"
-"2012DATA-DC1","VGAuthService.exe","1804","704","C:\Program Files\VMware\VMware Tools\VMware VGAuth\VGAuthService.exe","10407936","1804","112","3","20181118051732.161271-480"
-"2012DATA-DC1","vmtoolsd.exe","1852","704","C:\Program Files\VMware\VMware Tools\vmtoolsd.exe","19161088","1852","313","9","20181118051732.722896-480"
-"2012DATA-DC1","dfssvc.exe","1896","704","C:\Windows\system32\dfssvc.exe","5926912","1896","124","12","20181118051733.487383-480"
-"2012DATA-DC1","WmiPrvSE.exe","1532","884","C:\Windows\system32\wbem\wmiprvse.exe","24502272","1532","249","11","20181118051736.841426-480"
-"2012DATA-DC1","vds.exe","2248","704","C:\Windows\System32\vds.exe","8216576","2248","156","12","20181118051743.986213-480"
-"2012DATA-DC1","svchost.exe","2284","704","C:\Windows\System32\svchost.exe","8232960","2284","362","16","20181118051744.643680-480"
-"2012DATA-DC1","svchost.exe","2380","704","C:\Windows\system32\svchost.exe","4489216","2380","108","4","20181118051746.248413-480"
-"2012DATA-DC1","svchost.exe","2400","704","C:\Windows\system32\svchost.exe","9957376","2400","205","9","20181118051746.326526-480"
-"2012DATA-DC1","dllhost.exe","2556","704","C:\Windows\system32\dllhost.exe","10518528","2556","191","11","20181118051801.043653-480"
-"2012DATA-DC1","WmiPrvSE.exe","2720","884","C:\Windows\system32\wbem\wmiprvse.exe","13389824","2720","211","5","20181118051803.892107-480"
-"2012DATA-DC1","msdtc.exe","3864","704","C:\Windows\System32\msdtc.exe","7184384","3864","147","10","20181118051824.843348-480"
-"2012DATA-DC1","taskhostex.exe","2636","704","C:\Windows\system32\taskhostex.exe","5947392","2636","146","5","20181118051830.927143-480"
-"2012DATA-DC1","explorer.exe","992","3780","C:\Windows\Explorer.EXE","38449152","992","816","28","20181118051840.382670-480"
-"2012DATA-DC1","ServerManager.exe","4104","4060","C:\Windows\system32\ServerManager.exe","3616768","4104","437","10","20181118051858.461468-480"
-"2012DATA-DC1","shutdown.exe","4368","992","C:\Windows\system32\shutdown.exe","5246976","4368","53","1","20181118051905.544152-480"
-"2012DATA-DC1","conhost.exe","4400","4368","C:\Windows\system32\conhost.exe","2969600","4400","32","1","20181118051905.746718-480"
-"2012DATA-DC1","vmtoolsd.exe","4696","992","C:\Program Files\VMware\VMware Tools\vmtoolsd.exe","17506304","4696","220","7","20181118051917.446901-480"
-"2012DATA-DC1","ManagementAgentHost.exe","4792","704","C:\Program Files\VMware\VMware Tools\VMware CAF\pme\bin\ManagementAgentHost.exe","10588160","4792","119","9","20181118051957.615640-480"
-"WIN81-01","System Idle Process","0","0",,"8192","0","0","2",
-"WIN81-01","System","4","0",,"1343488","4","702","141","20181118081745.270556-300"
-"WIN81-01","smss.exe","268","4",,"786432","268","44","2","20181118081745.286520-300"
-"WIN81-01","csrss.exe","360","352",,"3428352","360","265","9","20181118081747.791727-300"
-"WIN81-01","wininit.exe","432","352","C:\Windows\system32\wininit.exe","3043328","432","78","1","20181118081748.229074-300"
-"WIN81-01","csrss.exe","440","424",,"21680128","440","210","9","20181118081748.229074-300"
-"WIN81-01","winlogon.exe","484","424","C:\Windows\system32\winlogon.exe","7385088","484","160","2","20181118081748.385472-300"
-"WIN81-01","services.exe","524","432",,"4755456","524","201","3","20181118081748.635494-300"
-"WIN81-01","lsass.exe","532","432",,"10391552","532","967","7","20181118081748.698229-300"
-"WIN81-01","svchost.exe","592","524","C:\Windows\system32\svchost.exe","7839744","592","372","8","20181118081749.397018-300"
-"WIN81-01","svchost.exe","636","524","C:\Windows\system32\svchost.exe","6037504","636","392","10","20181118081749.740979-300"
-"WIN81-01","svchost.exe","736","524","C:\Windows\System32\svchost.exe","15548416","736","673","18","20181118081750.068973-300"
-"WIN81-01","dwm.exe","760","484","C:\Windows\system32\dwm.exe","49516544","760","200","7","20181118081750.162541-300"
-"WIN81-01","svchost.exe","780","524","C:\Windows\system32\svchost.exe","27512832","780","1430","39","20181118081750.178187-300"
-"WIN81-01","svchost.exe","808","524","C:\Windows\system32\svchost.exe","12140544","808","795","18","20181118081750.256351-300"
-"WIN81-01","svchost.exe","896","524","C:\Windows\System32\svchost.exe","13328384","896","364","9","20181118081750.556279-300"
-"WIN81-01","svchost.exe","1052","524","C:\Windows\system32\svchost.exe","15118336","1052","597","18","20181118081751.146956-300"
-"WIN81-01","spoolsv.exe","1176","524","C:\Windows\System32\spoolsv.exe","8908800","1176","403","9","20181118081751.443995-300"
-"WIN81-01","svchost.exe","1216","524","C:\Windows\system32\svchost.exe","14737408","1216","477","21","20181118081751.506441-300"
-"WIN81-01","esensor.exe","1352","524",,"84312064","1352","618","46","20181118081751.928193-300"
-"WIN81-01","vmtoolsd.exe","1424","524","C:\Program Files\VMware\VMware Tools\vmtoolsd.exe","11776000","1424","307","8","20181118081752.193797-300"
-"WIN81-01","MsMpEng.exe","1488","524",,"55775232","1488","516","17","20181118081752.584515-300"
-"WIN81-01","svchost.exe","1984","524","C:\Windows\system32\svchost.exe","3629056","1984","107","3","20181118081753.662549-300"
-"WIN81-01","dllhost.exe","372","524","C:\Windows\system32\dllhost.exe","7864320","372","192","10","20181118081753.959504-300"
-"WIN81-01","msdtc.exe","1528","524","C:\Windows\System32\msdtc.exe","5423104","1528","159","9","20181118081755.568966-300"
-"WIN81-01","NisSrv.exe","2328","524",,"1998848","2328","264","8","20181118081759.006303-300"
-"WIN81-01","SearchIndexer.exe","1936","524","C:\Windows\system32\SearchIndexer.exe","14077952","1936","695","12","20181118081956.112621-300"
-"WIN81-01","taskhostex.exe","1612","780","C:\Windows\system32\taskhostex.exe","8404992","1612","262","9","20181118085846.636780-300"
-"WIN81-01","explorer.exe","2900","2908","C:\Windows\Explorer.EXE","52428800","2900","1365","51","20181118085850.543457-300"
-"WIN81-01","svchost.exe","2400","524","C:\Windows\system32\svchost.exe","6094848","2400","240","10","20181118085859.934515-300"
-"WIN81-01","TabTip.exe","2736","896","C:\Program Files\Common Files\microsoft shared\ink\TabTip.exe","6922240","2736","278","13","20181118085905.122417-300"
-"WIN81-01","vmtoolsd.exe","2068","2900","C:\Program Files\VMware\VMware Tools\vmtoolsd.exe","18182144","2068","256","5","20181118085915.560655-300"
-"WIN81-01","Taskmgr.exe","1668","2900","C:\Windows\system32\taskmgr.exe","19329024","1668","359","16","20181118101304.842913-300"
-"WIN81-01","powershell_ise.exe","3032","2900","C:\Windows\System32\WindowsPowerShell\v1.0\powershell_ise.exe","850710528","3032","1046","43","20181118152103.585179-300"
-"WIN81-01","audiodg.exe","3028","736",,"7454720","3028","133","2","20181118165033.329080-300"
-"WIN81-01","WmiPrvSE.exe","984","592","C:\Windows\system32\wbem\wmiprvse.exe","5844992","984","138","6","20181118165423.324143-300"
-"WIN81-01","SearchProtocolHost.exe","3228","1936","C:\Windows\system32\SearchProtocolHost.exe","6213632","3228","304","7","20181118165452.471255-300"
-"WIN81-01","SearchFilterHost.exe","2244","1936","C:\Windows\system32\SearchFilterHost.exe","3612672","2244","106","4","20181118165452.738176-300"
-"WIN81-01","powershell.exe","1672","3032","C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe","44769280","1672","424","9","20181118165537.888362-300"
-"WIN81-01","conhost.exe","3040","1672","C:\Windows\system32\conhost.exe","3698688","3040","42","1","20181118165537.906542-300"
-"WIN81-01","powershell.exe","3708","3032","C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe","44642304","3708","397","11","20181118165539.586021-300"
-"WIN81-01","conhost.exe","3176","3708","C:\Windows\system32\conhost.exe","3698688","3176","42","1","20181118165539.824120-300"
-"WIN81-01","powershell.exe","2200","3032","C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe","13205504","2200","228","5","20181118165540.959766-300"
-"WIN81-01","conhost.exe","4088","2200","C:\Windows\system32\conhost.exe","3690496","4088","42","1","20181118165540.973635-300"
+PSComputerName,Name,ProcessID,ParentProcessID,Path,WorkingSetSize,Handle,HandleCount,ThreadCount,CreationDate
+2012DATA-DC1,Unauthorized_Software,0,0,,20480,0,0,1,
+2012DATA-DC1,System Idle Process,0,0,,20480,0,0,1,
+2012DATA-DC1,System,4,0,,307200,4,654,227,20181118051654.767867-480
+2012DATA-DC1,smss.exe,448,4,,1003520,448,50,3,20181118051654.783289-480
+2012DATA-DC1,csrss.exe,536,528,C:\Windows\system32\csrss.exe,4046848,536,322,9,20181118051657.419805-480
+2012DATA-DC1,csrss.exe,604,596,C:\Windows\system32\csrss.exe,11034624,604,141,9,20181118051657.716223-480
+2012DATA-DC1,wininit.exe,612,528,C:\Windows\system32\wininit.exe,3485696,612,79,2,20181118051657.716223-480
+2012DATA-DC1,winlogon.exe,640,596,C:\Windows\system32\winlogon.exe,6070272,640,150,3,20181118051657.747313-480
+2012DATA-DC1,services.exe,704,612,C:\Windows\system32\services.exe,7499776,704,264,7,20181118051657.918985-480
+2012DATA-DC1,lsass.exe,712,612,,29691904,712,1259,30,20181118051657.950213-480
+2012DATA-DC1,svchost.exe,884,704,C:\Windows\system32\svchost.exe,9027584,884,326,6,20181118051701.008197-480
+2012DATA-DC1,vmacthlp.exe,924,704,C:\Program Files\VMware\VMware Tools\vmacthlp.exe,3891200,924,61,2,20181118051701.132580-480
+2012DATA-DC1,svchost.exe,948,704,C:\Windows\system32\svchost.exe,6909952,948,333,9,20181118051701.257346-480
+2012DATA-DC1,svchost.exe,1020,704,C:\Windows\System32\svchost.exe,16093184,1020,410,14,20181118051701.319788-480
+2012DATA-DC1,dwm.exe,516,640,C:\Windows\system32\dwm.exe,27860992,516,181,7,20181118051701.366566-480
+2012DATA-DC1,svchost.exe,828,704,C:\Windows\system32\svchost.exe,35536896,828,1453,45,20181118051701.460150-480
+2012DATA-DC1,svchost.exe,1072,704,C:\Windows\system32\svchost.exe,11698176,1072,694,16,20181118051702.224579-480
+2012DATA-DC1,svchost.exe,1152,704,C:\Windows\system32\svchost.exe,16560128,1152,524,18,20181118051702.989256-480
+2012DATA-DC1,svchost.exe,1272,704,C:\Windows\system32\svchost.exe,11304960,1272,352,18,20181118051703.800191-480
+2012DATA-DC1,spoolsv.exe,1568,704,C:\Windows\System32\spoolsv.exe,18292736,1568,432,12,20181118051727.949807-480
+2012DATA-DC1,Microsoft.ActiveDirectory.WebServices.exe,1596,704,C:\Windows\ADWS\Microsoft.ActiveDirectory.WebServices.exe,38731776,1596,542,12,20181118051728.230082-480
+2012DATA-DC1,dfsrs.exe,1632,704,C:\Windows\system32\DFSRs.exe,14917632,1632,250,11,20181118051730.850876-480
+2012DATA-DC1,dns.exe,1664,704,C:\Windows\system32\dns.exe,50257920,1664,5221,14,20181118051731.006921-480
+2012DATA-DC1,esensor.exe,1692,704,,151375872,1692,552,37,20181118051731.381354-480
+2012DATA-DC1,ismserv.exe,1756,704,C:\Windows\System32\ismserv.exe,4386816,1756,94,7,20181118051731.755800-480
+2012DATA-DC1,VGAuthService.exe,1804,704,C:\Program Files\VMware\VMware Tools\VMware VGAuth\VGAuthService.exe,10407936,1804,112,3,20181118051732.161271-480
+2012DATA-DC1,vmtoolsd.exe,1852,704,C:\Program Files\VMware\VMware Tools\vmtoolsd.exe,19161088,1852,313,9,20181118051732.722896-480
+2012DATA-DC1,dfssvc.exe,1896,704,C:\Windows\system32\dfssvc.exe,5926912,1896,124,12,20181118051733.487383-480
+2012DATA-DC1,WmiPrvSE.exe,1532,884,C:\Windows\system32\wbem\wmiprvse.exe,24502272,1532,249,11,20181118051736.841426-480
+2012DATA-DC1,vds.exe,2248,704,C:\Windows\System32\vds.exe,8216576,2248,156,12,20181118051743.986213-480
+2012DATA-DC1,svchost.exe,2284,704,C:\Windows\System32\svchost.exe,8232960,2284,362,16,20181118051744.643680-480
+2012DATA-DC1,svchost.exe,2380,704,C:\Windows\system32\svchost.exe,4489216,2380,108,4,20181118051746.248413-480
+2012DATA-DC1,svchost.exe,2400,704,C:\Windows\system32\svchost.exe,9957376,2400,205,9,20181118051746.326526-480
+2012DATA-DC1,dllhost.exe,2556,704,C:\Windows\system32\dllhost.exe,10518528,2556,191,11,20181118051801.043653-480
+2012DATA-DC1,WmiPrvSE.exe,2720,884,C:\Windows\system32\wbem\wmiprvse.exe,13389824,2720,211,5,20181118051803.892107-480
+2012DATA-DC1,msdtc.exe,3864,704,C:\Windows\System32\msdtc.exe,7184384,3864,147,10,20181118051824.843348-480
+2012DATA-DC1,taskhostex.exe,2636,704,C:\Windows\system32\taskhostex.exe,5947392,2636,146,5,20181118051830.927143-480
+2012DATA-DC1,explorer.exe,992,3780,C:\Windows\Explorer.EXE,38449152,992,816,28,20181118051840.382670-480
+2012DATA-DC1,ServerManager.exe,4104,4060,C:\Windows\system32\ServerManager.exe,3616768,4104,437,10,20181118051858.461468-480
+2012DATA-DC1,shutdown.exe,4368,992,C:\Windows\system32\shutdown.exe,5246976,4368,53,1,20181118051905.544152-480
+2012DATA-DC1,conhost.exe,4400,4368,C:\Windows\system32\conhost.exe,2969600,4400,32,1,20181118051905.746718-480
+2012DATA-DC1,vmtoolsd.exe,4696,992,C:\Program Files\VMware\VMware Tools\vmtoolsd.exe,17506304,4696,220,7,20181118051917.446901-480
+2012DATA-DC1,ManagementAgentHost.exe,4792,704,C:\Program Files\VMware\VMware Tools\VMware CAF\pme\bin\ManagementAgentHost.exe,10588160,4792,119,9,20181118051957.615640-480
+WIN81-01,System Idle Process,0,0,,8192,0,0,2,
+WIN81-01,System,4,0,,1343488,4,702,141,20181118081745.270556-300
+WIN81-01,smss.exe,268,4,,786432,268,44,2,20181118081745.286520-300
+WIN81-01,csrss.exe,360,352,,3428352,360,265,9,20181118081747.791727-300
+WIN81-01,wininit.exe,432,352,C:\Windows\system32\wininit.exe,3043328,432,78,1,20181118081748.229074-300
+WIN81-01,csrss.exe,440,424,,21680128,440,210,9,20181118081748.229074-300
+WIN81-01,winlogon.exe,484,424,C:\Windows\system32\winlogon.exe,7385088,484,160,2,20181118081748.385472-300
+WIN81-01,services.exe,524,432,,4755456,524,201,3,20181118081748.635494-300
+WIN81-01,lsass.exe,532,432,,10391552,532,967,7,20181118081748.698229-300
+WIN81-01,svchost.exe,592,524,C:\Windows\system32\svchost.exe,7839744,592,372,8,20181118081749.397018-300
+WIN81-01,svchost.exe,636,524,C:\Windows\system32\svchost.exe,6037504,636,392,10,20181118081749.740979-300
+WIN81-01,svchost.exe,736,524,C:\Windows\System32\svchost.exe,15548416,736,673,18,20181118081750.068973-300
+WIN81-01,dwm.exe,760,484,C:\Windows\system32\dwm.exe,49516544,760,200,7,20181118081750.162541-300
+WIN81-01,svchost.exe,780,524,C:\Windows\system32\svchost.exe,27512832,780,1430,39,20181118081750.178187-300
+WIN81-01,svchost.exe,808,524,C:\Windows\system32\svchost.exe,12140544,808,795,18,20181118081750.256351-300
+WIN81-01,svchost.exe,896,524,C:\Windows\System32\svchost.exe,13328384,896,364,9,20181118081750.556279-300
+WIN81-01,svchost.exe,1052,524,C:\Windows\system32\svchost.exe,15118336,1052,597,18,20181118081751.146956-300
+WIN81-01,spoolsv.exe,1176,524,C:\Windows\System32\spoolsv.exe,8908800,1176,403,9,20181118081751.443995-300
+WIN81-01,svchost.exe,1216,524,C:\Windows\system32\svchost.exe,14737408,1216,477,21,20181118081751.506441-300
+WIN81-01,esensor.exe,1352,524,,84312064,1352,618,46,20181118081751.928193-300
+WIN81-01,vmtoolsd.exe,1424,524,C:\Program Files\VMware\VMware Tools\vmtoolsd.exe,11776000,1424,307,8,20181118081752.193797-300
+WIN81-01,MsMpEng.exe,1488,524,,55775232,1488,516,17,20181118081752.584515-300
+WIN81-01,svchost.exe,1984,524,C:\Windows\system32\svchost.exe,3629056,1984,107,3,20181118081753.662549-300
+WIN81-01,dllhost.exe,372,524,C:\Windows\system32\dllhost.exe,7864320,372,192,10,20181118081753.959504-300
+WIN81-01,msdtc.exe,1528,524,C:\Windows\System32\msdtc.exe,5423104,1528,159,9,20181118081755.568966-300
+WIN81-01,NisSrv.exe,2328,524,,1998848,2328,264,8,20181118081759.006303-300
+WIN81-01,SearchIndexer.exe,1936,524,C:\Windows\system32\SearchIndexer.exe,14077952,1936,695,12,20181118081956.112621-300
+WIN81-01,taskhostex.exe,1612,780,C:\Windows\system32\taskhostex.exe,8404992,1612,262,9,20181118085846.636780-300
+WIN81-01,explorer.exe,2900,2908,C:\Windows\Explorer.EXE,52428800,2900,1365,51,20181118085850.543457-300
+WIN81-01,svchost.exe,2400,524,C:\Windows\system32\svchost.exe,6094848,2400,240,10,20181118085859.934515-300
+WIN81-01,TabTip.exe,2736,896,C:\Program Files\Common Files\microsoft shared\ink\TabTip.exe,6922240,2736,278,13,20181118085905.122417-300
+WIN81-01,vmtoolsd.exe,2068,2900,C:\Program Files\VMware\VMware Tools\vmtoolsd.exe,18182144,2068,256,5,20181118085915.560655-300
+WIN81-01,Taskmgr.exe,1668,2900,C:\Windows\system32\taskmgr.exe,19329024,1668,359,16,20181118101304.842913-300
+WIN81-01,powershell_ise.exe,3032,2900,C:\Windows\System32\WindowsPowerShell\v1.0\powershell_ise.exe,850710528,3032,1046,43,20181118152103.585179-300
+WIN81-01,audiodg.exe,3028,736,,7454720,3028,133,2,20181118165033.329080-300
+WIN81-01,WmiPrvSE.exe,984,592,C:\Windows\system32\wbem\wmiprvse.exe,5844992,984,138,6,20181118165423.324143-300
+WIN81-01,SearchProtocolHost.exe,3228,1936,C:\Windows\system32\SearchProtocolHost.exe,6213632,3228,304,7,20181118165452.471255-300
+WIN81-01,SearchFilterHost.exe,2244,1936,C:\Windows\system32\SearchFilterHost.exe,3612672,2244,106,4,20181118165452.738176-300
+WIN81-01,powershell.exe,1672,3032,C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe,44769280,1672,424,9,20181118165537.888362-300
+WIN81-01,conhost.exe,3040,1672,C:\Windows\system32\conhost.exe,3698688,3040,42,1,20181118165537.906542-300
+WIN81-01,powershell.exe,3708,3032,C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe,44642304,3708,397,11,20181118165539.586021-300
+WIN81-01,conhost.exe,3176,3708,C:\Windows\system32\conhost.exe,3698688,3176,42,1,20181118165539.824120-300
+WIN81-01,powershell.exe,2200,3032,C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe,13205504,2200,228,5,20181118165540.959766-300
+WIN81-01,conhost.exe,4088,2200,C:\Windows\system32\conhost.exe,3690496,4088,42,1,20181118165540.973635-300

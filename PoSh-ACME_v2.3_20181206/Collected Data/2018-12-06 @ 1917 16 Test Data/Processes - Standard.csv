@@ -1,5 +1,5 @@
 PSComputerName,Name,ProcessID,ParentProcessID,Path,WorkingSetSize,Handle,HandleCount,ThreadCount,CreationDate
-2012DATA-DC1,PhotoShop_CS4,0,0,,20480,0,0,1,
+2012DATA-DC1,Bad_Guy_Trojan,0,0,,20480,0,0,1,
 2012DATA-DC1,System Idle Process,0,0,,20480,0,0,1,
 2012DATA-DC1,System,4,0,,307200,4,654,227,20181118051654.767867-480
 2012DATA-DC1,smss.exe,448,4,,1003520,448,50,3,20181118051654.783289-480

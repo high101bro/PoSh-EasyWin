@@ -1,0 +1,2 @@
+"PSComputerName","Status","Name","Caption","Description","Model","Manufacturer","SerialNumber","Signature","InterfaceType","MediaType","FirmwareRevision","SectorsPerTrack","Size","TotalCylinders","TotalHeads","TotalSectors","TotalTracks","TracksPerCylinder"
+"2012DATA-DC1","OK","\\.\PHYSICALDRIVE0","VMware, VMware Virtual S SCSI Disk Device","Disk drive","VMware, VMware Virtual S SCSI Disk Device","(Standard disk drives)",,"1838774814","SCSI","Fixed hard disk media","1.0 ","63","64420392960","7832","255","125821080","1997160","255"

@@ -1,0 +1,7 @@
+"PSComputerName","Name","Disabled","AccountType","Lockout","PasswordChangeable","PasswordRequired","SID","SIDType","LocalAccount","Domain","Caption","Description"
+"DELLWIN10","Administrator","True","512","False","True","True","S-1-5-21-282622394-918428586-1581471606-500","1","True","DELLWIN10","DELLWIN10\Administrator","Built-in account for administering the computer/domain"
+"DELLWIN10","Dan","False","512","False","True","False","S-1-5-21-282622394-918428586-1581471606-1001","1","True","DELLWIN10","DELLWIN10\Dan",""
+"DELLWIN10","Daniel","False","512","False","True","False","S-1-5-21-282622394-918428586-1581471606-1003","1","True","DELLWIN10","DELLWIN10\Daniel",""
+"DELLWIN10","DefaultAccount","True","512","False","True","False","S-1-5-21-282622394-918428586-1581471606-503","1","True","DELLWIN10","DELLWIN10\DefaultAccount","A user account managed by the system."
+"DELLWIN10","Guest","True","512","False","False","False","S-1-5-21-282622394-918428586-1581471606-501","1","True","DELLWIN10","DELLWIN10\Guest","Built-in account for guest access to the computer/domain"
+"DELLWIN10","WDAGUtilityAccount","True","512","False","True","True","S-1-5-21-282622394-918428586-1581471606-504","1","True","DELLWIN10","DELLWIN10\WDAGUtilityAccount","A user account managed and used by the system for Windows Defender Application Guard scenarios."

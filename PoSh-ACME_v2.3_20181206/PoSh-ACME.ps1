@@ -7,8 +7,8 @@
      |  |    |  (_)  | __)  | |  | |  |       |  | |  | \ \____ | | \/ | | | |__ 
      |__|     \_____/ |____/  |__| |__|       |__| |__|  \____/ |_|    |_| |____|
      ============================================================================
-     PowerShell - Automated Collection Made Easy (ACME) For The Security Analyst! 
-     ACME: The Point At Which Something Is The Best, Perfect, Or Most Successful. 
+     PowerShell-Analyst's Collection Made Easy (ACME) for Security Professionals. 
+     ACME: The point at which something is the Best, Perfect, or Most Successful! 
      ============================================================================
      File Name      : PoSh-ACME.ps1
      Version        : v.2.3 Beta
@@ -51,8 +51,9 @@
         http://lmgtfy.com/?q=high101bro+PoSH-ACME
 
     .NOTES  
-        Remember this is a script, not a program. So when it's conducting its queries
-        the script is unresponsive though you are able to view the status and timer updates.
+        Remember this is a script, not a program. So when it's conducting its queries the 
+        GUI will be unresponsive to user interaction even though you are able to view 
+        status and timer updates.
 
         In order to run the script:
         - Update locally
@@ -912,16 +913,16 @@ $Section1QueriesTab.Controls.Add($CommandsQuickPickCheckedlistbox)
 #--------------------
 $HostQueriesLabel           = New-Object System.Windows.Forms.Label
 $HostQueriesLabel.Location  = New-Object System.Drawing.Size($Column1RightPosition,($CommandsQuickPickCheckedlistbox.Location.Y + $CommandsQuickPickCheckedlistbox.Size.Height + 4)) 
-$HostQueriesLabel.Size      = New-Object System.Drawing.Size(100,$Column1BoxHeight) 
+$HostQueriesLabel.Size      = New-Object System.Drawing.Size(95,$Column1BoxHeight) 
 $HostQueriesLabel.Text      = "Host Queries"
 $HostQueriesLabel.Font      = New-Object System.Drawing.Font("$Font",13,1,2,1)
 $HostQueriesLabel.ForeColor = "Blue"
 $Section1QueriesTab.Controls.Add($HostQueriesLabel)
 
 $QueryLabel2           = New-Object System.Windows.Forms.Label
-$QueryLabel2.Location  = New-Object System.Drawing.Size(($Column1RightPosition + 110),($CommandsQuickPickCheckedlistbox.Location.Y + $CommandsQuickPickCheckedlistbox.Size.Height + 6)) 
+$QueryLabel2.Location  = New-Object System.Drawing.Size(($Column1RightPosition + 95),($CommandsQuickPickCheckedlistbox.Location.Y + $CommandsQuickPickCheckedlistbox.Size.Height + 6)) 
 $QueryLabel2.Size      = New-Object System.Drawing.Size(400,($Column1BoxHeight - 4)) 
-$QueryLabel2.Text      = "* = Utilizes WMI for Backwards with Server 2008 R2 and Windows 7 "
+$QueryLabel2.Text      = "* = Uses WMI for backwards compatibility (Server 2008 R2 + Windows 7)"
 $QueryLabel2.Font      = New-Object System.Drawing.Font("$Font",10,0,2,0)
 $QueryLabel2.ForeColor = "Blue"
 $Section1QueriesTab.Controls.Add($QueryLabel2) 
@@ -10460,7 +10461,7 @@ $ViewChartButton.add_click({
             # Custom View Chart Limit Results Textbox
             #-----------------------------------------
             $ViewChartLimitResultsTextBox          = New-Object System.Windows.Forms.TextBox
-            $ViewChartLimitResultsTextBox.Text     = 1000
+            $ViewChartLimitResultsTextBox.Text     = 10
             $ViewChartLimitResultsTextBox.Location = New-Object System.Drawing.Size(135,($ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + 5))
             $ViewChartLimitResultsTextBox.Size     = New-Object System.Drawing.Size(60,25)
             $ViewChartLimitResultsTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewChartExecute} })
@@ -10479,14 +10480,14 @@ $ViewChartButton.add_click({
                 $ViewChartAscendingRadioButton          = New-Object System.Windows.Forms.RadioButton
                 $ViewChartAscendingRadioButton.Location = New-Object System.Drawing.Size(20,15)
                 $ViewChartAscendingRadioButton.size     = '250,25'
-                $ViewChartAscendingRadioButton.Checked  = $true 
+                $ViewChartAscendingRadioButton.Checked  = $false
                 $ViewChartAscendingRadioButton.Text     = "Ascending / Lowest to Highest"
                 
                 ### Descending Radio Button
                 $ViewChartDescendingRadioButton          = New-Object System.Windows.Forms.RadioButton
                 $ViewChartDescendingRadioButton.Location = New-Object System.Drawing.Size(20,38)
                 $ViewChartDescendingRadioButton.size     = '250,25'
-                $ViewChartDescendingRadioButton.Checked  = $false
+                $ViewChartDescendingRadioButton.Checked  = $true
                 $ViewChartDescendingRadioButton.Text     = "Descending / Highest to Lowest"
                 
                 $ViewChartSortOrderGroupBox.Controls.AddRange(@($ViewChartAscendingRadioButton,$ViewChartDescendingRadioButton))
@@ -10545,21 +10546,6 @@ $ViewChartButton.add_click({
         $Property = ViewChartSelectProperty
     }
 }) 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #============================================================================================================================================================
 #============================================================================================================================================================
@@ -12028,8 +12014,8 @@ else {
     $MainListBox.Items.Add("  / ____/ / /__/ / ___/ / / / / / /_____/ / ____ |/ /___  / /   / / / /___    ") | Out-Null
     $MainListBox.Items.Add(" /_/      \_____/ /____/ /_/ /_/         /_/   |_|\____/ /_/   /_/ /_____/    ") | Out-Null
     $MainListBox.Items.Add("==============================================================================") | Out-Null
-    $MainListBox.Items.Add(" PowerShell - Automated Collection Made Easy (ACME) For The Security Analyst! ") | Out-Null
-    $MainListBox.Items.Add(" ACME: The Point At Which Something Is The Best, Perfect, Or Most Successful. ") | Out-Null
+    $MainListBox.Items.Add(" PowerShell-Analyst's Collection Made Easy (ACME) for Security Professionals. ") | Out-Null
+    $MainListBox.Items.Add(" ACME: The point at which something is the Best, Perfect, or Most Successful! ") | Out-Null
     $MainListBox.Items.Add("==============================================================================") | Out-Null
     $MainListBox.Items.Add("") | Out-Null
     $MainListBox.Items.Add(" Author         : high101bro                                                  ") | Out-Null
@@ -12162,12 +12148,6 @@ $ExecuteScriptHandler= {
         # If $SingleHostIPCheckBox.Checked is true, then query a single computer, othewise query the selected computers in the computerlistbox
         . SelectListBoxEntry
     }
-    # Checks if any commands were selected
-    if ($CommandsSelectionCheckedlistbox.SelectedItems.Count -eq 0) {
-        $MainListBox.Items.Clear()
-        $MainListBox.Items.Insert(0,"Error: No Queries Were Selected")
-        #$PoShACME.Close()
-    }
     # Checks if any computers were selected
     if (($ComputerListBox.SelectedItems.Count -eq 0) -and ($SingleHostIPCheckBox.Checked -eq $false)) {
         $MainListBox.Items.Clear()
@@ -12175,195 +12155,203 @@ $ExecuteScriptHandler= {
     }
     # Runs commands if it passes the above checks
     else {
-        $MainListBox.Items.Clear();
-        $CollectionTimerStart = Get-Date
-        $MainListBox.Items.Insert(0,"$(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss'))  Collection Start Time")    
-        $MainListBox.Items.Insert(0,"")
+        # Checks if any commands were selected
+        if ($CommandsSelectionCheckedlistbox.CheckedItems.Count -eq 0) {
+            $MainListBox.Items.Clear()
+            $MainListBox.Items.Insert(0,"Error: No Queries Were Selected. Make sure the checkbox is checked.")
+            #$PoShACME.Close()
+        }
+        else {
+            $MainListBox.Items.Clear();
+            $CollectionTimerStart = Get-Date
+            $MainListBox.Items.Insert(0,"$(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss'))  Collection Start Time")    
+            $MainListBox.Items.Insert(0,"")
  
-        # Sets / Resets count to zero
-        $CountCommandQueries = 0
+            # Sets / Resets count to zero
+            $CountCommandQueries = 0
 
-        # Counts Target Computers
-        $CountTargetComputer = $ComputerListBox.SelectedItems.Count
+            # Counts Target Computers
+            $CountTargetComputer = $ComputerListBox.SelectedItems.Count
 
-        # Runs the Commands
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Accounts - Local') {AccountsLocalCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'ARP Cache') {ARPCacheCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Startup Commands') {StartupCommandsCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'BIOS Info') {BIOSInfoCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Computer Info') {ComputerInfoCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Dates - Install, Bootup, System') {DatesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Disk - Logical Info') {DiskLogicalInfoCommand; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Disk - Physical Info') {DiskPhysicalInfoCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'DLLs Loaded by Processes') {DLLsLoadedByProcessesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'DNS Cache') {DNSCacheCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Detailed') {DriversDetailedCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Signed Info') {DriversSignedCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Valid Signatures') {DriversValidSignaturesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Environmental Variables') {EnvironmentalVariablesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Firewall Rules') {FirewallRulesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Firewall Status') {FirewallStatusCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Groups - Local') {GroupLocalCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Logon Info') {LogonInfoCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Logon Sessions') {LogonSessionsCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Logon User Status') {LogonUserStatusCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Mapped Drives') {MappedDrivesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Capacity Info') {MemoryCapacityInfoCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Physical Info') {MemoryPhysicalInfoCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Performance Data') {MemoryPerformanceDataCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Utilization') {MemoryUtilizationCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Motherboard Info') {MotherboardInfoCommand ; $CountCommandQueries += 1}                                                                                      
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Connections TCP') {NetworkConnectionsTCPCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Connections UDP') {NetworkConnectionsUDPCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Settings') {NetworkSettingsCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv4 All') {NetworkStatisticsIPv4Command ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv4 TCP') {NetworkStatisticsIPv4TCPCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv4 UDP') {NetworkStatisticsIPv4UDPCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv4 ICMP') {NetworkStatisticsIPv4ICMPCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv6 All') {NetworkStatisticsIPv6Command ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv6 TCP') {NetworkStatisticsIPv6TCPCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv6 UDP') {NetworkStatisticsIPv6UDPCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv6 ICMP') {NetworkStatisticsIPv6ICMPCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Plug and Play Devices') {PlugAndPlayCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Port Proxy Rules') {PortProxyRulesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Prefetch Files') {PrefetchFilesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Process Tree - Lineage') {ProcessTreeLineageCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Processes - Enhanced with Hashes') {ProcessesEnhancedCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Processes - Standard') {ProcessesStandardCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Processor - CPU Info') {ProcessorCPUInfoCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Remote Capability Check') {RemoteCapabilityCheckCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Scheduled Tasks - schtasks') {ScheduledTasksCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Screen Saver Info') {ScreenSaverInfoCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Security Patches') {SecurityPatchesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Services') {ServicesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Shares') {SharesCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Software Installed') {SoftwareInstalledCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'System Info') {SystemInfoCommand ; $CountCommandQueries += 1}
-        if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'USB Controller Devices') {USBControllerDevicesCommand ; $CountCommandQueries += 1}        
+            # Runs the Commands
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Accounts - Local') {AccountsLocalCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'ARP Cache') {ARPCacheCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Startup Commands') {StartupCommandsCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'BIOS Info') {BIOSInfoCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Computer Info') {ComputerInfoCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Dates - Install, Bootup, System') {DatesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Disk - Logical Info') {DiskLogicalInfoCommand; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Disk - Physical Info') {DiskPhysicalInfoCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'DLLs Loaded by Processes') {DLLsLoadedByProcessesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'DNS Cache') {DNSCacheCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Detailed') {DriversDetailedCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Signed Info') {DriversSignedCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Drivers - Valid Signatures') {DriversValidSignaturesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Environmental Variables') {EnvironmentalVariablesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Firewall Rules') {FirewallRulesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Firewall Status') {FirewallStatusCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Groups - Local') {GroupLocalCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Logon Info') {LogonInfoCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Logon Sessions') {LogonSessionsCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Logon User Status') {LogonUserStatusCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Mapped Drives') {MappedDrivesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Capacity Info') {MemoryCapacityInfoCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Physical Info') {MemoryPhysicalInfoCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Performance Data') {MemoryPerformanceDataCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Memory - Utilization') {MemoryUtilizationCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Motherboard Info') {MotherboardInfoCommand ; $CountCommandQueries += 1}                                                                                      
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Connections TCP') {NetworkConnectionsTCPCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Connections UDP') {NetworkConnectionsUDPCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Settings') {NetworkSettingsCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv4 All') {NetworkStatisticsIPv4Command ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv4 TCP') {NetworkStatisticsIPv4TCPCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv4 UDP') {NetworkStatisticsIPv4UDPCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv4 ICMP') {NetworkStatisticsIPv4ICMPCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv6 All') {NetworkStatisticsIPv6Command ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv6 TCP') {NetworkStatisticsIPv6TCPCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv6 UDP') {NetworkStatisticsIPv6UDPCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Network Statistics IPv6 ICMP') {NetworkStatisticsIPv6ICMPCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Plug and Play Devices') {PlugAndPlayCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Port Proxy Rules') {PortProxyRulesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Prefetch Files') {PrefetchFilesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Process Tree - Lineage') {ProcessTreeLineageCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Processes - Enhanced with Hashes') {ProcessesEnhancedCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Processes - Standard') {ProcessesStandardCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Processor - CPU Info') {ProcessorCPUInfoCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Remote Capability Check') {RemoteCapabilityCheckCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Scheduled Tasks - schtasks') {ScheduledTasksCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Screen Saver Info') {ScreenSaverInfoCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Security Patches') {SecurityPatchesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Services') {ServicesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Shares') {SharesCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'Software Installed') {SoftwareInstalledCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'System Info') {SystemInfoCommand ; $CountCommandQueries += 1}
+            if ($CommandsSelectionCheckedlistbox.CheckedItems -match 'USB Controller Devices') {USBControllerDevicesCommand ; $CountCommandQueries += 1}        
         
-        if ($FileSearchDirectoryListingCheckbox.Checked) {FileSearchDirectoryListingCommand ; $CountCommandQueries += 1}
-        if ($FileSearchFileSearchCheckbox.Checked){FileSearchFileSearchCommand ; $CountCommandQueries += 1}
+            if ($FileSearchDirectoryListingCheckbox.Checked) {FileSearchDirectoryListingCommand ; $CountCommandQueries += 1}
+            if ($FileSearchFileSearchCheckbox.Checked){FileSearchFileSearchCommand ; $CountCommandQueries += 1}
 
-        if ($RekallWinPmemMemoryCaptureCheckbox.Checked){RekallWinPmemMemoryCaptureCommand ; $CountCommandQueries += 1}
-        if ($SysinternalsAutorunsCheckbox.Checked){SysinternalsAutorunsCommand ; $CountCommandQueries += 1}
-        if ($SysinternalsProcessMonitorCheckbox.Checked){SysinternalsProcessMonitorCommand ; $CountCommandQueries += 1}
+            if ($RekallWinPmemMemoryCaptureCheckbox.Checked){RekallWinPmemMemoryCaptureCommand ; $CountCommandQueries += 1}
+            if ($SysinternalsAutorunsCheckbox.Checked){SysinternalsAutorunsCommand ; $CountCommandQueries += 1}
+            if ($SysinternalsProcessMonitorCheckbox.Checked){SysinternalsProcessMonitorCommand ; $CountCommandQueries += 1}
         
-        if ($EventLogsEventIDsManualEntryCheckbox.Checked) {EventLogsEventCodeManualEntryCommand ; $CountCommandQueries += 1}
-        if ($EventLogsEventIDsIndividualSelectionCheckbox.Checked) {EventLogsEventCodeIndividualSelectionCommand ; $CountCommandQueries += 1}
-        if ($EventLogsQuickPickSelectionCheckbox.Checked) {
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Application Event Logs') {ApplicationEventLogsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Application Event Logs Errors') {ApplicationEventLogsErrorsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Security Event Logs') {SecurityEventLogsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'System Event Logs') {SystemEventLogsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'System Event Logs Errors') {SystemEventLogsErrorsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Account Lockout') {AccountLockoutCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Account Management') {AccountManagementCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Account Management Events - Other') {AccountManagementEventsOtherCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Application Generated') {ApplicationGeneratedCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Application Group Management') {ApplicationGroupManagementCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Authentication Policy Change') {AuthenticationPolicyChangeCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Authorization Policy Change') {AuthorizationPolicyChangeCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Audit Policy Change') {AuditPolicyChangeCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Central Access Policy Staging') {CentralAccessPolicyStagingCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Certification Services') {CertificationServicesCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Computer Account Management') {ComputerAccountManagementCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Detailed Directory Service Replication') {DetailedDirectoryServiceReplicationCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Detailed File Share') {DetailedFileShareCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Directory Service Access') {DirectoryServiceAccessCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Directory Service Changes') {DirectoryServiceChangesCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Directory Service Replication') {DirectoryServiceReplicationCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Distribution Group Management') {DistributionGroupManagementCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'DPAPI Activity') {DPAPIActivityCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Group Membership') {GroupMembershipCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'File Share') {FileShareCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'File System') {FileSystemCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Filtering Platform Connection') {FilteringPlatformConnectionCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Filtering Platform Packet Drop') {FilteringPlatformPacketDropCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Filtering Platform Policy Change') {FilteringPlatformPolicyChangeCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Handle Manipulation') {HandleManipulationCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'IPSec Driver') {IPSecDriverCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'IPSec Extended Mode') {IPSecExtendedModeCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'IPSec Main Mode') {IPSecMainModeCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'IPSec Quick Mode') {IPSecQuickModeCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Kerberos Authentication Service') {KerberosAuthenticationServiceCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Kerberos Service Ticket Operations') {KerberosServiceTicketOperationsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Kernel Object') {KernelObjectCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Logon and Logoff Events') {LogonLogoffEventsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Logon and Logoff Events - Other') {LogonLogoffEventsOtherCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'MPSSVC Rule Level Policy Change') {MPSSVCRuleLevelPolicyChangeCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Network Policy Server') {NetworkPolicyServerCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Other Events') {OtherEventsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Other Object Access Events') {OtherObjectAccessEventsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Other Policy Change Events') {OtherPolicyChangeEventsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Other System Events') {OtherSystemEventsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'PNP Activity') {PNPActivityCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Process Creation and Termination') {ProcessCreationTerminationCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Registry') {RegistryCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Removeable Storage') {RemoveableStorageCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'RPC Events') {RPCEventsCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'SAM') {SAMCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Security Group Management') {SecurityGroupManagementCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Security State Change') {SecurityStateChangeCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Security System Extension') {SecuritySystemExtensionCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Sensitive and NonSensitive Privilege Use') {SensitiveandNonSensitivePrivilegeUseCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Special Logon') {SpecialLogonCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'System Integrity') {SystemIntegrityCommand ; $CountCommandQueries += 1}
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'User and Device Claims') {UserDeviceClaimsCommand ; $CountCommandQueries += 1}
-         }
+            if ($EventLogsEventIDsManualEntryCheckbox.Checked) {EventLogsEventCodeManualEntryCommand ; $CountCommandQueries += 1}
+            if ($EventLogsEventIDsIndividualSelectionCheckbox.Checked) {EventLogsEventCodeIndividualSelectionCommand ; $CountCommandQueries += 1}
+            if ($EventLogsQuickPickSelectionCheckbox.Checked) {
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Application Event Logs') {ApplicationEventLogsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Application Event Logs Errors') {ApplicationEventLogsErrorsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Security Event Logs') {SecurityEventLogsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'System Event Logs') {SystemEventLogsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'System Event Logs Errors') {SystemEventLogsErrorsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Account Lockout') {AccountLockoutCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Account Management') {AccountManagementCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Account Management Events - Other') {AccountManagementEventsOtherCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Application Generated') {ApplicationGeneratedCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Application Group Management') {ApplicationGroupManagementCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Authentication Policy Change') {AuthenticationPolicyChangeCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Authorization Policy Change') {AuthorizationPolicyChangeCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Audit Policy Change') {AuditPolicyChangeCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Central Access Policy Staging') {CentralAccessPolicyStagingCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Certification Services') {CertificationServicesCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Computer Account Management') {ComputerAccountManagementCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Detailed Directory Service Replication') {DetailedDirectoryServiceReplicationCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Detailed File Share') {DetailedFileShareCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Directory Service Access') {DirectoryServiceAccessCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Directory Service Changes') {DirectoryServiceChangesCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Directory Service Replication') {DirectoryServiceReplicationCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Distribution Group Management') {DistributionGroupManagementCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'DPAPI Activity') {DPAPIActivityCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Group Membership') {GroupMembershipCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'File Share') {FileShareCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'File System') {FileSystemCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Filtering Platform Connection') {FilteringPlatformConnectionCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Filtering Platform Packet Drop') {FilteringPlatformPacketDropCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Filtering Platform Policy Change') {FilteringPlatformPolicyChangeCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Handle Manipulation') {HandleManipulationCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'IPSec Driver') {IPSecDriverCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'IPSec Extended Mode') {IPSecExtendedModeCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'IPSec Main Mode') {IPSecMainModeCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'IPSec Quick Mode') {IPSecQuickModeCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Kerberos Authentication Service') {KerberosAuthenticationServiceCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Kerberos Service Ticket Operations') {KerberosServiceTicketOperationsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Kernel Object') {KernelObjectCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Logon and Logoff Events') {LogonLogoffEventsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Logon and Logoff Events - Other') {LogonLogoffEventsOtherCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'MPSSVC Rule Level Policy Change') {MPSSVCRuleLevelPolicyChangeCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Network Policy Server') {NetworkPolicyServerCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Other Events') {OtherEventsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Other Object Access Events') {OtherObjectAccessEventsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Other Policy Change Events') {OtherPolicyChangeEventsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Other System Events') {OtherSystemEventsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'PNP Activity') {PNPActivityCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Process Creation and Termination') {ProcessCreationTerminationCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Registry') {RegistryCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Removeable Storage') {RemoveableStorageCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'RPC Events') {RPCEventsCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'SAM') {SAMCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Security Group Management') {SecurityGroupManagementCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Security State Change') {SecurityStateChangeCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Security System Extension') {SecuritySystemExtensionCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Sensitive and NonSensitive Privilege Use') {SensitiveandNonSensitivePrivilegeUseCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'Special Logon') {SpecialLogonCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'System Integrity') {SystemIntegrityCommand ; $CountCommandQueries += 1}
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match 'User and Device Claims') {UserDeviceClaimsCommand ; $CountCommandQueries += 1}
+            }
 
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Accounts') {ActiveDirectoryAccountsCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Details and User Information') {ActiveDirectoryAccountDetailsAndUserInfoCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Logon and Passowrd Policy') {ActiveDirectoryAccountLogonAndPassowrdPolicyCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Contact Information') {ActiveDirectoryAccountContactInfoCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Email Addresses') {ActiveDirectoryAccountEmailAddressesCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Phone Numbers') {ActiveDirectoryAccountPhoneNumbersCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Computers') {ActiveDirectoryComputersCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Default Domain Password Policy') {ActiveDirectoryDefaultDomainPasswordPolicyCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Groups') {ActiveDirectoryGroupsCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Group Membership By Groups') {ActiveDirectoryGroupMembershipByGroupsCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Group Membership by Users') {ActiveDirectoryGroupMembershipByUsersCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Groups Without Account Members') {ActiveDirectoryGroupsWithoutAccountMembersCommand ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'DNS All Records (Server 2008)') {DNSAllRecordsServer2008Command ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'DNS Root Hints (Server 2008)') {DomainDNSRootHintsServer2008Command ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'DNS Zones (Server 2008)') {DomainDNSZonesServer2008Command ; $CountCommandQueries += 1}
-        if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'DNS Statistics (Server 2008)') {DomainDNSStatisticsServer2008Command ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Accounts') {ActiveDirectoryAccountsCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Details and User Information') {ActiveDirectoryAccountDetailsAndUserInfoCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Logon and Passowrd Policy') {ActiveDirectoryAccountLogonAndPassowrdPolicyCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Contact Information') {ActiveDirectoryAccountContactInfoCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Email Addresses') {ActiveDirectoryAccountEmailAddressesCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Account Phone Numbers') {ActiveDirectoryAccountPhoneNumbersCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Computers') {ActiveDirectoryComputersCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Default Domain Password Policy') {ActiveDirectoryDefaultDomainPasswordPolicyCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Groups') {ActiveDirectoryGroupsCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Group Membership By Groups') {ActiveDirectoryGroupMembershipByGroupsCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Group Membership by Users') {ActiveDirectoryGroupMembershipByUsersCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'Active Directory - Groups Without Account Members') {ActiveDirectoryGroupsWithoutAccountMembersCommand ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'DNS All Records (Server 2008)') {DNSAllRecordsServer2008Command ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'DNS Root Hints (Server 2008)') {DomainDNSRootHintsServer2008Command ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'DNS Zones (Server 2008)') {DomainDNSZonesServer2008Command ; $CountCommandQueries += 1}
+            if ($ActiveDirectorySelectionCheckedlistbox.CheckedItems -match 'DNS Statistics (Server 2008)') {DomainDNSStatisticsServer2008Command ; $CountCommandQueries += 1}
 
-        $CollectionTimerStop = Get-Date
-        $MainListBox.Items.Insert(0,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Finished Collecting Data!")
+            $CollectionTimerStop = Get-Date
+            $MainListBox.Items.Insert(0,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Finished Collecting Data!")
 
-        $CollectionTime = New-TimeSpan -Start $CollectionTimerStart -End $CollectionTimerStop
-        $MainListBox.Items.Insert(1,"   $CollectionTime  Total Elapsed Time")
-        $MainListBox.Items.Insert(2,"====================================================================================================")
-        $MainListBox.Items.Insert(3,"")        
+            $CollectionTime = New-TimeSpan -Start $CollectionTimerStart -End $CollectionTimerStop
+            $MainListBox.Items.Insert(1,"   $CollectionTime  Total Elapsed Time")
+            $MainListBox.Items.Insert(2,"====================================================================================================")
+            $MainListBox.Items.Insert(3,"")        
        
-        #-----------------------------
-        # Plays a Sound When Finished
-        #-----------------------------
-        [system.media.systemsounds]::Exclamation.play()
+            #-----------------------------
+            # Plays a Sound When Finished
+            #-----------------------------
+            [system.media.systemsounds]::Exclamation.play()
 
-        #----------------------
-        # Text To Speach (TTS)
-        #----------------------
-        if ($TextToSpeachCheckBox.Checked -eq $true) {
-            Add-Type -AssemblyName System.speech
-            $speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
-            Start-Sleep -Seconds 1
+            #----------------------
+            # Text To Speach (TTS)
+            #----------------------
+            if ($TextToSpeachCheckBox.Checked -eq $true) {
+                Add-Type -AssemblyName System.speech
+                $speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
+                Start-Sleep -Seconds 1
 
-            # TTS for Query Count
-            if ($CountCommandQueries -eq 1) {$TTSQuerySingularPlural = "query"}
-            else {$TTSQuerySingularPlural = "queries"}
+                # TTS for Query Count
+                if ($CountCommandQueries -eq 1) {$TTSQuerySingularPlural = "query"}
+                else {$TTSQuerySingularPlural = "queries"}
 
-            # TTS for TargetComputer Count
-            if ($ComputerListBox.SelectedItems.Count -eq 1) {$TTSTargetComputerSingularPlural = "host"}
-            else {$TTSTargetComputerSingularPlural = "hosts"}
+                # TTS for TargetComputer Count
+                if ($ComputerListBox.SelectedItems.Count -eq 1) {$TTSTargetComputerSingularPlural = "host"}
+                else {$TTSTargetComputerSingularPlural = "hosts"}
         
-            # Say Message
-            if (($CountCommandQueries -eq 0) -and ($CountTargetComputer -eq 0)) {$speak.Speak("You need to select at least one query and target host.")}
-            else {
-                if ($CountCommandQueries -eq 0) {$speak.Speak("You need to select at least one query.")}
-                if ($CountTargetComputer -eq 0) {$speak.Speak("You need to select at least one target host.")}
-                else {$speak.Speak("PoSh-ACME has completed $CountCommandQueries $TTSQuerySingularPlural against $CountTargetComputer $TTSTargetComputerSingularPlural.")}
-            }        
+                # Say Message
+                if (($CountCommandQueries -eq 0) -and ($CountTargetComputer -eq 0)) {$speak.Speak("You need to select at least one query and target host.")}
+                else {
+                    if ($CountCommandQueries -eq 0) {$speak.Speak("You need to select at least one query.")}
+                    if ($CountTargetComputer -eq 0) {$speak.Speak("You need to select at least one target host.")}
+                    else {$speak.Speak("PoSh-ACME has completed $CountCommandQueries $TTSQuerySingularPlural against $CountTargetComputer $TTSTargetComputerSingularPlural.")}
+                }        
+            }
         }
     }
 }

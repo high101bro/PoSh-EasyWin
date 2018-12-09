@@ -1,0 +1,6 @@
+"PSComputerName","DeviceID","Description","ProviderName","FreeSpace","Size","DriveType"
+"2012DATA-DC1","C:","Local Fixed Disk",,"53645930496","64422408192","3"
+"2012DATA-DC1","D:","CD-ROM Disc",,,,"5"
+"DELLWIN10","C:","Local Fixed Disk",,"148837007360","999626371072","3"
+"DELLWIN10","D:","CD-ROM Disc",,,,"5"
+"DELLWIN10","E:","Local Fixed Disk",,"1290016718848","4000750497792","3"
