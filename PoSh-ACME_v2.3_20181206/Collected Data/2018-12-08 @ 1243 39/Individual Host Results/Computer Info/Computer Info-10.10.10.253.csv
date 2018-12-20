@@ -1,2 +1,0 @@
-"PSComputerName","Description","Manufacturer","Model","SystemType","NumberOfProcessors","TotalPhysicalMemory","EnableDaylightSavingsTime","BootupState","PartOfDomain","Domain","Username","PrimaryOwnerName"
-"DELLWIN10","AT/AT COMPATIBLE","Dell Inc.","Latitude E6520","x64-based PC","1","17055137792","True","Normal boot","True","contoso.com","DELLWIN10\Dan","Daniel"

@@ -1,7 +1,0 @@
-"PSComputerName","Status","Name","Path","Description"
-"DELLWIN10","OK","ADMIN$","C:\Windows","Remote Admin"
-"DELLWIN10","OK","C$","C:\","Default share"
-"DELLWIN10","OK","E$","E:\","Default share"
-"DELLWIN10","OK","GitHub","C:\Users\Dan\Documents\GitHub",""
-"DELLWIN10","OK","IPC$","","Remote IPC"
-"DELLWIN10","OK","Users","C:\Users",""
