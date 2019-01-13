@@ -1,0 +1,15 @@
+====================================================================================================
+Logon User Status
+====================================================================================================
+Base Command Ran:
+   query user
+====================================================================================================
+Display information about users logged on to the system.
+
+Obtains the following information:
+ - Username
+ - Session Name
+ - ID
+ - State
+ - Idle Time
+ - Logon Time

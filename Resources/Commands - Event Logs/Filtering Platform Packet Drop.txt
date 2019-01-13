@@ -1,0 +1,9 @@
+====================================================================================================
+Filtering Platform Packet Drop
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='5152') OR (EventCode='5153'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-filtering-platform-packet-drop
+5152(F): The Windows Filtering Platform blocked a packet.
+5153(S): A more restrictive Windows Filtering Platform filter has blocked a packet

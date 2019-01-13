@@ -1,0 +1,17 @@
+====================================================================================================
+Firewall Rules
+====================================================================================================
+Base Command Ran:
+   netsh advfirewall firewall show rule name=all
+====================================================================================================
+Obtains the following information:
+ - Rule Name
+ - Enabled
+ - Direction
+ - Action
+ - Local & Remote IP
+ - Local & Remote Port
+ - Protocol
+ - Profiles
+ - Grouping
+ - Edge Traversal

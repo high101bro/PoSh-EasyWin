@@ -1,0 +1,14 @@
+====================================================================================================
+Network Statistics IPv4 All
+====================================================================================================
+Base Command Ran:
+   netstat -e -p ip
+====================================================================================================
+Gets IPv4 protocol statistics (Received and Sent).
+
+Obtains the following information:
+ - Bytes
+ - Unicast Packets
+ - Non-Unicast Packets
+ - Discards
+ - Unknown Protocols

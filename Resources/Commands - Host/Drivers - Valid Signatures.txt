@@ -1,0 +1,13 @@
+====================================================================================================
+Drivers - Valid Signatures
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_SystemDriver | ForEach {Get-AuthenticodeSignature $_.pathname}
+====================================================================================================
+   Gets information about the authenticode signature for System Drivers. If the 
+file is not signed, the information is retrieved, but the fields are blank.
+
+Obtains the following information:
+ - Status
+ - Path
+ - Signer Certificate

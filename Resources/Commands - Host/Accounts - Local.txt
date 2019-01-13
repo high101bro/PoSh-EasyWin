@@ -1,0 +1,22 @@
+====================================================================================================
+Accounts - Local
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_UserAccount -Filter "LocalAccount='True'"
+Similar Commmands:
+   net user
+   Get-LocalUser
+====================================================================================================
+Obtains the following information:
+ - Name
+ - Disabled
+ - AccountType
+ - Lockout
+ - PasswordChangeable
+ - PasswordRequired
+ - LocalAccount 
+ - Domain
+ - SID
+ - SIDType
+ - Caption
+ - Description

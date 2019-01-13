@@ -1,0 +1,55 @@
+====================================================================================================
+Memory - Performance Data
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_PerfRawData_PerfOS_Memory
+====================================================================================================
+   The processor performance object consists of counters that measure aspects of processor
+activity. The processor is the part of the computer that performs arithmetic and logical
+computations, initiates operations on peripherals, and runs the threats of processes.
+
+Obtains the following information:
+ - Availabel Bytes
+ - Availabel KBytes
+ - Availabel MBytes
+ - Cache Bytes
+ - Cache Bytes Peak
+ - Cache Faults Per Sec
+ - Caption
+ - Commit Limit
+ - Committed Bytes
+ - Demand Zero Faults Per Sec
+ - Free And Zero Page List Bytes
+ - Free System Page Table Entries
+ - Frequency Object
+ - Frequency Perf Time
+ - Frequency Sys 100NS
+ - Long Term Average Standby Cache Lifetimes
+ - Modified Page List Bytes
+ - Page Faults Per Sec
+ - Page Reads Per Sec
+ - Pages Input Per Sec
+ - Pages Output Per Sec
+ - Pages Per Sec
+ - Page Writes Per Sec
+ - Percent Committed Bytes In Use
+ - Percent Committed Bytes In Use Base
+ - Pool Nonpaged Allocs
+ - Pool Nonpaged Bytes
+ - Pool Paged Allocs
+ - Pool Paged Bytes
+ - Pool Paged Resident Bytes
+ - Standby Cache Core Bytes
+ - Standby Cache Normal Priority Bytes
+ - Standby Cache Reserve Bytes
+ - System Cache Resident Bytes
+ - System Code Resident Bytes
+ - System Code Total Bytes
+ - System Driver Resident Bytes
+ - System Driver Total Bytes
+ - Timestamp Object
+ - Timestamp Perf Time
+ - Timestamp Sys 100NS
+ - Transition Faults Per Sec
+ - Transition Pages RePurposed Per Sec
+ - Write Copies Per Sec
