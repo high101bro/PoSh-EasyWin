@@ -1,4 +1,0 @@
-"PSComputerName","Name","Location","Command","User"
-"2012DATA-DC1","OpenOffice.org 3.4.1","Startup","OpenOffice.org 3.4.1.lnk","CONTOSO\Administrator"
-"2012DATA-DC1","VMware User Process","HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run","""C:\Program Files\VMware\VMware Tools\vmtoolsd.exe"" -n vmusr","Public"
-"WIN81-01","VMware User Process","HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run","""C:\Program Files\VMware\VMware Tools\vmtoolsd.exe"" -n vmusr","Public"

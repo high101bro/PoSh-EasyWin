@@ -1,8 +1,0 @@
-====================================================================================================
-Detailed File Share
-====================================================================================================
-Base Command Ran:
-   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND (EventCode='5145')"
-====================================================================================================
-https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-detailed-file-share
-5145(S, F): A network share object was checked to see whether client can be granted desired access.

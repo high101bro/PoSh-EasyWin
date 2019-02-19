@@ -1,9 +1,0 @@
-Investigate processes that...
-......don't have an icon
-......don't have a description or company name
-......are unsigned Microsoft images
-......live in Windows directory or user profile
-......are packed
-......include strang URLS in their strings
-......have open TCP/IP endpoints
-......host suspicious DLLs or services
