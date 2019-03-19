@@ -1,0 +1,8 @@
+====================================================================================================
+Group Membership
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND (EventCode='4627')"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-group-membership
+4627(S): Group membership information.

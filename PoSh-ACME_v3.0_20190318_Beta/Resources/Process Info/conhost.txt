@@ -1,0 +1,18 @@
+conhost
+
+Image Path:
+
+Parent Process:
+
+Child Processes:
+
+Number of Instances:
+
+User Account:
+
+Start Time:
+
+Description:
+It’s not an essential part of Windows launch, but you might stillfind the Console Window Host running on your system.
+This isn’t likely to be impersonated by malware, so as long as it’s running from \Windows\System32 and signed by Microsoft then the process itself is going to be safe.
+What’s more interesting is why it’s been launched, as the presence of CONHOST indicates some console-based activity. That might be completely safe and legitimate – you’ve just opened a command window, an application has used the shell for something – but take a closer look anyway. Which process was the parent, what’s the user account, when was it launched?

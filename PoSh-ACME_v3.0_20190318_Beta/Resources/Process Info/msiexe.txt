@@ -1,0 +1,24 @@
+msiexe.exe (Microsoft Installer Executable)
+
+Image Path:		%SystemRoot%\System32\Msiexec.exe
+
+Parent Process:		
+
+Child Processes:
+
+Number of Instances:	
+
+User Account:
+
+Start Time:
+
+Description:
+The original msiexec.exe is an important part of Windows and rarely causes problems. Known file sizes on Windows 10/8/7/XP are 78,848 bytes (39% of all occurrences), 73,216 bytes and 33 more variants. The program is not visible. Msiexec.exe is a trustworthy file from Microsoft. The application starts upon Windows startup (see Registry key: DEFAULT\Runonce, MACHINE\Run, Run, RunOnce).
+
+Username:
+
+Notes:
+
+Base Priority of #
+
+Command Line: 

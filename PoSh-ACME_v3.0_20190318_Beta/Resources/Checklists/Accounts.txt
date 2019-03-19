@@ -1,0 +1,10 @@
+Adversaries can create new accounts to provide another means of access to a machine
+Check for the following when analyzing accounts and groups:
+--- Prior staff or service accounts being used
+--- Odd logon times and locations 
+--- Incorrect account names
+--- Accounts having improper privileges
+--- Simultaneous logins for one user
+--- Account/User lockouts or repeated unsuccessful logins
+--- Root/Admin access to critical systems
+--- Brute force logins

@@ -1,0 +1,21 @@
+___.exe
+
+Image Path:	%SystemRoot%\System32\___
+
+Parent Process:	
+
+Child Processes:
+
+Number of Instances:	
+
+User Account:	
+
+Start Time:	
+
+Description:	
+
+Known Malicious Uses:
+
+Notes: 
+https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/
+
