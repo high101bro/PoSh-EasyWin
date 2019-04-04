@@ -1,0 +1,25 @@
+wmiapsrv.exe (Windows Managment Instrumentation Adapter Performance Service)
+
+Image Path:		%SystemRoot%\System32\WmiApSrv.exe (typically %SystemRoot%\System32\wbem\)
+
+Parent Process:		
+
+Child Processes:
+
+Number of Instances:	
+
+User Account:
+
+Start Time:
+
+Description:
+The original WmiApSrv.exe from Microsoft is an important part of Windows, but often causes problems. Known file sizes on Windows 10/8/7/XP are 126,464 bytes (83% of all occurrences), 136,192 bytes or 137,728 bytes. The WmiApSrv.exe file is a Windows core system file. The program has no visible window. The file is a Microsoft signed file. WmiApSrv.exe is able to monitor applications. The genuine WmiApSrv.exe file is a software component of Microsoft Windows by Microsoft. Windows Management Instrumentation (WMI) is a range of specifications from Microsoft for managing applications and devices in a network. WMI scripts and applications can be written to automate administrative tasks on remote computers, and can be used in all Windows based applications. The WMI performance adapter is part of the Windows Management Instrumentation (WMI) program, and is tasked with collecting information about its performance.
+
+Username:
+
+Notes:
+WmiApSrv.exe is able to monitor applications. Therefore the technical security rating is 3% dangerous, however you should also read the user reviews.
+
+Base Priority of #
+
+Command Line: 

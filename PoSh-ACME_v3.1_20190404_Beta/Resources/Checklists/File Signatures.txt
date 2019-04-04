@@ -1,0 +1,7 @@
+Hex Signature     ASCII   Offset Description 
+4D5A              MZ        0    Portable Executable (PE) 
+FFD8              ÿØ        0    Joint Photographic Expert Group 
+D0CF11E0A1B11AE1  ÐÏ.à¡±.á  0    Microsoft Office Application 
+504B0304          PK..      0    PKZip 
+25504446          %PDF      0    Portable Document Format
+...look up more
