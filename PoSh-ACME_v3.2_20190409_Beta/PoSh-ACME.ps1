@@ -11,7 +11,7 @@
      ACME: The point at which something is the Best, Perfect, or Most Successful!
      ============================================================================
      File Name      : PoSh-ACME.ps1
-     Version        : v.3.1 Beta
+     Version        : v.3.2 Beta
 
      Author         : high101bro
      Email          : high101bro@gmail.com
@@ -21,7 +21,7 @@
                     : WinRM  (Default Port 5986)
      Optional       : PsExec.exe, Procmon.exe, Autoruns.exe 
         		    : Can run standalone, but works best with the Resources folder!
-     Updated        :  3 Apr 19
+     Updated        :  9 Apr 19
      Created        : 21 Aug 18
 
     PoSh-ACME is a tool that allows you to run any number of queries against any number
@@ -881,7 +881,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_BIOS'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic bios list brief"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, SMBIOSBIOSVersion, Name, Manufacturer, SerialNumber, Version, Description, ReleaseDate, InstallDate' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets the basic input/output services (BIOS) that are installed."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1127,7 +1127,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c netsh interface portproxy show all > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets the ports that are forwarded/redirected elsewhere."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1190,7 +1190,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_Group -Filter { LocalAccount="True" }'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic group list" # ...wmic sysaccount... meh
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value "winrs net localgroup"
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Name, LocalAccount, Domain, SID, SIDType, Caption, Description' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1212,7 +1212,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value "winrs dir C:\Windows\System32\drivers\etc\hosts"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_winrs        -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Directory, Name, Length, CreationTime, LastWriteTime, LastAccessTime, Attributes, Mode' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets the contents of the Host file, which is a file that maps hostnames to IP addresses."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1224,7 +1224,7 @@ $script:AllEndpointCommands = @()
     #
     $CollectionName = 'Logon Info'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "User"
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "User, Charts"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD      -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD_Arg  -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value $null
@@ -1236,7 +1236,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_NetworkLoginProfile'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic netlogin list brief"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Name, LastLogon, LastLogoff, NumberOfLogons, PasswordAge' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets information about user logon activity."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1257,7 +1257,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c query session > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs query session"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets session information of the computer."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1278,7 +1278,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c query user > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets information about when a user logged on."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1288,7 +1288,7 @@ $script:AllEndpointCommands = @()
 
     $CollectionName = 'Mapped Drives'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System"
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Charts"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD      -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD_Arg  -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value $null
@@ -1299,7 +1299,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_MappedLogicalDisk'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Name, ProviderName, FileSystem, Size, FreeSpace, Compressed' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets information about mapped drives."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1320,7 +1320,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_PhysicalMemoryArray'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value "PSComputerName, Model, Name, MaxCapacity, @{Name='MaxCapacityGigabyte';Expression={$_.MaxCapacity / 1Mb}}, MemoryDevices"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets capacity information of the system memory."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1341,7 +1341,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_PerfRawData_PerfOS_Memory'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, AvaiLabelBytes, AvaiLabelKBytes, AvaiLabelMBytes, CacheBytes, CacheBytesPeak, CacheFaultsPersec, Caption, CommitLimit, CommittedBytes, DemandZeroFaultsPersec, FreeAndZeroPageListBytes, FreeSystemPageTableEntries, Frequency_Object, Frequency_PerfTime, Frequency_Sys100NS, LongTermAverageStandbyCacheLifetimes, ModifiedPageListBytes, PageFaultsPersec, PageReadsPersec, PagesInputPersec, PagesOutputPersec, PagesPersec, PageWritesPersec, PercentCommittedBytesInUse, PercentCommittedBytesInUse_Base, PoolNonpagedAllocs, PoolNonpagedBytes, PoolPagedAllocs, PoolPagedBytes, PoolPagedResidentBytes, StandbyCacheCoreBytes, StandbyCacheNormalPriorityBytes, StandbyCacheReserveBytes, SystemCacheResidentBytes, SystemCodeResidentBytes, SystemCodeTotalBytes, SystemDriverResidentBytes, SystemDriverTotalBytes, Timestamp_Object, Timestamp_PerfTime, Timestamp_Sys100NS, TransitionFaultsPersec, TransitionPagesRePurposedPersec, WriteCopiesPersec' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets performance data information of the system memory."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1362,7 +1362,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_PhysicalMemory'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Tag, Capacity, Speed, Manufacturer, PartNumber, SerialNumber' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets physical information of the system memory."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1383,16 +1383,8 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_OperatingSystem'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, 
-            FreePhysicalMemory,
-            TotalVisibleMemorySize, 
-            FreeVirtualMemory, 
-            TotalVirtualMemorySize,
-            @{Name="FreePhysicalMemoryMegabyte";Expression={$_.FreePhysicalMemory / 1KB}},
-            @{Name="TotalVisibleMemorySizeMegabyte";Expression={$_.TotalVisibleMemorySize / 1KB}},
-            @{Name="FreeVirtualMemoryeMegabyte";Expression={$_.FreeVirtualMemory / 1KB}},
-            @{Name="TotalVirtualMemorySizeMegabyte";Expression={$_.TotalVirtualMemorySize / 1KB}}'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, FreePhysicalMemory,TotalVisibleMemorySize, FreeVirtualMemory, TotalVirtualMemorySize, @{Name="FreePhysicalMemoryMegabyte";Expression={$_.FreePhysicalMemory / 1KB}}, @{Name="TotalVisibleMemorySizeMegabyte";Expression={$_.TotalVisibleMemorySize / 1KB}}, @{Name="FreeVirtualMemoryeMegabyte";Expression={$_.FreeVirtualMemory / 1KB}}, @{Name="TotalVirtualMemorySizeMegabyte";Expression={$_.TotalVirtualMemorySize / 1KB}}'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets utilization information of the system memory."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
@@ -1412,7 +1404,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_BaseBoard'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic baseboard list brief"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Manufacturer, Model, Name, SerialNumber, SKU, Product' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1474,7 +1466,7 @@ $script:AllEndpointCommands = @()
 
     $CollectionName = 'Network Settings'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "Network" 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "Network, Charts" 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD      -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD_Arg  -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value $null
@@ -1519,7 +1511,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c netstat -e -p ip > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets all host protocol statistics for an IPv4 network."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1540,7 +1532,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c netstat -e -p icmp > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets host ICMP statistics for an IPv4 network."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1561,7 +1553,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c netstat -e -p tcp > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets host TCP statistics for an IPv4 network."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1582,7 +1574,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c netstat -e -p udp > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets host UDP statistics for an IPv4 network."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1603,7 +1595,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c netstat -e -p ipv6 > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets all host protocol statistics for an IPv6 network."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1624,7 +1616,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c netstat -e -p tcpv6 > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets host TCP statistics for an IPv6 network."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1645,7 +1637,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c netstat -e -p udpv6 > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets host UDP statistics for an IPv6 network."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1666,7 +1658,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c netstat -e -p icmpv6 > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets host ICMP statistics for an IPv6 network."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1708,7 +1700,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_PnPEntity'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, InstallDate, Status, Description, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID -join "; "}}, Manufacturer' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets information on Plug and Play (PnP) Devices"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1734,7 +1726,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_WMI    -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "A PowerShell profile is a script that runs when PowerShell starts. You can use the profile as a logon script to customize the environment. You can add commands, aliases, functions, variables, snap-ins, modules, and PowerShell drives. ... PowerShell supports several profiles for users and host programs."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -1823,7 +1815,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value 'Gets the lineage of each process in a simple to view tree.'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value '$CommandsHostDirectoryNotes\$CollectionName.txt'
@@ -1907,7 +1899,7 @@ $script:AllEndpointCommands = @()
 
     $CollectionName = 'Processes - (Standard)'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System"
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Charts"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD      -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD_Arg  -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value "Get-Process"
@@ -1919,7 +1911,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_WMI    -Value "Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Process }"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_CMD    -Value "Invoke-Command -ScriptBlock { cmd /c tasklist /V /FO CSV }"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '@{name="PSComputerName";expression={$TargetComputer}}, Name, ID, Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description'
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value "PSComputerName, Name, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate, Description"
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, @{name="Name";expression={(($_.Name).split("."))[0]}}, ProcessID, ParentProcessID, Path, WorkingSetSize, Handle, HandleCount, ThreadCount, CreationDate, Description'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets a list of running processes."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
@@ -1960,7 +1952,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets a list of Restore Points."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2002,7 +1994,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_Desktop'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Name, ScreenSaverActive, ScreenSaverTimeout, ScreenSaverExecutable, Wallpaper' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Get screensaver information."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2012,7 +2004,7 @@ $script:AllEndpointCommands = @()
 
     $CollectionName = 'Security Patches'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System"
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Charts"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD      -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD_Arg  -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value "Get-HotFix"
@@ -2023,8 +2015,8 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_QuickFixEngineering'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic qfe list"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value "winrs dism /online /get-packages"
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value '@{Name="Name";Expression={$_.HotFixID}}, HotFixID, Description, InstalledBy, InstalledOn' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, @{Name="Name";Expression={$_.HotFixID}}, HotFixID, Description, InstalledBy, InstalledOn' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets information on security patches and when they were installed."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
@@ -2033,7 +2025,7 @@ $script:AllEndpointCommands = @()
 
     $CollectionName = 'Services'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System"
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Charts"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD      -Value "cmd /c sc "
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD_Arg  -Value "query state=all"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value "Get-Service"
@@ -2088,7 +2080,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList "cmd /c net session > c:\results.txt"'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value "winrs net session"
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Status, Name, Path, Description' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets network SMB sessions."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2099,7 +2091,7 @@ $script:AllEndpointCommands = @()
 
     $CollectionName = 'Shares'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "Network, Hunt" 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "Network, Hunt, Charts" 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD      -Value "cmd /c net view /ALL"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD_Arg  -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value $null
@@ -2110,7 +2102,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_Share'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic share"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value "winrs net share"
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Status, Name, Path, Description' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets network shares. The 'net share' command is used to manage file/printer shares."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2197,7 +2189,7 @@ $script:AllEndpointCommands = @()
         Get-Software        
     }
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Hunt"
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Hunt, Charts"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD      -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD_Arg  -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value $null
@@ -2208,7 +2200,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_Product'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets installed software."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2271,7 +2263,7 @@ $script:AllEndpointCommands = @()
         } | select Computer, MD5, SHA256, Path
     }
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Hunt"
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Hunt, Charts"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD      -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_CMD_Arg  -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value $null
@@ -2282,7 +2274,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_StartupCommand'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic startup list brief"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Name, Location, Command, User' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets startup information."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2303,7 +2295,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_ComputerSystem'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic os list brief"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Description, Manufacturer, Model, SystemType, NumberOfProcessors, TotalPhysicalMemory, EnableDaylightSavingsTime, BootupState, PartOfDomain, Domain, Username, PrimaryOwnerName' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "GUI = msinfo32 ; Get-ComputerInfo is only avilable on WPF 5.1 ; Gets consolidated operating system information and properties."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2324,7 +2316,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "If the hardware supports Secure Boot, gets the publisher GUID and the policy version of the Secure Boot configuration policy. If enabled it will return True, otherwise False. If the hardware doesn't support UEFI Secure boot or is BIOS based, an not supported error will be displayed."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2345,7 +2337,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "If the hardware supports UEFI Secure Boot, checks if it's enabled. If enabled it will return True, otherwise False. If the hardware doesn't support UEFI Secure boot or is BIOS based, an not supported error will be displayed."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2366,7 +2358,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_USBControllerDevice'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*' 
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value 'PSComputerName, Name, Manufacturer, Status, Service, DeviceID, @{Name="HardwareID";Expression={$_.HardwareID}}' 
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Gets USB information."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2443,7 +2435,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Detects VMWare Product; either the host is a VMWare VM or is hosting VMs."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2469,7 +2461,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value "Windows Side By Side (WinSxS), is a folder that stores different copies of DLL and system files. It stores different files for compatibility reasons and for times older versions need to be restored. Files within contain different versions, are needed for installation, backups, or updates. It's a space hog, taking up several gigabytes of space and growing with each Windows Update you perform. ou can't just delete everything in the WinSxS folder, because some of those files are needed for Windows to run and update reliably. However, with Windows 7 and above you can use the built-in Disk Cleanup tool to delete older versions of Windows updates you no longer need."
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -2486,7 +2478,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value 'Invoke-Command -ScriptBlock { Get-MpThreatDetection }'
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value 'Gets active and past malware threats that Windows Defender detected.'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
@@ -2497,7 +2489,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Network"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value 'Invoke-Command -ScriptBlock { Get-MpPreference }'
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value 'Gets preferences for the Windows Defender scans and updates.'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
@@ -2508,7 +2500,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System, Network"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value 'Invoke-Command -ScriptBlock { Get-MpComputerStatus }'
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value 'Gets the status of anti-malware software on the computer.'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
@@ -2528,7 +2520,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value 'The WS-Management TrustedHosts list is a list of trusted resources for your computer. The TrustedHosts list consists of a comma-separated list of computer names, IP addresses, and fully-qualified domain names. Only members of the Administrators group on the computer have permission to change the list of trusted hosts on the computer. For information about runningWindows PowerShell with administrator permissions, see How to Run as Administrator. To use the IP address of a remote computer in a Windows PowerShell command to connect to the remote computer, the IP address must be in the TrustedHosts list on your computer. This is a requirement of NTLM authentication, which is used whenever a computer is identified by the IP address instead of a computer name.'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
@@ -3126,7 +3118,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value '_____'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\ADDS - $CollectionName.txt"
@@ -3168,7 +3160,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
-    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value '*'
+    $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_PoSh      -Value 'PSComputerName, *'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Properties_WMI       -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Message              -Value '_____'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\ADDS - $CollectionName.txt"
@@ -4091,10 +4083,8 @@ $CommandsTreeViewSearchTextBox.Location      = New-Object System.Drawing.Size(0,
 $CommandsTreeViewSearchTextBox.Size          = New-Object System.Drawing.Size(172,25)
 $CommandsTreeViewSearchTextBox.AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
 $CommandsTreeViewSearchTextBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-    $CommandTypes = @("user","network","hardware","system","File","Hunt")
-    ForEach ($Type in $CommandTypes) { 
-        [void] $CommandsTreeViewSearchTextBox.Items.Add($Type) 
-    }
+    $CommandTypes = @("Chart","File","Hardware","Hunt","Network","System","User")
+    ForEach ($Type in $CommandTypes) { [void] $CommandsTreeViewSearchTextBox.Items.Add($Type) }
 $CommandsTreeViewSearchTextBox.Add_KeyDown({ 
     if ($_.KeyCode -eq "Enter") { 
         Search-CommandsTreeView
@@ -4906,7 +4896,6 @@ function EventLogQuery {
             } -ArgumentList @($CollectedDataTimeStampDirectory,$IndividualHostResults,$CollectionName,$TargetComputer,$SleepTime,$LimitNumberOfEventLogsCollectToChoice,$Filter)
         }   
     }
-    #batman
     Monitor-Jobs -CollectionName $CollectionName
     $CollectionCommandEndTime  = Get-Date                    
     $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
@@ -5417,7 +5406,7 @@ $FileSearchDownPosition += $FileSearchDownPositionShift
 $FileSearchSelectFileHashCheckbox          = New-Object System.Windows.Forms.ComboBox
 $FileSearchSelectFileHashCheckbox.Text     = "Select FileHashes - Default is None"
 $FileSearchSelectFileHashCheckbox.Location = New-Object System.Drawing.Point($FileSearchRightPosition,$FileSearchDownPosition) 
-$FileSearchSelectFileHashCheckbox.Size     = New-Object System.Drawing.Size(300,$FileSearchLabelHeight) 
+$FileSearchSelectFileHashCheckbox.Size     = New-Object System.Drawing.Size(200,$FileSearchLabelHeight) 
     $HashList = @('None', 'MD5','SHA1','SHA256','SHA512','MD5 + SHA1','MD5 + SHA256','MD5 + SHA512','MD5 + SHA1 + SHA256 + SHA512')
     ForEach ($Hash in $HashList) { $FileSearchSelectFileHashCheckbox.Items.Add($Hash) }
 $FileSearchSelectFileHashCheckbox.Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -7111,10 +7100,10 @@ $Section1ProcessesTab.Controls.Add($Section1ProcessesTabControl)
 # Auto Creates Tabs and Imports Data
 #------------------------------------
 # Obtains a list of the files in the resources folder
-$ResourceProcessFiles = Get-ChildItem "$PoShHome\Resources\Process Info"
+$ResourceFiles = Get-ChildItem "$PoShHome\Resources\Process Info"
 
 # Iterates through the files and dynamically creates tabs and imports data
-foreach ($File in $ResourceProcessFiles) {
+foreach ($File in $ResourceFiles) {
     #-----------------------------
     # Creates Tabs From Each File
     #-----------------------------
@@ -7524,10 +7513,10 @@ $Section1AboutTab.Controls.Add($Section1AboutTabControl)
 # Auto Creates Tabs and Imports Data
 #------------------------------------
 # Obtains a list of the files in the resources folder
-$ResourceProcessFiles = Get-ChildItem "$PoShHome\Resources\About"
+$ResourceFiles = Get-ChildItem "$PoShHome\Resources\About"
 
 # Iterates through the files and dynamically creates tabs and imports data
-foreach ($File in $ResourceProcessFiles) {
+foreach ($File in $ResourceFiles) {
     #-----------------------------
     # Creates Tabs From Each File
     #-----------------------------
@@ -7586,9 +7575,6 @@ $Section2MainTab.UseVisualStyleBackColor = $True
 $Section2MainTab.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section2TabControl.Controls.Add($Section2MainTab)
 
-#============================================================================================================================================================
-# Functions used for commands/queries
-#============================================================================================================================================================
 # Varables to Control Column 3
 $Column3RightPosition     = 3
 $Column3DownPosition      = 11
@@ -7596,29 +7582,49 @@ $Column3BoxWidth          = 300
 $Column3BoxHeight         = 22
 $Column3DownPositionShift = 26
 
+$DefaultSingleHostIPText = "<Type In A Hostname / IP>"
+
 #---------------------------------------------------
 # Single Host - Enter A Single Hostname/IP Checkbox
 #---------------------------------------------------
 # This checkbox highlights when selecing computers from the ComputerList
 $SingleHostIPCheckBox          = New-Object System.Windows.Forms.Checkbox
-$SingleHostIPCheckBox.Name     = "Query A Single Hostname/IP:"
+$SingleHostIPCheckBox.Name     = "Query A Single Host:"
 $SingleHostIPCheckBox.Text     = "$($SingleHostIPCheckBox.Name)"
 $SingleHostIPCheckBox.Location = New-Object System.Drawing.Size(3,11) 
 $SingleHostIPCheckBox.Size     = New-Object System.Drawing.Size(210,$Column3BoxHeight)
 $SingleHostIPCheckBox.Enabled  = $true
 $SingleHostIPCheckBox.Add_Click({
     if ($SingleHostIPCheckBox.Checked -eq $true){
+        $SingleHostIPTextBox.Text       = ""
         $ComputerListTreeView.Enabled   = $false
         $ComputerListTreeView.BackColor = "lightgray"
     }
     elseif ($SingleHostIPCheckBox.Checked -eq $false) {
-        $SingleHostIPTextBox.Text       = "<Type In A Hostname / IP>"
+        $SingleHostIPTextBox.Text       = $DefaultSingleHostIPText
         $ComputerListTreeView.Enabled   = $true
         $ComputerListTreeView.BackColor = "white"
     }
 })
-$SingleHostIPCheckBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$SingleHostIPCheckBox.Font          = New-Object System.Drawing.Font("$Font",11,1,2,1)
 $Section2MainTab.Controls.Add($SingleHostIPCheckBox)
+
+$Column3DownPosition += $Column3DownPositionShift
+
+#-----------------------------
+# Single Host - Input Textbox
+#-----------------------------
+$SingleHostIPTextBox          = New-Object System.Windows.Forms.TextBox
+$SingleHostIPTextBox.Text     = $DefaultSingleHostIPText
+$SingleHostIPTextBox.Location = New-Object System.Drawing.Size($Column3RightPosition,($Column3DownPosition + 1))
+$SingleHostIPTextBox.Size     = New-Object System.Drawing.Size(235,$Column3BoxHeight)
+$SingleHostIPTextBox.Add_KeyDown({
+    $SingleHostIPCheckBox.Checked   = $true
+    $ComputerListTreeView.Enabled   = $false
+    $ComputerListTreeView.BackColor = "lightgray"
+})
+$SingleHostIPTextBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$Section2MainTab.Controls.Add($SingleHostIPTextBox)
 
 #----------------------------------
 # Single Host - Add To List Button
@@ -7629,79 +7635,34 @@ $SingleHostIPAddButton.Location = New-Object System.Drawing.Size(($Column3RightP
 $SingleHostIPAddButton.Size     = New-Object System.Drawing.Size(115,$Column3BoxHeight) 
 $SingleHostIPAddButton.Add_Click({
     # Conducts a simple input check for default or blank data
-    if (($SingleHostIPTextBox.Text -ne '<Type In A Hostname / IP>') -and ($SingleHostIPTextBox.Text -ne '')) {
-        # Adds the hostname/ip entered into the collection list box
-        $value = "Manually Added"
-        Add-ComputerNode -RootNode $script:TreeNodeComputerList -Category $value -Entry $SingleHostIPTextBox.Text -ToolTip 'Manually Added'
-        $ComputerListTreeView.ExpandAll()
-        # Clears Textbox
-        $SingleHostIPTextBox.Text = "<Type In A Hostname / IP>"
-        # Auto checks/unchecks various checkboxes for visual status indicators
-        $SingleHostIPCheckBox.Checked = $false
+    if (($SingleHostIPTextBox.Text -ne $DefaultSingleHostIPText) -and ($SingleHostIPTextBox.Text -ne '')) {
+        if ($script:ComputerListTreeViewData.Name -contains $SingleHostIPTextBox.Text) {
+            $StatusListBox.Items.Clear()
+            $StatusListBox.Items.Add("Add Hostname/IP:  Error")
+            $ResultsListBox.Items.Clear()
+            $ResultsListBox.Items.Add("Error: $($ComputerListTreeViewPopupAddTextBox.Text) already exists with the following data:")
+            $ResultsListBox.Items.Add("- OU/CN: $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).CanonicalName)")
+            $ResultsListBox.Items.Add("- OS:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).OperatingSystem)")
+            $ResultsListBox.Items.Add("- IP:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Name}).IPv4Address)")
+            $ResultsListBox.Items.Add("- MAC:   $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Name}).MACAddress)")
+        }
+        else {
+            # Adds the hostname/ip entered into the collection list box
+            $value = "Manually Added"
+            Add-ComputerNode -RootNode $script:TreeNodeComputerList -Category $value -Entry $SingleHostIPTextBox.Text -ToolTip 'Manually Added'
+            $ComputerListTreeView.ExpandAll()
+            # Enables the Computer TreeView
+            $ComputerListTreeView.Enabled   = $true
+            $ComputerListTreeView.BackColor = "white"
+            # Clears Textbox
+            $SingleHostIPTextBox.Text = $DefaultSingleHostIPText
+            # Auto checks/unchecks various checkboxes for visual status indicators
+            $SingleHostIPCheckBox.Checked = $false
+        }
     }
 })
 $SingleHostIPAddButton.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section2MainTab.Controls.Add($SingleHostIPAddButton) 
-
-$Column3DownPosition += $Column3DownPositionShift
-
-#------------------------------------
-# Single Host - Input Check Function
-#------------------------------------
-function SingleHostInputCheck {
-    if (($SingleHostIPTextBox.Text -ne '<Type In A Hostname / IP>') -and ($SingleHostIPTextBox.Text -ne '') ) {
-        # Auto checks/unchecks various checkboxes for visual status indicators
-        $SingleHostIPCheckBox.Checked = $true
-
-        . SingleEntry
-
-        $ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Add("Collect Data From:")
-        foreach ($Computer in $ComputerList) {
-            $ResultsListBox.Items.Add("$Computer")
-        }
-    }
-    if ($SingleHostIPCheckBox.Checked -eq $true){
-        $ComputerListBox.Enabled   = $false
-        $ComputerListBox.BackColor = "lightgray"
-    }
-    elseif ($SingleHostIPCheckBox.Checked -eq $false) {
-        $SingleHostIPTextBox.Text  = "<Type In A Hostname / IP>"
-        $ComputerListBox.Enabled   = $true
-        $ComputerListBox.BackColor = "white"
-    }
-}
-
-#-----------------------------------------------
-# Single Host - <Type In A Hostname / IP> Textbox
-#-----------------------------------------------
-$SingleHostIPTextBox          = New-Object System.Windows.Forms.TextBox
-$SingleHostIPTextBox.Text     = "<Type In A Hostname / IP>"
-$SingleHostIPTextBox.Location = New-Object System.Drawing.Size($Column3RightPosition,($Column3DownPosition + 1))
-$SingleHostIPTextBox.Size     = New-Object System.Drawing.Size(235,$Column3BoxHeight)
-$SingleHostIPTextBox.Add_KeyDown({
-    if ($_.KeyCode -eq "Enter") {
-        SingleHostInputCheck
-    }
-})
-$SingleHostIPTextBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-$Section2MainTab.Controls.Add($SingleHostIPTextBox)
-
-
-#--------------------------------------
-# Single Host - Collect Entered Button
-#--------------------------------------
-$SingleHostIPOKButton          = New-Object System.Windows.Forms.Button
-$SingleHostIPOKButton.Text     = "Single Collection"
-$SingleHostIPOKButton.Location = New-Object System.Drawing.Size(($Column3RightPosition + 240),$Column3DownPosition)
-$SingleHostIPOKButton.Size     = New-Object System.Drawing.Size(115,$Column3BoxHeight) 
-$SingleHostIPOKButton.Add_Click({
-    $SingleHostIPCheckBox.Checked = $true
-    SingleHostInputCheck
-})
-$SingleHostIPOKButton.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-$Section2MainTab.Controls.Add($SingleHostIPOKButton) 
-
 
 # Shift Row Location
 $Column3DownPosition += $Column3DownPositionShift
@@ -7719,7 +7680,7 @@ $DirectoryListLabel           = New-Object System.Windows.Forms.Label
 $DirectoryListLabel.Location  = New-Object System.Drawing.Size($Column3RightPosition,($Column3DownPosition + 2)) 
 $DirectoryListLabel.Size      = New-Object System.Drawing.Size(120,$Column3BoxHeight) 
 $DirectoryListLabel.Text      = "Results Folder:"
-$DirectoryListLabel.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$DirectoryListLabel.Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
 $DirectoryListLabel.ForeColor = "Black"
 $Section2MainTab.Controls.Add($DirectoryListLabel)
 
@@ -7786,7 +7747,7 @@ $ResultsSectionLabel           = New-Object System.Windows.Forms.Label
 $ResultsSectionLabel.Location  = New-Object System.Drawing.Size(2,200) 
 $ResultsSectionLabel.Size      = New-Object System.Drawing.Size(230,$Column3BoxHeight) 
 $ResultsSectionLabel.Text      = "Choose How To View Results"
-$ResultsSectionLabel.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$ResultsSectionLabel.Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
 $ResultsSectionLabel.ForeColor = "Black"
 $Section2MainTab.Controls.Add($ResultsSectionLabel)
 
@@ -8681,7 +8642,7 @@ function AutoChartsSelectOptions {
             }
             function AutoChartsCommandSoftwareInstalled {
                 AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed" -PropertyX Name -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
-                AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed" -PropertyX PSComputerName -PropertyY Name -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Number of Software Installed on Computers" -PropertyX PSComputerName -PropertyY Name -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
             }
             function AutoChartsCommandStartUpCommands {
                 AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startup Names"    -PropertyX Name    -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
@@ -8700,15 +8661,15 @@ function AutoChartsSelectOptions {
                 AutoChartsCommandSoftwareInstalled
                 AutoChartsCommandStartUpCommands
             }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Logon Info")           { AutoChartsCommandLogonInfo }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Mapped Drives")        { AutoChartsCommandMappedDrives }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Network Settings")     { AutoChartsCommandNetworkSettings }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Processes") { AutoChartsCommandProcessesStandard }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Security Patches")     { AutoChartsCommandSecurityPatches }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Services")             { AutoChartsCommandServices }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Shares")               { AutoChartsCommandShares }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Software Installed")   { AutoChartsCommandSoftwareInstalled }
-            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Startup Commands")     { AutoChartsCommandStartUpCommands }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Logon Info")         { AutoChartsCommandLogonInfo }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Mapped Drives")      { AutoChartsCommandMappedDrives }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Network Settings")   { AutoChartsCommandNetworkSettings }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Processes")          { AutoChartsCommandProcessesStandard }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Security Patches")   { AutoChartsCommandSecurityPatches }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Services")           { AutoChartsCommandServices }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Shares")             { AutoChartsCommandShares }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Software Installed") { AutoChartsCommandSoftwareInstalled }
+            elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Startup Commands")   { AutoChartsCommandStartUpCommands }
         
             # Launches the form
             $AutoChartsForm.Add_Shown({$AutoChartsForm.Activate()})
@@ -8740,18 +8701,12 @@ function AutoChartsCommand {
         $MarkerStyle2,
         $MarkerStyle3
     )
-    #batman
-
-
-        # Name of Collected Data Directory
-        $CollectedDataDirectory                   = "$PoShHome\Collected Data"
-        # Location of separate queries
-        $CollectedDataTimeStampDirectory      = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
-        # Location of Uncompiled Results
-        $IndividualHostResults                = "$CollectedDataTimeStampDirectory\Individual Host Results"
-
-
-
+    # Name of Collected Data Directory
+    $CollectedDataDirectory               = "$PoShHome\Collected Data"
+    # Location of separate queries
+    $CollectedDataTimeStampDirectory      = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+    # Location of Uncompiled Results
+    $IndividualHostResults                = "$CollectedDataTimeStampDirectory\Individual Host Results"
 
     # Searches though the all Collection Data Directories to find files that match the $QueryName
     $ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
@@ -8764,15 +8719,17 @@ function AutoChartsCommand {
             }
         }
     }
+
     # Checkes if the Appropriate Checkbox is selected, if so it selects the very first, previous, and most recent collections respectively
+    # Each below will be the filename/path for their respective collection: baseline, previous, and most recent
     if ($AutoChartsBaselineCheckBox.Checked -eq $true) {
-        $script:CSVFileBaselineCollection   = $CSVFileMatch | Select-Object -First 1
+        $script:CSVFileBaselineCollection = $CSVFileMatch | Select-Object -First 1
     }
     if ($AutoChartsPreviousCheckBox.Checked -eq $true) { 
-        $script:CSVFilePreviousCollection   = $CSVFileMatch | Select-Object -Last 2 | Select-Object -First 1 
+        $script:CSVFilePreviousCollection = $CSVFileMatch | Select-Object -Last 2 | Select-Object -First 1 
     }
     if ($AutoChartsMostRecentCheckBox.Checked -eq $true) { 
-        $script:CSVFileMostRecentCollection   = $CSVFileMatch | Select-Object -Last 1 
+        $script:CSVFileMostRecentCollection = $CSVFileMatch | Select-Object -Last 1 
     }
 
     # Checks if the files selected are identicle, removing series as necessary that are to prevent erroneous double data
@@ -8785,14 +8742,14 @@ function AutoChartsCommand {
             $script:CSVFilePreviousCollection = $null        
         }    
     }
-
+    
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
     #--------------------------
     # Auto Create Charts Object
     #--------------------------
-    $AutoChart = New-object System.Windows.Forms.DataVisualization.Charting.Chart
+    $AutoChart                = New-object System.Windows.Forms.DataVisualization.Charting.Chart
     $AutoChart.Width           = 1115
     $AutoChart.Height          = 552
     $AutoChart.Left            = 5
@@ -8921,13 +8878,12 @@ function AutoChartsCommand {
     #-------------------------------------------------------
     # Auto Create Charts - Chart Type and Series Management
     #-------------------------------------------------------
-
     # Empties out variable that contains csv data if the respective checkbox is not checked
     if ($AutoChartsBaselineCheckBox.Checked   -eq $False) { $script:CSVFileBaselineCollection   = $null }
     if ($AutoChartsPreviousCheckBox.Checked   -eq $False) { $script:CSVFilePreviousCollection   = $null }
     if ($AutoChartsMostRecentCheckBox.Checked -eq $False) { $script:CSVFileMostRecentCollection = $null }
 
-    # Controls which series is showing and what type of charts will be displayed
+    # Controls which series is showing and what chart types will be displayed
     if ($script:CSVFileBaselineCollection -and $script:CSVFilePreviousCollection -and $script:CSVFileMostRecentCollection) {
         $AutoChart.Series["$Series01Name"].ChartType     = $ChartType1
         $AutoChart.Series["$Series01Name"].Color         = 'Blue'
@@ -8969,7 +8925,6 @@ function AutoChartsCommand {
         $AutoChart.Series["$Series03Name"].MarkerSize    = '10'  
         $AutoChart.Series["$Series02Name"].Enabled       = $False
     }
-
     elseif (($script:CSVFilePreviousCollection) -and -not ($script:CSVFileBaselineCollection) -and -not ($script:CSVFileMostRecentCollection)) {
         $AutoChart.Series["$Series02Name"].ChartType     = $ChartType1
         $AutoChart.Series["$Series02Name"].Color         = 'Orange'
@@ -9010,27 +8965,59 @@ function AutoChartsCommand {
     function Merge-CSVFiles { 
         [cmdletbinding()] 
         param( 
-            [string[]]$CSVFiles, 
-            [string]$OutputFile = "c:\merged.csv" 
+            [string]$CSVFileBaseline,
+            [string]$CSVFilePrevious,
+            [string]$CSVFileMostRecent
         ) 
-        $Script:MergedCSVFilesOutput = @(); 
-        foreach($CSV in $CSVFiles) { 
-            if(Test-Path $CSV) {          
-                $FileName = [System.IO.Path]::GetFileName($CSV) 
-                $temp = Import-CSV -Path $CSV | select *, @{Expression={$FileName};Label="FileName"} 
-                $Script:MergedCSVFilesOutput += $temp 
-            } else { 
-                Write-Warning "$CSV : No such file found" 
-            } 
- 
-        }        
-        #$Script:Output | Export-Csv -Path $OutputFile -NoTypeInformation 
-        #Write-Output "$OutputFile successfully created" 
-        return $Script:MergedCSVFilesOutput
-    }
+        $script:CsvAllHosts = @()
+        # Checks if the files exists, then stores the complete csv in a variable
+        if ((Test-Path $CSVFileBaseline) -and $AutoChartsBaselineCheckBox.Checked) {
+            $CsvFile1Data  = Import-CSV -Path $CSVFileBaseline | Select-Object *, @{Expression={$([System.IO.Path]::GetFileName($CSVFileBaseline))};Label="FileName"}
+            $CsvFile1Hosts = $CsvFile1Data | Select-Object -ExpandProperty PSComputerName -Unique
+            $script:CsvAllHosts  += $CsvFile1Hosts
+        }
+        if ((Test-Path $CSVFilePrevious) -and $AutoChartsPreviousCheckBox.Checked) {
+            $CsvFile2Data  = Import-CSV -Path $CSVFilePrevious | Select-Object *, @{Expression={$([System.IO.Path]::GetFileName($CSVFilePrevious))};Label="FileName"}
+            $CsvFile2Hosts = $CsvFile2Data | Select-Object -ExpandProperty PSComputerName -Unique
+            $script:CsvAllHosts  += $CsvFile2Hosts
+        }
+        if ((Test-Path $CSVFileMostRecent) -and $AutoChartsMostRecentCheckBox.Checked) {
+            $CsvFile3Data  = Import-CSV -Path $CSVFileMostRecent | Select-Object *, @{Expression={$([System.IO.Path]::GetFileName($CSVFileMostRecent))};Label="FileName"}
+            $CsvFile3Hosts = $CsvFile3Data | Select-Object -ExpandProperty PSComputerName -Unique
+            $script:CsvAllHosts  += $CsvFile3Hosts
+        }
+        # Gets unique listing of all hosts (PSComputerName), this will be used to compare each csv file against
+        $script:CsvUniqueHosts  = @()
+        $script:CsvUniqueHosts += $script:CsvAllHosts | Sort-Object -Unique
+        # Checks to see if hosts in the overall unique list exist in each csv
+        # If one is found that doesn't exist in the csv file, it is removed from the overall list
+        # This is to ensure that the results when compared between baseline, previous and most recent match the same computers
+        foreach ($UniqueHost in $script:CsvUniqueHosts) { 
+            if ((Test-Path $CSVFileBaseline) -and $AutoChartsBaselineCheckBox.Checked) {
+                if ($CsvFile1Hosts -notcontains $UniqueHost) { $script:CsvUniqueHosts = $script:CsvUniqueHosts | Where-Object {$_ -ne $UniqueHost} }
+            }
+            if ((Test-Path $CSVFilePrevious) -and $AutoChartsPreviousCheckBox.Checked) {
+                if ($CsvFile2Hosts -notcontains $UniqueHost) { $script:CsvUniqueHosts = $script:CsvUniqueHosts | Where-Object {$_ -ne $UniqueHost} }
+            }
+            if ((Test-Path $CSVFileMostRecent) -and $AutoChartsMostRecentCheckBox.Checked) {
+                if ($CsvFile3Hosts -notcontains $UniqueHost) { $script:CsvUniqueHosts = $script:CsvUniqueHosts | Where-Object {$_ -ne $UniqueHost} }
+            }
+        }
 
+        # Compiles the data for only similar hosts
+        $Script:MergedCSVUniquePropertyDataResults = @()
+        if ((Test-Path $CSVFileBaseline) -and $AutoChartsBaselineCheckBox.Checked) {
+            foreach ($UniqueHost in $script:CsvUniqueHosts) { $Script:MergedCSVUniquePropertyDataResults += $CsvFile1Data | Where { $_.PSComputerName -eq $UniqueHost } }
+        }
+        if ((Test-Path $CSVFilePrevious) -and $AutoChartsPreviousCheckBox.Checked) {
+            foreach ($UniqueHost in $script:CsvUniqueHosts) { $Script:MergedCSVUniquePropertyDataResults += $CsvFile2Data | Where { $_.PSComputerName -eq $UniqueHost } }
+        }
+        if ((Test-Path $CSVFileMostRecent) -and $AutoChartsMostRecentCheckBox.Checked) {
+            foreach ($UniqueHost in $script:CsvUniqueHosts) { $Script:MergedCSVUniquePropertyDataResults += $CsvFile3Data | Where { $_.PSComputerName -eq $UniqueHost } }
+        }
+    }
     # Later used to iterate through
-    $CSVFileCollection = @($script:CSVFileBaselineCollection,$script:CSVFilePreviousCollection,$script:CSVFileMostRecentCollection)
+    $CsvFileList = @($script:CSVFileBaselineCollection,$script:CSVFilePreviousCollection,$script:CSVFileMostRecentCollection)
     $SeriesCount = 0
 
     # If the Second field/Y Axis equals PSComputername, it counts it
@@ -9039,59 +9026,77 @@ function AutoChartsCommand {
         #$Script:AutoChartsChoice1 = "PSComputerName"
 
         # This file merger is later used to get a unique count of PropertyX and add to the DataSource (later the count is then subtracted by 1), 
-        # this allow each collection to have a minimum of zero count of a process. This aligns all results, otherwise unique results will be shifted off from one another
-        Merge-CSVFiles -CSVFiles $script:CSVFileBaselineCollection,$script:CSVFilePreviousCollection,$script:CSVFileMostRecentCollection 
-
-        foreach ($CSVFile in $CSVFileCollection) {
+        # this allow each collection to have a minimum of zero count of a process. This aligns all results, otherwise unique results will be shifted 
+        # off from one another when alphabetized
+        Merge-CSVFiles -CSVFileBaseline $script:CSVFileBaselineCollection `
+                       -CSVFilePrevious $script:CSVFilePreviousCollection `
+                       -CSVFileMostRecent $script:CSVFileMostRecentCollection
+        
+        #batman#batman
+        # The purpose of the code below is to ultiately add any missing unique fields to each collection.
+        # ex: If the most recent scan/collection contained an item not in the baseline, the baseline will now contain that item but at a zero value
+        # This is needed to ensure columns align when viewing multiple scans at once
+        foreach ($CSVFile in $CsvFileList) {
             $SeriesCount += 1
             $DataSource = @()
 
             # Filtering Results for Services to show just running services
-            if ($CSVFile -match "Services.csv") {
-                $DataSource += Import-Csv $CSVFile | Where-Object {$_.State -eq "Running"}
-                $DataSource += $Script:MergedCSVFilesOutput  | Where-Object {$_.State -eq "Running"} | Select-Object -Property $PropertyX -Unique
+            if ($CSVFile -match "Services") {
+                foreach ($UniqueHost in $script:CsvUniqueHosts) { 
+                    $DataSource += Import-Csv $CSVFile | Where { $_.PSComputerName -eq $UniqueHost } | Where-Object {$_.State -eq "Running" } 
+                }
+                # Gets a unique list of each item across all hosts
+                $DataSource += $Script:MergedCSVUniquePropertyDataResults  | Where-Object {$_.State -eq "Running"} | Select-Object -Property $PropertyX -Unique
                 $AutoChartTitle.Text = (($script:CSVFileMostRecentCollection.split('\'))[-1] -replace '.csv','') + " - Running"
             }
+
+            # Combines the file data along with the unique field list
+            # This essentially ends up adding a +1 count to all exist fiends, but will be later subtracted later
             else {
-                #test# $DataSource = Import-Csv $CSVFile
-                $DataSource += Import-Csv $CSVFile
-                $DataSource += $Script:MergedCSVFilesOutput | Select-Object -Property $PropertyX -Unique
-            }                    
-            # Creates a Unique list
+                $ImportCsvFile = Import-Csv $CSVFile
+                foreach ($UniqueHost in $script:CsvUniqueHosts) { 
+                    $DataSource += $ImportCsvFile | Where { $_.PSComputerName -eq $UniqueHost } 
+                }
+                # Gets a unique list of each item and appends it to ensure each collection has the same number of fields
+                $DataSource += $Script:MergedCSVUniquePropertyDataResults | Select-Object -Property $PropertyX -Unique
+            }
+
+            # Important, gets a unique list for X and Y
             $UniqueDataFields   = $DataSource | Select-Object -Property $PropertyX | Sort-Object -Property $PropertyX -Unique
             $UniqueComputerList = $DataSource | Select-Object -Property $PropertyY | Sort-Object -Property $PropertyY -Unique
-
+            
             # Generates and Counts the data
+            # Counts the number of times that any given property possess a given value
             $OverallDataResults = @()
             foreach ($DataField in $UniqueDataFields) {
                 $Count          = 0
-                $Computers      = @()
-                foreach ( $Line in $DataSource ) { 
-                    if ( $Line.$PropertyX -eq $DataField.$PropertyX ) {
+                $CsvComputers   = @()
+                foreach ( $Line in $DataSource ) {
+                    if ($Line.$PropertyX -eq $DataField.$PropertyX) {
                         $Count += 1
-                        if ( $Computers -notcontains $Line.$PropertyY ) { $Computers += $Line.$PropertyY }
+                        if ( $CsvComputers -notcontains $Line.$PropertyY ) { $CsvComputers += $Line.$PropertyY }                        
                     }
                 }
-                $UniqueCount    = $Computers.Count - 1 ### 1 is subtracted to account for the one added when ensuring all data fields are present
-                $DataResults    =  New-Object PSObject -Property @{
+                ### The - 1 is subtracted to account for the one added when adding $Script:MergedCSVUniquePropertyDataResults 
+                $UniqueCount    = $CsvComputers.Count - 1 
+                $DataResults    = New-Object PSObject -Property @{
                     DataField   = $DataField
                     TotalCount  = $Count
                     UniqueCount = $UniqueCount
-                    Computers   = $Computers 
+                    Computers   = $CsvComputers 
                 }
                 $OverallDataResults += $DataResults
             }
             $Series = '$Series0' + $SeriesCount + 'Name'
-            $OverallDataResults `
-            | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.UniqueCount)}
-        }
+            $OverallDataResults | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.UniqueCount)}
+        }        
     }
 
     # If the Second field/Y Axis DOES NOT equals PSComputername, it uses the field provided
     elseif ($PropertyX -eq "PSComputerName") {   
         # Import Data
         $DataSource = ""
-        foreach ($CSVFile in $CSVFileCollection) {
+        foreach ($CSVFile in $CsvFileList) {
             $SeriesCount += 1
             $DataSource = Import-Csv $CSVFile
 ########## TEST DATA ##########
@@ -9155,7 +9160,8 @@ function AutoChartsCommand {
         $OverallDataResults `
         | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.Computer,$_.ResultsCount)}        
         }
-    } 
+    }
+    Clear-Variable -Name MergedCSVDataResults
 
     ############################################################################################################
     # Auto Create Charts Processes
@@ -9165,7 +9171,7 @@ function AutoChartsCommand {
     # Auto Creates Tabs and Imports Data
     #------------------------------------
     # Obtains a list of the files in the resources folder
-    $ResourceProcessFiles = Get-ChildItem "$PoShHome\Resources\Process Info"
+    ###$ResourceFiles = Get-ChildItem "$PoShHome\Resources\Process Info"
 
     #-----------------------------
     # Creates Tabs From Each File
@@ -9175,34 +9181,26 @@ function AutoChartsCommand {
     $AutoChartsIndividualTabs.Text    = "$TabName"
     $AutoChartsIndividualTabs.UseVisualStyleBackColor = $True
     $AutoChartsIndividualTabs.Anchor  = $AnchorAll
-    $AutoChartsIndividualTabs.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    $AutoChartsIndividualTabs.Font    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $AutoChartsTabControl.Controls.Add($AutoChartsIndividualTabs)            
     $AutoChartsIndividualTabs.controls.add($AutoChart)
-
-    #----------------------------
-    # Auto Charts - Notice Label
-    #----------------------------
-    $AutoChartsNoticeLabel                = New-Object System.Windows.Forms.Label
-    $AutoChartsNoticeLabel.Location       = New-Object System.Drawing.Size(955,216) 
-    $AutoChartsNoticeLabel.Size           = New-Object System.Drawing.Size(150,25)
-    $AutoChartsNoticeLabel.Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    $AutoChartsNoticeLabel.ForeColor      = 'Black'
-    $AutoChartsNoticeLabel.Text           = "Future Notes Section"
-    $AutoChart.Controls.Add($AutoChartsNoticeLabel)
 
     #------------------------------
     # Auto Charts - Notice Textbox
     #------------------------------
-    $AutoChartsNoticeTextbox                = New-Object System.Windows.Forms.Textbox
-    $AutoChartsNoticeTextbox.Location       = New-Object System.Drawing.Size(($AutoChartsNoticeLabel.Location.X),($AutoChartsNoticeLabel.Location.Y + $AutoChartsNoticeLabel.Size.Height + 5)) 
-    $AutoChartsNoticeTextbox.Size           = New-Object System.Drawing.Size(150,300)
-    $AutoChartsNoticeTextbox.Multiline      = $tru
-    $AutoChartsNoticeTextbox.Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    $AutoChartsNoticeTextbox.ForeColor      = 'Black'
-    $AutoChartsNoticeTextbox.Text           = "Computer... Data`nasdfasdf`nasdfasdf`nasdfasdf"
+    $AutoChartsNoticeTextbox             = New-Object System.Windows.Forms.Textbox
+    $AutoChartsNoticeTextbox.Location    = New-Object System.Drawing.Size(964,216)
+    $AutoChartsNoticeTextbox.Size        = New-Object System.Drawing.Size(116,60)
+    $AutoChartsNoticeTextbox.Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+    $AutoChartsNoticeTextbox.Font        = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+    $AutoChartsNoticeTextbox.ForeColor   = 'Black'
+    $AutoChartsNoticeTextbox.Text        = "Computers
+ - Total:     $(($script:CsvAllHosts | Sort-Object -Unique).Count)
+ - Displayed: $($CsvComputers.Count - 1)
+ - Hidden:    $(($script:CsvAllHosts | Sort-Object -Unique).Count - $($CsvComputers.Count - 1))"
+    $AutoChartsNoticeTextbox.Multiline   = $true
+    $AutoChartsNoticeTextbox.BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
     $AutoChart.Controls.Add($AutoChartsNoticeTextbox)
-
-
     
     #--------------------------------
     # Auto Create Charts Save Button
@@ -9227,7 +9225,7 @@ function AutoChartsCommand {
     $AutoChartsSaveButton.Location  = New-Object System.Drawing.Size(955,516)
     $AutoChartsSaveButton.Size      = New-Object System.Drawing.Size(150,25)
     $AutoChartsSaveButton.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-        [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
+    #    [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
     $AutoChartsSaveButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $AutoChartsSaveButton.ForeColor = "Black"
     $AutoChartsSaveButton.UseVisualStyleBackColor = $True
@@ -10872,7 +10870,7 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     $ComputerListTreeViewPopup.Text          = "Add Hostname/IP"
     $ComputerListTreeViewPopup.Size          = New-Object System.Drawing.Size(335,177)
     $ComputerListTreeViewPopup.StartPosition = "CenterScreen"
-    $ComputerListTreeViewPopup.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    $ComputerListTreeViewPopup.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
 
     #-----------------------------------------------------
     # ComputerList TreeView Popup Add Hostname/IP TextBox
@@ -10881,7 +10879,7 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     $ComputerListTreeViewPopupAddTextBox.Text     = "Enter a hostname/IP"
     $ComputerListTreeViewPopupAddTextBox.Size     = New-Object System.Drawing.Size(300,25)
     $ComputerListTreeViewPopupAddTextBox.Location = New-Object System.Drawing.Size(10,10)
-    $ComputerListTreeViewPopupAddTextBox.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    $ComputerListTreeViewPopupAddTextBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupAddTextBox)
 
     #-----------------------------------------
@@ -10896,7 +10894,7 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
         $ComputerListTreeViewOSCategoryList = $script:ComputerListTreeViewData | Select-Object -ExpandProperty OperatingSystem -Unique
         # Dynamically creates the OS Category combobox list used for OS Selection
         ForEach ($OS in $ComputerListTreeViewOSCategoryList) { $ComputerListTreeViewPopupOSComboBox.Items.Add($OS) }
-    $ComputerListTreeViewPopupOSComboBox.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    $ComputerListTreeViewPopupOSComboBox.Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupOSComboBox)
 
     #-----------------------------------------
@@ -10911,7 +10909,7 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
         $ComputerListTreeViewOUCategoryList = $script:ComputerListTreeViewData | Select-Object -ExpandProperty CanonicalName -Unique
         # Dynamically creates the OU Category combobox list used for OU Selection
         ForEach ($OU in $ComputerListTreeViewOUCategoryList) { $ComputerListTreeViewPopupOUComboBox.Items.Add($OU) }
-    $ComputerListTreeViewPopupOUComboBox.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    $ComputerListTreeViewPopupOUComboBox.Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupOUComboBox)
 
     #---------------------------------------------
@@ -10923,7 +10921,7 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Add Hostname/IP:  Error")
             $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("$($ComputerListTreeViewPopupAddTextBox.Text) already exists with the following data:")
+            $ResultsListBox.Items.Add("Error: $($ComputerListTreeViewPopupAddTextBox.Text) already exists with the following data:")
             $ResultsListBox.Items.Add("- OU/CN: $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).CanonicalName)")
             $ResultsListBox.Items.Add("- OS:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).OperatingSystem)")
             $ResultsListBox.Items.Add("- IP:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Name}).IPv4Address)")
@@ -10969,11 +10967,11 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     # ComputerList TreeView Popup Execute Button
     #--------------------------------------------
     $ComputerListTreeViewPopupMoveButton          = New-Object System.Windows.Forms.Button
-    $ComputerListTreeViewPopupMoveButton.Text     = "Execute"
+    $ComputerListTreeViewPopupMoveButton.Text     = "Add Host"
     $ComputerListTreeViewPopupMoveButton.Size     = New-Object System.Drawing.Size(100,25)
     $ComputerListTreeViewPopupMoveButton.Location = New-Object System.Drawing.Size(210,($ComputerListTreeViewPopupOUComboBox.Location.Y + $ComputerListTreeViewPopupOUComboBox.Size.Height + 10))
     $ComputerListTreeViewPopupMoveButton.Add_Click({
-        AddHost-ComputerListTreeView
+        AddHost-ComputerListTreeView -AddHost
     })
     $ComputerListTreeViewPopupMoveButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupMoveButton)
@@ -11893,13 +11891,13 @@ $HostDataList2 = {
     }
 
     function Get-HostDataCsvDateTime {
-        $envnames = $script:CSVFileMatch
+    clear
         $script:HostDataCsvDateTime = @()
-        foreach ($Csv in $envnames) {
+        foreach ($Csv in $script:CSVFileMatch) {
             #$a = $CollectedDataDirectory #not use, just a note
             $DirDateTime = $Csv.split('\')[-4]
-            $script:CsvFileExtention = $Csv.split('\')[-3,-2,-1] -join '\'
             $script:HostDataCsvDateTime += $DirDateTime
+            $script:HostDataCsvPath = $Csv.split('\')[-3,-2] -join '\'
         }
     }                               
 
@@ -11967,13 +11965,13 @@ $HostDataList2 = {
         if ($OptionShowToolTipCheckBox.Checked){
             $Message = "⦿ If data exists, the date-time group will be displayed below.`n⦿ These files can be searchable, toggle in Options Tab.`n`n"
             $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
-            $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
-            $ToolTip.UseAnimation   = $true
-            $ToolTip.UseFading      = $true
-            $ToolTip.IsBalloon      = $true
-            $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
-            $ToolTip.ToolTipTitle   = 'Select Search Topic'
-        }    
+            $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+            $ToolTip.UseAnimation = $true
+            $ToolTip.UseFading    = $true
+            $ToolTip.IsBalloon    = $true
+            $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+            $ToolTip.ToolTipTitle = 'Select Search Topic'
+        }
     })
     $Section3HostDataSelectionComboBox.add_SelectedIndexChanged($HostDataList2)
     $Section3HostDataTab.Controls.Add($Section3HostDataSelectionComboBox)
@@ -12015,8 +12013,8 @@ $HostDataList2 = {
     $Section3HostDataGetDataButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $Section3HostDataGetDataButton.Add_Click({
         # Chooses the most recent file if multiple exist
-        $HostData = Import-Csv -Path "$CollectedDataDirectory\$($Section3HostDataSelectionDateTimeComboBox.SelectedItem)\$CsvFileExtention" | Where {$_.PSComputerName -match $Section3HostDataName.Text}
-
+        $HostData = Import-Csv -Path "$CollectedDataDirectory\$($Section3HostDataSelectionDateTimeComboBox.SelectedItem)\$script:HostDataCsvPath\*$($Section3HostDataName.Text)*.csv"
+        
         if ($HostData) {
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Showing Results:  $HostDataSection")
@@ -12137,7 +12135,8 @@ function Compile-CsvFiles {
     )
     # This function compiles the .csv files in the collection directory which outputs in the parent directory
     # The first line (collumn headers) is only copied once from the first file compiled, then skipped for the rest  
-    Remove-Item "$LocationToSaveCompiledCSV" -Force
+    Remove-Item -Path "$LocationToSaveCompiledCSV" -Force
+    Start-Sleep -Milliseconds 250
 
     $getFirstLine = $true
     Get-ChildItem "$LocationOfCSVsToCompile" | foreach {
@@ -12260,9 +12259,6 @@ function Monitor-Jobs {
 # CheckBox Script Handler
 #============================================================================================================================================================
 $ExecuteScriptHandler= {
-    #$StatusListBox.Items.Clear()
-    #$StatusListBox.Items.Insert(0,"Conducting Pre-Checks!")
-
     # This is for reference, it's also used later in the handler script
     #$Section1TabControl.SelectedTab   = $Section1OpNotesTab
     #$Section2TabControl.SelectedTab   = $Section2MainTab
@@ -12272,63 +12268,72 @@ $ExecuteScriptHandler= {
     # Clears previous Target Host values
     $ComputerList = @()           
 
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
-    
-    ### If the root computerlist checkbox is checked, all hosts will be queried
-    if ($script:ComputerListSearch.Checked) { 
-        foreach ($root in $AllHostsNode) { 
-            if ($root.text -imatch "Search Results") {
-                foreach ($Category in $root.Nodes) {
-                    foreach ($Entry in $Category.nodes) {
-                        $ComputerList += $Entry.text 
-                    }
-                }            
-            }
-        }    
-    }     
-    if ($script:TreeNodeComputerList.Checked) {
-        foreach ($root in $AllHostsNode) { 
-            if ($root.text -imatch "All Hosts") {
-                foreach ($Category in $root.Nodes) { 
-                    foreach ($Entry in $Category.nodes) { 
-                        $ComputerList += $Entry.text 
-                    }       
-                } 
-            }
+    if ($SingleHostIPCheckBox.Checked -eq $true) {
+        if (($SingleHostIPTextBox.Text -ne $DefaultSingleHostIPText) -and ($SingleHostIPTextBox.Text -ne '') ) {
+            $StatusListBox.Items.Clear()
+            $StatusListBox.Items.Add("Single Host Collection")
+            $ComputerList = $SingleHostIPTextBox.Text
         }
     }
-    foreach ($root in $AllHostsNode) {         
-        # This loop will select all hosts in a Category    
-        foreach ($Category in $root.Nodes) {
-            if ($Category.Checked) {
-                foreach ($Entry in $Category.Nodes) {
-                    $ComputerList += $Entry.text
+    elseif ($SingleHostIPCheckBox.Checked -eq $false) {    
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Multiple Host Collection")
+        
+        # If the root computerlist checkbox is checked, all hosts will be queried
+        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
+        if ($script:ComputerListSearch.Checked) { 
+            foreach ($root in $AllHostsNode) { 
+                if ($root.text -imatch "Search Results") {
+                    foreach ($Category in $root.Nodes) {
+                        foreach ($Entry in $Category.nodes) {
+                            $ComputerList += $Entry.text 
+                        }
+                    }            
+                }
+            }    
+        }     
+        if ($script:TreeNodeComputerList.Checked) {
+            foreach ($root in $AllHostsNode) { 
+                if ($root.text -imatch "All Hosts") {
+                    foreach ($Category in $root.Nodes) { 
+                        foreach ($Entry in $Category.nodes) { 
+                            $ComputerList += $Entry.text 
+                        }       
+                    } 
                 }
             }
         }
-        # This loop will check for entries that are checked
-        foreach ($Category in $root.Nodes) { 
-            foreach ($Entry in $Category.nodes) { 
-                if ($Entry.Checked) { $ComputerList += $Entry.text }
+        foreach ($root in $AllHostsNode) {         
+            # This loop will select all hosts in a Category    
+            foreach ($Category in $root.Nodes) {
+                if ($Category.Checked) {
+                    foreach ($Entry in $Category.Nodes) {
+                        $ComputerList += $Entry.text
+                    }
+                }
+            }
+            # This loop will check for entries that are checked
+            foreach ($Category in $root.Nodes) { 
+                foreach ($Entry in $Category.nodes) { 
+                    if ($Entry.Checked) { $ComputerList += $Entry.text }
+                }
             }
         }
+        # This will dedup the ComputerList, though there is unlikely multiple computers of the same name
+        $ComputerList = $ComputerList | Sort-Object -Unique
     }
-    # This will dedup selected checkboxes that happened from selecting categores and individual entries
-    $ComputerList = $ComputerList | Sort-Object -Unique
     $ResultsListBox.Items.Clear()
     $ResultsListBox.Items.Add("Computers to be queried:  $($ComputerList.Count)")
     $ResultsListBox.Items.Add("$ComputerList")
-    start-sleep 1
+    Start-Sleep -Seconds 1
+    
     # Assigns the path to save the Collections to
     $CollectedDataTimeStampDirectory = $CollectionSavedDirectoryTextBox.Text
     $IndividualHostResults           = "$CollectedDataTimeStampDirectory\Individual Host Results"
 
-    New-Item -Type Directory -Path $CollectionSavedDirectoryTextBox.Text
+    New-Item -Type Directory -Path $CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
 
-    #if ($SingleHostIPCheckBox.Checked -eq $false) {
-    #    # If $SingleHostIPCheckBox.Checked is true, then query a single computer, othewise query the selected computers in the computerlistbox
-    #    . SelectListBoxEntry
-    #}
+<#
     # Checks if any commands were selected
     if ($false) {
     #if ($CommandsSelectionCheckedlistbox.CheckedItems.Count -eq 0) {
@@ -12352,220 +12357,132 @@ $ExecuteScriptHandler= {
         $ResultsListBox.Items.Insert(0,"       Sysinternals [if Resource foler is present]") 
     }
     else {
-        # Checks if any computers were selected
-        if (($ComputerList.Count -eq 0) -and ($SingleHostIPCheckBox.Checked -eq $false)) {
-            # This brings specific tabs to the forefront/front view
-            $Section1TabControl.SelectedTab   = $Section1CollectionsTab
-            $Section4TabControl.SelectedTab   = $Section3ResultsTab
+#>
 
-            # Sounds a chime if there are no queries selected
-            [system.media.systemsounds]::Exclamation.play()
+    # Checks if any computers were selected
+    if (($ComputerList.Count -eq 0) -and ($SingleHostIPCheckBox.Checked -eq $false)) {
+        # This brings specific tabs to the forefront/front view
+        $Section1TabControl.SelectedTab = $Section1CollectionsTab
+        $Section4TabControl.SelectedTab = $Section3ResultsTab
 
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Error: No Target Computers Selected")
-            $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("Error: You need to make a selction from the computer treeView:")
-            $ResultsListBox.Items.Add("       Checkbox one or more target computers.")
-            $ResultsListBox.Items.Add("       Checkbox a category to collect data from all nested target computers.")
-        }
-        # Runs commands if it passes the above checks
-        else {
-            # This brings specific tabs to the forefront/front view
-            $Section1TabControl.SelectedTab   = $Section1OpNotesTab
-            $Section2TabControl.SelectedTab   = $Section2MainTab
-            $Section3TabControl.SelectedTab   = $Section3ActionTab
-            $Section4TabControl.SelectedTab   = $Section3ResultsTab
+        # Sounds a chime if there are no queries selected
+        [system.media.systemsounds]::Exclamation.play()
 
-            $ResultsListBox.Items.Clear();
-            $CollectionTimerStart = Get-Date
-            $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss'))  Collection Start Time")    
-            $ResultsListBox.Items.Insert(0,"")
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Error: No Hosts Entered or Selected")
+        $ResultsListBox.Items.Clear()
+        $ResultsListBox.Items.Add("Error: 1) Make a selection from the Computer TreeView:")
+        $ResultsListBox.Items.Add("            Check one or more target computers")
+        $ResultsListBox.Items.Add("            Check a category to collect data from all nested target computers")
+        $ResultsListBox.Items.Add("       2) Enter a Single Host to collect from:")
+        $ResultsListBox.Items.Add("            Check the Query A Single Host Checkbox")
+        $ResultsListBox.Items.Add("            Enter a valid host to collect data from")
+    }
+    # Runs commands if it passes the above checks
+    else {
+        # This brings specific tabs to the forefront/front view
+        $Section1TabControl.SelectedTab = $Section1OpNotesTab
+        $Section2TabControl.SelectedTab = $Section2MainTab
+        $Section3TabControl.SelectedTab = $Section3ActionTab
+        $Section4TabControl.SelectedTab = $Section3ResultsTab
+
+        $ResultsListBox.Items.Clear();
+        $CollectionTimerStart = Get-Date
+        $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss'))  Collection Start Time")    
+        $ResultsListBox.Items.Insert(0,"")
  
-            # Sets / Resets count to zero
-            $CountCommandQueries = 0
+        # Sets / Resets count to zero
+        $CountCommandQueries = 0
 
-            # Counts Target Computers
-            $CountTargetComputer = $ComputerList.Count
+        # Counts Target Computers
+        $CountTargetComputer = $ComputerList.Count
 
-            # Runs the Commands
+        # Runs the Commands
         
-            # Adds all the checkboxed commands to a list
-            $CommandsCheckedBoxesSelected = @()
+        # Adds all the checkboxed commands to a list
+        $CommandsCheckedBoxesSelected = @()
 
-            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $CommandsTreeView.Nodes
-            $ResultsListBox.Items.Clear()
+        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $CommandsTreeView.Nodes
+        $ResultsListBox.Items.Clear()
 
-            $script:AllCommands  = $script:AllEndpointCommands
-            $script:AllCommands += $script:AllActiveDirectoryCommands
-            $script:AllCommands += $script:ImportCustomCommands
+        $script:AllCommands  = $script:AllEndpointCommands
+        $script:AllCommands += $script:AllActiveDirectoryCommands
+        $script:AllCommands += $script:ImportCustomCommands
 
-            foreach ($root in $AllHostsNode) { 
-                foreach ($Category in $root.Nodes) {                
-                    if ($CommandsViewMethodRadioButton.Checked) {
-                        foreach ($Entry in $Category.nodes) { 
-                            if ($Entry.Checked -and $Entry -match '(RPC)' -and $Entry -match 'CMD') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_RPC_CMD
-                                    Arguments      = $Command.Command_RPC_CMD_Arg
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(RPC) CMD"
-                                }
-                            }                    
-                            if ($Entry.Checked -and $Entry -match '(RPC)' -and $Entry -match 'PoSh') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_RPC_PoSh
-                                    Properties     = $Command.Properties_PoSh
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(RPC) PoSh"
-                                }
+        foreach ($root in $AllHostsNode) { 
+            foreach ($Category in $root.Nodes) {                
+                if ($CommandsViewMethodRadioButton.Checked) {
+                    foreach ($Entry in $Category.nodes) { 
+                        if ($Entry.Checked -and $Entry -match '(RPC)' -and $Entry -match 'CMD') {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_RPC_CMD
+                                Arguments      = $Command.Command_RPC_CMD_Arg
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(RPC) CMD"
                             }
-                            if ($Entry.Checked -and  $Entry -match '(WMI)' -and $Entry -notmatch '(WinRS)' -and $Entry -notmatch '(WinRM)') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WMI
-                                    Properties     = $Command.Properties_WMI
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WMI)"
-                                }
+                        }                    
+                        if ($Entry.Checked -and $Entry -match '(RPC)' -and $Entry -match 'PoSh') {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_RPC_PoSh
+                                Properties     = $Command.Properties_PoSh
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(RPC) PoSh"
                             }
-                            if ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'CMD') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRM_CMD
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRM) CMD"
-                                }
-                            }
-                            if ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'Script') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRM_Script
-                                    #Properties     = $Command.Properties_Script
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRM) Script"
-                                }
-                            }
-                            if ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'PoSh') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRM_PoSh
-                                    Properties     = $Command.Properties_PoSh
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = '(WinRM) PoSh'
-                                }
-                            }
-                            if ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'WMI') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRM_WMI
-                                    Properties     = $Command.Properties_WMI
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRM) WMI"
-                                }
-                            }
-                        <#    if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'CMD') {
-                                    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                    $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                        Name           = $Entry.Text
-                                        Command        = $Command.Command_WinRS_CMD
-                                        ExportFileName = $Command.ExportFileName
-                                        Type           = "(WinRS) CMD"
-                                    }
-                            }
-                            if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'WMIC') {
-                                    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                    $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                        Name           = $Entry.Text
-                                        Command        = $Command.Command_WinRS_WMIC
-                                        ExportFileName = $Command.ExportFileName
-                                        Type           = "(WinRS) WMIC"
-                                    }
-                            } #>
                         }
-                    }
-                    if ($CommandsViewQueryRadioButton.Checked) {
-                        foreach ($Entry in $Category.nodes) { 
-                            if ($Entry -match '(RPC)' -and $Entry -match 'CMD' -and $Entry.Checked) {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_RPC_CMD
-                                    Arguments      = $Command.Command_RPC_CMD_Arg
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(RPC) CMD"
-                                }
+                        if ($Entry.Checked -and  $Entry -match '(WMI)' -and $Entry -notmatch '(WinRS)' -and $Entry -notmatch '(WinRM)') {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WMI
+                                Properties     = $Command.Properties_WMI
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WMI)"
                             }
-                            if ($Entry -match '(RPC)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_RPC_PoSh
-                                    Properties     = $Command.Properties_PoSh
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = '(RPC) PoSh'
-                                }
+                        }
+                        if ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'CMD') {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRM_CMD
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRM) CMD"
                             }
-                            if (($Entry -match '(WMI)') -and ($Entry -notmatch '(WinRS)') -and ($Entry -notmatch '(WinRM)') -and $Entry.Checked) {                        
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WMI
-                                    Properties     = $Command.Properties_WMI
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WMI)"
-                                }
+                        }
+                        if ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'Script') {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRM_Script
+                                #Properties     = $Command.Properties_Script
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRM) Script"
                             }
-                            if ($Entry -match '(WinRM)' -and $Entry -match 'CMD' -and $Entry.Checked) {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRM_CMD
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRM) CMD"
-                                }
+                        }
+                        if ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'PoSh') {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRM_PoSh
+                                Properties     = $Command.Properties_PoSh
+                                ExportFileName = $Command.ExportFileName
+                                Type           = '(WinRM) PoSh'
                             }
-                            if ($Entry -match '(WinRM)' -and $Entry -match 'Script' -and $Entry.Checked) {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRM_Script
-                                    #Properties     = $Command.Properties_Script
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRM) Script"
-                                }
+                        }
+                        if ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'WMI') {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRM_WMI
+                                Properties     = $Command.Properties_WMI
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRM) WMI"
                             }
-                            if ($Entry -match '(WinRM)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRM_PoSh
-                                    Properties     = $Command.Properties_PoSh
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = '(WinRM) PoSh'
-                                }
-                            }
-                            if ($Entry -match '(WinRM)' -and $Entry -match 'WMI' -and $Entry.Checked) {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRM_WMI
-                                    Properties     = $Command.Properties_WMI
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRM) WMI"
-                                }
-                            }
-                        
-                        <#  
-                            if ($Entry -match '(WinRS)' -and $Entry -match 'CMD' -and $Entry.Checked) {
+                        }
+                    <#    if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'CMD') {
                                 $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                                 $CommandsCheckedBoxesSelected += New-Object psobject @{ 
                                     Name           = $Entry.Text
@@ -12573,8 +12490,8 @@ $ExecuteScriptHandler= {
                                     ExportFileName = $Command.ExportFileName
                                     Type           = "(WinRS) CMD"
                                 }
-                            }
-                            if ($Entry -match '(WinRS)' -and $Entry -match 'WMIC' -and $Entry.Checked) {
+                        }
+                        if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'WMIC') {
                                 $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                                 $CommandsCheckedBoxesSelected += New-Object psobject @{ 
                                     Name           = $Entry.Text
@@ -12582,297 +12499,390 @@ $ExecuteScriptHandler= {
                                     ExportFileName = $Command.ExportFileName
                                     Type           = "(WinRS) WMIC"
                                 }
-                            }
-                         #>                                        
-                        }
+                        } #>
                     }
                 }
-            }
-            # Ensures that there are to lingering jobs in memory
-            Get-Job -Name "PoSh-ACME:*" | Remove-Job -Force -ErrorAction SilentlyContinue
-
-            # Iterates through selected commands and computers
-            # Comamnds ran without credentials
-            if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {            
-                if (!$script:Credential) { $script:Credential = Get-Credential }
-                Foreach ($Command in $CommandsCheckedBoxesSelected) {
-                    $CollectionCommandStartTime = Get-Date 
-                    $StatusListBox.Items.Clear()
-                    $StatusListBox.Items.Add("Query: $($Command.Name)")                    
-                    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
-                    Foreach ($TargetComputer in $ComputerList) {
-                        $SavePath = "$($CollectionSavedDirectoryTextBox.Text)\Individual Host Results\$($Command.ExportFileName)"
-                        # Creates the directory to save the results to
-                        New-Item -ItemType Directory -Path $SavePath -Force
-
-                        # Checks for the type of command selected and assembles the command to be executed
-                        $OutputFileFileType = ""
-                        if ($Command.Type -eq "(WinRM) CMD") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential"
-                            $OutputFileFileType = "txt"
-                        }
-                        elseif (($Command.Type -eq "(WMI)") -and ($Command.Command -match "Get-WmiObject")) {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
-                            $OutputFileFileType = "csv"
-                        }
-                        elseif (($Command.Type -eq "(WMI)") -and ($Command.Command -match "Invoke-WmiMethod")) {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential"
-                            $OutputFileFileType = "txt"
-                        }
-                        elseif ($Command.Type -eq "(WinRM) Script") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential"
-                            $OutputFileFileType = "csv"
-                        }
-                        elseif ($Command.Type -eq "(WinRM) PoSh") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
-                            $OutputFileFileType = "csv"
-                        }
-                        elseif ($Command.Type -eq "(WinRM) WMI") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential"
-                            $OutputFileFileType = "csv"
-                        }
-                        <#
-                        elseif ($Command.Type -eq "(WinRS) CMD") {
-                            # -username:<username> -password:<password>
-                            $CommandString = "$($Command.Command)"
-                            $OutputFileFileType = "txt"
-                        }
-                        elseif ($Command.Type -eq "(WinRS) WMIC") {
-                            $CommandString = "$($Command.Command)"
-                            $OutputFileFileType = "txt"
-                        }
-                        #>
-                        elseif ($Command.Type -eq "(RPC) CMD") {
-                            $CommandString = "$($Command.Command) \\$TargetComputer $($Command.Arguments)"
-                            $OutputFileFileType = "txt"
-                        }
-                        elseif ($Command.Type -eq "(RPC) PoSh") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
-                            $OutputFileFileType = "csv"
-                        }
-
-                        $CommandName = $Command.Name
-                        $CommandType = $Command.Type
-                        Start-Job -Name "PoSh-ACME: $CommandName -- $TargetComputer" -ScriptBlock {
-                            param($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString)                      
-                            # Available priority values: Low, BelowNormal, Normal, AboveNormal, High, RealTime
-                            [System.Threading.Thread]::CurrentThread.Priority = 'High'
-                            ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
- 
-                            # Checks for the file output type, removes previous results with a file, then executes the commands
-                            if ( $OutputFileFileType -eq "csv" ) {
-                                $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).csv"
-                                Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
-                                Invoke-Expression -Command $CommandString | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
+                if ($CommandsViewQueryRadioButton.Checked) {
+                    foreach ($Entry in $Category.nodes) { 
+                        if ($Entry -match '(RPC)' -and $Entry -match 'CMD' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_RPC_CMD
+                                Arguments      = $Command.Command_RPC_CMD_Arg
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(RPC) CMD"
                             }
-                            elseif ( $OutputFileFileType -eq "txt" ) {
-                                $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).txt"
-                                Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
-
-                                if (($CommandType -eq "(WMI)") -and ($CommandString -match "Invoke-WmiMethod") ) {
-                                    # This is to catch Invoke-WmiMethod commands because these commands will drop files on the target that we want to retrieve then remove
-                                    Invoke-Expression -Command $CommandString
-                                    Start-Sleep -Seconds 1
-                                    Move-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
-                                    #Copy-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
-                                    #Remove-Item "\\$TargetComputer\c$\results.txt"
-                                }
-                                else {
-                                    # Runs all other commands an saves them locally as a .txt file
-                                    Invoke-Expression -Command $CommandString | Out-File $OutputFilePath -Force
-                                }
+                        }
+                        if ($Entry -match '(RPC)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_RPC_PoSh
+                                Properties     = $Command.Properties_PoSh
+                                ExportFileName = $Command.ExportFileName
+                                Type           = '(RPC) PoSh'
                             }
-                        } -InitializationScript $null -ArgumentList @($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString)
-
-                        # Logs the commands to file
-                        $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $CommandString"
-                        $LogMessage | Add-Content -Path $LogFile
-                    }
-                    # Monitors the progress of the Jobs and provides user status feedback. Jobs will also timeout, which the duration is a configurable
-                    Monitor-Jobs -CollectionName $($Command.Name)
-
-                    $CollectionCommandEndTime  = Get-Date                    
-                    $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
-                    $ResultsListBox.Items.RemoveAt(0)
-                    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
-
-                    # Compiles the CSVs into a single file for easier and faster viewing of results
-                    $StatusListBox.Items.Clear()
-                    $StatusListBox.Items.Add("Compiling CSV Results:  $((($Command.Name) -split ' -- ')[1])")
-                    Compile-CsvFiles -LocationOfCSVsToCompile "$SavePath\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.csv" -LocationToSaveCompiledCSV "$CollectedDataTimeStampDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
-                    $StatusListBox.Items.Clear()
-                    $StatusListBox.Items.Add("Finished Collecting Data!")
-                }
-            }                 
-            # Comamnds ran without credentials
-            else {
-                Foreach ($Command in $CommandsCheckedBoxesSelected) {
-                    $CollectionCommandStartTime = Get-Date 
-                    $StatusListBox.Items.Clear()
-                    $StatusListBox.Items.Add("Query: $($Command.Name)")                    
-                    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
-                    Foreach ($TargetComputer in $ComputerList) {
-                        $SavePath = "$($CollectionSavedDirectoryTextBox.Text)\Individual Host Results\$($Command.ExportFileName)"
-                        # Creates the directory to save the results to
-                        New-Item -ItemType Directory -Path $SavePath -Force
-
-                        # Checks for the type of command selected and assembles the command to be executed
-                        $OutputFileFileType = ""
-                        if ($Command.Type -eq "(WinRM) CMD") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
-                            $OutputFileFileType = "txt"
                         }
-                        elseif (($Command.Type -eq "(WMI)") -and ($Command.Command -match "Get-WmiObject")) {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
-                            $OutputFileFileType = "csv"
-                        }
-                        elseif (($Command.Type -eq "(WMI)") -and ($Command.Command -match "Invoke-WmiMethod")) {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
-                            $OutputFileFileType = "txt"
-                        }
-                        elseif ($Command.Type -eq "(WinRM) Script") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
-                            $OutputFileFileType = "csv"
-                        }
-                        elseif ($Command.Type -eq "(WinRM) PoSh") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
-                            $OutputFileFileType = "csv"
-                        }
-                        elseif ($Command.Type -eq "(WinRM) WMI") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
-                            $OutputFileFileType = "csv"
-                        }
-                        <#
-                        elseif ($Command.Type -eq "(WinRS) CMD") {
-                            # -username:<username> -password:<password>
-                            $CommandString = "$($Command.Command)"
-                            $OutputFileFileType = "txt"
-                        }
-                        elseif ($Command.Type -eq "(WinRS) WMIC") {
-                            $CommandString = "$($Command.Command)"
-                            $OutputFileFileType = "txt"
-                        }
-                        #>
-                        elseif ($Command.Type -eq "(RPC) CMD") {
-                            $CommandString = "$($Command.Command) \\$TargetComputer $($Command.Arguments)"
-                            $OutputFileFileType = "txt"
-                        }
-                        elseif ($Command.Type -eq "(RPC) PoSh") {
-                            $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
-                            $OutputFileFileType = "csv"
-                        }
-
-                        $CommandName = $Command.Name
-                        $CommandType = $Command.Type
-                        Start-Job -Name "PoSh-ACME: $CommandName -- $TargetComputer" -ScriptBlock {
-                            param($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString)                      
-                            # Available priority values: Low, BelowNormal, Normal, AboveNormal, High, RealTime
-                            [System.Threading.Thread]::CurrentThread.Priority = 'High'
-                            ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
- 
-                            # Checks for the file output type, removes previous results with a file, then executes the commands
-                            if ( $OutputFileFileType -eq "csv" ) {
-                                $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).csv"
-                                Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
-                                Invoke-Expression -Command $CommandString | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
+                        if (($Entry -match '(WMI)') -and ($Entry -notmatch '(WinRS)') -and ($Entry -notmatch '(WinRM)') -and $Entry.Checked) {                        
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WMI
+                                Properties     = $Command.Properties_WMI
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WMI)"
                             }
-                            elseif ( $OutputFileFileType -eq "txt" ) {
-                                $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).txt"
-                                Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
-
-                                if (($CommandType -eq "(WMI)") -and ($CommandString -match "Invoke-WmiMethod") ) {
-                                    # This is to catch Invoke-WmiMethod commands because these commands will drop files on the target that we want to retrieve then remove
-                                    Invoke-Expression -Command $CommandString
-                                    Start-Sleep -Seconds 1
-                                    Move-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
-                                    #Copy-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
-                                    #Remove-Item "\\$TargetComputer\c$\results.txt"
-                                }
-                                else {
-                                    # Runs all other commands an saves them locally as a .txt file
-                                    Invoke-Expression -Command $CommandString | Out-File $OutputFilePath -Force
-                                }
+                        }
+                        if ($Entry -match '(WinRM)' -and $Entry -match 'CMD' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRM_CMD
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRM) CMD"
                             }
-                        } -InitializationScript $null -ArgumentList @($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString)
-
-                        # Logs the commands to file
-                        $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $CommandString"
-                        $LogMessage | Add-Content -Path $LogFile
-                    }
-                    # Monitors the progress of the Jobs and provides user status feedback. Jobs will also timeout, which the duration is a configurable
-                    Monitor-Jobs -CollectionName $($Command.Name)
-
-                    $CollectionCommandEndTime  = Get-Date                    
-                    $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
-                    $ResultsListBox.Items.RemoveAt(0)
-                    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
-
-                    # Compiles the CSVs into a single file for easier and faster viewing of results
-                    $StatusListBox.Items.Clear()
-                    $StatusListBox.Items.Add("Compiling CSV Results:  $((($Command.Name) -split ' -- ')[1])")
-                    Compile-CsvFiles -LocationOfCSVsToCompile "$SavePath\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.csv" -LocationToSaveCompiledCSV "$CollectedDataTimeStampDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
-                    $StatusListBox.Items.Clear()
-                    $StatusListBox.Items.Add("Finished Collecting Data!")
-                }
-            }
-            if ($FileSearchDirectoryListingCheckbox.Checked) {FileSearchDirectoryListingCommand ; $CountCommandQueries += 1}
-            if ($FileSearchFileSearchCheckbox.Checked){FileSearchFileSearchCommand ; $CountCommandQueries += 1}
-            if ($FileSearchAlternateDataStreamCheckbox.Checked){FileSearchAlternateDataStreamCommand ; $CountCommandQueries += 1} 
-            if ($RekallWinPmemMemoryCaptureCheckbox.Checked){RekallWinPmemMemoryCaptureCommand ; $CountCommandQueries += 1}
-            if ($SysinternalsAutorunsCheckbox.Checked){SysinternalsAutorunsCommand ; $CountCommandQueries += 1}
-            if ($SysinternalsProcessMonitorCheckbox.Checked){SysinternalsProcessMonitorCommand ; $CountCommandQueries += 1}
-        
-            if ($EventLogsEventIDsManualEntryCheckbox.Checked) {EventLogsEventCodeManualEntryCommand ; $CountCommandQueries += 1}
-            if ($EventLogsEventIDsIndividualSelectionCheckbox.Checked) {EventLogsEventCodeIndividualSelectionCommand ; $CountCommandQueries += 1}
-            #batman
-            if ($EventLogsQuickPickSelectionCheckbox.Checked) {
-                foreach ($Query in $script:EventLogQueries) {
-                    if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
-                        EventLogQuery -CollectionName $Query.Name -Filter $Query.Filter
-                        $CountCommandQueries += 1
+                        }
+                        if ($Entry -match '(WinRM)' -and $Entry -match 'Script' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRM_Script
+                                #Properties     = $Command.Properties_Script
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRM) Script"
+                            }
+                        }
+                        if ($Entry -match '(WinRM)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRM_PoSh
+                                Properties     = $Command.Properties_PoSh
+                                ExportFileName = $Command.ExportFileName
+                                Type           = '(WinRM) PoSh'
+                            }
+                        }
+                        if ($Entry -match '(WinRM)' -and $Entry -match 'WMI' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRM_WMI
+                                Properties     = $Command.Properties_WMI
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRM) WMI"
+                            }
+                        }
+                        
+                    <#  
+                        if ($Entry -match '(WinRS)' -and $Entry -match 'CMD' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRS_CMD
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRS) CMD"
+                            }
+                        }
+                        if ($Entry -match '(WinRS)' -and $Entry -match 'WMIC' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRS_WMIC
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRS) WMIC"
+                            }
+                        }
+                        #>                                        
                     }
                 }
-            }
-            $CollectionTimerStop = Get-Date
-            $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Finished Collecting Data!")
-
-            $CollectionTime = New-TimeSpan -Start $CollectionTimerStart -End $CollectionTimerStop
-            $ResultsListBox.Items.Insert(1,"   $CollectionTime  Total Elapsed Time")
-            $ResultsListBox.Items.Insert(2,"====================================================================================================")
-            $ResultsListBox.Items.Insert(3,"")        
-      
-            #-----------------------------
-            # Plays a Sound When Finished
-            #-----------------------------
-            [system.media.systemsounds]::Exclamation.play()
-
-            #----------------------
-            # Text To Speach (TTS)
-            #----------------------
-            if ($OptionTextToSpeachCheckBox.Checked -eq $true) {
-                Add-Type -AssemblyName System.speech
-                $speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
-                Start-Sleep -Seconds 1
-
-                # TTS for Query Count
-                if ($CountCommandQueries -eq 1) {$TTSQuerySingularPlural = "query"}
-                else {$TTSQuerySingularPlural = "queries"}
-
-                # TTS for TargetComputer Count
-                if ($ComputerList.Count -eq 1) {$TTSTargetComputerSingularPlural = "host"}
-                else {$TTSTargetComputerSingularPlural = "hosts"}
-        
-                # Say Message
-                if (($CountCommandQueries -eq 0) -and ($CountTargetComputer -eq 0)) {$speak.Speak("You need to select at least one query and target host.")}
-                else {
-                    if ($CountCommandQueries -eq 0) {$speak.Speak("You need to select at least one query.")}
-                    if ($CountTargetComputer -eq 0) {$speak.Speak("You need to select at least one target host.")}
-                    else {$speak.Speak("PoSh-ACME has completed $CountCommandQueries $TTSQuerySingularPlural against $CountTargetComputer $TTSTargetComputerSingularPlural.")}
-                }        
             }
         }
-    }
+        # Ensures that there are to lingering jobs in memory
+        Get-Job -Name "PoSh-ACME:*" | Remove-Job -Force -ErrorAction SilentlyContinue
 
+        # Iterates through selected commands and computers
+        # Comamnds ran without credentials
+        if ($ComputerListProvideCredentialsCheckBox.Checked -eq $true) {            
+            if (!$script:Credential) { $script:Credential = Get-Credential }
+            Foreach ($Command in $CommandsCheckedBoxesSelected) {
+                $CollectionCommandStartTime = Get-Date 
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Query: $($Command.Name)")                    
+                $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
+                Foreach ($TargetComputer in $ComputerList) {
+                    $SavePath = "$($CollectionSavedDirectoryTextBox.Text)\Individual Host Results\$($Command.ExportFileName)"
+
+                    # Creates the directory to save the results to
+                    New-Item -ItemType Directory -Path $SavePath -Force
+
+                    # Checks for the type of command selected and assembles the command to be executed
+                    $OutputFileFileType = ""
+                    if ($Command.Type -eq "(WinRM) CMD") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif (($Command.Type -eq "(WMI)") -and ($Command.Command -match "Get-WmiObject")) {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
+                        $OutputFileFileType = "csv"
+                    }
+                    elseif (($Command.Type -eq "(WMI)") -and ($Command.Command -match "Invoke-WmiMethod")) {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif ($Command.Type -eq "(WinRM) Script") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential"
+                        $OutputFileFileType = "csv"
+                    }
+                    elseif ($Command.Type -eq "(WinRM) PoSh") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
+                        $OutputFileFileType = "csv"
+                    }
+                    elseif ($Command.Type -eq "(WinRM) WMI") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
+                        $OutputFileFileType = "csv"
+                    }
+                    <#
+                    elseif ($Command.Type -eq "(WinRS) CMD") {
+                        # -username:<username> -password:<password>
+                        $CommandString = "$($Command.Command)"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif ($Command.Type -eq "(WinRS) WMIC") {
+                        $CommandString = "$($Command.Command)"
+                        $OutputFileFileType = "txt"
+                    }
+                    #>
+                    elseif ($Command.Type -eq "(RPC) CMD") {
+                        $CommandString = "$($Command.Command) \\$TargetComputer $($Command.Arguments)"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif ($Command.Type -eq "(RPC) PoSh") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
+                        $OutputFileFileType = "csv"
+                    }
+
+                    $CommandName = $Command.Name
+                    $CommandType = $Command.Type
+                    Start-Job -Name "PoSh-ACME: $CommandName -- $TargetComputer" -ScriptBlock {
+                        param($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString)                      
+                        # Available priority values: Low, BelowNormal, Normal, AboveNormal, High, RealTime
+                        [System.Threading.Thread]::CurrentThread.Priority = 'High'
+                        ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
+ 
+                        # Checks for the file output type, removes previous results with a file, then executes the commands
+                        if ( $OutputFileFileType -eq "csv" ) {
+                            $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).csv"
+                            Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
+                            Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
+                            Invoke-Expression -Command $CommandString | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
+                        }
+                        elseif ( $OutputFileFileType -eq "txt" ) {
+                            $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).txt"
+                            Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
+
+                            if (($CommandType -eq "(WMI)") -and ($CommandString -match "Invoke-WmiMethod") ) {
+                                # This is to catch Invoke-WmiMethod commands because these commands will drop files on the target that we want to retrieve then remove
+                                Invoke-Expression -Command $CommandString
+                                Start-Sleep -Seconds 1
+                                Move-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
+                                #Copy-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
+                                #Remove-Item "\\$TargetComputer\c$\results.txt"
+                            }
+                            else {
+                                # Runs all other commands an saves them locally as a .txt file
+                                Invoke-Expression -Command $CommandString | Out-File $OutputFilePath -Force
+                            }
+                        }
+                    } -InitializationScript $null -ArgumentList @($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString)
+
+                    # Logs the commands to file
+                    $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $CommandString"
+                    $LogMessage | Add-Content -Path $LogFile
+                }
+                # Monitors the progress of the Jobs and provides user status feedback. Jobs will also timeout, which the duration is a configurable
+                Monitor-Jobs -CollectionName $($Command.Name)
+
+                $CollectionCommandEndTime  = Get-Date                    
+                $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
+                $ResultsListBox.Items.RemoveAt(0)
+                $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
+
+                # Compiles the CSVs into a single file for easier and faster viewing of results
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Compiling CSV Results:  $((($Command.Name) -split ' -- ')[1])")
+                Compile-CsvFiles -LocationOfCSVsToCompile "$SavePath\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.csv" -LocationToSaveCompiledCSV "$CollectedDataTimeStampDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Finished Collecting Data!")
+            }
+        }                 
+        # Comamnds ran without credentials
+        else {
+            Foreach ($Command in $CommandsCheckedBoxesSelected) {
+                $CollectionCommandStartTime = Get-Date 
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Query: $($Command.Name)")                    
+                $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
+                Foreach ($TargetComputer in $ComputerList) {
+                    $SavePath = "$($CollectionSavedDirectoryTextBox.Text)\Individual Host Results\$($Command.ExportFileName)"
+                    # Creates the directory to save the results to
+                    New-Item -ItemType Directory -Path $SavePath -Force
+
+                    # Checks for the type of command selected and assembles the command to be executed
+                    $OutputFileFileType = ""
+                    if ($Command.Type -eq "(WinRM) CMD") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif (($Command.Type -eq "(WMI)") -and ($Command.Command -match "Get-WmiObject")) {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
+                        $OutputFileFileType = "csv"
+                    }
+                    elseif (($Command.Type -eq "(WMI)") -and ($Command.Command -match "Invoke-WmiMethod")) {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif ($Command.Type -eq "(WinRM) Script") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
+                        $OutputFileFileType = "csv"
+                    }
+                    elseif ($Command.Type -eq "(WinRM) PoSh") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
+                        $OutputFileFileType = "csv"
+                    }
+                    elseif ($Command.Type -eq "(WinRM) WMI") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
+                        $OutputFileFileType = "csv"
+                    }
+                    <#
+                    elseif ($Command.Type -eq "(WinRS) CMD") {
+                        # -username:<username> -password:<password>
+                        $CommandString = "$($Command.Command)"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif ($Command.Type -eq "(WinRS) WMIC") {
+                        $CommandString = "$($Command.Command)"
+                        $OutputFileFileType = "txt"
+                    }
+                    #>
+                    elseif ($Command.Type -eq "(RPC) CMD") {
+                        $CommandString = "$($Command.Command) \\$TargetComputer $($Command.Arguments)"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif ($Command.Type -eq "(RPC) PoSh") {
+                        $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
+                        $OutputFileFileType = "csv"
+                    }
+
+                    $CommandName = $Command.Name
+                    $CommandType = $Command.Type
+                    Start-Job -Name "PoSh-ACME: $CommandName -- $TargetComputer" -ScriptBlock {
+                        param($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString)                      
+                        # Available priority values: Low, BelowNormal, Normal, AboveNormal, High, RealTime
+                        [System.Threading.Thread]::CurrentThread.Priority = 'High'
+                        ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
+ 
+                        # Checks for the file output type, removes previous results with a file, then executes the commands
+                        if ( $OutputFileFileType -eq "csv" ) {
+                            $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).csv"
+                            Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
+                            Invoke-Expression -Command $CommandString | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
+                        }
+                        elseif ( $OutputFileFileType -eq "txt" ) {
+                            $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).txt"
+                            Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
+
+                            if (($CommandType -eq "(WMI)") -and ($CommandString -match "Invoke-WmiMethod") ) {
+                                # This is to catch Invoke-WmiMethod commands because these commands will drop files on the target that we want to retrieve then remove
+                                Invoke-Expression -Command $CommandString
+                                Start-Sleep -Seconds 1
+                                Move-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
+                                #Copy-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
+                                #Remove-Item "\\$TargetComputer\c$\results.txt"
+                            }
+                            else {
+                                # Runs all other commands an saves them locally as a .txt file
+                                Invoke-Expression -Command $CommandString | Out-File $OutputFilePath -Force
+                            }
+                        }
+                    } -InitializationScript $null -ArgumentList @($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString)
+
+                    # Logs the commands to file
+                    $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $CommandString"
+                    $LogMessage | Add-Content -Path $LogFile
+                }
+                # Monitors the progress of the Jobs and provides user status feedback. Jobs will also timeout, which the duration is a configurable
+                Monitor-Jobs -CollectionName $($Command.Name)
+
+                $CollectionCommandEndTime  = Get-Date                    
+                $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
+                $ResultsListBox.Items.RemoveAt(0)
+                $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
+
+                # Compiles the CSVs into a single file for easier and faster viewing of results
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Compiling CSV Results:  $((($Command.Name) -split ' -- ')[1])")
+                Compile-CsvFiles -LocationOfCSVsToCompile "$SavePath\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.csv" -LocationToSaveCompiledCSV "$CollectedDataTimeStampDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Finished Collecting Data!")
+            }
+        }
+        if ($FileSearchDirectoryListingCheckbox.Checked) {FileSearchDirectoryListingCommand ; $CountCommandQueries += 1}
+        if ($FileSearchFileSearchCheckbox.Checked){FileSearchFileSearchCommand ; $CountCommandQueries += 1}
+        if ($FileSearchAlternateDataStreamCheckbox.Checked){FileSearchAlternateDataStreamCommand ; $CountCommandQueries += 1} 
+        if ($RekallWinPmemMemoryCaptureCheckbox.Checked){RekallWinPmemMemoryCaptureCommand ; $CountCommandQueries += 1}
+        if ($SysinternalsAutorunsCheckbox.Checked){SysinternalsAutorunsCommand ; $CountCommandQueries += 1}
+        if ($SysinternalsProcessMonitorCheckbox.Checked){SysinternalsProcessMonitorCommand ; $CountCommandQueries += 1}
+        
+        if ($EventLogsEventIDsManualEntryCheckbox.Checked) {EventLogsEventCodeManualEntryCommand ; $CountCommandQueries += 1}
+        if ($EventLogsEventIDsIndividualSelectionCheckbox.Checked) {EventLogsEventCodeIndividualSelectionCommand ; $CountCommandQueries += 1}
+        #batman
+        if ($EventLogsQuickPickSelectionCheckbox.Checked) {
+            foreach ($Query in $script:EventLogQueries) {
+                if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
+                    EventLogQuery -CollectionName $Query.Name -Filter $Query.Filter
+                    $CountCommandQueries += 1
+                }
+            }
+        }
+        $CollectionTimerStop = Get-Date
+        $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Finished Collecting Data!")
+
+        $CollectionTime = New-TimeSpan -Start $CollectionTimerStart -End $CollectionTimerStop
+        $ResultsListBox.Items.Insert(1,"   $CollectionTime  Total Elapsed Time")
+        $ResultsListBox.Items.Insert(2,"====================================================================================================")
+        $ResultsListBox.Items.Insert(3,"")        
+      
+        #-----------------------------
+        # Plays a Sound When Finished
+        #-----------------------------
+        [system.media.systemsounds]::Exclamation.play()
+
+        #----------------------
+        # Text To Speach (TTS)
+        #----------------------
+        if ($OptionTextToSpeachCheckBox.Checked -eq $true) {
+            Add-Type -AssemblyName System.speech
+            $speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
+            Start-Sleep -Seconds 1
+
+            # TTS for Query Count
+            if ($CountCommandQueries -eq 1) {$TTSQuerySingularPlural = "query"}
+            else {$TTSQuerySingularPlural = "queries"}
+
+            # TTS for TargetComputer Count
+            if ($ComputerList.Count -eq 1) {$TTSTargetComputerSingularPlural = "host"}
+            else {$TTSTargetComputerSingularPlural = "hosts"}
+        
+            # Say Message
+            if (($CountCommandQueries -eq 0) -and ($CountTargetComputer -eq 0)) {$speak.Speak("You need to select at least one query and target host.")}
+            else {
+                if ($CountCommandQueries -eq 0) {$speak.Speak("You need to select at least one query.")}
+                if ($CountTargetComputer -eq 0) {$speak.Speak("You need to select at least one target host.")}
+                else {$speak.Speak("PoSh-ACME has completed $CountCommandQueries $TTSQuerySingularPlural against $CountTargetComputer $TTSTargetComputerSingularPlural.")}
+            }        
+        }
+    }
 }
 # This needs to be here to execute the script
 # Note the Execution button itself is located in the Select Computer section
