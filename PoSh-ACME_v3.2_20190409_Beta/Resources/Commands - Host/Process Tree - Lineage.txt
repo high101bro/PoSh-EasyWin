@@ -1,6 +1,0 @@
-====================================================================================================
-Process Tree (Lineage)
-====================================================================================================
-   The Process Tree or Process Lineage allow you to easily see Child and Parent Process
-relationships.
-

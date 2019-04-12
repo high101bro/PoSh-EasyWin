@@ -1,9 +1,0 @@
-====================================================================================================
-Directory Service Replication
-====================================================================================================
-Base Command Ran:
-   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4932') OR (EventCode='4933'))"
-====================================================================================================
-https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-directory-service-replication
-4932(S): Synchronization of a replica of an Active Directory naming context has begun.
-4933(S, F): Synchronization of a replica of an Active Directory naming context has ended.

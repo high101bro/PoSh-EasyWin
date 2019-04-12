@@ -11,17 +11,17 @@
      ACME: The point at which something is the Best, Perfect, or Most Successful!
      ============================================================================
      File Name      : PoSh-ACME.ps1
-     Version        : v.3.2 Beta
+     Version        : v.3.3 Beta
 
      Author         : high101bro
      Email          : high101bro@gmail.com
      Website        : https://github.com/high101bro/PoSH-ACME
 
      Requirements   : PowerShell v3 or Higher
-                    : WinRM  (Default Port 5986)
+                    : RPC, WMI, and/or WinRM
      Optional       : PsExec.exe, Procmon.exe, Autoruns.exe 
         		    : Can run standalone, but works best with the Resources folder!
-     Updated        :  9 Apr 19
+     Updated        : 12 Apr 19
      Created        : 21 Aug 18
 
     PoSh-ACME is a tool that allows you to run any number of queries against any number
@@ -40,11 +40,6 @@
     Start-Job requires PowerShell v3.0
     PowerShell Charts requires PowerShell v3.0
     Get-FileHash requires PowerShell v3.0
-
-    Troubleshooting remote connection failures
-        about_Remote_Troubleshooting
-        about_Remote
-        about_Remote_Requirements
                         
     .EXAMPLE
         This will run PoSh-ACME.ps1 and provide prompts that will tailor your collection.
@@ -1219,9 +1214,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
 
-    #
-    # PSLOGGON -L \\remotecomputer
-    #
+
     $CollectionName = 'Logon Info'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "User, Charts"
@@ -1232,7 +1225,6 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_WMI    -Value "Invoke-Command -ScriptBlock { cmd /c wmic netlogin list brief }"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_CMD    -Value "Invoke-Command -ScriptBlock { cmd /c net config workstation | find /I ' name ' }"
-    # NBTSTAT -a remotecomputer | find '<03>' | find /I /V 'remotecomputer'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_NetworkLoginProfile'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic netlogin list brief"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
@@ -1411,16 +1403,6 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
 
-    <#
-    # There is an integrated tool in Windows Servers 2008R2 and newer, that allows capturing the network activity without installing anything.
-    cmd /c netsh trace start capture=yes Ethernet.Type=IPv4 IPv4.Address=127.0.0.1 filemode=single maxSize=250 overwrite=yes tracefile=c:\temp\nettrace_test.etl
-    #default save location: “traceFile=%LOCALAPPDATA%\Temp\NetTraces\NetTrace.etl”
-    # e.g. Protocol=6
-    # e.g. Protocol=!(TCP,UDP)
-    # e.g. Protocol=(4-10)    
-    Start-Sleep -Seconds 30
-    cmd /c netsh trace stop
-    #>
 
     $CollectionName = 'Network Connections TCP'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
@@ -1674,7 +1656,6 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_Script -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value 'Invoke-Command -ScriptBlock { Get-ChildItem \\.\\pipe\\ -Force }'
-    #$BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value 'Invoke-Command -ScriptBlock { [System.IO.Directory]::GetFiles("\\.\\pipe\\") }'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_WMI    -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_CMD    -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
@@ -1776,7 +1757,6 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
-
 
     
     $CollectionName = 'Process Tree (Lineage)'
@@ -2064,9 +2044,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
 
-    ############################################
-    ########## PsExec \\servername NET SESSION
-    ############################################
+
     $CollectionName = 'Sessions'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "Network, Hunt" 
@@ -2469,11 +2447,6 @@ $script:AllEndpointCommands = @()
     $script:AllEndpointCommands += $BuildCommand
 
  	
-    # Related: Get-MpThreatCatalog 	Gets known threats from the definitions catalog.
-    # Related: Get-MpThreat         Gets the history of threats detected on the computer
-    # start-MpScan -ScanType [QuickScan|FullScan]
-    # Start-MpScan -ScanPath C:\Users\<username>\Downloads
-
     $CollectionName = 'Windows Defender (Malware Detected)'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System"
@@ -2527,24 +2500,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
 
-
-
-
-#=============================
-#=============================
-#=============================
-#=============================
-#=============================
-#=============================
     $script:AllActiveDirectoryCommands = @()
-
-    ### Win32_MemoryDevice
-    ### Win32_ComputerSystemProcessor
-    ### netstat -es
-    ### tasklist /SVC /FO CSV
-    ### tree
-    ### auditpol /get /category:\*
-
 
     $CollectionName = 'Accounts (All Details and User Information)'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
@@ -3190,20 +3146,6 @@ $script:AllEndpointCommands = @()
 
     # Invoke-Command -ComputerName 2012data-dc1 -ScriptBlock {Get-ADGroup -filter * | Where-Object {-Not ($_ | Get-ADGroupMember)}  }
 
-    # find all members for a particular group
-    # dsget group "<group>" -members
-    # find all groups for a particular member
-    # dsget user "<DN of user>" -memberof -expand
-    # get the groups name from user container
-    # dsquery group -o rdn cn=users,dc=contoso.dc=com
-    # get the members from a group
-    # dsquery group-samid "CS_CLUB_ACCOUNTS" | dsget group -members -expand | dsget user -samid
-    # find all members for a OU
-    # dsquery user ou=targetOU,dc=domain,dc=com
-    # find all groups for a OU
-    # dsquery group ou=targetOU,dc=domain,dc=com
-
-
     $CollectionName = 'Group Membership by Groups'
     $CommandScript = {
         $ADGroupList = Get-ADGroup -Filter * | Select-Object -ExpandProperty Name
@@ -3285,24 +3227,6 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\ADDS - $CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllActiveDirectoryCommands += $BuildCommand
-
-    # marco...
-    # Get-DNSServerStatistics
-    # Get-DnsServer 
-    # Get-DnsServerDiagnostics 
-    # Get-DnsServerDsSetting 
-    # Get-DnsServerForwarder 
-    # Get-DnsServerGlobalNameZone
-    # Get-DnsServerRecursion
-    # Get-DNSServerRootHint
-    # Get-DnsServerScavenging
-    # Get-DnsServerSetting
-    # Get-DnsServerZone
-    # get-wmiobject -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord | select __Class, ContainerName, DomainName, RecordData, ownername
-
-    # The block list automatically applies to all zones for which the server is authoritative. For example, if the DNS server is authoritative for contoso.com and for europe.contoso.com, it ignores queries for wpad.contoso.com as well as for wpad.europe.contoso.com. However, the DNS Server service does not ignore queries for names in zones for which it is not authoritative. 
-    # dnscmd /info /globalqueryblocklist
-
 
     $CollectionName = 'DNS All Records (Server 2008)'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
@@ -3481,12 +3405,6 @@ function Conduct-NodeAction {
                     $StatusListBox.Items.Add("Hostname/IP:  $($Entry.Text)")
                     $ResultsListBox.Items.clear()
                     $ResultsListBox.Items.Add("$((($Entry.Text) -split ' -- ')[-1])")
-                    #batman
-                    #$CommandNotes = Get-Content -Path $($script:AllEndpointCommands | Where-Object Name -match $((($Entry.Text) -split ' -- ')[-1])).NotesPath
-                    #$ResultsListBox.Items.Clear()
-                    #Foreach ($Line in $CommandNotes) {
-                    #    $ResultsListBox.Items.Add($Line)                    
-                    #}
                                       
                     # Brings the Host Data Tab to the forefront/front view
                     $Section4TabControl.SelectedTab   = $Section3ResultsTab
@@ -3532,25 +3450,21 @@ function Initialize-CommandsTreeView {
     $CommandsTreeView.Nodes.Clear()
     $script:TreeNodeEndpointCommands                   = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList '2) Endpoint Commands'
     $script:TreeNodeEndpointCommands.Tag               = "Endpoint Commands"
-    #$script:TreeNodeEndpointCommands.Expand()
     $script:TreeNodeEndpointCommands.NodeFont          = New-Object System.Drawing.Font("$Font",10,1,1,1)
     $script:TreeNodeEndpointCommands.ForeColor         = [System.Drawing.Color]::FromArgb(0,0,0,0)
 
     $script:TreeNodeActiveDirectoryCommands            = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList '3) Active Directory Commands'
     $script:TreeNodeActiveDirectoryCommands.Tag        = "ADDS Commands"
-    #$script:TreeNodeActiveDirectoryCommands.Expand()
     $script:TreeNodeActiveDirectoryCommands.NodeFont   = New-Object System.Drawing.Font("$Font",10,1,1,1)
     $script:TreeNodeActiveDirectoryCommands.ForeColor  = [System.Drawing.Color]::FromArgb(0,0,0,0)
 
     $script:TreeNodeImportCustomCommands                = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList '1) Custom Commands'
     $script:TreeNodeImportCustomCommands.Tag            = "Custom Commands"
-    #$script:TreeNodeImportCustomCommands.Expand()
     $script:TreeNodeImportCustomCommands.NodeFont       = New-Object System.Drawing.Font("$Font",10,1,1,1)
     $script:TreeNodeImportCustomCommands.ForeColor      = [System.Drawing.Color]::FromArgb(0,0,0,0)
 
     $script:TreeNodeCommandSearch                      = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList '* Search Results'
     $script:TreeNodeCommandSearch.Tag                  = "Search"
-    #$script:TreeNodeCommandSearch.Expand()
     $script:TreeNodeCommandSearch.NodeFont             = New-Object System.Drawing.Font("$Font",10,1,1,1)
     $script:TreeNodeCommandSearch.ForeColor            = [System.Drawing.Color]::FromArgb(0,0,0,0)
 }
@@ -3573,7 +3487,6 @@ function Keep-CommandsCheckboxesChecked {
                     if ($CommandsCheckedBoxesSelected -contains $Entry.text) {
                         $Entry.Checked      = $true
                         $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",10,1,1,1)
-                        #green#$Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,128,0)
                         $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
                         $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
                         $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
@@ -3611,8 +3524,6 @@ function Add-CommandsNode {
         $CategoryNode.Name          = $Category
         $CategoryNode.Text          = $Category
         $CategoryNode.Tag           = $Category
-        #$CategoryNode.Expand()
-        #$CategoryNode.ToolTipText   = "Checkbox this Category to query all its hosts"
 
         if ($Category -match '(WinRM)') {
             $CategoryNode.ToolTipText = "PowerShell Remoting
@@ -3665,55 +3576,8 @@ Cons:      Limited functionality
 
 $script:HostQueryTreeViewSelected = ""
 
-#marco
-
 # Groups Commands TreeNodes by Method
 Function View-CommandsTreeViewMethod {
-<#    $CommandTypeList = @{
-        $script:TreeNodeEndpointCommands=$script:AllEndpointCommands,
-        $script:TreeNodeActiveDirectoryCommands=$script:AllActiveDirectoryCommands,
-        $script:TreeNodeImportCustomCommands=$script:ImportCustomCommands
-    }
-
-    Foreach ( $CommandType in $CommandTypeList.GetEnumerator() ) {
-        Foreach ( $Command in $CommandType.value ) {
-            if ($Command.Command_RPC_PoSh) {
-                Add-CommandsNode -RootNode $CommandType.Name -Category 'Remote Procedure Call (RPC) PoSh' -Entry "(RPC) PoSh -- $($Command.Name)" -ToolTip $Command.Command_RPC_PoSh
-            }
-            if ($Command.Command_RPC_CMD) {
-                Add-CommandsNode -RootNode $CommandType.Name -Category 'Remote Procedure Call (RPC) Win CMD' -Entry "(RPC) CMD -- $($Command.Name)" -ToolTip $Command.Command_RPC_CMD
-            }
-            if ($Command.Command_WMI) {
-                Add-CommandsNode -RootNode $CommandType.Name -Category 'Windows Management Instrumentation (WMI)' -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
-            }
-    #        if ($Command.Command_WinRS_WMIC) {
-    #            Add-CommandsNode -RootNode $CommandType.Name -Category 'Windows Remote Shell (WinRS) WMIC' -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-    #        }
-    #        if ($Command.Command_WinRS_CMD) {
-    #            Add-CommandsNode -RootNode $CommandType.Name -Category 'Windows Remote Shell (WinRS) CMD' -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-    #        }
-            if ($Command.Command_WinRM_Script) {
-                Add-CommandsNode -RootNode $CommandType.Name -Category 'PowerShell Remoting (WinRM) Scripts' -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
-            }        
-            if ($Command.Command_WinRM_PoSh) {
-                Add-CommandsNode -RootNode $CommandType.Name -Category 'PowerShell Remoting (WinRM) PoSh' -Entry "(WinRM) PoSh -- $($Command.Name)" -ToolTip $Command.Command_WinRM_PoSh
-            }
-            if ($Command.Command_WinRM_WMI) {
-                Add-CommandsNode -RootNode $CommandType.Name -Category 'PowerShell Remoting (WinRM) WMI' -Entry "(WinRM) WMI -- $($Command.Name)" -ToolTip $Command.Command_WinRM_WMI
-            }
-            if ($Command.Command_WinRM_CMD) {
-                Add-CommandsNode -RootNode $CommandType.Name -Category 'PowerShell Remoting (WinRM) Win CMD' -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRM_CMD
-            }
-        }
-    }
-}
-#>
-
-
-
-
-
-
 
     Foreach($Command in $script:AllEndpointCommands) {
         if ($Command.Command_RPC_PoSh) {
@@ -3725,12 +3589,6 @@ Function View-CommandsTreeViewMethod {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category 'Windows Management Instrumentation (WMI)' -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category 'Windows Remote Shell (WinRS) WMIC' -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category 'Windows Remote Shell (WinRS) CMD' -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category 'PowerShell Remoting (WinRM) Scripts' -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -3754,12 +3612,6 @@ Function View-CommandsTreeViewMethod {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category 'Windows Management Instrumentation (WMI)' -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category 'Windows Remote Shell (WinRS) WMIC' -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category 'Windows Remote Shell (WinRS) CMD' -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category 'PowerShell Remoting (WinRM) Scripts' -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -3783,12 +3635,6 @@ Function View-CommandsTreeViewMethod {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category 'Windows Management Instrumentation (WMI)' -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category 'Windows Remote Shell (WinRS) WMIC' -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category 'Windows Remote Shell (WinRS) CMD' -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category 'PowerShell Remoting (WinRM) Scripts' -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -3816,12 +3662,6 @@ Function View-CommandsTreeViewQuery {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -3845,12 +3685,6 @@ Function View-CommandsTreeViewQuery {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -3921,8 +3755,9 @@ $System_Drawing_Size                    = New-Object System.Drawing.Size
 $System_Drawing_Size.Height             = 22
 $System_Drawing_Size.Width              = 100
 $CommandsViewMethodRadioButton.size     = $System_Drawing_Size
-$CommandsViewMethodRadioButton.Checked  = $True
 $CommandsViewMethodRadioButton.Text     = "Method"
+$CommandsViewMethodRadioButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$CommandsViewMethodRadioButton.Checked  = $True
 $CommandsViewMethodRadioButton.Add_Click({
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("View Commands By:  Method")
@@ -3947,7 +3782,20 @@ $CommandsViewMethodRadioButton.Add_Click({
     Keep-CommandsCheckboxesChecked
     #$CommandsTreeView.ExpandAll()
 })
-$CommandsViewMethodRadioButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$CommandsViewMethodRadioButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Displays commands grouped by the method they're collected
+⦿ All commands executed against each host are logged`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation = $true
+        $ToolTip.UseFading    = $true
+        $ToolTip.IsBalloon    = $true
+        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle = 'Display by Method'
+    }    
+})
 $Section1CommandsTab.Controls.Add($CommandsViewMethodRadioButton)
 
 #---------------------------------------------
@@ -3962,8 +3810,9 @@ $System_Drawing_Size                   = New-Object System.Drawing.Size
 $System_Drawing_Size.Height            = 22
 $System_Drawing_Size.Width             = 100
 $CommandsViewQueryRadioButton.size     = $System_Drawing_Size
-$CommandsViewQueryRadioButton.Checked  = $false
 $CommandsViewQueryRadioButton.Text     = "Query"
+$CommandsViewQueryRadioButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$CommandsViewQueryRadioButton.Checked  = $false
 $CommandsViewQueryRadioButton.Add_Click({ 
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("View Commands By:  Query")
@@ -3988,7 +3837,20 @@ $CommandsViewQueryRadioButton.Add_Click({
     Keep-CommandsCheckboxesChecked
     #$CommandsTreeView.ExpandAll()
 })
-$CommandsViewQueryRadioButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$CommandsViewQueryRadioButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Displays commands grouped by queries
+⦿ All commands executed against each host are logged`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation = $true
+        $ToolTip.UseFading    = $true
+        $ToolTip.IsBalloon    = $true
+        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle = 'Display by Query'
+    }    
+})
 $Section1CommandsTab.Controls.Add($CommandsViewQueryRadioButton)
 
 $Column5DownPosition += $Column5DownPositionShift
@@ -3998,7 +3860,6 @@ $Column5DownPosition += $Column5DownPositionShift
 #-------------------------------------
 function Search-CommandsTreeView {
     $Section4TabControl.SelectedTab   = $Section3ResultsTab
-
     [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $CommandsTreeView.Nodes
 
     # Checks if the search node already exists
@@ -4077,20 +3938,33 @@ function Search-CommandsTreeView {
 #------------------------------------
 # Computer TreeView - Search TextBox
 #------------------------------------
-$CommandsTreeViewSearchTextBox               = New-Object System.Windows.Forms.ComboBox
-$CommandsTreeViewSearchTextBox.Name          = "Search TextBox"
-$CommandsTreeViewSearchTextBox.Location      = New-Object System.Drawing.Size(0,25)
-$CommandsTreeViewSearchTextBox.Size          = New-Object System.Drawing.Size(172,25)
+$CommandsTreeViewSearchTextBox          = New-Object System.Windows.Forms.ComboBox
+$CommandsTreeViewSearchTextBox.Name     = "Search TextBox"
+$CommandsTreeViewSearchTextBox.Location = New-Object System.Drawing.Size(0,25)
+$CommandsTreeViewSearchTextBox.Size     = New-Object System.Drawing.Size(172,25)
+$CommandsTreeViewSearchTextBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $CommandsTreeViewSearchTextBox.AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
 $CommandsTreeViewSearchTextBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     $CommandTypes = @("Chart","File","Hardware","Hunt","Network","System","User")
     ForEach ($Type in $CommandTypes) { [void] $CommandsTreeViewSearchTextBox.Items.Add($Type) }
 $CommandsTreeViewSearchTextBox.Add_KeyDown({ 
-    if ($_.KeyCode -eq "Enter") { 
-        Search-CommandsTreeView
-    }
+    if ($_.KeyCode -eq "Enter") { Search-CommandsTreeView }
 })
-$CommandsTreeViewSearchTextBox.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$CommandsTreeViewSearchTextBox.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Searches may be typed in manually.
+⦿ Searches can include any character.
+⦿ There are several default searches available.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation = $true
+        $ToolTip.UseFading    = $true
+        $ToolTip.IsBalloon    = $true
+        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle = 'Search Input Field'
+    }    
+})
 $Section1CommandsTab.Controls.Add($CommandsTreeViewSearchTextBox)
 
 #-----------------------------------
@@ -4101,11 +3975,23 @@ $CommandsTreeViewSearchButton.Name     = "Search Button"
 $CommandsTreeViewSearchButton.Text     = "Search"
 $CommandsTreeViewSearchButton.Location = New-Object System.Drawing.Size(($CommandsTreeViewSearchTextBox.Size.Width + 5),25)
 $CommandsTreeViewSearchButton.Size     = New-Object System.Drawing.Size(55,22)
-$CommandsTreeViewSearchButton.Font     = New-Object System.Drawing.Font("$Font",10,0,2,1)
-$CommandsTreeViewSearchButton.Add_Click({
-    Search-CommandsTreeView
+$CommandsTreeViewSearchButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$CommandsTreeViewSearchButton.Add_Click({ Search-CommandsTreeView })
+$CommandsTreeViewSearchButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Searches through query names and metadata.
+⦿ Search results are returned as nodes.
+⦿ Search results are not persistent.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation = $true
+        $ToolTip.UseFading    = $true
+        $ToolTip.IsBalloon    = $true
+        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle = 'Command Search'
+    }    
 })
-$CommandsTreeViewSearchButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section1CommandsTab.Controls.Add($CommandsTreeViewSearchButton)
 
 
@@ -4116,6 +4002,7 @@ $CommandsTreeviewDeselectAllButton           = New-Object System.Windows.Forms.B
 $CommandsTreeviewDeselectAllButton.Location  = New-Object System.Drawing.Size(336,25)
 $CommandsTreeviewDeselectAllButton.Size      = New-Object System.Drawing.Size(100,22)
 $CommandsTreeviewDeselectAllButton.Text      = 'Deselect All'
+$CommandsTreeviewDeselectAllButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $CommandsTreeviewDeselectAllButton.Add_Click({
     [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $CommandsTreeView.Nodes 
     foreach ($root in $AllCommandsNode) { 
@@ -4137,7 +4024,20 @@ $CommandsTreeviewDeselectAllButton.Add_Click({
         }
     }
 })
-$CommandsTreeviewDeselectAllButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$CommandsTreeviewDeselectAllButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Unchecks all commands checked within this view.
+⦿ Commands and queries in other Tabs must be manually unchecked.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation = $true
+        $ToolTip.UseFading    = $true
+        $ToolTip.IsBalloon    = $true
+        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle = 'Deselect All'
+    }    
+})
 $Section1CommandsTab.Controls.Add($CommandsTreeviewDeselectAllButton) 
 
 #---------------------------
@@ -5280,8 +5180,6 @@ function FileSearchFileSearchCommand {
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
 
                 $FilesFoundList = @()
-#Batman
-
                 foreach ($DirectoryPath in $DirectoriesToSearch) {
                     foreach ($Filename in $FilesToSearch) {
                         $FilesFound = Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
@@ -5464,9 +5362,6 @@ $FileSearchFileSearchDirectoryTextbox.WordWrap      = $True
 $FileSearchFileSearchDirectoryTextbox.AcceptsTab    = $false    # Allows you to enter in tabs into the textbox
 $FileSearchFileSearchDirectoryTextbox.AcceptsReturn = $false # Allows you to enter in tabs into the textbox
 $FileSearchFileSearchDirectoryTextbox.Text          = "Enter Directories; One Per Line"
-#$FileSearchFileSearchDirectoryTextbox.AutoCompleteSource = "FileSystem" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-#$FileSearchFileSearchDirectoryTextbox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-#$FileSearchFileSearchDirectoryTextbox.Add_KeyDown({          })
 $FileSearchFileSearchDirectoryTextbox.Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section1FileSearchTab.Controls.Add($FileSearchFileSearchDirectoryTextbox)
 
@@ -5592,7 +5487,6 @@ $FileSearchAlternateDataStreamMaxDepthLabel.Location   = New-Object System.Drawi
 $FileSearchAlternateDataStreamMaxDepthLabel.Size       = New-Object System.Drawing.Size(100,$FileSearchLabelHeight) 
 $FileSearchAlternateDataStreamMaxDepthLabel.Text       = "Recursive Depth"
 $FileSearchAlternateDataStreamMaxDepthLabel.Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
-#$FileSearchAlternateDataStreamMaxDepthLabel.ForeColor  = "Blue"
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamMaxDepthLabel)
 
 #-------------------------------------------------------
@@ -5603,11 +5497,7 @@ $FileSearchAlternateDataStreamMaxDepthTextbox.Text           = 0
 $FileSearchAlternateDataStreamMaxDepthTextbox.Location       = New-Object System.Drawing.Size(($FileSearchAlternateDataStreamMaxDepthLabel.Location.X + $FileSearchAlternateDataStreamMaxDepthLabel.Size.Width),($FileSearchDownPosition)) 
 $FileSearchAlternateDataStreamMaxDepthTextbox.Size           = New-Object System.Drawing.Size(50,20)
 $FileSearchAlternateDataStreamMaxDepthTextbox.MultiLine      = $false
-#$FileSearchAlternateDataStreamMaxDepthTextbox.ScrollBars    = "Vertical"
 $FileSearchAlternateDataStreamMaxDepthTextbox.WordWrap       = $false
-#$FileSearchAlternateDataStreamMaxDepthTextbox.AcceptsTab    = $false
-#$FileSearchAlternateDataStreamMaxDepthTextbox.AcceptsReturn = $false
-#$FileSearchAlternateDataStreamMaxDepthTextbox.Add_KeyDown({          })
 $FileSearchAlternateDataStreamMaxDepthTextbox.Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamMaxDepthTextbox)
 
@@ -5640,9 +5530,6 @@ $FileSearchAlternateDataStreamDirectoryTextbox.ScrollBars    = "Vertical"
 $FileSearchAlternateDataStreamDirectoryTextbox.WordWrap      = $True
 $FileSearchAlternateDataStreamDirectoryTextbox.AcceptsTab    = $false # Allows you to enter in tabs into the textbox
 $FileSearchAlternateDataStreamDirectoryTextbox.AcceptsReturn = $false # Allows you to enter in tabs into the textbox
-#$FileSearchAlternateDataStreamDirectoryTextbox.AutoCompleteSource = "FileSystem" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-#$FileSearchAlternateDataStreamDirectoryTextbox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-#$FileSearchAlternateDataStreamDirectoryTextbox.Add_KeyDown({          })
 $FileSearchAlternateDataStreamDirectoryTextbox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamDirectoryTextbox)
 
@@ -6274,11 +6161,6 @@ function Conduct-PortScan {
         $PortsToScan += $null
     }
 
-    # Places the Ports to Scan in Numerical Order, removes duplicate entries, and remove possible empty fields
-##Consumes too much time##
-##    $SortedPorts=@()
-##    foreach ( $Port in $PortsToScan ) { $SortedPorts += [int]$Port }
-##    $PortsToScan = $SortedPorts | ? {$_ -ne ""}
     $PortsToScan = $PortsToScan | Sort-Object -Unique | ? {$_ -ne ""}
     if ($($PortsToScan).count -eq 0) {
         $ResultsListBox.Items.Clear()
@@ -6600,9 +6482,6 @@ $EnumerationPortScanGroupDownPositionShift = 25
             $ResultsListBox.Items.Add("Previous Ports Scanned:  $($CustomSavedPortsConvertedToList | Where {$_ -ne ''})")
         }
     })
-    #$EnumerationPortScanPortQuickPickComboBox.Add_KeyDown({ 
-    #    if ($_.KeyCode -eq "Enter") { Conduct-PortScan }
-    #})
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortQuickPickComboBox)
 
     #-------------------------------------------------
@@ -7593,6 +7472,7 @@ $SingleHostIPCheckBox.Name     = "Query A Single Host:"
 $SingleHostIPCheckBox.Text     = "$($SingleHostIPCheckBox.Name)"
 $SingleHostIPCheckBox.Location = New-Object System.Drawing.Size(3,11) 
 $SingleHostIPCheckBox.Size     = New-Object System.Drawing.Size(210,$Column3BoxHeight)
+$SingleHostIPCheckBox.Font     = New-Object System.Drawing.Font("$Font",11,1,2,1)
 $SingleHostIPCheckBox.Enabled  = $true
 $SingleHostIPCheckBox.Add_Click({
     if ($SingleHostIPCheckBox.Checked -eq $true){
@@ -7606,7 +7486,23 @@ $SingleHostIPCheckBox.Add_Click({
         $ComputerListTreeView.BackColor = "white"
     }
 })
-$SingleHostIPCheckBox.Font          = New-Object System.Drawing.Font("$Font",11,1,2,1)
+$SingleHostIPCheckBox.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Queries a single host provided in the input field,
+    disabling the computer treeview list.
+⦿ Enter a valid hostname or IP address to collect data from. 
+⦿ Depending upon host or domain configurations, some queries 
+    such as WinRM against valid IPs may not yield results.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation = $true
+        $ToolTip.UseFading    = $true
+        $ToolTip.IsBalloon    = $true
+        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle = 'Query A Single Host'
+    }    
+})
 $Section2MainTab.Controls.Add($SingleHostIPCheckBox)
 
 $Column3DownPosition += $Column3DownPositionShift
@@ -7618,12 +7514,29 @@ $SingleHostIPTextBox          = New-Object System.Windows.Forms.TextBox
 $SingleHostIPTextBox.Text     = $DefaultSingleHostIPText
 $SingleHostIPTextBox.Location = New-Object System.Drawing.Size($Column3RightPosition,($Column3DownPosition + 1))
 $SingleHostIPTextBox.Size     = New-Object System.Drawing.Size(235,$Column3BoxHeight)
+$SingleHostIPTextBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $SingleHostIPTextBox.Add_KeyDown({
     $SingleHostIPCheckBox.Checked   = $true
     $ComputerListTreeView.Enabled   = $false
     $ComputerListTreeView.BackColor = "lightgray"
 })
-$SingleHostIPTextBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$SingleHostIPTextBox.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Queries a single host provided in the input field,
+    disabling the computer treeview list.
+⦿ Enter a valid hostname or IP address to collect data from. 
+⦿ Depending upon host or domain configurations, some queries 
+    such as WinRM against valid IPs may not yield results.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation = $true
+        $ToolTip.UseFading    = $true
+        $ToolTip.IsBalloon    = $true
+        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle = 'Single Host Input Field'
+    }    
+})
 $Section2MainTab.Controls.Add($SingleHostIPTextBox)
 
 #----------------------------------
@@ -7633,6 +7546,7 @@ $SingleHostIPAddButton          = New-Object System.Windows.Forms.Button
 $SingleHostIPAddButton.Text     = "Add To List"
 $SingleHostIPAddButton.Location = New-Object System.Drawing.Size(($Column3RightPosition + 240),$Column3DownPosition)
 $SingleHostIPAddButton.Size     = New-Object System.Drawing.Size(115,$Column3BoxHeight) 
+$SingleHostIPAddButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $SingleHostIPAddButton.Add_Click({
     # Conducts a simple input check for default or blank data
     if (($SingleHostIPTextBox.Text -ne $DefaultSingleHostIPText) -and ($SingleHostIPTextBox.Text -ne '')) {
@@ -7640,16 +7554,30 @@ $SingleHostIPAddButton.Add_Click({
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Add Hostname/IP:  Error")
             $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("Error: $($ComputerListTreeViewPopupAddTextBox.Text) already exists with the following data:")
-            $ResultsListBox.Items.Add("- OU/CN: $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).CanonicalName)")
-            $ResultsListBox.Items.Add("- OS:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).OperatingSystem)")
-            $ResultsListBox.Items.Add("- IP:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Name}).IPv4Address)")
-            $ResultsListBox.Items.Add("- MAC:   $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Name}).MACAddress)")
+            $ResultsListBox.Items.Add("Error: $($SingleHostIPTextBox.Text) already exists with the following data:")
+            $ResultsListBox.Items.Add("- OU/CN: $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $SingleHostIPTextBox.Text}).CanonicalName)")
+            $ResultsListBox.Items.Add("- OS:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $SingleHostIPTextBox.Text}).OperatingSystem)")
+            $ResultsListBox.Items.Add("- IP:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $SingleHostIPTextBox.Text}).IPv4Address)")
+            $ResultsListBox.Items.Add("- MAC:   $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $SingleHostIPTextBox.Text}).MACAddress)")
         }
         else {
+            $StatusListBox.Items.Clear()
+            $StatusListBox.Items.Add("Added Selection:  $($SingleHostIPTextBox.Text)")
+
+            $NewNodeValue = "Manually Added"
             # Adds the hostname/ip entered into the collection list box
-            $value = "Manually Added"
-            Add-ComputerNode -RootNode $script:TreeNodeComputerList -Category $value -Entry $SingleHostIPTextBox.Text -ToolTip 'Manually Added'
+            Add-ComputerNode -RootNode $script:TreeNodeComputerList -Category $NewNodeValue -Entry $SingleHostIPTextBox.Text -ToolTip 'No Data Avialable'
+            $ResultsListBox.Items.Clear()
+            $ResultsListBox.Items.Add("$($SingleHostIPTextBox.Text) has been added to $($NewNodeValue)")
+
+            $ComputerListTreeViewAddHostnameIP = New-Object PSObject -Property @{ 
+                Name            = $SingleHostIPTextBox.Text
+                OperatingSystem = $NewNodeValue
+                CanonicalName   = $NewNodeValue
+                IPv4Address     = "No IP Available"
+            }        
+            $script:ComputerListTreeViewData += $ComputerListTreeViewAddHostnameIP
+
             $ComputerListTreeView.ExpandAll()
             # Enables the Computer TreeView
             $ComputerListTreeView.Enabled   = $true
@@ -7658,10 +7586,26 @@ $SingleHostIPAddButton.Add_Click({
             $SingleHostIPTextBox.Text = $DefaultSingleHostIPText
             # Auto checks/unchecks various checkboxes for visual status indicators
             $SingleHostIPCheckBox.Checked = $false
+
+            Populate-ComputerListTreeViewDefaultData
+            TempSave-HostData
         }
     }
 })
-$SingleHostIPAddButton.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$SingleHostIPAddButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Adds a single host to the computer treeview.
+⦿ The host is added under`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation = $true
+        $ToolTip.UseFading    = $true
+        $ToolTip.IsBalloon    = $true
+        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle = 'Query A Single Host'
+    }    
+})
 $Section2MainTab.Controls.Add($SingleHostIPAddButton) 
 
 # Shift Row Location
@@ -7691,12 +7635,27 @@ $DirectoryOpenListBox          = New-Object System.Windows.Forms.Button
 $DirectoryOpenListBox.Text     = "Open Results"
 $DirectoryOpenListBox.Location = New-Object System.Drawing.Size(($Column3RightPosition + 120),$Column3DownPosition)
 $DirectoryOpenListBox.Size     = New-Object System.Drawing.Size(115,$Column3BoxHeight) 
-$DirectoryOpenListBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$DirectoryOpenListBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$DirectoryOpenListBox.Add_Click({ Invoke-Item -Path $CollectedDataDirectory })
+$DirectoryOpenListBox.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Opens the directory where the collected data is saved.
+⦿ The 'Collected Data' parent directory is opened by default. 
+⦿ After collecting data, the directory opened is changed to that
+    of where the data is saved - normally the timestamp folder.
+⦿ From here, you can easily navigate the rest of the directory.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation   = $true
+        $ToolTip.UseFading      = $true
+        $ToolTip.IsBalloon      = $true
+        $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle   = 'Open Results'
+    }
+})
 $Section2MainTab.Controls.Add($DirectoryOpenListBox)
 
-$DirectoryOpenListBox.Add_Click({
-    Invoke-Item -Path $CollectedDataDirectory
-})
 
 #-------------------------------------------
 # Directory Location - New Timestamp Button
@@ -7706,15 +7665,35 @@ $DirectoryUpdateListBox.Text         = "New Timestamp"
 $DirectoryUpdateListBox.Location     = New-Object System.Drawing.Size(($Column3RightPosition + 240),$Column3DownPosition)
 $DirectoryUpdateListBox.Size         = New-Object System.Drawing.Size(115,$Column3BoxHeight) 
 $DirectoryUpdateListBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-$Section2MainTab.Controls.Add($DirectoryUpdateListBox) 
 #$DirectoryUpdateListBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {} })
-
 $DirectoryUpdateListBox.Add_Click({
     $CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
     $CollectionSavedDirectoryTextBox.Text  = $CollectedDataTimeStampDirectory
 })
+$DirectoryUpdateListBox.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Provides a new timestamp name for the directory files are saved.
+⦿ The timestamp is automatically renewed upon launch of PoSh-ACME.
+⦿ Collections are saved to a 'Collected Data' directory that is created
+    automatically where the PoSh-ACME script is executed from.
+⦿ The directory's timestamp does not auto-renew after data is collected, 
+    you have to manually do so. This allows you to easily run multiple
+    collections and keep this co-located.
+⦿ The full directory path may also be manually modified to contain any
+    number or characters that are permitted within NTFS. This allows
+    data to be saved to uniquely named or previous directories created.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation   = $true
+        $ToolTip.UseFading      = $true
+        $ToolTip.IsBalloon      = $true
+        $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle   = 'New Timestamp'
+    }
+})
+$Section2MainTab.Controls.Add($DirectoryUpdateListBox) 
 
-# Shift Row Location
 $Column3DownPosition += $Column3DownPositionShift
 
 #----------------------------------------
@@ -7734,6 +7713,27 @@ $CollectionSavedDirectoryTextBox.AutoCompleteMode   = "SuggestAppend" # Options 
 $CollectionSavedDirectoryTextBox.Location      = New-Object System.Drawing.Size($Column3RightPosition,$Column3DownPosition) 
 $CollectionSavedDirectoryTextBox.Size          = New-Object System.Drawing.Size(354,35)
 $CollectionSavedDirectoryTextBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$CollectionSavedDirectoryTextBox.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ This path supports auto-directory completion.
+⦿ Collections are saved to a 'Collected Data' directory that is created
+    automatically where the PoSh-ACME script is executed from.
+⦿ The directory's timestamp does not auto-renew after data is collected, 
+    you have to manually do so. This allows you to easily run multiple
+    collections and keep this co-located.
+⦿ The full directory path may also be manually modified to contain any
+    number or characters that are permitted within NTFS. This allows
+    data to be saved to uniquely named or previous directories created.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
+        $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation   = $true
+        $ToolTip.UseFading      = $true
+        $ToolTip.IsBalloon      = $true
+        $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle   = 'Results Folder'
+    }
+})
 $Section2MainTab.Controls.Add($CollectionSavedDirectoryTextBox)
 
 #============================================================================================================================================================
@@ -7761,8 +7761,6 @@ $OpenResultsButton.UseVisualStyleBackColor = $True
 $OpenResultsButton.Location = New-Object System.Drawing.Size(2,($ResultsSectionLabel.Location.Y + $ResultsSectionLabel.Size.Height + 5))
 $OpenResultsButton.Size     = New-Object System.Drawing.Size(115,22)
 $OpenResultsButton.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-$Section2MainTab.Controls.Add($OpenResultsButton)
-
 $OpenResultsButton.Add_Click({
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $ViewCSVResultsOpenResultsOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog
@@ -7783,10 +7781,30 @@ $OpenResultsButton.Add_Click({
     }
     Save-OpNotes
 })
+$OpenResultsButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Utilizes Out-GridView to view the results.
+⦿ Out-GridView is native to PowerShell, lightweight, and fast.
+⦿ Results can be easily filtered with conditional statements.
+⦿ Collected data from is primarily saved as CSVs, so they can 
+    be opened with Excel or similar products.
+⦿ Multiple lines can be selected and added to OpNotes.
+    The selection can be contiguous by using the Shift key
+    and/or be separate using the Ctrl key, the press OK.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
+        $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation   = $true
+        $ToolTip.UseFading      = $true
+        $ToolTip.IsBalloon      = $true
+        $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle   = 'View Results'
+    }
+})
+$Section2MainTab.Controls.Add($OpenResultsButton)
 
 # Shift Row Location
 $Column5DownPosition += $Column5DownPositionShift
-
 
 #============================================================================================================================================================
 # Compare CSV Files
@@ -7802,8 +7820,6 @@ $CompareButton.UseVisualStyleBackColor = $True
 $CompareButton.Location = New-Object System.Drawing.Size(($OpenResultsButton.Location.X + $OpenResultsButton.Size.Width + 5),$OpenResultsButton.Location.Y)
 $CompareButton.Size     = New-Object System.Drawing.Size(115,22)
 $CompareButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
-$Section2MainTab.Controls.Add($CompareButton)
-
 $CompareButton.Add_Click({
     # Compare Reference Object
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
@@ -7843,7 +7859,6 @@ $CompareButton.Add_Click({
             $CompareCsvFilesForm.Close()
         }
     }
-
     function SelectProperty{
         [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
         [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
@@ -7858,7 +7873,6 @@ $CompareButton.Add_Click({
         $CompareCsvFilesForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\favicon.ico")
         $CompareCsvFilesForm.StartPosition = "CenterScreen"
         $CompareCsvFilesForm.ControlBox = $true
-        #$CompareCsvFilesForm.Add_Shown({$CompareCsvFilesForm.Activate()})
 
         #-----------------
         # Drop Down Label
@@ -7904,7 +7918,7 @@ $CompareButton.Add_Click({
     # Compares two Csv files Command
     #--------------------------------
     Compare-Object -ReferenceObject (Import-Csv $OpenCompareReferenceObjectFileDialog.FileName) -DifferenceObject (Import-Csv $OpenCompareDifferenceObjectFileDialog.FileName) -Property $Property `
-        | Out-GridView -OutputMode Multiple | Set-Variable -Name CompareImportResults
+        | Out-GridView -Title "Reference [<=]:  `"$(($OpenCompareReferenceObjectFileDialog.FileName).split('\') | ? {$_ -match '\d\d\d\d-\d\d-\d\d'})...$(($OpenCompareReferenceObjectFileDialog.FileName).split('\')[-1])`"  <-->  Difference [=>]:  `"$(($OpenCompareDifferenceObjectFileDialog.FileName).split('\') | ? {$_ -match '\d\d\d\d-\d\d-\d\d'})...$(($OpenCompareDifferenceObjectFileDialog.FileName).split('\')[-1])`"" -OutputMode Multiple | Set-Variable -Name CompareImportResults
 
     # Outputs messages to ResultsListBox 
     $ResultsListBox.Items.Clear()
@@ -7921,12 +7935,35 @@ $CompareButton.Add_Click({
             $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Compare: $($Selection -replace '@{','' -replace '}','')")
             Add-Content -Path $OpNotesWriteOnlyFile -Value ("$($(Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($OpNotesListBox.SelectedItems)") -Force 
         }
+        $Section1TabControl.SelectedTab = $Section1OpNotesTab
     }
     Save-OpNotes
 
     } # End If Statement for Compare CSV Reference
     } # End If Statement for Compare CSV Difference
 })
+$CompareButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Utilizes Compare-Object to compare two similar CSV Files.
+⦿ Reads the CSV header and provides a dropdown to select a field.
+⦿ Provides basic results, indicating which file has different lines:
+    The side indicator of <= are for findings in the Reference File.
+    The side indicator of => are for findings in the Difference File.
+⦿ If the two files are identical, no results will be provided.
+⦿ Multiple lines can be selected and added to OpNotes.
+    The selection can be contiguous by using the Shift key
+    and/or be separate using the Ctrl key, the press OK.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
+        $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation   = $true
+        $ToolTip.UseFading      = $true
+        $ToolTip.IsBalloon      = $true
+        $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle   = 'Compare CSVs'
+    }
+})
+$Section2MainTab.Controls.Add($CompareButton)
 
 #============================================================================================================================================================
 # Custom View Chart
@@ -7934,16 +7971,14 @@ $CompareButton.Add_Click({
 #-------------------
 # View Chart Button
 #-------------------
-$ViewChartButton          = New-Object System.Windows.Forms.Button
-$ViewChartButton.Name     = "Build Chart"
-$ViewChartButton.Text     = "$($ViewChartButton.Name)"
-$ViewChartButton.UseVisualStyleBackColor = $True
-$ViewChartButton.Location = New-Object System.Drawing.Size(($CompareButton.Location.X + $CompareButton.Size.Width + 5),$CompareButton.Location.Y)
-$ViewChartButton.Size     = New-Object System.Drawing.Size(115,22)
-$ViewChartButton.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-$Section2MainTab.Controls.Add($ViewChartButton)
-
-$ViewChartButton.Add_Click({
+$BuildChartButton          = New-Object System.Windows.Forms.Button
+$BuildChartButton.Name     = "Build Chart"
+$BuildChartButton.Text     = "$($BuildChartButton.Name)"
+$BuildChartButton.UseVisualStyleBackColor = $True
+$BuildChartButton.Location = New-Object System.Drawing.Size(($CompareButton.Location.X + $CompareButton.Size.Width + 5),$CompareButton.Location.Y)
+$BuildChartButton.Size     = New-Object System.Drawing.Size(115,22)
+$BuildChartButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$BuildChartButton.Add_Click({
     # Open File
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $ViewChartOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
@@ -8013,7 +8048,6 @@ $ViewChartButton.Add_Click({
             if ($Script:ViewChartChoice[1] -eq "PSComputername") {$ChartArea.AxisY.Title = "Number of Computers"}
             else {$ChartArea.AxisY.Title    = $Script:ViewChartChoice[1]}
             $ChartArea.AxisX.Interval = 1
-            #$ChartArea.AxisY.Interval = 1
             $ChartArea.AxisY.IntervalAutoMode = $true
 
             # Option to enable 3D Charts
@@ -8050,7 +8084,6 @@ $ViewChartButton.Add_Click({
             $Chart.Series["$Series01Name"]['PieLabelStyle'] = 'Outside'
             $Chart.Series["$Series01Name"]['PieLineColor'] = 'Black'
             $Chart.Series["$Series01Name"]['PieDrawingStyle'] = 'Concave'
-            
 
         #-----------------------------------------------------------
         # Custom View Chart - Code that counts computers that match
@@ -8059,7 +8092,6 @@ $ViewChartButton.Add_Click({
             if ($Script:ViewChartChoice[1] -eq "PSComputerName") {
                 $Script:ViewChartChoice0 = "Name"
                 $Script:ViewChartChoice1 = "PSComputerName"                
-                #test# $DataSource = Import-Csv "C:\Users\Dan\Documents\GitHub\Dev Ops\Collected Data\2018-10-23 @ 2246 51\Processes.csv"
                 $UniqueDataFields = $DataSource | Select-Object -Property $Script:ViewChartChoice0 | Sort-Object -Property $Script:ViewChartChoice0 -Unique                
                 $ComputerWithDataResults = @()
                 foreach ($DataField in $UniqueDataFields) {
@@ -8147,10 +8179,6 @@ $ViewChartButton.Add_Click({
         $ViewChartForm.controls.add($SaveButton)
         $ViewChartForm.Add_Shown({$ViewChartForm.Activate()})
         [void]$ViewChartForm.ShowDialog()
-        #---------------------------------------
-        # Custom View Chart - Autosave an Image
-        #---------------------------------------
-        #$Chart.SaveImage('C:\temp\chart.jpeg', 'jpeg')
     }
 
     #=================================================
@@ -8385,15 +8413,29 @@ $ViewChartButton.Add_Click({
         $Property = ViewChartSelectProperty
     }
 }) 
-
+$BuildChartButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Utilizes PowerShell (v3) charts to visualize data.
+⦿ These charts are built manually from selecting a CSV file and fields.
+⦿ Use caution, manually recreated charts can be built that either don't
+    work, don't make sensse, or don't accurately represent data.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
+        $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation   = $true
+        $ToolTip.UseFading      = $true
+        $ToolTip.IsBalloon      = $true
+        $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle   = 'Build Chart'
+    }
+})
+$Section2MainTab.Controls.Add($BuildChartButton)
 
 #============================================================================================================================================================
 #============================================================================================================================================================
 # Auto Create Charts
 #============================================================================================================================================================
 #============================================================================================================================================================
-# https://bytecookie.wordpress.com/2012/04/13/tutorial-powershell-and-microsoft-chart-controls-or-how-to-spice-up-your-reports/
-# https://blogs.msdn.microsoft.com/alexgor/2009/03/27/aligning-multiple-series-with-categorical-values/
 
 #======================================
 # Auto Charts Select Property Function
@@ -8407,7 +8449,7 @@ function AutoChartsSelectOptions {
     #----------------------------------
     $AutoChartsSelectionForm        = New-Object System.Windows.Forms.Form
     $AutoChartsSelectionForm.width  = 327
-    $AutoChartsSelectionForm.height = 243 
+    $AutoChartsSelectionForm.height = 313 
     $AutoChartsSelectionForm.StartPosition = "CenterScreen"
     $AutoChartsSelectionForm.Text   = ”View Chart - Select Fields ”
     $AutoChartsSelectionForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\favicon.ico")
@@ -8437,8 +8479,8 @@ function AutoChartsSelectOptions {
         ### View Chart Baseline Checkbox
         $AutoChartsBaselineCheckBox          = New-Object System.Windows.Forms.Checkbox
         $AutoChartsBaselineCheckBox.Location = New-Object System.Drawing.Size(10,15)
-        $AutoChartsBaselineCheckBox.Size     = '165,25'
-        $AutoChartsBaselineCheckBox.Checked  = $flase
+        $AutoChartsBaselineCheckBox.Size     = '100,25'
+        $AutoChartsBaselineCheckBox.Checked  = $false
         $AutoChartsBaselineCheckBox.Enabled  = $true
         $AutoChartsBaselineCheckBox.Text     = "Baseline"
         $AutoChartsBaselineCheckBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -8446,7 +8488,7 @@ function AutoChartsSelectOptions {
         ### View Chart Previous Checkbox
         $AutoChartsPreviousCheckBox          = New-Object System.Windows.Forms.Checkbox
         $AutoChartsPreviousCheckBox.Location = New-Object System.Drawing.Size(10,38)
-        $AutoChartsPreviousCheckBox.Size     = '165,25'
+        $AutoChartsPreviousCheckBox.Size     = '100,25'
         $AutoChartsPreviousCheckBox.Checked  = $false
         $AutoChartsPreviousCheckBox.Enabled  = $true
         $AutoChartsPreviousCheckBox.Text     = "Previous"
@@ -8455,7 +8497,7 @@ function AutoChartsSelectOptions {
         ### View Chart Most Recent Checkbox
         $AutoChartsMostRecentCheckBox          = New-Object System.Windows.Forms.Checkbox
         $AutoChartsMostRecentCheckBox.Location = New-Object System.Drawing.Size(10,61)
-        $AutoChartsMostRecentCheckBox.Size     = '165,25'
+        $AutoChartsMostRecentCheckBox.Size     = '100,25'
         $AutoChartsMostRecentCheckBox.Checked  = $true
         $AutoChartsMostRecentCheckBox.Enabled  = $true
         $AutoChartsMostRecentCheckBox.Text     = "Most Recent"
@@ -8464,15 +8506,48 @@ function AutoChartsSelectOptions {
         $AutoChartsSeriesGroupBox.Controls.AddRange(@($AutoChartsBaselineCheckBox,$AutoChartsPreviousCheckBox,$AutoChartsMostRecentCheckBox))
     $AutoChartsSelectionForm.Controls.Add($AutoChartsSeriesGroupBox) 
 
+    #-----------------------------------------
+    # Auto Create Using Results From GroupBox
+    #-----------------------------------------
+    # Create a group that will contain your radio buttons
+    $AutoChartsCreateChartsFromGroupBox          = New-Object System.Windows.Forms.GroupBox
+    $AutoChartsCreateChartsFromGroupBox.Location = New-Object System.Drawing.Size(10,($AutoChartsSeriesGroupBox.Location.y + $AutoChartsSeriesGroupBox.Size.Height + 8))
+    $AutoChartsCreateChartsFromGroupBox.size     = '185,65'
+    $AutoChartsCreateChartsFromGroupBox.text     = "Filter Charts Using Results From:"
+    $AutoChartsCreateChartsFromGroupBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+
+        ### View Chart WMI Results Checkbox
+        $AutoChartsWmiCollectionsCheckBox          = New-Object System.Windows.Forms.Checkbox
+        $AutoChartsWmiCollectionsCheckBox.Location = New-Object System.Drawing.Size(10,15)
+        $AutoChartsWmiCollectionsCheckBox.Size     = '165,25'
+        $AutoChartsWmiCollectionsCheckBox.Checked  = $false
+        $AutoChartsWmiCollectionsCheckBox.Enabled  = $true
+        $AutoChartsWmiCollectionsCheckBox.Text     = "WMI Collections"
+        $AutoChartsWmiCollectionsCheckBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $AutoChartsWmiCollectionsCheckBox.Add_Click({ $AutoChartsPoShCollectionsCheckBox.Checked = $false })
+        
+        ### View Chart WinRM Results Checkbox
+        $AutoChartsPoShCollectionsCheckBox          = New-Object System.Windows.Forms.Checkbox
+        $AutoChartsPoShCollectionsCheckBox.Location = New-Object System.Drawing.Size(10,38)
+        $AutoChartsPoShCollectionsCheckBox.Size     = '165,25'
+        $AutoChartsPoShCollectionsCheckBox.Checked  = $false
+        $AutoChartsPoShCollectionsCheckBox.Enabled  = $true
+        $AutoChartsPoShCollectionsCheckBox.Text     = "PoSh Collections"
+        $AutoChartsPoShCollectionsCheckBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $AutoChartsPoShCollectionsCheckBox.Add_Click({ $AutoChartsWmiCollectionsCheckBox.Checked  = $false })
+
+        $AutoChartsCreateChartsFromGroupBox.Controls.AddRange(@($AutoChartsWmiCollectionsCheckBox,$AutoChartsPoShCollectionsCheckBox))
+    $AutoChartsSelectionForm.Controls.Add($AutoChartsCreateChartsFromGroupBox) 
+
     #------------------------------------
     # Auto Create Charts Options GroupBox
     #------------------------------------
     # Create a group that will contain your radio buttons
     $AutoChartsOptionsGroupBox          = New-Object System.Windows.Forms.GroupBox
     $AutoChartsOptionsGroupBox.Location = New-Object System.Drawing.Size(($AutoChartsSeriesGroupBox.Location.X + $AutoChartsSeriesGroupBox.Size.Width + 5),($AutoChartsSeriesGroupBox.Location.Y))
-    $AutoChartsOptionsGroupBox.size     = '100,90'
+    $AutoChartsOptionsGroupBox.size     = '100,163'
     $AutoChartsOptionsGroupBox.text     = "Options:"
-    $AutoChartsOptionsGroupBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    $AutoChartsOptionsGroupBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 
         ### View Chart Legend CheckBox
         $AutoChartsLegendCheckBox          = New-Object System.Windows.Forms.Checkbox
@@ -8481,7 +8556,7 @@ function AutoChartsSelectOptions {
         $AutoChartsLegendCheckBox.Checked  = $true
         $AutoChartsLegendCheckBox.Enabled  = $true
         $AutoChartsLegendCheckBox.Text     = "Legend"
-        $AutoChartsOptionsGroupBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $AutoChartsOptionsGroupBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 
         ### View Chart 3D Chart CheckBox
         $AutoCharts3DChartCheckBox          = New-Object System.Windows.Forms.Checkbox
@@ -8499,7 +8574,7 @@ function AutoChartsSelectOptions {
     # Auto Chart Select Color ComboBox
     #----------------------------------
     $AutoChartColorSchemeSelectionComboBox          = New-Object System.Windows.Forms.ComboBox
-    $AutoChartColorSchemeSelectionComboBox.Location = New-Object System.Drawing.Size(10,($AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 108))
+    $AutoChartColorSchemeSelectionComboBox.Location = New-Object System.Drawing.Size(10,($AutoChartsCreateChartsFromGroupBox.Location.y + $AutoChartsCreateChartsFromGroupBox.Size.Height + 10))
     $AutoChartColorSchemeSelectionComboBox.Size     = New-Object System.Drawing.Size(185,25)
     $AutoChartColorSchemeSelectionComboBox.Text     = "Select Alternate Color Scheme"
     $AutoChartColorSchemeSelectionComboBox.AutoCompleteSource = "ListItems"
@@ -8547,7 +8622,7 @@ function AutoChartsSelectOptions {
     # Auto Create Charts Execute Button
     #-----------------------------------
     $AutoChartsExecuteButton          = New-Object System.Windows.Forms.Button
-    $AutoChartsExecuteButton.Location = New-Object System.Drawing.Size(200,($AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 107))
+    $AutoChartsExecuteButton.Location = New-Object System.Drawing.Size(200,($AutoChartColorSchemeSelectionComboBox.Location.y))
     $AutoChartsExecuteButton.Size     = New-Object System.Drawing.Size(101,54)
     $AutoChartsExecuteButton.Text     = "View Chart"
     $AutoChartsExecuteButton.Add_Click({ AutoChartsViewCharts })
@@ -8708,14 +8783,45 @@ function AutoChartsCommand {
     # Location of Uncompiled Results
     $IndividualHostResults                = "$CollectedDataTimeStampDirectory\Individual Host Results"
 
-    # Searches though the all Collection Data Directories to find files that match the $QueryName
-    $ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
-    $CSVFileMatch = @()
-    foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
-        $CSVFiles = (Get-ChildItem -Path $CollectionDir).FullName
-        foreach ($CSVFile in $CSVFiles) {
-            if ($CSVFile -match $QueryName) {
-                $CSVFileMatch += $CSVFile
+    # Filter results for just WMI Collections
+    if ( $AutoChartsWmiCollectionsCheckBox.Checked ) { 
+        # Searches though the all Collection Data Directories to find files that match the $QueryName
+        $ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
+        $CSVFileMatch = @()
+        foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
+            $CSVFiles = (Get-ChildItem -Path $CollectionDir).FullName | Where {$_ -match 'WMI'} 
+            foreach ($CSVFile in $CSVFiles) {
+                if ($CSVFile -match $QueryName) {
+                    $CSVFileMatch += $CSVFile
+                }
+            }
+        }
+    }
+    # Filter results for other than WMI Collections    
+    elseif ( $AutoChartsPoShCollectionsCheckBox.Checked ) { 
+        # Searches though the all Collection Data Directories to find files that match the $QueryName
+        $ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
+        $CSVFileMatch = @()
+        foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
+            $CSVFiles = (Get-ChildItem -Path $CollectionDir).FullName | Where {$_ -notmatch 'WMI'} 
+            foreach ($CSVFile in $CSVFiles) {
+                if ($CSVFile -match $QueryName) {
+                    $CSVFileMatch += $CSVFile
+                }
+            }
+        }
+    }
+    # Don't filter results
+    else {
+        # Searches though the all Collection Data Directories to find files that match the $QueryName
+        $ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
+        $CSVFileMatch = @()
+        foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
+            $CSVFiles = (Get-ChildItem -Path $CollectionDir).FullName
+            foreach ($CSVFile in $CSVFiles) {
+                if ($CSVFile -match $QueryName) {
+                    $CSVFileMatch += $CSVFile
+                }
             }
         }
     }
@@ -8757,7 +8863,6 @@ function AutoChartsCommand {
     $AutoChart.BackColor       = [System.Drawing.Color]::White
     $AutoChart.BorderColor     = 'Black'
     $AutoChart.BorderDashStyle = 'Solid'
-    #$AutoChart.DataManipulator.Sort() = "Descending"
     $AutoChart.Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
     $AutoChart.Anchor          = $AnchorAll
     
@@ -8852,11 +8957,6 @@ function AutoChartsCommand {
     $AutoChart.Series["$Series02Name"].Chartarea         = "Chart Area"
     $AutoChart.Series["$Series02Name"].Legend            = "Legend"
     $AutoChart.Series["$Series02Name"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-    # Pie Charts - Moves text off pie
-    #if (-not ($script:CSVFileMostRecentCollection -eq $script:CSVFilePreviousCollection) -or -not ($script:CSVFileMostRecentCollection -eq $script:CSVFileBaselineCollection)) {
-    #    $AutoChart.Series["$Series03Name"].ChartType         = $ChartType1
-    #    $AutoChart.Series["$Series03Name"].MarkerColor       = 'Blue'
-    #}
     $AutoChart.Series["$Series02Name"]['PieLineColor']   = 'Black'
     $AutoChart.Series["$Series02Name"]['PieLabelStyle']  = 'Outside'
            
@@ -8970,25 +9070,28 @@ function AutoChartsCommand {
             [string]$CSVFileMostRecent
         ) 
         $script:CsvAllHosts = @()
+
         # Checks if the files exists, then stores the complete csv in a variable
         if ((Test-Path $CSVFileBaseline) -and $AutoChartsBaselineCheckBox.Checked) {
-            $CsvFile1Data  = Import-CSV -Path $CSVFileBaseline | Select-Object *, @{Expression={$([System.IO.Path]::GetFileName($CSVFileBaseline))};Label="FileName"}
-            $CsvFile1Hosts = $CsvFile1Data | Select-Object -ExpandProperty PSComputerName -Unique
+            $CsvFile1Data         = Import-CSV -Path $CSVFileBaseline | Select-Object *, @{Expression={$([System.IO.Path]::GetFileName($CSVFileBaseline))};Label="FileName"}
+            $CsvFile1Hosts        = $CsvFile1Data | Select-Object -ExpandProperty PSComputerName -Unique
             $script:CsvAllHosts  += $CsvFile1Hosts
         }
         if ((Test-Path $CSVFilePrevious) -and $AutoChartsPreviousCheckBox.Checked) {
-            $CsvFile2Data  = Import-CSV -Path $CSVFilePrevious | Select-Object *, @{Expression={$([System.IO.Path]::GetFileName($CSVFilePrevious))};Label="FileName"}
-            $CsvFile2Hosts = $CsvFile2Data | Select-Object -ExpandProperty PSComputerName -Unique
+            $CsvFile2Data         = Import-CSV -Path $CSVFilePrevious | Select-Object *, @{Expression={$([System.IO.Path]::GetFileName($CSVFilePrevious))};Label="FileName"}
+            $CsvFile2Hosts        = $CsvFile2Data | Select-Object -ExpandProperty PSComputerName -Unique
             $script:CsvAllHosts  += $CsvFile2Hosts
         }
         if ((Test-Path $CSVFileMostRecent) -and $AutoChartsMostRecentCheckBox.Checked) {
-            $CsvFile3Data  = Import-CSV -Path $CSVFileMostRecent | Select-Object *, @{Expression={$([System.IO.Path]::GetFileName($CSVFileMostRecent))};Label="FileName"}
-            $CsvFile3Hosts = $CsvFile3Data | Select-Object -ExpandProperty PSComputerName -Unique
+            $CsvFile3Data         = Import-CSV -Path $CSVFileMostRecent | Select-Object *, @{Expression={$([System.IO.Path]::GetFileName($CSVFileMostRecent))};Label="FileName"}
+            $CsvFile3Hosts        = $CsvFile3Data | Select-Object -ExpandProperty PSComputerName -Unique
             $script:CsvAllHosts  += $CsvFile3Hosts
         }
+
         # Gets unique listing of all hosts (PSComputerName), this will be used to compare each csv file against
         $script:CsvUniqueHosts  = @()
         $script:CsvUniqueHosts += $script:CsvAllHosts | Sort-Object -Unique
+
         # Checks to see if hosts in the overall unique list exist in each csv
         # If one is found that doesn't exist in the csv file, it is removed from the overall list
         # This is to ensure that the results when compared between baseline, previous and most recent match the same computers
@@ -9022,9 +9125,6 @@ function AutoChartsCommand {
 
     # If the Second field/Y Axis equals PSComputername, it counts it
     if ($PropertyY -eq "PSComputerName") {
-        #$Script:AutoChartsChoice0 = "Name"
-        #$Script:AutoChartsChoice1 = "PSComputerName"
-
         # This file merger is later used to get a unique count of PropertyX and add to the DataSource (later the count is then subtracted by 1), 
         # this allow each collection to have a minimum of zero count of a process. This aligns all results, otherwise unique results will be shifted 
         # off from one another when alphabetized
@@ -9032,7 +9132,6 @@ function AutoChartsCommand {
                        -CSVFilePrevious $script:CSVFilePreviousCollection `
                        -CSVFileMostRecent $script:CSVFileMostRecentCollection
         
-        #batman#batman
         # The purpose of the code below is to ultiately add any missing unique fields to each collection.
         # ex: If the most recent scan/collection contained an item not in the baseline, the baseline will now contain that item but at a zero value
         # This is needed to ensure columns align when viewing multiple scans at once
@@ -9099,12 +9198,6 @@ function AutoChartsCommand {
         foreach ($CSVFile in $CsvFileList) {
             $SeriesCount += 1
             $DataSource = Import-Csv $CSVFile
-########## TEST DATA ##########
-#            $DataSource = @()
-#            $DataSource += Import-Csv "C:\Users\Dan\Documents\GitHub\PoSH-ACME\PoSh-ACME_v2.3_20181106_Beta_Nightly_Build\Collected Data\2018-11-19 @ 2101 42\Network Settings.csv"
-#            $PropertyX = "PSComputerName"
-#            $PropertyY = "IPAddress"
-########## TEST DATA ##########
 
             $SelectedDataField  = $DataSource | Select-Object -Property $PropertyY | Sort-Object -Property $PropertyY -Unique
             $UniqueComputerList = $DataSource | Select-Object -Property $PropertyX | Sort-Object -Property $PropertyX -Unique
@@ -9155,7 +9248,6 @@ function AutoChartsCommand {
                 Computer     = $Computer
             }    
             $OverallDataResults += $DataResults
-            #$OverallDataResults
         $Series = '$Series0' + $SeriesCount + 'Name'        
         $OverallDataResults `
         | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.Computer,$_.ResultsCount)}        
@@ -9236,23 +9328,22 @@ function AutoChartsCommand {
     $AutoChart.controls.add($AutoChartsSaveButton)
 
     $ButtonSpacing = 35 
-
     if ($AutoChartSelectChartComboBox.SelectedItem -notmatch "All Charts") {
         #------------------------------------
-        # Auto Create Charts Series3 Results
+        # Auto Create Charts Series1 Results
         #------------------------------------
-        if ($AutoChartsMostRecentCheckBox.Checked -eq $True) {
-            if ($script:CSVFileMostRecentCollection) { 
-                $AutoChartsSeries3Results           = New-Object Windows.Forms.Button
-                $AutoChartsSeries3Results.Text      = "$Series03Name Results"
-                $AutoChartsSeries3Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
-                $AutoChartsSeries3Results.Size      = New-Object System.Drawing.Size(150,25)
-                $AutoChartsSeries3Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-                $AutoChartsSeries3Results.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
-                $AutoChartsSeries3Results.ForeColor = "Red"
-                $AutoChartsSeries3Results.UseVisualStyleBackColor = $True
-                $AutoChartsSeries3Results.Add_Click({ Import-CSV $script:CSVFileMostRecentCollection | Out-GridView }) 
-                $AutoChart.controls.add($AutoChartsSeries3Results)
+        if ($AutoChartsBaselineCheckBox.Checked -eq $True) {
+            if ($script:CSVFileBaselineCollection) {
+                $AutoChartsSeries1Results           = New-Object Windows.Forms.Button
+                $AutoChartsSeries1Results.Text      = "$Series01Name Results"
+                $AutoChartsSeries1Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
+                $AutoChartsSeries1Results.Size      = New-Object System.Drawing.Size(150,25)
+                $AutoChartsSeries1Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+                $AutoChartsSeries1Results.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                $AutoChartsSeries1Results.ForeColor = "Blue"
+                $AutoChartsSeries1Results.UseVisualStyleBackColor = $True
+                $AutoChartsSeries1Results.Add_Click({ Import-CSV $script:CSVFileBaselineCollection | Out-GridView }) 
+                $AutoChart.controls.add($AutoChartsSeries1Results)
                 $ButtonSpacing += 35
             }
         }
@@ -9277,46 +9368,58 @@ function AutoChartsCommand {
         }
 
         #------------------------------------
-        # Auto Create Charts Series1 Results
+        # Auto Create Charts Series3 Results
         #------------------------------------
-        if ($AutoChartsBaselineCheckBox.Checked -eq $True) {
-            if ($script:CSVFileBaselineCollection) {
-                $AutoChartsSeries1Results           = New-Object Windows.Forms.Button
-                $AutoChartsSeries1Results.Text      = "$Series01Name Results"
-                $AutoChartsSeries1Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
-                $AutoChartsSeries1Results.Size      = New-Object System.Drawing.Size(150,25)
-                $AutoChartsSeries1Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-                $AutoChartsSeries1Results.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
-                $AutoChartsSeries1Results.ForeColor = "Blue"
-                $AutoChartsSeries1Results.UseVisualStyleBackColor = $True
-                $AutoChartsSeries1Results.Add_Click({ Import-CSV $script:CSVFileBaselineCollection | Out-GridView }) 
-                $AutoChart.controls.add($AutoChartsSeries1Results)
+        if ($AutoChartsMostRecentCheckBox.Checked -eq $True) {
+            if ($script:CSVFileMostRecentCollection) { 
+                $AutoChartsSeries3Results           = New-Object Windows.Forms.Button
+                $AutoChartsSeries3Results.Text      = "$Series03Name Results"
+                $AutoChartsSeries3Results.Location  = New-Object System.Drawing.Size(($AutoChartsSaveButton.Location.X),($AutoChartsSaveButton.Location.Y - $ButtonSpacing))
+                $AutoChartsSeries3Results.Size      = New-Object System.Drawing.Size(150,25)
+                $AutoChartsSeries3Results.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+                $AutoChartsSeries3Results.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                $AutoChartsSeries3Results.ForeColor = "Red"
+                $AutoChartsSeries3Results.UseVisualStyleBackColor = $True
+                $AutoChartsSeries3Results.Add_Click({ Import-CSV $script:CSVFileMostRecentCollection | Out-GridView }) 
+                $AutoChart.controls.add($AutoChartsSeries3Results)
                 $ButtonSpacing += 35
             }
         }
     }
-
-    ####$AutoChart.Add_Shown({$ViewChartForm.Activate()})
-    ####[void]$AutoChart.ShowDialog()
-    
-    #---------------------------------------
-    # Custom View Chart - Autosave an Image
-    #---------------------------------------
-    #$AutoChart.SaveImage('C:\temp\chart.jpeg', 'jpeg')    
 }
 
-#-------------------------
-# View Auto Charts Button
-#-------------------------
-$AutoChartsButton2          = New-Object System.Windows.Forms.Button
-$AutoChartsButton2.Name     = "View Auto Chart"
-$AutoChartsButton2.Text     = "$($AutoChartsButton2.Name)"
-$AutoChartsButton2.UseVisualStyleBackColor = $True
-$AutoChartsButton2.Location = New-Object System.Drawing.Size(($ViewChartButton.Location.X),($ViewChartButton.Location.Y - 30))
-$AutoChartsButton2.Size     = New-Object System.Drawing.Size(115,22)
-$AutoChartsButton2.Add_Click({ AutoChartsSelectOptions })
-$AutoChartsButton2.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
-$Section2MainTab.Controls.Add($AutoChartsButton2)
+#---------------------------
+# Auto Create Charts Button
+#---------------------------
+$AutoCreateChartsButton          = New-Object System.Windows.Forms.Button
+$AutoCreateChartsButton.Name     = "Auto Create Charts"
+$AutoCreateChartsButton.Text     = "$($AutoCreateChartsButton.Name)"
+$AutoCreateChartsButton.UseVisualStyleBackColor = $True
+$AutoCreateChartsButton.Location = New-Object System.Drawing.Size(($BuildChartButton.Location.X),($BuildChartButton.Location.Y - 30))
+$AutoCreateChartsButton.Size     = New-Object System.Drawing.Size(115,22)
+$AutoCreateChartsButton.Add_Click({ AutoChartsSelectOptions })
+$AutoCreateChartsButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$AutoCreateChartsButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ Utilizes PowerShell (v3) charts to visualize data.
+⦿ These charts are auto created from pre-selected CSV files and fields.
+⦿ Multi-series charts can be created that are generated from baseline, 
+    previous, and most recents CSV files for pre-selected CSV files.
+⦿ Multi-series charts will only display results from hosts that are
+    found in each series; excess host results will be hidden.
+⦿ Charts can be filtered for data collected via WMI or PoSh commands.
+⦿ Images can be saved of each chart in .png format.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
+        $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation   = $true
+        $ToolTip.UseFading      = $true
+        $ToolTip.IsBalloon      = $true
+        $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle   = 'Auto Create Charts'
+    }
+})
+$Section2MainTab.Controls.Add($AutoCreateChartsButton)
 
 ##############################################################################################################################################################
 ##
@@ -9340,7 +9443,7 @@ $OptionLogButton.UseVisualStyleBackColor = $True
 $OptionLogButton.Location = New-Object System.Drawing.Size(3,11)
 $OptionLogButton.Size     = New-Object System.Drawing.Size(115,22)
 $OptionLogButton.Add_Click({Start-Process notepad.exe $LogFile}) 
-$OptionLogButton.add_MouseHover({
+$OptionLogButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
         $Message = "⦿ Opens the PoSh-ACME activity log file.
@@ -9373,7 +9476,7 @@ $script:OptionJobTimeoutSelectionComboBox.Font     = New-Object System.Drawing.F
     $script:OptionJobTimeoutSelectionComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     $JobTimesAvailable = @(15,30,45,60,120,180,240,300,600)
     ForEach ($Item in $JobTimesAvailable) { [void] $script:OptionJobTimeoutSelectionComboBox.Items.Add($Item) }
-$OptionJobTimeoutSelectionComboBox.add_MouseHover({
+$OptionJobTimeoutSelectionComboBox.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
         $Message = "⦿ Queries are threaded and not executed serially like typical scripts.`n⦿ This is done in command order for each host checked.`n⦿ This increases collection speed... but also network traffic and local processing.`n`n"
@@ -9403,7 +9506,7 @@ $Section2OptionsTab.Controls.Add($OptionJobTimeoutSelectionLabel)
 # Option - Search Processes Checkbox
 #------------------------------------
 $OptionSearchProcessesCheckBox          = New-Object System.Windows.Forms.Checkbox
-$OptionSearchProcessesCheckBox.Text     = "Include Searching Through 'Processes' Results"
+$OptionSearchProcessesCheckBox.Text     = "Host Data Search - Include 'Processes' Results"
 $OptionSearchProcessesCheckBox.Location = New-Object System.Drawing.Size(3,($script:OptionJobTimeoutSelectionComboBox.Location.Y + $script:OptionJobTimeoutSelectionComboBox.Size.Height + 5))
 $OptionSearchProcessesCheckBox.Size     = New-Object System.Drawing.Size(400,$Column3BoxHeight) 
 $OptionSearchProcessesCheckBox.Enabled  = $true
@@ -9412,12 +9515,37 @@ $OptionSearchProcessesCheckBox.Font      = New-Object System.Drawing.Font("$Font
 #$OptionSearchProcessesCheckBox.Add_Click({  })
 $Section2OptionsTab.Controls.Add($OptionSearchProcessesCheckBox)
 
+#-----------------------------------
+# Option - Search Services Checkbox
+#-----------------------------------
+$OptionSearchServicesCheckBox          = New-Object System.Windows.Forms.Checkbox
+$OptionSearchServicesCheckBox.Text     = "Host Data Search - Include 'Services' Results"
+$OptionSearchServicesCheckBox.Location = New-Object System.Drawing.Size(3,($OptionSearchProcessesCheckBox.Location.Y + $OptionSearchProcessesCheckBox.Size.Height + 5))
+$OptionSearchServicesCheckBox.Size     = New-Object System.Drawing.Size(400,$Column3BoxHeight) 
+$OptionSearchServicesCheckBox.Enabled  = $true
+$OptionSearchServicesCheckBox.Checked  = $False
+$OptionSearchServicesCheckBox.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+#$OptionSearchServicesCheckBox.Add_Click({  })
+$Section2OptionsTab.Controls.Add($OptionSearchServicesCheckBox)
+
+#--------------------------------------------------
+# Option - Search Network TCP Connections Checkbox
+#--------------------------------------------------
+$OptionSearchNetworkTCPConnectionsCheckBox          = New-Object System.Windows.Forms.Checkbox
+$OptionSearchNetworkTCPConnectionsCheckBox.Text     = "Host Data Search - Include 'Network TCP Connections' Results"
+$OptionSearchNetworkTCPConnectionsCheckBox.Location = New-Object System.Drawing.Size(3,($OptionSearchServicesCheckBox.Location.Y + $OptionSearchServicesCheckBox.Size.Height + 5))
+$OptionSearchNetworkTCPConnectionsCheckBox.Size     = New-Object System.Drawing.Size(400,$Column3BoxHeight) 
+$OptionSearchNetworkTCPConnectionsCheckBox.Enabled  = $true
+$OptionSearchNetworkTCPConnectionsCheckBox.Checked  = $False
+$OptionSearchNetworkTCPConnectionsCheckBox.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$Section2OptionsTab.Controls.Add($OptionSearchNetworkTCPConnectionsCheckBox)
+
 #--------------------------
 # Option - Bold Categories
 #--------------------------
 $OptionBoldTreeViewCategoriesCheckBox          = New-Object System.Windows.Forms.Checkbox
 $OptionBoldTreeViewCategoriesCheckBox.Text     = "Bold TreeView Categories"
-$OptionBoldTreeViewCategoriesCheckBox.Location = New-Object System.Drawing.Size(3,($OptionSearchProcessesCheckBox.Location.Y + $OptionSearchProcessesCheckBox.Size.Height + 5))
+$OptionBoldTreeViewCategoriesCheckBox.Location = New-Object System.Drawing.Size(3,($OptionSearchNetworkTCPConnectionsCheckBox.Location.Y + $OptionSearchNetworkTCPConnectionsCheckBox.Size.Height + 5))
 $OptionBoldTreeViewCategoriesCheckBox.Size     = New-Object System.Drawing.Size(200,$Column3BoxHeight) 
 $OptionBoldTreeViewCategoriesCheckBox.Enabled  = $true
 $OptionBoldTreeViewCategoriesCheckBox.Checked  = $false
@@ -9448,7 +9576,6 @@ $OptionShowToolTipCheckBox.Size     = New-Object System.Drawing.Size(200,$Column
 $OptionShowToolTipCheckBox.Enabled  = $true
 $OptionShowToolTipCheckBox.Checked  = $true
 $OptionShowToolTipCheckBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
-#$OptionShowToolTipCheckBox.Add_Click({    })
 $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
 
 #--------------------------------------
@@ -9618,7 +9745,6 @@ foreach ($Tag in $TagListFileContents) {
 
 function Search-ComputerListTreeView {
     #$Section4TabControl.SelectedTab   = $Section3ResultsTab
-
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes
 
     # Checks if the search node already exists
@@ -9668,30 +9794,62 @@ function Search-ComputerListTreeView {
             }                
         }    
 
-        # Checks if the Option is checked, if so it will include searching through 'Processes' CSVs
-        # This is a slow process...
-        if ($OptionSearchProcessesCheckBox.Checked) {
-            # Searches though the all Collection Data Directories to find files that match
-            $ListOfCollectedDataDirectories = $(Get-ChildItem -Path $CollectedDataDirectory | Sort-Object -Descending).FullName
-            $script:CSVFileMatch = @()
-            foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
-                $CSVFiles = $(Get-ChildItem -Path $CollectionDir -Recurse).FullName
-                foreach ($CSVFile in $CSVFiles) {
+    # Checks if the Option is checked, if so it will include searching through 'Processes' CSVs
+    # This is a slow process...
+    if ($OptionSearchProcessesCheckBox.Checked -or $OptionSearchServicesCheckBox.Checked -or $OptionSearchNetworkTCPConnectionsCheckBox.Checked) {
+        # Searches though the all Collection Data Directories to find files that match
+        $ListOfCollectedDataDirectories = $(Get-ChildItem -Path $CollectedDataDirectory | Sort-Object -Descending).FullName
+        $script:CSVFileMatch = @()
+
+        foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
+            $CSVFiles = $(Get-ChildItem -Path $CollectionDir -Filter "*.csv" -Recurse).FullName
+            foreach ($CSVFile in $CSVFiles) {
+                if ($OptionSearchProcessesCheckBox.Checked) {
                     # Searches for the CSV file that matches the data selected
-                    if ($CSVFile -match "Processes") {
-                        #$CsvContents = Import-CSV -Path $CSVFile | select
-                        if ($(Import-CSV -Path $CSVFile | select -Property name | where {$_.name -imatch $ComputerListTreeViewSearchTextBox.Text} | where {$_.name -ne ''})) {
-                            $ComputerWithResults = $($($($CSVFile.split('\')[-1]).split('-')[2..5]) -join '-').replace('.csv','')
+                    if (($CSVFile -match "Processes") -and ($CSVFile -match "Individual Host Results") -and ($CSVFile -match ".csv")) {
+                        if ($(Import-CSV -Path $CSVFile | select -Property Name, Description | `
+                            where {($_.Name -imatch $ComputerListTreeViewSearchTextBox.Text) -or ($_.Description -imatch $ComputerListTreeViewSearchTextBox.Text)} #| where {$_.name -ne ''}
+                            )) {
+                            $ComputerWithResults = $CSVFile.Split('\')[-1].split('-')[-1].split('.')[-2].replace(' ','')
                             if (($SearchFound -inotcontains $ComputerWithResults) -and ($ComputerWithResults -ne ''))  {
-                                Add-ComputerNode -RootNode $script:ComputerListSearch -Category $ComputerListTreeViewSearchTextBox.Text -Entry $ComputerWithResults -ToolTip $Computer.IPv4Address    
+                                Add-ComputerNode -RootNode $script:ComputerListSearch -Category $ComputerListTreeViewSearchTextBox.Text -Entry $ComputerWithResults #-ToolTip $Computer.IPv4Address
                                 $SearchFound += $ComputerWithResults
                             }
-                        }                  
+                        }
                     }
                 }
-            }        
-        }    
+                if ($OptionSearchServicesCheckBox.Checked) {
+                    # Searches for the CSV file that matches the data selected
+                    if (($CSVFile -match "Services") -and ($CSVFile -match "Individual Host Results") -and ($CSVFile -match ".csv")) {
+                        if ($(Import-CSV -Path $CSVFile | select -Property Name, DisplayName | `
+                            where {($_.Name -imatch $ComputerListTreeViewSearchTextBox.Text) -or ($_.DisplayName -imatch $ComputerListTreeViewSearchTextBox.Text)} #| where {$_.name -ne ''}
+                            )) {
+                            $ComputerWithResults = $CSVFile.Split('\')[-1].split('-')[-1].split('.')[-2].replace(' ','')
+                            if (($SearchFound -inotcontains $ComputerWithResults) -and ($ComputerWithResults -ne ''))  {
+                                Add-ComputerNode -RootNode $script:ComputerListSearch -Category $ComputerListTreeViewSearchTextBox.Text -Entry $ComputerWithResults #-ToolTip $Computer.IPv4Address
+                                $SearchFound += $ComputerWithResults
+                            }
+                        }
+                    }
+                }
+                if ($OptionSearchNetworkTCPConnectionsCheckBox.Checked) {
+                    # Searches for the CSV file that matches the data selected
+                    if (($CSVFile -match "Network") -and ($CSVFile -match "Individual Host Results") -and ($CSVFile -match ".csv")) {
+                        if ($(Import-CSV -Path $CSVFile | select -Property RemoteAddress, RemotePort, LocalPort | `
+                            where {($_.RemoteAddress -imatch $ComputerListTreeViewSearchTextBox.Text) -or ($_.RemotePort -imatch $ComputerListTreeViewSearchTextBox.Text) -or ($_.LocalPort -imatch $ComputerListTreeViewSearchTextBox.Text)} #| where {$_.name -ne ''}
+                            )) {
+                            $ComputerWithResults = $CSVFile.Split('\')[-1].split('-')[-1].split('.')[-2].replace(' ','')
+                            if (($SearchFound -inotcontains $ComputerWithResults) -and ($ComputerWithResults -ne ''))  {
+                                Add-ComputerNode -RootNode $script:ComputerListSearch -Category $ComputerListTreeViewSearchTextBox.Text -Entry $ComputerWithResults #-ToolTip $Computer.IPv4Address
+                                $SearchFound += $ComputerWithResults
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+}
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
     foreach ($root in $AllHostsNode) { 
         if ($root.text -match 'Search Results'){
@@ -9703,9 +9861,12 @@ function Search-ComputerListTreeView {
             }
         }
     }
-
-
     $ComputerListTreeViewSearchTextBox.Text = ""
+
+    $SingleHostIPCheckBox.Checked   = $false
+    $SingleHostIPTextBox.Text       = $DefaultSingleHostIPText
+    $ComputerListTreeView.Enabled   = $true
+    $ComputerListTreeView.BackColor = "white"
 }
 
 #----------------------------------------
@@ -9725,10 +9886,13 @@ $ComputerListTreeViewSearchTextBox.Add_KeyDown({
         Search-ComputerListTreeView
     }
 })
-$ComputerListTreeViewSearchTextBox.add_MouseHover({
+$ComputerListTreeViewSearchTextBox.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Searches through host data and returns results as nodes.`n⦿ Search can include any character.`n⦿ Tags are pre-built to assist with standarized notes.`n⦿ Can search CSV Results, enable them in the Options Tab.`n`n"
+        $Message = "⦿ Searches through host data and returns results as nodes.
+⦿ Search can include any character.
+⦿ Tags are pre-built to assist with standarized notes.
+⦿ Can search CSV Results, enable them in the Options Tab.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -9752,10 +9916,13 @@ $ComputerListTreeViewSearchButton.Size     = New-Object System.Drawing.Size(55,2
 $ComputerListTreeViewSearchButton.Add_Click({
     Search-ComputerListTreeView
 })
-$ComputerListTreeViewSearchButton.add_MouseHover({
+$ComputerListTreeViewSearchButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Searches through host data and returns results as nodes.`n⦿ Search can include any character.`n⦿ Tags are pre-built to assist with standarized notes.`n⦿ Can search CSV Results, enable them in the Options Tab.`n`n"
+        $Message = "⦿ Searches through host data and returns results as nodes.
+⦿ Search can include any character.
+⦿ Tags are pre-built to assist with standarized notes.
+⦿ Can search CSV Results, enable them in the Options Tab.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -9782,7 +9949,6 @@ $System_Drawing_Point.Y                 = $Column4DownPosition + 39
 $ComputerListTreeView.Location          = $System_Drawing_Point
 $ComputerListTreeView.Font              = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $ComputerListTreeView.CheckBoxes        = $True
-#$ComputerListTreeView.LabelEdit        = $True
 $ComputerListTreeView.ShowLines         = $True
 $ComputerListTreeView.ShowNodeToolTips  = $True
 $ComputerListTreeView.Sort()
@@ -9883,10 +10049,12 @@ $ComputerListTreeView.add_AfterSelect({
                 $ResultsListBox.Items.Clear()
                 $ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
 
+                # The follwing fields are filled out with N/A when host nodes are not selected
                 $Section3HostDataName.Text  = "N/A"
                 $Section3HostDataOS.Text    = "N/A"
                 $Section3HostDataOU.Text    = "N/A"
                 $Section3HostDataIP.Text    = "N/A"
+                $Section3HostDataMAC.Text   = "N/A"
                 $Section3HostDataTags.Text  = "N/A"
                 $Section3HostDataNotes.Text = "N/A"
 
@@ -9991,10 +10159,11 @@ $ComputerListTreeViewOSHostnameRadioButton.Add_Click({
     }
     Keep-ComputerListCheckboxesChecked
 })
-$ComputerListTreeViewOSHostnameRadioButton.add_MouseHover({
+$ComputerListTreeViewOSHostnameRadioButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Displays the hosts by Operating Systems.`n⦿ Hosts will remain checked when switching between views.`n`n"
+        $Message = "⦿ Displays the hosts by Operating Systems.
+⦿ Hosts will remain checked when switching between views.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -10049,10 +10218,11 @@ $ComputerListTreeViewOUHostnameRadioButton.Add_Click({
     }
     Keep-ComputerListCheckboxesChecked
 })
-$ComputerListTreeViewOUHostnameRadioButton.add_MouseHover({
+$ComputerListTreeViewOUHostnameRadioButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Displays the hosts by Organizational Unit / Canonical Name.`n⦿ Hosts will remain checked when switching between views.`n`n"
+        $Message = "⦿ Displays the hosts by Organizational Unit / Canonical Name.
+⦿ Hosts will remain checked when switching between views.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -10163,8 +10333,6 @@ function Check-Connection {
             }
             elseif ($CheckType -eq "WinRM Check") {
                 $CheckCommand = Test-WSman -ComputerName $target
-                # The following does a ping first...
-                # Test-NetConnection -CommonTCPPort WINRM -ComputerName <Target>
             }
             elseif ($CheckType -eq "RPC Check") {
                 function Test-Port {
@@ -10238,11 +10406,11 @@ $ComputerListPingButton.Location  = New-Object System.Drawing.Size($Column5Right
 $ComputerListPingButton.Size      = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
 $ComputerListPingButton.Name      = "Ping"
 $ComputerListPingButton.Text      = "Ping"
-$ComputerListPingButton.add_MouseHover($MouseHover)
+$ComputerListPingButton.Add_MouseHover($MouseHover)
 $ComputerListPingButton.Add_Click({
     Check-Connection -CheckType "Ping" -MessageTrue "Able to Ping" -MessageFalse "Unable to Ping"
 })
-$ComputerListPingButton.add_MouseHover({
+$ComputerListPingButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
         $Message = "⦿ Unresponsive hosts can be removed from being nodes checked.
@@ -10273,11 +10441,11 @@ $ComputerListWinRMCheckButton.Location  = New-Object System.Drawing.Size($Column
 $ComputerListWinRMCheckButton.Size      = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
 $ComputerListWinRMCheckButton.Name      = "WinRM Check"
 $ComputerListWinRMCheckButton.Text      = "WinRM Check"
-$ComputerListWinRMCheckButton.add_MouseHover($MouseHover)
+$ComputerListWinRMCheckButton.Add_MouseHover($MouseHover)
 $ComputerListWinRMCheckButton.Add_Click({
     Check-Connection -CheckType "WinRM Check" -MessageTrue "Able to Verify WinRM" -MessageFalse "Unable to Verify WinRM"
 })
-$ComputerListWinRMCheckButton.add_MouseHover({
+$ComputerListWinRMCheckButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
         $Message = "⦿ Unresponsive hosts can be removed from being nodes checked.
@@ -10308,15 +10476,15 @@ $ComputerListRPCCheckButton.Location  = New-Object System.Drawing.Size($Column5R
 $ComputerListRPCCheckButton.Size      = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
 $ComputerListRPCCheckButton.Name      = "RPC Check"
 $ComputerListRPCCheckButton.Text      = "RPC Check"
-$ComputerListRPCCheckButton.add_MouseHover($MouseHover)
+$ComputerListRPCCheckButton.Add_MouseHover($MouseHover)
 $ComputerListRPCCheckButton.Add_Click({
     Check-Connection -CheckType "RPC Check" -MessageTrue "RPC Port 135 is Open" -MessageFalse "RPC Port 135 is Closed"
 })
-$ComputerListRPCCheckButton.add_MouseHover({
+$ComputerListRPCCheckButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Unresponsive hosts can be removed from being nodes checked .`n"
-        $MessageCommand='⦿ Command:
+        $Message = "⦿ Unresponsive hosts can be removed from being nodes checked.
+⦿ Command:
         function Test-Port {
             param ($ComputerName, $Port)
             begin { $tcp = New-Object Net.Sockets.TcpClient }
@@ -10329,8 +10497,8 @@ $ComputerListRPCCheckButton.add_MouseHover({
         }
         $CheckCommand = Test-Port -ComputerName $target -Port 135 | Select-Object -ExpandProperty Open
 ⦿ Command Alternative (Sends Ping First):
-        Test-NetConnection -Port 135 -ComputerName <target>'
-        $ToolTip.SetToolTip($this,$($Message + $MessageCommand + "`n`n" + $ToolTipMessage3))
+        Test-NetConnection -Port 135 -ComputerName <target>`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
         $ToolTip.UseFading      = $true
@@ -10404,13 +10572,13 @@ $ComputerListRDPButton.Add_Click({
         $ResultsListBox.Items.Add("        Selecting a Category will not allow you to connect to multiple hosts")    
     }
 })
-$ComputerListRDPButton.add_MouseHover({
+$ComputerListRDPButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Will attempt to RDP into a single host.`n"
-        $MessageCommand='⦿ Command:
-        mstsc /v:<target>:3389'
-        $ToolTip.SetToolTip($this,$($Message + $MessageCommand + "`n`n" + $ToolTipMessage3))
+        $Message = "⦿ Will attempt to RDP into a single host.
+⦿ Command:
+        mstsc /v:<target>:3389`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
         $ToolTip.UseFading      = $true
@@ -10489,13 +10657,13 @@ $ComputerListPsExecButton.Add_Click({
         $ResultsListBox.Items.Add("        Selecting a Category will not allow you to connect to multiple hosts")    
     }
 })
-$ComputerListPsExecButton.add_MouseHover({
+$ComputerListPsExecButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Will attempt to obtain a cmd prompt via PsExec.`n⦿ PsExec is a Windows Sysinternals tool.`n⦿ Some anti-virus scanners will alert on this.`n"
-        $MessageCommand='⦿ Command:
-        PsExec.exe -accepteula -s \\<target> -u <domain\username> -p <password> cmd'
-        $ToolTip.SetToolTip($this,$($Message + $MessageCommand + "`n`n" + $ToolTipMessage3))
+        $Message = "⦿ Will attempt to obtain a cmd prompt via PsExec.`n⦿ PsExec is a Windows Sysinternals tool.`n⦿ Some anti-virus scanners will alert on this.
+⦿ Command:
+        PsExec.exe -accepteula -s \\<target> -u <domain\username> -p <password> cmd`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
         $ToolTip.UseFading      = $true
@@ -10578,13 +10746,17 @@ $ComputerListPSSessionButton.Add_Click({
         $ResultsListBox.Items.Add("        Selecting a Category will not allow you to connect to multiple hosts")    
     }
 })
-$ComputerListPSSessionButton.add_MouseHover({
+$ComputerListPSSessionButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Starts an interactive session with a remote computer.`n⦿ Requires the WinRM service.`n⦿ To use with an IP address, the Credential parameter must be used.`nAlso, the computer must be configured for HTTPS transport or`nthe remote computer's IP must be in the local TrustedHosts.`n"
-        $MessageCommand='⦿ Command:
-        Enter-PSSession -ComputerName <target>'
-        $ToolTip.SetToolTip($this,$($Message + $MessageCommand + "`n`n" + $ToolTipMessage3))
+        $Message = "⦿ Starts an interactive session with a remote computer.
+⦿ Requires the WinRM service.
+⦿ To use with an IP address, the Credential parameter must be used.
+Also, the computer must be configured for HTTPS transport or
+the remote computer's IP must be in the local TrustedHosts.
+⦿ Command:
+        Enter-PSSession -ComputerName <target>`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
         $ToolTip.UseFading      = $true
@@ -10607,10 +10779,11 @@ $ComputerListProvideCredentialsCheckBox.Text     = "$($ComputerListProvideCreden
 $ComputerListProvideCredentialsCheckBox.Location = New-Object System.Drawing.Size(($Column5RightPosition + 1),($Column5DownPosition + 3))
 $ComputerListProvideCredentialsCheckBox.Size     = New-Object System.Drawing.Size($Column5BoxWidth,($Column5BoxHeight - 5))
 $ComputerListProvideCredentialsCheckBox.Checked  = $false
-$ComputerListProvideCredentialsCheckBox.add_MouseHover({
+$ComputerListProvideCredentialsCheckBox.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Credentials are stored as a SecureString.`n⦿ If checked, credentials are applied to supported commands.`n`n"
+        $Message = "⦿ Credentials are stored as a SecureString.
+⦿ If checked, credentials are applied to supported commands.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -10648,10 +10821,11 @@ $ProvideCredsButton.Add_Click({
     $StatusListBox.Items.Add("Provide Credentials: Stored")
     $ResultsListBox.Items.Clear()
 })
-$ProvideCredsButton.add_MouseHover({
+$ProvideCredsButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Credentials are stored as a SecureString.`n⦿ If checked, credentials are applied to supported commands.`n`n"
+        $Message = "⦿ Credentials are stored as a SecureString.
+⦿ If checked, credentials are applied to supported commands.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -10678,10 +10852,14 @@ $ComputerListExecuteButton1.Location  = New-Object System.Drawing.Size($Column5R
 $ComputerListExecuteButton1.Size      = New-Object System.Drawing.Size($Column5BoxWidth,($Column5BoxHeight * 2))
 $ComputerListExecuteButton1.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $ComputerListExecuteButton1.ForeColor = "Red"
-$ComputerListExecuteButton1.add_MouseHover({
+$ComputerListExecuteButton1.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Starts the collection process.`n⦿ All checked commands are executed against all checked hosts.`n⦿ Be sure to verify selections before execution.`n⦿ All queries to targets are logged with timestamps.`n⦿ Results are stored in CSV format.`n`n"
+        $Message = "⦿ Starts the collection process.
+⦿ All checked commands are executed against all checked hosts.
+⦿ Be sure to verify selections before execution.
+⦿ All queries to targets are logged with timestamps.
+⦿ Results are stored in CSV format.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -10691,7 +10869,6 @@ $ComputerListExecuteButton1.add_MouseHover({
         $ToolTip.ToolTipTitle   = 'Start Collection'
     }    
 })
-### $ComputerListExecuteButton1.Add_Click($ExecuteScriptHandler) ### Is located lower in the script
 $Section3ActionTab.Controls.Add($ComputerListExecuteButton1)
 
 ##############################################################################################################################################################
@@ -10958,9 +11135,7 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
 
     # Moves the hostname/IPs to the new Category
     $ComputerListTreeViewPopupAddTextBox.Add_KeyDown({ 
-        if ($_.KeyCode -eq "Enter") { 
-            AddHost-ComputerListTreeView
-        }
+        if ($_.KeyCode -eq "Enter") { AddHost-ComputerListTreeView }
     })
 
     #--------------------------------------------
@@ -10971,7 +11146,7 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     $ComputerListTreeViewPopupMoveButton.Size     = New-Object System.Drawing.Size(100,25)
     $ComputerListTreeViewPopupMoveButton.Location = New-Object System.Drawing.Size(210,($ComputerListTreeViewPopupOUComboBox.Location.Y + $ComputerListTreeViewPopupOUComboBox.Size.Height + 10))
     $ComputerListTreeViewPopupMoveButton.Add_Click({
-        AddHost-ComputerListTreeView -AddHost
+        AddHost-ComputerListTreeView
     })
     $ComputerListTreeViewPopupMoveButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupMoveButton)
@@ -11264,7 +11439,6 @@ $ComputerListRenameButton.Add_Click({
         #-----------------------------------------
         function Rename-ComputerListTreeViewSelected {                       
             if ($script:ComputerListTreeViewData.Name -contains $ComputerListTreeViewRenamePopupTextBox.Text) {
-                #$script:ComputerListTreeViewData = $script:ComputerListTreeViewData | Where-Object {$_.Name -ne $Entry.text}
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Rename Hostname/IP:  Error")
                 $ResultsListBox.Items.Clear()
@@ -11394,13 +11568,6 @@ $ComputerListTreeViewCollapseAllButton.Location = New-Object System.Drawing.Size
 $ComputerListTreeViewCollapseAllButton.Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
 $ComputerListTreeViewCollapseAllButton.Text     = "Collapse"
 $ComputerListTreeViewCollapseAllButton.Add_Click({
-<#    $ComputerListTreeViewFound = $ComputerListTreeView.Nodes.Find("WIN81-01", $true)
-    $ResultsListBox.Items.Clear()
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
-            foreach ($Node in $ComputerListTreeViewFound) { 
-                $ResultsListBox.Items.Add($Node.Text)
-            }       
-    $ResultsListBox.Items.Add("")#>
     if ($ComputerListTreeViewCollapseAllButton.Text -eq "Collapse") {
         $ComputerListTreeView.CollapseAll()
         [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
@@ -11446,10 +11613,14 @@ $ComputerListExecuteButton2.Location  = New-Object System.Drawing.Size($Column5R
 $ComputerListExecuteButton2.Size      = New-Object System.Drawing.Size($Column5BoxWidth,($Column5BoxHeight * 2))
 $ComputerListExecuteButton2.ForeColor = "Red"
 ### $ComputerListExecuteButton2.Add_Click($ExecuteScriptHandler) ### Is located lower in the script
-$ComputerListExecuteButton2.add_MouseHover({
+$ComputerListExecuteButton2.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Starts the collection process.`n⦿ All checked commands are executed against all checked hosts.`n⦿ Be sure to verify selections before execution.`n⦿ All queries to targets are logged with timestamps.`n⦿ Results are stored in CSV format.`n`n"
+        $Message = "⦿ Starts the collection process.
+⦿ All checked commands are executed against all checked hosts.
+⦿ Be sure to verify selections before execution.
+⦿ All queries to targets are logged with timestamps.
+⦿ Results are stored in CSV format.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -11524,12 +11695,9 @@ $PoShACME.Controls.Add($ProgressBar1Label)
 #----------------------------
 $ProgressBar1          = New-Object System.Windows.Forms.ProgressBar
 $ProgressBar1.Style    = "Continuous"
-#$ProgressBar1.Maximum  = 10
 $ProgressBar1.Minimum  = 0
 $ProgressBar1.Location = new-object System.Drawing.Size(($Section3RightPosition + 60),($Section3DownPosition - 2))
 $ProgressBar1.size     = new-object System.Drawing.Size($Section3ProgressBarWidth,10)
-#$ProgressBar1.Value     = 0
-#$ProgressBar1.Step     = 1
 $PoSHACME.Controls.Add($ProgressBar1)
 
 $Section3DownPosition += $Section3DownPositionShift - 9
@@ -11607,6 +11775,22 @@ $ResultsTabOpNotesAddButton.Add_Click({
         Save-OpNotes
     }
 })
+$ResultsTabOpNotesAddButton.Add_MouseHover({
+    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    if ($OptionShowToolTipCheckBox.Checked){
+        $Message = "⦿ One or more lines can be selected to add to the OpNotes.
+⦿ The selection can be contiguous by using the Shift key
+    and/or be separate using the Ctrl key, the press OK.
+⦿ A Datetime stampe will be prefixed to the entry.`n`n"
+        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
+        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
+        $ToolTip.UseAnimation = $true
+        $ToolTip.UseFading    = $true
+        $ToolTip.IsBalloon    = $true
+        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
+        $ToolTip.ToolTipTitle = 'Add Selected To OpNotes'
+    }
+})
 $Section3ResultsTab.Controls.Add($ResultsTabOpNotesAddButton) 
 
 #-----------------
@@ -11666,10 +11850,13 @@ $Section3HostDataName.Location = New-Object System.Drawing.Size(0,3)
 $Section3HostDataName.Size     = New-Object System.Drawing.Size(250,25)
 $Section3HostDataName.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section3HostDataName.ReadOnly = $true
-$Section3HostDataName.add_MouseHover({
+$Section3HostDataName.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Queries use this field, even if it's a hostname or IP.`n⦿ Hostnames are not case sensitive.`n`n"
+        $Message = "⦿ This field is reserved for the hostname.
+⦿ Hostnames are not case sensitive.
+⦿ Though IP addresses may be entered, WinRM queries may fail as
+IPs may only be used for authentication under certain conditions.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -11677,7 +11864,7 @@ $Section3HostDataName.add_MouseHover({
         $ToolTip.IsBalloon      = $true
         $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
         $ToolTip.ToolTipTitle   = 'Hostname'
-    }    
+    }
 })
 $Section3HostDataTab.Controls.Add($Section3HostDataName)
 
@@ -11689,7 +11876,7 @@ $Section3HostDataOS.Location = New-Object System.Drawing.Size(0,($Section3HostDa
 $Section3HostDataOS.Size     = New-Object System.Drawing.Size(250,25)
 $Section3HostDataOS.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section3HostDataOS.ReadOnly = $true
-$Section3HostDataOS.add_MouseHover({
+$Section3HostDataOS.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
         $Message = "⦿ This field is useful to view groupings of hosts by OS.`n`n"
@@ -11712,7 +11899,7 @@ $Section3HostDataOU.Location = New-Object System.Drawing.Size(0,($Section3HostDa
 $Section3HostDataOU.Size     = New-Object System.Drawing.Size(250,25)
 $Section3HostDataOU.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section3HostDataOU.ReadOnly = $true
-$Section3HostDataOU.add_MouseHover({
+$Section3HostDataOU.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
         $Message = "⦿ This field is useful to view groupings of hosts by OU/CN.`n`n"
@@ -11736,7 +11923,7 @@ $Section3HostDataTab.Controls.Add($Section3HostDataOU)
     $Section3HostDataIP.Size     = New-Object System.Drawing.Size(120,25)
     $Section3HostDataIP.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $Section3HostDataIP.ReadOnly = $false
-    $Section3HostDataIP.add_MouseHover({
+    $Section3HostDataIP.Add_MouseHover({
         $ToolTip = New-Object System.Windows.Forms.ToolTip    
         if ($OptionShowToolTipCheckBox.Checked){
             $Message = "⦿ Informational field not used to query hosts.`n`n"
@@ -11757,7 +11944,7 @@ $Section3HostDataTab.Controls.Add($Section3HostDataOU)
     $Section3HostDataMAC.Size     = New-Object System.Drawing.Size(120,25)
     $Section3HostDataMAC.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $Section3HostDataMAC.ReadOnly = $false
-    $Section3HostDataMAC.add_MouseHover({
+    $Section3HostDataMAC.Add_MouseHover({
         $ToolTip = New-Object System.Windows.Forms.ToolTip    
         if ($OptionShowToolTipCheckBox.Checked){
             $Message = "⦿ Informational field not used to query hosts.`n`n"
@@ -11783,10 +11970,11 @@ $Section3HostDataNotes.Multiline  = $True
 $Section3HostDataNotes.ScrollBars = $True
 $Section3HostDataNotes.WordWrap   = $True
 $Section3HostDataNotes.ReadOnly   = $false
-$Section3HostDataNotes.add_MouseHover({
+$Section3HostDataNotes.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ These notes are specific to the host.`n⦿ Also can contains Tags if used.`n`n"
+        $Message = "⦿ These notes are specific to the host.
+⦿ Also can contains Tags if used.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -11838,7 +12026,7 @@ $Section3HostDataSaveButton.Add_Click({
 
 })
 $Section3HostDataSaveButton.ReadOnly = $false
-$Section3HostDataSaveButton.add_MouseHover({
+$Section3HostDataSaveButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
         $Message = "⦿ Best practice is to save after modifying each host data.`n`n"
@@ -11870,7 +12058,7 @@ $HostDataList1 = @(
 )
 
 $HostDataList2 = {
-    function Get-HostDataCsvResults {        
+    function Get-HostDataCsvResults {
         # Searches though the all Collection Data Directories to find files that match
         $ListOfCollectedDataDirectories = $(Get-ChildItem -Path $CollectedDataDirectory | Sort-Object -Descending).FullName
         $script:CSVFileMatch = @()
@@ -11891,7 +12079,6 @@ $HostDataList2 = {
     }
 
     function Get-HostDataCsvDateTime {
-    clear
         $script:HostDataCsvDateTime = @()
         foreach ($Csv in $script:CSVFileMatch) {
             #$a = $CollectedDataDirectory #not use, just a note
@@ -11959,11 +12146,13 @@ $HostDataList2 = {
     $Section3HostDataSelectionComboBox.AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
     $Section3HostDataSelectionComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     $Section3HostDataSelectionComboBox.DataSource         = $HostDataList1
-    #$Section3HostDataSelectionComboBox.Add_KeyDown({  })
-    $Section3HostDataSelectionComboBox.add_MouseHover({
+    $Section3HostDataSelectionComboBox.Add_MouseHover({
         $ToolTip = New-Object System.Windows.Forms.ToolTip    
         if ($OptionShowToolTipCheckBox.Checked){
-            $Message = "⦿ If data exists, the date-time group will be displayed below.`n⦿ These files can be searchable, toggle in Options Tab.`n`n"
+            $Message = "⦿ If data exists, the datetime group will be displayed below.
+⦿ These files can be searchable, toggle in Options Tab.
+⦿ Note: Datetimes with more than one collection type won't
+    display, these results will need to be navigated to manually.`n`n"
             $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
             $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
             $ToolTip.UseAnimation = $true
@@ -11987,18 +12176,20 @@ $HostDataList2 = {
     $Section3HostDataSelectionDateTimeComboBox.ForeColor          = "Black"
     $Section3HostDataSelectionDateTimeComboBox.AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
     $Section3HostDataSelectionDateTimeComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-    #$Section3HostDataSelectionDateTimeComboBox.Add_KeyDown({  })
-    $Section3HostDataSelectionDateTimeComboBox.add_MouseHover({
+    $Section3HostDataSelectionDateTimeComboBox.Add_MouseHover({
         $ToolTip = New-Object System.Windows.Forms.ToolTip    
         if ($OptionShowToolTipCheckBox.Checked){
-            $Message = "⦿ If data exists, the date-time group will be displayed.`n⦿ These files can be searchable, toggle in Options Tab.`n`n"
+            $Message = "⦿ If data exists, the datetime group will be displayed.
+⦿ These files can be searchable, toggle in Options Tab.
+⦿ Note: Datetimes with more than one collection type won't
+    display, these results will need to be navigated to manually.`n`n"
             $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
             $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
             $ToolTip.UseAnimation   = $true
             $ToolTip.UseFading      = $true
             $ToolTip.IsBalloon      = $true
             $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
-            $ToolTip.ToolTipTitle   = 'Date-time of Results'
+            $ToolTip.ToolTipTitle   = 'Datetime of Results'
         }    
     })    
     $Section3HostDataTab.Controls.Add($Section3HostDataSelectionDateTimeComboBox)
@@ -12034,10 +12225,13 @@ $HostDataList2 = {
             [system.media.systemsounds]::Exclamation.play()
         }
     })
-    $Section3HostDataGetDataButton.add_MouseHover({
+    $Section3HostDataGetDataButton.Add_MouseHover({
         $ToolTip = New-Object System.Windows.Forms.ToolTip    
         if ($OptionShowToolTipCheckBox.Checked){
-            $Message = "⦿ If data exists, the date-time group will be displayed.`n⦿ These files can be searchable, toggle in Options Tab.`n`n"
+            $Message = "⦿ If data exists, the datetime group will be displayed.
+⦿ These files can be searchable, toggle in Options Tab.
+⦿ Note: Datetimes with more than one collection type won't
+    display, these results will need to be navigated to manually.`n`n"
             $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
             $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
             $ToolTip.UseAnimation   = $true
@@ -12063,10 +12257,12 @@ $Section3HostDataTagsComboBox.AutoCompleteMode   = "SuggestAppend" # Options are
     ForEach ($Item in $TagList) { 
         [void] $Section3HostDataTagsComboBox.Items.Add($Item) 
     }
-$Section3HostDataTagsComboBox.add_MouseHover({
+$Section3HostDataTagsComboBox.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Tags are not mandatory`n⦿ Tags provide standized info to aide searches.`n⦿ Custom tags can be created and used`n`n"
+        $Message = "⦿ Tags are not mandatory.
+⦿ Tags provide standized info to aide searches.
+⦿ Custom tags can be modified, created, and used.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -12094,10 +12290,12 @@ $Section3HostDataTagsAddButton.Add_Click({
         $Section3HostDataNotes.text = "[$($Section3HostDataTagsComboBox.SelectedItem)] " + $Section3HostDataNotes.text
     }
 })
-$Section3HostDataTagsAddButton.add_MouseHover({
+$Section3HostDataTagsAddButton.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
     if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Tags are not mandatory`n⦿ Tags provide standized info to aide searches.`n⦿ Custom tags can be created and used.`n`n"
+        $Message = "⦿ Tags are not mandatory.
+⦿ Tags provide standized info to aide searches.
+⦿ Custom tags can be created and used.`n`n"
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage123))
         $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
         $ToolTip.UseAnimation   = $true
@@ -12105,7 +12303,7 @@ $Section3HostDataTagsAddButton.add_MouseHover({
         $ToolTip.IsBalloon      = $true
         $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
         $ToolTip.ToolTipTitle   = 'Add Tag to Notes'
-    }    
+    }
 })
 $Section3HostDataTab.Controls.Add($Section3HostDataTagsAddButton)
 
@@ -12200,8 +12398,6 @@ function Monitor-Jobs {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Processing: $JobsHosts")
 
-        #$CurrentJobs | Out-File $env:TEMP\scrapjobs.txt
-        #Get-Content $env:TEMP\scrapjobs.txt
         $jobscount = $CurrentJobs.count                  
         $ProgressBar1.Maximum = $jobscount
 
@@ -12241,8 +12437,6 @@ function Monitor-Jobs {
                 break        
             }
         }
-        #$ResultsListBox.Items.RemoveAt(0)
-        #$ResultsListBox.Items.RemoveAt(0)
         $ResultsListBox.Items.RemoveAt(0)
         $ResultsListBox.Items.RemoveAt(0)
         $ResultsListBox.Items.RemoveAt(0)
@@ -12259,12 +12453,6 @@ function Monitor-Jobs {
 # CheckBox Script Handler
 #============================================================================================================================================================
 $ExecuteScriptHandler= {
-    # This is for reference, it's also used later in the handler script
-    #$Section1TabControl.SelectedTab   = $Section1OpNotesTab
-    #$Section2TabControl.SelectedTab   = $Section2MainTab
-    #$Section3TabControl.SelectedTab   = $Section3ActionTab
-    #$Section4TabControl.SelectedTab   = $Section3ResultsTab
-    
     # Clears previous Target Host values
     $ComputerList = @()           
 
@@ -12333,32 +12521,6 @@ $ExecuteScriptHandler= {
 
     New-Item -Type Directory -Path $CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
 
-<#
-    # Checks if any commands were selected
-    if ($false) {
-    #if ($CommandsSelectionCheckedlistbox.CheckedItems.Count -eq 0) {
-        # This brings specific tabs to the forefront/front view
-        $Section1TabControl.SelectedTab            = $Section1CollectionsTab
-        $Section1CollectionsTabControl.SelectedTab = $Section1CommandsTab
-        $Section4TabControl.SelectedTab            = $Section3ResultsTab
-
-        # Sounds a chime if there are no queries selected
-        [system.media.systemsounds]::Exclamation.play()
-
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Insert(0,"Error: Nothing Selected To Collect")
-        $ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Insert(0,"Error: You need to make a selection from one of the following in the Collections Tab:")
-        $ResultsListBox.Items.Insert(0,"       Queries") 
-        $ResultsListBox.Items.Insert(0,"       Event Logs") 
-        $ResultsListBox.Items.Insert(0,"       Active Directory") 
-        $ResultsListBox.Items.Insert(0,"       File Search") 
-        $ResultsListBox.Items.Insert(0,"       Registry [future feature]") 
-        $ResultsListBox.Items.Insert(0,"       Sysinternals [if Resource foler is present]") 
-    }
-    else {
-#>
-
     # Checks if any computers were selected
     if (($ComputerList.Count -eq 0) -and ($SingleHostIPCheckBox.Checked -eq $false)) {
         # This brings specific tabs to the forefront/front view
@@ -12381,7 +12543,7 @@ $ExecuteScriptHandler= {
     # Runs commands if it passes the above checks
     else {
         # This brings specific tabs to the forefront/front view
-        $Section1TabControl.SelectedTab = $Section1OpNotesTab
+        #$Section1TabControl.SelectedTab = $Section1OpNotesTab
         $Section2TabControl.SelectedTab = $Section2MainTab
         $Section3TabControl.SelectedTab = $Section3ActionTab
         $Section4TabControl.SelectedTab = $Section3ResultsTab
@@ -12482,24 +12644,6 @@ $ExecuteScriptHandler= {
                                 Type           = "(WinRM) WMI"
                             }
                         }
-                    <#    if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'CMD') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRS_CMD
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRS) CMD"
-                                }
-                        }
-                        if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'WMIC') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRS_WMIC
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRS) WMIC"
-                                }
-                        } #>
                     }
                 }
                 if ($CommandsViewQueryRadioButton.Checked) {
@@ -12572,28 +12716,7 @@ $ExecuteScriptHandler= {
                                 ExportFileName = $Command.ExportFileName
                                 Type           = "(WinRM) WMI"
                             }
-                        }
-                        
-                    <#  
-                        if ($Entry -match '(WinRS)' -and $Entry -match 'CMD' -and $Entry.Checked) {
-                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                Name           = $Entry.Text
-                                Command        = $Command.Command_WinRS_CMD
-                                ExportFileName = $Command.ExportFileName
-                                Type           = "(WinRS) CMD"
-                            }
-                        }
-                        if ($Entry -match '(WinRS)' -and $Entry -match 'WMIC' -and $Entry.Checked) {
-                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                Name           = $Entry.Text
-                                Command        = $Command.Command_WinRS_WMIC
-                                ExportFileName = $Command.ExportFileName
-                                Type           = "(WinRS) WMIC"
-                            }
-                        }
-                        #>                                        
+                        }                        
                     }
                 }
             }
@@ -12642,17 +12765,6 @@ $ExecuteScriptHandler= {
                         $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
                         $OutputFileFileType = "csv"
                     }
-                    <#
-                    elseif ($Command.Type -eq "(WinRS) CMD") {
-                        # -username:<username> -password:<password>
-                        $CommandString = "$($Command.Command)"
-                        $OutputFileFileType = "txt"
-                    }
-                    elseif ($Command.Type -eq "(WinRS) WMIC") {
-                        $CommandString = "$($Command.Command)"
-                        $OutputFileFileType = "txt"
-                    }
-                    #>
                     elseif ($Command.Type -eq "(RPC) CMD") {
                         $CommandString = "$($Command.Command) \\$TargetComputer $($Command.Arguments)"
                         $OutputFileFileType = "txt"
@@ -12686,8 +12798,6 @@ $ExecuteScriptHandler= {
                                 Invoke-Expression -Command $CommandString
                                 Start-Sleep -Seconds 1
                                 Move-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
-                                #Copy-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
-                                #Remove-Item "\\$TargetComputer\c$\results.txt"
                             }
                             else {
                                 # Runs all other commands an saves them locally as a .txt file
@@ -12754,17 +12864,6 @@ $ExecuteScriptHandler= {
                         $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
                         $OutputFileFileType = "csv"
                     }
-                    <#
-                    elseif ($Command.Type -eq "(WinRS) CMD") {
-                        # -username:<username> -password:<password>
-                        $CommandString = "$($Command.Command)"
-                        $OutputFileFileType = "txt"
-                    }
-                    elseif ($Command.Type -eq "(WinRS) WMIC") {
-                        $CommandString = "$($Command.Command)"
-                        $OutputFileFileType = "txt"
-                    }
-                    #>
                     elseif ($Command.Type -eq "(RPC) CMD") {
                         $CommandString = "$($Command.Command) \\$TargetComputer $($Command.Arguments)"
                         $OutputFileFileType = "txt"
@@ -12836,7 +12935,7 @@ $ExecuteScriptHandler= {
         
         if ($EventLogsEventIDsManualEntryCheckbox.Checked) {EventLogsEventCodeManualEntryCommand ; $CountCommandQueries += 1}
         if ($EventLogsEventIDsIndividualSelectionCheckbox.Checked) {EventLogsEventCodeIndividualSelectionCommand ; $CountCommandQueries += 1}
-        #batman
+
         if ($EventLogsQuickPickSelectionCheckbox.Checked) {
             foreach ($Query in $script:EventLogQueries) {
                 if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
@@ -12902,6 +13001,3 @@ $PoShACME.ShowDialog() | Out-Null
 
 # Call the PoSh-ACME Function
 PoSh-ACME_GUI
-
-
-
