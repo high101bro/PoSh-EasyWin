@@ -11,17 +11,17 @@
      ACME: The point at which something is the Best, Perfect, or Most Successful!
      ============================================================================
      File Name      : PoSh-ACME.ps1
-     Version        : v.3.3 Beta
+     Version        : v.3.4 Beta
 
      Author         : high101bro
      Email          : high101bro@gmail.com
      Website        : https://github.com/high101bro/PoSH-ACME
 
      Requirements   : PowerShell v3 or Higher
-                    : RPC, WMI, and/or WinRM
+                    : WinRM  (Default Port 5986)
      Optional       : PsExec.exe, Procmon.exe, Autoruns.exe 
         		    : Can run standalone, but works best with the Resources folder!
-     Updated        : 12 Apr 19
+     Updated        : 17 Apr 19
      Created        : 21 Aug 18
 
     PoSh-ACME is a tool that allows you to run any number of queries against any number
@@ -1214,7 +1214,9 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
 
-
+    #
+    # PSLOGGON -L \\remotecomputer
+    #
     $CollectionName = 'Logon Info'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "User, Charts"
@@ -1225,6 +1227,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_WMI    -Value "Invoke-Command -ScriptBlock { cmd /c wmic netlogin list brief }"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_CMD    -Value "Invoke-Command -ScriptBlock { cmd /c net config workstation | find /I ' name ' }"
+    # NBTSTAT -a remotecomputer | find '<03>' | find /I /V 'remotecomputer'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WMI          -Value 'Get-WmiObject -Class Win32_NetworkLoginProfile'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value "winrs wmic netlogin list brief"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_CMD    -Value $null
@@ -1403,6 +1406,16 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
 
+    <#
+    # There is an integrated tool in Windows Servers 2008R2 and newer, that allows capturing the network activity without installing anything.
+    cmd /c netsh trace start capture=yes Ethernet.Type=IPv4 IPv4.Address=127.0.0.1 filemode=single maxSize=250 overwrite=yes tracefile=c:\temp\nettrace_test.etl
+    #default save location: “traceFile=%LOCALAPPDATA%\Temp\NetTraces\NetTrace.etl”
+    # e.g. Protocol=6
+    # e.g. Protocol=!(TCP,UDP)
+    # e.g. Protocol=(4-10)    
+    Start-Sleep -Seconds 30
+    cmd /c netsh trace stop
+    #>
 
     $CollectionName = 'Network Connections TCP'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
@@ -1656,6 +1669,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_RPC_PoSh     -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_Script -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value 'Invoke-Command -ScriptBlock { Get-ChildItem \\.\\pipe\\ -Force }'
+    #$BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_PoSh   -Value 'Invoke-Command -ScriptBlock { [System.IO.Directory]::GetFiles("\\.\\pipe\\") }'
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_WMI    -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRM_CMD    -Value $null
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Command_WinRS_WMIC   -Value $null
@@ -1757,6 +1771,7 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\$CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
+
 
     
     $CollectionName = 'Process Tree (Lineage)'
@@ -2044,7 +2059,9 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
 
-
+    ############################################
+    ########## PsExec \\servername NET SESSION
+    ############################################
     $CollectionName = 'Sessions'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "Network, Hunt" 
@@ -2447,6 +2464,11 @@ $script:AllEndpointCommands = @()
     $script:AllEndpointCommands += $BuildCommand
 
  	
+    # Related: Get-MpThreatCatalog 	Gets known threats from the definitions catalog.
+    # Related: Get-MpThreat         Gets the history of threats detected on the computer
+    # start-MpScan -ScanType [QuickScan|FullScan]
+    # Start-MpScan -ScanPath C:\Users\<username>\Downloads
+
     $CollectionName = 'Windows Defender (Malware Detected)'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
     $BuildCommand | Add-Member -MemberType NoteProperty -Name Type                 -Value "System"
@@ -2500,7 +2522,24 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllEndpointCommands += $BuildCommand
 
+
+
+
+#=============================
+#=============================
+#=============================
+#=============================
+#=============================
+#=============================
     $script:AllActiveDirectoryCommands = @()
+
+    ### Win32_MemoryDevice
+    ### Win32_ComputerSystemProcessor
+    ### netstat -es
+    ### tasklist /SVC /FO CSV
+    ### tree
+    ### auditpol /get /category:\*
+
 
     $CollectionName = 'Accounts (All Details and User Information)'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
@@ -3146,6 +3185,20 @@ $script:AllEndpointCommands = @()
 
     # Invoke-Command -ComputerName 2012data-dc1 -ScriptBlock {Get-ADGroup -filter * | Where-Object {-Not ($_ | Get-ADGroupMember)}  }
 
+    # find all members for a particular group
+    # dsget group "<group>" -members
+    # find all groups for a particular member
+    # dsget user "<DN of user>" -memberof -expand
+    # get the groups name from user container
+    # dsquery group -o rdn cn=users,dc=contoso.dc=com
+    # get the members from a group
+    # dsquery group-samid "CS_CLUB_ACCOUNTS" | dsget group -members -expand | dsget user -samid
+    # find all members for a OU
+    # dsquery user ou=targetOU,dc=domain,dc=com
+    # find all groups for a OU
+    # dsquery group ou=targetOU,dc=domain,dc=com
+
+
     $CollectionName = 'Group Membership by Groups'
     $CommandScript = {
         $ADGroupList = Get-ADGroup -Filter * | Select-Object -ExpandProperty Name
@@ -3227,6 +3280,24 @@ $script:AllEndpointCommands = @()
     $BuildCommand | Add-Member -MemberType NoteProperty -Name NotesPath            -Value "$CommandsHostDirectoryNotes\ADDS - $CollectionName.txt"
     $BuildCommand | Add-Member -MemberType NoteProperty -Name ExportFileName       -Value "$CollectionName"
     $script:AllActiveDirectoryCommands += $BuildCommand
+
+    # marco...
+    # Get-DNSServerStatistics
+    # Get-DnsServer 
+    # Get-DnsServerDiagnostics 
+    # Get-DnsServerDsSetting 
+    # Get-DnsServerForwarder 
+    # Get-DnsServerGlobalNameZone
+    # Get-DnsServerRecursion
+    # Get-DNSServerRootHint
+    # Get-DnsServerScavenging
+    # Get-DnsServerSetting
+    # Get-DnsServerZone
+    # get-wmiobject -Namespace root\MicrosoftDNS -class microsoftdns_resourcerecord | select __Class, ContainerName, DomainName, RecordData, ownername
+
+    # The block list automatically applies to all zones for which the server is authoritative. For example, if the DNS server is authoritative for contoso.com and for europe.contoso.com, it ignores queries for wpad.contoso.com as well as for wpad.europe.contoso.com. However, the DNS Server service does not ignore queries for names in zones for which it is not authoritative. 
+    # dnscmd /info /globalqueryblocklist
+
 
     $CollectionName = 'DNS All Records (Server 2008)'
     $BuildCommand = New-Object PSObject -Property @{ Name = $CollectionName }
@@ -3405,6 +3476,12 @@ function Conduct-NodeAction {
                     $StatusListBox.Items.Add("Hostname/IP:  $($Entry.Text)")
                     $ResultsListBox.Items.clear()
                     $ResultsListBox.Items.Add("$((($Entry.Text) -split ' -- ')[-1])")
+                    #batman
+                    #$CommandNotes = Get-Content -Path $($script:AllEndpointCommands | Where-Object Name -match $((($Entry.Text) -split ' -- ')[-1])).NotesPath
+                    #$ResultsListBox.Items.Clear()
+                    #Foreach ($Line in $CommandNotes) {
+                    #    $ResultsListBox.Items.Add($Line)                    
+                    #}
                                       
                     # Brings the Host Data Tab to the forefront/front view
                     $Section4TabControl.SelectedTab   = $Section3ResultsTab
@@ -3450,21 +3527,25 @@ function Initialize-CommandsTreeView {
     $CommandsTreeView.Nodes.Clear()
     $script:TreeNodeEndpointCommands                   = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList '2) Endpoint Commands'
     $script:TreeNodeEndpointCommands.Tag               = "Endpoint Commands"
+    #$script:TreeNodeEndpointCommands.Expand()
     $script:TreeNodeEndpointCommands.NodeFont          = New-Object System.Drawing.Font("$Font",10,1,1,1)
     $script:TreeNodeEndpointCommands.ForeColor         = [System.Drawing.Color]::FromArgb(0,0,0,0)
 
     $script:TreeNodeActiveDirectoryCommands            = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList '3) Active Directory Commands'
     $script:TreeNodeActiveDirectoryCommands.Tag        = "ADDS Commands"
+    #$script:TreeNodeActiveDirectoryCommands.Expand()
     $script:TreeNodeActiveDirectoryCommands.NodeFont   = New-Object System.Drawing.Font("$Font",10,1,1,1)
     $script:TreeNodeActiveDirectoryCommands.ForeColor  = [System.Drawing.Color]::FromArgb(0,0,0,0)
 
     $script:TreeNodeImportCustomCommands                = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList '1) Custom Commands'
     $script:TreeNodeImportCustomCommands.Tag            = "Custom Commands"
+    #$script:TreeNodeImportCustomCommands.Expand()
     $script:TreeNodeImportCustomCommands.NodeFont       = New-Object System.Drawing.Font("$Font",10,1,1,1)
     $script:TreeNodeImportCustomCommands.ForeColor      = [System.Drawing.Color]::FromArgb(0,0,0,0)
 
     $script:TreeNodeCommandSearch                      = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList '* Search Results'
     $script:TreeNodeCommandSearch.Tag                  = "Search"
+    #$script:TreeNodeCommandSearch.Expand()
     $script:TreeNodeCommandSearch.NodeFont             = New-Object System.Drawing.Font("$Font",10,1,1,1)
     $script:TreeNodeCommandSearch.ForeColor            = [System.Drawing.Color]::FromArgb(0,0,0,0)
 }
@@ -3487,6 +3568,7 @@ function Keep-CommandsCheckboxesChecked {
                     if ($CommandsCheckedBoxesSelected -contains $Entry.text) {
                         $Entry.Checked      = $true
                         $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                        #green#$Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,128,0)
                         $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
                         $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
                         $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
@@ -3524,6 +3606,8 @@ function Add-CommandsNode {
         $CategoryNode.Name          = $Category
         $CategoryNode.Text          = $Category
         $CategoryNode.Tag           = $Category
+        #$CategoryNode.Expand()
+        #$CategoryNode.ToolTipText   = "Checkbox this Category to query all its hosts"
 
         if ($Category -match '(WinRM)') {
             $CategoryNode.ToolTipText = "PowerShell Remoting
@@ -3576,8 +3660,55 @@ Cons:      Limited functionality
 
 $script:HostQueryTreeViewSelected = ""
 
+#marco
+
 # Groups Commands TreeNodes by Method
 Function View-CommandsTreeViewMethod {
+<#    $CommandTypeList = @{
+        $script:TreeNodeEndpointCommands=$script:AllEndpointCommands,
+        $script:TreeNodeActiveDirectoryCommands=$script:AllActiveDirectoryCommands,
+        $script:TreeNodeImportCustomCommands=$script:ImportCustomCommands
+    }
+
+    Foreach ( $CommandType in $CommandTypeList.GetEnumerator() ) {
+        Foreach ( $Command in $CommandType.value ) {
+            if ($Command.Command_RPC_PoSh) {
+                Add-CommandsNode -RootNode $CommandType.Name -Category 'Remote Procedure Call (RPC) PoSh' -Entry "(RPC) PoSh -- $($Command.Name)" -ToolTip $Command.Command_RPC_PoSh
+            }
+            if ($Command.Command_RPC_CMD) {
+                Add-CommandsNode -RootNode $CommandType.Name -Category 'Remote Procedure Call (RPC) Win CMD' -Entry "(RPC) CMD -- $($Command.Name)" -ToolTip $Command.Command_RPC_CMD
+            }
+            if ($Command.Command_WMI) {
+                Add-CommandsNode -RootNode $CommandType.Name -Category 'Windows Management Instrumentation (WMI)' -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
+            }
+    #        if ($Command.Command_WinRS_WMIC) {
+    #            Add-CommandsNode -RootNode $CommandType.Name -Category 'Windows Remote Shell (WinRS) WMIC' -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
+    #        }
+    #        if ($Command.Command_WinRS_CMD) {
+    #            Add-CommandsNode -RootNode $CommandType.Name -Category 'Windows Remote Shell (WinRS) CMD' -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
+    #        }
+            if ($Command.Command_WinRM_Script) {
+                Add-CommandsNode -RootNode $CommandType.Name -Category 'PowerShell Remoting (WinRM) Scripts' -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
+            }        
+            if ($Command.Command_WinRM_PoSh) {
+                Add-CommandsNode -RootNode $CommandType.Name -Category 'PowerShell Remoting (WinRM) PoSh' -Entry "(WinRM) PoSh -- $($Command.Name)" -ToolTip $Command.Command_WinRM_PoSh
+            }
+            if ($Command.Command_WinRM_WMI) {
+                Add-CommandsNode -RootNode $CommandType.Name -Category 'PowerShell Remoting (WinRM) WMI' -Entry "(WinRM) WMI -- $($Command.Name)" -ToolTip $Command.Command_WinRM_WMI
+            }
+            if ($Command.Command_WinRM_CMD) {
+                Add-CommandsNode -RootNode $CommandType.Name -Category 'PowerShell Remoting (WinRM) Win CMD' -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRM_CMD
+            }
+        }
+    }
+}
+#>
+
+
+
+
+
+
 
     Foreach($Command in $script:AllEndpointCommands) {
         if ($Command.Command_RPC_PoSh) {
@@ -3589,6 +3720,12 @@ Function View-CommandsTreeViewMethod {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category 'Windows Management Instrumentation (WMI)' -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
+#        if ($Command.Command_WinRS_WMIC) {
+#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category 'Windows Remote Shell (WinRS) WMIC' -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
+#        }
+#        if ($Command.Command_WinRS_CMD) {
+#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category 'Windows Remote Shell (WinRS) CMD' -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
+#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category 'PowerShell Remoting (WinRM) Scripts' -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -3612,6 +3749,12 @@ Function View-CommandsTreeViewMethod {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category 'Windows Management Instrumentation (WMI)' -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
+#        if ($Command.Command_WinRS_WMIC) {
+#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category 'Windows Remote Shell (WinRS) WMIC' -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
+#        }
+#        if ($Command.Command_WinRS_CMD) {
+#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category 'Windows Remote Shell (WinRS) CMD' -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
+#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category 'PowerShell Remoting (WinRM) Scripts' -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -3635,6 +3778,12 @@ Function View-CommandsTreeViewMethod {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category 'Windows Management Instrumentation (WMI)' -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
+#        if ($Command.Command_WinRS_WMIC) {
+#            Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category 'Windows Remote Shell (WinRS) WMIC' -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
+#        }
+#        if ($Command.Command_WinRS_CMD) {
+#            Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category 'Windows Remote Shell (WinRS) CMD' -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
+#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category 'PowerShell Remoting (WinRM) Scripts' -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -3662,6 +3811,12 @@ Function View-CommandsTreeViewQuery {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
+#        if ($Command.Command_WinRS_WMIC) {
+#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
+#        }
+#        if ($Command.Command_WinRS_CMD) {
+#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
+#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -3685,6 +3840,12 @@ Function View-CommandsTreeViewQuery {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WMI) -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
+#        if ($Command.Command_WinRS_WMIC) {
+#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WinRS) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
+#        }
+#        if ($Command.Command_WinRS_CMD) {
+#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WinRS) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
+#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -5180,6 +5341,8 @@ function FileSearchFileSearchCommand {
                 ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
 
                 $FilesFoundList = @()
+#Batman
+
                 foreach ($DirectoryPath in $DirectoriesToSearch) {
                     foreach ($Filename in $FilesToSearch) {
                         $FilesFound = Invoke-Command -ComputerName $TargetComputer -ScriptBlock {
@@ -5362,6 +5525,9 @@ $FileSearchFileSearchDirectoryTextbox.WordWrap      = $True
 $FileSearchFileSearchDirectoryTextbox.AcceptsTab    = $false    # Allows you to enter in tabs into the textbox
 $FileSearchFileSearchDirectoryTextbox.AcceptsReturn = $false # Allows you to enter in tabs into the textbox
 $FileSearchFileSearchDirectoryTextbox.Text          = "Enter Directories; One Per Line"
+#$FileSearchFileSearchDirectoryTextbox.AutoCompleteSource = "FileSystem" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
+#$FileSearchFileSearchDirectoryTextbox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+#$FileSearchFileSearchDirectoryTextbox.Add_KeyDown({          })
 $FileSearchFileSearchDirectoryTextbox.Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section1FileSearchTab.Controls.Add($FileSearchFileSearchDirectoryTextbox)
 
@@ -5487,6 +5653,7 @@ $FileSearchAlternateDataStreamMaxDepthLabel.Location   = New-Object System.Drawi
 $FileSearchAlternateDataStreamMaxDepthLabel.Size       = New-Object System.Drawing.Size(100,$FileSearchLabelHeight) 
 $FileSearchAlternateDataStreamMaxDepthLabel.Text       = "Recursive Depth"
 $FileSearchAlternateDataStreamMaxDepthLabel.Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+#$FileSearchAlternateDataStreamMaxDepthLabel.ForeColor  = "Blue"
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamMaxDepthLabel)
 
 #-------------------------------------------------------
@@ -5497,7 +5664,11 @@ $FileSearchAlternateDataStreamMaxDepthTextbox.Text           = 0
 $FileSearchAlternateDataStreamMaxDepthTextbox.Location       = New-Object System.Drawing.Size(($FileSearchAlternateDataStreamMaxDepthLabel.Location.X + $FileSearchAlternateDataStreamMaxDepthLabel.Size.Width),($FileSearchDownPosition)) 
 $FileSearchAlternateDataStreamMaxDepthTextbox.Size           = New-Object System.Drawing.Size(50,20)
 $FileSearchAlternateDataStreamMaxDepthTextbox.MultiLine      = $false
+#$FileSearchAlternateDataStreamMaxDepthTextbox.ScrollBars    = "Vertical"
 $FileSearchAlternateDataStreamMaxDepthTextbox.WordWrap       = $false
+#$FileSearchAlternateDataStreamMaxDepthTextbox.AcceptsTab    = $false
+#$FileSearchAlternateDataStreamMaxDepthTextbox.AcceptsReturn = $false
+#$FileSearchAlternateDataStreamMaxDepthTextbox.Add_KeyDown({          })
 $FileSearchAlternateDataStreamMaxDepthTextbox.Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamMaxDepthTextbox)
 
@@ -5530,6 +5701,9 @@ $FileSearchAlternateDataStreamDirectoryTextbox.ScrollBars    = "Vertical"
 $FileSearchAlternateDataStreamDirectoryTextbox.WordWrap      = $True
 $FileSearchAlternateDataStreamDirectoryTextbox.AcceptsTab    = $false # Allows you to enter in tabs into the textbox
 $FileSearchAlternateDataStreamDirectoryTextbox.AcceptsReturn = $false # Allows you to enter in tabs into the textbox
+#$FileSearchAlternateDataStreamDirectoryTextbox.AutoCompleteSource = "FileSystem" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
+#$FileSearchAlternateDataStreamDirectoryTextbox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+#$FileSearchAlternateDataStreamDirectoryTextbox.Add_KeyDown({          })
 $FileSearchAlternateDataStreamDirectoryTextbox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamDirectoryTextbox)
 
@@ -6161,6 +6335,11 @@ function Conduct-PortScan {
         $PortsToScan += $null
     }
 
+    # Places the Ports to Scan in Numerical Order, removes duplicate entries, and remove possible empty fields
+##Consumes too much time##
+##    $SortedPorts=@()
+##    foreach ( $Port in $PortsToScan ) { $SortedPorts += [int]$Port }
+##    $PortsToScan = $SortedPorts | ? {$_ -ne ""}
     $PortsToScan = $PortsToScan | Sort-Object -Unique | ? {$_ -ne ""}
     if ($($PortsToScan).count -eq 0) {
         $ResultsListBox.Items.Clear()
@@ -6482,6 +6661,9 @@ $EnumerationPortScanGroupDownPositionShift = 25
             $ResultsListBox.Items.Add("Previous Ports Scanned:  $($CustomSavedPortsConvertedToList | Where {$_ -ne ''})")
         }
     })
+    #$EnumerationPortScanPortQuickPickComboBox.Add_KeyDown({ 
+    #    if ($_.KeyCode -eq "Enter") { Conduct-PortScan }
+    #})
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortQuickPickComboBox)
 
     #-------------------------------------------------
@@ -7873,6 +8055,7 @@ $CompareButton.Add_Click({
         $CompareCsvFilesForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\favicon.ico")
         $CompareCsvFilesForm.StartPosition = "CenterScreen"
         $CompareCsvFilesForm.ControlBox = $true
+        #$CompareCsvFilesForm.Add_Shown({$CompareCsvFilesForm.Activate()})
 
         #-----------------
         # Drop Down Label
@@ -8048,6 +8231,7 @@ $BuildChartButton.Add_Click({
             if ($Script:ViewChartChoice[1] -eq "PSComputername") {$ChartArea.AxisY.Title = "Number of Computers"}
             else {$ChartArea.AxisY.Title    = $Script:ViewChartChoice[1]}
             $ChartArea.AxisX.Interval = 1
+            #$ChartArea.AxisY.Interval = 1
             $ChartArea.AxisY.IntervalAutoMode = $true
 
             # Option to enable 3D Charts
@@ -8092,6 +8276,7 @@ $BuildChartButton.Add_Click({
             if ($Script:ViewChartChoice[1] -eq "PSComputerName") {
                 $Script:ViewChartChoice0 = "Name"
                 $Script:ViewChartChoice1 = "PSComputerName"                
+                #test# $DataSource = Import-Csv "C:\Users\Dan\Documents\GitHub\Dev Ops\Collected Data\2018-10-23 @ 2246 51\Processes.csv"
                 $UniqueDataFields = $DataSource | Select-Object -Property $Script:ViewChartChoice0 | Sort-Object -Property $Script:ViewChartChoice0 -Unique                
                 $ComputerWithDataResults = @()
                 foreach ($DataField in $UniqueDataFields) {
@@ -8179,6 +8364,10 @@ $BuildChartButton.Add_Click({
         $ViewChartForm.controls.add($SaveButton)
         $ViewChartForm.Add_Shown({$ViewChartForm.Activate()})
         [void]$ViewChartForm.ShowDialog()
+        #---------------------------------------
+        # Custom View Chart - Autosave an Image
+        #---------------------------------------
+        #$Chart.SaveImage('C:\temp\chart.jpeg', 'jpeg')
     }
 
     #=================================================
@@ -8436,6 +8625,8 @@ $Section2MainTab.Controls.Add($BuildChartButton)
 # Auto Create Charts
 #============================================================================================================================================================
 #============================================================================================================================================================
+# https://bytecookie.wordpress.com/2012/04/13/tutorial-powershell-and-microsoft-chart-controls-or-how-to-spice-up-your-reports/
+# https://blogs.msdn.microsoft.com/alexgor/2009/03/27/aligning-multiple-series-with-categorical-values/
 
 #======================================
 # Auto Charts Select Property Function
@@ -8863,6 +9054,7 @@ function AutoChartsCommand {
     $AutoChart.BackColor       = [System.Drawing.Color]::White
     $AutoChart.BorderColor     = 'Black'
     $AutoChart.BorderDashStyle = 'Solid'
+    #$AutoChart.DataManipulator.Sort() = "Descending"
     $AutoChart.Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
     $AutoChart.Anchor          = $AnchorAll
     
@@ -8957,6 +9149,11 @@ function AutoChartsCommand {
     $AutoChart.Series["$Series02Name"].Chartarea         = "Chart Area"
     $AutoChart.Series["$Series02Name"].Legend            = "Legend"
     $AutoChart.Series["$Series02Name"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+    # Pie Charts - Moves text off pie
+    #if (-not ($script:CSVFileMostRecentCollection -eq $script:CSVFilePreviousCollection) -or -not ($script:CSVFileMostRecentCollection -eq $script:CSVFileBaselineCollection)) {
+    #    $AutoChart.Series["$Series03Name"].ChartType         = $ChartType1
+    #    $AutoChart.Series["$Series03Name"].MarkerColor       = 'Blue'
+    #}
     $AutoChart.Series["$Series02Name"]['PieLineColor']   = 'Black'
     $AutoChart.Series["$Series02Name"]['PieLabelStyle']  = 'Outside'
            
@@ -9125,6 +9322,9 @@ function AutoChartsCommand {
 
     # If the Second field/Y Axis equals PSComputername, it counts it
     if ($PropertyY -eq "PSComputerName") {
+        #$Script:AutoChartsChoice0 = "Name"
+        #$Script:AutoChartsChoice1 = "PSComputerName"
+
         # This file merger is later used to get a unique count of PropertyX and add to the DataSource (later the count is then subtracted by 1), 
         # this allow each collection to have a minimum of zero count of a process. This aligns all results, otherwise unique results will be shifted 
         # off from one another when alphabetized
@@ -9132,6 +9332,7 @@ function AutoChartsCommand {
                        -CSVFilePrevious $script:CSVFilePreviousCollection `
                        -CSVFileMostRecent $script:CSVFileMostRecentCollection
         
+        #batman#batman
         # The purpose of the code below is to ultiately add any missing unique fields to each collection.
         # ex: If the most recent scan/collection contained an item not in the baseline, the baseline will now contain that item but at a zero value
         # This is needed to ensure columns align when viewing multiple scans at once
@@ -9198,6 +9399,12 @@ function AutoChartsCommand {
         foreach ($CSVFile in $CsvFileList) {
             $SeriesCount += 1
             $DataSource = Import-Csv $CSVFile
+########## TEST DATA ##########
+#            $DataSource = @()
+#            $DataSource += Import-Csv "C:\Users\Dan\Documents\GitHub\PoSH-ACME\PoSh-ACME_v2.3_20181106_Beta_Nightly_Build\Collected Data\2018-11-19 @ 2101 42\Network Settings.csv"
+#            $PropertyX = "PSComputerName"
+#            $PropertyY = "IPAddress"
+########## TEST DATA ##########
 
             $SelectedDataField  = $DataSource | Select-Object -Property $PropertyY | Sort-Object -Property $PropertyY -Unique
             $UniqueComputerList = $DataSource | Select-Object -Property $PropertyX | Sort-Object -Property $PropertyX -Unique
@@ -9248,6 +9455,7 @@ function AutoChartsCommand {
                 Computer     = $Computer
             }    
             $OverallDataResults += $DataResults
+            #$OverallDataResults
         $Series = '$Series0' + $SeriesCount + 'Name'        
         $OverallDataResults `
         | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.Computer,$_.ResultsCount)}        
@@ -9385,7 +9593,16 @@ function AutoChartsCommand {
                 $ButtonSpacing += 35
             }
         }
+
     }
+
+    ####$AutoChart.Add_Shown({$ViewChartForm.Activate()})
+    ####[void]$AutoChart.ShowDialog()
+    
+    #---------------------------------------
+    # Custom View Chart - Autosave an Image
+    #---------------------------------------
+    #$AutoChart.SaveImage('C:\temp\chart.jpeg', 'jpeg')    
 }
 
 #---------------------------
@@ -9538,6 +9755,7 @@ $OptionSearchNetworkTCPConnectionsCheckBox.Size     = New-Object System.Drawing.
 $OptionSearchNetworkTCPConnectionsCheckBox.Enabled  = $true
 $OptionSearchNetworkTCPConnectionsCheckBox.Checked  = $False
 $OptionSearchNetworkTCPConnectionsCheckBox.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+#$OptionSearchNetworkTCPConnectionsCheckBox.Add_Click({  })
 $Section2OptionsTab.Controls.Add($OptionSearchNetworkTCPConnectionsCheckBox)
 
 #--------------------------
@@ -9576,6 +9794,7 @@ $OptionShowToolTipCheckBox.Size     = New-Object System.Drawing.Size(200,$Column
 $OptionShowToolTipCheckBox.Enabled  = $true
 $OptionShowToolTipCheckBox.Checked  = $true
 $OptionShowToolTipCheckBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+#$OptionShowToolTipCheckBox.Add_Click({    })
 $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
 
 #--------------------------------------
@@ -9632,8 +9851,6 @@ function Initialize-ComputerListTreeView {
 function Populate-ComputerListTreeViewDefaultData {
     # This section populates the data with default data if it doesn't have any
     $script:ComputerListTreeViewDataTemp = @()
-
-
     Foreach($Computer in $script:ComputerListTreeViewData) {
         # Trims out the domain name from the the CanonicalName
         $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
@@ -9670,6 +9887,21 @@ function Populate-ComputerListTreeViewDefaultData {
     $script:ComputerListTreeViewData       = $script:ComputerListTreeViewDataTemp
     $script:ComputerListTreeViewDataTemp   = $null
     $ComputerListTreeViewInsertDefaultData = $null
+}
+
+# This function checks if the category node is empty, if so the node is removed
+function Check-CategoryIsEmpty {
+    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes
+    foreach ($root in $AllHostsNode) { 
+        foreach ($Category in $root.Nodes) { 
+            $CategoryNodeContentCount = 0
+            # Counts the number of computer nodes in each category
+            foreach ($Entry in $Category.nodes) { $CategoryNodeContentCount += 1 }
+            # Removes a category node if it is empty
+            if ($CategoryNodeContentCount -eq 0) { $Category.remove() }
+        }
+    }
+    
 }
 
 # This section will check the checkboxes selected under the other view
@@ -9794,8 +10026,8 @@ function Search-ComputerListTreeView {
             }                
         }    
 
-    # Checks if the Option is checked, if so it will include searching through 'Processes' CSVs
-    # This is a slow process...
+        # Checks if the Option is checked, if so it will include searching through 'Processes' CSVs
+        # This is a slow process...
     if ($OptionSearchProcessesCheckBox.Checked -or $OptionSearchServicesCheckBox.Checked -or $OptionSearchNetworkTCPConnectionsCheckBox.Checked) {
         # Searches though the all Collection Data Directories to find files that match
         $ListOfCollectedDataDirectories = $(Get-ChildItem -Path $CollectedDataDirectory | Sort-Object -Descending).FullName
@@ -9863,10 +10095,20 @@ function Search-ComputerListTreeView {
     }
     $ComputerListTreeViewSearchTextBox.Text = ""
 
-    $SingleHostIPCheckBox.Checked   = $false
-    $SingleHostIPTextBox.Text       = $DefaultSingleHostIPText
-    $ComputerListTreeView.Enabled   = $true
-    $ComputerListTreeView.BackColor = "white"
+    #$SingleHostIPCheckBox.Enabled  = $true
+    # Enables and disables fields
+#    if ($SingleHostIPCheckBox.Checked -eq $true){
+#        $SingleHostIPTextBox.Text       = ""
+#        $ComputerListTreeView.Enabled   = $false
+#        $ComputerListTreeView.BackColor = "lightgray"
+#    }
+#    elseif ($SingleHostIPCheckBox.Checked -eq $false) {
+        $SingleHostIPCheckBox.Checked   = $false
+        $SingleHostIPTextBox.Text       = $DefaultSingleHostIPText
+        $ComputerListTreeView.Enabled   = $true
+        $ComputerListTreeView.BackColor = "white"
+#    }
+
 }
 
 #----------------------------------------
@@ -9949,6 +10191,7 @@ $System_Drawing_Point.Y                 = $Column4DownPosition + 39
 $ComputerListTreeView.Location          = $System_Drawing_Point
 $ComputerListTreeView.Font              = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $ComputerListTreeView.CheckBoxes        = $True
+#$ComputerListTreeView.LabelEdit        = $True
 $ComputerListTreeView.ShowLines         = $True
 $ComputerListTreeView.ShowNodeToolTips  = $True
 $ComputerListTreeView.Sort()
@@ -10333,6 +10576,8 @@ function Check-Connection {
             }
             elseif ($CheckType -eq "WinRM Check") {
                 $CheckCommand = Test-WSman -ComputerName $target
+                # The following does a ping first...
+                # Test-NetConnection -CommonTCPPort WINRM -ComputerName <Target>
             }
             elseif ($CheckType -eq "RPC Check") {
                 function Test-Port {
@@ -10869,6 +11114,7 @@ $ComputerListExecuteButton1.Add_MouseHover({
         $ToolTip.ToolTipTitle   = 'Start Collection'
     }    
 })
+### $ComputerListExecuteButton1.Add_Click($ExecuteScriptHandler) ### Is located lower in the script
 $Section3ActionTab.Controls.Add($ComputerListExecuteButton1)
 
 ##############################################################################################################################################################
@@ -11028,6 +11274,57 @@ $Column5DownPosition += $Column5DownPositionShift
 #============================================================================================================================================================
 # Computer List - Treeview - Add Button
 #============================================================================================================================================================
+
+#---------------------------------------------
+# function to add a hostname/IP to a category
+#---------------------------------------------
+function AddHost-ComputerListTreeView {
+    if (($ComputerListTreeViewPopupAddTextBox.Text -eq "Enter a hostname/IP") -or ($ComputerListTreeViewPopupOSComboBox.Text -eq "Select an Operating System (or type in a new one)") -or ($ComputerListTreeViewPopupOUComboBox.Text -eq "Select an Organizational Unit / Canonical Name (or type a new one)")) {
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Add Hostname/IP:  Error")
+        $ResultsListBox.Items.Clear()
+        $ResultsListBox.Items.Add("Error:  Enter a suitable non-default value")
+    }
+    elseif ($script:ComputerListTreeViewData.Name -contains $ComputerListTreeViewPopupAddTextBox.Text) {
+        #$script:ComputerListTreeViewData = $script:ComputerListTreeViewData | Where-Object {$_.Name -ne $Entry.text}
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Add Hostname/IP:  Error")
+        $ResultsListBox.Items.Clear()
+        $ResultsListBox.Items.Add("Error: $($ComputerListTreeViewPopupAddTextBox.Text) already exists with the following data:")
+        $ResultsListBox.Items.Add("- OU/CN: $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).CanonicalName)")
+        $ResultsListBox.Items.Add("- OS:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).OperatingSystem)")
+        $ResultsListBox.Items.Add("- IP:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Name}).IPv4Address)")
+        $ResultsListBox.Items.Add("- MAC:   $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Name}).MACAddress)")
+    }
+    else {
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Added Selection:  $($ComputerListTreeViewPopupAddTextBox.Text)")
+
+        if ($ComputerListTreeViewOSHostnameRadioButton.Checked) {
+            Add-ComputerNode -RootNode $script:TreeNodeComputerList -Category $ComputerListTreeViewPopupOSComboBox.Text -Entry $ComputerListTreeViewPopupAddTextBox.Text #-ToolTip "No Data Available"
+            $ResultsListBox.Items.Clear()
+            $ResultsListBox.Items.Add("$($ComputerListTreeViewPopupAddTextBox.Text) has been added to $($ComputerListTreeViewPopupOSComboBox.Text)")
+        }
+        elseif ($ComputerListTreeViewOUHostnameRadioButton.Checked) {
+            Add-ComputerNode -RootNode $script:TreeNodeComputerList -Category $ComputerListTreeViewPopupOUComboBox.SelectedItem -Entry $ComputerListTreeViewPopupAddTextBox.Text #-ToolTip "No Data Available"            
+            $ResultsListBox.Items.Clear()
+            $ResultsListBox.Items.Add("$($ComputerListTreeViewPopupAddTextBox.Text) has been added to $($ComputerListTreeViewPopupOUComboBox.Text)")
+        }       
+        $ComputerListTreeViewAddHostnameIP = New-Object PSObject -Property @{ 
+            Name            = $ComputerListTreeViewPopupAddTextBox.Text
+            OperatingSystem = $ComputerListTreeViewPopupOSComboBox.Text
+            CanonicalName   = $ComputerListTreeViewPopupOUComboBox.Text
+            IPv4Address     = "No IP Available"
+        }        
+        $script:ComputerListTreeViewData += $ComputerListTreeViewAddHostnameIP
+        $ComputerListTreeView.ExpandAll()
+        $ComputerListTreeViewPopup.close()
+    }
+}
+
+#----------------------------------
+# ComputerList TreeView Add Button
+#----------------------------------
 $ComputerListTreeViewAddHostnameIPButton           = New-Object System.Windows.Forms.Button
 $ComputerListTreeViewAddHostnameIPButton.Location  = New-Object System.Drawing.Size($Column5RightPosition,$Column5DownPosition)
 $ComputerListTreeViewAddHostnameIPButton.Size      = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
@@ -11057,6 +11354,9 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     $ComputerListTreeViewPopupAddTextBox.Size     = New-Object System.Drawing.Size(300,25)
     $ComputerListTreeViewPopupAddTextBox.Location = New-Object System.Drawing.Size(10,10)
     $ComputerListTreeViewPopupAddTextBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    $ComputerListTreeViewPopupAddTextBox.Add_KeyDown({ 
+        if ($_.KeyCode -eq "Enter") { AddHost-ComputerListTreeView }
+    })
     $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupAddTextBox)
 
     #-----------------------------------------
@@ -11078,7 +11378,7 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     # ComputerList TreeView Popup OU ComboBox
     #-----------------------------------------
     $ComputerListTreeViewPopupOUComboBox                    = New-Object System.Windows.Forms.ComboBox
-    $ComputerListTreeViewPopupOUComboBox.Text               = "Select an Organizational Unit / Canonical Name"
+    $ComputerListTreeViewPopupOUComboBox.Text               = "Select an Organizational Unit / Canonical Name (or type a new one)"
     $ComputerListTreeViewPopupOUComboBox.Size               = New-Object System.Drawing.Size(300,25)
     $ComputerListTreeViewPopupOUComboBox.Location           = New-Object System.Drawing.Size(10,($ComputerListTreeViewPopupOSComboBox.Location.Y + $ComputerListTreeViewPopupOSComboBox.Size.Height + 10))        
     $ComputerListTreeViewPopupOUComboBox.AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
@@ -11088,55 +11388,6 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
         ForEach ($OU in $ComputerListTreeViewOUCategoryList) { $ComputerListTreeViewPopupOUComboBox.Items.Add($OU) }
     $ComputerListTreeViewPopupOUComboBox.Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupOUComboBox)
-
-    #---------------------------------------------
-    # function to add a hostname/IP to a category
-    #---------------------------------------------
-    function AddHost-ComputerListTreeView {
-        if ($script:ComputerListTreeViewData.Name -contains $ComputerListTreeViewPopupAddTextBox.Text) {
-            #$script:ComputerListTreeViewData = $script:ComputerListTreeViewData | Where-Object {$_.Name -ne $Entry.text}
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Add Hostname/IP:  Error")
-            $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("Error: $($ComputerListTreeViewPopupAddTextBox.Text) already exists with the following data:")
-            $ResultsListBox.Items.Add("- OU/CN: $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).CanonicalName)")
-            $ResultsListBox.Items.Add("- OS:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Text}).OperatingSystem)")
-            $ResultsListBox.Items.Add("- IP:    $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Name}).IPv4Address)")
-            $ResultsListBox.Items.Add("- MAC:   $($($script:ComputerListTreeViewData | Where-Object {$_.Name -eq $ComputerListTreeViewPopupAddTextBox.Name}).MACAddress)")
-        }
-        else {
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Added Selection:  $($ComputerListTreeViewPopupAddTextBox.Text)")
-
-            if ($ComputerListTreeViewOSHostnameRadioButton.Checked) {
-                Add-ComputerNode -RootNode $script:TreeNodeComputerList -Category $ComputerListTreeViewPopupOSComboBox.Text -Entry $ComputerListTreeViewPopupAddTextBox.Text #-ToolTip "No Data Available"
-                $ResultsListBox.Items.Clear()
-                $ResultsListBox.Items.Add("$($ComputerListTreeViewPopupAddTextBox.Text) has been added to $($ComputerListTreeViewPopupOSComboBox.Text)")
-            }
-            elseif ($ComputerListTreeViewOUHostnameRadioButton.Checked) {
-                Add-ComputerNode -RootNode $script:TreeNodeComputerList -Category $ComputerListTreeViewPopupOUComboBox.SelectedItem -Entry $ComputerListTreeViewPopupAddTextBox.Text #-ToolTip "No Data Available"            
-                $ResultsListBox.Items.Clear()
-                $ResultsListBox.Items.Add("$($ComputerListTreeViewPopupAddTextBox.Text) has been added to $($ComputerListTreeViewPopupOUComboBox.Text)")
-            }       
-            $ComputerListTreeViewAddHostnameIP = New-Object PSObject -Property @{ 
-                Name            = $ComputerListTreeViewPopupAddTextBox.Text
-                OperatingSystem = $ComputerListTreeViewPopupOSComboBox.Text
-                CanonicalName   = $ComputerListTreeViewPopupOUComboBox.SelectedItem
-                IPv4Address     = "No IP Available"
-            }        
-            $script:ComputerListTreeViewData += $ComputerListTreeViewAddHostnameIP
-            $ComputerListTreeView.ExpandAll()
-            $ComputerListTreeViewPopup.close()
-        }
-    }
-    $ComputerListTreeView.ExpandAll()
-    Populate-ComputerListTreeViewDefaultData
-    TempSave-HostData
-
-    # Moves the hostname/IPs to the new Category
-    $ComputerListTreeViewPopupAddTextBox.Add_KeyDown({ 
-        if ($_.KeyCode -eq "Enter") { AddHost-ComputerListTreeView }
-    })
 
     #--------------------------------------------
     # ComputerList TreeView Popup Execute Button
@@ -11151,6 +11402,9 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     $ComputerListTreeViewPopupMoveButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupMoveButton)
 
+    $ComputerListTreeView.ExpandAll()
+    Populate-ComputerListTreeViewDefaultData
+    TempSave-HostData
     $ComputerListTreeViewPopup.ShowDialog()               
 })
 $Section3ManageListTab.Controls.Add($ComputerListTreeViewAddHostnameIPButton) 
@@ -11165,65 +11419,65 @@ $ComputerListDeleteButton.Location      = New-Object System.Drawing.Size($Column
 $ComputerListDeleteButton.Size          = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
 $ComputerListDeleteButton.Text          = 'Delete'
 $ComputerListDeleteButton.Add_Click({
-    # This array stores checkboxes that are check; a minimum of at least one checkbox will be needed later in the script
+    # The array stores any node that is checked
     $ComputerListCheckedBoxesSelected = @()
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
     foreach ($root in $AllHostsNode) { 
-        if ($root.Checked) {
-            $ComputerListCheckedBoxesSelected += $root.Text
-        }
+        if ($root.Checked) { $ComputerListCheckedBoxesSelected += $root.Text }
         foreach ($Category in $root.Nodes) { 
-            if ($Category.Checked) {
-                $ComputerListCheckedBoxesSelected += $Category.Text
-            }
+            if ($Category.Checked) { $ComputerListCheckedBoxesSelected += $Category.Text }
             foreach ($Entry in $Category.nodes) {
-                if ($Entry.Checked) {
-                    $ComputerListCheckedBoxesSelected += $Entry.Text
-                }
+                if ($Entry.Checked) { $ComputerListCheckedBoxesSelected += $Entry.Text }
             }       
         }         
     }
 
-    if ($ComputerListCheckedBoxesSelected.count -ge 1) {
-        # Removes the original hostname/IP that was copied above
+    if ($ComputerListCheckedBoxesSelected.count -gt 0) {
+        # Removes selected computer nodes
         foreach ($i in $ComputerListCheckedBoxesSelected) {
-            foreach ($root in $AllHostsNode) { 
-                if (($i -contains $root.text) -and ($root.Checked -eq $True)) {
-                    $ResultsListBox.Items.Add($root.text)
-                    $root.remove()
-                    Initialize-ComputerListTreeView
-                    $Null = $ComputerListTreeView.Nodes.Add($script:TreeNodeComputerList)
-                    $ComputerListTreeView.ExpandAll()
-                }
+            foreach ($root in $AllHostsNode) {
                 foreach ($Category in $root.Nodes) { 
-                    if (($i -contains $Category.text) -and ($Category.Checked -eq $True)) {
-                        $ResultsListBox.Items.Add($Category.text)
-                        $Category.remove()
-                        foreach ($Entry in $Category.nodes) { 
-                            $ResultsListBox.Items.Add($Entry.text)
-                            $Entry.remove()
-                            $script:ComputerListTreeViewData = $script:ComputerListTreeViewData | Where-Object {$_.Name -ne $Entry.text}
-                        }
-                    }
                     foreach ($Entry in $Category.nodes) { 
-                        if (($i -contains $Entry.text) -and ($Entry.Checked -eq $True)) {
-                            $ResultsListBox.Items.Add($Entry.text)
-                            # This removes the host from the treeview
+                        if (($i -eq $Entry.text) -and ($Entry.Checked)) {
+                            # Removes the node from the treeview
                             $Entry.remove()
-            
-                            # This removes the host from the variable storing the all the computers
+                            # Removes the host from the variable storing the all the computers
                             $script:ComputerListTreeViewData = $script:ComputerListTreeViewData | Where-Object {$_.Name -ne $Entry.text}
                         }
                     }
                 }
             }
         }
+        # Removes selected category nodes - Note: had to put this in its own loop... 
+        # the saving of nodes didn't want to work properly when use in the above loop when switching between treenode views.
+        foreach ($i in $ComputerListCheckedBoxesSelected) {
+            foreach ($root in $AllHostsNode) {
+                foreach ($Category in $root.Nodes) { 
+                    if (($i -eq $Category.text) -and ($Category.Checked)) { $Category.remove() }
+                }
+            }
+        }
+        # Removes selected root node - Note: had to put this in its own loop... see above category note
+        foreach ($i in $ComputerListCheckedBoxesSelected) {
+            foreach ($root in $AllHostsNode) {                
+                if (($i -eq $root.text) -and ($root.Checked)) {
+                    foreach ($Category in $root.Nodes) { $Category.remove() }
+                    $root.remove()
+                    if ($i -eq "All Hosts") { $ComputerListTreeView.Nodes.Add($script:TreeNodeComputerList) }                                    
+                }
+            }
+        }
+
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Deleted:  $($ComputerListCheckedBoxesSelected.Count) Selected Items")
         $ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Add("The following hostnames/IPs or categories have been deleted:")
+        $ResultsListBox.Items.Add("The following hostnames/IPs or categories have been deleted:  ")
+        foreach ($n in $ComputerListCheckedBoxesSelected) { $ResultsListBox.Items.Add(" - $n") }
 
-        $ComputerListTreeViewPopup.close()
+        Initialize-ComputerListTreeView
+        Populate-ComputerListTreeViewDefaultData
+        Check-CategoryIsEmpty
+        TempSave-HostData
     }
     else {
         $StatusListBox.Items.Clear()
@@ -11233,7 +11487,6 @@ $ComputerListDeleteButton.Add_Click({
         $ResultsListBox.Items.Add("       Make sure to checkbox at least one hostname/IP or Category")
         $ResultsListBox.Items.Add("       Selecting a Category will remove contents within it")
     }
-    TempSave-HostData
 })
 $ComputerListDeleteButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section3ManageListTab.Controls.Add($ComputerListDeleteButton) 
@@ -11282,7 +11535,9 @@ $ComputerListMoveButton.Add_Click({
         $ComputerListTreeViewPopupMoveComboBox.Text     = "Select A Category"
         $ComputerListTreeViewPopupMoveComboBox.Size     = New-Object System.Drawing.Size(300,25)
         $ComputerListTreeViewPopupMoveComboBox.Location = New-Object System.Drawing.Size(10,10)
-
+        $ComputerListTreeViewPopupMoveComboBox.AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
+        $ComputerListTreeViewPopupMoveComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+        
         # Dynamically creates the combobox's Category list used for the move destination
         $ComputerListTreeViewCategoryList = @()
         [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
@@ -11344,12 +11599,18 @@ $ComputerListMoveButton.Add_Click({
                     }
                 }
             }
+
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Move Selection:  $($ComputerListTreeViewToMove.Count) Hosts")
             $ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("The following hostnames/IPs have been moved to $($ComputerListTreeViewPopupMoveComboBox.SelectedItem):")
-            $ComputerListTreeViewPopup.close()
+            foreach ($n in $ComputerListCheckedBoxesSelected) {
+                $ResultsListBox.Items.Add(" - $n")
+            }
+            Check-CategoryIsEmpty
+            $ComputerListTreeViewPopup.close()        
         }           
+        
         # Moves the hostname/IPs to the new Category
         $ComputerListTreeViewPopupMoveComboBox.Add_KeyDown({ 
             if ($_.KeyCode -eq "Enter") { 
@@ -11371,7 +11632,6 @@ $ComputerListMoveButton.Add_Click({
         })
         $ComputerListTreeViewPopupMoveButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
         $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupMoveButton)
-
         $ComputerListTreeViewPopup.ShowDialog()               
     }
     else {
@@ -11439,6 +11699,7 @@ $ComputerListRenameButton.Add_Click({
         #-----------------------------------------
         function Rename-ComputerListTreeViewSelected {                       
             if ($script:ComputerListTreeViewData.Name -contains $ComputerListTreeViewRenamePopupTextBox.Text) {
+                #$script:ComputerListTreeViewData = $script:ComputerListTreeViewData | Where-Object {$_.Name -ne $Entry.text}
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Rename Hostname/IP:  Error")
                 $ResultsListBox.Items.Clear()
@@ -11568,6 +11829,13 @@ $ComputerListTreeViewCollapseAllButton.Location = New-Object System.Drawing.Size
 $ComputerListTreeViewCollapseAllButton.Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
 $ComputerListTreeViewCollapseAllButton.Text     = "Collapse"
 $ComputerListTreeViewCollapseAllButton.Add_Click({
+<#    $ComputerListTreeViewFound = $ComputerListTreeView.Nodes.Find("WIN81-01", $true)
+    $ResultsListBox.Items.Clear()
+    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
+            foreach ($Node in $ComputerListTreeViewFound) { 
+                $ResultsListBox.Items.Add($Node.Text)
+            }       
+    $ResultsListBox.Items.Add("")#>
     if ($ComputerListTreeViewCollapseAllButton.Text -eq "Collapse") {
         $ComputerListTreeView.CollapseAll()
         [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
@@ -11695,9 +11963,12 @@ $PoShACME.Controls.Add($ProgressBar1Label)
 #----------------------------
 $ProgressBar1          = New-Object System.Windows.Forms.ProgressBar
 $ProgressBar1.Style    = "Continuous"
+#$ProgressBar1.Maximum  = 10
 $ProgressBar1.Minimum  = 0
 $ProgressBar1.Location = new-object System.Drawing.Size(($Section3RightPosition + 60),($Section3DownPosition - 2))
 $ProgressBar1.size     = new-object System.Drawing.Size($Section3ProgressBarWidth,10)
+#$ProgressBar1.Value     = 0
+#$ProgressBar1.Step     = 1
 $PoSHACME.Controls.Add($ProgressBar1)
 
 $Section3DownPosition += $Section3DownPositionShift - 9
@@ -12146,6 +12417,7 @@ $HostDataList2 = {
     $Section3HostDataSelectionComboBox.AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
     $Section3HostDataSelectionComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     $Section3HostDataSelectionComboBox.DataSource         = $HostDataList1
+    #$Section3HostDataSelectionComboBox.Add_KeyDown({  })
     $Section3HostDataSelectionComboBox.Add_MouseHover({
         $ToolTip = New-Object System.Windows.Forms.ToolTip    
         if ($OptionShowToolTipCheckBox.Checked){
@@ -12176,6 +12448,7 @@ $HostDataList2 = {
     $Section3HostDataSelectionDateTimeComboBox.ForeColor          = "Black"
     $Section3HostDataSelectionDateTimeComboBox.AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
     $Section3HostDataSelectionDateTimeComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+    #$Section3HostDataSelectionDateTimeComboBox.Add_KeyDown({  })
     $Section3HostDataSelectionDateTimeComboBox.Add_MouseHover({
         $ToolTip = New-Object System.Windows.Forms.ToolTip    
         if ($OptionShowToolTipCheckBox.Checked){
@@ -12398,6 +12671,8 @@ function Monitor-Jobs {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Processing: $JobsHosts")
 
+        #$CurrentJobs | Out-File $env:TEMP\scrapjobs.txt
+        #Get-Content $env:TEMP\scrapjobs.txt
         $jobscount = $CurrentJobs.count                  
         $ProgressBar1.Maximum = $jobscount
 
@@ -12437,6 +12712,8 @@ function Monitor-Jobs {
                 break        
             }
         }
+        #$ResultsListBox.Items.RemoveAt(0)
+        #$ResultsListBox.Items.RemoveAt(0)
         $ResultsListBox.Items.RemoveAt(0)
         $ResultsListBox.Items.RemoveAt(0)
         $ResultsListBox.Items.RemoveAt(0)
@@ -12453,6 +12730,12 @@ function Monitor-Jobs {
 # CheckBox Script Handler
 #============================================================================================================================================================
 $ExecuteScriptHandler= {
+    # This is for reference, it's also used later in the handler script
+    #$Section1TabControl.SelectedTab   = $Section1OpNotesTab
+    #$Section2TabControl.SelectedTab   = $Section2MainTab
+    #$Section3TabControl.SelectedTab   = $Section3ActionTab
+    #$Section4TabControl.SelectedTab   = $Section3ResultsTab
+    
     # Clears previous Target Host values
     $ComputerList = @()           
 
@@ -12520,6 +12803,32 @@ $ExecuteScriptHandler= {
     $IndividualHostResults           = "$CollectedDataTimeStampDirectory\Individual Host Results"
 
     New-Item -Type Directory -Path $CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
+
+<#
+    # Checks if any commands were selected
+    if ($false) {
+    #if ($CommandsSelectionCheckedlistbox.CheckedItems.Count -eq 0) {
+        # This brings specific tabs to the forefront/front view
+        $Section1TabControl.SelectedTab            = $Section1CollectionsTab
+        $Section1CollectionsTabControl.SelectedTab = $Section1CommandsTab
+        $Section4TabControl.SelectedTab            = $Section3ResultsTab
+
+        # Sounds a chime if there are no queries selected
+        [system.media.systemsounds]::Exclamation.play()
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Insert(0,"Error: Nothing Selected To Collect")
+        $ResultsListBox.Items.Clear()
+        $ResultsListBox.Items.Insert(0,"Error: You need to make a selection from one of the following in the Collections Tab:")
+        $ResultsListBox.Items.Insert(0,"       Queries") 
+        $ResultsListBox.Items.Insert(0,"       Event Logs") 
+        $ResultsListBox.Items.Insert(0,"       Active Directory") 
+        $ResultsListBox.Items.Insert(0,"       File Search") 
+        $ResultsListBox.Items.Insert(0,"       Registry [future feature]") 
+        $ResultsListBox.Items.Insert(0,"       Sysinternals [if Resource foler is present]") 
+    }
+    else {
+#>
 
     # Checks if any computers were selected
     if (($ComputerList.Count -eq 0) -and ($SingleHostIPCheckBox.Checked -eq $false)) {
@@ -12644,6 +12953,24 @@ $ExecuteScriptHandler= {
                                 Type           = "(WinRM) WMI"
                             }
                         }
+                    <#    if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'CMD') {
+                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                    Name           = $Entry.Text
+                                    Command        = $Command.Command_WinRS_CMD
+                                    ExportFileName = $Command.ExportFileName
+                                    Type           = "(WinRS) CMD"
+                                }
+                        }
+                        if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'WMIC') {
+                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                    Name           = $Entry.Text
+                                    Command        = $Command.Command_WinRS_WMIC
+                                    ExportFileName = $Command.ExportFileName
+                                    Type           = "(WinRS) WMIC"
+                                }
+                        } #>
                     }
                 }
                 if ($CommandsViewQueryRadioButton.Checked) {
@@ -12716,7 +13043,28 @@ $ExecuteScriptHandler= {
                                 ExportFileName = $Command.ExportFileName
                                 Type           = "(WinRM) WMI"
                             }
-                        }                        
+                        }
+                        
+                    <#  
+                        if ($Entry -match '(WinRS)' -and $Entry -match 'CMD' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRS_CMD
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRS) CMD"
+                            }
+                        }
+                        if ($Entry -match '(WinRS)' -and $Entry -match 'WMIC' -and $Entry.Checked) {
+                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                                Name           = $Entry.Text
+                                Command        = $Command.Command_WinRS_WMIC
+                                ExportFileName = $Command.ExportFileName
+                                Type           = "(WinRS) WMIC"
+                            }
+                        }
+                        #>                                        
                     }
                 }
             }
@@ -12765,6 +13113,17 @@ $ExecuteScriptHandler= {
                         $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
                         $OutputFileFileType = "csv"
                     }
+                    <#
+                    elseif ($Command.Type -eq "(WinRS) CMD") {
+                        # -username:<username> -password:<password>
+                        $CommandString = "$($Command.Command)"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif ($Command.Type -eq "(WinRS) WMIC") {
+                        $CommandString = "$($Command.Command)"
+                        $OutputFileFileType = "txt"
+                    }
+                    #>
                     elseif ($Command.Type -eq "(RPC) CMD") {
                         $CommandString = "$($Command.Command) \\$TargetComputer $($Command.Arguments)"
                         $OutputFileFileType = "txt"
@@ -12798,6 +13157,8 @@ $ExecuteScriptHandler= {
                                 Invoke-Expression -Command $CommandString
                                 Start-Sleep -Seconds 1
                                 Move-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
+                                #Copy-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
+                                #Remove-Item "\\$TargetComputer\c$\results.txt"
                             }
                             else {
                                 # Runs all other commands an saves them locally as a .txt file
@@ -12864,6 +13225,17 @@ $ExecuteScriptHandler= {
                         $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
                         $OutputFileFileType = "csv"
                     }
+                    <#
+                    elseif ($Command.Type -eq "(WinRS) CMD") {
+                        # -username:<username> -password:<password>
+                        $CommandString = "$($Command.Command)"
+                        $OutputFileFileType = "txt"
+                    }
+                    elseif ($Command.Type -eq "(WinRS) WMIC") {
+                        $CommandString = "$($Command.Command)"
+                        $OutputFileFileType = "txt"
+                    }
+                    #>
                     elseif ($Command.Type -eq "(RPC) CMD") {
                         $CommandString = "$($Command.Command) \\$TargetComputer $($Command.Arguments)"
                         $OutputFileFileType = "txt"
@@ -13001,3 +13373,6 @@ $PoShACME.ShowDialog() | Out-Null
 
 # Call the PoSh-ACME Function
 PoSh-ACME_GUI
+
+
+
