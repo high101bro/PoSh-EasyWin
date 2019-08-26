@@ -10,7 +10,7 @@
  ACME: The point at which something is the Best, Perfect, or Most Successful! 
  ============================================================================
  File Name      : PoSh-ACME.ps1
- Version        : v.2.3 Beta
+ Version        : v.3.5 Beta
 
  Author         : high101bro
  Email          : high101bro@gmail.com
@@ -20,7 +20,7 @@
                 : WinRM  (Default Port 5986)
  Optional       : PSExec.exe, Procmon.exe, Autoruns.exe 
                 : Can run standalone, but works best with the Resources folder!
- Updated        : 19 Dec 18
+ Updated        : 25 Aug 19
  Created        : 21 Aug 18
 
 PoSh-ACME is a tool that allows you to run any number of queries against any number
@@ -34,5 +34,5 @@ of external applications like various Sysinternals tools, and basic reference in
 for quick use when not on the web.
 
 As the name indicates, PoSh-ACME is writen in PowerShell. The GUI utilizes the .net 
-frame work to access Windows built in WinForms.
+frame work to access Windows built using Windows Presentation Framework (WPF).
  
