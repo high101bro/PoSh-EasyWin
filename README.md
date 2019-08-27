@@ -33,9 +33,11 @@ Notice the Command Preview             |  Notice the Query Highlighting
 Queries are organized and displayed by Method and Commands. The Method view displays queries nested within RPC or WinRM categories followed by they type of command. The Commands view displays queries by they type of commands, with the RPC/WinRM command types nested within. For ease of viewing, commands and their category are highlighted blue when selected, and also maintain selection when changing between views. Selecting commands and endpoints by way of a simple checkbox clicks has the benefit of preventing errors on commandline and increase the speed of querying for data. A preview of the command is provided as queries are hovered over to provide the user with a basic understanding of what is being executed. Category checkboxes allows for all sub-checkboxes to automatiicaly be checked. You can use the search feature to find commands by full or partial name, and even by tags.
 
 
-Resource File has Lookup Tables             |  Plus More
+Resource File Provides Lookup Tables             |  Sysinternals Tools Provided
 |:-------------------------------------:|:-------------------------------------:|
-|  If the Resource folder is present, it adds additional functionality. Such as the ability to select ports/protocols or Event IDs from a GUI rather than memorizing them all or looking them up externally. It also allows you to now push various Sysinternals tools to remote hosts and pull back data for analysis (procmon & autoruns); moreover, you can install sysmon to selected endpoints with XML configurations.  |![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot027.jpg)  |
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot027.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot006.jpg)  |
+
+If the Resource folder is present, it adds additional functionality. Such as the ability to select ports/protocols or Event IDs from a GUI rather than memorizing them all or looking them up externally. It also allows you to now push various Sysinternals tools to remote hosts and pull back data for analysis (procmon & autoruns); moreover, you can install sysmon to selected endpoints with XML configurations. Other items of interest in the Resource folder is the PoSh-ACME Icon; the Checklist, Processes, adn About tabs, and tags.
 
 
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot021.jpg)
@@ -81,7 +83,6 @@ frame work to access Windows built using Windows Presentation Framework (WPF).
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot005.jpg)
 
 
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot006.jpg)
 
 
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot007.jpg)
