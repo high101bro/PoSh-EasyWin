@@ -20,6 +20,7 @@ PoSh-ACME is a tool that allows you to run any number of queries against any num
 
 
 Query TreeView
+:-----------------------------------------------------------------------------:
 Notice the Command Preview             |  Notice Query Highlighting
 :-------------------------------------:|:-------------------------------------:
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot002.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot016.jpg)
