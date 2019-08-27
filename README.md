@@ -1,18 +1,27 @@
-PowerShell-Analyst's Collection Made Easy (ACME) for Security Professionals. 
+PowerShell-Analyst's Collection Made Easy (ACME) for Security Professionals.
+
 ACME: The point at which something is the Best, Perfect, or Most Successful! 
 
 File Name      : PoSh-ACME.ps1
+
 Version        : v.3.5 Beta
 
 Author         : high101bro
+
 Email          : high101bro@gmail.com
+
 Website        : https://github.com/high101bro/PoSH-ACME
 
 Requirements   : PowerShell v3 or Higher
+
                : WinRM and/or DCOM/RPC
+
 Optional       : PSExec.exe, Procmon.exe, Autoruns.exe 
+
                : Can run standalone, but works best with the Resources folder!
+
 Updated        : 25 Aug 19
+
 Created        : 21 Aug 18
 
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot001.jpg)
@@ -20,10 +29,10 @@ PoSh-ACME is a tool that allows you to run any number of queries against any num
 
 
 Query TreeView
-:-----------------------------------------------------------------------------:
+|:-----------------------------------------------------------------------------:|
 Notice the Command Preview             |  Notice Query Highlighting
-:-------------------------------------:|:-------------------------------------:
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot002.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot016.jpg)
+|:-------------------------------------:|:-------------------------------------:|
+|![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot002.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot016.jpg)|
 
 Queries are organized and displayed by Method and Commands. The Method view displays queries nested within RPC or WinRM categories followed by they type of command. The Commands view displays queries by they type of commands, with the RPC/WinRM command types nested within. For ease of viewing, commands and their category are highlighted blue when selected, and also maintain selection when changing between views. Selecting commands and endpoints by way of a simple checkbox clicks has the benefit of preventing errors on commandline and increase the speed of querying for data. A preview of the command is provided as queries are hovered over to provide the user with a basic understanding of what is being executed. Category checkboxes allows for all sub-checkboxes to automatiicaly be checked. You can use the search feature to find commands by full or partial name, and even by tags.
 
