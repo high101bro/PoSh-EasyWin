@@ -13,12 +13,10 @@ Email          : high101bro@gmail.com
 Website        : https://github.com/high101bro/PoSH-ACME
 
 Requirements   : PowerShell v3 or Higher
-
-               : WinRM and/or DCOM/RPC
+`              : WinRM and/or DCOM/RPC
 
 Optional       : PSExec.exe, Procmon.exe, Autoruns.exe 
-
-               : Can run standalone, but works best with the Resources folder!
+`              : Can run standalone, but works best with the Resources folder!
 
 Updated        : 25 Aug 19
 
@@ -29,7 +27,8 @@ PoSh-ACME is a tool that allows you to run any number of queries against any num
 
 
 Query TreeView
-|:-----------------------------------------------------------------------------:|
+|:---:|
+
 Notice the Command Preview             |  Notice Query Highlighting
 |:-------------------------------------:|:-------------------------------------:|
 |![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot002.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot016.jpg)|
