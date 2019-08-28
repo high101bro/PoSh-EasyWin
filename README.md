@@ -1,6 +1,6 @@
 # PoSh-ACME
-### PowerShell-Analyst's Collection Made Easy (ACME) for Security Professionals.
-### ACME: The point at which something is the Best, Perfect, or Most Successful! 
+#### PowerShell-Analyst's Collection Made Easy (ACME) for Security Professionals.
+#### ACME: The point at which something is the Best, Perfect, or Most Successful! 
 
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
@@ -87,7 +87,7 @@ The computers tree view displays the computers either by Operating Systems (OS) 
 ***
 ***
 ### Managing Computer Treeview
-The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save. 
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg)  |  The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save. 
 1. <b>Deselect All</b> - This butt
 1. <b>Collapse/Expand</b> - 
 1. <b>Import .csv</b> - This button allows you to import endpoint names from a csv file. The file's needs to have one endpoint name per line under a 'Name" header field to be read in properly. Supported fields are: "Name", "OperatingSystem", "CanonicalName", "IPv4Address", "MACAddress", and "Notes" - any addtional fields will be automatically purged. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
@@ -97,8 +97,10 @@ The computer tree view can be managed via the Manage List tab, where you can Des
 4. <b>Move</b> - This button will move one or more endpoints between categories. Depending on the treeview, OS or OU/CN, it will move endpoints under a different Operating System or Organizational Unit/Canonical Name categories. You can select a category checkbox to move all endpoints contained within. If a category no longer contains an endpoint after they're moved, it will be automatically removed. If you move an endpoint to a non-existing category, it will be automatically moved to an Unknown category.
 5. <b>Rename</b> - This button renames a single endpoint name. Currently, there is no way to rename a category as it automatically selects all endoints within, thus it would attempt to rename all of them which is not permitted. There are two work arounds for this: 1) Close PoSh-ACME and modify the CSV file namually, or 2) Add a new endpoint, and enter a custom/New OS or OU/CN name, then move the endpoint over.
 6. <b>Save</b> - This button saves the Computer TreeView, allowing it to be loaded automatically upon the next time PoSh-ACME is started. The save button within the Host Data tab will both save the contents of the notes and the treeview state.
-   * <b>Note:</b> Any modification to the treeview is not saved automatically, this way you can revert if you make a mistake by just closing out PoSh-ACME without clicking the Save button. Conversely, if you hypothetically made a lot of changes but PoSh-ACME is closed untintentionally, you can recover as an auto-saved file is generated whenever you make any changes even if you don't save. Just manually delete/rename "Computer List TreeView (Saved).csv", then launch PoSh-ACME and import the "Computer List TreeView (Auto-Save).csv" version... [To Do: Add feature to create loading of separate files....]
+   * <b>Note:</b> Any modification to the treeview is not saved automatically, this way you can revert if you make a mistake by just closing out PoSh-ACME without clicking the Save button. Conversely, if you hypothetically made a lot of changes but PoSh-ACME is closed untintentionally, you can recover as an auto-saved file is generated whenever you make any changes even if you don't save. Just manually delete/rename "Computer List TreeView (Saved).csv", then launch PoSh-ACME and import the "Computer List TreeView (Auto-Save).csv" version... [To Do: Add feature to create loading of separate files....]  |
+|:---:|:---|
 
+***
 ***
 
 You can view individual endpoint data and notes by selecting the Host Data tab. ....
@@ -149,7 +151,6 @@ frame work to access Windows built using Windows Presentation Framework (WPF).
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot014.jpg)
 
 
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg)
 
 
 
