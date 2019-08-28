@@ -90,13 +90,15 @@ The computers tree view displays the computers either by Operating Systems (OS) 
 <TABLE>
    <TR>
       <TH COLSPAN="2">
-         <H3><BR>TABLE TITLE</H3>
+         <H1><BR>Managing Computer Treeview</H1>
       </TH>
    </TR>
    <TR>
-      <TD>Data 1</TD>
       <TD>
-The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save. 
+      ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg)
+      </TD>
+      <TD><TD>
+The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save. </TD>
 1) <b>Deselect All</b> - This butt
 2) <b>Collapse/Expand</b> - 
 3) <b>Import .csv</b> - This button allows you to import endpoint names from a csv file. The file's needs to have one endpoint name per line under a 'Name" header field to be read in properly. Supported fields are: "Name", "OperatingSystem", "CanonicalName", "IPv4Address", "MACAddress", and "Notes" - any addtional fields will be automatically purged. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
@@ -123,7 +125,8 @@ The computer tree view can be managed via the Manage List tab, where you can Des
       <TD>Data 6</TD>
    </TR>
 </TABLE>
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg)  
+
+  
 
 
 ***
