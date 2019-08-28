@@ -53,7 +53,7 @@ Queries are returned in a csv format for easy review and can be viewed with Powe
 ***
 ***
 ### PowerShell Charts
-|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot019.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/Processes Donut.PNG)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/Processes WorkingSet Size.PNG)  |
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot019.jpg)  |  ![Alt text]('https://github.com/high101bro/PoSH-ACME/blob/master/Images/Processes Donut.PNG')  |  ![Alt text]('https://github.com/high101bro/PoSH-ACME/blob/master/Images/Processes WorkingSet Size.PNG')  |
 |:-------------------------:|:---------------------------:|:--------------------------------:|
 | Example of an AutoChart  |  Build Your Own Donut   |  Build Your Own Graph  |
 
