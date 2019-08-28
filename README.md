@@ -38,8 +38,8 @@ Queries are organized and displayed by Method and Commands. The Method view disp
 ### Resource Files
 
 |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot027.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot006.jpg)  |
-|  Suports VariosLookup Tables  |  Sysinternals Tools Provided  |
 |:-----------------------------:|:-----------------------------:|
+|  Suports VariosLookup Tables  |  Sysinternals Tools Provided  |
 
 If the Resource folder is present, it adds additional functionality. Such as the ability to select ports/protocols or Event IDs from a GUI rather than memorizing them all or looking them up externally. It also allows you to now push various Sysinternals tools to remote hosts and pull back data for analysis (procmon & autoruns); moreover, you can install sysmon to selected endpoints with XML configurations. Other items of interest in the Resource folder is the PoSh-ACME Icon; the Checklist, Processes, adn About tabs, and tags.
 
