@@ -73,7 +73,31 @@ Queries can be executed as separate commands or compiled together. When executed
 
 ***
 ***
-The computers tree view displays the computers either by Operating Systems (OS) or Organizational Units/Cononical Names (OU/CN). You can import these computers from Active Directory, from a list in a text file, from the Enumerations section, or just manually add them. 1) When importing from Active Directory, use the following command (Get-ADComputer -Filter * -Properties "Name","OperatingSystem","CanonicalName","IPv4Address","MACAddress" | Export-Csv .\AD_Computers.csv -NoTypeInformation). If you get too few/many properties, PoSh-ACME will automatically adjust when it formats its 'Computer List TreeView (Saved).csv' file. This file not only saves this basic data about each host, but also all notes manually entered per host wihtin PoSh-ACME. 2) When importing list from a text file, format the file so that there is one hostname per line. If you include IP address, you're mileage will vary and queries may not work as expected (the reason why is beyond the scope of this document). It is recommended to use hostname's within the domain when making queries. When data is imported from a text file, the hostnames will show up with Unknown OS's and OU/CN's, to which you can manually edit if desired. 3) Importing from the Enumeration tab functions similarly as the importing from text file, but hostnames are obtainsed from either pinging or port scanning the network for hosts, then resolving their names to hostnames. 4) Lastly, you can manually add endpoints with the Add button in the Manage List tab. This allows you to initially enter a name, Operating System, and Organizational Unit/Canonical Name. -- The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save. Note: Any modification to the treeview is not saved automatically, this way you can revert if you make a mistake by just closing out PoSh-ACME without clicking the Save button. Conversely, if you hypothetically made a lot of changes but PoSh-ACME is closed untintentionally, you can recover as an auto-saved file is generated whenever you make any changes even if you don't save. Just manually delete/rename "Computer List TreeView (Saved).csv", then launch PoSh-ACME and import the "Computer List TreeView (Auto-Save).csv" version... [To Do: Add feature to create loading of separate files....]
+### Computer TreeView
+| View by Operating System  |  View by Organization Unit  |  Ability to Checkbox Categories  |
+|:-------------------------:|:---------------------------:|:--------------------------------:|
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot010.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot011.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot017.jpg)  |
+
+The computers tree view displays the computers either by Operating Systems (OS) or Organizational Units/Cononical Names (OU/CN). You can import these computers from Active Directory, from a list in a text file, from the Enumerations section, or just manually add them. 
+1. When importing from Active Directory, use the following command (Get-ADComputer -Filter * -Properties "Name","OperatingSystem","CanonicalName","IPv4Address","MACAddress" | Export-Csv .\AD_Computers.csv -NoTypeInformation). If you get too few/many properties, PoSh-ACME will automatically adjust when it formats its 'Computer List TreeView (Saved).csv' file. This file not only saves this basic data about each host, but also all notes manually entered per host wihtin PoSh-ACME. 
+2.) When importing list from a text file, format the file so that there is one hostname per line. If you include IP address, you're mileage will vary and queries may not work as expected (the reason why is beyond the scope of this document). It is recommended to use hostname's within the domain when making queries. When data is imported from a text file, the hostnames will show up with Unknown OS's and OU/CN's, to which you can manually edit if desired. 
+3. Importing from the Enumeration tab functions similarly as the importing from text file, but hostnames are obtainsed from either pinging or port scanning the network for hosts, then resolving their names to hostnames. 
+4. Lastly, you can manually add endpoints with the Add button in the Manage List tab. This allows you to initially enter a name, Operating System, and Organizational Unit/Canonical Name. 
+
+***
+***
+### Managing Computer Treeview
+The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save. 
+1. <b>Deselect All</b> - This butt
+1. <b>Collapse/Expand</b> - 
+1. <b>Import .csv</b> - This button allows you to import endpoint names from a csv file. The file's needs to have one endpoint name per line under a 'Name" header field to be read in properly. Supported fields are: "Name", "OperatingSystem", "CanonicalName", "IPv4Address", "MACAddress", and "Notes" - any addtional fields will be automatically purged. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
+1. <b>Import .txt</b> - This button allows you to import endpoint names from a txt file. The file's needs to have one endpoint name per line to be read in properly. The endpoints ingested will not contain OS or OU/CN metadata and will be placed within Unknown categories. They can be moved afterwareds to their proper categories with the move button. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
+2. <b>Add</b> - This button allows you to manually ad an enpoint to the computer treeview. You can either select existing OS or OU/CN categories, which auto-populte, or enter new names. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
+3. <b>Delete</b> - This button will delete one ore more endpoints. If a category no longer contains an endpoint after deletion, it will be automatically removed.
+4. <b>Move</b> - This button will move one or more endpoints between categories. Depending on the treeview, OS or OU/CN, it will move endpoints under a different Operating System or Organizational Unit/Canonical Name categories. You can select a category checkbox to move all endpoints contained within. If a category no longer contains an endpoint after they're moved, it will be automatically removed. If you move an endpoint to a non-existing category, it will be automatically moved to an Unknown category.
+5. <b>Rename</b> - This button renames a single endpoint name. Currently, there is no way to rename a category as it automatically selects all endoints within, thus it would attempt to rename all of them which is not permitted. There are two work arounds for this: 1) Close PoSh-ACME and modify the CSV file namually, or 2) Add a new endpoint, and enter a custom/New OS or OU/CN name, then move the endpoint over.
+6. <b>Save</b> - This button saves the Computer TreeView, allowing it to be loaded automatically upon the next time PoSh-ACME is started. The save button within the Host Data tab will both save the contents of the notes and the treeview state.
+   * <b>Note:</b> Any modification to the treeview is not saved automatically, this way you can revert if you make a mistake by just closing out PoSh-ACME without clicking the Save button. Conversely, if you hypothetically made a lot of changes but PoSh-ACME is closed untintentionally, you can recover as an auto-saved file is generated whenever you make any changes even if you don't save. Just manually delete/rename "Computer List TreeView (Saved).csv", then launch PoSh-ACME and import the "Computer List TreeView (Auto-Save).csv" version... [To Do: Add feature to create loading of separate files....]
 
 ***
 
@@ -114,10 +138,6 @@ frame work to access Windows built using Windows Presentation Framework (WPF).
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot009.jpg)
 
 
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot010.jpg)
-
-
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot011.jpg)
 
 
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot012.jpg)
@@ -134,7 +154,6 @@ frame work to access Windows built using Windows Presentation Framework (WPF).
 
 
 
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot017.jpg)
 
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot020.jpg)
 
