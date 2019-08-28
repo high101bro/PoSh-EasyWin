@@ -37,9 +37,9 @@ Queries are organized and displayed by Method and Commands. The Method view disp
 ***
 ### Resource Files
 
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot027.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot006.jpg)  |
 |  Suports VariosLookup Tables  |  Sysinternals Tools Provided  |
 |:-----------------------------:|:-----------------------------:|
-|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot027.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot006.jpg)  |
 
 If the Resource folder is present, it adds additional functionality. Such as the ability to select ports/protocols or Event IDs from a GUI rather than memorizing them all or looking them up externally. It also allows you to now push various Sysinternals tools to remote hosts and pull back data for analysis (procmon & autoruns); moreover, you can install sysmon to selected endpoints with XML configurations. Other items of interest in the Resource folder is the PoSh-ACME Icon; the Checklist, Processes, adn About tabs, and tags.
 
@@ -74,9 +74,9 @@ Queries can be executed as separate commands or compiled together. When executed
 ***
 ***
 ### Computer TreeView
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot010.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot011.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot017.jpg)  |
 | View by Operating System  |  View by Organization Unit  |  Ability to Checkbox Categories  |
 |:-------------------------:|:---------------------------:|:--------------------------------:|
-|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot010.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot011.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot017.jpg)  |
 
 The computers tree view displays the computers either by Operating Systems (OS) or Organizational Units/Cononical Names (OU/CN). You can import these computers from Active Directory, from a list in a text file, from the Enumerations section, or just manually add them. 
 1. When importing from Active Directory, use the following command (Get-ADComputer -Filter * -Properties "Name","OperatingSystem","CanonicalName","IPv4Address","MACAddress" | Export-Csv .\AD_Computers.csv -NoTypeInformation). If you get too few/many properties, PoSh-ACME will automatically adjust when it formats its 'Computer List TreeView (Saved).csv' file. This file not only saves this basic data about each host, but also all notes manually entered per host wihtin PoSh-ACME. 
@@ -87,16 +87,8 @@ The computers tree view displays the computers either by Operating Systems (OS) 
 ***
 ***
 ### Managing Computer Treeview
-<TABLE>
-   <TR>
-      <H1><BR>Managing Computer Treeview</H1>
-   </TR>
-   <TR>
-      <TD>
-      <img src="https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg" width="124" height="348">
-      </TD>
-      <TD>
-The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save.
+![Alt Text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg)
+The computer treeview can be managed via the Manage List tab, where you can conduct the following actions: Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save.
 1) <b>Deselect All</b> - This butt
 2) <b>Collapse/Expand</b> - 
 3) <b>Import .csv</b> - This button allows you to import endpoint names from a csv file. The file's needs to have one endpoint name per line under a 'Name" header field to be read in properly. Supported fields are: "Name", "OperatingSystem", "CanonicalName", "IPv4Address", "MACAddress", and "Notes" - any addtional fields will be automatically purged. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
@@ -107,23 +99,34 @@ The computer tree view can be managed via the Manage List tab, where you can Des
 8) <b>Rename</b> - This button renames a single endpoint name. Currently, there is no way to rename a category as it automatically selects all endoints within, thus it would attempt to rename all of them which is not permitted. There are two work arounds for this: 9) Close PoSh-ACME and modify the CSV file namually, or 2) Add a new endpoint, and enter a custom/New OS or OU/CN name, then move the endpoint over.
 10) <b>Save</b> - This button saves the Computer TreeView, allowing it to be loaded automatically upon the next time PoSh-ACME is started. The save button within the Host Data tab will both save the contents of the notes and the treeview state.
     - <b>Note:</b> Any modification to the treeview is not saved automatically, this way you can revert if you make a mistake by just closing out PoSh-ACME without clicking the Save button. Conversely, if you hypothetically made a lot of changes but PoSh-ACME is closed untintentionally, you can recover as an auto-saved file is generated whenever you make any changes even if you don't save. Just manually delete/rename "Computer List TreeView (Saved).csv", then launch PoSh-ACME and import the "Computer List TreeView (Auto-Save).csv" version... (To Do: Add feature to create loading of separate files) 
-      
-      
-      
-            </TD>
-   </TR>
-</TABLE>
-
-  
-
 
 ***
 ***
+### Operator Notes (OpNotes) and Logs
+##### Efficiently take notes and track your actions on endpoints.
 
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/Log File.jpg)  |
+|  OpNotes  |  Log File  |
+|:-----------------------------:|:-----------------------------:|
+
+<b>OpNotes</b> is information that the operator considers to be of particular interest to note. They can be typed in manually, selectively imported from query results when viewed or from the Results panel. OpNotes that are entered are automaticlly prepended with a timestamp. The notes field auto-magically expands and shirts when hovered over to make quick review simple, though you can open the OpNotes file directly if desired with external applications. OpNotes are automatically saved to 'OpNotes.txt' when entered, moved, or deleted. The 'OpNotes (Write Only).txt' file contains all notes added in the order they were entered; this is useful if you accidentally remove/delete entries. The following are buttons used to assist with OpNotes.
+1) <b>Add</b> - This button manally adds messages and are prepended with a datetime group that you type into the OpNotes input field at the top. Alternatively you can press the enter key to add notes which is arguably faster. Note that you cannot enter blank entries, if you do want to though, you will have to at least enter a space bar entry. 
+2) <b>Remove</b> - This button removes/deletes one or more selected notes. The notes can be selected in any order and/or be within a selected range. Though automatically removed from the 'OpNotes.txt ', they will remain in the 'OpNotes (Write Only).txt' file.
+3) <b>Select All</b> - This button selects all lines of the OpNotes.
+4) <b>Create Report</b> - This button creates a report from selected lines of notes. This is useful if you want to extact and save only certain information for easy note management or passing along to another individual. The file is saved to the Reports directory where PoSh-ACME is located.
+5) <b>Open Reports</b> - This button opens the directory where the Reports are saved. You can then open the text file with any external applications such as notepad, wordpad, or MicrSoft Docs.
+6) <b>Open OpNotes</b> - This button directly opens the 'OpNotes.txt' file with the systems default application, which is most often notepad.
+7) <b>Move up</b> - This button moves up on or more selected lines of OpNotes. The notes can be selected in any order and/or be within a selected range. When notes are moved, the datetimes remain. When notes are moved, the datetimes remain unchanged.
+8) <b>Move Down</b> - This button moves down on or more selected lines of OpNotes. The notes can be selected in any order and/or be within a selected range. When notes are moved, the datetimes remain unchanged.
+The <b>Log File</b> differ from OpNotes by automatically logging actions conducted with PoSh-ACME. This is useful to help determine what action were or were not conducted though PoSh-ACME. Actions logged include such things as the lauching PoSh-ACME, each query conducted against each endpoint, Job execution/completion, the use of Sysinternals tools within PoSh-ACME, and activity conducted with endpoint enumeration scans. This section will continue to develop as more relavant data is identified to log.
+
+***
+***
+### Host Data Management and Notes
+![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot012.jpg)
 You can view individual endpoint data and notes by selecting the Host Data tab. ....
 
 
-OpNotes
 
 Reference Material
 
@@ -137,9 +140,7 @@ frame work to access Windows built using Windows Presentation Framework (WPF).
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot004.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot005.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot007.jpg)
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot009.jpg)
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot012.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot013.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot014.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot020.jpg)
