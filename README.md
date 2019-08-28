@@ -89,15 +89,14 @@ The computers tree view displays the computers either by Operating Systems (OS) 
 ### Managing Computer Treeview
 <TABLE>
    <TR>
-      <TH COLSPAN="2">
-         <H1><BR>Managing Computer Treeview</H1>
-      </TH>
+      <H1><BR>Managing Computer Treeview</H1>
    </TR>
    <TR>
       <TD>
-      <img src="https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg" width="124" height="348">
+      <img src="https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg" width="124">
       </TD>
       <TD>
+         <textarea>
 The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save.
 1) <b>Deselect All</b> - This butt
 2) <b>Collapse/Expand</b> - 
@@ -113,16 +112,8 @@ The computer tree view can be managed via the Manage List tab, where you can Des
       
       
       
-      
+        </textarea>
       </TD>
-   </TR>
-   <TR>
-      <TD>Data 3</TD>
-      <TD>Data 4</TD>
-   </TR>
-   <TR>
-      <TD>Data 5</TD>
-      <TD>Data 6</TD>
    </TR>
 </TABLE>
 
@@ -145,79 +136,17 @@ Checklists
 As the name indicates, PoSh-ACME is writen in PowerShell. The GUI utilizes the .net 
 frame work to access Windows built using Windows Presentation Framework (WPF).
 
-
-
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot003.jpg)
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot004.jpg)
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot005.jpg)
-
-
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot007.jpg)
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot009.jpg)
-
-
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot012.jpg)
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot013.jpg)
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot014.jpg)
-
-
-
-
-
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot020.jpg)
-
-
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot022.jpg)
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot023.jpg)
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot024.jpg)
-
-
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot025.jpg)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
