@@ -53,7 +53,7 @@ Queries are returned in a csv format for easy review and can be viewed with Powe
 ***
 ***
 ### PowerShell Charts
-|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot019.jpg)  |  ![Alt text]('https://github.com/high101bro/PoSH-ACME/blob/master/Images/Processes Donut.PNG')  |  ![Alt text]('https://github.com/high101bro/PoSH-ACME/blob/master/Images/Processes WorkingSet Size.PNG')  |
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot019.jpg)  |  ![Alt text]('https://github.com/high101bro/PoSH-ACME/blob/master/Images/ProcessesDonut.PNG')  |  ![Alt text]('https://github.com/high101bro/PoSH-ACME/blob/master/Images/ProcessesWorkingSetSize.PNG')  |
 |:-------------------------:|:---------------------------:|:--------------------------------:|
 | Example of an AutoChart  |  Build Your Own Donut   |  Build Your Own Graph  |
 
@@ -109,7 +109,7 @@ The computer treeview can be managed via the Manage List tab, where you can cond
 ### Operator Notes (OpNotes) and Logs
 ##### Efficiently take notes and track your actions on endpoints.
 
-|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/Log File.jpg)  |
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/LogFile.jpg)  |
 |:-----------------------------:|:-----------------------------:|
 |  OpNotes  |  Log File  |
 
