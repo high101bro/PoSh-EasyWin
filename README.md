@@ -93,10 +93,9 @@ The computers tree view displays the computers either by Operating Systems (OS) 
    </TR>
    <TR>
       <TD>
-      <img src="https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg" width="348" height="348">
+      <img src="https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg" width="124" height="348">
       </TD>
       <TD>
-         <textarea>
 The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save.
 1) <b>Deselect All</b> - This butt
 2) <b>Collapse/Expand</b> - 
@@ -111,9 +110,7 @@ The computer tree view can be managed via the Manage List tab, where you can Des
       
       
       
-      
-        </textarea>
-      </TD>
+            </TD>
    </TR>
 </TABLE>
 
