@@ -1,28 +1,30 @@
 # PoSh-ACME
 ### PowerShell-Analyst's Collection Made Easy (ACME) for Security Professionals.
-
 ### ACME: The point at which something is the Best, Perfect, or Most Successful! 
 
-##### File Name      : PoSh-ACME.ps1
-##### Version        : v.3.5 Beta
-##### Author         : high101bro
-##### Email          : high101bro@gmail.com
-##### Website        : https://github.com/high101bro/PoSH-ACME
-##### Requirements   : PowerShell v3 or Higher
-#####                : WinRM and/or DCOM/RPC
-##### Optional       : PSExec.exe, Procmon.exe, Autoruns.exe 
-#####                : Can run standalone, but works best with the Resources folder!
-##### Updated        : 25 Aug 19
-##### Created        : 21 Aug 18
+|:--------------:|:---------------------------------------------------------------:|
+|  File Name     |  PoSh-ACME.ps1                                                  |
+|  Version       |  v.3.5 Beta                                                     |
+|  Author        |  high101bro                                                     |
+|  Email         |  high101bro@gmail.com                                           |
+|  Website       |  https://github.com/high101bro/PoSH-ACME                        |
+|  Requirements  |  PowerShell v3 or Higher                                        |
+|                |  WinRM and/or DCOM/RPC                                          |
+|  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe                          |
+|                |  Can run standalone, but works best with the Resources folder!  |
+|  Updated       |  25 Aug 19                                                      |
+|  Created       |  21 Aug 18                                                      |
 
 ***
-## Executing Queries
+***
+### Executing Queries
 
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot001.jpg)
 PoSh-ACME is a tool that allows you to run any number of queries against any number of hosts. The queries primarily consist of one liner commands, but several are made of scripts that allows for more comprehensive results. PoSh-ACME consists of queries speicific for endpoiint hosts and servers in an Active Directory domain. It allows you to easily query event logs from multiple sources within specified date ranges; query for filenames, parts of filenames, file hashes in any number of specified directores at any recursion depth; query for network connections by IP addresses, ports, and connetions started by specified process names. 
 
 ***
-## Resource Files
+***
+### Query Selection Features
 
 |![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot002.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot016.jpg)|
 |:-----------------:|:--------------------:|
@@ -32,6 +34,8 @@ PoSh-ACME is a tool that allows you to run any number of queries against any num
 Queries are organized and displayed by Method and Commands. The Method view displays queries nested within RPC or WinRM categories followed by they type of command. The Commands view displays queries by they type of commands, with the RPC/WinRM command types nested within. For ease of viewing, commands and their category are highlighted blue when selected, and also maintain selection when changing between views. Selecting commands and endpoints by way of a simple checkbox clicks has the benefit of preventing errors on commandline and increase the speed of querying for data. A preview of the command is provided as queries are hovered over to provide the user with a basic understanding of what is being executed. Category checkboxes allows for all sub-checkboxes to automatiicaly be checked. You can use the search feature to find commands by full or partial name, and even by tags.
 
 ***
+***
+### Resource Files
 
 Resource File Provides Lookup Tables             |  Sysinternals Tools Provided
 |:-------------------------------------:|:-------------------------------------:|
@@ -40,7 +44,9 @@ Resource File Provides Lookup Tables             |  Sysinternals Tools Provided
 If the Resource folder is present, it adds additional functionality. Such as the ability to select ports/protocols or Event IDs from a GUI rather than memorizing them all or looking them up externally. It also allows you to now push various Sysinternals tools to remote hosts and pull back data for analysis (procmon & autoruns); moreover, you can install sysmon to selected endpoints with XML configurations. Other items of interest in the Resource folder is the PoSh-ACME Icon; the Checklist, Processes, adn About tabs, and tags.
 
 ***
-
+***
+### Query Results
+##### Easy to view with no external dependencies
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot021.jpg)
 Queries are returned in a csv format for easy review and can be viewed with PowerShell's native Out-GridView - no need for 3rd party software like Microsoft Excel. Query results are saved in datetime folders by each query name, and are both stored individually by hosts as well as compiled all together. 
 
