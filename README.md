@@ -53,7 +53,10 @@ Queries are returned in a csv format for easy review and can be viewed with Powe
 ***
 ***
 ### PowerShell Charts
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot019.jpg)
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot019.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/Processes Donut.PNG)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/Processes WorkingSet Size.PNG)  |
+|:-------------------------:|:---------------------------:|:--------------------------------:|
+| Example of an AutoChart  |  Build Your Own Donut   |  Build Your Own Graph  |
+
 Certain common queres, like processes, can have their results viewed with PowerShell charts automatically. You can also explore data and build your own charts manually. Both features allow you simple save the chart as an image with a simple push of a button, or if you go to the Options tab you can select where they are saved automatically. These charts can provide easy view of baseline, previous, and most recent query results.  
 
 ***
