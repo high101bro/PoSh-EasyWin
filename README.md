@@ -93,7 +93,7 @@ The computers tree view displays the computers either by Operating Systems (OS) 
    </TR>
    <TR>
       <TD>
-      <img src="https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg" width="124">
+      <img src="https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg" width="348" height="348">
       </TD>
       <TD>
          <textarea>
