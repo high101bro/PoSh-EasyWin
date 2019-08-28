@@ -95,7 +95,24 @@ The computers tree view displays the computers either by Operating Systems (OS) 
    </TR>
    <TR>
       <TD>Data 1</TD>
-      <TD>Data 2</TD>
+      <TD>
+The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save. 
+1) <b>Deselect All</b> - This butt
+2) <b>Collapse/Expand</b> - 
+3) <b>Import .csv</b> - This button allows you to import endpoint names from a csv file. The file's needs to have one endpoint name per line under a 'Name" header field to be read in properly. Supported fields are: "Name", "OperatingSystem", "CanonicalName", "IPv4Address", "MACAddress", and "Notes" - any addtional fields will be automatically purged. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
+4) <b>Import .txt</b> - This button allows you to import endpoint names from a txt file. The file's needs to have one endpoint name per line to be read in properly. The endpoints ingested will not contain OS or OU/CN metadata and will be placed within Unknown categories. They can be moved afterwareds to their proper categories with the move button. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
+5) <b>Add</b> - This button allows you to manually ad an enpoint to the computer treeview. You can either select existing OS or OU/CN categories, which auto-populte, or enter new names. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
+6) <b>Delete</b> - This button will delete one ore more endpoints. If a category no longer contains an endpoint after deletion, it will be automatically removed.
+7) <b>Move</b> - This button will move one or more endpoints between categories. Depending on the treeview, OS or OU/CN, it will move endpoints under a different Operating System or Organizational Unit/Canonical Name categories. You can select a category checkbox to move all endpoints contained within. If a category no longer contains an endpoint after they're moved, it will be automatically removed. If you move an endpoint to a non-existing category, it will be automatically moved to an Unknown category.
+8) <b>Rename</b> - This button renames a single endpoint name. Currently, there is no way to rename a category as it automatically selects all endoints within, thus it would attempt to rename all of them which is not permitted. There are two work arounds for this: 9) Close PoSh-ACME and modify the CSV file namually, or 2) Add a new endpoint, and enter a custom/New OS or OU/CN name, then move the endpoint over.
+10) <b>Save</b> - This button saves the Computer TreeView, allowing it to be loaded automatically upon the next time PoSh-ACME is started. The save button within the Host Data tab will both save the contents of the notes and the treeview state.
+    - <b>Note:</b> Any modification to the treeview is not saved automatically, this way you can revert if you make a mistake by just closing out PoSh-ACME without clicking the Save button. Conversely, if you hypothetically made a lot of changes but PoSh-ACME is closed untintentionally, you can recover as an auto-saved file is generated whenever you make any changes even if you don't save. Just manually delete/rename "Computer List TreeView (Saved).csv", then launch PoSh-ACME and import the "Computer List TreeView (Auto-Save).csv" version... (To Do: Add feature to create loading of separate files) 
+      
+      
+      
+      
+      
+      </TD>
    </TR>
    <TR>
       <TD>Data 3</TD>
@@ -106,19 +123,7 @@ The computers tree view displays the computers either by Operating Systems (OS) 
       <TD>Data 6</TD>
    </TR>
 </TABLE>
-|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg)  |  The computer tree view can be managed via the Manage List tab, where you can Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save. 
-1) <b>Deselect All</b> - This butt
-2) <b>Collapse/Expand</b> - 
-3) <b>Import .csv</b> - This button allows you to import endpoint names from a csv file. The file's needs to have one endpoint name per line under a 'Name" header field to be read in properly. Supported fields are: "Name", "OperatingSystem", "CanonicalName", "IPv4Address", "MACAddress", and "Notes" - any addtional fields will be automatically purged. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
-4) <b>Import .txt</b> - This button allows you to import endpoint names from a txt file. The file's needs to have one endpoint name per line to be read in properly. The endpoints ingested will not contain OS or OU/CN metadata and will be placed within Unknown categories. They can be moved afterwareds to their proper categories with the move button. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
-5) <b>Add</b> - This button allows you to manually ad an enpoint to the computer treeview. You can either select existing OS or OU/CN categories, which auto-populte, or enter new names. PoSh-ACME prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
-6) <b>Delete</b> - This button will delete one ore more endpoints. If a category no longer contains an endpoint after deletion, it will be automatically removed.
-7) <b>Move</b> - This button will move one or more endpoints between categories. Depending on the treeview, OS or OU/CN, it will move endpoints under a different Operating System or Organizational Unit/Canonical Name categories. You can select a category checkbox to move all endpoints contained within. If a category no longer contains an endpoint after they're moved, it will be automatically removed. If you move an endpoint to a non-existing category, it will be automatically moved to an Unknown category.
-8) <b>Rename</b> - This button renames a single endpoint name. Currently, there is no way to rename a category as it automatically selects all endoints within, thus it would attempt to rename all of them which is not permitted. There are two work arounds for this: 9) Close PoSh-ACME and modify the CSV file namually, or 2) Add a new endpoint, and enter a custom/New OS or OU/CN name, then move the endpoint over.
-10) <b>Save</b> - This button saves the Computer TreeView, allowing it to be loaded automatically upon the next time PoSh-ACME is started. The save button within the Host Data tab will both save the contents of the notes and the treeview state.
-    - <b>Note:</b> Any modification to the treeview is not saved automatically, this way you can revert if you make a mistake by just closing out PoSh-ACME without clicking the Save button. Conversely, if you hypothetically made a lot of changes but PoSh-ACME is closed untintentionally, you can recover as an auto-saved file is generated whenever you make any changes even if you don't save. Just manually delete/rename "Computer List TreeView (Saved).csv", then launch PoSh-ACME and import the "Computer List TreeView (Auto-Save).csv" version... (To Do: Add feature to create loading of separate files)  |
-|:------:|:------|
-|  Manage List  |  Notes:  |
+![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg)  
 
 
 ***
