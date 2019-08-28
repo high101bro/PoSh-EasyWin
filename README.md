@@ -2,7 +2,8 @@
 ### PowerShell-Analyst's Collection Made Easy (ACME) for Security Professionals.
 ### ACME: The point at which something is the Best, Perfect, or Most Successful! 
 
-|:--------------:|:---------------------------------------------------------------:|
+
+|:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-ACME.ps1                                                  |
 |  Version       |  v.3.5 Beta                                                     |
 |  Author        |  high101bro                                                     |
@@ -14,6 +15,7 @@
 |                |  Can run standalone, but works best with the Resources folder!  |
 |  Updated       |  25 Aug 19                                                      |
 |  Created       |  21 Aug 18                                                      |
+
 
 ***
 ***
