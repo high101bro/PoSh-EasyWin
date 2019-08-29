@@ -119,7 +119,7 @@ The computer treeview can be managed via the Manage List tab, where you can cond
 ### Operator Notes (OpNotes) and Logs
 ##### Efficiently take notes and track your actions on endpoints.
 
-|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/LogFile.jpg)  |
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/LogFile.JPG)  |
 |:---------:|:----------:|
 |  OpNotes  |  Log File  |
 
