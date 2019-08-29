@@ -21,6 +21,7 @@
 ### Executing Queries
 
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot001.jpg)
+
 PoSh-ACME is a tool that allows you to run any number of queries against any number of hosts. The queries primarily consist of one liner commands, but several are made of scripts that allows for more comprehensive results. PoSh-ACME consists of queries speicific for endpoiint hosts and servers in an Active Directory domain. It allows you to easily query event logs from multiple sources within specified date ranges; query for filenames, parts of filenames, file hashes in any number of specified directores at any recursion depth; query for network connections by IP addresses, ports, and connetions started by specified process names. 
 
 ***
@@ -47,12 +48,15 @@ If the Resource folder is present, it adds additional functionality. Such as the
 ***
 ### Query Results
 ##### Easy to view with no external dependencies
+
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot021.jpg)
+
 Queries are returned in a csv format for easy review and can be viewed with PowerShell's native Out-GridView - no need for 3rd party software like Microsoft Excel. Query results are saved in datetime folders by each query name, and are both stored individually by hosts as well as compiled all together. 
 
 ***
 ***
 ### PowerShell Charts
+
 |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot019.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ProcessesDonut.PNG)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ProcessesWorkingSetSize.PNG)  |
 |:-------------------------:|:---------------------------:|:--------------------------------:|
 | Example of an AutoChart  |  Build Your Own Donut   |  Build Your Own Graph  |
@@ -64,6 +68,7 @@ Certain common queres, like processes, can have their results viewed with PowerS
 ### Multi-Threaded
 ##### Faster! Don't be hindered with unresponsive hosts.
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot018.jpg)
+
 Unlike many other scripts that execute serially, PoSh-ACME executes its queries multi-threaded as Jobs (up to 32 at a time by default). This prevents the script from hanging if one query or host is unresponsive. Additionly, there are two progress bars provided: 
 1. The <b>Section</b> progress bar shows the status of the number of endpoints that have completed a given query while 
 2. The <b>Overall</b> progress bar shows the status how many queries have been completed altogether. It is recommended that you don't run excessive queries against excessive number of endpoints. Aside from poor tradecraft, excessive queries can take a long time to process.
@@ -71,7 +76,9 @@ Unlike many other scripts that execute serially, PoSh-ACME executes its queries 
 ***
 ***
 ### Execute Queries Separately or Compiled Together
+
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot026.jpg)
+
 Queries can be executed as separate commands or compiled together. When executed separately the progress bars function as normal and provide an easy to view indicate of the PoSh-ACME's status. Since these commands are threaded as jobs which requires the host to spin up multiple PowerShell's (more memory intensive) to execute each command to each host (more individual network connections). Results are returned immedately for each host and endpoint though, and if an error occurs you don't lose all the data. Lastly, queries executed individual take longer to collect data, as new instances of PowerShell are spun up for each query and endpoint.  If the the commands are compiled together and executed, only one query is sent per endpoint (one PowerShell instance per host). This is substantially faster, but if for some reason if an error occurs during the remote collection, all data is lost; Lastly, the progress bars are not as effective as there is no way to monitor each queries completion, so you wont' konw when a larger compiled query is finished until it's finished.
 
 ***
@@ -92,7 +99,9 @@ The computers tree view displays the computers either by Operating Systems (OS) 
 ***
 ***
 ### Managing Computer Treeview
+
 ![Alt Text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot015.jpg)
+
 The computer treeview can be managed via the Manage List tab, where you can conduct the following actions: Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save.
 1) <b>Deselect All</b> - This butt
 2) <b>Collapse/Expand</b> - 
@@ -111,7 +120,7 @@ The computer treeview can be managed via the Manage List tab, where you can cond
 ##### Efficiently take notes and track your actions on endpoints.
 
 |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/LogFile.jpg)  |
-|:-----------------------------:|:-----------------------------:|
+|:---------:|:----------:|
 |  OpNotes  |  Log File  |
 
 An <b>OpNote</b> is information that the operator considers to be of particular interest to note. They can be typed in manually, selectively imported from query results when viewed or from the Results panel. OpNotes that are entered are automaticlly prepended with a timestamp. The notes field auto-magically expands and shirts when hovered over to make quick review simple, though you can open the OpNotes file directly if desired with external applications. OpNotes are automatically saved to 'OpNotes.txt' when entered, moved, or deleted. The 'OpNotes (Write Only).txt' file contains all notes added in the order they were entered; this is useful if you accidentally remove/delete entries. The following are buttons used to assist with OpNotes.
@@ -129,8 +138,10 @@ The <b>Log File</b> differ from OpNotes by automatically logging actions conduct
 ***
 ***
 ### Host Data Management and Notes
+
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot012.jpg)
-You can view individual endpoint data and notes by selecting the Host Data tab. ....
+
+You can view individual endpoint data and notes by selecting and highlighting, not checkboxing, the endpoint name in the computer treeview. This will automatically change the lower Results tab to the Host Data tab. Here you will see data on the 
 
 
 
