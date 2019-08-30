@@ -131,17 +131,13 @@ The computer treeview can be managed via the Manage List tab, where you can cond
 
 ***
 ***
-### Operator Notes (OpNotes) and Logs
-##### Efficiently take notes and track your actions on endpoints.
+### Operator Notes (OpNotes)
+##### Efficiently take notes with timestamps.
 
-|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/LogFile.JPG)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)  |
-|:----------:|:---------:|
-|  Log File  |  OpNotes  |
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot008.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot009.jpg)  |
+|:-------------:|:--------------:|
+|  OpNotes Tab  |  OpNotes File  |
 
-###### Log File
-The <b>Log File</b> automatically logs actions conducted with PoSh-ACME. This is useful to help determine what action were or were not conducted though PoSh-ACME. Actions logged include such things as the lauching PoSh-ACME, each query conducted against each endpoint, Job execution/completion, the use of Sysinternals tools within PoSh-ACME, and activity conducted with endpoint enumeration scans. This section will continue to develop as more relavant data is identified to log.
-
-###### OpNotes
 An <b>OpNote</b> is information that the operator considers to be of particular interest to note. They can be typed in manually, selectively imported from query results when viewed or from the Results panel. OpNotes that are entered are automaticlly prepended with a timestamp. The notes field auto-magically expands and shirts when hovered over to make quick review simple, though you can open the OpNotes file directly if desired with external applications. OpNotes are automatically saved to 'OpNotes.txt' when entered, moved, or deleted. The 'OpNotes (Write Only).txt' file contains all notes added in the order they were entered; this is useful if you accidentally remove/delete entries. The following are buttons used to assist with OpNotes.
 1) <b>Add</b> - This button manally adds messages and are prepended with a datetime group that you type into the OpNotes input field at the top. Alternatively you can press the enter key to add notes which is arguably faster. Note that you cannot enter blank entries, if you do want to though, you will have to at least enter a space bar entry. 
 2) <b>Remove</b> - This button removes/deletes one or more selected notes. The notes can be selected in any order and/or be within a selected range. Though automatically removed from the 'OpNotes.txt ', they will remain in the 'OpNotes (Write Only).txt' file.
@@ -151,6 +147,14 @@ An <b>OpNote</b> is information that the operator considers to be of particular 
 6) <b>Open OpNotes</b> - This button directly opens the 'OpNotes.txt' file with the systems default application, which is most often notepad.
 7) <b>Move up</b> - This button moves up on or more selected lines of OpNotes. The notes can be selected in any order and/or be within a selected range. When notes are moved, the datetimes remain. When notes are moved, the datetimes remain unchanged.
 8) <b>Move Down</b> - This button moves down on or more selected lines of OpNotes. The notes can be selected in any order and/or be within a selected range. When notes are moved, the datetimes remain unchanged.
+
+***
+***
+### Log File
+##### Efficiently track your actions on endpoints with timestamps.
+![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/LogFile.JPG)
+
+The <b>Log File</b> automatically logs actions conducted with PoSh-ACME. This is useful to help determine what action were or were not conducted though PoSh-ACME. Actions logged include such things as the lauching PoSh-ACME, each query conducted against each endpoint, Job execution/completion, the use of Sysinternals tools within PoSh-ACME, and activity conducted with endpoint enumeration scans. This section will continue to develop as more relavant data is identified to log.
 
 ***
 ***
@@ -174,7 +178,6 @@ You can view individual endpoint data and notes by selecting and highlighting, n
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot004.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot005.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot007.jpg)
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot009.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot013.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot014.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot020.jpg)
