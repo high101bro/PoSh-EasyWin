@@ -138,7 +138,6 @@ The computer treeview can be managed via the Manage List tab, where you can cond
 |:----------------:|:--------------:|
 |  Remote Desktop  |  Event Viewer  |
 |   ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot024.jpg)   |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot025.jpg)  |
-|:-------------:|:--------------:|
 |   PSSession   |     PSEXEC     |
 
 
