@@ -131,6 +131,19 @@ The computer treeview can be managed via the Manage List tab, where you can cond
 
 ***
 ***
+### Connecting to Endpoints
+##### Connect to an endpoint for an interactive experience.
+
+|  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot022.jpg)  |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot023.jpg)  |
+|:----------------:|:--------------:|
+|  Remote Desktop  |  Event Viewer  |
+|   ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot024.jpg)   |  ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot025.jpg)  |
+|:-------------:|:--------------:|
+|   PSSession   |     PSEXEC     |
+
+
+***
+***
 ### Operator Notes (OpNotes)
 ##### Efficiently take notes with timestamps.
 
@@ -180,8 +193,3 @@ You can view individual endpoint data and notes by selecting and highlighting, n
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot007.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot013.jpg)
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot014.jpg)
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot020.jpg)
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot022.jpg)
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot023.jpg)
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot024.jpg)
-![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot025.jpg)
