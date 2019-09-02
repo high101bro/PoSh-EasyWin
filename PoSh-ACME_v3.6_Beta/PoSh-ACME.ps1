@@ -1,17 +1,4 @@
 ﻿<#
-### if ((Show-Command -PassThru -ErrorPopup).split('-')[0] -ne 'Get') {Write-Host "Limited to only using cmdlets with Get verbs!"}
-### Show-Command -PassThru -ErrorPopup
-### These commands use the ErrorPopup parameter of the Show-Command cmdlet to save the output of a command in a variable.
-
-#    # There is an integrated tool in Windows Servers 2008R2 and newer, that allows capturing the network activity without installing anything.
-#    cmd /c netsh trace start capture=yes Ethernet.Type=IPv4 IPv4.Address=127.0.0.1 filemode=single maxSize=250 overwrite=yes tracefile=c:\temp\nettrace_test.etl
-#    #default save location: “traceFile=%LOCALAPPDATA%\Temp\NetTraces\NetTrace.etl”
-#    # e.g. Protocol=6
-#    # e.g. Protocol=!(TCP,UDP)
-#    # e.g. Protocol=(4-10)    
-#    Start-Sleep -Seconds 30
-#    cmd /c netsh trace stop
-
     .SYNOPSIS
      _______             ____  __               _____     ____  ___    __  _____ 
      |   _  \           /  __||  |             /  _  \   / ___\ |  \  /  | | ___|
@@ -671,6 +658,7 @@ $Section1CollectionsTab = New-Object System.Windows.Forms.TabPage -Property @{
 }
 $Section1TabControl.Controls.Add($Section1CollectionsTab)
 
+
 # Variable Sizes
 $TabRightPosition     = 3
 $TabhDownPosition     = 3
@@ -744,8 +732,18 @@ $QueriesDownPositionShift = 25
 $QueriesBoxWidth          = 410
 $QueriesBoxHeight         = 25
 
+#=========================================
+#    ____                  _          
+#   / __ \__  _____  _____(_)__  _____
+#  / / / / / / / _ \/ ___/ / _ \/ ___/
+# / /_/ / /_/ /  __/ /  / /  __(__  ) 
+# \___\_\__,_/\___/_/  /_/\___/____/  
+#
+#=========================================
+
 $Section1CommandsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Queries"
+    Name     = "Queries"
     Location = @{ X = $Column1RightPosition
                   Y = $Column1DownPosition
                 }
@@ -1734,37 +1732,6 @@ $script:AllEndpointCommands = @()
         NotesPath            = "$CommandsHostDirectoryNotes\$CollectionName.txt"
         ExportFileName       = "$CollectionName"
     }
-<#THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING
-    $CollectionName = 'PowerShell Profiles'
-    $CommandScript = @'
-
-            $ProfileCheck = $Variable:Profile | Get-Member -MemberType NoteProperty | select Name, @{name='Path';expression={((($_.definition) -split '=')[1])}} 
-            foreach ($item in $ProfileCheck) {
-                $TestPath = $(Test-Path -Path $item.path)
-                $item | Add-Member -MemberType NoteProperty -Name "DoesItExist" -value $TestPath
-            }
-            $ProfileCheck | Select-Object -Property @{name="PSComputerName";expression={hostname}}, Name, Path, DoesItExist
-'@
-    $script:AllEndpointCommands += [PSCustomObject]@{ 
-        Name                 = $CollectionName
-        Type                 = "File, Hunt" 
-        Command_RPC_CMD      = $null
-        Command_RPC_CMD_Arg  = $null
-        Command_RPC_PoSh     = $null
-        Command_WMI          = $null
-        Command_WinRS_WMIC   = $null
-        Command_WinRS_CMD    = $null
-        Command_WinRM_Script = "Invoke-Command -ScriptBlock { $CommandScript }"
-        Command_WinRM_PoSh   = $null
-        Command_WinRM_WMI    = $null
-        Command_WinRM_CMD    = $null
-        Properties_PoSh      = '@{name="PSComputerName";expression={hostname}}, *'
-        Properties_WMI       = 'PSComputerName, *'
-        Message              = "A PowerShell profile is a script that runs when PowerShell starts. You can use the profile as a logon script to customize the environment. You can add commands, aliases, functions, variables, snap-ins, modules, and PowerShell drives. ... PowerShell supports several profiles for users and host programs."
-        NotesPath            = "$CommandsHostDirectoryNotes\$CollectionName.txt"
-        ExportFileName       = "$CollectionName"
-    }
-<#THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
 
     $CollectionName = 'Prefetch Files'
     $script:AllEndpointCommands += [PSCustomObject]@{ 
@@ -1808,53 +1775,6 @@ $script:AllEndpointCommands = @()
         ExportFileName       = "$CollectionName"
     }
     
-<# THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING
-    $CollectionName = 'Process Tree (Lineage)'
-    $CommandScript = @'
-
-            $script:Results = @()
-            $script:Results += $('==================================================')
-            $script:Results += $('{0,-8}{1}' -f 'PID','Process Name')
-            $script:Results += $('==================================================')
-            Function Get-ProcessChildren ($P,$Depth=1) {
-                $procs | Where-Object {
-                    $_.ParentProcessId -eq $p.ProcessID -and $_.ParentProcessId -ne 0
-                } | ForEach-Object {
-                    $script:Results += $('{0,-8}{1}|--- {2}' -f $_.ProcessID,(' '*5*$Depth),$_.Name,$_.ParentProcessId)
-                    Get-ProcessChildren $_ (++$Depth) 
-                    $Depth-- 
-                }
-            } 
-            $filter = { -not (Get-Process -Id $_.ParentProcessId -ErrorAction SilentlyContinue) -or $_.ParentProcessId -eq 0 } 
-                $procs = Get-WmiObject -Class Win32_Process
-                $top = $procs | Where-Object $filter | Sort-Object ProcessID 
-            foreach ($p in $top) {
-                $script:Results += $('{0,-8}{1}' -f $p.ProcessID, $p.Name)                
-                Get-ProcessChildren $p
-            }
-            return $script:Results
-'@
-    $script:AllEndpointCommands += [PSCustomObject]@{ 
-        Name                 = 'Process Tree (Lineage)'
-        Type                 = 'System' 
-        Command_RPC_CMD      = $null
-        Command_RPC_CMD_Arg  = $null
-        Command_RPC_PoSh     = $null
-        Command_WMI          = $null
-        Command_WinRM_PoSh   = $null
-        Command_WinRM_Script = "Invoke-Command -ScriptBlock { $CommandScript }"
-        Command_WinRM_WMI    = $null
-        Command_WinRM_CMD    = $null
-        Command_WinRS_WMIC   = $null
-        Command_WinRS_CMD    = $null
-        Properties_PoSh      = '@{name="PSComputerName";expression={hostname}}, *' 
-        Properties_WMI       = 'PSComputerName, *'
-        Message              = 'Gets the lineage of each process in a simple to view tree.'
-        NotesPath            = '$CommandsHostDirectoryNotes\$CollectionName.txt'
-        ExportFileName       = "$IndividualHostResults\$CollectionName\$CollectionName"
-    }
-THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
-
     $CollectionName = 'Processes (Enhanced)'
     $Commandscript = @'
 
@@ -2407,57 +2327,6 @@ THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
         ExportFileName       = "$CollectionName"
     }
 
-<#
-    $CollectionName = 'Valid Signatures (C:\Windows\System32)'
-    $CommandScript = @'
-
-        $Files  = Get-ChildItem -File C:\Windows\System32 -Recurse -Force
-        $SHA256 = [System.Security.Cryptography.HashAlgorithm]::Create("SHA256")
-        $MD5    = [System.Security.Cryptography.HashAlgorithm]::Create("MD5")
-
-        foreach ($File in $Files) {
-            #$filebytes = [system.io.file]::ReadAllBytes($File)
-            
-            #$HashMD5 = [System.BitConverter]::ToString($MD5.ComputeHash($filebytes)) -replace "-", ""
-            #$File | Add-Member -NotePropertyName HashMD5 -NotePropertyValue $HashMD5
-            $HashMD5 = $(Get-FileHash -Path $File.FullName -Algorithm MD5).Hash
-            $File | Add-Member -NotePropertyName HashMD5 -NotePropertyValue $HashMD5
-            
-            #$HashSHA256 = [System.BitConverter]::ToString($SHA256.ComputeHash($filebytes)) -replace "-", ""
-            #$File | Add-Member -NotePropertyName HashSHA256 -NotePropertyValue $HashSHA256
-            $HashSHA256 = $(Get-FileHash -Path $File.FullName -Algorithm SHA256).Hash
-            $File | Add-Member -NotePropertyName HashSHA256 -NotePropertyValue $HashSHA256
-            
-            $FileSignature = Get-AuthenticodeSignature -FilePath $File.FullName
-            $Signercertificate = $FileSignature.SignerCertificate.Thumbprint
-            $File | Add-Member -NotePropertyName SignerCertificate -NotePropertyValue $Signercertificate
-            $Status = $FileSignature.Status
-            $File | Add-Member -NotePropertyName Status -NotePropertyValue $Status
-            $File | Select Name, HashMD5, HashSHA256, SignerCertificate, Status, CreationTime, LastAccessTime, LastWriteTime, Attributes, FullName
-        }
-'@
-
-    $script:AllEndpointCommands += [PSCustomObject]@{ 
-        Name                 = $CollectionName
-        Type                 = 'File' 
-        Command_RPC_CMD      = $null
-        Command_RPC_CMD_Arg  = $null
-        Command_RPC_PoSh     = $null
-        Command_WMI          = $null
-        Command_WinRM_Script = "Invoke-Command -ScriptBlock { $CommandScript }"
-        Command_WinRM_PoSh   = $null #"Invoke-Command -ScriptBlock { Get-ChildItem C:\windows\system32 -Recurse -File | Get-AuthenticodeSignature }"
-        Command_WinRM_WMI    = $null
-        Command_WinRM_CMD    = $null
-        Command_WinRS_WMIC   = $null
-        Command_WinRS_CMD    = $null
-# ... C:\Program Files  C:\Program Files (x86)  C:\pagefile.sys  
-        Properties_PoSh      = '@{name="PSComputerName";expression={hostname}}, SignerCertificate, TimeStamperCertificate, Status, StatusMessage, Path, SignatureType, IsOSBinary'
-        Properties_WMI       = 'PSComputerName, *'
-        Message              = "Gets information about the digital signature of files in the C:\Windows\System32 directory."
-        NotesPath            = "$CommandsHostDirectoryNotes\$CollectionName.txt"
-        ExportFileName       = "$CollectionName"
-    }
-#>
     $CollectionName = 'VMWare Detection'
     $CommandScript  = @'
 
@@ -2633,36 +2502,6 @@ THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
 #==========================================================================================================================================
     $script:AllActiveDirectoryCommands = @()
 
-    ### Win32_MemoryDevice
-    ### Win32_ComputerSystemProcessor
-    ### netstat -es
-    ### tasklist /SVC /FO CSV
-    ### tree
-    ### auditpol /get /category:\*
-    # dsquery * -filter "&(objectClass=person)(objectCategory=user)" -attr cn lastLogonTimestamp -limit 0
-
-<# Command Template
-    $CollectionName = 'AD Accounts (All Details and User Information)'
-    $script:AllActiveDirectoryCommands += [PSCustomObject]@{ 
-        Name                 = $CollectionName
-        Type                 = "User"
-        Command_RPC_CMD      = $null
-        Command_RPC_CMD_Arg  = $null
-        Command_RPC_PoSh     = $null
-        Command_WMI          = $null
-        Command_WinRM_Script = $null
-        Command_WinRM_PoSh   = $null
-        Command_WinRM_WMI    = $null
-        Command_WinRM_CMD    = $null
-        Command_WinRS_WMIC   = $null
-        Command_WinRS_CMD    = $null
-        Properties_PoSh      = '@{name="PSComputerName";expression={hostname}}, *'
-        Properties_WMI       = 'PSComputerName, *'
-        Message              = '_____________'
-        NotesPath            = "$CommandsHostDirectoryNotes\ADDS - $CollectionName.txt"
-        ExportFileName       = "$CollectionName"
-    }
-#>
     $CollectionName = 'AD Accounts (All Details and User Information)'
     $script:AllActiveDirectoryCommands += [PSCustomObject]@{ 
         Name                 = $CollectionName
@@ -3124,8 +2963,6 @@ THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
         NotesPath            = "$CommandsHostDirectoryNotes\ADDS - $CollectionName.txt"
         ExportFileName       = "$CollectionName"
     }
-    # if you prefer host names only
-    # DSQUERY Server -o rdn
 
     $CollectionName = 'AD Domain Controllers (Primary)'
     $script:AllActiveDirectoryCommands += [PSCustomObject]@{ 
@@ -3488,15 +3325,7 @@ THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
         NotesPath            = "$CommandsHostDirectoryNotes\ADDS - $CollectionName.txt"
         ExportFileName       = "$CollectionName"
     }
-    <#
-    TrustedAttributes = Direction of Trust
-        1 = Non-Transitive
-        2 = Transitive
-    TrustedDirection = Direction of Trust
-        1 = Incoming only
-        2 = Outgoing only
-        3 = Two-way
-    #>
+
     $CollectionName = 'AD Domain Workstations (All of them)'
     $script:AllActiveDirectoryCommands += [PSCustomObject]@{ 
         Name                 = $CollectionName
@@ -3686,19 +3515,6 @@ THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
         ExportFileName       = "$CollectionName"
     }
 
-    # find all members for a particular group
-    # dsget group "<group>" -members
-    # find all groups for a particular member
-    # dsget user "<DN of user>" -memberof -expand
-    # get the groups name from user container
-    # dsquery group -o rdn cn=users,dc=contoso.dc=com
-    # get the members from a group
-    # dsquery group-samid "CS_CLUB_ACCOUNTS" | dsget group -members -expand | dsget user -samid
-    # find all members for a OU
-    # dsquery user ou=targetOU,dc=domain,dc=com
-    # find all groups for a OU
-    # dsquery group ou=targetOU,dc=domain,dc=com
-
     $CollectionName = 'AD Group Membership by Groups'
     $CommandScript = @'
 
@@ -3782,9 +3598,6 @@ THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
         ExportFileName       = "$CollectionName"
     }
    
-    # The block list automatically applies to all zones for which the server is authoritative. For example, if the DNS server is authoritative for contoso.com and for europe.contoso.com, it ignores queries for wpad.contoso.com as well as for wpad.europe.contoso.com. However, the DNS Server service does not ignore queries for names in zones for which it is not authoritative. 
-    # dnscmd /info /globalqueryblocklist
-
     $CollectionName = 'AD DNS All Records (Server 2008)'
     $script:AllActiveDirectoryCommands += [PSCustomObject]@{ 
         Name                 = $CollectionName
@@ -3869,15 +3682,6 @@ THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
         ExportFileName       = "$CollectionName"
     }
 
-<#
-    DNS Server Statistics NOT included
-        RecursionStatistics
-        DnsSecStatistics
-        MasterStatistics
-        SecondaryStatistics
-        WinsStatistics
-        UpdateStatistics
-#>
     $CollectionName = 'AD DNS Server Statistics (Time)'
     $script:AllActiveDirectoryCommands += [PSCustomObject]@{ 
         Name                 = $CollectionName
@@ -4047,9 +3851,9 @@ THIS ISN'T WORKING REMOTLY FOR SOME REASON, NEEDS TROUBLESHOOTING #>
             ### NEED TO RECONCILE THE CONFLICTS ###
             $ErrorActionPreference = 'SilentlyContinue'
             Get-ADObject -SearchBase (Get-ADRootDSE).schemaNamingContext -LDAPFilter '(schemaIDGUID=*)' -Properties name, schemaIDGUID |
-             ForEach-Object {$schemaIDGUID.add([System.GUID]$_.schemaIDGUID,$_.name)}
+             ForEach-Object {$schemaIDGUID.Add([System.GUID]$_.schemaIDGUID,$_.name)}
             Get-ADObject -SearchBase "CN=Extended-Rights,$((Get-ADRootDSE).configurationNamingContext)" -LDAPFilter '(objectClass=controlAccessRight)' -Properties name, rightsGUID |
-             ForEach-Object {$schemaIDGUID.add([System.GUID]$_.rightsGUID,$_.name)}
+             ForEach-Object {$schemaIDGUID.Add([System.GUID]$_.rightsGUID,$_.name)}
             $ErrorActionPreference = 'Continue'
 
             # Get a list of all OUs.  Add in the root containers for good measure (users, computers, etc.).
@@ -4229,7 +4033,7 @@ function Conduct-NodeAction {
         }         
     }
 }
-#marco
+
 function Initialize-CommandsTreeView {
     $script:TreeNodeImportCustomCommands = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList "1) Custom Commands          " -Property @{
         Tag       = "Custom Commands"
@@ -4400,12 +4204,6 @@ Function View-CommandsTreeViewMethod {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-13}{1}" -f "[RPC]", "Windows Management Instrumentation (WMI)") -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-10}{1}" -f "[WinRM]", "WMIC") -Entry "(WinRM) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-10}{1}" -f "[WinRM]", "Windows CMD") -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-10}{1}" -f "[WinRM]", "PowerShell Scripts") -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -4429,12 +4227,6 @@ Function View-CommandsTreeViewMethod {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category $("{0,-13}{1}" -f "[RPC]", "Windows Management Instrumentation (WMI)") -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category $("{0,-10}{1}" -f "[WinRM]", "WMIC") -Entry "(WinRM) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category $("{0,-10}{1}" -f "[WinRM]", "Windows CMD") -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category $("{0,-10}{1}" -f "[WinRM]", "PowerShell Scripts") -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -4462,12 +4254,6 @@ Function View-CommandsTreeViewQuery {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRM) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -4491,12 +4277,6 @@ Function View-CommandsTreeViewQuery {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WinRM) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeActiveDirectoryCommands -Category $Command.Name -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -4520,12 +4300,6 @@ Function View-CommandsTreeViewQuery {
         if ($Command.Command_WMI) {
             Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category $Command.Name -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_WMI
         }
-#        if ($Command.Command_WinRS_WMIC) {
-#            Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category $Command.Name -Entry "(WinRM) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-#        }
-#        if ($Command.Command_WinRS_CMD) {
-#            Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category $Command.Name -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-#        }
         if ($Command.Command_WinRM_Script) {
             Add-CommandsNode -RootNode $script:TreeNodeImportCustomCommands -Category $Command.Name -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
         }        
@@ -4767,12 +4541,6 @@ function Search-CommandsTreeView {
                 if ($Command.Command_WMI) {
                     Add-CommandsNode -RootNode $script:TreeNodeCommandSearch -Category $($CommandsTreeViewSearchTextBox.Text) -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_WMI
                 }
-        #        if ($Command.Command_WinRS_WMIC) {
-        #            Add-CommandsNode -RootNode $script:TreeNodeCommandSearch -Category $($CommandsTreeViewSearchTextBox.Text) -Entry "(WinRM) WMIC -- $($Command.Name)" -ToolTip $Command.Command_WinRS_WMIC
-        #        }
-        #        if ($Command.Command_WinRS_CMD) {
-        #            Add-CommandsNode -RootNode $script:TreeNodeCommandSearch -Category $($CommandsTreeViewSearchTextBox.Text) -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRS_CMD
-        #        }
                 if ($Command.Command_WinRM_Script) {
                     Add-CommandsNode -RootNode $script:TreeNodeCommandSearch -Category $($CommandsTreeViewSearchTextBox.Text) -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
                 }        
@@ -5064,23 +4832,7 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         ForeColor = 'Black'
     }
-    #$EventLogWinRMRadioButton.Add_Click({
-    #    if ($EventLogWinRMRadioButton.Checked -eq $true) {$EventLogWinRMRadioButton.Checked = $false}
-    #})
-    <#$EventLogWinRMRadioButton.Add_MouseHover({
-        $ToolTip = New-Object System.Windows.Forms.ToolTip    
-        if ($OptionShowToolTipCheckBox.Checked){
-            $Message = "⦿ Displays commands grouped by queries
-    ⦿ All commands executed against each host are logged`n`n"
-            $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
-            $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
-            $ToolTip.UseAnimation = $true
-            $ToolTip.UseFading    = $true
-            $ToolTip.IsBalloon    = $true
-            $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
-            $ToolTip.ToolTipTitle = 'Display by Query'
-        }    
-    })#>
+
     #---------------------------------------
     # Event Log Protocol RPC - Radio Button
     #---------------------------------------
@@ -5282,29 +5034,39 @@ if (Test-Path $EventIDsFile) {
 #---------------------------------------------------
 # Event Logs - Event IDs Manual Entry Clear Button
 #---------------------------------------------------
-$EventLogsEventIDsManualEntryClearButton          = New-Object System.Windows.Forms.Button 
-$EventLogsEventIDsManualEntryClearButton.Text     = "Clear"
-$EventLogsEventIDsManualEntryClearButton.Location = New-Object System.Drawing.Point(136,($EventLogsEventIDsManualEntryLabel.Location.Y + $EventLogsEventIDsManualEntryLabel.Size.Height)) 
-$EventLogsEventIDsManualEntryClearButton.Size     = New-Object System.Drawing.Size(75,20) 
+$EventLogsEventIDsManualEntryClearButton = New-Object System.Windows.Forms.Button -Property @{
+    Text     = "Clear"
+    Location = @{ X = 136
+                  Y = $EventLogsEventIDsManualEntryLabel.Location.Y + $EventLogsEventIDsManualEntryLabel.Size.Height
+                }
+    Size     = @{ Width  = 75
+                  Height = 20
+                }
+}
 $EventLogsEventIDsManualEntryClearButton.Add_Click({
     $EventLogsEventIDsManualEntryTextbox.Text = ""
 })
-$EventLogsEventIDsManualEntryClearButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$EventLogsEventIDsManualEntryClearButton.Font = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryClearButton) 
 
 
 #----------------------------------------------
 # Event Logs - Event IDs Manual Entry Textbox
 #----------------------------------------------
-$EventLogsEventIDsManualEntryTextbox               = New-Object System.Windows.Forms.TextBox 
-$EventLogsEventIDsManualEntryTextbox.Location      = New-Object System.Drawing.Point(5,($EventLogsEventIDsManualEntryClearButton.Location.Y + $EventLogsEventIDsManualEntryClearButton.Size.Height + 5)) 
-$EventLogsEventIDsManualEntryTextbox.Size          = New-Object System.Drawing.Size(205,139)
-$EventLogsEventIDsManualEntryTextbox.MultiLine     = $True
-$EventLogsEventIDsManualEntryTextbox.ScrollBars    = "Vertical"
-$EventLogsEventIDsManualEntryTextbox.WordWrap      = $True
-$EventLogsEventIDsManualEntryTextbox.AcceptsTab    = $false # Allows you to enter in tabs into the textbox
-$EventLogsEventIDsManualEntryTextbox.AcceptsReturn = $false # Allows you to enter in tabs into the textbox
-$EventLogsEventIDsManualEntryTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,1,1)
+$EventLogsEventIDsManualEntryTextbox = New-Object System.Windows.Forms.TextBox -Property @{
+    Location = @{ X = 5
+                  Y = $EventLogsEventIDsManualEntryClearButton.Location.Y + $EventLogsEventIDsManualEntryClearButton.Size.Height + 5
+                }
+    Size     = @{ Width  = 205
+                  Height = 139
+                }
+    MultiLine     = $True
+    WordWrap      = $True
+    AcceptsTab    = $false # Allows you to enter in tabs into the textbox
+    AcceptsReturn = $false # Allows you to enter in tabs into the textbox
+    ScrollBars    = "Vertical"
+    Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
+}
 #$EventLogsEventIDsManualEntryTextbox.Add_KeyDown({   })
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryTextbox)
 
@@ -5801,9 +5563,6 @@ $EventLogsQuickPickSelectionCheckedlistbox = New-Object -TypeName System.Windows
     Size     = @{ Width  = 210
                   Height = 150
                 }
-    #checked = $true
-    #CheckOnClick        = $true #so we only have to click once to check a box
-    #SelectionMode       = One #This will only allow one options at a time
     ScrollAlwaysVisible = $true
     Font                = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
@@ -5929,9 +5688,6 @@ if (Test-Path -Path $EventLogsWindowITProCenter) {
         Size     = @{ Width  = 425
                       Height = 125
                     }
-        #checked            = $true
-        #CheckOnClick       = $true #so we only have to click once to check a box
-        #SelectionMode      = One #This will only allow one options at a time
         ScrollAlwaysVisible = $true
     }
     #----------------------------------------------------
@@ -6014,10 +5770,7 @@ function Query-EventLog {
             $LogMessage = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $TargetComputer`: $EventLogQueryBuild"
             $LogMessage | Add-Content -Path $LogFile
         }
-       
-        ### Future code implementation, Currently using WMI via RPC and WinRM (nested withing Invoke-Command)
-        #Invoke-Command -ComputerName DellWin10 -Credential (Get-Credential) -ScriptBlock { Get-WinEvent -ComputerName DellWin10 -FilterHashtable @{LogName='Security';Id='4624';StartTime=(Get-Date -Date '5/19/2019 8:00:00 AM');EndTime=(Get-Date -Date '5/19/2019 5:00:00 PM')} | Select @{Name="PSComputerName";Expression={$_.MachineName}}, LogName, Id, ProcessId, TimeCreated, Message, @{Name="KeywordsDisplayNames";Expression={$_.KeywordsDisplayNames}} -First 10 }
-        
+               
         Start-Job -Name "PoSh-ACME: $CollectionName -- $TargetComputer" -ScriptBlock {
             param($ThreadPriority,$EventLogQueryBuild)
             Invoke-Expression -Command $ThreadPriority
@@ -6096,14 +5849,17 @@ $FileSearchButtonHeight      = 22
 
 $Section1FileSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "File, Hash, and ADS Search"
-    Location                = New-Object System.Drawing.Point($FileSearchRightPosition,$FileSearchDownPosition) 
-    Size                    = New-Object System.Drawing.Size($FileSearchLabelWidth,$FileSearchLabelHeight) 
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = $FileSearchLabelWidth
+                  Height = $FileSearchLabelHeight
+                }
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
 $Section1CollectionsTabControl.Controls.Add($Section1FileSearchTab)
 
-# Shift the fields
 $FileSearchDownPosition += $FileSearchDownPositionShift
 
 #============================================================================================================================================================
@@ -6215,8 +5971,12 @@ $QueryJob= @"
 
 $FileSearchDirectoryListingCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Directory Listing (WinRM)"
-    Location = New-Object System.Drawing.Point($FileSearchRightPosition,$FileSearchDownPosition)
-    Size     = New-Object System.Drawing.Size(230,$FileSearchLabelHeight) 
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 230
+                  Height = $FileSearchLabelHeight
+                }
     Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
     ForeColor = 'Blue'
 }
@@ -6226,9 +5986,13 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
 # File Search - Directory Listing Max Depth Label
 #--------------------------------------------------
 $FileSearchDirectoryListingMaxDepthLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text       = "Recursive Depth"
-    Location   = New-Object System.Drawing.Point(($FileSearchDirectoryListingCheckbox.Size.Width + 52),($FileSearchDownPosition + 3)) 
-    Size       = New-Object System.Drawing.Size(100,$FileSearchLabelHeight) 
+    Text     = "Recursive Depth"
+    Location = @{ X = $FileSearchDirectoryListingCheckbox.Size.Width + 52
+                  Y = $FileSearchDownPosition + 3
+                }
+    Size     = @{ Width  = 100
+                  Height = $FileSearchLabelHeight
+                }
     Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor  = "Black"
 }
@@ -6238,9 +6002,13 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingMaxDepthLabel)
 # File Search - Directory Listing Max Depth Textbox
 #----------------------------------------------------
 $FileSearchDirectoryListingMaxDepthTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-    Text           = 0
-    Location       = New-Object System.Drawing.Size(($FileSearchDirectoryListingMaxDepthLabel.Location.X + $FileSearchDirectoryListingMaxDepthLabel.Size.Width),($FileSearchDownPosition)) 
-    Size           = New-Object System.Drawing.Size(50,20)
+    Text     = 0
+    Location = @{ X = $FileSearchDirectoryListingMaxDepthLabel.Location.X + $FileSearchDirectoryListingMaxDepthLabel.Size.Width
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 50
+                  Height = 20
+                }
     MultiLine      = $false
     WordWrap       = $false
     Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -6248,30 +6016,36 @@ $FileSearchDirectoryListingMaxDepthTextbox = New-Object System.Windows.Forms.Tex
 #$FileSearchDirectoryListingMaxDepthTextbox.Add_KeyDown({          })
 $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingMaxDepthTextbox)
 
-# Shift the fields
 $FileSearchDownPosition += $FileSearchDownPositionShift
 
 #----------------------------------------------
 # File Search - Directory Listing Label
 #----------------------------------------------
 $FileSearchDirectoryListingLabel = New-Object System.Windows.Forms.Label -Property @{
-    Location  = New-Object System.Drawing.Point($FileSearchRightPosition,$FileSearchDownPosition) 
-    Size      = New-Object System.Drawing.Size($FileSearchLabelWidth,$FileSearchLabelHeight) 
     Text      = "Collection time is dependant on the directory's contents."
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = $FileSearchLabelWidth
+                  Height = $FileSearchLabelHeight
+                }
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor = "Black"
 }
 $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingLabel)
 
-# Shift the fields
 $FileSearchDownPosition += $FileSearchDownPositionShift
 
 #----------------------------------------------------
 # File Search - Directory Listing Directory Textbox
 #----------------------------------------------------
 $FileSearchDirectoryListingTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location           = New-Object System.Drawing.Size($FileSearchRightPosition,($FileSearchDownPosition)) 
-    Size               = New-Object System.Drawing.Size(430,22)
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = 22
+                }
     MultiLine          = $False
     #ScrollBars         = "Vertical"
     WordWrap           = $false
@@ -6302,7 +6076,6 @@ $FileSearchDirectoryListingTextbox.Add_MouseLeave({
 })
 $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingTextbox)
 
-# Shift the fields
 $FileSearchDownPosition += $FileSearchDownPositionShift + $FileSearchDirectoryListingTextbox.Size.Height
 
 #============================================================================================================================================================
@@ -6384,8 +6157,12 @@ $QueryJob= @"
 #---------------------------------------------------
 $FileSearchFileSearchCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "File Search (WinRM)"
-    Location = New-Object System.Drawing.Size(($FileSearchRightPosition),($FileSearchDownPosition)) 
-    Size     = New-Object System.Drawing.Size((230),$FileSearchLabelHeight)
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 230
+                  Height = $FileSearchLabelHeight
+                }
     Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
     ForeColor = 'Blue'
 }
@@ -6396,8 +6173,12 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
 #--------------------------------------------------
 $FileSearchFileSearchMaxDepthLabel            = New-Object System.Windows.Forms.Label -Property @{
     Text       = "Recursive Depth"
-    Location   = New-Object System.Drawing.Point(($FileSearchFileSearchCheckbox.Size.Width + 52),($FileSearchDownPosition + 3)) 
-    Size       = New-Object System.Drawing.Size(100,$FileSearchLabelHeight) 
+    Location = @{ X = $FileSearchFileSearchCheckbox.Size.Width + 52
+                  Y = $FileSearchDownPosition + 3
+                }
+    Size     = @{ Width  = 100
+                  Height = $FileSearchLabelHeight
+                }
     Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor  = "Black"
 }
@@ -6428,46 +6209,56 @@ $FileSearchDownPosition += $FileSearchDownPositionShift
 #--------------------------------------------------------
 $FileSearchSelectFileHashCheckbox = New-Object System.Windows.Forms.ComboBox -Property @{
     Text     = "Select FileHashes - Default is None"
-    Location = New-Object System.Drawing.Point($FileSearchRightPosition,$FileSearchDownPosition) 
-    Size     = New-Object System.Drawing.Size(200,$FileSearchLabelHeight) 
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 200
+                  Height = $FileSearchLabelHeight
+                }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
     $HashList = @('None', 'MD5','SHA1','SHA256','SHA512','MD5 + SHA1','MD5 + SHA256','MD5 + SHA512','MD5 + SHA1 + SHA256 + SHA512')
     ForEach ($Hash in $HashList) { $FileSearchSelectFileHashCheckbox.Items.Add($Hash) }
 $Section1FileSearchTab.Controls.Add($FileSearchSelectFileHashCheckbox)
 
-# Shift the fields
 $FileSearchDownPosition += $FileSearchDownPositionShift
 
 #----------------------------------------
 # File Search - File Search Label
 #----------------------------------------
 $FileSearchFileSearchLabel = New-Object System.Windows.Forms.Label -Property @{
-    Location  = New-Object System.Drawing.Point($FileSearchRightPosition,$FileSearchDownPosition) 
-    Size      = New-Object System.Drawing.Size($FileSearchLabelWidth,$FileSearchLabelHeight) 
     Text      = "Collection time depends on the number of files and directories, plus recursive depth."
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = $FileSearchLabelWidth
+                  Height = $FileSearchLabelHeight
+                }
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor = "Black"
 }
 $Section1FileSearchTab.Controls.Add($FileSearchFileSearchLabel)
 
-# Shift the fields
 $FileSearchDownPosition += $FileSearchDownPositionShift - 3
 
 #------------------------------------------------
 # File Search - File Search Files Textbox
 #------------------------------------------------
 $FileSearchFileSearchFileTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location            = New-Object System.Drawing.Point($FileSearchRightPosition,($FileSearchDownPosition)) 
-    Size                = New-Object System.Drawing.Size(430,(80))
-    MultiLine           = $True
-    ScrollBars          = "Vertical" #Horizontal
-    WordWrap            = $false
-    AcceptsTab          = $false    # Allows you to enter in tabs into the textbox
-    AcceptsReturn       = $false # Allows you to enter in tabs into the textbox
-    AllowDrop           = $true
-    Text                = "Enter FileNames; One Per Line"
-    Font                = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = 80
+                }
+    MultiLine     = $True
+    ScrollBars    = "Vertical" #Horizontal
+    WordWrap      = $false
+    AcceptsTab    = $false    # Allows you to enter in tabs into the textbox
+    AcceptsReturn = $false # Allows you to enter in tabs into the textbox
+    AllowDrop     = $true
+    Text          = "Enter FileNames; One Per Line"
+    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
     #AutoCompleteSource = "FileSystem" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
     #AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
 }
@@ -6503,14 +6294,18 @@ $FileSearchDownPosition += $FileSearchFileSearchFileTextbox.Size.Height + 5
 # File Search - File Search Directory Textbox
 #---------------------------------------------
 $FileSearchFileSearchDirectoryTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location            = New-Object System.Drawing.Point($FileSearchRightPosition,($FileSearchDownPosition)) 
-    Size                = New-Object System.Drawing.Size(430,(80))
+    Text     = "Enter Directories; One Per Line"
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = 80
+                }
     MultiLine           = $True
     ScrollBars          = "Vertical"
     WordWrap            = $True
     AcceptsTab          = $false    # Allows you to enter in tabs into the textbox
     AcceptsReturn       = $false # Allows you to enter in tabs into the textbox
-    Text                = "Enter Directories; One Per Line"
     Font                = New-Object System.Drawing.Font("$Font",11,0,0,0)
     #AutoCompleteSource = "FileSystem" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
     #AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
@@ -6626,8 +6421,12 @@ $QueryJob = @"
 #--------------------------------------------------------
 $FileSearchAlternateDataStreamCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Alternate Data Stream Search (WinRM)"
-    Location = New-Object System.Drawing.Point(($FileSearchRightPosition),($FileSearchDownPosition)) 
-    Size     = New-Object System.Drawing.Size((250),$FileSearchLabelHeight)
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 250
+                  Height = $FileSearchLabelHeight
+                }
     Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
     ForeColor = 'Blue'
 }
@@ -6637,9 +6436,13 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
 # File Search - Alternate Data Stream Max Depth Label
 #-----------------------------------------------------
 $FileSearchAlternateDataStreamMaxDepthLabel = New-Object System.Windows.Forms.Label -Property @{
-    Location = New-Object System.Drawing.Point(($FileSearchFileSearchCheckbox.Size.Width + 52),($FileSearchDownPosition + 3)) 
-    Size     = New-Object System.Drawing.Size(100,$FileSearchLabelHeight) 
     Text     = "Recursive Depth"
+    Location = @{ X = $FileSearchFileSearchCheckbox.Size.Width + 52
+                  Y = $FileSearchDownPosition + 3
+                }
+    Size     = @{ Width  = 100
+                  Height = $FileSearchLabelHeight
+                }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
 #$FileSearchAlternateDataStreamMaxDepthLabel.ForeColor  = "Blue"
@@ -6650,8 +6453,12 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamMaxDepthLabel)
 #-------------------------------------------------------
 $FileSearchAlternateDataStreamMaxDepthTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Text           = 0
-    Location       = New-Object System.Drawing.Point(($FileSearchAlternateDataStreamMaxDepthLabel.Location.X + $FileSearchAlternateDataStreamMaxDepthLabel.Size.Width),($FileSearchDownPosition)) 
-    Size           = New-Object System.Drawing.Size(50,20)
+    Location = @{ X = $FileSearchAlternateDataStreamMaxDepthLabel.Location.X + $FileSearchAlternateDataStreamMaxDepthLabel.Size.Width
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 50
+                  Height = 20
+                }
     MultiLine      = $false
     #ScrollBars    = "Vertical"
     WordWrap       = $false
@@ -6662,7 +6469,6 @@ $FileSearchAlternateDataStreamMaxDepthTextbox = New-Object System.Windows.Forms.
 #$FileSearchAlternateDataStreamMaxDepthTextbox.Add_KeyDown({          })
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamMaxDepthTextbox)
 
-# Shift the fields
 $FileSearchDownPosition += $FileSearchAlternateDataStreamCheckbox.Size.Height + 5
 
 #-------------------------------------------
@@ -6670,14 +6476,17 @@ $FileSearchDownPosition += $FileSearchAlternateDataStreamCheckbox.Size.Height + 
 #-------------------------------------------
 $FileSearchAlternateDataStreamLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = "Exlcudes':`$DATA' stream, and will show the ADS name and its contents."
-    Location  = New-Object System.Drawing.Point($FileSearchRightPosition,$FileSearchDownPosition) 
-    Size      = New-Object System.Drawing.Size($FileSearchLabelWidth,$FileSearchLabelHeight) 
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = $FileSearchLabelWidth
+                  Height = $FileSearchLabelHeight
+                }
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor = "Black"
 }
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamLabel)
 
-# Shift the fields
 $FileSearchDownPosition += $FileSearchDownPositionShift
 
 #---------------------------------------------
@@ -6685,16 +6494,18 @@ $FileSearchDownPosition += $FileSearchDownPositionShift
 #---------------------------------------------
 $FileSearchAlternateDataStreamDirectoryTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Text          = "Enter Directories; One Per Line"
-    Location      = New-Object System.Drawing.Point($FileSearchRightPosition,($FileSearchDownPosition)) 
-    Size          = New-Object System.Drawing.Size(430,(80))
+    Location = @{ X = $FileSearchRightPosition
+                  Y = $FileSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = 80
+                }
     Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
     MultiLine     = $True
     ScrollBars    = "Vertical"
     WordWrap      = $True
     AcceptsTab    = $false # Allows you to enter in tabs into the textbox
     AcceptsReturn = $false # Allows you to enter in tabs into the textbox
-    #AutoCompleteSource = "FileSystem" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-    #AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
 }
 #$FileSearchAlternateDataStreamDirectoryTextbox.Add_KeyDown({          })
 $FileSearchAlternateDataStreamDirectoryTextbox.Add_MouseHover({
@@ -6745,10 +6556,14 @@ $NetworkConnectionSearchButtonHeight      = 22
 $NetworkConnectionSearchLabelHeight       = 22
 
 $Section1NetworkConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text                    = "Network Connections"
-    Location                = New-Object System.Drawing.Point($NetworkConnectionSearchRightPosition,$NetworkConnectionSearchDownPosition) 
-    Size                    = New-Object System.Drawing.Size($NetworkConnectionSearchWidth,$NetworkConnectionSearchHeight) 
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Text     = "Network Connections"
+    Location = @{ X = $NetworkConnectionSearchRightPosition
+                  Y = $NetworkConnectionSearchDownPosition
+                }
+    Size     = @{ Width  = $NetworkConnectionSearchWidth
+                  Height = $NetworkConnectionSearchHeight
+                }
+    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
 $Section1CollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
@@ -7090,13 +6905,17 @@ if (Test-Path "$ResourcesDirectory\Ports, Protocols, and Services.csv") {
 # Network Connections Search -  Remote Port Textbox
 #---------------------------------------------
 $NetworkConnectionSearchRemotePortTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-    Text          = "Enter Remote Ports; One Per Line"
-    Location      = New-Object System.Drawing.Point(($NetworkConnectionSearchRemoteIPAddressTextbox.Location.X + $NetworkConnectionSearchRemoteIPAddressTextbox.Size.Width + 10),($NetworkConnectionSearchRemoteIPAddressTextbox.Location.Y)) 
-    Size          = New-Object System.Drawing.Size(210,(120))
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    MultiLine     = $True
-    ScrollBars    = "Vertical"
-    WordWrap      = $True
+    Text     = "Enter Remote Ports; One Per Line"
+    Location = @{ X = $NetworkConnectionSearchRemoteIPAddressTextbox.Location.X + $NetworkConnectionSearchRemoteIPAddressTextbox.Size.Width + 10
+                  Y = $NetworkConnectionSearchRemoteIPAddressTextbox.Location.Y
+                }
+    Size     = @{ Width  = 210
+                  Height = 120
+                }
+    Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    MultiLine  = $True
+    ScrollBars = "Vertical"
+    WordWrap   = $True
 }
 #$NetworkConnectionSearchRemotePortTextbox.Add_KeyDown({          })
 $NetworkConnectionSearchRemotePortTextbox.Add_MouseHover({
@@ -7190,8 +7009,12 @@ $QueryJob = @"
 #--------------------------------------------------------
 $NetworkConnectionSearchProcessCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Remote Process Name"
-    Location = New-Object System.Drawing.Point(($NetworkConnectionSearchRightPosition),($NetworkConnectionSearchDownPosition)) 
-    Size     = New-Object System.Drawing.Size((430),$NetworkConnectionSearchLabelHeight)
+    Location = @{ X = $NetworkConnectionSearchRightPosition
+                  Y = $NetworkConnectionSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = $NetworkConnectionSearchLabelHeight
+                }
     Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
     ForeColor = 'Blue'
 }
@@ -7203,11 +7026,15 @@ $NetworkConnectionSearchDownPosition += $NetworkConnectionSearchDownPositionShif
 # Network Connections Search - Process Label
 #-----------------------------------------------------
 $NetworkConnectionSearchProcessLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text      = "Check hosts for connections created by a given process."
-    Location  = New-Object System.Drawing.Point(($NetworkConnectionSearchRightPosition),($NetworkConnectionSearchDownPosition)) 
-    Size      = New-Object System.Drawing.Size(430,$NetworkConnectionSearchLabelHeight) 
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Text     = "Check hosts for connections created by a given process."
+    Location = @{ X = $NetworkConnectionSearchRightPosition
+                  Y = $NetworkConnectionSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = $NetworkConnectionSearchLabelHeight
+                }
     ForeColor = "Black"
+    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
 $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProcessLabel)
 
@@ -7218,8 +7045,12 @@ $NetworkConnectionSearchDownPosition += $NetworkConnectionSearchDownPositionShif
 #---------------------------------------------
 $NetworkConnectionSearchProcessTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Text          = "Enter Process Names; One Per Line"
-    Location      = New-Object System.Drawing.Point($NetworkConnectionSearchRightPosition,($NetworkConnectionSearchDownPosition)) 
-    Size          = New-Object System.Drawing.Size(430,(120))
+    Location = @{ X = $NetworkConnectionSearchRightPosition
+                  Y = $NetworkConnectionSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = 120
+                }
     Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
     MultiLine     = $True
     ScrollBars    = "Vertical"
@@ -7320,8 +7151,12 @@ $QueryJob = @"
 #--------------------------------------------------------
 $NetworkConnectionSearchDNSCacheCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Remote DNS Cache Entry"
-    Location = New-Object System.Drawing.Point(($NetworkConnectionSearchRightPosition),($NetworkConnectionSearchDownPosition)) 
-    Size     = New-Object System.Drawing.Size((430),$NetworkConnectionSearchLabelHeight)
+    Location = @{ X = $NetworkConnectionSearchRightPosition
+                  Y = $NetworkConnectionSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = $NetworkConnectionSearchLabelHeight
+                }
     Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
     ForeColor = 'Blue'
 }
@@ -7334,8 +7169,12 @@ $NetworkConnectionSearchDownPosition += $NetworkConnectionSearchDownPositionShif
 #-----------------------------------------------------
 $NetworkConnectionSearchDNSCacheLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = "Check hosts' DNS Cache for entries that match given criteria."
-    Location  = New-Object System.Drawing.Point(($NetworkConnectionSearchRightPosition),($NetworkConnectionSearchDownPosition)) 
-    Size      = New-Object System.Drawing.Size(430,$NetworkConnectionSearchLabelHeight) 
+    Location = @{ X = $NetworkConnectionSearchRightPosition
+                  Y = $NetworkConnectionSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = $NetworkConnectionSearchLabelHeight
+                }
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor = "Black"
 }
@@ -7348,12 +7187,16 @@ $NetworkConnectionSearchDownPosition += $NetworkConnectionSearchDownPositionShif
 #-------------------------------------------------
 $NetworkConnectionSearchDNSCacheTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Text          = "Enter DNS query information or IP addresses; One Per Line"
-    Location      = New-Object System.Drawing.Point($NetworkConnectionSearchRightPosition,($NetworkConnectionSearchDownPosition)) 
-    Size          = New-Object System.Drawing.Size(430,(100))
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    MultiLine     = $True
-    ScrollBars    = "Vertical"
-    WordWrap      = $True
+    Location = @{ X = $NetworkConnectionSearchRightPosition
+                  Y = $NetworkConnectionSearchDownPosition
+                }
+    Size     = @{ Width  = 430
+                  Height = 100
+                }
+    Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    MultiLine  = $True
+    ScrollBars = "Vertical"
+    WordWrap   = $True
 }
 #$NetworkConnectionSearchDNSCacheTextbox.Add_KeyDown({          })
 $NetworkConnectionSearchDNSCacheTextbox.Add_MouseHover({
@@ -7678,7 +7521,6 @@ $SysinternalsAutorunsButton.Add_Click({
     }
 })
 $Section1SysinternalsTab.Controls.Add($SysinternalsAutorunsButton) 
-
 
 #--------------------------------
 # Sysinternals Autoruns CheckBox
@@ -8014,12 +7856,16 @@ $EnumerationButtonHeight      = 22
 $EnumerationGroupGap          = 15
 
 $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Name                    = "Enumeration"
-    Text                    = "Enumeration"
-    Location                = New-Object System.Drawing.Point($EnumerationRightPosition,$EnumerationDownPosition) 
-    Size                    = New-Object System.Drawing.Size($EnumerationLabelWidth,$EnumerationLabelHeight) 
+    Name     = "Enumeration"
+    Text     = "Enumeration"
+    Location = @{ X = $EnumerationRightPosition
+                  Y = $EnumerationDownPosition
+                }
+    Size     = @{ Width  = $EnumerationLabelWidth
+                  Height = $EnumerationLabelHeight
+                }
+    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
 $Section1TabControl.Controls.Add($Section1EnumerationTab)
 
@@ -8227,12 +8073,6 @@ function Conduct-PortScan {
         $PortsToScan += $null
     }
 
-    # Places the Ports to Scan in Numerical Order, removes duplicate entries, and remove possible empty fields
-##Consumes too much time##
-##    $SortedPorts=@()
-##    foreach ( $Port in $PortsToScan ) { $SortedPorts += [int]$Port }
-##    $PortsToScan = $SortedPorts | ? {$_ -ne ""}
-
     # Validates Unique Port List To Scan
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Validating Unique Port List To Scan")
@@ -8328,9 +8168,13 @@ function Conduct-PortScan {
 # Enumeration - Port Scan - GroupBox
 #------------------------------------
 $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Location  = New-Object System.Drawing.Point(0,($EnumerationDomainGenerateGroupBox.Location.Y + $EnumerationDomainGenerateGroupBox.Size.Height + $EnumerationGroupGap))
-    Size      = New-Object System.Drawing.Size(294,270)
-    text      = "Create List From TCP Port Scan"
+    Text      = "Create List From TCP Port Scan"
+    Location = @{ X = 0
+                  Y = $EnumerationDomainGenerateGroupBox.Location.Y + $EnumerationDomainGenerateGroupBox.Size.Height + $EnumerationGroupGap
+                }
+    Size     = @{ Width  = 294
+                  Height = 270
+                }
     Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
     ForeColor = "Blue"
 }
@@ -8502,9 +8346,6 @@ $EnumerationPortScanGroupDownPositionShift = 25
     $EnumerationPortScanSpecificPortsTextbox.Text          = ""
     $EnumerationPortScanSpecificPortsTextbox.Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
     $EnumerationPortScanSpecificPortsTextbox.ForeColor     = "Black"
-    #$EnumerationPortScanSpecificPortsTextbox.Add_KeyDown({ 
-    #    if ($_.KeyCode -eq "Enter") { Conduct-PortScan }
-    #})
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificPortsTextbox)
 
     $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
@@ -8566,9 +8407,6 @@ $EnumerationPortScanGroupDownPositionShift = 25
             $ResultsListBox.Items.Add("Previous Ports Scanned:  $($CustomSavedPortsConvertedToList | Where {$_ -ne ''})")
         }
     })
-    #$EnumerationPortScanPortQuickPickComboBox.Add_KeyDown({ 
-    #    if ($_.KeyCode -eq "Enter") { Conduct-PortScan }
-    #})
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortQuickPickComboBox)
 
     #-------------------------------------------------
@@ -9032,8 +8870,12 @@ foreach ($File in $ResourceChecklistFiles) {
     foreach ($line in $TabContents) {
         $Checklist = New-Object System.Windows.Forms.CheckBox -Property @{
             Text     = "$line"
-            Location = New-Object System.Drawing.Point($ChecklistRightPosition,$ChecklistDownPosition) 
-            Size     = New-Object System.Drawing.Size($ChecklistBoxWidth,$ChecklistBoxHeight)
+            Location = @{ X = $ChecklistRightPosition
+                          Y = $ChecklistDownPosition
+                        }
+            Size     = @{ Width  = $ChecklistBoxWidth
+                          Height = $ChecklistBoxHeight
+                        }
             Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         }
         if ($Checklist.Check -eq $True) { $Checklist.ForeColor = "Blue" }
@@ -9083,9 +8925,13 @@ $TextBoxHeight          = 536
 
 # The TabControl controls the tabs within it
 $Section1ProcessesTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-    Name          = "Processes TabControl"
-    Location      = New-Object System.Drawing.Point($TabRightPosition,$TabhDownPosition)
-    Size          = New-Object System.Drawing.Size($TabAreaWidth,$TabAreaHeight) 
+    Name     = "Processes TabControl"
+    Location = @{ X = $TabRightPosition
+                    Y = $TabhDownPosition
+                }
+    Size     = @{ Width  = $TabAreaWidth
+                    Height = $TabAreaHeight
+                }
     Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ShowToolTips  = $True
     SelectedIndex = 0
@@ -9120,8 +8966,12 @@ foreach ($File in $ResourceFiles) {
     $Section1ProcessesSubTabTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Name       = "$file"
         Text       = "$TabContents"
-        Location   = New-Object System.Drawing.Point($TextBoxRightPosition,$TextBoxDownPosition) 
-        Size       = New-Object System.Drawing.Size($TextBoxWidth,$TextBoxHeight)
+        Location = @{ X = $TextBoxRightPosition
+                      Y = $TextBoxDownPosition
+                    }
+        Size     = @{ Width  = $TextBoxWidth
+                      Height = $TextBoxHeight
+                    }
         Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
         MultiLine  = $True
         ScrollBars = "Vertical"
@@ -9202,8 +9052,6 @@ function OpNoteTextBoxEntry {
     # Adds all entries to the OpNotesWriteOnlyFile -- This file gets all entries and are not editable from the GUI
     # Useful for looking into accidentally deleted entries
     Add-Content -Path $OpNotesWriteOnlyFile -Value ("$($(Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) $($OpNotesInputTextBox.Text)") -Force 
-#    $PrependData = Get-Content $OpNotesWriteOnlyFile
-#    Set-Content -Path $OpNotesWriteOnlyFile -Value (("$($(Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) $($OpNotesInputTextBox.Text)"),$PrependData) -Force 
     
     #Clears Textbox
     $OpNotesInputTextBox.Text = ""
@@ -9217,9 +9065,13 @@ function OpNoteTextBoxEntry {
 # OpNoptes - Enter your OpNotes Label
 #-------------------------------------
 $OpNotesLabel = New-Object System.Windows.Forms.Label -Property @{
-    Location  = New-Object System.Drawing.Point($OpNotesRightPosition,$OpNotesDownPosition) 
-    Size      = New-Object System.Drawing.Size($OpNotesInputTextBoxWidth,$OpNotesInputTextBoxHeight)
     Text      = "Enter Your OpNotes (Auto-Timestamp):"
+    Location = @{ X = $OpNotesRightPosition
+                  Y = $OpNotesDownPosition
+                }
+    Size     = @{ Width  = $OpNotesInputTextBoxWidth
+                  Height = $OpNotesInputTextBoxHeight
+                }
     Font      = New-Object System.Drawing.Font("$Font",13,1,2,1)
     ForeColor = "Blue"
 }
@@ -9920,8 +9772,6 @@ $CollectionSavedDirectoryTextBox.Text          = $CollectedDataTimeStampDirector
 $CollectionSavedDirectoryTextBox.WordWrap      = $false
 $CollectionSavedDirectoryTextBox.AcceptsTab    = $true
 $CollectionSavedDirectoryTextBox.TabStop       = $true
-#$CollectionSavedDirectoryTextBox.Multiline     = $true
-#$CollectionSavedDirectoryTextBox.AutoSize      = $true
 $CollectionSavedDirectoryTextBox.AutoCompleteSource = "FileSystem" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
 $CollectionSavedDirectoryTextBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
 $CollectionSavedDirectoryTextBox.Location      = New-Object System.Drawing.Size($Column3RightPosition,$Column3DownPosition) 
@@ -10207,7 +10057,7 @@ $BuildChartButton          = New-Object System.Windows.Forms.Button
 $BuildChartButton.Name     = "Build Chart"
 $BuildChartButton.Text     = "$($BuildChartButton.Name)"
 $BuildChartButton.UseVisualStyleBackColor = $True
-$BuildChartButton.Location = New-Object System.Drawing.Size(($CompareButton.Location.X + $CompareButton.Size.Width + 5),$CompareButton.Location.Y)
+$BuildChartButton.Location = New-Object System.Drawing.Point(($CompareButton.Location.X + $CompareButton.Size.Width + 5),$CompareButton.Location.Y)
 $BuildChartButton.Size     = New-Object System.Drawing.Size(115,22)
 $BuildChartButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $BuildChartButton.Add_Click({
@@ -10375,7 +10225,7 @@ $BuildChartButton.Add_Click({
             $ViewChartForm.Height        = 490
             $ViewChartForm.StartPosition = "CenterScreen"
             $ViewChartForm.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-            $ViewChartForm.controls.add($Chart)
+            $ViewChartForm.controls.Add($Chart)
             $Chart.Anchor = $AnchorAll
         #-------------------------------
         # Custom View Chart Save Button
@@ -10391,7 +10241,7 @@ $BuildChartButton.Add_Click({
                 If ($Result) { $Chart.SaveImage($Result.FileName, $Result.Extension) }
             })
             $SaveButton.Font   = New-Object System.Drawing.Font("$Font",11,0,0,0)
-        $ViewChartForm.controls.add($SaveButton)
+        $ViewChartForm.controls.Add($SaveButton)
         $ViewChartForm.Add_Shown({$ViewChartForm.Activate()})
         [void]$ViewChartForm.ShowDialog()
 
@@ -10449,16 +10299,7 @@ $BuildChartButton.Add_Click({
                 }
                 # This array outputs the multiple results and is later used in the charts
                 $Script:ViewChartChoice = @($Script:ViewChartXChoice, $Script:ViewChartYChoice, $Script:ViewChartChartTypesChoice, $ViewChartLimitResultsTextBox.Text, $ViewChartAscendingRadioButton.Checked, $ViewChartDescendingRadioButton.Checked, $ViewChartLegendCheckBox.Checked, $ViewChart3DChartCheckBox.Checked)
-                <# Notes:
-                    $Script:ViewChartChoice[0] = $Script:ViewChartXChoice
-                    $Script:ViewChartChoice[1] = $Script:ViewChartYChoice
-                    $Script:ViewChartChoice[2] = $Script:ViewChartChartTypesChoice
-                    $Script:ViewChartChoice[3] = $ViewChartLimitResultsTextBox.Text
-                    $Script:ViewChartChoice[4] = $ViewChartAscendingRadioButton.Checked
-                    $Script:ViewChartChoice[5] = $ViewChartDescendingRadioButton.Checked
-                    $Script:ViewChartChoice[6] = $ViewChartLegendCheckBox.Checked
-                    $Script:ViewChartChoice[7] = $ViewChart3DChartCheckBox.Checked
-                #>
+
                 return $Script:ViewChartChoice
             }
 
@@ -10478,7 +10319,7 @@ $BuildChartButton.Add_Click({
             # Custom View Chart Main Label
             #------------------------------
             $ViewChartMainLabel          = New-Object System.Windows.Forms.Label
-            $ViewChartMainLabel.Location = New-Object System.Drawing.Size(10,10) 
+            $ViewChartMainLabel.Location = New-Object System.Drawing.Point(10,10) 
             $ViewChartMainLabel.size     = New-Object System.Drawing.Size(290,25) 
             $ViewChartMainLabel.Text     = "Fill out the bellow to view a chart of a csv file:`nNote: Currently some limitations with compiled results files."
             $ViewChartMainLabel.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -10488,7 +10329,7 @@ $BuildChartButton.Add_Click({
             # Custom View Chart X ComboBox
             #------------------------------
             $ViewChartXComboBox          = New-Object System.Windows.Forms.ComboBox
-            $ViewChartXComboBox.Location = New-Object System.Drawing.Size(10,($ViewChartMainLabel.Location.y + $ViewChartMainLabel.Size.Height + 5))
+            $ViewChartXComboBox.Location = New-Object System.Drawing.Point(10,($ViewChartMainLabel.Location.y + $ViewChartMainLabel.Size.Height + 5))
             $ViewChartXComboBox.Size     = New-Object System.Drawing.Size(185,25)
             $ViewChartXComboBox.Text     = "Field 1 - X Axis"
             $ViewChartXComboBox.AutoCompleteSource = "ListItems"
@@ -10502,7 +10343,7 @@ $BuildChartButton.Add_Click({
             # Custom View Chart Y ComboBox
             #------------------------------
             $ViewChartYComboBox          = New-Object System.Windows.Forms.ComboBox
-            $ViewChartYComboBox.Location = New-Object System.Drawing.Size(10,($ViewChartXComboBox.Location.y + $ViewChartXComboBox.Size.Height + 5))
+            $ViewChartYComboBox.Location = New-Object System.Drawing.Point(10,($ViewChartXComboBox.Location.y + $ViewChartXComboBox.Size.Height + 5))
             $ViewChartYComboBox.Size     = New-Object System.Drawing.Size(185,25)
             $ViewChartYComboBox.Text     = "Field 2 - Y Axis"
             $ViewChartYComboBox.AutoCompleteSource = "ListItems"
@@ -10516,7 +10357,7 @@ $BuildChartButton.Add_Click({
             # Custom View Chart Types ComboBox
             #----------------------------------
             $ViewChartChartTypesComboBox          = New-Object System.Windows.Forms.ComboBox
-            $ViewChartChartTypesComboBox.Location = New-Object System.Drawing.Size(10,($ViewChartYComboBox.Location.y + $ViewChartYComboBox.Size.Height + 5))
+            $ViewChartChartTypesComboBox.Location = New-Object System.Drawing.Point(10,($ViewChartYComboBox.Location.y + $ViewChartYComboBox.Size.Height + 5))
             $ViewChartChartTypesComboBox.Size     = New-Object System.Drawing.Size(185,25)
             $ViewChartChartTypesComboBox.Text     = "Chart Types"
             $ViewChartChartTypesComboBox.AutoCompleteSource = "ListItems"
@@ -10533,7 +10374,7 @@ $BuildChartButton.Add_Click({
             # Custom View Chart Limit Results Label
             #---------------------------------------
             $ViewChartLimitResultsLabel          = New-Object System.Windows.Forms.Label
-            $ViewChartLimitResultsLabel.Location = New-Object System.Drawing.Size(10,($ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + 8)) 
+            $ViewChartLimitResultsLabel.Location = New-Object System.Drawing.Point(10,($ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + 8)) 
             $ViewChartLimitResultsLabel.size     = New-Object System.Drawing.Size(120,25) 
             $ViewChartLimitResultsLabel.Text     = "Limit Results to:"
             $ViewChartLimitResultsLabel.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -10544,7 +10385,7 @@ $BuildChartButton.Add_Click({
             #-----------------------------------------
             $ViewChartLimitResultsTextBox          = New-Object System.Windows.Forms.TextBox
             $ViewChartLimitResultsTextBox.Text     = 10
-            $ViewChartLimitResultsTextBox.Location = New-Object System.Drawing.Size(135,($ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + 5))
+            $ViewChartLimitResultsTextBox.Location = New-Object System.Drawing.Point(135,($ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + 5))
             $ViewChartLimitResultsTextBox.Size     = New-Object System.Drawing.Size(60,25)
             $ViewChartLimitResultsTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewChartExecute} })
             $ViewChartLimitResultsTextBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -10555,13 +10396,13 @@ $BuildChartButton.Add_Click({
             #---------------------------------------
             # Create a group that will contain your radio buttons
             $ViewChartSortOrderGroupBox          = New-Object System.Windows.Forms.GroupBox
-            $ViewChartSortOrderGroupBox.Location = New-Object System.Drawing.Size(10,($ViewChartLimitResultsTextBox.Location.y + $ViewChartLimitResultsTextBox.Size.Height + 7))
+            $ViewChartSortOrderGroupBox.Location = New-Object System.Drawing.Point(10,($ViewChartLimitResultsTextBox.Location.y + $ViewChartLimitResultsTextBox.Size.Height + 7))
             $ViewChartSortOrderGroupBox.size     = '290,65'
             $ViewChartSortOrderGroupBox.text     = "Select how to Sort Data:"
 
                 ### Ascending Radio Button
                 $ViewChartAscendingRadioButton          = New-Object System.Windows.Forms.RadioButton
-                $ViewChartAscendingRadioButton.Location = New-Object System.Drawing.Size(20,15)
+                $ViewChartAscendingRadioButton.Location = New-Object System.Drawing.Point(20,15)
                 $ViewChartAscendingRadioButton.size     = '250,25'
                 $ViewChartAscendingRadioButton.Checked  = $false
                 $ViewChartAscendingRadioButton.Text     = "Ascending / Lowest to Highest"
@@ -10569,7 +10410,7 @@ $BuildChartButton.Add_Click({
                 
                 ### Descending Radio Button
                 $ViewChartDescendingRadioButton          = New-Object System.Windows.Forms.RadioButton
-                $ViewChartDescendingRadioButton.Location = New-Object System.Drawing.Size(20,38)
+                $ViewChartDescendingRadioButton.Location = New-Object System.Drawing.Point(20,38)
                 $ViewChartDescendingRadioButton.size     = '250,25'
                 $ViewChartDescendingRadioButton.Checked  = $true
                 $ViewChartDescendingRadioButton.Text     = "Descending / Highest to Lowest"
@@ -10583,13 +10424,13 @@ $BuildChartButton.Add_Click({
             #------------------------------------
             # Create a group that will contain your radio buttons
             $ViewChartOptionsGroupBox          = New-Object System.Windows.Forms.GroupBox
-            $ViewChartOptionsGroupBox.Location = New-Object System.Drawing.Size(($ViewChartXComboBox.Location.X + $ViewChartXComboBox.Size.Width + 5),$ViewChartXComboBox.Location.Y)
+            $ViewChartOptionsGroupBox.Location = New-Object System.Drawing.Point(($ViewChartXComboBox.Location.X + $ViewChartXComboBox.Size.Width + 5),$ViewChartXComboBox.Location.Y)
             $ViewChartOptionsGroupBox.size     = '100,105'
             $ViewChartOptionsGroupBox.text     = "Options:"
 
                 ### View Chart Legend CheckBox
                 $ViewChartLegendCheckBox          = New-Object System.Windows.Forms.Checkbox
-                $ViewChartLegendCheckBox.Location = New-Object System.Drawing.Size(10,15)
+                $ViewChartLegendCheckBox.Location = New-Object System.Drawing.Point(10,15)
                 $ViewChartLegendCheckBox.Size     = '85,25'
                 $ViewChartLegendCheckBox.Checked  = $false
                 $ViewChartLegendCheckBox.Enabled  = $true
@@ -10598,7 +10439,7 @@ $BuildChartButton.Add_Click({
 
                 ### View Chart 3D Chart CheckBox
                 $ViewChart3DChartCheckBox          = New-Object System.Windows.Forms.Checkbox
-                $ViewChart3DChartCheckBox.Location = New-Object System.Drawing.Size(10,38)
+                $ViewChart3DChartCheckBox.Location = New-Object System.Drawing.Point(10,38)
                 $ViewChart3DChartCheckBox.Size     = '85,25'
                 $ViewChart3DChartCheckBox.Checked  = $false
                 $ViewChart3DChartCheckBox.Enabled  = $true
@@ -10612,7 +10453,7 @@ $BuildChartButton.Add_Click({
             # Custom View Chart Execute Button
             #----------------------------------
             $ViewChartExecuteButton          = New-Object System.Windows.Forms.Button
-            $ViewChartExecuteButton.Location = New-Object System.Drawing.Size(200,($ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + 8))
+            $ViewChartExecuteButton.Location = New-Object System.Drawing.Point(200,($ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + 8))
             $ViewChartExecuteButton.Size     = New-Object System.Drawing.Size(100,23)
             $ViewChartExecuteButton.Text     = "Execute"
             $ViewChartExecuteButton.Add_Click({ ViewChartExecute })
@@ -10623,7 +10464,7 @@ $BuildChartButton.Add_Click({
             # Custom View Chart Execute Button Note Label
             #---------------------------------------------
             $ViewChartExecuteButtonNoteLabel          = New-Object System.Windows.Forms.Label
-            $ViewChartExecuteButtonNoteLabel.Location = New-Object System.Drawing.Size(10,($ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + 8)) 
+            $ViewChartExecuteButtonNoteLabel.Location = New-Object System.Drawing.Point(10,($ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + 8)) 
             $ViewChartExecuteButtonNoteLabel.size     = New-Object System.Drawing.Size(190,25) 
             $ViewChartExecuteButtonNoteLabel.Text     = "Note: Press execute again if the desired chart did not appear."
             $ViewChartExecuteButtonNoteLabel.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -10658,8 +10499,6 @@ $Section2MainTab.Controls.Add($BuildChartButton)
 # Auto Create Charts
 #============================================================================================================================================================
 #============================================================================================================================================================
-# https://bytecookie.wordpress.com/2012/04/13/tutorial-powershell-and-microsoft-chart-controls-or-how-to-spice-up-your-reports/
-# https://blogs.msdn.microsoft.com/alexgor/2009/03/27/aligning-multiple-series-with-categorical-values/
 
 #======================================
 # Auto Charts Select Property Function
@@ -10683,10 +10522,14 @@ function AutoChartsSelectOptions {
     #------------------------------
     # Auto Create Charts Main Label
     #------------------------------
-    $AutoChartsMainLabel          = New-Object System.Windows.Forms.Label -Property @{
-        Location = New-Object System.Drawing.Point(10,10) 
-        size     = New-Object System.Drawing.Size(290,25) 
+    $AutoChartsMainLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "This Will Auto Create Varios Charts From Past Collections."
+        Location = @{ X = 10
+                      Y = 10
+                    }
+        Size     = @{ Width  = 290
+                      Height = 25
+                    }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
     $AutoChartsSelectionForm.Controls.Add($AutoChartsMainLabel)
@@ -10694,40 +10537,78 @@ function AutoChartsSelectOptions {
     #------------------------------------
     # Auto Create Charts Series GroupBox
     #------------------------------------
+    $AutoChartsNumberOfSeriesChecked = 1
+
+    function AutoChartsSeriesCountDisableSlideBar {
+        $AutoChartsNumberOfSeriesChecked = 0
+        if ( $AutoChartsBaselineCheckBox.checked    ) { $AutoChartsNumberOfSeriesChecked++ } 
+        if ( $AutoChartsPreviousCheckBox.checked    ) { $AutoChartsNumberOfSeriesChecked++ } 
+        if ( $AutoChartsMostRecentCheckBox.checked  ) { $AutoChartsNumberOfSeriesChecked++ } 
+        if ( $AutoChartsNumberOfSeriesChecked -gt 1 ) { $AutoChartsSlidebarCheckBox.checked = $false}
+        if ( $AutoChartsNumberOfSeriesChecked -eq 1 ) { $AutoChartsSlidebarCheckBox.checked = $true}
+
+        # Temp solution until I fix the csv import
+        if ( $AutoChartsBaselineCheckBox.checked    ) { $AutoChartsSlidebarCheckBox.checked = $false } 
+        if ( $AutoChartsPreviousCheckBox.checked    ) { $AutoChartsSlidebarCheckBox.checked = $false } 
+        # Temp solution until I fix the csv import
+    }
+
     # Create a group that will contain your radio buttons
     $AutoChartsSeriesGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-        Location = New-Object System.Drawing.Point(10,($AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 8))
-        Size     = '185,90'
         Text     = "Select Collection Series to View:`n(if Available)"
+        Location = @{ X = 10
+                      Y = $AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 8
+                    }
+        Size     = @{ Width  = 185
+                      Height = 90
+                    }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
         ### View Chart Baseline Checkbox
         $AutoChartsBaselineCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-            Location = New-Object System.Drawing.Point(10,15)
-            Size     = '100,25'
+            Location = @{ X = 10
+                          Y = 15
+                        }
+            Size     = @{ Width  = 100
+                          Height = 25
+                        }
             Checked  = $false
             Enabled  = $true
             Text     = "Baseline"
             Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         }
+        $AutoChartsBaselineCheckBox.Add_Click({ AutoChartsSeriesCountDisableSlideBar })
+        
         ### View Chart Previous Checkbox
         $AutoChartsPreviousCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-            Location = New-Object System.Drawing.Point(10,38)
-            Size     = '100,25'
+            Location = @{ X = 10
+                          Y = 38
+                        }
+            Size     = @{ Width  = 100
+                          Height = 25
+                        }
             Checked  = $false
             Enabled  = $true
             Text     = "Previous"
             Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         }
+        $AutoChartsPreviousCheckBox.Add_Click({ AutoChartsSeriesCountDisableSlideBar })
+
         ### View Chart Most Recent Checkbox
         $AutoChartsMostRecentCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-            Location = New-Object System.Drawing.Point(10,61)
-            Size     = '100,25'
+            Location = @{ X = 10
+                          Y = 61
+                        }
+            Size     = @{ Width  = 100
+                          Height = 25
+                        }
             Checked  = $true
             Enabled  = $true
             Text     = "Most Recent"
             Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         }
+        $AutoChartsMostRecentCheckBox.Add_Click({ AutoChartsSeriesCountDisableSlideBar })
+
         $AutoChartsSeriesGroupBox.Controls.AddRange(@($AutoChartsBaselineCheckBox,$AutoChartsPreviousCheckBox,$AutoChartsMostRecentCheckBox))
     $AutoChartsSelectionForm.Controls.Add($AutoChartsSeriesGroupBox) 
 
@@ -10736,26 +10617,38 @@ function AutoChartsSelectOptions {
     #-----------------------------------------
     # Create a group that will contain your radio buttons
     $AutoChartsCreateChartsFromGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-        Location = New-Object System.Drawing.Point(10,($AutoChartsSeriesGroupBox.Location.y + $AutoChartsSeriesGroupBox.Size.Height + 8))
-        size     = '185,65'
         text     = "Filter Charts Using Results From:"
+        Location = @{ X = 10
+                      Y = $AutoChartsSeriesGroupBox.Location.y + $AutoChartsSeriesGroupBox.Size.Height + 8
+                    }
+        Size     = @{ Width  = 185
+                      Height = 65
+                    }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
         ### View Chart WMI Results Checkbox
         $AutoChartsWmiCollectionsCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-            Location = New-Object System.Drawing.Point(10,15)
-            Size     = '165,25'
+            Text     = "WMI Collections"
+            Location = @{ X = 10
+                          Y = 15
+                        }
+            Size     = @{ Width  = 165
+                          Height = 25
+                        }
             Checked  = $false
             Enabled  = $true
-            Text     = "WMI Collections"
             Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         }        
         $AutoChartsWmiCollectionsCheckBox.Add_Click({ $AutoChartsPoShCollectionsCheckBox.Checked = $false })
 
         ### View Chart WinRM Results Checkbox
         $AutoChartsPoShCollectionsCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-            Location = New-Object System.Drawing.Point(10,38)
-            Size     = '165,25'
+            Location = @{ X = 10
+                          Y = 38
+                        }
+            Size     = @{ Width  = 165
+                          Height = 25
+                        }
             Checked  = $false
             Enabled  = $true
             Text     = "PoSh Collections"
@@ -10771,15 +10664,23 @@ function AutoChartsSelectOptions {
     #------------------------------------
     # Create a group that will contain your radio buttons
     $AutoChartsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-        Location = New-Object System.Drawing.Point(($AutoChartsSeriesGroupBox.Location.X + $AutoChartsSeriesGroupBox.Size.Width + 5),($AutoChartsSeriesGroupBox.Location.Y))
-        size     = '100,163'
-        text     = "Options:"
+        Text     = "Options:"
+        Location = @{ X = $AutoChartsSeriesGroupBox.Location.X + $AutoChartsSeriesGroupBox.Size.Width + 5
+                      Y = $AutoChartsSeriesGroupBox.Location.Y
+                    }
+        Size     = @{ Width  = 100
+                      Height = 163
+                    }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
         ### View Chart Legend CheckBox
         $AutoChartsLegendCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-            Location = New-Object System.Drawing.Point(10,15)
-            Size     = '85,25'
+            Location = @{ X = 10
+                          Y = 15
+                        }
+            Size     = @{ Width  = 85
+                          Height = 25
+                        }
             Checked  = $true
             Enabled  = $true
             Text     = "Legend"
@@ -10787,23 +10688,47 @@ function AutoChartsSelectOptions {
         }
         ### View Chart 3D Chart CheckBox
         $AutoCharts3DChartCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-            Location = New-Object System.Drawing.Point(10,38)
-            Size     = '85,25'
+            Text     = "3D Chart"
+            Location = @{ X = 10
+                          Y = 38
+                        }
+            Size     = @{ Width  = 85
+                          Height = 25
+                        }
             Checked  = $false
             Enabled  = $true
-            Text     = "3D Chart"
             Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         }                
-        $AutoChartsOptionsGroupBox.Controls.AddRange(@($AutoChartsLegendCheckBox,$AutoCharts3DChartCheckBox))
+        ### Slide Bar (trackbar) CheckBox
+        $AutoChartsSlidebarCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+            Text     = "Slide Bar"
+            Location = @{ X = 10
+                          Y = 61
+                        }
+            Size     = @{ Width  = 85
+                          Height = 25
+                        }
+            Checked  = $true
+            Enabled  = $true
+            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        }
+        $AutoChartsSlidebarCheckBox.Add_Click({ AutoChartsSeriesCountDisableSlideBar })
+
+        $AutoChartsOptionsGroupBox.Controls.AddRange(@($AutoChartsLegendCheckBox,$AutoCharts3DChartCheckBox,$AutoChartsSlidebarCheckBox))
     $AutoChartsSelectionForm.Controls.Add($AutoChartsOptionsGroupBox) 
 
     #----------------------------------
     # Auto Chart Select Color ComboBox
     #----------------------------------
     $AutoChartColorSchemeSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Location = New-Object System.Drawing.Point(10,($AutoChartsCreateChartsFromGroupBox.Location.y + $AutoChartsCreateChartsFromGroupBox.Size.Height + 10))
-        Size     = New-Object System.Drawing.Size(185,25)
         Text     = "Select Alternate Color Scheme"
+        Location = @{ X = 10
+                      Y = $AutoChartsCreateChartsFromGroupBox.Location.y + $AutoChartsCreateChartsFromGroupBox.Size.Height + 10
+                    }
+        Size     = @{ Width  = 185
+                      Height = 25
+                    }
+        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     }
@@ -10815,19 +10740,21 @@ function AutoChartsSelectOptions {
         'Dark Blue, Blue, Light Blue',
         'Dark Green, Green, Light Green',
         'Dark Gray, Gray, Light Gray')
-    ForEach ($Item in $ColorShcemesAvailable) {
-        [void] $AutoChartColorSchemeSelectionComboBox.Items.Add($Item)
-    }
-    $AutoChartColorSchemeSelectionComboBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    ForEach ($Item in $ColorShcemesAvailable) { [void] $AutoChartColorSchemeSelectionComboBox.Items.Add($Item) }
     $AutoChartsSelectionForm.Controls.Add($AutoChartColorSchemeSelectionComboBox) 
 
     #----------------------------------
     # Auto Chart Select Chart ComboBox
     #----------------------------------
     $AutoChartSelectChartComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Location           = New-Object System.Drawing.Point(10,($AutoChartColorSchemeSelectionComboBox.Location.y + $AutoChartColorSchemeSelectionComboBox.Size.Height + 10))
-        Size               = New-Object System.Drawing.Size(185,25)
-        Text               = "Select A Chart"
+        Text     = "Select A Chart"
+        Location = @{ X = 10
+                      Y = $AutoChartColorSchemeSelectionComboBox.Location.y + $AutoChartColorSchemeSelectionComboBox.Size.Height + 10
+                    }
+        Size     = @{ Width  = 185
+                      Height = 25
+                    }
+        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     }
@@ -10844,16 +10771,19 @@ function AutoChartsSelectOptions {
         "Software Installed",
         "Startup Commands")
     ForEach ($Item in $AutoChartsAvailable) { [void] $AutoChartSelectChartComboBox.Items.Add($Item) }
-    $AutoChartSelectChartComboBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox) 
 
     #-----------------------------------
     # Auto Create Charts Execute Button
     #-----------------------------------
     $AutoChartsExecuteButton = New-Object System.Windows.Forms.Button -Property @{
-        Location = New-Object System.Drawing.Point(200,($AutoChartColorSchemeSelectionComboBox.Location.y))
-        Size     = New-Object System.Drawing.Size(101,54)
         Text     = "View Chart"
+        Location = @{ X = 200
+                      Y = $AutoChartColorSchemeSelectionComboBox.Location.y
+                    }
+        Size     = @{ Width  = 101
+                      Height = 54
+                    }
     }
     $AutoChartsExecuteButton.Add_Click({ AutoChartsViewCharts })
 
@@ -10923,7 +10853,7 @@ function AutoChartsSelectOptions {
             }
             function AutoChartsCommandMappedDrives {
                 AutoChartsCommand -QueryName "Mapped Drives" -QueryTabName "Number of Mapped Drives per Server" -PropertyX PSComputerName -PropertyY ProviderName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
-                AutoChartsCommand -QueryName "Mapped Drives" -QueryTabName "Number of Servers to Mapped Drives" -PropertyX ProviderName -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                #AutoChartsCommand -QueryName "Mapped Drives" -QueryTabName "Number of Servers to Mapped Drives" -PropertyX ProviderName -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
             }
             function AutoChartsCommandNetworkSettings {
                 AutoChartsCommand -QueryName "Network Settings" -QueryTabName "Number of Interfaces with IPs" -PropertyX PSComputerName -PropertyY IPAddress -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
@@ -10956,15 +10886,15 @@ function AutoChartsSelectOptions {
 
             # Calls the functions for the respective commands to generate charts
             if ($AutoChartSelectChartComboBox.SelectedItem -match "All Charts") {
-                AutoChartsCommandLogonInfo
-                AutoChartsCommandMappedDrives
-                AutoChartsCommandNetworkSettings
-                AutoChartsCommandProcessesStandard
-                AutoChartsCommandSecurityPatches
-                AutoChartsCommandServices
-                AutoChartsCommandShares
-                AutoChartsCommandSoftwareInstalled
-                AutoChartsCommandStartUpCommands
+                AutoChartsCommand -QueryName "Logon Info" -QueryTabName "Logged On Accounts" -PropertyX Name -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Mapped Drives" -QueryTabName "Number of Mapped Drives per Server" -PropertyX PSComputerName -PropertyY ProviderName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Network Settings" -QueryTabName "Number of Interfaces with IPs" -PropertyX PSComputerName -PropertyY IPAddress -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Processes" -QueryTabName "Process Names" -PropertyX Name -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Security Patches" -QueryTabName "Number of Computers with Security Patches" -PropertyX Name -PropertyY PSComputerName     -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Services" -QueryTabName "Service Names" -PropertyX Name     -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Shares" -QueryTabName "Shares" -PropertyX Path -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Software Installed" -QueryTabName "Software Installed" -PropertyX Name -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
+                AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startup Names"    -PropertyX Name    -PropertyY PSComputerName -ChartType1 'Column' -ChartType2_3 'Point' -MarkerStyle1 'None' -MarkerStyle2 'Square' -MarkerStyle3 'Diamond'
             }
             elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Logon Info")         { AutoChartsCommandLogonInfo }
             elseif ($AutoChartSelectChartComboBox.SelectedItem -match "Mapped Drives")      { AutoChartsCommandMappedDrives }
@@ -11142,7 +11072,7 @@ function AutoChartsCommand {
     #--------------------------
     # Auto Create Charts Legend 
     #--------------------------
-    $Legend                      = New-Object system.Windows.Forms.DataVisualization.Charting.Legend
+    $Legend                      = New-Object system.Windows.Forms.DataVisualization.Charting.Legend 
     $Legend.Enabled              = $AutoChartsLegendCheckBox.Checked
     $Legend.Name                 = "Legend"
     $Legend.Title                = "Legend"
@@ -11179,11 +11109,6 @@ function AutoChartsCommand {
     $AutoChart.Series["$Series02Name"].Chartarea         = "Chart Area"
     $AutoChart.Series["$Series02Name"].Legend            = "Legend"
     $AutoChart.Series["$Series02Name"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-    # Pie Charts - Moves text off pie
-    #if (-not ($script:CSVFileMostRecentCollection -eq $script:CSVFilePreviousCollection) -or -not ($script:CSVFileMostRecentCollection -eq $script:CSVFileBaselineCollection)) {
-    #    $AutoChart.Series["$Series03Name"].ChartType         = $ChartType1
-    #    $AutoChart.Series["$Series03Name"].MarkerColor       = 'Blue'
-    #}
     $AutoChart.Series["$Series02Name"]['PieLineColor']   = 'Black'
     $AutoChart.Series["$Series02Name"]['PieLabelStyle']  = 'Outside'
            
@@ -11346,9 +11271,12 @@ function AutoChartsCommand {
             foreach ($UniqueHost in $script:CsvUniqueHosts) { $Script:MergedCSVUniquePropertyDataResults += $CsvFile3Data | Where { $_.PSComputerName -eq $UniqueHost } }
         }
     }
+    
+
     # Later used to iterate through
     $CsvFileList = @($script:CSVFileBaselineCollection,$script:CSVFilePreviousCollection,$script:CSVFileMostRecentCollection)
     $SeriesCount = 0
+
 
     # If the Second field/Y Axis equals PSComputername, it counts it
     if ($PropertyY -eq "PSComputerName") {
@@ -11417,7 +11345,14 @@ function AutoChartsCommand {
                 $OverallDataResults += $DataResults
             }
             $Series = '$Series0' + $SeriesCount + 'Name'
-            $OverallDataResults | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.UniqueCount)}
+
+            if ( $AutoChartsSlidebarCheckBox.checked ) {
+                #$OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -Property $($AutoChartsTrimOffFirstTrackBar.Value) | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.UniqueCount)}
+                $OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.UniqueCount)}
+            }
+            else {
+                $OverallDataResults | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.UniqueCount)}
+            }
         }        
     }
 
@@ -11428,12 +11363,6 @@ function AutoChartsCommand {
         foreach ($CSVFile in $CsvFileList) {
             $SeriesCount += 1
             $DataSource = Import-Csv $CSVFile
-########## TEST DATA ##########
-#            $DataSource = @()
-#            $DataSource += Import-Csv "C:\Users\Dan\Documents\GitHub\PoSH-ACME\PoSh-ACME_v2.3_20181106_Beta_Nightly_Build\Collected Data\2018-11-19 @ 2101 42\Network Settings.csv"
-#            $PropertyX = "PSComputerName"
-#            $PropertyY = "IPAddress"
-########## TEST DATA ##########
 
             $SelectedDataField  = $DataSource | Select-Object -Property $PropertyY | Sort-Object -Property $PropertyY -Unique
             $UniqueComputerList = $DataSource | Select-Object -Property $PropertyX | Sort-Object -Property $PropertyX -Unique
@@ -11496,12 +11425,6 @@ function AutoChartsCommand {
     # Auto Create Charts Processes
     ############################################################################################################
 
-    #------------------------------------
-    # Auto Creates Tabs and Imports Data
-    #------------------------------------
-    # Obtains a list of the files in the resources folder
-    ###$ResourceFiles = Get-ChildItem "$PoShHome\Resources\Process Info"
-
     #-----------------------------
     # Creates Tabs From Each File
     #-----------------------------
@@ -11512,13 +11435,13 @@ function AutoChartsCommand {
     $AutoChartsIndividualTabs.Anchor  = $AnchorAll
     $AutoChartsIndividualTabs.Font    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $AutoChartsTabControl.Controls.Add($AutoChartsIndividualTabs)            
-    $AutoChartsIndividualTabs.controls.add($AutoChart)
+    $AutoChartsIndividualTabs.controls.Add($AutoChart)
 
     #------------------------------
     # Auto Charts - Notice Textbox
     #------------------------------
     $AutoChartsNoticeTextbox             = New-Object System.Windows.Forms.Textbox
-    $AutoChartsNoticeTextbox.Location    = New-Object System.Drawing.Point(964,216)
+    $AutoChartsNoticeTextbox.Location    = New-Object System.Drawing.Point(966,150)
     $AutoChartsNoticeTextbox.Size        = New-Object System.Drawing.Size(126,60)
     $AutoChartsNoticeTextbox.Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     $AutoChartsNoticeTextbox.Font        = New-Object System.Drawing.Font("Courier New",11,0,0,0)
@@ -11530,7 +11453,83 @@ function AutoChartsCommand {
     $AutoChartsNoticeTextbox.Multiline   = $true
     $AutoChartsNoticeTextbox.BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
     $AutoChart.Controls.Add($AutoChartsNoticeTextbox)
-    
+
+    if ( $AutoChartsSlidebarCheckBox.checked ) {
+        #--------------------------------------
+        # AutoCharts - Trim Off First GroupBox
+        #--------------------------------------
+        $AutoChartsTrimOffFirstGroupBox             = New-Object System.Windows.Forms.GroupBox
+        $AutoChartsTrimOffFirstGroupBox.Text        = "Trim Off First: 0"
+        $AutoChartsTrimOffFirstGroupBox.Location    = New-Object System.Drawing.Point(940,225)
+        $AutoChartsTrimOffFirstGroupBox.Size        = New-Object System.Drawing.Size(165,70)
+        $AutoChartsTrimOffFirstGroupBox.Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+        $AutoChartsTrimOffFirstGroupBox.Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+        $AutoChartsTrimOffFirstGroupBox.ForeColor   = 'Black'
+
+            #--------------------------------------
+            # AutoCharts - Trim Off First TrackBar
+            #--------------------------------------
+            $AutoChartsTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar
+            $AutoChartsTrimOffFirstTrackBar.Location      = "1,20"
+            $AutoChartsTrimOffFirstTrackBar.Orientation   = "Horizontal"
+            $AutoChartsTrimOffFirstTrackBar.Width         = 160
+            $AutoChartsTrimOffFirstTrackBar.Height        = 25
+            $AutoChartsTrimOffFirstTrackBar.TickFrequency = 5
+            $AutoChartsTrimOffFirstTrackBar.TickStyle     = "TopLeft" #TopLeft
+            $AutoChartsTrimOffFirstTrackBar.Minimum       = 0
+            $AutoChartsTrimOffFirstTrackBar.SetRange(0, $($OverallDataResults.count))
+            $AutoChartsTrimOffFirstTrackBar.Value         = 0 
+            $script:AutoChartsTrimOffFirstTrackBarValue   = 0
+            $AutoChartsTrimOffFirstTrackBar.add_ValueChanged({
+                $script:AutoChartsTrimOffFirstTrackBarValue = $AutoChartsTrimOffFirstTrackBar.Value
+                $AutoChartsTrimOffFirstGroupBox.Text = "Trim Off First: $($AutoChartsTrimOffFirstTrackBar.Value)"
+                $AutoChart.Series[0].Points.Clear()
+                $AutoChart.Series[1].Points.Clear()
+                $AutoChart.Series[2].Points.Clear()
+                $OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select -SkipLast $script:AutoChartsShowingLastTrackBarValue | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.UniqueCount)}
+            })
+            $AutoChartsTrimOffFirstGroupBox.Controls.Add($AutoChartsTrimOffFirstTrackBar)
+        $AutoChart.Controls.Add($AutoChartsTrimOffFirstGroupBox)
+
+        #--------------------------------------
+        # Auto Charts - Trim Off Last GroupBox
+        #--------------------------------------
+        $AutoChartsTrimOffLastGroupBox             = New-Object System.Windows.Forms.GroupBox
+        $AutoChartsTrimOffLastGroupBox.Text        = "Trim Off Last: 0"
+        $AutoChartsTrimOffLastGroupBox.Location    = New-Object System.Drawing.Point(940,300)
+        $AutoChartsTrimOffLastGroupBox.Size        = New-Object System.Drawing.Size(165,70)
+        $AutoChartsTrimOffLastGroupBox.Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
+        $AutoChartsTrimOffLastGroupBox.Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+        $AutoChartsTrimOffLastGroupBox.ForeColor   = 'Black'
+
+            #-------------------------------------
+            # AutoCharts - Trim Off Last TrackBar
+            #-------------------------------------
+            $AutoChartsShowingLastTrackBar = New-Object System.Windows.Forms.TrackBar
+            $AutoChartsShowingLastTrackBar.Location      = "1,20"
+            $AutoChartsShowingLastTrackBar.Orientation   = "Horizontal"
+            $AutoChartsShowingLastTrackBar.Width         = 160
+            $AutoChartsShowingLastTrackBar.Height        = 25
+            $AutoChartsShowingLastTrackBar.TickFrequency = 5
+            $AutoChartsShowingLastTrackBar.TickStyle     = "TopLeft"
+            $AutoChartsShowingLastTrackBar.RightToLeft   = $true
+            $AutoChartsShowingLastTrackBar.Minimum       = 0
+            $AutoChartsShowingLastTrackBar.SetRange(0, $($OverallDataResults.count))
+            $AutoChartsShowingLastTrackBar.Value         = $($OverallDataResults.count) #0
+            $script:AutoChartsShowingLastTrackBarValue   = 0
+            $AutoChartsShowingLastTrackBar.add_ValueChanged({
+                $script:AutoChartsShowingLastTrackBarValue = $($OverallDataResults.count) - $AutoChartsShowingLastTrackBar.Value
+                $AutoChartsTrimOffLastGroupBox.Text = "Trim Off Last: $($($OverallDataResults.count) - $AutoChartsShowingLastTrackBar.Value)"
+                $AutoChart.Series[0].Points.Clear()
+                $AutoChart.Series[1].Points.Clear()
+                $AutoChart.Series[2].Points.Clear()
+                $OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -Skip $script:AutoChartsTrimOffFirstTrackBarValue | Select -SkipLast $script:AutoChartsShowingLastTrackBarValue | ForEach-Object {$AutoChart.Series["$(iex $Series)"].Points.AddXY($_.DataField.$PropertyX,$_.UniqueCount)}
+            })
+            $AutoChartsTrimOffLastGroupBox.Controls.Add($AutoChartsShowingLastTrackBar)
+        $AutoChart.Controls.Add($AutoChartsTrimOffLastGroupBox)
+        #marco
+    }    
+
     #--------------------------------
     # Auto Create Charts Save Button
     #--------------------------------      
@@ -11539,8 +11538,6 @@ function AutoChartsCommand {
     $AutoChartsSaveButton.Location  = New-Object System.Drawing.Point(955,516)
     $AutoChartsSaveButton.Size      = New-Object System.Drawing.Size(150,25)
     $AutoChartsSaveButton.Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    # we can find supported values here:
-    #    [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
     $AutoChartsSaveButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     $AutoChartsSaveButton.ForeColor = "Black"
     $AutoChartsSaveButton.UseVisualStyleBackColor = $True
@@ -11548,9 +11545,8 @@ function AutoChartsCommand {
         $Result = Invoke-SaveChartAsImage
         If ($Result) { $AutoChart.SaveImage($Result.FileName, $Result.Extension) }
     })
-    $AutoChart.controls.add($AutoChartsSaveButton)
+    $AutoChart.controls.Add($AutoChartsSaveButton)
     $ButtonSpacing = 35 
-
 
     if ($AutoChartSelectChartComboBox.SelectedItem -notmatch "All Charts") {
         #------------------------------------
@@ -11572,7 +11568,7 @@ function AutoChartsCommand {
                     UseVisualStyleBackColor = $True
                 }
                 $AutoChartsSeries1Results.Add_Click({ Import-CSV $script:CSVFileBaselineCollection | Out-GridView -Title "$script:CSVFileBaselineCollection" }) 
-                $AutoChart.controls.add($AutoChartsSeries1Results)
+                $AutoChart.controls.Add($AutoChartsSeries1Results)
                 $ButtonSpacing += 35
             
                 # Autosaves the chart if checked
@@ -11600,7 +11596,7 @@ function AutoChartsCommand {
                     UseVisualStyleBackColor = $True
                     }
                 $AutoChartsSeries2Results.Add_Click({ Import-CSV $script:CSVFilePreviousCollection | Out-GridView -Title "$script:CSVFilePreviousCollection" }) 
-                $AutoChart.controls.add($AutoChartsSeries2Results)
+                $AutoChart.controls.Add($AutoChartsSeries2Results)
                 $ButtonSpacing += 35
 
                 # Autosaves the chart if checked
@@ -11628,7 +11624,7 @@ function AutoChartsCommand {
                     UseVisualStyleBackColor = $True
                     }
                 $AutoChartsSeries3Results.Add_Click({ Import-CSV $script:CSVFileMostRecentCollection | Out-GridView -Title "$script:CSVFileMostRecentCollection" }) 
-                $AutoChart.controls.add($AutoChartsSeries3Results)
+                $AutoChart.controls.Add($AutoChartsSeries3Results)
                 $ButtonSpacing += 35
 
                 # Autosaves the chart if checked
@@ -12044,11 +12040,15 @@ $StatisticsResults = Get-PoShACMEStatistics
 # Statistics - Button
 #---------------------
 $StatisticsRefreshButton = New-Object System.Windows.Forms.Button -Property @{
-    Name                    = "Refresh"
-    Text                    = "Refresh"
-    Location                = New-Object System.Drawing.Point(2,5)
-    Size                    = New-Object System.Drawing.Size(100,22)
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Name     = "Refresh"
+    Text     = "Refresh"
+    Location = @{ X = 2
+                  Y = 5
+                }
+    Size     = @{ Width  = 100
+                  Height = 22
+                }
+    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
 $StatisticsRefreshButton.Add_Click({
@@ -12062,8 +12062,12 @@ $Section2StatisticsTab.Controls.Add($StatisticsRefreshButton)
 #------------------------------------------
 $StatisticsLogButton = New-Object System.Windows.Forms.Button -Property @{
     Text                    = "View Log"
-    Location                = New-Object System.Drawing.Point(258,5)
-    Size                    = New-Object System.Drawing.Size(100,22)
+    Location = @{ X = 258
+                  Y = 5
+                }
+    Size     = @{ Width  = 100
+                  Height = 22
+                }
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
@@ -12094,8 +12098,12 @@ $Section2StatisticsTab.Controls.Add($StatisticsLogButton)
 #----------------------
 $StatisticsNumberOfCSVs = New-Object System.Windows.Forms.Textbox -Property @{
     Text       = $StatisticsResults
-    Location   = New-Object System.Drawing.Point(3,32)
-    Size       = New-Object System.Drawing.Size(354,215)
+    Location = @{ X = 3
+                  Y = 32
+                }
+    Size     = @{ Width  = 354
+                  Height = 215
+                }
     Font       = New-Object System.Drawing.Font("Courier new",11,0,0,0)
     Multiline  = $true
     #Scrollbars = "Vertical"
@@ -12388,29 +12396,23 @@ function Search-ComputerListTreeView {
     }
     $ComputerListTreeViewSearchTextBox.Text = ""
 
-    #$SingleHostIPCheckBox.Enabled  = $true
-    # Enables and disables fields
-#    if ($SingleHostIPCheckBox.Checked -eq $true){
-#        $SingleHostIPTextBox.Text       = ""
-#        $ComputerListTreeView.Enabled   = $false
-#        $ComputerListTreeView.BackColor = "lightgray"
-#    }
-#    elseif ($SingleHostIPCheckBox.Checked -eq $false) {
-        $SingleHostIPCheckBox.Checked   = $false
-        $SingleHostIPTextBox.Text       = $DefaultSingleHostIPText
-        $ComputerListTreeView.Enabled   = $true
-        $ComputerListTreeView.BackColor = "white"
-#    }
-
+    $SingleHostIPCheckBox.Checked   = $false
+    $SingleHostIPTextBox.Text       = $DefaultSingleHostIPText
+    $ComputerListTreeView.Enabled   = $true
+    $ComputerListTreeView.BackColor = "white"
 }
 
 #----------------------------------------
 # ComputerList TreeView - Search TextBox
 #----------------------------------------
 $ComputerListTreeViewSearchTextBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Name               = "Search TextBox"
-    Location           = New-Object System.Drawing.Point(($Column4RightPosition),25)
-    Size               = New-Object System.Drawing.Size(172,25)
+    Name     = "Search TextBox"
+    Location = @{ X = $Column4RightPosition
+                  Y = 25
+                }
+    Size     = @{ Width  = 172
+                  Height = 25
+                }
     AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
     AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -12443,8 +12445,12 @@ $PoShACME.Controls.Add($ComputerListTreeViewSearchTextBox)
 $ComputerListTreeViewSearchButton = New-Object System.Windows.Forms.Button -Property @{
     Name     = "Search Button"
     Text     = "Search"
-    Location = New-Object System.Drawing.Point(($Column4RightPosition + 176),24)#(($ComputerListTreeViewViewByLabel.Location.Y),($ComputerListTreeViewViewByLabel.Location.X + $ComputerListTreeViewViewByLabel.Size.Height + 5))
-    Size     = New-Object System.Drawing.Size(55,22)
+    Location = @{ X = $Column4RightPosition + 176
+                  Y = 24
+                }
+    Size     = @{ Width  = 55
+                  Height = 22
+                }
 }
 $ComputerListTreeViewSearchButton.Add_Click({ Search-ComputerListTreeView })
 $ComputerListTreeViewSearchButton.Add_MouseHover({
@@ -12469,20 +12475,6 @@ $PoShACME.Controls.Add($ComputerListTreeViewSearchButton)
 #-----------------------------
 # ComputerList Treeview Nodes
 #-----------------------------
-#Ref: https://info.sapien.com/index.php/guis/gui-controls/spotlight-on-the-contextmenustrip-control
-#$ComputerListTreeViewContextMenuStrip = New-Object System.Windows.Forms.ContextMenuStrip
-#$ComputerListTreeViewContextMenuStrip.Items.Add("$(hostname)")
-#$ComputerListTreeViewContextMenuStrip.Items.Add("Delete")
-##$ComputerListTreeViewContextMenuStrip.Items.Add("Move")
-#$ComputerListTreeViewContextMenuStrip.Items.Add("Rename")
-#$ComputerListTreeViewContextMenuStrip.ShowImageMargin   = $false #default is $true  #This property gets or sets a value indicating whether space for an image is shown on the left edge of the ToolStripMenuItem
-#$ComputerListTreeViewContextMenuStrip.ShowCheckMargin   = $true  #default is $false #This property gets or sets a value indicating whether space for a check mark is shown on the left edge of the ToolStripMenuItem    
-##$ComputerListTreeViewContextMenuStrip.ShowItemToolTips  = $false #This property gets or sets a value indicating whether ToolTips are to be displayed on ToolStrip items.
-#$ComputerListTreeViewContextMenuStrip.SourceControl     = $true #This property returns the last control that caused the ContextMenuStrip to display.
-#$ComputerListTreeViewContextMenuStrip.DropShadowEnabled = $true
-#$ComputerListTreeViewContextMenuStrip.Text = 'testtest'
-#$ComputerListTreeViewContextMenuStrip.Add_Click({ Write-Host $($ComputerListTreeViewContextMenuStrip.Text) })
-
 $ComputerListTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     size              = @{ Width = 230 ; Height = 308 }
     Location          = @{ X = $Column4RightPosition ; Y = $Column4DownPosition + 39 }
@@ -12491,15 +12483,8 @@ $ComputerListTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     #LabelEdit         = $True  #Not implementing yet...
     ShowLines         = $True
     ShowNodeToolTips  = $True
-    #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
-    #ContextMenuStrip  = $ComputerListTreeViewContextMenuStrip #Used for ContextMenuStrip
 }
-<#$ComputerListTreeView.add_AfterLabelEdit({
-    $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("This is only a test!!!")
-})#>
 $ComputerListTreeView.Sort()
-#$ComputerListTreeView.Add_MouseEnter({ $ComputerListTreeView.size = @{ Width = 361 ; Height = 544 } })
 $ComputerListTreeView.Add_MouseEnter({ $ComputerListTreeView.size = @{ Width = 230 ; Height = 544 } })
 $ComputerListTreeView.Add_MouseLeave({ $ComputerListTreeView.size = @{ Width = 230 ; Height = 308 } })
 
@@ -12664,8 +12649,12 @@ $ComputerListTreeView.ExpandAll()
 #-----------------------------
 $ComputerListTreeViewViewByLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "View by:"
-    Location = New-Object System.Drawing.Point($Column4RightPosition,7)
-    Size     = New-Object System.Drawing.Size(75,25)
+    Location = @{ X = $Column4RightPosition
+                  Y = 7
+                }
+    Size     = @{ Width  = 75
+                  Height = 25
+                }
     Font     = New-Object System.Drawing.Font("$Font",11,1,2,1)
 }
 $PoShACME.Controls.Add($ComputerListTreeViewViewByLabel)
@@ -12674,6 +12663,7 @@ $PoShACME.Controls.Add($ComputerListTreeViewViewByLabel)
 # ComputerList TreeView - OS & Hostname Radio Button
 #----------------------------------------------------
 $ComputerListTreeViewOSHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+    Text     = "OS"
     Location = @{ X = $ComputerListTreeViewViewByLabel.Location.X + $ComputerListTreeViewViewByLabel.Size.Width
                   Y = $ComputerListTreeViewViewByLabel.Location.Y - 5
                 }
@@ -12681,7 +12671,6 @@ $ComputerListTreeViewOSHostnameRadioButton = New-Object System.Windows.Forms.Rad
                   Width  = 50
                 }
     Checked  = $True
-    Text     = "OS"
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
 $ComputerListTreeViewOSHostnameRadioButton.Add_Click({
@@ -12731,6 +12720,7 @@ $PoShACME.Controls.Add($ComputerListTreeViewOSHostnameRadioButton)
 # ComputerList TreeView - Active Directory OU & Hostname Radio Button
 #---------------------------------------------------------------------
 $ComputerListTreeViewOUHostnameRadioButton  = New-Object System.Windows.Forms.RadioButton -Property @{
+    Text     = "OU / CN"
     Location = @{ X = $ComputerListTreeViewOSHostnameRadioButton.Location.X + $ComputerListTreeViewOSHostnameRadioButton.Size.Width + 5
                   Y = $ComputerListTreeViewOSHostnameRadioButton.Location.Y
                 }
@@ -12738,7 +12728,6 @@ $ComputerListTreeViewOUHostnameRadioButton  = New-Object System.Windows.Forms.Ra
                   Width  = 75
                 }
     Checked  = $false
-    Text     = "OU / CN"
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
 $ComputerListTreeViewOUHostnameRadioButton.Add_Click({ 
@@ -13080,17 +13069,17 @@ $ComputerListRPCCheckButton.Add_MouseHover({
 })
 $Section3ActionTab.Controls.Add($ComputerListRPCCheckButton) 
 
-$Column5DownPosition += $Column5DownPositionShift
+$Column5DownPosition += $Column5DownPositionShift + $Column5DownPositionShift
 
 #============================================================================================================================================================
 # Computer List - EventLog Button
 #============================================================================================================================================================
 $EventViewerButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = 'Event Viewer'
     Location  = @{ X = $Column5RightPosition
                    Y = $Column5DownPosition }
     Size      = @{ Height = $Column5BoxHeight
                    Width  = $Column5BoxWidth }
-    Text      = 'Event Viewer'
     Font      = New-Object System.Drawing.Font("$Font",11,0,2,1)
     ForeColor = "Black"
 }
@@ -13426,83 +13415,7 @@ if (Test-Path "$ExternalPrograms\PsExec.exe") { $Section3ActionTab.Controls.Add(
 
 $Column5DownPosition += $Column5DownPositionShift
 
-<#
-#============================================================================================================================================================
-# Computer List - Provide Creds Checkbox
-#============================================================================================================================================================
-
-$ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Location = @{ X = $Column5RightPosition + 1
-                  Y = $Column5DownPosition + 3 }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight - 5 }
-    Name     = "Use Credentials"
-    Text     = "Use Credentials"
-    Checked  = $false
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
-}
-$ComputerListProvideCredentialsCheckBox.Add_MouseHover({
-    $ToolTip = New-Object System.Windows.Forms.ToolTip    
-    if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Credentials are stored as a SecureString.
-⦿ If checked, credentials are applied to supported commands.`n`n"
-        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
-        $ToolTip.Active         = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
-        $ToolTip.UseAnimation   = $true
-        $ToolTip.UseFading      = $true
-        $ToolTip.IsBalloon      = $true
-        $ToolTip.ToolTipIcon    = "Info"  #Error, Info, Warning, None
-        $ToolTip.ToolTipTitle   = 'Use Credentials'
-    }    
-})
-$Section3ActionTab.Controls.Add($ComputerListProvideCredentialsCheckBox)
-
-$Column5DownPosition += $Column5DownPositionShift
-
-#============================================================================================================================================================
-# Provide Creds Button
-#============================================================================================================================================================
-$ProvideCredsButton = New-Object System.Windows.Forms.Button -Property @{
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition - 3 }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight }
-    Name     = "Provide Creds"
-    Text     = "Provide Creds"
-    Font = New-Object System.Drawing.Font("$Font",11,0,0,0)
-}
-#$ProvideCredsButton.UseVisualStyleBackColor = $True
-$ProvideCredsButton.Add_Click({
-    # This brings specific tabs to the forefront/front view
-    $Section4TabControl.SelectedTab   = $Section3ResultsTab
-
-    $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Provide Credentials:")
-
-    $script:Credential = Get-Credential
-    $ComputerListProvideCredentialsCheckBox.Checked = $True
-
-    $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Provide Credentials: Stored")
-    $ResultsListBox.Items.Clear()
-})
-$ProvideCredsButton.Add_MouseHover({
-    $ToolTip = New-Object System.Windows.Forms.ToolTip    
-    if ($OptionShowToolTipCheckBox.Checked){
-        $Message = "⦿ Credentials are stored as a SecureString.
-⦿ If checked, credentials are applied to supported commands.`n`n"
-        $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage3))
-        $ToolTip.Active       = $false # This is counter intuitive, but is the only way I can get it to disable tooltips when unchecked in options
-        $ToolTip.UseAnimation = $true
-        $ToolTip.UseFading    = $true
-        $ToolTip.IsBalloon    = $true
-        $ToolTip.ToolTipIcon  = "Info"  #Error, Info, Warning, None
-        $ToolTip.ToolTipTitle = 'Use Credentials'
-    }    
-})
-$Section3ActionTab.Controls.Add($ProvideCredsButton)
-#>
-$Column5DownPosition += $Column5DownPositionShift + $Column5DownPositionShift + 17
+$Column5DownPosition += $Column5DownPositionShift + 17
 
 #============================================================================================================================================================
 # Execute Button
@@ -13573,10 +13486,15 @@ $Column5DownPosition = $Column5DownPositionStart
 #============================================================================================================================================================
 # Computer List - Treeview - Deselect All Button
 #============================================================================================================================================================
-$ComputerListDeselectAllButton           = New-Object System.Windows.Forms.Button
-$ComputerListDeselectAllButton.Location  = New-Object System.Drawing.Point($Column5RightPosition,$Column5DownPosition)
-$ComputerListDeselectAllButton.Size      = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
-$ComputerListDeselectAllButton.Text      = 'Deselect All'
+$ComputerListDeselectAllButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = 'Deselect All'
+    Location = @{ X = $Column5RightPosition
+                  Y = $Column5DownPosition
+                }
+    Size     = @{ Width  = $Column5BoxWidth
+                  Height = $Column5BoxHeight
+                }
+}
 $ComputerListDeselectAllButton.Add_Click({
     #$ComputerListTreeView.Nodes.Clear()
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
@@ -13602,18 +13520,16 @@ $Column5DownPosition += $Column5DownPositionShift
 #============================================================================================================================================================
 # Computer List - Treeview - Collapse / Expand Button
 #============================================================================================================================================================
-$ComputerListTreeViewCollapseAllButton          = New-Object System.Windows.Forms.Button
-$ComputerListTreeViewCollapseAllButton.Location = New-Object System.Drawing.Point($Column5RightPosition,$Column5DownPosition)
-$ComputerListTreeViewCollapseAllButton.Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
-$ComputerListTreeViewCollapseAllButton.Text     = "Collapse"
+$ComputerListTreeViewCollapseAllButton = New-Object System.Windows.Forms.Button -Property @{
+    Text     = "Collapse"
+    Location = @{ X = $Column5RightPosition
+                  Y = $Column5DownPosition
+                }
+    Size     = @{ Width  = $Column5BoxWidth
+                  Height = $Column5BoxHeight
+                }
+}
 $ComputerListTreeViewCollapseAllButton.Add_Click({
-<#    $ComputerListTreeViewFound = $ComputerListTreeView.Nodes.Find("WIN81-01", $true)
-    $ResultsListBox.Items.Clear()
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
-            foreach ($Node in $ComputerListTreeViewFound) { 
-                $ResultsListBox.Items.Add($Node.Text)
-            }       
-    $ResultsListBox.Items.Add("")#>
     if ($ComputerListTreeViewCollapseAllButton.Text -eq "Collapse") {
         $ComputerListTreeView.CollapseAll()
         [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $ComputerListTreeView.Nodes 
@@ -13832,9 +13748,13 @@ function AddHost-ComputerListTreeView {
 # ComputerList TreeView Add Button
 #----------------------------------
 $ComputerListTreeViewAddHostnameIPButton = New-Object System.Windows.Forms.Button -Property @{
-    Location  = New-Object System.Drawing.Point($Column5RightPosition,$Column5DownPosition)
-    Size      = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
     Text      = "Add"
+    Location = @{ X = $Column5RightPosition
+                  Y = $Column5DownPosition
+                }
+    Size     = @{ Width  = $Column5BoxWidth
+                  Height = $Column5BoxHeight
+                }
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor = "Green"
 }
@@ -13858,8 +13778,12 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     #-----------------------------------------------------
     $ComputerListTreeViewPopupAddTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text     = "Enter a hostname/IP"
-        Size     = New-Object System.Drawing.Size(300,25)
-        Location = New-Object System.Drawing.Point(10,10)
+        Location = @{ X = 300
+                      Y = 25
+                    }
+        Size     = @{ Width  = 10
+                      Height = 10
+                    }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
     $ComputerListTreeViewPopupAddTextBox.Add_KeyDown({ 
@@ -13871,9 +13795,13 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     # ComputerList TreeView Popup OS ComboBox
     #-----------------------------------------
     $ComputerListTreeViewPopupOSComboBox  = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text               = "Select an Operating System (or type in a new one)"
-        Size               = New-Object System.Drawing.Size(300,25)
-        Location           = New-Object System.Drawing.Point(10,($ComputerListTreeViewPopupAddTextBox.Location.Y + $ComputerListTreeViewPopupAddTextBox.Size.Height + 10))
+        Text     = "Select an Operating System (or type in a new one)"
+        Location = @{ X = 300
+                      Y = 25
+                    }
+        Size     = @{ Width  = 10
+                      Height = $ComputerListTreeViewPopupAddTextBox.Location.Y + $ComputerListTreeViewPopupAddTextBox.Size.Height + 10
+                    }
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
         Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -13887,9 +13815,13 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     # ComputerList TreeView Popup OU ComboBox
     #-----------------------------------------
     $ComputerListTreeViewPopupOUComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text               = "Select an Organizational Unit / Canonical Name (or type a new one)"
-        Size               = New-Object System.Drawing.Size(300,25)
-        Location           = New-Object System.Drawing.Point(10,($ComputerListTreeViewPopupOSComboBox.Location.Y + $ComputerListTreeViewPopupOSComboBox.Size.Height + 10))        
+        Text     = "Select an Organizational Unit / Canonical Name (or type a new one)"
+        Location = @{ X = 300
+                      Y = 25
+                    }
+        Size     = @{ Width  = 10
+                      Height = $ComputerListTreeViewPopupOSComboBox.Location.Y + $ComputerListTreeViewPopupOSComboBox.Size.Height + 10
+                    }
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
         Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -13904,9 +13836,13 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     #--------------------------------------------
     $ComputerListTreeViewPopupMoveButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Add Host"
+        Location = @{ X = 100
+                      Y = 25
+                    }
+        Size     = @{ Width  = 210
+                      Height = $ComputerListTreeViewPopupOUComboBox.Location.Y + $ComputerListTreeViewPopupOUComboBox.Size.Height + 10
+                    }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
-        Size     = New-Object System.Drawing.Size(100,25)
-        Location = New-Object System.Drawing.Point(210,($ComputerListTreeViewPopupOUComboBox.Location.Y + $ComputerListTreeViewPopupOUComboBox.Size.Height + 10))
     }
     $ComputerListTreeViewPopupMoveButton.Add_Click({ AddHost-ComputerListTreeView })
     $ComputerListTreeViewPopup.Controls.Add($ComputerListTreeViewPopupMoveButton)
@@ -13924,9 +13860,13 @@ $Column5DownPosition += $Column5DownPositionShift
 # Computer List - Treeview - Delete Button
 #============================================================================================================================================================
 $ComputerListDeleteButton = New-Object System.Windows.Forms.Button -Property @{
-    Location = New-Object System.Drawing.Point($Column5RightPosition,$Column5DownPosition)
-    Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
     Text     = 'Delete'
+    Location = @{ X = $Column5RightPosition
+                  Y = $Column5DownPosition
+                }
+    Size     = @{ Width  = $Column5BoxWidth
+                  Height = $Column5BoxHeight
+                }
 }
 $ComputerListDeleteButton.Add_Click({
     # The array stores any node that is checked
@@ -14007,9 +13947,13 @@ $Column5DownPosition += $Column5DownPositionShift
 # Computer List - Treeview - Move Button
 #============================================================================================================================================================
 $ComputerListMoveButton = New-Object System.Windows.Forms.Button -Property @{
-    Location = New-Object System.Drawing.Point($Column5RightPosition,$Column5DownPosition)
-    Size     = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
     Text     = 'Move'
+    Location = @{ X = $Column5RightPosition
+                  Y = $Column5DownPosition
+                }
+    Size     = @{ Width  = $Column5BoxWidth
+                  Height = $Column5BoxHeight
+                }
 }
 $ComputerListMoveButton.Add_Click({
     # Creates a list of all the checkboxes selected
@@ -14043,9 +13987,13 @@ $ComputerListMoveButton.Add_Click({
         # ComputerList TreeView Popup Execute ComboBox
         #----------------------------------------------
         $ComputerListTreeViewPopupMoveComboBox          = New-Object System.Windows.Forms.ComboBox -Property @{
-            Text               = "Select A Category"
-            Size               = New-Object System.Drawing.Size(300,25)
-            Location           = New-Object System.Drawing.Point(10,10)
+            Text     = "Select A Category"
+            Location = @{ X = 300
+                          Y = 25
+                        }
+            Size     = @{ Width  = 10
+                          Height = 10
+                        }
             AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
             AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
             Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -14130,8 +14078,12 @@ $ComputerListMoveButton.Add_Click({
         #--------------------------------------------
         $ComputerListTreeViewPopupMoveButton = New-Object System.Windows.Forms.Button -Property @{
             Text     = "Execute"
-            Size     = New-Object System.Drawing.Size(100,25)
-            Location = New-Object System.Drawing.Point(210,($ComputerListTreeViewPopupMoveComboBox.Size.Height + 15))
+            Location = @{ X = 100
+                          Y = 25
+                        }
+            Size     = @{ Width  = 210
+                          Height = $ComputerListTreeViewPopupMoveComboBox.Size.Height + 15
+                        }
             Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         }
         $ComputerListTreeViewPopupMoveButton.Add_Click({ Move-ComputerListTreeViewSelected })
@@ -14156,11 +14108,16 @@ $Column5DownPosition += $Column5DownPositionShift
 #============================================================================================================================================================
 # Computer List - Treeview - Rename Button
 #============================================================================================================================================================
-$ComputerListRenameButton           = New-Object System.Windows.Forms.Button
-$ComputerListRenameButton.Location  = New-Object System.Drawing.Point($Column5RightPosition,$Column5DownPosition)
-$ComputerListRenameButton.Size      = New-Object System.Drawing.Size($Column5BoxWidth,$Column5BoxHeight)
-$ComputerListRenameButton.Text      = 'Rename'
-$ComputerListRenameButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$ComputerListRenameButton           = New-Object System.Windows.Forms.Button -Property @{
+    Text      = 'Rename'
+    Location = @{ X = $Column5RightPosition
+                  Y = $Column5DownPosition
+                }
+    Size     = @{ Width  = $Column5BoxWidth
+                  Height = $Column5BoxHeight
+                }
+    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+}
 $ComputerListRenameButton.Add_Click({
     # Creates a list of all the checkboxes selected
     $ComputerListCheckedBoxesSelected = @()
@@ -14312,13 +14269,18 @@ $Column5DownPosition += $Column5DownPositionShift + 17
 #============================================================================================================================================================
 # Execute Button
 #============================================================================================================================================================
-$ComputerListExecuteButton2           = New-Object System.Windows.Forms.Button
-$ComputerListExecuteButton2.Name      = "Start`nCollection"
-$ComputerListExecuteButton2.Text      = "$($ComputerListExecuteButton2.Name)"
-$ComputerListExecuteButton2.UseVisualStyleBackColor = $True
-$ComputerListExecuteButton2.Location  = New-Object System.Drawing.Point($Column5RightPosition,$Column5DownPosition)
-$ComputerListExecuteButton2.Size      = New-Object System.Drawing.Size($Column5BoxWidth,($Column5BoxHeight * 2))
-$ComputerListExecuteButton2.ForeColor = "Red"
+$ComputerListExecuteButton2           = New-Object System.Windows.Forms.Button -Property @{
+    Name      = "Start`nCollection"
+    Text      = "Start`nCollection"
+    Location = @{ X = $Column5RightPosition
+                  Y = $Column5DownPosition
+                }
+    Size     = @{ Width  = $Column5BoxWidth
+                  Height = $Column5BoxHeight * 2
+                }
+    ForeColor = "Red"
+    UseVisualStyleBackColor = $True
+}
 ### $ComputerListExecuteButton2.Add_Click($ExecuteScriptHandler) ### Is located lower in the script
 $ComputerListExecuteButton2.Add_MouseHover({
     $ToolTip = New-Object System.Windows.Forms.ToolTip    
@@ -14366,9 +14328,13 @@ $Section3DownPosition += $Section3DownPositionShift
 # Status Label
 #--------------
 $StatusLabel = New-Object System.Windows.Forms.Label -Property @{
-    Location  = New-Object System.Drawing.Point(($Section3RightPosition),($Section3DownPosition + 1))
-    Size      = New-Object System.Drawing.Size(60,($Section3ProgressBarHeight - 2))
-    Text      = "Status:"
+    Text     = "Status:"
+    Location = @{ X = $Section3RightPosition
+                  Y = $Section3DownPosition + 1
+                }
+    Size     = @{ Width  = 60
+                  Height = $Section3ProgressBarHeight - 2
+                }
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor = "Blue"
 }
@@ -14378,10 +14344,14 @@ $PoShACME.Controls.Add($StatusLabel)
 # Status Listbox
 #----------------
 $StatusListBox = New-Object System.Windows.Forms.ListBox -Property @{
-    Name              = "StatusListBox"
-    Location          = New-Object System.Drawing.Point(($Section3RightPosition + 60),$Section3DownPosition) 
-    Size              = New-Object System.Drawing.Size($Section3ProgressBarWidth,$Section3ProgressBarHeight)
-    Font              = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Name     = "StatusListBox"
+    Location = @{ X = $Section3RightPosition + 60
+                  Y = $Section3DownPosition
+                }
+    Size     = @{ Width  = $Section3ProgressBarWidth
+                  Height = $Section3ProgressBarHeight
+                }
+    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     FormattingEnabled = $True
 }
 $StatusListBox.Items.Add("") | Out-Null
@@ -14393,9 +14363,13 @@ $Section3DownPosition += $Section3DownPositionShift
 # Progress Bar 1 Label
 #----------------------
 $ProgressBarSectionLabel = New-Object System.Windows.Forms.Label -Property @{
-    Location = New-Object System.Drawing.Point(($Section3RightPosition),($Section3DownPosition - 4))
-    Size     = New-Object System.Drawing.Size(60,($Section3ProgressBarHeight - 7))
     Text     = "Section:"
+    Location = @{ X = $Section3RightPosition
+                  Y = $Section3DownPosition - 4
+                }
+    Size     = @{ Width  = 60
+                  Height = $Section3ProgressBarHeight - 7
+                }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
 $PoShACME.Controls.Add($ProgressBarSectionLabel)  
@@ -14407,8 +14381,12 @@ $ProgressBarSection = New-Object System.Windows.Forms.ProgressBar -Property @{
     Style    = "Continuous"
     #Maximum = 10
     Minimum  = 0
-    Location = new-object System.Drawing.Point(($Section3RightPosition + 60),($Section3DownPosition - 2))
-    size     = new-object System.Drawing.Size($Section3ProgressBarWidth,10)
+    Location = @{ X = $Section3RightPosition + 60
+                  Y = $Section3DownPosition - 2
+                }
+    Size     = @{ Width  = $Section3ProgressBarWidth
+                  Height = 10
+                }
     #Value   = 0
     #Step    = 1
 }
@@ -14420,9 +14398,13 @@ $Section3DownPosition += $Section3DownPositionShift - 9
 # Progress Bar 2 Label
 #----------------------
 $ProgressBarOverallLabel = New-Object System.Windows.Forms.Label -Property @{
-    Location = New-Object System.Drawing.Point(($Section3RightPosition),($Section3DownPosition - 4))
-    Size     = New-Object System.Drawing.Size(60,($Section3ProgressBarHeight - 4))
     Text     = "Overall:"
+    Location = @{ X = $Section3RightPosition
+                  Y = $Section3DownPosition - 4
+                }
+    Size     = @{ Width  = 60
+                  Height = $Section3ProgressBarHeight - 4
+                }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
 $PoShACME.Controls.Add($ProgressBarOverallLabel)  
@@ -14542,9 +14524,13 @@ $Section3ResultsTab.Controls.Add($ResultsTabOpNotesAddButton)
 # Results ListBox
 #-----------------
 $ResultsListBox = New-Object System.Windows.Forms.ListBox -Property @{
-    Name                = "ResultsListBox"
-    Location            = New-Object System.Drawing.Point(-1,-1) 
-    Size                = New-Object System.Drawing.Size(($Section3ResultsTabWidth - 3),($Section3ResultsTabHeight - 15))
+    Name     = "ResultsListBox"
+    Location = @{ X = -1
+                  Y = -1
+                }
+    Size     = @{ Width  = $Section3ResultsTabWidth - 3
+                  Height = $Section3ResultsTabHeight - 15
+                }
     FormattingEnabled   = $True
     SelectionMode       = 'MultiExtended'
     ScrollAlwaysVisible = $True
@@ -14602,8 +14588,12 @@ $ToolTipMessage123 = $ToolTipMessage1 + $ToolTipMessage2 + $ToolTipMessage3
 # Host Data - Hostname Textbox
 #------------------------------
 $Section3HostDataName = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = New-Object System.Drawing.Point(0,3) 
-    Size     = New-Object System.Drawing.Size(250,25)
+    Location = @{ X = 0
+                  Y = 3
+                }
+    Size     = @{ Width  = 250
+                  Height = 25
+                }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ReadOnly = $true
 }
@@ -14629,8 +14619,12 @@ $Section3HostDataTab.Controls.Add($Section3HostDataName)
 # Host Data - OS Textbox
 #------------------------
 $Section3HostDataOS = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = New-Object System.Drawing.Point(0,($Section3HostDataName.Location.Y + $Section3HostDataName.Size.Height + 4)) 
-    Size     = New-Object System.Drawing.Size(250,25)
+    Location = @{ X = 0
+                  Y = $Section3HostDataName.Location.Y + $Section3HostDataName.Size.Height + 4
+                }
+    Size     = @{ Width  = 250
+                  Height = 25
+                }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ReadOnly = $true
 }
@@ -14653,8 +14647,12 @@ $Section3HostDataTab.Controls.Add($Section3HostDataOS)
 # Host Data - OU Textbox
 #------------------------
 $Section3HostDataOU = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = New-Object System.Drawing.Point(0,($Section3HostDataOS.Location.Y + $Section3HostDataOS.Size.Height + 4)) 
-    Size     = New-Object System.Drawing.Size(250,25)
+    Location = @{ X = 0
+                  Y = $Section3HostDataOS.Location.Y + $Section3HostDataOS.Size.Height + 4
+                }
+    Size     = @{ Width  = 250
+                  Height = 25
+                }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ReadOnly = $true
 }
@@ -14678,8 +14676,12 @@ $Section3HostDataTab.Controls.Add($Section3HostDataOU)
 #----------------------------------
     # IP Address TextBox
     $Section3HostDataIP = New-Object System.Windows.Forms.TextBox -Property @{
-        Location = New-Object System.Drawing.Point(0,($Section3HostDataOU.Location.Y + $Section3HostDataOU.Size.Height + 4)) 
-        Size     = New-Object System.Drawing.Size(120,25)
+        Location = @{ X = 0
+                      Y = $Section3HostDataOU.Location.Y + $Section3HostDataOU.Size.Height + 4
+                    }
+        Size     = @{ Width  = 120
+                      Height = 25
+                    }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         ReadOnly = $false
     }
@@ -14700,8 +14702,12 @@ $Section3HostDataTab.Controls.Add($Section3HostDataOU)
 
     # MAC Address TextBox
     $Section3HostDataMAC = New-Object System.Windows.Forms.TextBox -Property @{
-        Location = New-Object System.Drawing.Point(($Section3HostDataIP.Size.Width + 10),($Section3HostDataOU.Location.Y + $Section3HostDataOU.Size.Height + 4)) 
-        Size     = New-Object System.Drawing.Size(120,25)
+        Location = @{ X = $Section3HostDataIP.Size.Width + 10
+                      Y = $Section3HostDataOU.Location.Y + $Section3HostDataOU.Size.Height + 4
+                    }
+        Size     = @{ Width  = 120
+                      Height = 25
+                    }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         ReadOnly = $false
     }
@@ -14725,8 +14731,12 @@ $Section3HostDataTab.Controls.Add($Section3HostDataOU)
 #--------------------------------------
 $Section3HostDataNotesAddOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Add Host Data To OpNotes"
-    Location  = New-Object System.Drawing.Point(558,197)
-    Size      = New-Object System.Drawing.Size(150,25)
+    Location = @{ X = 558
+                  Y = 197
+                }
+    Size     = @{ Width  = 150
+                  Height = 25
+                }
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor = "Green"
 }
@@ -14765,8 +14775,12 @@ $Section3HostDataTab.Controls.Add($Section3HostDataNotesAddOpNotesButton)
 # Host Data - Notes Textbox
 #---------------------------
 $Section3HostDataNotes = New-Object System.Windows.Forms.TextBox -Property @{
-    Location   = New-Object System.Drawing.Point(0,($Section3HostDataIP.Location.Y + $Section3HostDataIP.Size.Height + 3)) 
-    Size       = New-Object System.Drawing.Size(727,126)
+    Location = @{ X = 0
+                  Y = $Section3HostDataIP.Location.Y + $Section3HostDataIP.Size.Height + 3
+                }
+    Size     = @{ Width  = 727
+                  Height = 126
+                }
     Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
     Multiline  = $True
     ScrollBars = 'Vertical'
@@ -14795,8 +14809,12 @@ $Section3HostDataTab.Controls.Add($Section3HostDataNotes)
 $Section3HostDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
     Name      = "Host Data - Save"
     Text      = "Save"
-    Location  = New-Object System.Drawing.Point(629,73) 
-    Size      = New-Object System.Drawing.Size(100,22)
+    Location = @{ X = 629
+                  Y = 73
+                }
+    Size     = @{ Width  = 100
+                  Height = 22
+                }
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor = 'Red'
 }
@@ -15089,8 +15107,12 @@ $Section3HostDataTab.Controls.Add($Section3HostDataTagsComboBox)
 $Section3HostDataTagsAddButton = New-Object System.Windows.Forms.Button -Property @{
     Name      = "Tags Add Button"
     Text      = "Add"
-    Location  = New-Object System.Drawing.Point(($Section3HostDataTagsComboBox.Size.Width + $Section3HostDataTagsComboBox.Location.X + 5),($Section3HostDataTagsComboBox.Location.Y - 1))
-    Size      = New-Object System.Drawing.Size(75,23)
+    Location = @{ X = $Section3HostDataTagsComboBox.Size.Width + $Section3HostDataTagsComboBox.Location.X + 5
+                  Y = $Section3HostDataTagsComboBox.Location.Y - 1
+                }
+    Size     = @{ Width  = 75
+                  Height = 23
+                }
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ForeColor = "Green"
 }
@@ -15219,16 +15241,6 @@ function Monitor-Jobs {
         # Gets the results from jobs that are completed
         $CurrentJobs | Receive-Job -Force
 
-        ### Not currently satisfied with it
-        # Gets a host list of the Jobs
-        #$ACME_Jobs = $CurrentJobs | Where-Object State -eq Running | Select-Object -ExpandProperty Name
-        #$JobsHosts = ''
-        #foreach ($job in $ACME_Jobs) { $JobsHosts += $($($job -replace 'PoSh-ACME: ','' -split '--')[2])}
-        #$JobsHosts = $JobsHosts -replace ' ',', ' -replace ", $","" -replace "^,",""       
-        #$StatusListBox.Items.Clear()
-        #$StatusListBox.Items.Add("Processing: $JobsHosts")
-                
-
         # Counts the total of completed jobs for each update
         $done = 0
         foreach ($job in $CurrentJobs) {
@@ -15295,12 +15307,6 @@ function Monitor-Jobs {
 # CheckBox Script Handler
 #============================================================================================================================================================
 $ExecuteScriptHandler= {
-    # This is for reference, it's also used later in the handler script
-    #$Section1TabControl.SelectedTab   = $Section1OpNotesTab
-    #$Section2TabControl.SelectedTab   = $Section2MainTab
-    #$Section3TabControl.SelectedTab   = $Section3ActionTab
-    #$Section4TabControl.SelectedTab   = $Section3ResultsTab
-
     # Clears the Progress bars
     $ProgressBarSection.Value = 0
     $ProgressBarOverall.Value = 0
@@ -15371,33 +15377,6 @@ $ExecuteScriptHandler= {
     $CollectedDataTimeStampDirectory = $CollectionSavedDirectoryTextBox.Text
     $IndividualHostResults           = "$CollectedDataTimeStampDirectory\Individual Host Results"
 
-
-<#
-    # Checks if any commands were selected
-    if ($false) {
-    #if ($CommandsSelectionCheckedlistbox.CheckedItems.Count -eq 0) {
-        # This brings specific tabs to the forefront/front view
-        $Section1TabControl.SelectedTab            = $Section1CollectionsTab
-        $Section1CollectionsTabControl.SelectedTab = $Section1CommandsTab
-        $Section4TabControl.SelectedTab            = $Section3ResultsTab
-
-        # Sounds a chime if there are no queries selected
-        [system.media.systemsounds]::Exclamation.play()
-
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Insert(0,"Error: Nothing Selected To Collect")
-        $ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Insert(0,"Error: You need to make a selection from one of the following in the Collections Tab:")
-        $ResultsListBox.Items.Insert(0,"       Queries") 
-        $ResultsListBox.Items.Insert(0,"       Event Logs") 
-        $ResultsListBox.Items.Insert(0,"       Active Directory") 
-        $ResultsListBox.Items.Insert(0,"       File Search") 
-        $ResultsListBox.Items.Insert(0,"       Registry [future feature]") 
-        $ResultsListBox.Items.Insert(0,"       Sysinternals [if Resource foler is present]") 
-    }
-    else {
-#>
-
     # Checks if any computers were selected
     if (($ComputerList.Count -eq 0) -and ($SingleHostIPCheckBox.Checked -eq $false)) {
         # This brings specific tabs to the forefront/front view
@@ -15450,18 +15429,6 @@ $ExecuteScriptHandler= {
 
         # Counts the Total Queries
         $CountCommandQueries = 0
-
-
-
-#        if ($CommandsTreeViewQueryAsCompiledRadioButton.checked -eq $true) {
-#
-#            $QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
-#   }
-
-
-
-
-
 
         # Adds all the checkboxed commands to a list
         $CommandsCheckedBoxesSelected = @()
@@ -15552,24 +15519,6 @@ $ExecuteScriptHandler= {
                                 Type           = "(WinRM) WMI"
                             }
                         }
-                    <#    if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'CMD') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRS_CMD
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRM) CMD"
-                                }
-                        }
-                        if ($Entry.Checked -and $Entry -match '(WinRS)' -and $Entry -match 'WMIC') {
-                                $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                                $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                    Name           = $Entry.Text
-                                    Command        = $Command.Command_WinRS_WMIC
-                                    ExportFileName = $Command.ExportFileName
-                                    Type           = "(WinRM) WMIC"
-                                }
-                        } #>
                     }
                 }
                 if ($CommandsViewQueryRadioButton.Checked) {
@@ -15647,27 +15596,6 @@ $ExecuteScriptHandler= {
                                 Type           = "(WinRM) WMI"
                             }
                         }
-                        
-                    <#  
-                        if ($Entry -match '(WinRS)' -and $Entry -match 'CMD' -and $Entry.Checked) {
-                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                Name           = $Entry.Text
-                                Command        = $Command.Command_WinRS_CMD
-                                ExportFileName = $Command.ExportFileName
-                                Type           = "(WinRM) CMD"
-                            }
-                        }
-                        if ($Entry -match '(WinRS)' -and $Entry -match 'WMIC' -and $Entry.Checked) {
-                            $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                            $CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                                Name           = $Entry.Text
-                                Command        = $Command.Command_WinRS_WMIC
-                                ExportFileName = $Command.ExportFileName
-                                Type           = "(WinRM) WMIC"
-                            }
-                        }
-                        #>                                        
                     }
                 }
             }
@@ -15718,17 +15646,6 @@ $ExecuteScriptHandler= {
                         $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential $script:Credential | Select-Object -Property $($Command.Properties)"
                         $OutputFileFileType = "csv"
                     }
-                    <#
-                    elseif ($Command.Type -eq "(WinRM) CMD") {
-                        # -username:<username> -password:<password>
-                        $CommandString = "$($Command.Command)"
-                        $OutputFileFileType = "txt"
-                    }
-                    elseif ($Command.Type -eq "(WinRM) WMIC") {
-                        $CommandString = "$($Command.Command)"
-                        $OutputFileFileType = "txt"
-                    }
-                    #>
                     elseif ($Command.Type -eq "(RPC) CMD") {
                         $CommandString = "$($Command.Command)$TargetComputer $($Command.Arguments)"
                         $OutputFileFileType = "txt"
@@ -15846,17 +15763,6 @@ $ExecuteScriptHandler= {
                             $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
                             $OutputFileFileType = "csv"
                         }
-                        <#
-                        elseif ($Command.Type -eq "(WinRM) CMD") {
-                            # -username:<username> -password:<password>
-                            $CommandString = "$($Command.Command)"
-                            $OutputFileFileType = "txt"
-                        }
-                        elseif ($Command.Type -eq "(WinRM) WMIC") {
-                            $CommandString = "$($Command.Command)"
-                            $OutputFileFileType = "txt"
-                        }
-                        #>
                         elseif ($Command.Type -eq "(RPC) CMD") {
                             $CommandString = "$($Command.Command) \\$TargetComputer $($Command.Arguments)"
                             $OutputFileFileType = "txt"
@@ -15960,13 +15866,6 @@ $ExecuteScriptHandler= {
                     elseif ($Command.Type -eq "(WinRM) WMI") {
                         $QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
                     }
-                    #elseif ($Command.Type -eq "(WinRM) CMD") {
-                    #    # -username:<username> -password:<password>
-                    #    $QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
-                    #}
-                    #elseif ($Command.Type -eq "(WinRM) WMIC") {
-                    #    $QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
-                    #}
                     elseif ($Command.Type -eq "(RPC) CMD") {
                         $QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
                     }
@@ -16206,11 +16105,6 @@ $CommandReviewString += @"
                     #$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($TargetComputer)")
 
                     $CollectionCommandStartTime = Get-Date
-    #                ForEach ($Query in $($QueryCommands.keys)) {
-    #                    $ResultsListBox.Items.Insert(0,"")
-    #                    $ResultsListBox.Items.Insert(0,"$($QueryCommands[$Query]['Command'])")
-    #                    $ResultsListBox.Items.Insert(0,"$($QueryCommands[$Query]['Name'])")
-    #                }
 
                     # Clear any PoSh-ACME Jobs
                     $ClearJobs = Get-Job -Name 'PoSh-ACME*'
@@ -16236,147 +16130,7 @@ $CommandReviewString += @"
                             Invoke-Expression -Command $CommandReviewEditTextboxText
                         } -InitializationScript $null -ArgumentList @($TargetComputer, $CommandReviewEditTextboxText)
                     }
-                    
-
-
-
-
-
-
-<#
-#############                            function Monitor-Jobs {
-
-                                do {
-
-        
-                                    Get-Job -Name "PoSh-ACME:*" | Receive-Job -Force
-
-
-                                    # Gets a host list of the Jobs
-                                    $ACME_Jobs = $CurrentJobs | Where-Object State -eq Running | Select-Object -ExpandProperty Name
-                                    $JobsHosts = ''
-                                    foreach ($job in $ACME_Jobs) { $JobsHosts += $($($job -replace 'PoSh-ACME: ','' -split '--')[2])}
-                                    $JobsHosts = $JobsHosts -replace ' ',', ' -replace ", $","" -replace "^,",""
-        
-                                    $StatusListBox.Items.Clear()
-                                    $StatusListBox.Items.Add("Processing: $JobsHosts")
-
-                                    #$CurrentJobs | Out-File $env:TEMP\scrapjobs.txt
-                                    #Get-Content $env:TEMP\scrapjobs.txt
-                                    $jobscount = $CurrentJobs.count                  
-                                    $ProgressBarSection.Maximum = $jobscount
-
-                                    # Counts the total of completed jobs for each update
-                                    $done = 0
-                                    foreach ($job in $CurrentJobs) {
-                                        $mystate = $job.state
-                                        if ($mystate -eq "Completed") {$done++}
-                                    }
-                                    $ProgressBarSection.Value = $done + 1
-        
-                                    # Calcualtes and formats time elaspsed
-                                    $CurrentTime = Get-Date
-                                    $Timecount   = $JobsLaunch - $CurrentTime        
-                                    $hour        = [Math]::Truncate($Timecount)
-                                    $minute      = ($CollectionTime - $hour) * 60
-                                    $second      = [int](($minute - ([Math]::Truncate($minute))) * 60)
-                                    $minute      = [Math]::Truncate($minute)
-                                    $Timecount   = [datetime]::Parse("$hour`:$minute`:$second")
-
-                                    # Provides updates on the jobs
-                                    $ResultsListBox.Items.Insert(0,"Running Jobs:  $($jobscount - $done)")        
-                                    $ResultsListBox.Items.Insert(1,"Current Time:  $currentTime")
-                                    $ResultsListBox.Items.Insert(2,"Elasped Time:  $($Timecount -replace '-','')")
-                                    $ResultsListBox.Items.Insert(3,"")
-                                    $ExecutionStatusCheckedListBox.Items.Add("$JobsHosts")
-
-                                    # This is how often PoSoh-ACME's GUI will refresh when provide the status of the jobs
-                                    # Default have is 250 ms. If you change this, be sure to update the $StatisticsUpdateInterval variarible within this function
-                                    Start-Sleep -Milliseconds $SleepMilliseconds
-
-                                    
-                                    $CompletedJobs = @()
-                                    foreach ($Job in $CurrentJobs) {
-                                        #if ($Job.PSBeginTime -lt $(Get-Date).AddSeconds(-$JobsTimer)) {
-                                        #    $TimeStamp = $(Get-Date).ToString('yyyy/MM/dd HH:mm:ss')
-                                        #    $ResultsListBox.Items.insert(5,"$($TimeStamp)   - Job Timed Out: $((($Job | Select-Object -ExpandProperty Name) -split '-')[3])")
-                                        #    $Job | Stop-Job 
-                                        #    $Job | Receive-Job -Force 
-                                        #    $Job | Remove-Job -Force
-                                        #    break        
-                                        #}
-                                        if (($Job.State -eq 'Completed') -and ($Job.Name -notin $CompletedJobs)) {
-                                            $TargetComputerCount -= 1
-                                            $CompletedJobs += $Job.Name
-                                            $CollectionCommandEndTime  = Get-Date                    
-                                            $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
-                                            #$ResultsListBox.Items.RemoveAt(0)
-                                            $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$($CollectionCommandDiffTime)]  Completed: $(($Job.Name).split('--')[-1].trim())")
-                                        }
-                                    }
-                                    #$ResultsListBox.Items.RemoveAt(0)
-                                    #$ResultsListBox.Items.RemoveAt(0)
-                                    $ResultsListBox.Items.RemoveAt(0)
-                                    $ResultsListBox.Items.RemoveAt(0)
-                                    $ResultsListBox.Items.RemoveAt(0)
-                                    $ResultsListBox.Items.RemoveAt(0)       
-                                } while ($done -lt $jobscount)
-
-
-##########                            }
-#>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<#
-                                # Initially updates statistics
-                                $StatisticsResults = Get-PoShACMEStatistics
-                                $StatisticsNumberOfCSVs.text = $StatisticsResults        
-
-                                $ProgressBarSection.Value = 0
-                                $JobsLaunch = Get-Date 
-                                $JobsTimer  = [int]$($OptionJobTimeoutSelectionComboBox.Text)
-    
-                                $SleepMilliseconds = 250
-
-                                # This is how often the statistics page updates, be default it is 20 which is 5 seconds (250 ms x 4)
-                                $StatisticsUpdateInterval      = (1000 / $SleepMilliseconds) * $OptionStatisticsUpdateIntervalCombobox.text
-                                $StatisticsUpdateIntervalCount = 0
-#>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                   
                     # Checks Jobs for completion
                     $TargetComputerCount = $ComputerList.count
                     $CompletedJobs = @()
@@ -16386,13 +16140,6 @@ $CommandReviewString += @"
                     $PoShACMEJobs = Get-Job -Name "PoSh-ACME:*"
 
                     While ($TargetComputerCount -gt 0) {
-<#                        # Updates Statistics 
-                        $StatisticsUpdateIntervalCount++
-                        if (($StatisticsUpdateIntervalCount % $StatisticsUpdateInterval) -eq 0) {
-                            $StatisticsResults = Get-PoShACMEStatistics
-                            $StatisticsNumberOfCSVs.text = $StatisticsResults        
-                        }
-#>                        
                         foreach ($Job in $PoShACMEJobs) {
                             if (($Job.State -eq 'Completed') -and ($Job.Name -notin $CompletedJobs)) {
                                 $TargetComputerCount -= 1
@@ -16440,70 +16187,6 @@ $CommandReviewString += @"
                         }
                         Remove-Job -Name "$($Job.Name)" -Force
                     }
-
-
-
-
-
-
-
-
-
-
-
-
-<#
-                                # Updates Statistics One last time
-                                $StatisticsResults = Get-PoShACMEStatistics
-                                $StatisticsNumberOfCSVs.text = $StatisticsResults        
-                                Get-Job -Name "PoSh-ACME:*" | Remove-Job -Force -ErrorAction SilentlyContinue
-                                Start-Sleep -Seconds 1
-#>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     # Compile results 
                     $StatusListBox.Items.Clear()
                     $StatusListBox.Items.Add("Compiling CSV Results From Target Hosts")                    
