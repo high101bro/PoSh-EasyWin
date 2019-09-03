@@ -13778,11 +13778,11 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     #-----------------------------------------------------
     $ComputerListTreeViewPopupAddTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text     = "Enter a hostname/IP"
-        Location = @{ X = 300
-                      Y = 25
+        Location = @{ X = 10
+                      Y = 10
                     }
-        Size     = @{ Width  = 10
-                      Height = 10
+        Size     = @{ Width  = 300
+                      Height = 25
                     }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
@@ -13795,12 +13795,12 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     # ComputerList TreeView Popup OS ComboBox
     #-----------------------------------------
     $ComputerListTreeViewPopupOSComboBox  = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text     = "Select an Operating System (or type in a new one)"
-        Location = @{ X = 300
-                      Y = 25
+        Text               = "Select an Operating System (or type in a new one)"
+        Location = @{ X = 10
+                      Y = $ComputerListTreeViewPopupAddTextBox.Location.Y + $ComputerListTreeViewPopupAddTextBox.Size.Height + 10
                     }
-        Size     = @{ Width  = 10
-                      Height = $ComputerListTreeViewPopupAddTextBox.Location.Y + $ComputerListTreeViewPopupAddTextBox.Size.Height + 10
+        Size     = @{ Width  = 300
+                      Height = 25
                     }
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
@@ -13815,12 +13815,12 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     # ComputerList TreeView Popup OU ComboBox
     #-----------------------------------------
     $ComputerListTreeViewPopupOUComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text     = "Select an Organizational Unit / Canonical Name (or type a new one)"
-        Location = @{ X = 300
-                      Y = 25
+        Text               = "Select an Organizational Unit / Canonical Name (or type a new one)"
+        Location = @{ X = 10
+                      Y = $ComputerListTreeViewPopupOSComboBox.Location.Y + $ComputerListTreeViewPopupOSComboBox.Size.Height + 10
                     }
-        Size     = @{ Width  = 10
-                      Height = $ComputerListTreeViewPopupOSComboBox.Location.Y + $ComputerListTreeViewPopupOSComboBox.Size.Height + 10
+        Size     = @{ Width  = 300
+                      Height = 25
                     }
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
@@ -13836,11 +13836,11 @@ $ComputerListTreeViewAddHostnameIPButton.Add_Click({
     #--------------------------------------------
     $ComputerListTreeViewPopupMoveButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Add Host"
-        Location = @{ X = 100
-                      Y = 25
+        Location = @{ X = 210
+                      Y = $ComputerListTreeViewPopupOUComboBox.Location.Y + $ComputerListTreeViewPopupOUComboBox.Size.Height + 10
                     }
-        Size     = @{ Width  = 210
-                      Height = $ComputerListTreeViewPopupOUComboBox.Location.Y + $ComputerListTreeViewPopupOUComboBox.Size.Height + 10
+        Size     = @{ Width  = 100
+                      Height = 25
                     }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
@@ -13988,11 +13988,11 @@ $ComputerListMoveButton.Add_Click({
         #----------------------------------------------
         $ComputerListTreeViewPopupMoveComboBox          = New-Object System.Windows.Forms.ComboBox -Property @{
             Text     = "Select A Category"
-            Location = @{ X = 300
-                          Y = 25
+            Location = @{ X = 10
+                          Y = 10
                         }
-            Size     = @{ Width  = 10
-                          Height = 10
+            Size     = @{ Width  = 300
+                          Height = 25
                         }
             AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
             AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
@@ -14078,11 +14078,11 @@ $ComputerListMoveButton.Add_Click({
         #--------------------------------------------
         $ComputerListTreeViewPopupMoveButton = New-Object System.Windows.Forms.Button -Property @{
             Text     = "Execute"
-            Location = @{ X = 100
-                          Y = 25
+            Location = @{ X = 210
+                          Y = $ComputerListTreeViewPopupMoveComboBox.Size.Height + 15
                         }
-            Size     = @{ Width  = 210
-                          Height = $ComputerListTreeViewPopupMoveComboBox.Size.Height + 15
+            Size     = @{ Width  = 100
+                          Height = 25
                         }
             Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
         }
