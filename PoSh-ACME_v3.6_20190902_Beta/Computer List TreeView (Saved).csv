@@ -1,7 +1,0 @@
-"Name","OperatingSystem","CanonicalName","IPv4Address","MACAddress","Notes"
-"2012DATA-DC1","Windows Server 2012 Datacenter","/Domain Controllers","10.10.10.1","No MAC Available","No Notes Available"
-"EastPC1","Windows 10 Pro","/Domain Controllers/East Coast","eastpc1","No MAC Available","No Notes Available"
-"EastPC2","Windows 10 Pro","/Domain Controllers/East Coast","No IP Available","deadbeef","No Notes Available"
-"WestPC1","Windows 10 Pro","/Domain Controllers/West Coast","No IP Available","No MAC Available","No Notes Available"
-"WestPC2","Windows 10 Pro","/Domain Controllers/West Coast","No IP Available","No MAC Available","No Notes Available"
-"dummy","test OS","/test OU","No IP Available","No MAC Available","No Notes Available"
