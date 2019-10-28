@@ -5,15 +5,15 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-ACME.ps1                                                  |
-|  Version       |  v.3.5 Beta                                                     |
+|  Version       |  v.3.1.6 Beta                                                   |
 |  Author        |  high101bro                                                     |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSH-ACME                        |
 |  Requirements  |  PowerShell v3 or Higher                                        |
 |                |  WinRM and/or DCOM/RPC                                          |
-|  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe                          |
+|  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe |
 |                |  Can run standalone, but works best with the Resources folder!  |
-|  Updated       |  25 Aug 19                                                      |
+|  Updated       |  28 Oct 19                                                      |
 |  Created       |  21 Aug 18                                                      |
 
 ***
