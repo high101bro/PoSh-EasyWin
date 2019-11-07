@@ -11,7 +11,7 @@
      ACME: The point at which something is the Best, Perfect, or Most Successful!
      ============================================================================
      File Name      : PoSh-ACME.ps1
-     Version        : v.3.1.6
+     Version        : v.3.1.7
 
      Author         : high101bro
      Email          : high101bro@gmail.com
@@ -25,7 +25,7 @@
                                       TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
      Optional       : Can run standalone, but works best with the Resources folder!
                     : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe
-     Updated        : 28 Oct 19
+     Updated        : 06 Nov 19
      Created        : 21 Aug 18
                         
     .EXAMPLE
