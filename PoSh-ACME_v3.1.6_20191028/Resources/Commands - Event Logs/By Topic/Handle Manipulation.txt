@@ -1,9 +1,0 @@
-====================================================================================================
-Handle Manipulation
-====================================================================================================
-Base Command Ran:
-   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4658') OR (EventCode='4690'))"
-====================================================================================================
-https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-handle-manipulation
-4658(S): The handle to an object was closed.
-4690(S): An attempt was made to duplicate a handle to an object.

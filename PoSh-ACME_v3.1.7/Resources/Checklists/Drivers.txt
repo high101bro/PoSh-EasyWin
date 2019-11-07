@@ -1,0 +1,8 @@
+Windows device installation uses digital signatures to verify the integrity of driver packages and to verify the identity of the vendor (software publisher) who provides the driver packages
+--- X64 bit and 6.x+ Kernels require drivers to be signed to be loaded
+Most drivers are located in C:\Windows\System32\drivers
+Types of drivers:
+--- Software Drivers - Has access to protected data that is available only in kernel mode, Software drivers always run in kernel mode
+--- Filter Drivers -Add value to or modify the behavior of a device
+--- Function Drivers - Typically the function driver handles reads and writes to the device and manages device power policy.
+--- Bus Drivers - Services a bus controller, adapter, or bridge; Bus drivers are essentially function drivers that also enumerate children 

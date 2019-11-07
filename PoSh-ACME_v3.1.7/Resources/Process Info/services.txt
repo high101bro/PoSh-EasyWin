@@ -1,0 +1,32 @@
+services.exe (Service Control Manager)
+
+Image Path:	%SystemRoot%\System32\services.exe
+
+Parent Process:	wininit.exe
+
+Child Processes:
+
+Number of Instances:	One
+
+User Account:	Local System
+
+Start Time:	Within seconds of boot time
+
+Description:	Implements the Unified Background Process Manager (UBPM), which is responsible for background activities such as services and scheduled tasks. Services.exe also implements the Service Control Manager (SCM), which specifically handles the loading of services and device drivers marked for auto-start. In addition, once a user has successfully logged on interactively, the SCM (services.exe) considers the boot successful and sets the Last Known Good control set (HKLM\SYSTEM\Select|LastKnownGood) to the value of the CurrentControlSet.
+Parent to services such at svchost.exe, dllhost.exe, taskhost.exe, spoolsv.exe, etc. Services are defined in SYSTEM\CurrentControlSet\Services
+
+Username: NT AUTHORITY\SYSTEM
+
+Base Priority of 9
+
+Loads a database of services into memory
+
+Runs within session 0
+
+There should only be one services.exe process running
+
+The Service Control Manager -- SERVICES.EXE --finds and runs all the non-boot drivers and services you’ve installed (boot drivers and services have already been launched).
+
+The legitimate SERVICES will appear once, running as SYSTEM, and be a child of WININIT.
+
+SERVICES is also going to be the parent for a lot of processes, some managed by the standard hosting process (SVCHOST), others working on their own (like AppleMobileDeviceService.exe).
