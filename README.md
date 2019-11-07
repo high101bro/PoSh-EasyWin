@@ -23,7 +23,7 @@ PoSh-ACME is a Graphical User Interface (GUI) that uses PowerShell with the .Net
 
 ### The goals of PoSh-ACME are to provide:
 1. a user interface that is easy to use and intuitive.
-2. an efficiet method to obtain various data from remote endpoints.
+2. an efficient method to obtain various data from remote endpoints.
 3. visiblity into many common commands for endpoints and active directory servers.
 4. the ability to effortlessly connect to an endpoint via a Remote Desktop, PSSession, PSExec, or explore Event Logs. 
 5. a method to analyze data/results from numerous systems natively without external 3rd party applications.
@@ -34,7 +34,7 @@ PoSh-ACME is a Graphical User Interface (GUI) that uses PowerShell with the .Net
 
 ![Alt text](https://github.com/high101bro/PoSH-ACME/blob/master/Images/ScreenShot001.jpg)
 
-PoSh-ACME is a tool that allows you to run any number of queries against any number of hosts. The queries primarily consist of one liner commands, but several are made of scripts that allows for more comprehensive results. PoSh-ACME consists of queries speicific for endpoiint hosts and servers in an Active Directory domain. It allows you to easily query event logs from multiple sources within specified date ranges; query for filenames, parts of filenames, file hashes in any number of specified directores at any recursion depth; query for network connections by IP addresses, ports, and connetions started by specified process names. 
+PoSh-ACME is a tool that allows you to run any number of queries against any number of hosts. The queries primarily consist of one liner commands, but several are made of scripts that allows for more comprehensive results. PoSh-ACME consists of queries speicific for endpoiint hosts and servers in an Active Directory domain. It allows you to easily query event logs from multiple sources within specified date ranges; query for filenames, parts of filenames, file hashes in any number of specified directores at any recursion depth; query for network connections by IP addresses, ports, and connections started by specified process names. 
 
 ***
 ***
