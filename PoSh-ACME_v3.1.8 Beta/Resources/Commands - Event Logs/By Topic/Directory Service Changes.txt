@@ -1,0 +1,12 @@
+====================================================================================================
+Directory Service Changes
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='5136') OR (EventCode='5137') OR (EventCode='5138') OR (EventCode='5139') OR (EventCode='5141'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-directory-service-changes
+5136(S): A directory service object was modified.
+5137(S): A directory service object was created.
+5138(S): A directory service object was undeleted.
+5139(S): A directory service object was moved.
+5141(S): A directory service object was deleted
