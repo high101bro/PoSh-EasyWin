@@ -1,0 +1,41 @@
+====================================================================================================
+System Info
+====================================================================================================
+Base Command Ran:
+   systeminfo
+Similar Commands:
+   Get-WmiObject Win32_ComputerSystem
+   Get-ComputerInfo
+====================================================================================================
+Obtains the following information:
+ - OS Name
+ - OS Version
+ - OS Manufacturer
+ - OS Configuration
+ - OS Build Type
+ - Registered Owner
+ - Product ID
+ - Original Install Date
+ - System Boot Time
+ - System Manufacturer
+ - System Model
+ - System Type
+ - Processor(s)
+ - BIOS Version
+ - Windows Directory
+ - System Directory
+ - Boot Device
+ - System Locale
+ - Input Locale
+ - Time Zone
+ - Total Physical Memory
+ - Available Physical Memory
+ - Virtual Memory - Max Size
+ - Virtual Memory - Available
+ - Virtual Memory - In Use
+ - Page File Location
+ - Domain
+ - Logon Server
+ - Hotfixes
+ - Network Cards
+ - Hyper-V Requirements 

@@ -1,0 +1,14 @@
+====================================================================================================
+Security Patches
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_QuickFixEngineering
+Similar Commands:
+   systeminfo
+   wmic qfe
+====================================================================================================
+Obtains the following information:
+ - HotFix ID
+ - Description
+ - Installed By
+ - Installed On

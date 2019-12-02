@@ -1,0 +1,15 @@
+====================================================================================================
+Motherboard Info
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_BaseBoard
+Similar Commands:
+   wmic baseboard list brief
+====================================================================================================
+Obtains the following information:
+ - Manufacturer
+ - Model
+ - Name
+ - Serial Number
+ - SKU
+ - Product
