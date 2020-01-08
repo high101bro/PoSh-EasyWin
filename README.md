@@ -5,7 +5,7 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-ACME.ps1                                                  |
-|  Version       |  v.3.1.9                                                        |
+|  Version       |  v.3.2.1                                                        |
 |  Author        |  high101bro                                                     |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSH-ACME                        |
@@ -13,7 +13,7 @@
 |                |  WinRM and/or DCOM/RPC                                          |
 |  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe |
 |                |  Can run standalone, but works best with the Resources folder!  |
-|  Updated       |  01 Dec 19                                                      |
+|  Updated       |  07 Jan 20                                                      |
 |  Created       |  21 Aug 18                                                      |
 
 ***
