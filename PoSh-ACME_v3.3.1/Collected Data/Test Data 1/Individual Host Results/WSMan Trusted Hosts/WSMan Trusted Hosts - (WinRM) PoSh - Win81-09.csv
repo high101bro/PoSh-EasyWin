@@ -1,0 +1,2 @@
+"PSComputerName","PSPath","PSParentPath","PSChildName","PSDrive","PSProvider","PSIsContainer","SourceOfValue","Value","Name","TypeNameOfElement","Type"
+"WIN81-09","Microsoft.WSMan.Management\WSMan::localhost\Client\TrustedHosts","Microsoft.WSMan.Management\WSMan::localhost\Client","TrustedHosts","WSMan","Microsoft.WSMan.Management\WSMan","False",,"","TrustedHosts","System.String","System.String"

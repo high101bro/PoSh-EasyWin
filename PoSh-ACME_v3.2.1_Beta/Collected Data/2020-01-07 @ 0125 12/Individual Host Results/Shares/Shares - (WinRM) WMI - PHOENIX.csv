@@ -1,6 +1,0 @@
-"PSComputerName","Status","Name","Path","Description"
-"PHOENIX","OK","ADMIN$","C:\Windows","Remote Admin"
-"PHOENIX","OK","B$","B:\","Default share"
-"PHOENIX","OK","C$","C:\","Default share"
-"PHOENIX","OK","IPC$","","Remote IPC"
-"PHOENIX","OK","P$","P:\","Default share"

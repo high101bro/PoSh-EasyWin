@@ -1,0 +1,4 @@
+"PSComputerName","Name","DeviceID","DriveType","DriveTypeName","VolumeName","FreeSpaceGB","CapacityGB"
+"WIN81-01","A:","A:","2","Removeable Disk",,"0.00","0.00"
+"WIN81-01","C:","C:","3","Local Drive","","4.55","15.66"
+"WIN81-01","D:","D:","5","Compact Disc",,"0.00","0.00"

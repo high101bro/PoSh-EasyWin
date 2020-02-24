@@ -1,0 +1,6 @@
+"PSComputerName","IPAddress","InterfaceIndex","InterfaceAlias","AddressFamily","Type","PrefixLength","PrefixOrigin","SuffixOrigin","AddressState","ValidLifetime","PreferredLifetime","SkipAsSource","PolicyStore"
+"WIN81-03","fe80::5efe:10.10.10.102%4","4","isatap.MobileLab.home","IPv6","Unicast","128","WellKnown","Link","Deprecated","10675199.02:48:05.4775807","10675199.02:48:05.4775807","False",
+"WIN81-03","::1","1","Loopback Pseudo-Interface 1","IPv6","Unicast","128","WellKnown","WellKnown","Preferred","10675199.02:48:05.4775807","10675199.02:48:05.4775807","False",
+"WIN81-03","fe80::77:e16e:91b6:6409%3","3","Ethernet","IPv6","Unicast","64","WellKnown","Link","Preferred","10675199.02:48:05.4775807","10675199.02:48:05.4775807","False",
+"WIN81-03","127.0.0.1","1","Loopback Pseudo-Interface 1","IPv4","Unicast","8","WellKnown","WellKnown","Preferred","10675199.02:48:05.4775807","10675199.02:48:05.4775807","False",
+"WIN81-03","10.10.10.102","3","Ethernet","IPv4","Unicast","24","Dhcp","Dhcp","Preferred","7.15:55:58","7.15:55:58","False",

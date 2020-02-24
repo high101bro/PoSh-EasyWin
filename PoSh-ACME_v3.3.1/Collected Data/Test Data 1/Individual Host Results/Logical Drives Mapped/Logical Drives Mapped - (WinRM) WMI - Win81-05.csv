@@ -1,0 +1,4 @@
+"PSComputerName","Name","DeviceID","DriveType","DriveTypeName","VolumeName","FreeSpaceGB","CapacityGB"
+"Win81-05","A:","A:","2","Removeable Disk",,"0.00","0.00"
+"Win81-05","C:","C:","3","Local Drive","","5.34","15.66"
+"Win81-05","D:","D:","5","Compact Disc","IR3_CCSA_X64FRE_EN-US_DV9","0.00","3.83"

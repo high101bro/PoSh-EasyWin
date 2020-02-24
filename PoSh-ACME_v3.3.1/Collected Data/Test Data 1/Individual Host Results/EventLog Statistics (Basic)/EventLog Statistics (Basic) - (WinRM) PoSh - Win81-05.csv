@@ -1,0 +1,8 @@
+"PSComputerName","MaximumKilobytes","MinimumRetentionDays","OverflowAction","Entries","Log","EnableRaisingEvents"
+"WIN81-05","20480","0","OverwriteAsNeeded","1043","Application","False"
+"WIN81-05","20480","0","OverwriteAsNeeded","0","HardwareEvents","False"
+"WIN81-05","512","7","OverwriteOlder","0","Internet Explorer","False"
+"WIN81-05","20480","0","OverwriteAsNeeded","0","Key Management Service","False"
+"WIN81-05","20480","0","OverwriteAsNeeded","2426","Security","False"
+"WIN81-05","20480","0","OverwriteAsNeeded","802","System","False"
+"WIN81-05","15360","0","OverwriteAsNeeded","900","Windows PowerShell","False"

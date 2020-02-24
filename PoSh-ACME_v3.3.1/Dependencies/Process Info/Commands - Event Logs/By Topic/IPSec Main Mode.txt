@@ -1,0 +1,16 @@
+====================================================================================================
+IPSec Main Mode
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4646') OR (EventCode='4650') OR (EventCode='4651') OR (EventCode='4652') OR (EventCode='4653') OR (EventCode='4655') OR (EventCode='4976') OR (EventCode='5049') OR (EventCode='5453'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-ipsec-main-mode
+4646: Security ID: %1
+4650: An IPsec Main Mode security association was established. Extended Mode was not enabled. Certificate authentication was not used.
+4651: An IPsec Main Mode security association was established. Extended Mode was not enabled. A certificate was used for authentication.
+4652: An IPsec Main Mode negotiation failed.
+4653: An IPsec Main Mode negotiation failed.
+4655: An IPsec Main Mode security association ended.
+4976: During Main Mode negotiation, IPsec received an invalid negotiation packet. If this problem persists, it could indicate a network issue or an attempt to modify or replay this negotiation.
+5049: An IPsec Security Association was deleted.
+5453: An IPsec negotiation with a remote computer failed because the IKE and AuthIP IPsec Keying Modules (IKEEXT) service is not started.

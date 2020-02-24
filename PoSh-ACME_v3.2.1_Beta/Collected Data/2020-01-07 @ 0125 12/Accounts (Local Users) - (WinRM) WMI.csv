@@ -1,6 +1,0 @@
-"PSComputerName","Name","Disabled","AccountType","Lockout","PasswordChangeable","PasswordRequired","SID","SIDType","LocalAccount","Domain","Caption","Description"
-"PHOENIX","Administrator","True","512","False","True","True","S-1-5-21-3120379691-2163718279-3834483495-500","1","True","PHOENIX","PHOENIX\Administrator","Built-in account for administering the computer/domain"
-"PHOENIX","dan","False","512","False","True","True","S-1-5-21-3120379691-2163718279-3834483495-1004","1","True","PHOENIX","PHOENIX\dan",""
-"PHOENIX","daniel","False","512","False","True","True","S-1-5-21-3120379691-2163718279-3834483495-1009","1","True","PHOENIX","PHOENIX\daniel",""
-"PHOENIX","Guest","True","512","False","False","False","S-1-5-21-3120379691-2163718279-3834483495-501","1","True","PHOENIX","PHOENIX\Guest","Built-in account for guest access to the computer/domain"
-"PHOENIX","kids","False","512","False","True","True","S-1-5-21-3120379691-2163718279-3834483495-1006","1","True","PHOENIX","PHOENIX\kids",""

@@ -1,0 +1,6 @@
+"PSComputerName","Entry","RecordName","RecordType","Status","Section","TimeToLive","Data"
+"WIN81-01","_ldap._tcp.pdc._msdcs.mobilelab.home",,,"0","1","419","dc1.mobilelab.home 0 100 389"
+"WIN81-01","_ldap._tcp.pdc._msdcs.mobilelab.home",,,"0","3","419","10.10.10.1"
+"WIN81-01","_ldap._tcp.pdc._msdcs.mobilelab.home",,,"0","3","419","192.168.43.239"
+"WIN81-01","dc1.mobilelab.home",,,"0","1","2251","10.10.10.1"
+"WIN81-01","dc1.mobilelab.home",,,"0","1","2251","192.168.43.239"

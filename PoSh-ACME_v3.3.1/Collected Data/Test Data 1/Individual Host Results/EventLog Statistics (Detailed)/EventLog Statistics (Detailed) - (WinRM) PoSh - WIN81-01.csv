@@ -1,0 +1,328 @@
+"PSComputerName","IsEnabled","LogMode","MaximumSizeInBytes","RecordCount","LogName","LogType","LogIsolation","FileSize","IsLogFull","LastWriteTime","OldestRecordNumber"
+"WIN81-01","True","Circular","20971520","1630","Application","Administrative","Application","4263936","False","2/24/2020 12:45:46 AM","1"
+"WIN81-01","True","Circular","20971520","0","HardwareEvents","Administrative","Application","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","0","Internet Explorer","Administrative","Application","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","20971520","0","Key Management Service","Administrative","Application","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","20971520","6041","Security","Administrative","Custom","4263936","False","2/24/2020 12:46:14 AM","1"
+"WIN81-01","True","Circular","20971520","1221","System","Administrative","System","1118208","False","2/24/2020 12:46:13 AM","1"
+"WIN81-01","True","Circular","15728640","2070","Windows PowerShell","Administrative","Application","2166784","False","2/24/2020 2:37:19 AM","1"
+"WIN81-01","False","Circular","20971520",,"ForwardedEvents","Operational","Custom",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-All-User-Install-Agent/Admin","Administrative","Application","69632","False","2/24/2020 3:24:43 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Anytime-Upgrade-Events/Operational","Operational","Application","69632","False","2/24/2020 3:24:43 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-AppHost/Admin","Administrative","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-AppID/Operational","Operational","System","69632","False","2/24/2020 3:24:43 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-ApplicabilityEngine/Operational","Operational","Application","69632","False","2/24/2020 3:24:43 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Application Server-Applications/Admin","Administrative","Application","69632","False","2/24/2020 3:24:43 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Application Server-Applications/Operational","Operational","Application","69632","False","2/24/2020 3:24:43 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Application-Experience/Program-Compatibility-Assistant","Operational","Application","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Application-Experience/Program-Compatibility-Troubleshooter","Operational","Application","69632","False","1/30/2020 3:40:31 AM","0"
+"WIN81-01","True","Circular","1052672","10","Microsoft-Windows-Application-Experience/Program-Inventory","Operational","Application","69632","False","2/24/2020 4:06:06 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Application-Experience/Program-Telemetry","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Application-Experience/Steps-Recorder","Operational","Application","69632","False","1/30/2020 3:40:31 AM","0"
+"WIN81-01","True","Circular","1052672","59","Microsoft-Windows-ApplicationResourceManagementSystem/Operational","Operational","Application","69632","False","2/3/2020 11:13:05 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-AppLocker/EXE and DLL","Operational","System","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-AppLocker/MSI and Script","Operational","Application","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-AppLocker/Packaged app-Deployment","Operational","Application","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-AppLocker/Packaged app-Execution","Operational","System","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","True","Circular","1052672","110","Microsoft-Windows-AppModel-Runtime/Admin","Administrative","Application","69632","False","2/24/2020 3:24:44 AM","1"
+"WIN81-01","True","Circular","5242880","99","Microsoft-Windows-AppReadiness/Admin","Administrative","Application","69632","False","2/24/2020 3:24:44 AM","1"
+"WIN81-01","True","Circular","5242880","1666","Microsoft-Windows-AppReadiness/Operational","Operational","Application","1118208","False","2/24/2020 3:24:44 AM","1"
+"WIN81-01","True","Circular","1052672","106","Microsoft-Windows-AppXDeployment/Operational","Operational","Application","69632","False","2/24/2020 3:24:44 AM","1"
+"WIN81-01","True","Circular","5242880","2558","Microsoft-Windows-AppXDeploymentServer/Operational","Operational","Application","4263936","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-AppXDeploymentServer/Restricted","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-AppxPackaging/Operational","Operational","Application","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-ASN1/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-AssignedAccess/Admin","Administrative","Application","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-AssignedAccess/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Audio/CaptureMonitor","Operational","System","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Audio/GlitchDetection","Operational","System","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Audio/Informational","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Audio/Operational","Operational","System","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Audio/PlaybackManager","Operational","Application","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Authentication User Interface/Operational","Operational","Application","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Authentication/AuthenticationPolicyFailures-DomainController","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Authentication/ProtectedUser-Client","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Authentication/ProtectedUserFailures-DomainController","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Authentication/ProtectedUserSuccesses-DomainController","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","1","Microsoft-Windows-BackgroundTaskInfrastructure/Operational","Operational","Application","69632","False","2/24/2020 3:24:44 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-BackgroundTransfer-ContentPrefetcher/Operational","Operational","Custom",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Backup","Operational","System","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Base-Filtering-Engine-Connections/Operational","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Base-Filtering-Engine-Resource-Flows/Operational","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Biometrics/Operational","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-BitLocker-DrivePreparationTool/Admin","Administrative","System","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-BitLocker-DrivePreparationTool/Operational","Operational","System","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-BitLocker/BitLocker Management","Operational","Application","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-BitLocker/BitLocker Operational","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Bits-Client/Analytic","Operational","Custom",,,,
+"WIN81-01","True","Circular","1052672","4","Microsoft-Windows-Bits-Client/Operational","Operational","System","69632","False","2/7/2020 3:55:46 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Bluetooth-HidBthLE/Operational","Operational","System","69632","False","2/24/2020 3:24:44 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Bluetooth-MTPEnum/Operational","Operational","System","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-BranchCache/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-BranchCacheSMB/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-CAPI2/Operational","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-CertificateServicesClient-CredentialRoaming/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-CertificateServicesClient-Lifecycle-System/Operational","Operational","System","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-CertificateServicesClient-Lifecycle-User/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-CertPoleEng/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-CloudStorageWizard/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-CodeIntegrity/Operational","Operational","System","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","1","Microsoft-Windows-Connected-Search/Operational","Operational","Application","69632","False","2/3/2020 11:13:05 PM","1"
+"WIN81-01","True","Circular","1052672","75","Microsoft-Windows-CoreApplication/Operational","Operational","Application","69632","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-CorruptedFileRecovery-Client/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-CorruptedFileRecovery-Server/Operational","Operational","System","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Crypto-DPAPI/BackUpKeySvc","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Crypto-DPAPI/Debug","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","6","Microsoft-Windows-Crypto-DPAPI/Operational","Operational","System","69632","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Crypto-NCrypt/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DAL-Provider/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DataIntegrityScan/Admin","Administrative","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DataIntegrityScan/CrashRecovery","Administrative","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DateTimeControlPanel/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","104857600","0","Microsoft-Windows-Deduplication/Diagnostic","Operational","System","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","10485760","0","Microsoft-Windows-Deduplication/Operational","Operational","System","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","10485760","0","Microsoft-Windows-Deduplication/Scrubbing","Operational","System","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","1208","Microsoft-Windows-DeviceSetupManager/Admin","Administrative","System","1052672","False","2/24/2020 12:46:20 AM","1"
+"WIN81-01","True","Circular","1052672","12","Microsoft-Windows-DeviceSetupManager/Operational","Operational","System","69632","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DeviceSync/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","1","Microsoft-Windows-Dhcp-Client/Admin","Administrative","Application","69632","False","1/28/2020 10:49:44 PM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Dhcp-Client/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DhcpNap/Admin","Administrative","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-DhcpNap/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Dhcpv6-Client/Admin","Administrative","Application","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Dhcpv6-Client/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","87","Microsoft-Windows-Diagnosis-DPS/Operational","Operational","System","69632","False","2/24/2020 12:51:16 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Diagnosis-PCW/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Diagnosis-PLA/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","14","Microsoft-Windows-Diagnosis-Scheduled/Operational","Operational","Application","69632","False","2/11/2020 7:45:39 PM","1"
+"WIN81-01","True","Circular","1052672","2","Microsoft-Windows-Diagnosis-Scripted/Admin","Administrative","Application","69632","False","2/24/2020 3:24:45 AM","1"
+"WIN81-01","True","Circular","1052672","8","Microsoft-Windows-Diagnosis-Scripted/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Diagnosis-ScriptedDiagnosticsProvider/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Diagnostics-Networking/Operational","Operational","Application","69632","False","2/24/2020 3:24:45 AM","0"
+"WIN81-01","True","Circular","1052672","42","Microsoft-Windows-Diagnostics-Performance/Operational","Operational","System","69632","False","2/24/2020 3:24:45 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DiskDiagnostic/Operational","Operational","System","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DiskDiagnosticDataCollector/Operational","Operational","System","69632","False","2/3/2020 10:05:17 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DiskDiagnosticResolver/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-DisplayColorCalibration/Operational","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-DNS-Client/Operational","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-DriverFrameworks-UserMode/Operational","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-DSC/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-EapHost/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-EapMethods-RasChap/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-EapMethods-RasTls/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-EapMethods-Sim/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-EapMethods-Ttls/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-EmbeddedAppLauncher/Admin","Administrative","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-EmbeddedAppLauncher/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-EventCollector/Operational","Operational","System","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Fault-Tolerant-Heap/Operational","Operational","System","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-FileHistory-Core/WHC","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-FileHistory-Engine/BackupLog","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-FileManagerApp/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-FileManagerDataModel/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-FMS/Operational","Operational","System","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","4194304","0","Microsoft-Windows-Folder Redirection/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","8","Microsoft-Windows-Forwarding/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-GenericRoaming/Admin","Administrative","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-glcnd/Admin","Operational","Application",,,,
+"WIN81-01","True","Circular","4194304","6646","Microsoft-Windows-GroupPolicy/Operational","Operational","System","4198400","False","2/24/2020 12:45:32 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Help/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-HomeGroup Control Panel/Operational","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-HomeGroup Listener Service/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","3","Microsoft-Windows-HomeGroup Provider Service/Operational","Operational","Application","69632","False","1/20/2020 11:34:09 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-HotspotAuth/Operational","Operational","Application","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-HttpService/Log","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-HttpService/Trace","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-IdCtrls/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-IKE/Operational","Operational","System","69632","False","1/28/2020 2:59:21 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-International-RegionalOptionsControlPanel/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","2","Microsoft-Windows-International/Operational","Operational","Application","69632","False","1/20/2020 11:34:09 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Iphlpsvc/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-KdsSvc/Operational","Operational","System","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Kerberos/Operational","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Kernel-ApphelpCache/Operational","Operational","Application","69632","False","2/24/2020 3:24:46 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Kernel-Boot/Operational","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Kernel-EventTracing/Admin","Administrative","System","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","173","Microsoft-Windows-Kernel-PnP/Configuration","Operational","System","1052672","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","True","Circular","1052672","281","Microsoft-Windows-Kernel-PnPConfig/Configuration","Operational","System","1052672","False","2/24/2020 12:46:14 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Kernel-Power/Thermal-Operational","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","1","Microsoft-Windows-Kernel-ShimEngine/Operational","Operational","System","69632","False","1/20/2020 11:27:38 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Kernel-StoreMgr/Operational","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Kernel-WDI/Operational","Operational","System","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Kernel-WHEA/Errors","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","24","Microsoft-Windows-Kernel-WHEA/Operational","Operational","System","1052672","False","2/24/2020 12:46:14 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-KeyboardFilter/Admin","Administrative","System","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-KeyboardFilter/Operational","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-KeyboardFilter/Performance","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","1243","Microsoft-Windows-Known Folders API Service","Operational","Application","1052672","False","2/24/2020 12:45:34 AM","1"
+"WIN81-01","True","Circular","1052672","20","Microsoft-Windows-LanguagePackSetup/Operational","Operational","System","69632","False","2/24/2020 4:07:13 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-LinkLayerDiscoveryProtocol/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","2","Microsoft-Windows-LiveId/Operational","Operational","System","69632","False","2/24/2020 3:24:47 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-LSA/Operational","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-MediaFoundation-Performance/SARStreamResource","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-MemoryDiagnostics-Results/Debug","Operational","System","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Mobile-Broadband-Experience-Parser-Task/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Mobile-Broadband-Experience-SmsRouter/Admin","Administrative","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Mprddm/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-MSPaint/Admin","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-MUI/Admin","Administrative","System","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","13","Microsoft-Windows-MUI/Operational","Operational","System","69632","False","2/7/2020 3:55:49 PM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Ncasvc/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-NcdAutoSetup/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","79","Microsoft-Windows-NCSI/Operational","Operational","Application","69632","False","2/24/2020 12:46:19 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-NDIS/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-NdisImPlatform/Operational","Operational","System","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-NetworkAccessProtection/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-NetworkAccessProtection/WHC","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-NetworkLocationWizard/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","94","Microsoft-Windows-NetworkProfile/Operational","Operational","Application","69632","False","2/24/2020 12:46:19 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-NetworkProvisioning/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","128","Microsoft-Windows-NlaSvc/Operational","Operational","Application","69632","False","2/24/2020 12:46:31 AM","1"
+"WIN81-01","True","Circular","1052672","54","Microsoft-Windows-Ntfs/Operational","Operational","System","69632","False","2/24/2020 12:46:16 AM","1"
+"WIN81-01","True","Circular","1052672","24","Microsoft-Windows-Ntfs/WHC","Operational","System","69632","False","2/24/2020 12:46:14 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-NTLM/Operational","Operational","System","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-OfflineFiles/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-OOBE-Machine-DUI/Operational","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-OtpCredentialProvider/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-PackageStateRoaming/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","30270400","0","Microsoft-Windows-ParentalControls/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Policy/Operational","Operational","System","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-PowerShell-DesiredStateConfiguration-FileDownloadManager/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Retain","1048985600","0","Microsoft-Windows-PowerShell/Admin","Administrative","Application","69632","False","2/3/2020 10:25:45 PM","0"
+"WIN81-01","True","Circular","15728640","118","Microsoft-Windows-PowerShell/Operational","Operational","Application","1118208","False","2/24/2020 3:29:18 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-PrintBRM/Admin","Administrative","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","18","Microsoft-Windows-PrintService/Admin","Administrative","Application","69632","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-PrintService/Operational","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Program-Compatibility-Assistant/Analytic","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Proximity-Common/Diagnostic","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-PushNotification-Platform/Admin","Administrative","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-PushNotification-Platform/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-RasClusterResource/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","38","Microsoft-Windows-ReadyBoost/Operational","Operational","Application","69632","False","2/24/2020 12:46:57 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-ReadyBoostDriver/Operational","Operational","System","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Regsvr32/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","9","Microsoft-Windows-ReliabilityAnalysisComponent/Operational","Operational","Application","69632","False","2/24/2020 1:52:30 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-RemoteApp and Desktop Connections/Admin","Administrative","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-RemoteApp and Desktop Connections/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-RemoteAssistance/Admin","Administrative","Application","69632","False","1/29/2020 1:15:42 AM","0"
+"WIN81-01","True","Circular","1052672","22","Microsoft-Windows-RemoteAssistance/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Admin","Administrative","Application","69632","False","2/6/2020 12:58:48 AM","0"
+"WIN81-01","True","Circular","1052672","679","Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational","Operational","Application","1052672","False","2/24/2020 12:46:21 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-RemoteDesktopServices-SessionServices/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Remotefs-Rdbss/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","29","Microsoft-Windows-Resource-Exhaustion-Detector/Operational","Operational","System","69632","False","2/24/2020 12:56:17 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Resource-Exhaustion-Resolver/Operational","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Resource-Leak-Diagnostic/Operational","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-RestartManager/Operational","Operational","Application","69632","False","2/7/2020 3:55:49 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-SearchUI/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Security-Audit-Configuration-Client/Operational","Operational","Application","69632","False","2/24/2020 3:24:47 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Security-EnterpriseData-FileRevocationManager/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Security-ExchangeActiveSyncProvisioning/Operational","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Security-IdentityListener/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Security-Netlogon/Operational","Operational","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Security-SPP-UX-GenuineCenter-Logging/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","45","Microsoft-Windows-Security-SPP-UX-Notifications/ActionCenter","Operational","Application","69632","False","2/24/2020 12:46:48 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Security-UserConsentVerifier/Audit","Operational","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-ServiceReportingApi/Debug","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","8","Microsoft-Windows-SettingSync/Debug","Operational","Application","69632","False","2/24/2020 3:24:48 AM","1"
+"WIN81-01","True","Circular","1052672","2","Microsoft-Windows-SettingSync/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Shell-ConnectedAccountState/ActionCenter","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Shell-Core/ActionCenter","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","1418","Microsoft-Windows-Shell-Core/Operational","Operational","Application","1052672","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-SkyDrive-SyncEngine/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-SmartCard-Audit/Authentication","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","48","Microsoft-Windows-SmartCard-DeviceEnum/Operational","Operational","Application","69632","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-SmartCard-TPM-VCard-Module/Admin","Administrative","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-SmartCard-TPM-VCard-Module/Operational","Operational","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","8388608","105","Microsoft-Windows-SmbClient/Connectivity","Operational","System","69632","False","2/24/2020 12:46:16 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-SMBClient/Operational","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","8388608","0","Microsoft-Windows-SmbClient/Security","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-SMBServer/Connectivity","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","114","Microsoft-Windows-SMBServer/Operational","Operational","System","69632","False","2/24/2020 12:46:19 AM","1"
+"WIN81-01","True","Circular","1052672","2","Microsoft-Windows-SMBServer/Security","Operational","System","69632","False","2/24/2020 10:28:30 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-StickyNotes/Admin","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Storage-ATAPort/Admin","Administrative","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Storage-ATAPort/Operational","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Storage-ClassPnP/Admin","Administrative","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Storage-ClassPnP/Operational","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Storage-Disk/Admin","Administrative","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Storage-Disk/Operational","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Storage-Storport/Admin","Administrative","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Storage-Storport/Operational","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-StorageSpaces-Driver/Operational","Operational","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-StorageSpaces-ManagementAgent/WHC","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","20000000","129","Microsoft-Windows-Store/Operational","Operational","Application","1118208","False","2/24/2020 1:52:28 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Superfetch/AgmcOperation","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-SystemSettings/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-SystemSettingsV2/Diagnostic","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","495","Microsoft-Windows-TaskScheduler/Maintenance","Operational","Application","1052672","False","2/24/2020 12:48:16 AM","1"
+"WIN81-01","True","Circular","10485760","6006","Microsoft-Windows-TaskScheduler/Operational","Operational","Application","4263936","False","2/24/2020 12:46:15 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TCPIP/Operational","Operational","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TerminalServices-ClientUSBDevices/Admin","Administrative","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TerminalServices-ClientUSBDevices/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TerminalServices-LocalSessionManager/Admin","Administrative","Application","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","180","Microsoft-Windows-TerminalServices-LocalSessionManager/Operational","Operational","Application","1052672","False","2/24/2020 12:46:14 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TerminalServices-PnPDevices/Admin","Administrative","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TerminalServices-PnPDevices/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TerminalServices-Printers/Admin","Administrative","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TerminalServices-Printers/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TerminalServices-RDPClient/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","12","Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin","Administrative","Application","69632","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","True","Circular","1052672","89","Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational","Operational","Application","69632","False","2/24/2020 12:46:21 AM","1"
+"WIN81-01","True","Circular","1052672","17","Microsoft-Windows-TWinUI/Operational","Operational","Application","69632","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","True","Circular","1052672","28","Microsoft-Windows-TZSync/Operational","Operational","Application","69632","False","2/22/2020 10:49:43 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-TZUtil/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-UAC-FileVirtualization/Operational","Operational","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-UAC/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-User Control Panel/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","4194304","353","Microsoft-Windows-User Profile Service/Operational","Operational","Application","1118208","False","2/24/2020 2:37:18 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-User-Loader/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-UserPnp/ActionCenter","Operational","Application","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","4","Microsoft-Windows-UserPnp/DeviceInstall","Operational","Application","69632","False","1/28/2020 10:49:44 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-VDRVROOT/Operational","Operational","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-VerifyHardwareSecurity/Admin","Administrative","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-VerifyHardwareSecurity/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-VHDMP/Operational","Operational","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-VPN-Client/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-VPN/Operational","Operational","System","69632","False","1/28/2020 2:59:21 PM","0"
+"WIN81-01","True","Circular","1052672","258","Microsoft-Windows-Wcmsvc/Operational","Operational","Application","1052672","False","2/24/2020 12:46:15 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-WebAuth/Operational","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-WebIO-NDF/Diagnostic","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-WEPHOSTSVC/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-WER-Diag/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","42","Microsoft-Windows-WFP/Operational","Operational","System","69632","False","2/24/2020 12:46:19 AM","1"
+"WIN81-01","True","Circular","1052672","56","Microsoft-Windows-Windows Defender/Operational","Operational","System","69632","False","2/24/2020 4:05:33 AM","1"
+"WIN81-01","True","Circular","1052672","87","Microsoft-Windows-Windows Defender/WHC","Operational","System","69632","False","2/24/2020 12:46:18 AM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Windows Firewall With Advanced Security/ConnectionSecurity","Operational","System","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Windows Firewall With Advanced Security/ConnectionSecurityVerbose","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","436","Microsoft-Windows-Windows Firewall With Advanced Security/Firewall","Operational","Application","1052672","False","2/24/2020 12:46:20 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Windows Firewall With Advanced Security/FirewallVerbose","Operational","Application",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-WindowsColorSystem/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","72","Microsoft-Windows-WindowsSystemAssessmentTool/Operational","Operational","Application","69632","False","2/24/2020 4:07:13 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-WindowsUIImmersive/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","23","Microsoft-Windows-WindowsUpdateClient/Operational","Operational","System","69632","False","2/24/2020 12:47:54 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-WinHTTP-NDF/Diagnostic","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","4","Microsoft-Windows-WinINet-Config/ProxyConfigChanged","Operational","Application","69632","False","2/11/2020 7:02:55 PM","1"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Winlogon/Operational","Operational","Application","69632","False","1/20/2020 11:34:09 PM","0"
+"WIN81-01","True","Circular","1052672","2411","Microsoft-Windows-WinRM/Operational","Operational","Application","1052672","False","2/24/2020 12:46:18 AM","310"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Winsock-AFD/Operational","Operational","System",,,,
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Winsock-NameResolution/Operational","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Winsock-WS2HELP/Operational","Operational","System","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Wired-AutoConfig/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-WLAN-AutoConfig/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","1144","Microsoft-Windows-WMI-Activity/Operational","Operational","Application","1052672","False","2/24/2020 12:46:28 AM","1"
+"WIN81-01","False","Circular","1052672",,"Microsoft-Windows-Wordpad/Admin","Operational","Application",,,,
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-WorkFolders/Operational","Operational","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-WorkFolders/WHC","Operational","Custom","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-Workplace Join/Admin","Administrative","Application","69632","False","2/24/2020 3:24:48 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-WPD-ClassInstaller/Operational","Operational","System","69632","False","2/24/2020 3:24:49 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-WPD-CompositeClassDriver/Operational","Operational","System","69632","False","2/24/2020 3:24:49 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-WPD-MTPClassDriver/Operational","Operational","System","69632","False","2/24/2020 3:24:49 AM","0"
+"WIN81-01","True","Circular","1052672","0","Microsoft-Windows-WWAN-SVC-Events/Operational","Operational","Application","69632","False","2/24/2020 3:24:49 AM","0"
+"WIN81-01","True","Circular","1052672","75","Microsoft-WS-Licensing/Admin","Administrative","Application","69632","False","2/7/2020 3:55:51 PM","1"
+"WIN81-01","False","Circular","1052672",,"Network Isolation Operational","Operational","System",,,,
+"WIN81-01","True","Circular","1052672","0","Setup","Operational","Application","69632","False","1/20/2020 11:27:38 PM","0"
+"WIN81-01","True","Circular","1052672","0","SMSApi","Operational","Application","69632","False","2/24/2020 3:24:49 AM","0"
+"WIN81-01","False","Circular","1052672",,"Windows Networking Vpn Plugin Platform/Operational","Operational","Custom",,,,
+"WIN81-01","False","Circular","1052672",,"Windows Networking Vpn Plugin Platform/OperationalVerbose","Operational","Custom",,,,
+"WIN81-01","True","Circular","1052672","0","WitnessClientAdmin","Administrative","Application","69632","False","2/24/2020 3:24:49 AM","0"
