@@ -9,4 +9,5 @@
 
 
 # The command:
+$DomainController = 'localhost'
 Invoke-Command -ComputerName $DomainController -ScriptBlock { Get-ADComputer -Filter * -Properties "Name","OperatingSystem","CanonicalName","IPv4Address","MACAddress","Notes" } | Export-Csv -Path "Domain Computers.csv" -NoTypeInformation

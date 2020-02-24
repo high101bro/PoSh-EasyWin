@@ -1,2 +1,0 @@
-"PSComputerName","Number","FriendlyName","Model","Manufacturer","SerialNumber","OperationalStatus","TotalSize","BootFromDisk","IsSystem","IsOfline","IsReadOnly","PartitionStyle","NumberOfPartitions","LargestFreeExtent","Location","UniqueId"
-"WIN81-07","0","Virtual HD ATA Device","Virtual HD",,"","Online",,"True","True",,"False","MBR","2","0","ACPI(_SB_)#ACPI(PCI0)#ACPI(IDE0)#ACPI(CHN0)#ATA(C00T00L00)","IDE\DISKVIRTUAL_HD______________________________1.1.0___\5&1278C138&0&0.0.0:Win81-07"

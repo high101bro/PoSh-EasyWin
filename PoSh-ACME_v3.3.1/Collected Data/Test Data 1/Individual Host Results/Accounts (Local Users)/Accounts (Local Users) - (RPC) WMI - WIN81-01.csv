@@ -1,4 +1,0 @@
-"PSComputerName","Name","Disabled","AccountType","Lockout","PasswordChangeable","PasswordRequired","SID","SIDType","LocalAccount","Domain","Caption","Description"
-"WIN81-01","Administrator","True","512","False","True","True","S-1-5-21-3234688381-3227104834-3551560616-500","1","True","WIN81-01","WIN81-01\Administrator","Built-in account for administering the computer/domain"
-"WIN81-01","Guest","True","512","False","False","False","S-1-5-21-3234688381-3227104834-3551560616-501","1","True","WIN81-01","WIN81-01\Guest","Built-in account for guest access to the computer/domain"
-"WIN81-01","User","False","512","False","True","False","S-1-5-21-3234688381-3227104834-3551560616-1001","1","True","WIN81-01","WIN81-01\User",""

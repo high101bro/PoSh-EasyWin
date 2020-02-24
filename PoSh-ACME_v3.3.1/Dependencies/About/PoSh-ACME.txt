@@ -21,7 +21,7 @@
                                       TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
      Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe
 
-     Updated        :  7 Jan 20
+     Updated        : 24 Feb 20
      Created        : 21 Aug 18
 
      Author         : high101bro
