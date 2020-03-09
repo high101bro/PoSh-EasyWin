@@ -1,8 +1,0 @@
-====================================================================================================
-RPC Events
-====================================================================================================
-Base Command Ran:
-   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND (EventCode='5712')"
-====================================================================================================
-https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-rpc-events
-5712(S): A Remote Procedure Call (RPC) was attempted.
