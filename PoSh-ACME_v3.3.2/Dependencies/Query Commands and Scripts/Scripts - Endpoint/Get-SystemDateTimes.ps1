@@ -5,10 +5,11 @@
 
 $os = Get-WmiObject win32_operatingsystem 
 $DateTimes = [PSCustomObject]@{
+    PSComputername  = $os.PSComputerName
     LastBootUpTime  = $os.ConvertToDateTime($os.LastBootUpTime)
     InstallDate     = $os.ConvertToDateTime($os.InstallDate)
     LocalDateTime   = $os.ConvertToDateTime($os.LocalDateTime)
-    CurrentTimeZone = $os.CurrentTimeZone
+    CurrentTimeZone = $os.CurrentTimeZone/60
 }
 $DateTimes | Select-Object PSComputerName, LocalDateTime, LastBootUpTime, InstallDate, CurrentTimeZone
 
