@@ -16,7 +16,7 @@
      ==================================================================================
 
      File Name      : PoSh-EasyWin.ps1
-     Version        : v.3.3.2
+     Version        : v.4.0
 
      Requirements   : PowerShell v3+ for PowerShell Charts
                     : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -27,8 +27,8 @@
                                       TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
      Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe
 
-     Updated        :  9 Mar 20
-     Created        : 21 Aug 18
+     Updated        : 23 APR 2020
+     Created        : 21 AUG 2018
 
      Author         : high101bro
      Email          : high101bro@gmail.com
