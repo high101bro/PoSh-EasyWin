@@ -1,6 +1,6 @@
 $ComputerListRenameButtonAdd_Click = {
     # This brings specific tabs to the forefront/front view
-    $Section4TabControl.SelectedTab = $Section3ResultsTab
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
     Create-ComputerNodeCheckBoxArray 
     if ($script:ComputerTreeViewSelected.count -eq 1) {

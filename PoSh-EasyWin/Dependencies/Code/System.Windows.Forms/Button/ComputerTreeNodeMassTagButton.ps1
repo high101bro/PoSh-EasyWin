@@ -1,7 +1,7 @@
 $ComputerTreeNodeMassTagButtonAdd_Click = {
     # function to Mass Tgg one or multiple hosts in the computer treeview
     Create-ComputerNodeCheckBoxArray 
-    $Section4TabControl.SelectedTab = $Section3HostDataTab
+    $MainBottomTabControl.SelectedTab = $Section3HostDataTab
 
     if ($script:ComputerTreeViewSelected.count -ge 1) {
         $ComputerListMassTagForm = New-Object System.Windows.Forms.Form -Property @{
@@ -64,7 +64,7 @@ $ComputerTreeNodeMassTagButtonAdd_Click = {
                     foreach ($Entry in $Category.Nodes) {
                         if ($Entry.Checked -and $Entry.Text -notin $ComputerListMassTageArray) {
                             $ComputerListMassTageArray += $Entry.Text
-                            $Section4TabControl.SelectedTab = $Section3HostDataTab
+                            $MainBottomTabControl.SelectedTab = $Section3HostDataTab
                             $Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
                             $Section3HostDataOSTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
                             $Section3HostDataOUTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName

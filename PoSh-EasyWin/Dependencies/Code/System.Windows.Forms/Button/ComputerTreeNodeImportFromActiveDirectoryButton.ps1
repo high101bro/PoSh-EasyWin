@@ -3,7 +3,7 @@ $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
     if ($script:SingleHostIPCheckBox.Checked -eq $true) {
         if (Verify-Action -Title "Verification: Active Directory Import" -Question "Make sure to select the proper server.`nImport Active Directory hosts from the following?" -Computer $script:SingleHostIPTextBoxTarget) {
             # This brings specific tabs to the forefront/front view
-            $Section4TabControl.SelectedTab = $Section3ResultsTab
+            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
             $script:SingleHostIPTextBoxTarget = $script:SingleHostIPTextBox.Text
 
             if ($ComputerListProvideCredentialsCheckBox.Checked) {
@@ -43,7 +43,7 @@ $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
         Create-ComputerNodeCheckBoxArray
         if (Verify-Action -Title "Verification: Active Directory Import" -Question "Make sure to select the proper server.`nImport Active Directory hosts from the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
             # This brings specific tabs to the forefront/front view
-            $Section4TabControl.SelectedTab = $Section3ResultsTab
+            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
             $script:SingleHostIPTextBoxTarget = $script:SingleHostIPTextBox.Text
 
             if ($ComputerListProvideCredentialsCheckBox.Checked) {

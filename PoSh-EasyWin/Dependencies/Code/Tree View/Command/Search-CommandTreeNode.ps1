@@ -1,5 +1,5 @@
 function Search-CommandTreeNode {
-    $Section4TabControl.SelectedTab = $Section3ResultsTab
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes
 
     # Checks if the search node already exists

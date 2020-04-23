@@ -3,7 +3,7 @@ $ComputerListPSSessionButtonAdd_Click = {
     if ($script:ComputerTreeViewSelected.count -eq 1) {        
         if (Verify-Action -Title "Verification: PowerShell Session" -Question "Enter a PowerShell Session to the following?" -Computer $($script:ComputerTreeViewSelected)) {
             # This brings specific tabs to the forefront/front view
-            $Section4TabControl.SelectedTab = $Section3ResultsTab
+            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Enter-PSSession:  $($script:ComputerTreeViewSelected)")

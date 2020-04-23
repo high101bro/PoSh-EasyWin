@@ -8,7 +8,7 @@ foreach ($File in $ResourceChecklistFiles) {
         UseVisualStyleBackColor = $True
         Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
-    $Section1ChecklistTabControl.Controls.Add($Section1ChecklistSubTab)
+    $MainLeftChecklistTabControl.Controls.Add($Section1ChecklistSubTab)
 
     #-------------------------------------
     # Imports Data and Creates Checkboxes

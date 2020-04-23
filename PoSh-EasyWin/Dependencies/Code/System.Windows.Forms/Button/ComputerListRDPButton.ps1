@@ -3,7 +3,7 @@ $ComputerListRDPButtonAdd_Click = {
     if ($script:ComputerTreeViewSelected.count -eq 1) {
         if (Verify-Action -Title "Verification: Remote Desktop" -Question "Open a Remote Desktop session to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
             # This brings specific tabs to the forefront/front view
-            $Section4TabControl.SelectedTab = $Section3ResultsTab
+            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
             if ($ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }

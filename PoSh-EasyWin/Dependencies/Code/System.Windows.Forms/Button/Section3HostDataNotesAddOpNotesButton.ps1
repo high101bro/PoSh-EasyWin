@@ -1,5 +1,5 @@
 $Section3HostDataNotesAddOpNotesButtonAdd_Click = {
-    $Section1TabControl.SelectedTab   = $Section1OpNotesTab
+    $MainLeftTabControl.SelectedTab   = $Section1OpNotesTab
     if ($Section3HostDataNotesTextBox.text) {
         $TimeStamp = Get-Date
         $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($Section3HostDataNameTextBox.Text)")

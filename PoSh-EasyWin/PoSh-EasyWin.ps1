@@ -16,7 +16,7 @@
      ==================================================================================
 
      File Name      : PoSh-EasyWin.ps1
-     Version        : v.4.0
+     Version        : v.3.3.2
 
      Requirements   : PowerShell v3+ for PowerShell Charts
                     : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -27,8 +27,8 @@
                                       TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
      Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe
 
-     Updated        : 23 APR 2020
-     Created        : 21 AUG 2018
+     Updated        :  9 Mar 20
+     Created        : 21 Aug 18
 
      Author         : high101bro
      Email          : high101bro@gmail.com
@@ -202,7 +202,12 @@ Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "==================
 
 
 #============================================================================================================================================================
-# PoSh-EasyWin Form
+#  __  __         _          _____                       
+#  |  \/  |  __ _ (_) _ __   |  ___|___   _ __  _ __ ___  
+#  | |\/| | / _` || || '_ \  | |_  / _ \ | '__|| '_ ` _ \ 
+#  | |  | || (_| || || | | | |  _|| (_) || |   | | | | | |
+#  |_|  |_| \__,_||_||_| |_| |_|   \___/ |_|   |_| |_| |_|                                                                                                        
+#
 #============================================================================================================================================================
 
 # Generates the GUI and contains the majority of the script
@@ -228,40 +233,51 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
 . "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 
 
-##############################################################################################################################################################
-##############################################################################################################################################################
-##
-## Section 1 Tab Control
-##
-##############################################################################################################################################################
-##############################################################################################################################################################
+#============================================================================================================================================================
+#
+#  Parent: Main Form
+#   __  __         _            _            __  _       _____       _       ____               _                _ 
+#  |  \/  |  __ _ (_) _ __     | |     ___  / _|| |_    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
+#  | |\/| | / _` || || '_ \    | |    / _ \| |_ | __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
+#  | |  | || (_| || || | | |   | |___|  __/|  _|| |_      | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
+#  |_|  |_| \__,_||_||_| |_|   |_____|\___||_|   \__|     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|                                                                                                           
+#
+#============================================================================================================================================================
 
-$Section1TabControlBoxWidth  = 460
-$Section1TabControlBoxHeight = 590
+$MainLeftTabControlBoxWidth  = 460
+$MainLeftTabControlBoxHeight = 590
 
-$Section1TabControl = New-Object System.Windows.Forms.TabControl -Property @{
+$MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Main Tab Window"
     Location = @{ X = 5
                   Y = 5 }
-    Size     = @{ Width  = $Section1TabControlBoxWidth
-                  Height = $Section1TabControlBoxHeight }
+    Size     = @{ Width  = $MainLeftTabControlBoxWidth
+                  Height = $MainLeftTabControlBoxHeight }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     SelectedIndex = 0
     ShowToolTips  = $True
 }
-$PoShEasyWin.Controls.Add($Section1TabControl)
+$PoShEasyWin.Controls.Add($MainLeftTabControl)
 
 
-#---------------------
-# Collection Tab Page
-#---------------------
+#============================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl
+#    ____        _  _              _    _                        _____       _      ____                     
+#   / ___| ___  | || |  ___   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | |    / _ \ | || | / _ \ / __|| __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |___| (_) || || ||  __/| (__ | |_ | || (_) || | | |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#   \____|\___/ |_||_| \___| \___| \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                                                |___/       
+#============================================================================================================================================================
+
 $Section1CollectionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Collections"
     Name                    = "Collections Tab"
     UseVisualStyleBackColor = $True
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$Section1TabControl.Controls.Add($Section1CollectionsTab)
+$MainLeftTabControl.Controls.Add($Section1CollectionsTab)
 
 $TabRightPosition     = 3
 $TabhDownPosition     = 3
@@ -273,18 +289,21 @@ $TextBoxWidth         = 442
 $TextBoxHeight        = 536
 
 
-#####################################################################################################################################
-##
-## Section 1 Collections TabControl
-##
-#####################################################################################################################################
-# The TabControl controls the tabs within it
-
+#============================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl -> Collections Tab
+#    ____        _  _              _    _                        _____       _       ____               _                _ 
+#   / ___| ___  | || |  ___   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
+#  | |    / _ \ | || | / _ \ / __|| __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
+#  | |___| (_) || || ||  __/| (__ | |_ | || (_) || | | |\__ \     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
+#   \____|\___/ |_||_| \___| \___| \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
+#
+#============================================================================================================================================================
 
 #------------------------
 # Collection Tab Control
 #------------------------
-$Section1CollectionsTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+$MainLeftCollectionsTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Collections TabControl"
     Location = @{ X = $TabRightPosition
                   Y = $TabhDownPosition }
@@ -294,24 +313,26 @@ $Section1CollectionsTabControl = New-Object System.Windows.Forms.TabControl -Pro
     SelectedIndex = 0
     Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$Section1CollectionsTab.Controls.Add($Section1CollectionsTabControl)
+$Section1CollectionsTab.Controls.Add($MainLeftCollectionsTabControl)
 
 
-#=========================================
-#    ____                  _          
-#   / __ \__  _____  _____(_)__  _____
-#  / / / / / / / _ \/ ___/ / _ \/ ___/
-# / /_/ / /_/ /  __/ /  / /  __(__  ) 
-# \___\_\__,_/\___/_/  /_/\___/____/  
+#============================================================================================================================================================
 #
-#=========================================
+#  Parent: Main Form -> Main Left TabControl -> Collections TabControl
+#    ___                      _                _____       _      ____                     
+#   / _ \  _   _   ___  _ __ (_)  ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | | | || | | | / _ \| '__|| | / _ \/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |_| || |_| ||  __/| |   | ||  __/\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#   \__\_\ \__,_| \___||_|   |_| \___||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                              |___/       
+#============================================================================================================================================================
+
 $QueriesRightPosition     = 5
 $QueriesDownPositionStart = 10
 $QueriesDownPosition      = 10
 $QueriesDownPositionShift = 25
 $QueriesBoxWidth          = 410
 $QueriesBoxHeight         = 25
-
 
 #------------------
 # Commands TabPage
@@ -325,7 +346,7 @@ $Section1CommandsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section1CollectionsTabControl.Controls.Add($Section1CommandsTab)
+$MainLeftCollectionsTabControl.Controls.Add($Section1CommandsTab)
 
 
 #-------------------
@@ -625,14 +646,16 @@ $script:CommandsTreeView.Nodes.Add($script:TreeNodePreviouslyExecutedCommands)
 #$script:CommandsTreeView.ExpandAll()
 
 
-#===============================================================================
-#     ______                 __     __                        ______      __
-#    / ____/   _____  ____  / /_   / /   ____  ____ ______   /_  __/___ _/ /_ 
-#   / __/ | | / / _ \/ __ \/ __/  / /   / __ \/ __ `/ ___/    / / / __ `/ __ \
-#  / /___ | |/ /  __/ / / / /_   / /___/ /_/ / /_/ (__  )    / / / /_/ / /_/ /
-# /_____/ |___/\___/_/ /_/\__/  /_____/\____/\__, /____/    /_/  \__,_/_.___/ 
-#                                          /____/
-#===============================================================================
+#============================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl -> Collections TabControl
+#   _____                     _       _                           _____       _      ____                     
+#  | ____|__   __ ___  _ __  | |_    | |     ___    __ _  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  |  _|  \ \ / // _ \| '_ \ | __|   | |    / _ \  / _` |/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |___  \ V /|  __/| | | || |_    | |___| (_) || (_| |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_____|  \_/  \___||_| |_| \__|   |_____|\___/  \__, ||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                  |___/                                          |___/          
+#============================================================================================================================================================
 
 $EventLogsRightPosition     = 5
 $EventLogsDownPositionStart = 10
@@ -653,7 +676,7 @@ $Section1EventLogsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section1CollectionsTabControl.Controls.Add($Section1EventLogsTab)
+$MainLeftCollectionsTabControl.Controls.Add($Section1EventLogsTab)
 
 
 #-------------------------
@@ -1121,15 +1144,17 @@ $EventLogsEventIDsToMonitorCheckListBox.Font = New-Object System.Drawing.Font("$
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorCheckListBox)
 
 
-#=====================================================================================================================================================
+#============================================================================================================================================================
 #
-# REGISTRY TAB
-#
-#=====================================================================================================================================================
+#  Parent: Main Form -> Main Left TabControl -> Collections TabControl
+#   ____               _       _                    _____       _      ____                     
+#  |  _ \  ___   __ _ (_) ___ | |_  _ __  _   _    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | |_) |/ _ \ / _` || |/ __|| __|| '__|| | | |     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  |  _ <|  __/| (_| || |\__ \| |_ | |   | |_| |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_| \_\\___| \__, ||_||___/ \__||_|    \__, |     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#               |___/                     |___/                                     |___/             
+#============================================================================================================================================================
 
-#------------------
-# Registry TabPage
-#------------------
 $Section1RegistryTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Registry"
     Location = @{ X = $RegistryRightPosition
@@ -1139,7 +1164,7 @@ $Section1RegistryTab = New-Object System.Windows.Forms.TabPage -Property @{
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section1CollectionsTabControl.Controls.Add($Section1RegistryTab)
+$MainLeftCollectionsTabControl.Controls.Add($Section1RegistryTab)
 
 
 #----------------------------------------------------
@@ -1362,18 +1387,17 @@ $script:RegistryValueDataSearchRichTextbox = New-Object System.Windows.Forms.Ric
 $Section1RegistryTab.Controls.Add($script:RegistryValueDataSearchRichTextbox)
 
 
-#=====================================================================================================================================================
-#   _______ __          __  __           __                         __   ___    ____  _____    _____                      __       ______      __  
-#   / ____(_) /__       / / / /___ ______/ /_       ____ _____  ____/ /  /   |  / __ \/ ___/   / ___/___  ____ ___________/ /_     /_  __/___ _/ /_ 
-#  / /_  / / / _ \     / /_/ / __ `/ ___/ __ \     / __ `/ __ \/ __  /  / /| | / / / /\__ \    \__ \/ _ \/ __ `/ ___/ ___/ __ \     / / / __ `/ __ \
-# / __/ / / /  __/    / __  / /_/ (__  ) / / /    / /_/ / / / / /_/ /  / ___ |/ /_/ /___/ /   ___/ /  __/ /_/ / /  / /__/ / / /    / / / /_/ / /_/ /
-#/_/   /_/_/\___( )  /_/ /_/\__,_/____/_/ /_( )   \__,_/_/ /_/\__,_/  /_/  |_/_____//____/   /____/\___/\__,_/_/   \___/_/ /_/    /_/  \__,_/_.___/ 
-#               |/                          |/                                                                                                      
-#=====================================================================================================================================================
+#============================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl -> Collections TabControl
+#   _____  _  _           ____                           _         _____       _      ____                     
+#  |  ___|(_)| |  ___    / ___|   ___   __ _  _ __  ___ | |__     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | |_   | || | / _ \   \___ \  / _ \ / _` || '__|/ __|| '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  |  _|  | || ||  __/    ___) ||  __/| (_| || |  | (__ | | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_|    |_||_| \___|   |____/  \___| \__,_||_|   \___||_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                                                  |___/                  
+#============================================================================================================================================================
 
-#---------------------
-# File Search TabPage
-#---------------------
 $Section1FileSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "File Search"
     Location = @{ X = 3
@@ -1383,7 +1407,7 @@ $Section1FileSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section1CollectionsTabControl.Controls.Add($Section1FileSearchTab)
+$MainLeftCollectionsTabControl.Controls.Add($Section1FileSearchTab)
 
 # Recursively goes through directories down to the specified depth
 # Used for backwards compatibility with systems that have older PowerShell versions, newer versions of PowerShell has a -Depth parameter 
@@ -1689,20 +1713,19 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
         CommonButtonSettings -Button $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton
 
 
-#===============================================================================================================================
-#     _   __     __                      __      ______                            __  _                     ______      __  
-#    / | / /__  / /__      ______  _____/ /__   / ____/___  ____  ____  ___  _____/ /_(_)___  ____  _____   /_  __/___ _/ /_ 
-#   /  |/ / _ \/ __/ | /| / / __ \/ ___/ //_/  / /   / __ \/ __ \/ __ \/ _ \/ ___/ __/ / __ \/ __ \/ ___/    / / / __ `/ __ \
-#  / /|  /  __/ /_ | |/ |/ / /_/ / /  / ,<    / /___/ /_/ / / / / / / /  __/ /__/ /_/ / /_/ / / / (__  )    / / / /_/ / /_/ /
-# /_/ |_/\___/\__/ |__/|__/\____/_/  /_/|_|   \____/\____/_/ /_/_/ /_/\___/\___/\__/_/\____/_/ /_/____/    /_/  \__,_/_.___/ 
-#                                                                                                                           
-#===============================================================================================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl -> Collections TabControl
+#   _   _        _                          _         ____                                  _    _                        _____       _      ____                     
+#  | \ | |  ___ | |_ __      __ ___   _ __ | | __    / ___| ___   _ __   _ __    ___   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  |  \| | / _ \| __|\ \ /\ / // _ \ | '__|| |/ /   | |    / _ \ | '_ \ | '_ \  / _ \ / __|| __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |\  ||  __/| |_  \ V  V /| (_) || |   |   <    | |___| (_) || | | || | | ||  __/| (__ | |_ | || (_) || | | |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_| \_| \___| \__|  \_/\_/  \___/ |_|   |_|\_\    \____|\___/ |_| |_||_| |_| \___| \___| \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                                                                                                         |___/       
+#=======================================================================================================================================================================
 
 $NetworkConnectionSearchDownPosition = -10
 
-#--------------------------------
-# Network Connections Search Tab
-#--------------------------------
 $Section1NetworkConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Network Connections"
     Location = @{ X = 3
@@ -1712,7 +1735,7 @@ $Section1NetworkConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section1CollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
+$MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
 
 
         #---------------------------------------------------------
@@ -1983,14 +2006,16 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCac
             $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCacheRichTextbox)
 
 
-#===================================================================================
-#   _____            _       __                        __        ______      __  
-#   / ___/__  _______(_)___  / /____  _________  ____ _/ /____   /_  __/___ _/ /_ 
-#   \__ \/ / / / ___/ / __ \/ __/ _ \/ ___/ __ \/ __ `/ / ___/    / / / __ `/ __ \
-#  ___/ / /_/ (__  ) / / / / /_/  __/ /  / / / / /_/ / (__  )    / / / /_/ / /_/ /
-# /____/\__, /____/_/_/ /_/\__/\___/_/  /_/ /_/\__,_/_/____/    /_/  \__,_/_.___/ 
-#      /____/                                                                     
-#===================================================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl -> Collections TabControl
+#   ____               _         _                             _          _____       _      ____                     
+#  / ___|  _   _  ___ (_) _ __  | |_  ___  _ __  _ __    __ _ | | ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  \___ \ | | | |/ __|| || '_ \ | __|/ _ \| '__|| '_ \  / _` || |/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#   ___) || |_| |\__ \| || | | || |_|  __/| |   | | | || (_| || |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |____/  \__, ||___/|_||_| |_| \__|\___||_|   |_| |_| \__,_||_||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#          |___/                                                                                          |___/       
+#=======================================================================================================================================================================
 
 $SysinternalsRightPosition     = 3
 $SysinternalsDownPosition      = -10
@@ -1998,10 +2023,6 @@ $SysinternalsDownPositionShift = 22
 $SysinternalsButtonWidth       = 110
 $SysinternalsButtonHeight      = 22
 
-
-#-----------------------------
-# Sysinternals Sysmon TabPage
-#-----------------------------
 $Section1SysinternalsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Sysinternals"
     Location = @{ X = $SysinternalsRightPosition
@@ -2012,10 +2033,9 @@ $Section1SysinternalsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
 # Test if the External Programs directory is present; if it's there load the tab
-if (Test-Path $ExternalPrograms) { $Section1CollectionsTabControl.Controls.Add($Section1SysinternalsTab) }
+if (Test-Path $ExternalPrograms) { $MainLeftCollectionsTabControl.Controls.Add($Section1SysinternalsTab) }
 
 $SysinternalsDownPosition += $SysinternalsDownPositionShift
-
 
 
 #--------------------------------------
@@ -2521,14 +2541,16 @@ $Section1SysinternalsTab.Controls.Add($ExternalProgramsProcmonGroupBox)
     $ExternalProgramsProcmonGroupBox.Controls.Add($SysinternalsProcmonRenameProcessTextBox)
 
 
-#=========================================================================================
-#     ______                                      __  _                ______      __  
-#    / ____/___  __  ______ ___  ___  _________ _/ /_(_)___  ____     /_  __/___ _/ /_ 
-#   / __/ / __ \/ / / / __ `__ \/ _ \/ ___/ __ `/ __/ / __ \/ __ \     / / / __ `/ __ \
-#  / /___/ / / / /_/ / / / / / /  __/ /  / /_/ / /_/ / /_/ / / / /    / / / /_/ / /_/ /
-# /_____/_/ /_/\__,_/_/ /_/ /_/\___/_/   \__,_/\__/_/\____/_/ /_/    /_/  \__,_/_.___/ 
-#                                                                                     
-#=========================================================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl
+#   _____                                             _    _                   _____       _      ____                     
+#  | ____| _ __   _   _  _ __ ___    ___  _ __  __ _ | |_ (_)  ___   _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  |  _|  | '_ \ | | | || '_ ` _ \  / _ \| '__|/ _` || __|| | / _ \ | '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |___ | | | || |_| || | | | | ||  __/| |  | (_| || |_ | || (_) || | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_____||_| |_| \__,_||_| |_| |_| \___||_|   \__,_| \__||_| \___/ |_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                                                              |___/       
+#=======================================================================================================================================================================
 
 $EnumerationRightPosition     = 3
 $EnumerationDownPosition      = 0
@@ -2539,9 +2561,7 @@ $EnumerationButtonWidth       = 110
 $EnumerationButtonHeight      = 22
 $EnumerationGroupGap          = 15
 
-#---------------------
-# Enumeration TabPage
-#---------------------
+
 $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
     Name     = "Enumeration"
     Text     = "Enumeration"
@@ -2552,7 +2572,7 @@ $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section1TabControl.Controls.Add($Section1EnumerationTab)
+$MainLeftTabControl.Controls.Add($Section1EnumerationTab)
 
 $EnumerationDownPosition += 13
 
@@ -3219,36 +3239,47 @@ $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxClearButton)
 CommonButtonSettings -Button $EnumerationComputerListBoxClearButton
 
 
-#=================================================================
-#    ________              __   ___      __     ______      __  
-#   / ____/ /_  ___  _____/ /__/ (_)____/ /_   /_  __/___ _/ /_ 
-#  / /   / __ \/ _ \/ ___/ //_/ / / ___/ __/    / / / __ `/ __ \
-# / /___/ / / /  __/ /__/ ,< / / (__  ) /_     / / / /_/ / /_/ /
-# \____/_/ /_/\___/\___/_/|_/_/_/____/\__/    /_/  \__,_/_.___/ 
-# 
-#=================================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl
+#    ____  _                  _     _  _       _            _____       _      ____                     
+#   / ___|| |__    ___   ___ | | __| |(_) ___ | |_  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | |    | '_ \  / _ \ / __|| |/ /| || |/ __|| __|/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |___ | | | ||  __/| (__ |   < | || |\__ \| |_ \__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#   \____||_| |_| \___| \___||_|\_\|_||_||___/ \__||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                                           |___/       
+#=======================================================================================================================================================================
 
-$Section1ChecklistTab = New-Object System.Windows.Forms.TabPage -Property @{
+$MainLeftChecklistTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Checklist"
     Name                    = "Checklist Tab"
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-if (Test-Path "$Dependencies\Checklists") { $Section1TabControl.Controls.Add($Section1ChecklistTab) }
+if (Test-Path "$Dependencies\Checklists") { $MainLeftTabControl.Controls.Add($MainLeftChecklistTab) }
 
-# Variables
 $TabRightPosition     = 3
 $TabhDownPosition     = 3
 $TabAreaWidth         = 446
 $TabAreaHeight        = 557
-
 $TextBoxRightPosition = -2 
 $TextBoxDownPosition  = -2
 $TextBoxWidth         = 442
 $TextBoxHeight        = 536
 
-# The TabControl controls the tabs within it
-$Section1ChecklistTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+
+#============================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl -> Checklist Tabpage
+#    ____  _                  _     _  _       _            _____       _       ____               _                _ 
+#   / ___|| |__    ___   ___ | | __| |(_) ___ | |_  ___    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
+#  | |    | '_ \  / _ \ / __|| |/ /| || |/ __|| __|/ __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
+#  | |___ | | | ||  __/| (__ |   < | || |\__ \| |_ \__ \     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
+#   \____||_| |_| \___| \___||_|\_\|_||_||___/ \__||___/     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
+#
+#============================================================================================================================================================
+
+$MainLeftChecklistTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name          = "Checklist TabControl"
     Location      = New-Object System.Drawing.Point($TabRightPosition,$TabhDownPosition)
     Size          = New-Object System.Drawing.Size($TabAreaWidth,$TabAreaHeight) 
@@ -3256,7 +3287,7 @@ $Section1ChecklistTabControl = New-Object System.Windows.Forms.TabControl -Prope
     ShowToolTips  = $True
     SelectedIndex = 0
 }
-$Section1ChecklistTab.Controls.Add($Section1ChecklistTabControl)
+$MainLeftChecklistTab.Controls.Add($MainLeftChecklistTabControl)
 
 
 $ChecklistRightPosition     = 5
@@ -3276,14 +3307,16 @@ $ResourceChecklistFiles = Get-ChildItem "$Dependencies\Checklists"
 . "$Dependencies\Code\Main Body\Dynamically Create Checklists.ps1"
 
 
-#==========================================================================
-#     ____                                              ______      __  
-#    / __ \_________  ________  _____________  _____   /_  __/___ _/ /_ 
-#   / /_/ / ___/ __ \/ ___/ _ \/ ___/ ___/ _ \/ ___/    / / / __ `/ __ \
-#  / ____/ /  / /_/ / /__/  __(__  |__  )  __(__  )    / / / /_/ / /_/ /
-# /_/   /_/   \____/\___/\___/____/____/\___/____/    /_/  \__,_/_.___/ 
-#                                                                      
-#==========================================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl
+#   ____                                                  _____       _      ____                     
+#  |  _ \  _ __  ___    ___  ___  ___  ___   ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | |_) || '__|/ _ \  / __|/ _ \/ __|/ __| / _ \/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  |  __/ | |  | (_) || (__|  __/\__ \\__ \|  __/\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_|    |_|   \___/  \___|\___||___/|___/ \___||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                                         |___/       
+#=======================================================================================================================================================================
 
 $Section1ProcessesTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Processes"
@@ -3291,7 +3324,7 @@ $Section1ProcessesTab = New-Object System.Windows.Forms.TabPage -Property @{
     UseVisualStyleBackColor = $True
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-if (Test-Path "$Dependencies\Process Info") { $Section1TabControl.Controls.Add($Section1ProcessesTab) }
+if (Test-Path "$Dependencies\Process Info") { $MainLeftTabControl.Controls.Add($Section1ProcessesTab) }
 
 $TabRightPosition       = 3
 $TabhDownPosition       = 3
@@ -3303,11 +3336,18 @@ $TextBoxWidth           = 442
 $TextBoxHeight          = 536
 
     
-#------------------------
-#  Processes Tab Control
-#------------------------
-# The TabControl controls the tabs within it
-$Section1ProcessesTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+#============================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl -> Processes Tab
+#  ____                                                  _____       _       ____               _                _ 
+#  |  _ \  _ __  ___    ___  ___  ___  ___   ___  ___    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
+#  | |_) || '__|/ _ \  / __|/ _ \/ __|/ __| / _ \/ __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
+#  |  __/ | |  | (_) || (__|  __/\__ \\__ \|  __/\__ \     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
+#  |_|    |_|   \___/  \___|\___||___/|___/ \___||___/     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
+#
+#============================================================================================================================================================
+
+$MainLeftProcessesTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Processes TabControl"
     Location = @{ X = $TabRightPosition
                   Y = $TabhDownPosition }
@@ -3317,35 +3357,43 @@ $Section1ProcessesTabControl = New-Object System.Windows.Forms.TabControl -Prope
     ShowToolTips  = $True
     SelectedIndex = 0
 }
-$Section1ProcessesTab.Controls.Add($Section1ProcessesTabControl)
+$Section1ProcessesTab.Controls.Add($MainLeftProcessesTabControl)
 
 
-#------------------------------------
-# Auto Creates Tabs and Imports Data
-#------------------------------------
-# Iterates through the files and dynamically creates tabs and imports data
-. "$Dependencies\Code\Main Body\Dynamically Create Process Info.ps1"
+    #=================================================================================================================================================================================
+    #
+    #  Parent: Main Form -> Main Left TabControl -> Processes TabControl
+    #   ____                                   _              _  _             ____                                 _             _     _____       _      ____                     
+    #  |  _ \  _   _  _ __    __ _  _ __ ___  (_)  ___  __ _ | || | _   _     / ___|  ___  _ __    ___  _ __  __ _ | |_  ___   __| |   |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+    #  | | | || | | || '_ \  / _` || '_ ` _ \ | | / __|/ _` || || || | | |   | |  _  / _ \| '_ \  / _ \| '__|/ _` || __|/ _ \ / _` |     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+    #  | |_| || |_| || | | || (_| || | | | | || || (__| (_| || || || |_| |   | |_| ||  __/| | | ||  __/| |  | (_| || |_|  __/| (_| |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+    #  |____/  \__, ||_| |_| \__,_||_| |_| |_||_| \___|\__,_||_||_| \__, |    \____| \___||_| |_| \___||_|   \__,_| \__|\___| \__,_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+    #          |___/                                                |___/                                                                                               |___/       
+    #=================================================================================================================================================================================
+
+    # Iterates through the files and dynamically creates tabs and imports data
+    . "$Dependencies\Code\Main Body\Dynamically Create Process Info.ps1"
 
 
-#================================================================
-#    ____        _   __      __               ______      __  
-#   / __ \____  / | / /___  / /____  _____   /_  __/___ _/ /_ 
-#  / / / / __ \/  |/ / __ \/ __/ _ \/ ___/    / / / __ `/ __ \
-# / /_/ / /_/ / /|  / /_/ / /_/  __(__  )    / / / /_/ / /_/ /
-# \____/ .___/_/ |_/\____/\__/\___/____/    /_/  \__,_/_.___/ 
-#     /_/                                                     
-#================================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl
+#    ___          _   _         _                 _____       _      ____                     
+#   / _ \  _ __  | \ | |  ___  | |_  ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | | | || '_ \ |  \| | / _ \ | __|/ _ \/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |_| || |_) || |\  || (_) || |_|  __/\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#   \___/ | .__/ |_| \_| \___/  \__|\___||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#         |_|                                                                     |___/       
+#=======================================================================================================================================================================
 
-# The OpNotes TabPage Window
 $Section1OpNotesTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "OpNotes"
     Name                    = "OpNotes Tab"
     UseVisualStyleBackColor = $True
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$Section1TabControl.Controls.Add($Section1OpNotesTab)
+$MainLeftTabControl.Controls.Add($Section1OpNotesTab)
 
-# Variables
 $TabRightPosition          = 3
 $TabhDownPosition          = 3
 $TabAreaWidth              = 446
@@ -3561,19 +3609,25 @@ if (Test-Path -Path $OpNotesFile) {
     foreach ($OpNotesEntry in $OpNotesFileContents){ $OpNotesListBox.Items.Add("$OpNotesEntry") }
 }
 
-#========================================================
-#
-# Tab Info                                                    
-#========================================================
 
-$Section1AboutTab = New-Object System.Windows.Forms.TabPage -Property @{
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl
+#   ___          __            _____       _      ____                     
+#  |_ _| _ __   / _|  ___     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   | | | '_ \ | |_  / _ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#   | | | | | ||  _|| (_) |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |___||_| |_||_|   \___/      |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                              |___/       
+#=======================================================================================================================================================================
+
+$MainLeftInfoTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Info"
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section1TabControl.Controls.Add($Section1AboutTab)
+$MainLeftTabControl.Controls.Add($MainLeftInfoTab)
 
-# Variables
 $TabRightPosition       = 3
 $TabhDownPosition       = 3
 $TabAreaWidth           = 446
@@ -3583,16 +3637,25 @@ $TextBoxDownPosition    = -2
 $TextBoxWidth           = 442
 $TextBoxHeight          = 536
 
+#============================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl -> Info TabPage
+#   ___          __            _____       _       ____               _                _ 
+#  |_ _| _ __   / _|  ___     |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
+#   | | | '_ \ | |_  / _ \      | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
+#   | | | | | ||  _|| (_) |     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
+#  |___||_| |_||_|   \___/      |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
+#
+#============================================================================================================================================================
 
-$Section1AboutTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-    Name          = "About TabControl"
+$MainLeftInfoTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Location      = New-Object System.Drawing.Point($TabRightPosition,$TabhDownPosition)
     Size          = New-Object System.Drawing.Size($TabAreaWidth,$TabAreaHeight) 
     Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ShowToolTips  = $True
     SelectedIndex = 0
 }
-$Section1AboutTab.Controls.Add($Section1AboutTabControl)
+$MainLeftInfoTab.Controls.Add($MainLeftInfoTabControl)
 
 #------------------------------------
 # Auto Creates Tabs and Imports Data
@@ -3602,15 +3665,23 @@ $ResourceFiles = Get-ChildItem "$Dependencies\About"
 # Iterates through the files and dynamically creates tabs and imports data
 foreach ($File in $ResourceFiles) {
    
-    #-----------------------------
-    # Creates Tabs From Each File
-    #-----------------------------
+    #=================================================================================================================================================================================
+    #
+    #  Parent: Main Form -> Main Left TabControl -> Info TabControl
+    #   ____                                   _              _  _             ____                                 _             _     _____       _      ____                     
+    #  |  _ \  _   _  _ __    __ _  _ __ ___  (_)  ___  __ _ | || | _   _     / ___|  ___  _ __    ___  _ __  __ _ | |_  ___   __| |   |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+    #  | | | || | | || '_ \  / _` || '_ ` _ \ | | / __|/ _` || || || | | |   | |  _  / _ \| '_ \  / _ \| '__|/ _` || __|/ _ \ / _` |     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+    #  | |_| || |_| || | | || (_| || | | | | || || (__| (_| || || || |_| |   | |_| ||  __/| | | ||  __/| |  | (_| || |_|  __/| (_| |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+    #  |____/  \__, ||_| |_| \__,_||_| |_| |_||_| \___|\__,_||_||_| \__, |    \____| \___||_| |_| \___||_|   \__,_| \__|\___| \__,_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+    #          |___/                                                |___/                                                                                               |___/       
+    #=================================================================================================================================================================================
+
     $Section1AboutSubTab = New-Object System.Windows.Forms.TabPage -Property @{
         Text                    = $File.BaseName
         UseVisualStyleBackColor = $True
         Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
-    $Section1AboutTabControl.Controls.Add($Section1AboutSubTab)
+    $MainLeftInfoTabControl.Controls.Add($Section1AboutSubTab)
 
 
     #-----------------------------
@@ -3630,16 +3701,19 @@ foreach ($File in $ResourceFiles) {
 }
 
 
-##############################################################################################################################################################
-##
-##
-## Section 2 Tab Control
-##      Main Tab, Options Tab, Statistics Tab
-##
-##############################################################################################################################################################
+#============================================================================================================================================================
+#
+#  Parent: Main Form
+#   __  __         _             ____              _                  _____       _       ____               _                _ 
+#  |  \/  |  __ _ (_) _ __      / ___| ___  _ __  | |_  ___  _ __    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
+#  | |\/| | / _` || || '_ \    | |    / _ \| '_ \ | __|/ _ \| '__|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
+#  | |  | || (_| || || | | |   | |___|  __/| | | || |_|  __/| |        | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
+#  |_|  |_| \__,_||_||_| |_|    \____|\___||_| |_| \__|\___||_|        |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
+#
+#============================================================================================================================================================
 
 . "$Dependencies\Code\System.Windows.Forms\TabControl\Section2TabControl.ps1"
-$Section2TabControl = New-Object System.Windows.Forms.TabControl -Property @{
+$MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name          = "Main Tab Window"
     Location      = @{ X = 470
                        Y = 5 }
@@ -3648,28 +3722,30 @@ $Section2TabControl = New-Object System.Windows.Forms.TabControl -Property @{
     SelectedIndex = 0
     ShowToolTips  = $True
     Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    Add_Click      = $Section2TabControlAdd_Click
-    Add_MouseHover = $Section2TabControlAdd_MouseHover
+    Add_Click      = $MainCenterTabControlAdd_Click
+    Add_MouseHover = $MainCenterTabControlAdd_MouseHover
 }
-$PoShEasyWin.Controls.Add($Section2TabControl)
+$PoShEasyWin.Controls.Add($MainCenterTabControl)
 
 
-#================================================
-#     __  ___      _          ______      __  
-#    /  |/  /___ _(_)___     /_  __/___ _/ /_ 
-#   / /|_/ / __ `/ / __ \     / / / __ `/ __ \
-#  / /  / / /_/ / / / / /    / / / /_/ / /_/ /
-# /_/  /_/\__,_/_/_/ /_/    /_/  \__,_/_.___/ 
+#=======================================================================================================================================================================
 #
-#================================================
+#  Parent: Main Form -> Main Center TabControl
+#   __  __         _            _____       _      ____                     
+#  |  \/  |  __ _ (_) _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | |\/| | / _` || || '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |  | || (_| || || | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_|  |_| \__,_||_||_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                               |___/       
+#=======================================================================================================================================================================
 
-$Section2MainTab = New-Object System.Windows.Forms.TabPage -Property @{
+$MainCenterMainTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Main"
     Name                    = "Main"
     UseVisualStyleBackColor = $True
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$Section2TabControl.Controls.Add($Section2MainTab)
+$MainCenterTabControl.Controls.Add($MainCenterMainTab)
 
 $Column3RightPosition     = 3
 $Column3DownPosition      = 11
@@ -3696,7 +3772,7 @@ $script:SingleHostIPCheckBox = New-Object System.Windows.Forms.Checkbox -Propert
     Add_Click      = $SingleHostIPCheckBoxAdd_Click
     Add_MouseHover = $SingleHostIPCheckBoxAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($script:SingleHostIPCheckBox)
+$MainCenterMainTab.Controls.Add($script:SingleHostIPCheckBox)
 
 $Column3DownPosition += $Column3DownPositionShift
 
@@ -3716,7 +3792,7 @@ $script:SingleHostIPTextBox = New-Object System.Windows.Forms.TextBox -Property 
     Add_MouseEnter = $SingleHostIPTextBoxAdd_MouseEnter
     Add_MouseLeave = $SingleHostIPTextBoxAdd_MouseLeave
 }
-$Section2MainTab.Controls.Add($script:SingleHostIPTextBox)
+$MainCenterMainTab.Controls.Add($script:SingleHostIPTextBox)
 
 
 #----------------------------------
@@ -3732,7 +3808,7 @@ $SingleHostIPAddButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click      = $SingleHostIPAddButtonAdd_Click
     Add_MouseHover = $SingleHostIPAddButtonAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($SingleHostIPAddButton)
+$MainCenterMainTab.Controls.Add($SingleHostIPAddButton)
 CommonButtonSettings -Button $SingleHostIPAddButton
 
 $Column3DownPosition += $Column3DownPositionShift
@@ -3751,7 +3827,7 @@ $DirectoryListLabel = New-Object System.Windows.Forms.Label -Property @{
     Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
     ForeColor = "Blue"
 }
-$Section2MainTab.Controls.Add($DirectoryListLabel)
+$MainCenterMainTab.Controls.Add($DirectoryListLabel)
 
 
 #----------------------------------------
@@ -3776,7 +3852,7 @@ $script:CollectionSavedDirectoryTextBox = New-Object System.Windows.Forms.TextBo
     AutoCompleteMode   = "SuggestAppend"
     Add_MouseHover     = $CollectionSavedDirectoryTextBoxAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($script:CollectionSavedDirectoryTextBox)
+$MainCenterMainTab.Controls.Add($script:CollectionSavedDirectoryTextBox)
 
 
 #------------------------------------------
@@ -3792,7 +3868,7 @@ $DirectoryOpenButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click      = $DirectoryOpenButtonAdd_Click 
     Add_MouseHover = $DirectoryOpenButtonAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($DirectoryOpenButton)
+$MainCenterMainTab.Controls.Add($DirectoryOpenButton)
 CommonButtonSettings -Button $DirectoryOpenButton
 
 
@@ -3809,7 +3885,7 @@ $DirectoryUpdateButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click      = $DirectoryUpdateButtonAdd_Click
     Add_MouseHover = $DirectoryUpdateButtonAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($DirectoryUpdateButton) 
+$MainCenterMainTab.Controls.Add($DirectoryUpdateButton) 
 CommonButtonSettings -Button $DirectoryUpdateButton
 
 
@@ -3825,7 +3901,7 @@ $ResultsSectionLabel = New-Object System.Windows.Forms.Label -Property @{
     Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
     ForeColor = "Blue"
 }
-$Section2MainTab.Controls.Add($ResultsSectionLabel)
+$MainCenterMainTab.Controls.Add($ResultsSectionLabel)
 
 
 #-------------------
@@ -3841,7 +3917,7 @@ $BuildChartButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click      = $BuildChartButtonAdd_Click
     Add_MouseHover = $BuildChartButtonAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($BuildChartButton)
+$MainCenterMainTab.Controls.Add($BuildChartButton)
 CommonButtonSettings -Button $BuildChartButton
 
 
@@ -3859,7 +3935,7 @@ $AutoCreateMultiSeriesChartButton = New-Object System.Windows.Forms.Button -Prop
     Add_Click = $AutoCreateMultiSeriesChartButtonAdd_Click
     Add_MouseHover = $AutoCreateMultiSeriesChartButtonAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($AutoCreateMultiSeriesChartButton)
+$MainCenterMainTab.Controls.Add($AutoCreateMultiSeriesChartButton)
 CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
 
 
@@ -3877,7 +3953,7 @@ $AutoCreateDashboardChartButton = New-Object System.Windows.Forms.Button -Proper
     Add_Click      = $AutoCreateDashboardChartButtonAdd_Click
     Add_MouseHover = $AutoCreateDashboardChartButtonAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($AutoCreateDashboardChartButton)
+$MainCenterMainTab.Controls.Add($AutoCreateDashboardChartButton)
 CommonButtonSettings -Button $AutoCreateDashboardChartButton
 
 
@@ -3894,7 +3970,7 @@ $RetrieveFilesButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click      = $RetrieveFilesButtonAdd_Click
     Add_MouseHover = $RetrieveFilesButtonAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($RetrieveFilesButton)
+$MainCenterMainTab.Controls.Add($RetrieveFilesButton)
 CommonButtonSettings -Button $RetrieveFilesButton
 
 
@@ -3911,7 +3987,7 @@ $OpenXmlResultsButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click      = $OpenXmlResultsButtonAdd_Click
     Add_MouseHover = $OpenXmlResultsButtonAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($OpenXmlResultsButton)
+$MainCenterMainTab.Controls.Add($OpenXmlResultsButton)
 CommonButtonSettings -Button $OpenXmlResultsButton
 
 
@@ -3928,7 +4004,7 @@ $OpenCsvResultsButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $OpenCsvResultsButtonAdd_Click
     Add_MouseHover = $OpenCsvResultsButtonAdd_MouseHover
 }
-$Section2MainTab.Controls.Add($OpenCsvResultsButton)
+$MainCenterMainTab.Controls.Add($OpenCsvResultsButton)
 CommonButtonSettings -Button $OpenCsvResultsButton
 
 
@@ -3939,14 +4015,16 @@ CommonButtonSettings -Button $OpenCsvResultsButton
 . "$Dependencies\Code\Charts\Save-ChartImage.ps1"
 
 
-#=============================================================
-#    ____        __  _                     ______      __  
-#   / __ \____  / /_(_)___  ____  _____   /_  __/___ _/ /_ 
-#  / / / / __ \/ __/ / __ \/ __ \/ ___/    / / / __ `/ __ \
-# / /_/ / /_/ / /_/ / /_/ / / / (__  )    / / / /_/ / /_/ /
-# \____/ .___/\__/_/\____/_/ /_/____/    /_/  \__,_/_.___/ 
-#     /_/                                                  
-#=============================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Center TabControl
+#    ___          _    _                        _____       _      ____                     
+#   / _ \  _ __  | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | | | || '_ \ | __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |_| || |_) || |_ | || (_) || | | |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#   \___/ | .__/  \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#         |_|                                                                   |___/       
+#=======================================================================================================================================================================
 
 $Section2OptionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Options"
@@ -3954,7 +4032,7 @@ $Section2OptionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section2TabControl.Controls.Add($Section2OptionsTab)
+$MainCenterTabControl.Controls.Add($Section2OptionsTab)
 
 
 #-------------------------------
@@ -4184,25 +4262,24 @@ $OptionTextToSpeachCheckBox = New-Object System.Windows.Forms.Checkbox -Property
 if ($AudibleCompletionMessage) {$OptionTextToSpeachCheckBox.Checked = $True}
 $Section2OptionsTab.Controls.Add($OptionTextToSpeachCheckBox)
 
-#=====================================================================
-#    _____ __        __  _      __  _              ______      __  
-#   / ___// /_____ _/ /_(_)____/ /_(_)_________   /_  __/___ _/ /_ 
-#   \__ \/ __/ __ `/ __/ / ___/ __/ / ___/ ___/    / / / __ `/ __ \
-#  ___/ / /_/ /_/ / /_/ (__  ) /_/ / /__(__  )    / / / /_/ / /_/ /
-# /____/\__/\__,_/\__/_/____/\__/_/\___/____/    /_/  \__,_/_.___/ 
+#=======================================================================================================================================================================
 #
-#=====================================================================
+#  Parent: Main Form -> Main Center TabControl
+#   ____   _          _    _       _    _                _____       _      ____                     
+#  / ___| | |_  __ _ | |_ (_) ___ | |_ (_)  ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  \___ \ | __|/ _` || __|| |/ __|| __|| | / __|/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#   ___) || |_| (_| || |_ | |\__ \| |_ | || (__ \__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |____/  \__|\__,_| \__||_||___/ \__||_| \___||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                                        |___/       
+#=======================================================================================================================================================================
 
-#----------------------
-# Statistics Tab Page
-#----------------------
 $Section2StatisticsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Statistics"
     Name                    = "Statistics"
     Font                    = New-Object System.Drawing.Font("$Font",10,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section2TabControl.Controls.Add($Section2StatisticsTab)
+$MainCenterTabControl.Controls.Add($Section2StatisticsTab)
 
 # Gets various statistics on PoSh-EasyWin such as number of queries and computer treenodes selected, and
 # the number number of csv files and data storage consumed
@@ -4428,7 +4505,18 @@ $ComputerTreeNodeOUHostnameRadioButton  = New-Object System.Windows.Forms.RadioB
 $PoShEasyWin.Controls.Add($ComputerTreeNodeOUHostnameRadioButton)
 
 
-$Section3TabControl = New-Object System.Windows.Forms.TabControl -Property @{
+#============================================================================================================================================================
+#
+#  Parent: Main Form
+#   __  __         _            ____   _         _      _       _____       _       ____               _                _ 
+#  |  \/  |  __ _ (_) _ __     |  _ \ (_)  __ _ | |__  | |_    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
+#  | |\/| | / _` || || '_ \    | |_) || | / _` || '_ \ | __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
+#  | |  | || (_| || || | | |   |  _ < | || (_| || | | || |_      | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
+#  |_|  |_| \__,_||_||_| |_|   |_| \_\|_| \__, ||_| |_| \__|     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
+#
+#============================================================================================================================================================
+
+$MainRightTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name         = "Main Tab Window for Computer List"
     Location     = @{ X = 1082 
                       Y = 10 }
@@ -4437,9 +4525,19 @@ $Section3TabControl = New-Object System.Windows.Forms.TabControl -Property @{
     ShowToolTips = $True
     Font         = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$PoShEasyWin.Controls.Add($Section3TabControl)
+$PoShEasyWin.Controls.Add($MainRightTabControl)
 
-# Varables to Control Column 5
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Right TabControl
+#      _          _    _                   _____       _      ____                     
+#     / \    ___ | |_ (_)  ___   _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#    / _ \  / __|| __|| | / _ \ | '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#   / ___ \| (__ | |_ | || (_) || | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  /_/   \_\\___| \__||_| \___/ |_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                       |___/       
+#=======================================================================================================================================================================
+
 $Column5RightPosition     = 3
 $Column5DownPositionStart = 6
 $Column5DownPosition      = 6
@@ -4447,20 +4545,10 @@ $Column5DownPositionShift = 28
 $Column5BoxWidth          = 124
 $Column5BoxHeight         = 22
 
-#=======================================================
-#     ___        __  _                ______      __  
-#    /   | _____/ /_(_)___  ____     /_  __/___ _/ /_ 
-#   / /| |/ ___/ __/ / __ \/ __ \     / / / __ `/ __ \
-#  / ___ / /__/ /_/ / /_/ / / / /    / / / /_/ / /_/ /
-# /_/  |_\___/\__/_/\____/_/ /_/    /_/  \__,_/_.___/ 
-#                                                    
-#=======================================================
-
 . "$Dependencies\Code\Tree View\Computer\Create-ComputerNodeCheckBoxArray.ps1"
 . "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedLessThanOne.ps1"
 . "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedMoreThanOne.ps1"
 . "$Dependencies\Code\Tree View\Computer\Verify-Action.ps1"
-
 
 $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Action"
@@ -4471,7 +4559,7 @@ $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section3TabControl.Controls.Add($Section3ActionTab)
+$MainRightTabControl.Controls.Add($Section3ActionTab)
 
 
 # This function is the base code for testing various connections with remote computers
@@ -4569,7 +4657,7 @@ $RekallWinPmemMemoryCaptureButton.Add_MouseHover({
 "@ })
 $RekallWinPmemMemoryCaptureButton.add_click({ 
     # This brings specific tabs to the forefront/front view
-    $Section4TabControl.SelectedTab = $Section3ResultsTab
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     
     # Ensures only one endpoint is selected
     # This array stores checkboxes that are check; a minimum of at least one checkbox will be needed later in the script
@@ -4782,14 +4870,16 @@ $Section3ActionTab.Controls.Add($ComputerListExecuteButton)
 CommonButtonSettings -Button $ComputerListExecuteButton
 
 
-#===================================================================================
-#     __  ___                                __    _      __     ______      __  
-#    /  |/  /___ _____  ____ _____ ____     / /   (_)____/ /_   /_  __/___ _/ /_ 
-#   / /|_/ / __ `/ __ \/ __ `/ __ `/ _ \   / /   / / ___/ __/    / / / __ `/ __ \
-#  / /  / / /_/ / / / / /_/ / /_/ /  __/  / /___/ (__  ) /_     / / / /_/ / /_/ /
-# /_/  /_/\__,_/_/ /_/\__,_/\__, /\___/  /_____/_/____/\__/    /_/  \__,_/_.___/ 
-#                          /____/                                                
-#===================================================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Right TabControl
+#   __  __                                       _____       _      ____                     
+#  |  \/  |  __ _  _ __    __ _   __ _   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | |\/| | / _` || '_ \  / _` | / _` | / _ \     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |  | || (_| || | | || (_| || (_| ||  __/     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_|  |_| \__,_||_| |_| \__,_| \__, | \___|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                |___/                                           |___/       
+#=======================================================================================================================================================================
 
 $Section3ManageListTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text      = "Manage List"
@@ -4800,7 +4890,7 @@ $Section3ManageListTab = New-Object System.Windows.Forms.TabPage -Property @{
     UseVisualStyleBackColor = $True
     Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$Section3TabControl.Controls.Add($Section3ManageListTab)
+$MainRightTabControl.Controls.Add($Section3ManageListTab)
 
 $Column5DownPosition = $Column5DownPositionStart
 
@@ -5102,15 +5192,18 @@ $script:ProgressBarQueriesProgressBar = New-Object System.Windows.Forms.Progress
 $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
 
 
-###########################################################
-###########################################################
-##
-## Section 3 Tab Control
-##
-###########################################################
-###########################################################
+#============================================================================================================================================================
+#
+#  Parent: Main Form
+#   __  __         _            ____          _    _                        _____       _       ____               _                _ 
+#  |  \/  |  __ _ (_) _ __     | __ )   ___  | |_ | |_  ___   _ __ ___     |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
+#  | |\/| | / _` || || '_ \    |  _ \  / _ \ | __|| __|/ _ \ | '_ ` _ \      | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
+#  | |  | || (_| || || | | |   | |_) || (_) || |_ | |_| (_) || | | | | |     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
+#  |_|  |_| \__,_||_||_| |_|   |____/  \___/  \__| \__|\___/ |_| |_| |_|     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
+#
+#============================================================================================================================================================
 
-$Section4TabControl = New-Object System.Windows.Forms.TabControl -Property @{
+$MainBottomTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Main Tab Window"
     Location = @{ X = 470
                   Y = $ProgressBarQueriesLabel.Location.Y + $ProgressBarQueriesLabel.Size.Height - 2 }
@@ -5119,24 +5212,26 @@ $Section4TabControl = New-Object System.Windows.Forms.TabControl -Property @{
     ShowToolTips  = $True
     Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$PoShEasyWin.Controls.Add($Section4TabControl)
+$PoShEasyWin.Controls.Add($MainBottomTabControl)
 
 
-#========================================================
-#     ___    __                __     ______      __  
-#    /   |  / /_  ____  __  __/ /_   /_  __/___ _/ /_ 
-#   / /| | / __ \/ __ \/ / / / __/    / / / __ `/ __ \
-#  / ___ |/ /_/ / /_/ / /_/ / /_     / / / /_/ / /_/ /
-# /_/  |_/_.___/\____/\__,_/\__/    /_/  \__,_/_.___/ 
-#                                                    
-#========================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Bottom TabControl
+#      _     _                    _       _____       _      ____                     
+#     / \   | |__    ___   _   _ | |_    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#    / _ \  | '_ \  / _ \ | | | || __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#   / ___ \ | |_) || (_) || |_| || |_      | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  /_/   \_\|_.__/  \___/  \__,_| \__|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                      |___/       
+#=======================================================================================================================================================================
 
 $Section3AboutTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "About"
     UseVisualStyleBackColor = $True
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$Section4TabControl.Controls.Add($Section3AboutTab)
+$MainBottomTabControl.Controls.Add($Section3AboutTab)
 
 
 $PoShEasyWinLogoPictureBox = New-Object Windows.Forms.PictureBox -Property @{
@@ -5182,14 +5277,16 @@ $Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.RichTextBox -P
 $Section3AboutTab.Controls.Add($Section1AboutSubTabRichTextBox)    
 
 
-#============================================================
-#     ____                  ____          ______      __  
-#    / __ \___  _______  __/ / /______   /_  __/___ _/ /_ 
-#   / /_/ / _ \/ ___/ / / / / __/ ___/    / / / __ `/ __ \
-#  / _, _/  __(__  ) /_/ / / /_(__  )    / / / /_/ / /_/ /
-# /_/ |_|\___/____/\__,_/_/\__/____/    /_/  \__,_/_.___/ 
+#=======================================================================================================================================================================
 #
-#============================================================
+#  Parent: Main Form -> Main Bottom TabControl
+#   ____                    _  _            _____       _      ____                     
+#  |  _ \  ___  ___  _   _ | || |_  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | |_) |/ _ \/ __|| | | || || __|/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  |  _ <|  __/\__ \| |_| || || |_ \__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_| \_\\___||___/ \__,_||_| \__||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                           |___/       
+#=======================================================================================================================================================================
 
 $Section3ResultsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Results"
@@ -5197,7 +5294,7 @@ $Section3ResultsTab = New-Object System.Windows.Forms.TabPage -Property @{
     UseVisualStyleBackColor = $True
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$Section4TabControl.Controls.Add($Section3ResultsTab)
+$MainBottomTabControl.Controls.Add($Section3ResultsTab)
 
 
 #------------------------------
@@ -5235,14 +5332,16 @@ $ResultsListBox = New-Object System.Windows.Forms.ListBox -Property @{
 $Section3ResultsTab.Controls.Add($ResultsListBox)
 
 
-#=========================================================================
-#     __  __           __     ____        __           ______      __  
-#    / / / /___  _____/ /_   / __ \____ _/ /_____ _   /_  __/___ _/ /_ 
-#   / /_/ / __ \/ ___/ __/  / / / / __ `/ __/ __ `/    / / / __ `/ __ \
-#  / __  / /_/ (__  ) /_   / /_/ / /_/ / /_/ /_/ /    / / / /_/ / /_/ /
-# /_/ /_/\____/____/\__/  /_____/\__,_/\__/\__,_/    /_/  \__,_/_.___/ 
-#                                                                      
-#=========================================================================
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Bottom TabControl
+#   _   _              _       ____          _             _____       _      ____                     
+#  | | | |  ___   ___ | |_    |  _ \   __ _ | |_  __ _    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | |_| | / _ \ / __|| __|   | | | | / _` || __|/ _` |     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  |  _  || (_) |\__ \| |_    | |_| || (_| || |_| (_| |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#  |_| |_| \___/ |___/ \__|   |____/  \__,_| \__|\__,_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                                          |___/       
+#=======================================================================================================================================================================
 
 $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Host Data"
@@ -5250,7 +5349,7 @@ $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     UseVisualStyleBackColor = $True
     Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
-$Section4TabControl.Controls.Add($Section3HostDataTab)
+$MainBottomTabControl.Controls.Add($Section3HostDataTab)
 
 
 #------------------------------
@@ -5483,18 +5582,24 @@ $Section3HostDataTab.Controls.Add($Section3HostDataTagsAddButton)
 CommonButtonSettings -Button $Section3HostDataTagsAddButton
 
 
-#=========================================================================
+#=======================================================================================================================================================================
 #
-# TAB - Query Exploration
-#
-#=========================================================================
+#  Parent: Main Form -> Main Bottom TabControl
+#    ___                                _____               _                     _    _                   _____       _      ____                     
+#   / _ \  _   _   ___  _ __  _   _    | ____|__  __ _ __  | |  ___   _ __  __ _ | |_ (_)  ___   _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  | | | || | | | / _ \| '__|| | | |   |  _|  \ \/ /| '_ \ | | / _ \ | '__|/ _` || __|| | / _ \ | '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+#  | |_| || |_| ||  __/| |   | |_| |   | |___  >  < | |_) || || (_) || |  | (_| || |_ | || (_) || | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#   \__\_\ \__,_| \___||_|    \__, |   |_____|/_/\_\| .__/ |_| \___/ |_|   \__,_| \__||_| \___/ |_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                             |___/                 |_|                                                                                    |___/       
+#=======================================================================================================================================================================
+
 $Section3QueryExplorationTabPage = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Query Exploration"
     Name = "Query Exploration"
     Font = New-Object System.Drawing.Font("$Font",11,0,0,0)
     UseVisualStyleBackColor = $True
 }
-$Section4TabControl.Controls.Add($Section3QueryExplorationTabPage)
+$MainBottomTabControl.Controls.Add($Section3QueryExplorationTabPage)
 
 
 #--------------------------
@@ -5910,8 +6015,8 @@ $ExecuteScriptHandler = {
     # Checks if any computers were selected
     if ($ComputerList.Count -eq 0 -and $script:SingleHostIPCheckBox.Checked -eq $false) {
         # This brings specific tabs to the forefront/front view
-        $Section1TabControl.SelectedTab = $Section1CollectionsTab
-        $Section4TabControl.SelectedTab = $Section3ResultsTab
+        $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
         [system.media.systemsounds]::Exclamation.play()
         $StatusListBox.Items.Clear()
@@ -5927,8 +6032,8 @@ $ExecuteScriptHandler = {
     }
     elseif ($CommandCountTotalBothQueryAndSection -eq 0) {
         # This brings specific tabs to the forefront/front view
-        $Section1TabControl.SelectedTab = $Section1CollectionsTab
-        $Section4TabControl.SelectedTab = $Section3ResultsTab
+        $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
         [system.media.systemsounds]::Exclamation.play()
         $StatusListBox.Items.Clear()
@@ -5967,15 +6072,15 @@ $ExecuteScriptHandler = {
         . "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
         
         # This brings specific tabs to the forefront/front view
-        #$Section1TabControl.SelectedTab = $Section1OpNotesTab
-        #$Section2TabControl.SelectedTab = $Section2MainTab
-        $Section2TabControl.SelectedTab = $Section2StatisticsTab
-            if ($Section2TabControl.SelectedTab -match 'Statistics') {
-                $Section2TabControl.Width  = 370
-                $Section2TabControl.Height = 278
+        #$MainLeftTabControl.SelectedTab = $Section1OpNotesTab
+        #$MainCenterTabControl.SelectedTab = $MainCenterMainTab
+        $MainCenterTabControl.SelectedTab = $Section2StatisticsTab
+            if ($MainCenterTabControl.SelectedTab -match 'Statistics') {
+                $MainCenterTabControl.Width  = 370
+                $MainCenterTabControl.Height = 278
             }
-        $Section3TabControl.SelectedTab = $Section3ActionTab
-        $Section4TabControl.SelectedTab = $Section3ResultsTab
+        $MainRightTabControl.SelectedTab = $Section3ActionTab
+        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
         $PoShEasyWin.Refresh()
 
 
@@ -6589,10 +6694,10 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
         }
     }
 
-    $Section2TabControl.SelectedTab = $Section2MainTab
-        if ($Section2TabControl.SelectedTab -match 'Main') {
-            $Section2TabControl.Width  = 370
-            $Section2TabControl.Height = 278
+    $MainCenterTabControl.SelectedTab = $MainCenterMainTab
+        if ($MainCenterTabControl.SelectedTab -match 'Main') {
+            $MainCenterTabControl.Width  = 370
+            $MainCenterTabControl.Height = 278
         }
         $PoShEasyWin.Refresh()
 }

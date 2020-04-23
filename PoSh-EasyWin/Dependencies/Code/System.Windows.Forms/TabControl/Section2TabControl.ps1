@@ -1,4 +1,4 @@
-$Section2TabControlAdd_Click = { 
+$MainCenterTabControlAdd_Click = { 
     if ($this.SelectedTab -match 'Main') {
         $this.Width  = 370
         $this.Height = 278
@@ -13,7 +13,7 @@ $Section2TabControlAdd_Click = {
     }
 }
 
-$Section2TabControlAdd_MouseHover = {
+$MainCenterTabControlAdd_MouseHover = {
 <#
     if ($this.SelectedTab -match 'Main') {
         Show-ToolTip -Title "Main Tab" -Icon "Info" -Message @"

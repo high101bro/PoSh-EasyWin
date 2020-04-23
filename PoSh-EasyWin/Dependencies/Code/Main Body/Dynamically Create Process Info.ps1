@@ -9,7 +9,7 @@ foreach ($File in $ResourceFiles) {
         Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
         UseVisualStyleBackColor = $True
     }
-    $Section1ProcessesTabControl.Controls.Add($Section1ProcessesSubTab)
+    $MainLeftProcessesTabControl.Controls.Add($Section1ProcessesSubTab)
 
     #-----------------------------
     # Imports Data Into Textboxes

@@ -4,7 +4,7 @@ $EventViewerButtonAdd_Click = {
         if ($script:ComputerTreeViewSelected.count -gt 0) {
             if (Verify-Action -Title "Verification: Event Viewer" -Question "Open the Event Viewer to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
                 # This brings specific tabs to the forefront/front view
-                $Section4TabControl.SelectedTab = $Section3ResultsTab
+                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Show Event Viewer:  $($script:ComputerTreeViewSelected)")

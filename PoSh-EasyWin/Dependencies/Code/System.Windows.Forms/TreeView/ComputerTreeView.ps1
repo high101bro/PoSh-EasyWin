@@ -110,7 +110,7 @@ $ComputerTreeViewAdd_AfterSelect = {
             $Section3HostDataNotesTextBox.Text = "N/A"
 
             # Brings the Host Data Tab to the forefront/front view
-            $Section4TabControl.SelectedTab   = $Section3HostDataTab
+            $MainBottomTabControl.SelectedTab   = $Section3HostDataTab
         }
         foreach ($Category in $root.Nodes) { 
             if ($Category.isselected) { 
@@ -130,11 +130,11 @@ $ComputerTreeViewAdd_AfterSelect = {
                 $Section3HostDataNotesTextBox.Text = "N/A"
 
                 # Brings the Host Data Tab to the forefront/front view
-                $Section4TabControl.SelectedTab = $Section3HostDataTab
+                $MainBottomTabControl.SelectedTab = $Section3HostDataTab
             }
             foreach ($Entry in $Category.nodes) { 
                 if ($Entry.isselected) { 
-                    $Section4TabControl.SelectedTab = $Section3HostDataTab
+                    $MainBottomTabControl.SelectedTab = $Section3HostDataTab
                     $script:ComputerTreeViewSelected = $Entry.Text
                     Function Update-HostDataNotes {
                         # Populates the Host Data Tab with data from the selected TreeNode

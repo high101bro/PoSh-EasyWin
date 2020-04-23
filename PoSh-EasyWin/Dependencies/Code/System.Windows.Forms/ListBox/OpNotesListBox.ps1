@@ -1,9 +1,9 @@
 $OpNotesListBoxAdd_MouseEnter = {
-    $Section1TabControl.Size = New-Object System.Drawing.Size(($Section1TabControlBoxWidth + 615),$Section1TabControlBoxHeight)
+    $MainLeftTabControl.Size = New-Object System.Drawing.Size(($MainLeftTabControlBoxWidth + 615),$MainLeftTabControlBoxHeight)
     $OpNotesListBox.Size     = New-Object System.Drawing.Size(($OpNotesMainTextBoxWidth + 615),$OpNotesMainTextBoxHeight)
 }
 
 $OpNotesListBoxAdd_MouseLeave = {
-    $Section1TabControl.Size = New-Object System.Drawing.Size($Section1TabControlBoxWidth,$Section1TabControlBoxHeight)
+    $MainLeftTabControl.Size = New-Object System.Drawing.Size($MainLeftTabControlBoxWidth,$MainLeftTabControlBoxHeight)
     $OpNotesListBox.Size     = New-Object System.Drawing.Size($OpNotesMainTextBoxWidth,$OpNotesMainTextBoxHeight)
 }

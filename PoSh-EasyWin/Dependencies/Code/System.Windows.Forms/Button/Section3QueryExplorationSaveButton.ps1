@@ -106,7 +106,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
         View-CommandTreeNodeMethod
         KeepChecked-CommandTreeNode
 
-        $Section4TabControl.SelectedTab = $Section3ResultsTab
+        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
         $CommandTextBoxList = @($Section3QueryExplorationNameTextBox,$Section3QueryExplorationTagWordsTextBox,$Section3QueryExplorationWinRMPoShTextBox,$Section3QueryExplorationWinRMWMITextBox,$Section3QueryExplorationWinRMCmdTextBox,$Section3QueryExplorationRPCPoShTextBox,$Section3QueryExplorationRPCWMITextBox,$Section3QueryExplorationPropertiesPoshTextBox,$Section3QueryExplorationPropertiesWMITextBox,$Section3QueryExplorationWinRSWmicTextBox,$Section3QueryExplorationWinRSCmdTextBox,$Section3QueryExplorationDescriptionTextbox)
         foreach ( $TextBox in $CommandTextBoxList ) { $TextBox.Text = '' }
         $StatusListBox.Items.Add("Command updated.")

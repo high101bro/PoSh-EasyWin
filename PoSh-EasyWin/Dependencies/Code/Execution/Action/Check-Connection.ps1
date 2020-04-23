@@ -5,7 +5,7 @@ function Check-Connection {
         $MessageFalse
     )
     # This brings specific tabs to the forefront/front view
-    $Section4TabControl.SelectedTab   = $Section3ResultsTab
+    $MainBottomTabControl.SelectedTab   = $Section3ResultsTab
 
     $ResultsListBox.Items.Clear()
     if ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message $CheckType }

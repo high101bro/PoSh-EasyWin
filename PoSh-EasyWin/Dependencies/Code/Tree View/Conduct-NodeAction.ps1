@@ -50,7 +50,7 @@ function Conduct-NodeAction {
             $Section3QueryExplorationRPCPoShTextBox.Text   = "N/A"
             $Section3QueryExplorationRPCWMITextBox.Text    = "N/A"
 
-            $Section4TabControl.SelectedTab = $Section3ResultsTab
+            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
         }
 
         foreach ($Category in $root.Nodes) { 
@@ -155,7 +155,7 @@ function Conduct-NodeAction {
                 $Section3QueryExplorationRPCPoShTextBox.Text   = "N/A"
                 $Section3QueryExplorationRPCWMITextBox.Text    = "N/A"
 
-                $Section4TabControl.SelectedTab   = $Section3ResultsTab
+                $MainBottomTabControl.SelectedTab   = $Section3ResultsTab
             }
 
             foreach ($Entry in $Category.nodes) { 
@@ -206,7 +206,7 @@ function Conduct-NodeAction {
                         $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSaveButton) 
                         $Section3QueryExplorationTabPage.Controls.Remove($Section3QueryExplorationViewScriptButton) 
                     }
-                    $Section4TabControl.SelectedTab   = $Section3QueryExplorationTabPage
+                    $MainBottomTabControl.SelectedTab   = $Section3QueryExplorationTabPage
                     
                     foreach ($Entry in $Category.nodes) {                     
                         if ($entry.checked) {

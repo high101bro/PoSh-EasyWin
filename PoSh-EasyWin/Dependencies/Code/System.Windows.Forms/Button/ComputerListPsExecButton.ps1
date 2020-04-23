@@ -3,7 +3,7 @@ $ComputerListPsExecButtonAdd_Click = {
     if ($script:ComputerTreeViewSelected.count -eq 1) {        
         if (Verify-Action -Title "Verification: PSExec" -Question "Enter a PSEexec session to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
             # This brings specific tabs to the forefront/front view
-            $Section4TabControl.SelectedTab = $Section3ResultsTab
+            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("PsExec:  $($script:ComputerTreeViewSelected)")

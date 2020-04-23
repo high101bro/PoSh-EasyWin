@@ -1,6 +1,6 @@
 $ComputerListMoveButtonAdd_Click = {
     # This brings specific tabs to the forefront/front view
-    $Section4TabControl.SelectedTab = $Section3ResultsTab
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     
     Create-ComputerNodeCheckBoxArray 
     if ($script:ComputerTreeViewSelected.count -ge 1) {
@@ -57,7 +57,7 @@ $ComputerListMoveButtonAdd_Click = {
         CommonButtonSettings -Button $ComputerTreeNodePopupExecuteButton
         $ComputerTreeNodePopupExecuteButton.Add_Click({ 
             # This brings specific tabs to the forefront/front view
-            $Section4TabControl.SelectedTab = $Section3ResultsTab
+            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
             Move-ComputerTreeNodeSelected 
         })
         $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupExecuteButton)

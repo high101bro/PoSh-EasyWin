@@ -7,7 +7,7 @@ $SysinternalsSysmonEventIdsButtonAdd_Click = {
     }
 
     if ($EventCodeManualEntrySelectionContents){ 
-        $Section1CollectionsTabControl.SelectedTab = $Section1EventLogsTab 
+        $MainLeftCollectionsTabControl.SelectedTab = $Section1EventLogsTab 
     }
 }
 

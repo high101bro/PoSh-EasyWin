@@ -125,7 +125,7 @@ $CompareButton.Add_Click({
             $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Compare: $($Selection -replace '@{','' -replace '}','')")
             Add-Content -Path $OpNotesWriteOnlyFile -Value ("$($(Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($OpNotesListBox.SelectedItems)") -Force 
         }
-        $Section1TabControl.SelectedTab = $Section1OpNotesTab
+        $MainLeftTabControl.SelectedTab = $Section1OpNotesTab
     }
     Save-OpNotes
 
@@ -144,4 +144,4 @@ $CompareButton.Add_MouseHover({
     The selection can be contiguous by using the Shift key
     and/or be separate using the Ctrl key, the press OK.`n`n
 "@ })
-$Section2MainTab.Controls.Add($CompareButton)
+$MainCenterMainTab.Controls.Add($CompareButton)

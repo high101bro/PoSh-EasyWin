@@ -1,5 +1,5 @@
 $ResultsTabOpNotesAddButtonAdd_Click = {
-    $Section1TabControl.SelectedTab   = $Section1OpNotesTab
+    $MainLeftTabControl.SelectedTab   = $Section1OpNotesTab
     if ($ResultsListBox.Items.Count -gt 0) {
         $TimeStamp = Get-Date
         $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Notes added from Results Window:")
