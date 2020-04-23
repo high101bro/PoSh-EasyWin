@@ -1,0 +1,16 @@
+Location      = New-Object System.Drawing.Point($EnumerationPortScanRightShift,$EnumerationPortScanGroupDownPosition) 
+Size          = New-Object System.Drawing.Size(50,22)
+MultiLine     = $False
+WordWrap      = $True
+AcceptsTab    = $false # Allows you to enter in tabs into the textbox
+AcceptsReturn = $false # Allows you to enter in returnss into the textbox
+Text          = ""
+Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+ForeColor     = "Black"
+Add_Load = {  }
+Add_AfterSelect = {  }
+Add_KeyDown = {  }
+Add_Click = {  }
+Add_MouseHover = {  }
+Add_MouseEnter = {  }
+Add_MouseLeave = {  }

@@ -1,0 +1,11 @@
+====================================================================================================
+Sensitive and Non-Sensitive Privilege Use
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4673') OR (EventCode='4674') OR (EventCode='4985'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-sensitive-privilege-use
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-non-sensitive-privilege-use
+4673(S, F): A privileged service was called.
+4674(S, F): An operation was attempted on a privileged object.
+4985(S): The state of a transaction has changed.

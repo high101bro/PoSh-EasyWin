@@ -1,0 +1,6 @@
+====================================================================================================
+Memory - Performance Data
+====================================================================================================
+   The processor performance object consists of counters that measure aspects of processor
+activity. The processor is the part of the computer that performs arithmetic and logical
+computations, initiates operations on peripherals, and runs the threats of processes.

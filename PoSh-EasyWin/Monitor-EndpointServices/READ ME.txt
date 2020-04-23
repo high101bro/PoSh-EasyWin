@@ -1,0 +1,6 @@
+WORK IN PROGRESS - Sample Demo
+Tested via PowerShell ISE code execution
+
+Monitor-EndpointServices is a simple GUI thrown together to monitor endpoint services.
+It is done by making a connection attempt for a listening port. 
+This doesn't fully validate if a service is up, but is useful at times nonetheless.

@@ -1,0 +1,15 @@
+====================================================================================================
+Application Event Logs Errors
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Application') AND (type='error')"
+====================================================================================================
+All Applicaiton Event Logs Error Type
+
+Obtains the following information:
+ - Event Code
+ - Log File
+ - Time Generated
+ - Message
+ - Insertion Strings
+ - Type

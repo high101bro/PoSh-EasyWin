@@ -1,0 +1,13 @@
+====================================================================================================
+Port Proxy Rules
+====================================================================================================
+   Windows has the ability to set up port forwarding. This allows incoming traffic to
+a local port to be redirected to another local port or a port on a remote computer. 
+Port Proxy allows for services to use non-standard ports, for example RDP on port 3390 
+rather than 3389. Additionally, it is not necessary for the system to have a service 
+using the port. Port Proxy can be used to pivot between networks. Port Proxy supports
+both IPv4 and IPv6.
+
+Obtains the following information:
+ - Listening IP Address and Port
+ - Connect to IP Address and Port

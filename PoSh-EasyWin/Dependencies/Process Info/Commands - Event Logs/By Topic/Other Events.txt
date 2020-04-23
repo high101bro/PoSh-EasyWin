@@ -1,0 +1,12 @@
+====================================================================================================
+Other Events
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='1100') OR (EventCode='1102') OR (EventCode='1104') OR (EventCode='1105') OR (EventCode='1108'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/other-events
+1100(S): The event logging service has shut down.
+1102(S): The audit log was cleared.
+1104(S): The security log is now full.
+1105(S): Event log automatic backup.
+1108(S): The event logging service encountered an error while processing an incoming event published from %1

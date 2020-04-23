@@ -1,0 +1,10 @@
+====================================================================================================
+Computer Account Management
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4741') OR (EventCode='4742') OR (EventCode='4743'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-computer-account-management
+4741(S): A computer account was created.
+4742(S): A computer account was changed.
+4743(S): A computer account was deleted.
