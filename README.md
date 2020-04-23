@@ -4,16 +4,16 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v.3.4                                                          |
+|  Version       |  v.4.0                                                          |
 |  Author        |  high101bro                                                     |
 |  Email         |  high101bro@gmail.com                                           |
-|  Website       |  https://github.com/high101bro/PoSh-EasyWin                        |
+|  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
 |  Requirements  |  PowerShell v3 (Ideally v5)                                     |
 |                |  WinRM and/or DCOM/RPC                                          |
 |  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe              |
 |                |                                                                 |
-|  Updated       |  09 Mar 20                                                      |
-|  Created       |  21 Aug 18                                                      |
+|  Updated       |  23 APR 2020                                                    |
+|  Created       |  21 AUG 2018                                                    |
 
 ***
 ***
