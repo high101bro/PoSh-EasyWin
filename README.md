@@ -1,11 +1,10 @@
-# PoSh-ACME
-#### PowerShell-Analyst's Collection Made Easy (ACME) for Security Professionals.
-#### ACME: The point at which something is the Best, Perfect, or Most Successful! 
-
+# PoSh-EasyWin
+#### PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs
+#### Formerly: PoSh-ACME
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
-|  File Name     |  PoSh-ACME.ps1                                                  |
-|  Version       |  v.3.3.2                                                        |
+|  File Name     |  PoSh-EasyWin.ps1                                               |
+|  Version       |  v.3.4                                                          |
 |  Author        |  high101bro                                                     |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSH-ACME                        |
