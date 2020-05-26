@@ -1,4 +1,74 @@
 ==================================================
+v4.1 - 26 May 2020
+==================================================
+Updated the main code to have large graphcial text to assist with viewing and finding separate sections of code
+
+Fixed Multi-Series Bug
+	- Issue with 'Most Recent', Baseline, and Previous chart values not aligning
+
+Not specific to PoSh-EasyWin
+	- But I created a new PowerShell project on my GitHub: PoSh-PopQuiz
+		As the name alludes to, it'a PowerShell Quiz generator, it pulls its question bank from Get-Help
+	- Uploaded PoSh-PortMonitor as a separate GitHub Project too
+		It's no longer package with PoSh-EasyWin
+
+PoSh-EasyWin cmdlet/script Parameters (commandline support)
+	- Renamed a few parameter switches and gave them defaults
+	- Added the -Credential parameter to immedately launch PoSh-EasyWin with alternate credentials
+	- Added support for Get-Help PoSh-EasyWin -Online
+		- This will now open my github page
+	- Added the abilty to change font based, valid fonts are included in the font validation set
+	- Added parameter to accepts EULA from command line, this prevents that gui from displaying
+	- Added GUI as the default parameteranameset
+		- When computer names are provided via command line, the computer tree nodes will auto check/select
+	- Added No GUI parameternameset
+		- when computer names are provided via command line, the hosts will be auto check/select
+	- Added ComputerName parameter
+		- added aliass for common variants
+			- PSComputerName
+			- CN	
+			- MachineName
+		- added acceptpipeline input for this parameter
+		- allows support for more than one input [string[]]
+	- Added ComputerSearch parameterset
+		- allows you to search for computers by their NetBIOS name, IP, MAC, OS, OU/CN, Tags, and notes (all metadata essentailly)
+		- allows support for more than one input [string[]]
+	- Added FilterOutComputer parameter
+		- allows support for more than one input [string[]]
+		- filters out only by computer's NetBIOS name, nothing else
+	- Added FilterInComputer parameter
+		- allows support for more than one input [string[]]
+		- filters back in only by computer's NetBIOS name, nothing else
+			- and they have had to be originally a part of the initial search
+	- Added Protocol parameter
+		- WinRM
+		- RPC *****Still need to add support*****
+	- Added CommandSearch parameter
+		- allows you to search for commands by thier displayed name, command, notes, and tags
+		- allows support for more than one input [string[]]
+		- added ability to find command via string entry that searches through the command syntax
+	- Added FilterOutCommand parameter
+	- Added FilterInCommand parameter
+	- Added AudioCompletionMessage parameter
+	- Added JobTimeout parameter
+	- Added SaveDirectory parameter
+
+
+
+Fixed search feature where results selected didn't show and populate the 'Query Exploration' Tab
+	- This was a big issue because when analyst searched for commands, they often clicked on them to see what they would do or see other command options... now this works
+
+Commands Search
+	- Updated script to support command line search
+
+Optimization
+	-Moved Common button settings to its own file
+
+Bug Fix
+	- Had the results tab be automatically switched to when RPC protocols commands are used
+	- Fixes get-help toolname graphical text... the help menu apparently doesn't support prepended spaces, so I chage the text art from slant to standard
+
+==================================================
 v4.0 - 23 APR 2020
 ==================================================
 

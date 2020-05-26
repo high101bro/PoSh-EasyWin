@@ -215,7 +215,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drives by Volume Name") { Generate-AutoChartsCommand -QueryName "Logical Drives Mapped" -QueryTabName "Mapped Drives by Volume Name" -PropertyX "PSComputerName" -PropertyY "VolumeName" }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drive Volume Names per Endpoint") { Generate-AutoChartsCommand -QueryName "Logical Drives Mapped" -QueryTabName "Mapped Drive Volume Names per Endpoint" -PropertyX "VolumeName" -PropertyY "PSComputerName" }
 
-        # Processes
+        # Processes 
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Process Names") { Generate-AutoChartsCommand -QueryName "Processes" -QueryTabName "Process Names" -PropertyX "Name" -PropertyY "PSComputerName"}
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Process Paths") { Generate-AutoChartsCommand -QueryName "Processes" -QueryTabName "Process Paths" -PropertyX "Path" -PropertyY "PSComputerName" }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Process Company") { Generate-AutoChartsCommand -QueryName "Processes" -QueryTabName "Process Company" -PropertyX "Company" -PropertyY "PSComputerName" }

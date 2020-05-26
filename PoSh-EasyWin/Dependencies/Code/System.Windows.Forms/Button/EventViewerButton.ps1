@@ -44,12 +44,13 @@ $EventViewerButtonAdd_Click = {
         elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Show Event Viewer' }
     }
 
-    if ($ComputerListProvideCredentialsCheckBox.checked) {
-        if ((Verify-Action -Title "Verification: Credential Warning" -Question "Warning!`nEvent Viewer does not support providing alternate credentials.`nDo you want to continue?" -Computer '')) {
-            Launch-EventViewer
-        }
-    }
-    else {Launch-EventViewer}
+    #if ($ComputerListProvideCredentialsCheckBox.checked) {
+    #    if ((Verify-Action -Title "Verification: Credential Warning" -Question "Warning!`nEvent Viewer does not support providing alternate credentials.`nDo you want to continue?" -Computer '')) {
+    #        Launch-EventViewer
+    #    }
+    #}
+    #else {Launch-EventViewer}
+    Launch-EventViewer
 }
 
 $EventViewerButtonAdd_MouseHover = {

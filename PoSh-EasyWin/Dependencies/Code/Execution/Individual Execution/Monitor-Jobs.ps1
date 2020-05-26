@@ -21,6 +21,11 @@ function Monitor-Jobs {
     $JobsCount = (Get-Job -Name "PoSh-EasyWin:*").count                  
     $script:ProgressBarEndpointsProgressBar.Maximum = $JobsCount
 
+    if ($NoGUI) { 
+        $ProgressBarQueriesCommandLine = 0
+        $ProgressBarQueriesCommandLineMaximum = ($script:CommandsCheckedBoxesSelected).count 
+    }
+
     $Done = 0
     
     do {
@@ -60,8 +65,12 @@ function Monitor-Jobs {
             if ( $Job.State -eq 'Completed' ) {
                 $Done++
                 $script:ProgressBarEndpointsProgressBar.Value = $Done
+                if ($NoGUI){
+                    $ProgressBarQueriesCommandLine   += $Done
+                    Write-Progress -Id 1 -Activity Updating -Status "Query: $CollectionName" -PercentComplete ($ProgressBarQueriesCommandLine / $ProgressBarQueriesCommandLineMaximum * 100) -CurrentOperation "Please be patient as queries are being executed..."
+                }
 
-                $JobName =  $Job.Name  -replace 'PoSh-EasyWin: ',''
+                $JobName     = $Job.Name  -replace 'PoSh-EasyWin: ',''
                 $JobReceived = $Job | Receive-Job #-Keep 
 
                 if ($job.Location -notmatch $(($Job.Name -split ' ')[-1]) ) {
@@ -117,7 +126,7 @@ function Monitor-Jobs {
     }
 
     # Updates Statistics One last time
-    $StatisticsResults = Get-PoShEasyWinStatistics
+    $StatisticsResults           = Get-PoShEasyWinStatistics
     $StatisticsNumberOfCSVs.text = $StatisticsResults        
     Get-Job -Name "PoSh-EasyWin:*" | Remove-Job -Force -ErrorAction SilentlyContinue
     $PoShEasyWin.Refresh()

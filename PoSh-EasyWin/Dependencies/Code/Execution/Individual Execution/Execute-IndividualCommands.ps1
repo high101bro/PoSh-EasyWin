@@ -7,6 +7,14 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $CollectionName = $Command.ExportFileName
     New-Item -ItemType Directory -Path "$script:IndividualHostResults\$CollectionName" -Force
 
+    # if the SaveDirectory parameter is provided, it will be used to identify where to save the results to
+    if ($SaveDirectory) {
+        $CollectionSavedDirectory = $SaveDirectory
+    }
+    else {
+        $CollectionSavedDirectory = "$script:IndividualHostResults\$CollectionName"
+    }
+
     # Each command to each target host is executed on it's own process thread, which utilizes more memory overhead on the localhost [running PoSh-EasyWin] and produces many more network connections to targets [noisier on the network].
     Foreach ($TargetComputer in $ComputerList) {
         # Checks for the type of command selected and assembles the command to be executed
@@ -78,12 +86,10 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $CommandName = $Command.Name
         $CommandType = $Command.Type
 
-        $SavePath = "$script:IndividualHostResults\$CollectionName"
-
         # Sends each query separetly to each computers, which produces a lot of network connections
         # This section is purposefull not using Invoke-Command -AsJob becuase some commands use  RPC/DCOM 
         Start-Job -Name "PoSh-EasyWin: $((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)" -ScriptBlock {
-            param($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString, $script:Credential)
+            param($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $script:Credential)
             # Available priority values: Low, BelowNormal, Normal, AboveNormal, High, RealTime
             [System.Threading.Thread]::CurrentThread.Priority = 'High'
             ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
@@ -91,12 +97,12 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             # Checks for the file output type, removes previous results with a file, then executes the commands
             if ( $OutputFileFileType -eq "csv" ) {
                 ## Now saving with Monitor-Jobs with the command Receive-Job
-                ## $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).csv"
+                ## $OutputFilePath = "$CollectionSavedDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).csv"
                 ## Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
                 Invoke-Expression -Command $CommandString ##| Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
             }
             elseif ( $OutputFileFileType -eq "txt" ) {
-                $OutputFilePath = "$SavePath\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).txt"
+                $OutputFilePath = "$CollectionSavedDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).txt"
                 Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
 
                 if (($CommandType -eq "(RPC) WMI") -and ($CommandString -match "Invoke-WmiMethod") ) {
@@ -112,7 +118,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     Invoke-Expression -Command $CommandString | Out-File $OutputFilePath -Force
                 }
             }
-        } -InitializationScript $null -ArgumentList @($OutputFileFileType, $SavePath, $CommandName, $CommandType, $TargetComputer, $CommandString, $script:Credential)
+        } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $script:Credential) | Out-Null
 
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$(($CommandString).Trim())"
     }
@@ -141,11 +147,11 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $BuildChartButton.BackColor = 'LightGreen'
 
     Compile-CsvFiles -LocationOfCSVsToCompile   "$($script:IndividualHostResults)\$CollectionName\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.csv" `
-                     -LocationToSaveCompiledCSV "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+                     -LocationToSaveCompiledCSV "$CollectionSavedDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
     
     Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:IndividualHostResults)\$CollectionName\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.xml" `
-                     -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).xml"
+                     -LocationToSaveCompiledXml "$CollectionSavedDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).xml"
                      
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
-    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$CollectionSavedDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
 }

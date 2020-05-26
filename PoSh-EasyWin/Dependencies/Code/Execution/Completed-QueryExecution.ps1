@@ -27,6 +27,10 @@ Function Completed-QueryExecution {
     $script:ProgressBarQueriesProgressBar.Maximum   = 1
     $script:ProgressBarQueriesProgressBar.Value     = 1
 
+    if ($NoGUI){
+        #Write-Progress -Activity Updating -Status 'Completed' -PercentComplete $ProgressBarEndpointsCommandLine -CurrentOperation Endpoints
+        Write-Progress -Id 1 -Activity Updating -Status 'Task Completed! ' -PercentComplete $ProgressBarQueriesCommandLine -CurrentOperation "Please be patient as queries are being executed..."
+    }
     # Plays a Sound When finished
     [system.media.systemsounds]::Exclamation.play()
 

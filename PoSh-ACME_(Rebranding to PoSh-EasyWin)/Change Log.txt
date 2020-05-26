@@ -2,6 +2,8 @@
 v3.3.2
 ==================================================
 
+Changed tool name from PoSh-ACME to PoSh-EasyWin
+
 Created 'PoSh-ACME-Archive' respository
 	- Intent is to store past commits online for reference and troubleshooting
 	- The PoSh-ACME repository will now only contain the most recent release

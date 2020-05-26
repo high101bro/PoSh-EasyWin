@@ -1,9 +1,0 @@
-====================================================================================================
-Prefetch Files
-====================================================================================================
-   Prefetch files are great artifacts for investigators trying to analyze applications
-that have been run on a system. Windows creates a prefetch file when an application is
-run from a particular location for the very first time. This is used to help speed up
-the loading of applications. Prefetch is enabled on Windows desktop by default, but not
-on servers.
-

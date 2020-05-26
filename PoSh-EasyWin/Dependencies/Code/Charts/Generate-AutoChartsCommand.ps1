@@ -12,11 +12,13 @@ function Generate-AutoChartsCommand {
     $script:PropertyY = $PropertyY
 
     # Name of Collected Data Directory
-    $CollectedDataDirectory               = "$PoShHome\Collected Data"
+    $CollectedDataDirectory                 = "$PoShHome\Collected Data"
+
     # Location of separate queries
-    $CollectedDataTimeStampDirectory      = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+    $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+
     # Location of Uncompiled Results
-    $script:IndividualHostResults         = "$CollectedDataTimeStampDirectory\Individual Host Results"
+    $script:IndividualHostResults           = "$script:CollectedDataTimeStampDirectory\Individual Host Results"
 
     # Removes a tab if it already exists... Since the same variable is used when spawning multi-series tabs whenever multiple tabs are created, the previous ones break and are unable to close 
     $AutoChartsTabControl.Controls.Remove($script:AutoChartsIndividualTabPage)            
@@ -89,7 +91,7 @@ function Generate-AutoChartsCommand {
     # Auto Create Charts Object
     #--------------------------
     . "$Dependencies\Code\System.Windows.Forms\DataVisualization\Charting\AutoChartCharting.ps1"
-    Clear-Variable -Name script:AutoChart
+    Clear-Variable -Name AutoChart -Scope script
     $script:AutoChartCharting = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
         Width           = 1115
         Height          = 552
@@ -283,6 +285,21 @@ function Generate-AutoChartsCommand {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     # The purpose of the code below is to ultiately add any missing unique fields to each collection.
     # ex: If the most recent scan/collection contained an item not in the baseline, the baseline will now contain that item but at a zero value
     # This is needed to ensure columns align when viewing multiple scans at once       
@@ -299,11 +316,13 @@ function Generate-AutoChartsCommand {
             $DataSourceBaseline += $Script:MergedCSVUniquePropertyDataResults | Select-Object -Property $script:PropertyX -Unique
 
             # Important, gets a unique list for X and Y
+            # In this case, X is the unique data name; ie process name, hash, file path, etc.
             $UniqueDataFieldsBaseline   = $DataSourceBaseline | Select-Object -Property $script:PropertyX | Sort-Object -Property $script:PropertyX -Unique
+            # In this case, Y is the unique hostname/computername/endpoint names
             $UniqueComputerListBaseline = $DataSourceBaseline | Select-Object -Property $script:PropertyY | Sort-Object -Property $script:PropertyY -Unique
         
-            # Generates and Counts the data
             # Counts the number of times that any given property possess a given value
+            $Index = 1
             foreach ($DataFieldBaseline in $UniqueDataFieldsBaseline) {
                 $CountBaseline          = 0
                 $CsvComputersBaseline   = @()
@@ -320,18 +339,14 @@ function Generate-AutoChartsCommand {
                     TotalCount  = $CountBaseline
                     UniqueCount = $UniqueCountBaseline
                     Computers   = $CsvComputersBaseline 
+                    Index       = $Index
                 }
                 $script:OverallDataResultsBaseline += $DataResultsBaseline
+                $Index += 1
             }
-
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Minimum = 0
             $script:AutoChartsProgressBar.Maximum = $UniqueDataFieldsBaseline.count
-
-            $script:OverallDataResultsBaseline | Sort-Object -Property UniqueCount | ForEach-Object {
-                $script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
-                $script:AutoChartsProgressBar.Value += 1
-            }
         }
 
         # If the Second field/Y Axis DOES NOT equals PSComputername, it uses the field provided
@@ -372,9 +387,17 @@ function Generate-AutoChartsCommand {
             }
             $DataResultsBaseline = New-Object PSObject -Property @{ ResultsCount = $ResultsCountBaseline ; Computer = $ComputerBaseline }    
             $script:OverallDataResultsBaseline += $DataResultsBaseline
-            $script:OverallDataResultsBaseline | Sort-Object -Property UniqueCount | ForEach-Object {$script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.Computer,$_.ResultsCount)}        
         } 
     }
+
+
+
+
+
+
+
+
+
 
     $script:OverallDataResultsPrevious = @()
     if (Test-Path $script:CSVFilePathPrevious) {
@@ -394,6 +417,7 @@ function Generate-AutoChartsCommand {
         
             # Generates and Counts the data
             # Counts the number of times that any given property possess a given value
+            $Index = 1
             foreach ($DataFieldPrevious in $UniqueDataFieldsPrevious) {
                 $CountPrevious          = 0
                 $CsvComputersPrevious   = @()
@@ -410,18 +434,15 @@ function Generate-AutoChartsCommand {
                     TotalCount  = $CountPrevious
                     UniqueCount = $UniqueCountPrevious
                     Computers   = $CsvComputersPrevious 
+                    Index       = $Index
                 }
                 $script:OverallDataResultsPrevious += $DataResultsPrevious
+                $Index += 1
             }
 
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Minimum = 0
             $script:AutoChartsProgressBar.Maximum = $UniqueDataFieldsPrevious.count
-
-            $script:OverallDataResultsPrevious | Sort-Object -Property UniqueCount | ForEach-Object {
-                $script:AutoChartCharting.Series["Previous"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
-                $script:AutoChartsProgressBar.Value += 1
-            }
         }
 
         # If the Second field/Y Axis DOES NOT equals PSComputername, it uses the field provided
@@ -462,9 +483,18 @@ function Generate-AutoChartsCommand {
             }
             $DataResultsPrevious = New-Object PSObject -Property @{ ResultsCount = $ResultsCountPrevious ; Computer = $ComputerPrevious }    
             $script:OverallDataResultsPrevious += $DataResultsPrevious
-            $script:OverallDataResultsPrevious | Sort-Object -Property UniqueCount | ForEach-Object {$script:AutoChartCharting.Series["Previous"].Points.AddXY($_.Computer,$_.ResultsCount)}        
         } 
     }
+
+
+
+
+
+
+
+
+
+
 
     $script:OverallDataResultsMostRecent = @()
     if (Test-Path $script:CSVFilePathMostRecent) {
@@ -484,6 +514,7 @@ function Generate-AutoChartsCommand {
         
             # Generates and Counts the data
             # Counts the number of times that any given property possess a given value
+            $Index = 1
             foreach ($DataFieldMostRecent in $UniqueDataFieldsMostRecent) {
                 $CountMostRecent          = 0
                 $CsvComputersMostRecent   = @()
@@ -499,19 +530,16 @@ function Generate-AutoChartsCommand {
                     DataField   = $DataFieldMostRecent
                     TotalCount  = $CountMostRecent
                     UniqueCount = $UniqueCountMostRecent
-                    Computers   = $CsvComputersMostRecent 
+                    Computers   = $CsvComputersMostRecent
+                    Index       = $Index
                 }
                 $script:OverallDataResultsMostRecent += $DataResultsMostRecent
+                $Index += 1
             }
 
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Minimum = 0
             $script:AutoChartsProgressBar.Maximum = $UniqueDataFieldsMostRecent.count
-
-            $script:OverallDataResultsMostRecent | Sort-Object -Property UniqueCount | ForEach-Object {
-                $script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)    
-                $script:AutoChartsProgressBar.Value += 1
-            }
         }
 
         # If the Second field/Y Axis DOES NOT equals PSComputername, it uses the field provided
@@ -551,12 +579,209 @@ function Generate-AutoChartsCommand {
             }
             $DataResultsMostRecent = New-Object PSObject -Property @{ ResultsCount = $ResultsCountMostRecent ; Computer = $ComputerMostRecent }    
             $script:OverallDataResultsMostRecent += $DataResultsMostRecent
-            $script:OverallDataResultsMostRecent | Sort-Object -Property UniqueCount | ForEach-Object {$script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.Computer,$_.ResultsCount)}        
         }        
     } # END if ( $script:CSVFilePathMostRecent )
 
     Clear-Variable -Name MergedCSVDataResults
 
+
+
+
+function script:Update-MultiSeriesChart {
+    param(
+        [switch]$TrackBar
+    )
+    #robin
+    # Creates an ordered list to organize the chart values to assign all three charts
+    # The ordered list is based on the most recent results and is based on unique counts of the associated properties
+    if ($script:PropertyY -eq "PSComputerName" ) {
+        if (Test-Path $script:CSVFilePathMostRecent) {
+            $script:AutoChartCharting.Series["Most Recent"].Points.Clear()
+            $Order = 1
+            $script:OverallDataResultsMostRecent | Sort-Object -Property UniqueCount,Index | ForEach-Object {
+                $_ | Add-Member -MemberType NoteProperty -Name 'ChartOrder' -Value $Order
+                $Order += 1
+            }
+            if ($TrackBar){
+                $script:OverallDataResultsMostRecent | 
+                Sort-Object -Property ChartOrder | 
+                Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
+                Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                ForEach-Object {
+                    $script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
+                }
+            }
+            else {
+                $script:OverallDataResultsMostRecent | 
+                Sort-Object -Property ChartOrder | 
+                ForEach-Object {
+                    $script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)    
+                    $script:AutoChartsProgressBar.Value += 1
+                }
+            }
+        }
+        $ChartOrder = $script:OverallDataResultsMostRecent | Sort-Object -Property ChartOrder | Select-Object -ExpandProperty Index
+
+        if (Test-Path $script:CSVFilePathBaseline) {
+            $script:AutoChartCharting.Series["Baseline"].Points.Clear()
+
+            if ($TrackBar){
+                foreach ($Order in $ChartOrder) {
+                    $script:OverallDataResultsBaseline | 
+                    Sort-Object -Property UniqueCount,Index | 
+                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
+                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                    ForEach-Object {
+                        if ($_.Index -eq $Order){
+                            $script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
+                        }
+                    }
+                }
+            }
+            else {
+                foreach ($Order in $ChartOrder) {
+                    $script:OverallDataResultsBaseline | 
+                    Sort-Object -Property UniqueCount,Index | 
+                    ForEach-Object {
+                        if ($_.Index -eq $Order){
+                            $script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
+                            $script:AutoChartsProgressBar.Value += 1
+                        }
+                    }
+                }
+            }
+        }
+
+        if (Test-Path $script:CSVFilePathPrevious) {
+            $script:AutoChartCharting.Series["Previous"].Points.Clear()
+
+            if ($TrackBar){
+                foreach ($Order in $ChartOrder) {
+                    $script:OverallDataResultsPrevious | 
+                    Sort-Object -Property UniqueCount,Index  | 
+                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
+                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                    ForEach-Object {
+                        if ($_.Index -eq $Order){
+                            $script:AutoChartCharting.Series["Previous"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
+                        }
+                    }
+                }
+            }
+            else {
+                foreach ($Order in $ChartOrder) {
+                    $script:OverallDataResultsPrevious | 
+                    Sort-Object -Property UniqueCount,Index  | 
+                    ForEach-Object {
+                        if ($_.Index -eq $Order){
+                            $script:AutoChartCharting.Series["Previous"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
+                            $script:AutoChartsProgressBar.Value += 1
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    elseif ($script:PropertyX -eq "PSComputerName") {
+        if (Test-Path $script:CSVFilePathMostRecent) {
+            $script:AutoChartCharting.Series["Most Recent"].Points.Clear()
+            $Order = 1
+            $script:OverallDataResultsMostRecent | Sort-Object -Property UniqueCount,Index | ForEach-Object {
+                $_ | Add-Member -MemberType NoteProperty -Name 'ChartOrder' -Value $Order
+                $Order += 1
+            }
+
+            if ($TrackBar){
+                $script:OverallDataResultsMostRecent | 
+                Sort-Object -Property ChartOrder | 
+                Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
+                Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                ForEach-Object {
+                    if ($_.Index -eq $Order){
+                        $script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.Computer,$_.ResultsCount)
+                    } 
+                }
+            }
+            else {
+                $script:OverallDataResultsMostRecent | Sort-Object -Property ChartOrder | ForEach-Object {
+                    $script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.Computer,$_.ResultsCount)
+                    $script:AutoChartsProgressBar.Value += 1
+                }
+            }
+        }
+        $ChartOrder = $script:OverallDataResultsMostRecent | Sort-Object -Property ChartOrder | Select-Object -ExpandProperty Index
+        
+        if (Test-Path $script:CSVFilePathBaseline) {
+            $script:AutoChartCharting.Series["Baseline"].Points.Clear()
+
+            if ($TrackBar){
+                foreach ($Order in $ChartOrder) {
+                    $script:OverallDataResultsBaseline | 
+                    Sort-Object -Property UniqueCount,Index | 
+                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
+                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                    ForEach-Object {
+                        if ($_.Index -eq $Order){
+                            $script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.Computer,$_.ResultsCount)
+                        }        
+                    }
+                }
+            }
+            else {
+                foreach ($Order in $ChartOrder) {
+                    $script:OverallDataResultsBaseline | 
+                    Sort-Object -Property UniqueCount,Index | 
+                    ForEach-Object {
+                        if ($_.Index -eq $Order){
+                            $script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.Computer,$_.ResultsCount)
+                            $script:AutoChartsProgressBar.Value += 1
+                        }
+                    }
+                }
+            }
+        }
+
+        if (Test-Path $script:CSVFilePathPrevious) {
+            $script:AutoChartCharting.Series["Previous"].Points.Clear()
+
+            if ($TrackBar){
+                foreach ($Order in $ChartOrder) {
+                    $script:OverallDataResultsPrevious | 
+                    Sort-Object -Property UniqueCount,Index | 
+                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
+                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                    ForEach-Object {
+                        if ($_.Index -eq $Order){
+                            $script:AutoChartCharting.Series["Previous"].Points.AddXY($_.Computer,$_.ResultsCount)
+                        }        
+                    }
+                }
+            }
+            else {
+                foreach ($Order in $ChartOrder) {
+                    $script:OverallDataResultsPrevious | 
+                    Sort-Object -Property UniqueCount,Index | 
+                    ForEach-Object {
+                        if ($_.Index -eq $Order){
+                            $script:AutoChartCharting.Series["Previous"].Points.AddXY($_.Computer,$_.ResultsCount)
+                            $script:AutoChartsProgressBar.Value += 1
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+script:Update-MultiSeriesChart
+
+
+
+
+
+
+
+    
     ############################################################################################################
     # Auto Create Charts Processes
     ############################################################################################################
@@ -661,36 +886,8 @@ function Generate-AutoChartsCommand {
             $script:AutoChartsTrimOffFirstTrackBarValue = $script:AutoChartsTrimOffFirstTrackBar.Value
 
             $script:AutoChartsTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChartsTrimOffFirstTrackBar.Value)"
-            if ( $script:CsvFileDataMostRecent ) {
-                if ($script:PropertyY -eq "PSComputerName") {
-                    $script:AutoChartCharting.Series["Most Recent"].Points.Clear()
-                    $script:OverallDataResultsMostRecent | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)}
-                }
-                elseif ($script:PropertyX -eq "PSComputerName") {   
-                    $script:AutoChartCharting.Series["Most Recent"].Points.Clear()
-                    $script:OverallDataResultsMostRecent | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.Computer,$_.ResultsCount)}
-                }
-            }
-            if ( $script:CsvFileDataPrevious ) {
-                if ($script:PropertyY -eq "PSComputerName") {
-                    $script:AutoChartCharting.Series["Previous"].Points.Clear()
-                    $script:OverallDataResultsPrevious | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Previous"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)}
-                }
-                elseif ($script:PropertyX -eq "PSComputerName") {   
-                    $script:AutoChartCharting.Series["Previous"].Points.Clear()
-                    $script:OverallDataResultsPrevious | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Previous"].Points.AddXY($_.Computer,$_.ResultsCount)}        
-                }
-            }
-            if ( $script:CsvFileDataBaseline ) {
-                if ($script:PropertyY -eq "PSComputerName") {
-                    $script:AutoChartCharting.Series["Baseline"].Points.Clear()
-                    $script:OverallDataResultsBaseline | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)}
-                }
-                elseif ($script:PropertyX -eq "PSComputerName") {   
-                    $script:AutoChartCharting.Series["Baseline"].Points.Clear()
-                    $script:OverallDataResultsBaseline | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.Computer,$_.ResultsCount)}        
-                }
-            }
+
+            script:Update-MultiSeriesChart -TrackBar
         })
         $script:AutoChartsTrimOffFirstGroupBox.Controls.Add($script:AutoChartsTrimOffFirstTrackBar)
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsTrimOffFirstGroupBox)
@@ -729,36 +926,7 @@ function Generate-AutoChartsCommand {
         $script:AutoChartsTrimOffLastTrackBar.add_ValueChanged({
             $script:AutoChartsTrimOffLastTrackBarValue = $($script:OverallDataResultsMostRecent.count) - $script:AutoChartsTrimOffLastTrackBar.Value
             $script:AutoChartsTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:OverallDataResultsMostRecent.count) - $script:AutoChartsTrimOffLastTrackBar.Value)"
-            if ( $script:CsvFileDataMostRecent ) {
-                if ($script:PropertyY -eq "PSComputerName") {
-                    $script:AutoChartCharting.Series["Most Recent"].Points.Clear()
-                    $script:OverallDataResultsMostRecent | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)}
-                }
-                elseif ($script:PropertyX -eq "PSComputerName") {   
-                    $script:AutoChartCharting.Series["Most Recent"].Points.Clear()
-                    $script:OverallDataResultsMostRecent | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.Computer,$_.ResultsCount)}        
-                }
-            }
-            if ( $script:CsvFileDataPrevious ) {
-                if ($script:PropertyY -eq "PSComputerName") {
-                    $script:AutoChartCharting.Series["Previous"].Points.Clear()
-                    $script:OverallDataResultsPrevious | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Previous"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)}
-                }
-                elseif ($script:PropertyX -eq "PSComputerName") {   
-                    $script:AutoChartCharting.Series["Previous"].Points.Clear()
-                    $script:OverallDataResultsPrevious | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Previous"].Points.AddXY($_.Computer,$_.ResultsCount)}        
-                }
-            }
-            if ( $script:CsvFileDataBaseline ) {
-                if ($script:PropertyY -eq "PSComputerName") {
-                    $script:AutoChartCharting.Series["Baseline"].Points.Clear()
-                    $script:OverallDataResultsBaseline | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)}
-                }
-                elseif ($script:PropertyX -eq "PSComputerName") {   
-                    $script:AutoChartCharting.Series["Baseline"].Points.Clear()
-                    $script:OverallDataResultsBaseline | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.Computer,$_.ResultsCount)}        
-                }
-            }
+            script:Update-MultiSeriesChart -TrackBar
         })
         $script:AutoChartsTrimOffLastGroupBox.Controls.Add($script:AutoChartsTrimOffLastTrackBar)
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsTrimOffLastGroupBox)

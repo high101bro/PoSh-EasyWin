@@ -425,7 +425,7 @@ function Conduct-RekallWinPmemMemoryCapture {
     $CollectionCommandStartTime = Get-Date 
     Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
     $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName - $script:ComputerTreeViewSelected")
-    Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $CollectedDataTimeStampDirectory `
+    Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                             -IndividualHostResults $script:IndividualHostResults -CollectionName $CollectionName `
                             -TargetComputer $script:ComputerTreeViewSelected
     Create-LogEntry -TargetComputer $script:ComputerTreeViewSelected -CollectionName $CollectionName -LogFile $LogFile
@@ -476,7 +476,7 @@ function Conduct-RekallWinPmemMemoryCapture {
             if ($CheckWinPmemProcessOnTargetHostStatus) { Start-Sleep -Seconds 10 }
             else {
                 # Copies the Memory Capture File from the TargetComputer back to the Localhost
-                $CopyMemoryCaptureFromTargetHost = "Copy-Item '\\$script:ComputerTreeViewSelected\C$\$TempPath\$MemoryCaptureFile' '$CollectedDataTimeStampDirectory' -Force"
+                $CopyMemoryCaptureFromTargetHost = "Copy-Item '\\$script:ComputerTreeViewSelected\C$\$TempPath\$MemoryCaptureFile' '$script:CollectedDataTimeStampDirectory' -Force"
                 Invoke-Expression $CopyMemoryCaptureFromTargetHost
                 $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $CopyMemoryCaptureFromTargetHost"
                 $Message | Add-Content -Path $LogFile

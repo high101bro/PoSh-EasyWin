@@ -1,5 +1,6 @@
 Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $script:ProgressBarEndpointsProgressBar.Value = 0
+    $ProgressBarEndpointsCommandLine = 0
 
     $CollectionCommandStartTime = Get-Date
     $CollectionName = $Command.Name
@@ -40,9 +41,10 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $CommandName = $Command.Name
     $CommandType = $Command.Type
 
+  
     # Checks for the file output type, removes previous results with a file, then executes the commands
     if ( $Command.Type -eq "(WinRM) Script" ) {
-        $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$((($CommandName) -split ' -- ')[1]) - $CommandType"
+        $OutputFilePath = "$script:CollectedDataTimeStampDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType"
         Remove-Item -Path "$OutputFilePath.csv" -Force -ErrorAction SilentlyContinue
         Remove-Item -Path "$OutputFilePath.xml" -Force -ErrorAction SilentlyContinue
 
@@ -55,7 +57,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         Remove-Variable -Name SessionData
     }   
     elseif ( $OutputFileFileType -eq "csv" ) {
-        $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$((($CommandName) -split ' -- ')[1]) - $CommandType"
+        $OutputFilePath = "$script:CollectedDataTimeStampDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType"
         Remove-Item -Path "$OutputFilePath.csv" -Force -ErrorAction SilentlyContinue
         Invoke-Command -ScriptBlock { param($CommandString); Invoke-Expression -Command $CommandString } -argumentlist $CommandString -Session $PSSession `
         | Set-Variable SessionData
@@ -64,7 +66,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         Remove-Variable -Name SessionData -Force
     }
     elseif ( $OutputFileFileType -eq "txt" ) {
-        $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)"
+        $OutputFilePath = "$script:CollectedDataTimeStampDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)"
         Remove-Item -Path "$OutputFilePath.txt" -Force -ErrorAction SilentlyContinue
         Invoke-Command -ScriptBlock { param($CommandString); Invoke-Expression -Command $CommandString } -argumentlist $CommandString -Session $PSSession `
         | Set-Variable SessionData
@@ -82,6 +84,11 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
     $PoShEasyWin.Refresh()
     Start-Sleep -match 500
+
+    if ($NoGUI){
+        $ProgressBarQueriesCommandLine   += 1
+        Write-Progress -Id 1 -Activity Updating -Status "Query: $CollectionName" -PercentComplete ($ProgressBarQueriesCommandLine / $ProgressBarQueriesCommandLineMaximum * 100) -CurrentOperation "Please be patient as queries are being executed..."
+    }
 }
 
 $AutoCreateDashboardChartButton.BackColor = 'LightGreen'

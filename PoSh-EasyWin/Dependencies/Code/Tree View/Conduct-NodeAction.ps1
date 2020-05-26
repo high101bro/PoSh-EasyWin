@@ -61,6 +61,10 @@ function Conduct-NodeAction {
                 if ($Category.Text -match '[\[(]rpc[)\]]' ) {
                     $script:RpcCommandCount += 1
                     if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                        # This brings specific tabs to the forefront/front view
+                        $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
                         [system.media.systemsounds]::Exclamation.play()
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
@@ -84,6 +88,10 @@ function Conduct-NodeAction {
                     if ($Entry.Text -match '[\[(]rpc[)\]]') {
                         $script:RpcCommandCount += 1
                         if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                            # This brings specific tabs to the forefront/front view
+                            $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+                            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
                             [system.media.systemsounds]::Exclamation.play()
                             $StatusListBox.Items.Clear()
                             $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
@@ -113,6 +121,10 @@ function Conduct-NodeAction {
                         if ($Entry.Text -match '[\[(]rpc[)\]]') {
                             $script:RpcCommandCount += 1
                             if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                                # This brings specific tabs to the forefront/front view
+                                $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+                                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
                                 [system.media.systemsounds]::Exclamation.play()
                                 $StatusListBox.Items.Clear()
                                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
@@ -194,6 +206,36 @@ function Conduct-NodeAction {
                         $Section3QueryExplorationWinRSWmicTextBox.Text      = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
                         $Section3QueryExplorationWinRSCmdTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
                         $Section3QueryExplorationDescriptionTextbox.Text    = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description                    
+                    }
+                    elseif ($root.text -match 'Search Results'){
+                        if ($($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name) {
+                            $Section3QueryExplorationNameTextBox.Text           = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name                    
+                            $Section3QueryExplorationTagWordsTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
+                            $Section3QueryExplorationWinRMPoShTextBox.Text      = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
+                            $Section3QueryExplorationWinRMWMITextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
+                            $Section3QueryExplorationWinRMCmdTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
+                            $Section3QueryExplorationRPCPoShTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
+                            $Section3QueryExplorationRPCWMITextBox.Text         = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WMI
+                            $Section3QueryExplorationPropertiesPoshTextBox.Text = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
+                            $Section3QueryExplorationPropertiesWMITextBox.Text  = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
+                            $Section3QueryExplorationWinRSWmicTextBox.Text      = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
+                            $Section3QueryExplorationWinRSCmdTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
+                            $Section3QueryExplorationDescriptionTextbox.Text    = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
+                        }
+                        else {
+                            $Section3QueryExplorationNameTextBox.Text           = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name                    
+                            $Section3QueryExplorationTagWordsTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
+                            $Section3QueryExplorationWinRMPoShTextBox.Text      = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
+                            $Section3QueryExplorationWinRMWMITextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
+                            $Section3QueryExplorationWinRMCmdTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
+                            $Section3QueryExplorationRPCPoShTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
+                            $Section3QueryExplorationRPCWMITextBox.Text         = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WMI
+                            $Section3QueryExplorationPropertiesPoshTextBox.Text = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
+                            $Section3QueryExplorationPropertiesWMITextBox.Text  = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
+                            $Section3QueryExplorationWinRSWmicTextBox.Text      = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
+                            $Section3QueryExplorationWinRSCmdTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
+                            $Section3QueryExplorationDescriptionTextbox.Text    = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description                        
+                        }
                     }
                     
                     if ($Category.text -match 'PowerShell Scripts'){

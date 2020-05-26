@@ -35,7 +35,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
     foreach ($TargetComputer in $ComputerList) {
         $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName - $TargetComputer")
         $PoShEasyWin.Refresh()
-        Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $CollectedDataTimeStampDirectory `
+        Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName

@@ -31,9 +31,9 @@
                 }
                 switch ($_.Properties.trusttype)
                 {
-                    1 {$TrustType="Windows NT"} #Downlevel (2000 et inférieur)
-                    2 {$TrustType="Active Directory"}#Uplevel (2003 et supérieur)
-                    3 {$TrustType="Kerberos realm"}#Not AD Based
+                    1 {$TrustType="Windows NT"}       #Downlevel (2000 et inférieur)
+                    2 {$TrustType="Active Directory"} #Uplevel (2003 et supérieur)
+                    3 {$TrustType="Kerberos realm"}   #Not AD Based
                     4 {$TrustType="DCE"}
                     default {$TrustType="N/A"}
                 }
@@ -71,4 +71,4 @@
     End{
     }
 } 
-Get-ADTrustsInfo | Select @{name="PSComputerName";expression={$env:COMPUTERNAME}}, Created, TrustName, Type, Direction, Attributes, LastChanged, Status, DomainSID
+Get-ADTrustsInfo | Select-Object @{name="PSComputerName";expression={$env:COMPUTERNAME}}, Created, TrustName, Type, Direction, Attributes, LastChanged, Status, DomainSID

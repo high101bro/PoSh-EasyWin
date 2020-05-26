@@ -1,5 +1,9 @@
 "Name","OperatingSystem","CanonicalName","IPv4Address","MACAddress","Notes"
-"DC1","Ex Windows Server 2012 R2 Datacenter","/Ex Domain Controllers","169.254.79.222","No MAC Available","No Notes Available"
+"DC1","Ex Windows Server 2012 R2 Datacenter","/Ex Domain Controllers","10.10.10.1","74-E5-43-7D-76-BA","[Actions: Scanned] 
+
+You can add endpoint specific notes here. These notes are searchable with the above 'Search' button to find endpoints.
+
+Tags can be added from a pre-populated list for ease of use and standardization."
 "WSUS","Ex Windows Server 2012 R2 Datacenter","/Ex Servers/Administrative","10.10.10.23","No MAC Available","No Notes Available"
 "APP","Ex Windows Server 2012 R2 Datacenter","/Ex Servers/Administrative","10.10.10.22","No MAC Available","No Notes Available"
 "DC2","Ex Windows Server 2012 R2 Datacenter","/Ex Domain Controllers","10.10.10.21","No MAC Available","No Notes Available"
@@ -9,17 +13,18 @@
 "WIN81-04","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.103","No MAC Available","No Notes Available"
 "WINXP-01","Ex Windows XP Professional","/Ex EU Branch/Remote Support","10.10.10.105","No MAC Available","No Notes Available"
 "FILE","Ex Windows Server 2012 R2 Datacenter","/Ex Servers/Business","10.10.10.104","No MAC Available","No Notes Available"
-"Win81-09","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.111","No MAC Available","No Notes Available"
-"Win81-08","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.110","No MAC Available","[11111] [asdfasdf] No Notes Available"
-"Win81-07","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.109","No MAC Available","[11111] [asdfasdf] No Notes Available"
-"Win81-06","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.108","No MAC Available","[11111] [asdfasdf] No Notes Available"
-"Win81-05","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.113","No MAC Available","No Notes Available"
+"Win81-09","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.111","No MAC Available","[WinRM] No Notes Available"
+"Win81-08","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.110","No MAC Available","[WinRM] [Online] [11111] [asdfasdf] No Notes Available"
+"Win81-07","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.109","No MAC Available","[WinRM] [Online] [11111] [asdfasdf] No Notes Available"
+"Win81-06","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.108","No MAC Available","[WinRM] [11111] [asdfasdf] No Notes Available"
+"Win81-05","Ex Windows 8.1 Pro","/Ex US Branch/Employee","10.10.10.113","No MAC Available","[WinRM] No Notes Available"
 "WIN81-10","Ex Windows 8.1 Pro","/Ex EU Branch/Remote Support","10.10.10.112","No MAC Available","No Notes Available"
-"WIN10-01","Ex Windows 10 Enterprise Evaluation","/Ex US Branch/Employee","10.10.10.105","No MAC Available","No Notes Available"
+"WIN10-01","Ex Windows 10 Enterprise Evaluation","/Ex US Branch/Employee","10.10.10.105","No MAC Available","[malware] No Notes Available"
 "WIN10-03","Ex Windows 10 Enterprise Evaluation","/Ex US Branch/Employee","10.10.10.114","No MAC Available","No Notes Available"
 "WIN10-04","Ex Windows 10 Enterprise Evaluation","/Ex US Branch/Employee","10.10.10.112","No MAC Available","No Notes Available"
 "WIN10-05","Ex Windows 10 Enterprise Evaluation","/Ex US Branch/Employee","10.10.10.107","No MAC Available","No Notes Available"
-"WIN10-02","Ex Windows 10 Enterprise Evaluation","/Ex US Branch/Employee","10.10.10.106","No MAC Available","No Notes Available
+"WIN10-02","Ex Windows 10 Enterprise Evaluation","/Ex US Branch/Employee","10.10.10.106","No MAC Available","[malware] No Notes Available
 malware pivot"
 "WIN2019-01","Ex Windows Server 2019 Standard Evaluation","/Ex Computers","10.10.10.115","No MAC Available","No Notes Available"
 "localhost","Manually Added",,"No IP Available","No MAC Available","No Notes Available"
+"Win81-05a","Ex Windows 8.1 Pro","/Ex Computers","No IP Available","No MAC Available","[WinRM] No Notes Available"

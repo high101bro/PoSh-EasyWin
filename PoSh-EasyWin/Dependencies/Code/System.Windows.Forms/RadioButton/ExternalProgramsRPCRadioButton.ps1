@@ -3,6 +3,10 @@ $ExternalProgramsRPCRadioButtonAdd_Click = {
         $MessageBox = [System.Windows.Forms.MessageBox]::Show("The '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' mode does not support the RPC Protocol.`nThe 'Individual Execution' mode supports the RPC Protocol, but is much slower.`n`nDo you want to change the collection mode to 'Individual Execution'?","RPC Protocol Alert",[System.Windows.Forms.MessageBoxButtons]::OKCancel)	
         switch ($MessageBox){
             "OK" {
+                # This brings specific tabs to the forefront/front view
+                $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                 $ResultsListBox.Items.Clear()

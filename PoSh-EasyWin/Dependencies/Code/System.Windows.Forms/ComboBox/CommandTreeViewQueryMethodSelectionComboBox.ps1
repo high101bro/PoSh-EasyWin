@@ -24,6 +24,11 @@ $CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged = {
                     }
                 }
                 Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+
+                # This brings specific tabs to the forefront/front view
+                $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
                 $ResultsListBox.Items.Clear()
                 $ResultsListBox.Items.Add("The following RPC queries have been unchecked:")
                 foreach ($Entry in $CommandNodesRemoved) {

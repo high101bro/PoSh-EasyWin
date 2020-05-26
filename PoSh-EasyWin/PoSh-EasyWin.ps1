@@ -4,92 +4,328 @@
     data via a filterable table and charts... plus much, much more.
 
     .DESCRIPTION
-         ____         _____  __            ______                    _       __ _      
-        / __ \ ____  / ___/ / /_          / ____/____ _ _____ __  __| |     / /(_)____ 
-       / /_/ // __ \ \__ \ / __ \ ______ / __/  / __ `// ___// / / /| | /| / // // __ \
-      / ____// /_/ /___/ // / / //_____// /___ / /_/ /(__  )/ /_/ / | |/ |/ // // / / /
-     /_/     \____//____//_/ /_/       /_____/ \__,_//____/ \__, /  |__/|__//_//_/ /_/ 
-                                                           /____/                      
-     ==================================================================================
-     PoSh-EasyWin: PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs!
-     I know, I know-it's over the top... but who doesn't love tools with acronym names? 
-     ==================================================================================
+    _____        ____   _             _____                  __        __ _        
+    |  _ \  ___ / ___| | |__         | ____| __ _  ___  _   _\ \      / /(_) _ __  
+    | |_) |/ _ \\___ \ | '_ \  _____ |  _|  / _` |/ __|| | | |\ \ /\ / / | || '_ \ 
+    |  __/| (_) |___) || | | ||_____|| |___| (_| |\__ \| |_| | \ V  V /  | || | | |
+    |_|    \___/|____/ |_| |_|       |_____|\__,_||___/ \__, |  \_/\_/   |_||_| |_|
+                                                        |___/                      
+    ==================================================================================
+    PoSh-EasyWin: PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs!
+    I know, I know-it's over the top... but who doesn't love tools with acronym names? 
+    ==================================================================================
 
-     File Name      : PoSh-EasyWin.ps1
-     Version        : v.3.3.2
+    File Name      : PoSh-EasyWin.ps1
+    Version        : v.4.1
 
-     Requirements   : PowerShell v3+ for PowerShell Charts
-                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
-                              HTTPS - TCP/5986 Win7+ (443 Vista-)
-                              Endpoint Listener - TCP/47001
-                    : DCOM    RPC   - TCP/135 and dynamic ports, typically:
-                                      TCP 49152-65535 (Windows Vista, Server 2008 and above)
-                                      TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
-     Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe
+    Requirements   : PowerShell v3+ for PowerShell Charts
+                   : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
+                             HTTPS - TCP/5986 Win7+ (443 Vista-)
+                             Endpoint Listener - TCP/47001
+                   : DCOM    RPC   - TCP/135 and dynamic ports, typically:
+                                     TCP 49152-65535 (Windows Vista, Server 2008 and above)
+                                     TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
+    Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe
 
-     Updated        :  9 Mar 20
-     Created        : 21 Aug 18
+    Updated        : 26 MAY 2020
+    Created        : 21 AUG 2018
 
-     Author         : high101bro
-     Email          : high101bro@gmail.com
-     Website        : https://github.com/high101bro/PoSh-EasyWin
+    Author         : Dan Komnick (high101bro)
+    Email          : high101bro@gmail.com
+    Website        : https://github.com/high101bro/PoSh-EasyWin
 
-     Copyright (C) 2018  Daniel S Komnick
 
-     This program is free software: you can redistribute it and/or modify it under the terms of the
-     GNU General Public License as published by the Free Software Foundation, either version 3 of 
-     the License, or (at your option) any later version.
+    PoSh-EasyWin is the Endpoint Analysis Solution Your Windows Intranet Needs that provides a 
+    simple user interface to execute any number of commands against any number of computers within 
+    a network, access hosts, manage data, and analyze their results.
 
-     This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-     without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-     See the GNU General Public License for more details.
+    Copyright (C) 2018  Daniel S Komnick
 
-     You should have received a copy of the GNU General Public License along with this program.  
-     If not, see <https://www.gnu.org/licenses/>.
+    This program is free software: you can redistribute it and/or modify it under the terms of the
+    GNU General Public License as published by the Free Software Foundation, either version 3 of 
+    the License, or (at your option) any later version.
 
-     Credits:
-     Learned a lot and referenced code from sources like Microsoft Technet, PowerShell Gallery, StackOverflow, and a numerous other websites.
-     Forked/modified code Get-Baseline from zulu8 on Github.
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+    without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    See the GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along with this program.
+    It is located in the 'GPLv3 - GNU General Public License.txt' file in the Dependencies folder.
+    If not, see <https://www.gnu.org/licenses/>.
+
+    Credits:
+    Learned a lot and referenced code from sources like Microsoft Technet, PowerShell Gallery, StackOverflow, and a numerous other websites.
+    That said, I didn't track all sites and individuals that deserve credit. In the unlikely event you believe you do, please notify me. 
 
     .EXAMPLE
-        This will run PoSh-EasyWin.ps1 and provide prompts that will tailor your collection.
+    This will run PoSh-EasyWin.ps1 and provide prompts that will tailor your collection.
 
-             PowerShell.exe -ExecutionPolicy ByPass -NoProfile -File .\PoSh-EasyWin.ps1
+        PowerShell.exe -ExecutionPolicy ByPass -NoProfile -File .\PoSh-EasyWin.ps1
 
     .Link
-         https://github.com/high101bro/PoSh-EasyWin
+    https://github.com/high101bro/PoSh-EasyWin
 
     .NOTES  
-        Though this may look like a program, it is still a script that has a GUI interface built
-        using the .Net Framework and WinForms. So when it's conducting queries, the GUI will be 
-        unresponsive to user interaction even though you are able to view status and timer updates.
+    Though this may look like a program, it is still a script that has a GUI interface built
+    using the .Net Framework and WinForms. So when it's conducting queries, the GUI will be 
+    unresponsive to user interaction even though you are able to view status and timer updates.
 
-        In order to run the script:
-        - Downloaded from the internet
-            You may have to use the Unblock-File cmdlet to be able to run the script.
-              - For addtional info on: Get-Help Unblock-File
-            How to Unblock the file:
-              - Unblock-File -Path .\PoSh-EasyWin.ps1
+    In order to run the script:
+    - Downloaded from the internet
+        You may have to use the Unblock-File cmdlet to be able to run the script.
+            - For addtional info on: Get-Help Unblock-File
+        How to Unblock the file:
+            - Unblock-File -Path .\PoSh-EasyWin.ps1
 
-        - Update Execution Policy locally
-            Open a PowerShell terminal with Administrator privledges
-              - Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
-              - Get-ExecutionPolicy -List
+    - Update Execution Policy locally
+        Open a PowerShell terminal with Administrator privledges
+            - Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
+            - Get-ExecutionPolicy -List
 
-        - Update Execution Policy via GPO
-            Open the GPO for editing. In the GPO editor, select:
-              - Computer Configuration > Policies > Administrative Templates > Windows Components > Windows PowerShell
-              - Right-click "Turn on script execution", then select "Edit"
-              - In the winodws that appears, click on "Enabled" radio button
-              - Under "Execution Policy", select "Allow All Scripts"
-              - Click on "Ok", then close the GPO Editor
-              - Push out GPO Updates, or on the computer's powershell/cmd terminal, type in `"gpupdate /force"
+    - Update Execution Policy via GPO
+        Open the GPO for editing. In the GPO editor, select:
+            - Computer Configuration > Policies > Administrative Templates > Windows Components > Windows PowerShell
+            - Right-click "Turn on script execution", then select "Edit"
+            - In the winodws that appears, click on "Enabled" radio button
+            - Under "Execution Policy", select "Allow All Scripts"
+            - Click on "Ok", then close the GPO Editor
+            - Push out GPO Updates, or on the computer's powershell/cmd terminal, type in `"gpupdate /force"
 #>
+
+#https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_cmdletbindingattribute?view=powershell-7
+[CmdletBinding(
+    #ConfirmImpact=<String>,
+    DefaultParameterSetName='GUI',
+    HelpURI='https://github.com/high101bro/PoSh-EasyWin',
+    #SupportsPaging=$true,
+    #SupportsShouldProcess=$true,
+    PositionalBinding=$true)
+]
+
+#https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_advanced_parameters?view=powershell-7
 param (
-    #Cmdlet Parameter Options
-    [switch]$DisableToolTip,
-    [switch]$AudibleCompletionMessage,
-    [int]$JobTimeOutSeconds = 300
+
+    [Parameter(
+        Mandatory=$false,
+        HelpMessage="The provided credentials will launch PoSh-EasyWin, and is subsequentially used for querying unless otherwise changed."
+    )]
+    [ValidateNotNullOrEmpty()]
+    [System.Management.Automation.PSCredential]
+    $Credential,
+
+    [Parameter(
+        Mandatory=$true,
+        ParameterSetName="No GUI Computer Name",
+        ValueFromPipeline=$true,
+        HelpMessage="Enter one or more computer names separated by commas, or imported from a file as an array. Entries will only query if they already exist within script."
+    )]
+    [Alias('PSComputerName','CN','MachineName')]
+    [ValidateLength(1,63)]
+        # NetBIOS Names Lenghts:   1-15
+        # DNS Name Lengths:        2-63
+    [ValidateNotNullOrEmpty()]
+    [string[]]
+    $ComputerName,
+
+    [Parameter(
+        Mandatory=$true,
+        ParameterSetName="No GUI Computer Search",
+        HelpMessage="Enter a string (use quotes if there are spaces) to search for a computer by its NetBIOS Name, IP, MAC, OS, OU/CN, Tags, or notes."
+    )]
+    [ValidateNotNullOrEmpty()]
+    [string[]]
+    $ComputerSearch,
+
+            [Parameter(
+                Mandatory=$false,
+                ParameterSetName="No GUI Computer Name",
+                HelpMessage="Enter a sting(s) to filter out computers whose name matches in part or in whole."
+            )]
+            [Parameter(
+                Mandatory=$false,
+                ParameterSetName="No GUI Computer Search",
+                HelpMessage="Enter a sting(s) to filter out computers whose name matches in part or in whole."
+            )]
+            [string[]]
+            $FilterOutComputer,
+
+            [Parameter(
+                Mandatory=$false,
+                ParameterSetName="No GUI Computer Name",
+                HelpMessage="Enter a string(s) to filter back in computer names that were filtered out."
+            )]
+            [Parameter(
+                Mandatory=$false,
+                ParameterSetName="No GUI Computer Search",
+                HelpMessage="Enter a string(s) to filter back in computer names that were filtered out."
+            )]
+            [string[]]
+            $FilterInComputer,
+    
+    [Parameter(
+        Mandatory=$true,
+        ParameterSetName="No GUI Computer Name",
+        HelpMessage="Searches for commands within PoSh-EasyWin."
+    )]
+    [Parameter(
+        Mandatory=$true,
+        ParameterSetName="No GUI Computer Search",
+        HelpMessage="Searches for commands within PoSh-EasyWin."
+    )]
+    [ValidateNotNullOrEmpty()]
+    [string[]]
+    $CommandSearch,
+
+            [Parameter(
+                Mandatory=$false,
+                ParameterSetName="No GUI Computer Name",
+                HelpMessage="Filters out results from the Command Search."
+            )]
+            [Parameter(
+                Mandatory=$false,
+                ParameterSetName="No GUI Computer Search",
+                HelpMessage="Filters out results from the Command Search."
+            )]
+            [string[]]
+            $FilterOutCommand,
+
+            [Parameter(
+                Mandatory=$false,
+                ParameterSetName="No GUI Computer Name",
+                HelpMessage="Filters Command Search results back in, overriding the -FilterOutCommand."
+            )]
+            [Parameter(
+                Mandatory=$false,
+                ParameterSetName="No GUI Computer Search",
+                HelpMessage="Filters Command Search results back in, overriding the -FilterOutCommand."
+            )]
+            [string[]]
+            $FilterInCommand,
+
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Name",
+        HelpMessage="Only the selected Protocol will be displayed."
+    )]
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Search",
+        HelpMessage="Only the selected Protocol will be displayed."
+    )]
+    [ValidateSet('RPC','WinRM')]
+    [string]
+    $Protocol,
+
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Name",
+        HelpMessage="Location where to save collected data."
+    )]
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Search",
+        HelpMessage="Location where to save collected data."
+    )]
+    [string]
+    $SaveDirectory = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)\Collected Data\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))",
+
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="GUI"
+    )]
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Name",
+        HelpMessage="Enter the amount of time in seconds that a command will run until it timesout. The default is 300 seconds."
+    )]
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Search",
+        HelpMessage="Enter the amount of time in seconds that a command will run until it timesout. The default is 300 seconds."
+    )]
+    [ValidateRange(30,600)]
+    #[ValidatePattern("[0-9][0-9][0-9][0-9]")]
+    [ValidateNotNullOrEmpty()]
+    [int]
+    $JobTimeOutSeconds = 300,
+
+
+
+
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="GUI",
+        HelpMessage="The default font used in the GUI is Courier, but the following fonts also valdated."
+    )]
+    [ValidateSet('Calibri','Courier','Arial')]
+        # This this validation set is expanded, ensure that larger fonts don't cause words to be truncated in the GUI
+    [ValidateNotNull()]
+    [string]
+    $Font = "Courier",
+
+
+
+
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="GUI",
+        HelpMessage="Disables the Tool Tips that display when the mouse hovers over various areas in the GUI."
+    )]
+    [switch]
+    $DisableToolTip,
+
+
+
+
+    [Parameter(
+        Mandatory=$false,
+        HelpMessage="Enables the audiable voice completion message at the end of queries/collections."
+    )]
+    [switch]
+    $AudibleCompletionMessage,
+
+
+
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="GUI",
+        HelpMessage="This disables the GUI and uses commandline mode."
+    )]
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Name",
+        HelpMessage="This disables the GUI and uses commandline mode."
+    )]
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Search",
+        HelpMessage="This disables the GUI and uses commandline mode."
+    )]
+    [switch]
+    $NoGUI,
+
+
+
+
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="GUI"
+    )]
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Name",
+        HelpMessage="Accepts the End User License Agreement (EULA). The GUI for the GNU GPL wont display."
+    )]
+    [Parameter(
+        Mandatory=$false,
+        ParameterSetName="No GUI Computer Search",
+        HelpMessage="Accepts the End User License Agreement (EULA). The GUI for the GNU GPL wont display."
+    )]
+    [switch]
+    $AcceptEULA
+
+
+
 )
 
 #============================================================================================================================================================
@@ -123,11 +359,11 @@ $PoShHome                         = Split-Path -parent $MyInvocation.MyCommand.D
             $CommandsEndpoint                 = "$QueryCommandsAndScripts\Commands - Endpoint.csv"
             $CommandsActiveDirectory          = "$QueryCommandsAndScripts\Commands - Active Directory.csv"
 
-        # Location of Host Commands Notes
-        $CommandsHostDirectoryNotes           = "$Dependencies\Commands - Host"
-
         # Location of Event Logs Commands
-        $CommandsEventLogsDirectory           = "$Dependencies\Commands - Event Logs"
+        $CommandsEventLogsDirectory           = "$Dependencies\Event Log Info"
+
+            # CSV file of Event IDs
+            $EventIDsFile                     = "$CommandsEventLogsDirectory\Event IDs.csv"
 
             # CSV file from Microsoft detailing Event IDs to Monitor
             $EventLogsWindowITProCenter       = "$CommandsEventLogsDirectory\Individual Selection\Event Logs to Monitor - Window IT Pro Center.csv"
@@ -145,25 +381,24 @@ $PoShHome                         = Split-Path -parent $MyInvocation.MyCommand.D
     # Name of Collected Data Directory
     $CollectedDataDirectory                   = "$PoShHome\Collected Data"
         # Location of separate queries
-        $CollectedDataTimeStampDirectory      = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+        $script:CollectedDataTimeStampDirectory      = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
         # Location of Uncompiled Results
-        $script:IndividualHostResults         = "$CollectedDataTimeStampDirectory\Individual Host Results"
+        $script:IndividualHostResults         = "$script:CollectedDataTimeStampDirectory\Individual Host Results"
 
 # URL for Character Art
-# http://patorjk.com/software/taag/#p=display&h=0&f=Slant&t=PoSh-EasyWin
+# http://patorjk.com/software/taag/#p=display&h=1&f=Standard&t=Script%20%20%20Execution
 
 # This variable maintains the state of Rolling Credentials
 $script:RollCredentialsState = $false
 $script:AdminCredsToRollPasswordState = $false
 
-# The Font Used throughout PoSh-EasyWin GUI
-$Font = "Courier"
-
 # Keeps track of the number of RPC protocol commands selected, if the value is ever greater than one, it'll set the collection mode to 'Individual Execution'
 $script:RpcCommandCount = 0
 
+# If the credential parameter is provided, it will use those credentials throughout the script and for queries unless otherwise selected
+if ( $Credential ) { $script:Credential = $Credential }
 # Clears out the Credential variable. Specify Credentials provided will stored in this variable
-$script:Credential = ""
+else { $script:Credential = $null }
 
 # Check if the script is running with Administrator Privlieges, if not it will attempt to re-run and prompt for credentials
 # Not Using the following commandline, but rather the script below
@@ -195,18 +430,34 @@ Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "==================
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin Started By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
 
 # This prompts the user for accepting the GPLv3 License
-Get-Content "$Dependencies\GPLv3 Notice.txt" | Out-GridView -Title 'PoSh-EasyWin User Agreement' -PassThru | Set-Variable -Name UserAgreement
-if ($UserAgreement) { Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)" }
-else { Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt NOT Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"; exit }
-Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "===================================================================================================="
-
+if ($AcceptEULA) {
+    Write-Host -ForeGroundColor Green  "You accepted the EULA."
+    Write-Host -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+}
+else {
+    Get-Content "$Dependencies\GPLv3 Notice.txt" | Out-GridView -Title 'PoSh-EasyWin User Agreement' -PassThru | Set-Variable -Name UserAgreement
+    if ($UserAgreement) { 
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)" 
+        Write-Host -ForeGroundColor Green  "You accepted the EULA."
+        Write-Host -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+            Start-Sleep -Seconds 1
+    }
+    else { 
+        [system.media.systemsounds]::Exclamation.play()
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt NOT Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
+        Write-Host -ForeGroundColor Red    "You must accept the EULA to continue."
+        Write-Host -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+        exit 
+    }
+    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "===================================================================================================="
+}
 
 #============================================================================================================================================================
-#  __  __         _          _____                       
-#  |  \/  |  __ _ (_) _ __   |  ___|___   _ __  _ __ ___  
-#  | |\/| | / _` || || '_ \  | |_  / _ \ | '__|| '_ ` _ \ 
-#  | |  | || (_| || || | | | |  _|| (_) || |   | | | | | |
-#  |_|  |_| \__,_||_||_| |_| |_|   \___/ |_|   |_| |_| |_|                                                                                                        
+#   __  __         _            _____                       
+#  |  \/  |  __ _ (_) _ __     |  ___|___   _ __  _ __ ___  
+#  | |\/| | / _` || || '_ \    | |_  / _ \ | '__|| '_ ` _ \ 
+#  | |  | || (_| || || | | |   |  _|| (_) || |   | | | | | |
+#  |_|  |_| \__,_||_||_| |_|   |_|   \___/ |_|   |_| |_| |_|                                                                                                        
 #
 #============================================================================================================================================================
 
@@ -232,6 +483,8 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
 # Provides messages when hovering over various areas in the GUI
 . "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 
+# These are the common settings for buttons in a function
+. "$Dependencies\Code\Main Body\CommonButtonSettings.ps1"
 
 #============================================================================================================================================================
 #
@@ -537,31 +790,6 @@ $CommandsTreeViewSearchComboBox = New-Object System.Windows.Forms.ComboBox -Prop
 $Section1CommandsTab.Controls.Add($CommandsTreeViewSearchComboBox)
 
 
-function CommonButtonSettings {
-    param($Button)
-    $Button.Font      = New-Object System.Drawing.Font("$ButtonFont",11,0,0,0)
-    $Button.ForeColor = "Black"
-    $Button.Flatstyle = 'Flat'
-    $Button.UseVisualStyleBackColor = $true
-    #$Button.FlatAppearance.BorderSize        = 1
-    $Button.BackColor = 'LightGray'
-    $Button.FlatAppearance.BorderColor        = [System.Drawing.Color]::Gray
-    $Button.FlatAppearance.MouseDownBackColor = [System.Drawing.Color]::DimGray
-    $Button.FlatAppearance.MouseOverBackColor = [System.Drawing.Color]::DarkGray
-    <#
-    $Button.BackColor = 'LightSkyBlue'
-    $Button.FlatAppearance.BorderColor        = [System.Drawing.Color]::Gray
-    $Button.FlatAppearance.MouseDownBackColor = [System.Drawing.Color]::DodgerBlue
-    $Button.FlatAppearance.MouseOverBackColor = [System.Drawing.Color]::PowderBlue
-
-    $contextMenuStrip1 = New-Object System.Windows.Forms.ContextMenuStrip
-    $contextMenuStrip1.Items.Add("Item 1")
-    $contextMenuStrip1.Items.Add("Item 2")  
-    $Button.ShortcutsEnabled = $false
-    $Button.ContextMenuStrip = $contextMenuStrip1
-    #>
-}
-
 #-----------------------------------
 # Commands TreeView - Search Button
 #-----------------------------------
@@ -577,6 +805,7 @@ $CommandsTreeViewSearchButton = New-Object System.Windows.Forms.Button -Property
 }
 $Section1CommandsTab.Controls.Add($CommandsTreeViewSearchButton)
 CommonButtonSettings -Button $CommandsTreeViewSearchButton
+
 
 #-----------------------------------------
 # Commands Treeview - Deselect All Button
@@ -3837,7 +4066,7 @@ $MainCenterMainTab.Controls.Add($DirectoryListLabel)
 . "$Dependencies\Code\System.Windows.Forms\TextBox\CollectionSavedDirectoryTextBox.ps1"
 $script:CollectionSavedDirectoryTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Name     = "Saved Directory List Box"
-    Text     = $CollectedDataTimeStampDirectory
+    Text    = $SaveDirectory
     Location = @{ X = $Column3RightPosition
                   Y = $DirectoryListLabel.Location.Y + $DirectoryListLabel.Size.Height } 
     Size     = @{ Width  = 354
@@ -5102,17 +5331,6 @@ $Section3ManageListTab.Controls.Add($ComputerTreeNodeSaveButton)
 CommonButtonSettings -Button $ComputerTreeNodeSaveButton
 
 
-#####################################################################
-#####################################################################
-#####################################################################
-##
-## Section 3 Bottom Area
-##
-#####################################################################
-#####################################################################
-#####################################################################
-
-
 #----------------
 # Status LIstBox
 #----------------
@@ -5448,7 +5666,7 @@ $Section3HostDataNotesAddOpNotesButton = New-Object System.Windows.Forms.Button 
 $Section3HostDataTab.Controls.Add($Section3HostDataNotesAddOpNotesButton) 
 CommonButtonSettings -Button $Section3HostDataNotesAddOpNotesButton
 
-# Mass Tgg one or multiple hosts in the computer treeview
+# Mass Tag one or multiple hosts in the computer treeview
 . "$Dependencies\Code\Tree View\Computer\Save-ComputerTreeNodeHostData.ps1" 
 
 # Checks if the Host Data has been modified and determines the text color: Green/Red
@@ -5971,14 +6189,21 @@ CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton
 . "$Dependencies\Code\Execution\Individual Execution\Query-Registry.ps1"
 
  # This sorts the command treenodes again prior to execution, mainly so 'Query History' nodes are accounted for when checking for RPC commands, it also performs another command dedup check
-. "$Dependencies\Code\Main Body\Sort-CommandTreeNode.ps1"
+. "$Dependencies\Code\Tree View\Command\Sort-CommandTreeNode.ps1"
 
 # Imports the Query History and populates the command treenode
 Update-QueryHistory
 
+# Provides $script:SectionQueryCount variable data
+. "$Dependencies\Code\Execution\Count-SectionQueries.ps1"
 
 #============================================================================================================================================================
-# CheckBox Script Handler
+#   ____               _         _       _____                          _    _               
+#  / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
+#  \___ \  / __|| '__|| || '_ \ | __|   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \ 
+#   ___) || (__ | |   | || |_) || |_    | |___  >  <|  __/| (__ | |_| || |_ | || (_) || | | |
+#  |____/  \___||_|   |_|| .__/  \__|   |_____|/_/\_\\___| \___| \__,_| \__||_| \___/ |_| |_|
+#                        |_|                                                                 
 #============================================================================================================================================================
 $ExecuteScriptHandler = {
     # Clears the Progress bars
@@ -5986,27 +6211,34 @@ $ExecuteScriptHandler = {
     $script:ProgressBarQueriesProgressBar.Value       = 0
     $script:ProgressBarEndpointsProgressBar.BackColor = 'White'
     $script:ProgressBarQueriesProgressBar.BackColor   = 'White'
-
+    if ($NoGUI){
+        $ProgressBarEndpointsCommandLine = 0
+        $ProgressBarQueriesCommandLine   = 0
+        #Write-Progress -Activity Updating -Status 'Completed: ' -PercentComplete $ProgressBarEndpointsCommandLine -CurrentOperation Endpoints
+    }
     # Clears previous Target Host values
-    $ComputerList = @()
+    if ( $ComputerSearch ) { continue }
+    else { $ComputerList = @() }
 
     if ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked) { $script:RpcCommandCount += 1 }
 
-    Sort-CommandTreeNode
-
     # Generate list of endpoints to query
-    . "$Dependencies\Code\Main Body\Generate-ComputerListToQuery.ps1"
+    if ( $ComputerSearch ){ continue }
+    else { . "$Dependencies\Code\Main Body\Generate-ComputerListToQuery.ps1" }
+
     Start-Sleep -Seconds 1
-    
+
     # Assigns the path to save the Collections to
-    $CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
-    $script:IndividualHostResults    = "$CollectedDataTimeStampDirectory\Individual Host Results"
+    $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
+    if ($SaveDirectory) { $script:CollectedDataTimeStampDirectory = $SaveDirectory }
 
-    Compile-SelectedCommandTreeNode
     
-    # Provides $script:SectionQueryCount variable data
-    . "$Dependencies\Code\Execution\Count-SectionQueries.ps1"
+    $script:IndividualHostResults    = "$script:CollectedDataTimeStampDirectory\Individual Host Results"
+    if (-Not $CommandSearch) { 
+        Sort-CommandTreeNode
 
+        Compile-SelectedCommandTreeNode
+    }
     Count-SectionQueries
 
     # The total count of queries/commands to be executed from all areas
@@ -6051,6 +6283,10 @@ $ExecuteScriptHandler = {
         $ResultsListBox.Items.Add("            SysInternals")
     }
     elseif ($EventLogsStartTimePicker.Checked -xor $EventLogsStopTimePicker.Checked) {
+        # This brings specific tabs to the forefront/front view
+        $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
         [system.media.systemsounds]::Exclamation.play()
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Error: Event Log DateTime Range Error")
@@ -6079,7 +6315,7 @@ $ExecuteScriptHandler = {
                 $MainCenterTabControl.Width  = 370
                 $MainCenterTabControl.Height = 278
             }
-        $MainRightTabControl.SelectedTab = $Section3ActionTab
+        $MainRightTabControl.SelectedTab  = $Section3ActionTab
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
         $PoShEasyWin.Refresh()
 
@@ -6098,7 +6334,7 @@ $ExecuteScriptHandler = {
         # Counts the Total Queries
         $CountCommandQueries = 0
 
-        Compile-SelectedCommandTreeNode
+        ########################Compile-SelectedCommandTreeNode
 
         # Verifies that the command is only present once. Prevents running the multiple copies of the same comand, line from using the Query History comamnds
         $CommandsCheckedBoxesSelectedTemp  = @()
@@ -6129,6 +6365,7 @@ $ExecuteScriptHandler = {
         if ($EventLogsQuickPickSelectionCheckbox.Checked) { foreach ($Query in $script:EventLogQueries) { if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) { $CountCommandQueries++ } } }
         $script:CommandsCheckedBoxesSelected          = $CommandsCheckedBoxesSelectedDedup
         $script:ProgressBarQueriesProgressBar.Maximum = $CountCommandQueries
+   
 
         # Adds executed commands to query history commands variable
         $script:QueryHistoryCommands += $script:CommandsCheckedBoxesSelected
@@ -6147,17 +6384,19 @@ $ExecuteScriptHandler = {
         # Ensures that there are to lingering jobs in memory
         Get-Job -Name "PoSh-EasyWin:*" | Remove-Job -Force -ErrorAction SilentlyContinue
 
-        ############################################################################
-        ##                                                                        ##
-        ##   Individual Execution                                                 ##
-        ##                                                                        ##
-        ############################################################################
+        #=======================================================================================================================================================================
+        #   ___             _  _         _      _                _     _____                          _    _               
+        #  |_ _| _ __    __| |(_)__   __(_)  __| | _   _   __ _ | |   | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
+        #   | | | '_ \  / _` || |\ \ / /| | / _` || | | | / _` || |   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \ 
+        #   | | | | | || (_| || | \ V / | || (_| || |_| || (_| || |   | |___  >  <|  __/| (__ | |_| || |_ | || (_) || | | |
+        #  |___||_| |_| \__,_||_|  \_/  |_| \__,_| \__,_| \__,_||_|   |_____|/_/\_\\___| \___| \__,_| \__||_| \___/ |_| |_|
+        #
+        #=======================================================================================================================================================================
         # Code that executes each command queries Individual
         # This may be slower then running commands directly with Invoke-Command as it starts multiple PowerShell instances per host
         # The mulple incstance essentiall threade up to 32 jobs, which provides the tolerance against individual queries that either hang or take forever
         # With multiple instances, each command query's status is tracked per host with a progress bar
         # These instances/jobs are one threaded when querying the same command type; eg: all process queries are multi-threaded, once their all complete it moves on to the service query
-
         function Conduct-IndividualExecution {
             $ExecutionStartTime = Get-Date 
 
@@ -6166,7 +6405,8 @@ $ExecuteScriptHandler = {
             $PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)
             $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
 
-            New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
+            $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
+            New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
 
             # This executes each selected command from the Commands' TreeView
             if ($script:CommandsCheckedBoxesSelected.count -gt 0) { . "$Dependencies\Code\Execution\Individual Execution\Execute-IndividualCommands.ps1" }
@@ -6235,7 +6475,10 @@ $ExecuteScriptHandler = {
             Completed-QueryExecution
         }
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $script:RpcCommandCount -gt 0 -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
+        if ($NoGui -and $script:RpcCommandCount -gt 0 -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
+            Conduct-IndividualExecution
+        }
+        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $script:RpcCommandCount -gt 0 -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
             Conduct-IndividualExecution
         }
         elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $script:RpcCommandCount -eq 0 ) {
@@ -6255,18 +6498,21 @@ $ExecuteScriptHandler = {
                 }
             }
         }
-        ########################################################################
-        ##                                                                    ##
-        ##  Compile all Queries into one                                      ##
-        ##                                                                    ##
-        ########################################################################
+        #=======================================================================================================================================================================
+        #    ____                          _  _            _     ____               _         _       _____                          _    _               
+        #   / ___| ___   _ __ ___   _ __  (_)| |  ___   __| |   / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
+        #  | |    / _ \ | '_ ` _ \ | '_ \ | || | / _ \ / _` |   \___ \  / __|| '__|| || '_ \ | __|   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \ 
+        #  | |___| (_) || | | | | || |_) || || ||  __/| (_| |    ___) || (__ | |   | || |_) || |_    | |___  >  <|  __/| (__ | |_| || |_ | || (_) || | | |
+        #   \____|\___/ |_| |_| |_|| .__/ |_||_| \___| \__,_|   |____/  \___||_|   |_|| .__/  \__|   |_____|/_/\_\\___| \___| \__,_| \__||_| \___/ |_| |_|
+        #                          |_|                                                |_|                                                                 
+        #=======================================================================================================================================================================
         # Code that compiles individual command treenodes into one to execute
         # A single compiled query for command nodes is sent to the hosts and when results are returned are automatcially 
         # saved to their own local csv files
         # This is faster when collecting data as only a single job per remote host is started locally for command treenode queries
         # The secondary progress bar is removed as it cannnot track compile queries
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Compiled Script' -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
+        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Compiled Script' -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
             $ExecutionStartTime = Get-Date 
             
             # Compiles the individual commands into an object hashtable '$script:QueryCommands'
@@ -6279,6 +6525,10 @@ $ExecuteScriptHandler = {
             Count-SectionQueries
 
             if ($script:SectionQueryCount -gt 0) {
+                # This brings specific tabs to the forefront/front view
+                $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
                 [system.media.systemsounds]::Exclamation.play()
                 $MessageBox = [System.Windows.Forms.MessageBox]::Show("This mode does not currently support pushing:`nSysMon, AutoRuns, and ProcMon`n`nNor does it support the following sections:`nEventLogs, Registry, File Search, Network Connections","Compiled Script Error",[System.Windows.Forms.MessageBoxButtons]::OK)
             }
@@ -6555,20 +6805,20 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
             
                 $CommandReviewEditForm.ShowDialog() | Out-Null 
 
-
-
-
                 # Executes Compiled Script if the code is verified
                 . "$Dependencies\Code\Execution\Compiled Script\Execute-CompiledScriptIfVerified.ps1"
             }
         }
 
-        ########################################################################
-        ##                                                                    ##
-        ##  Session Based Invoke-Command                                      ##
-        ##                                                                    ##
-        ########################################################################
-        # A session is established to each endpoint, to which queries are executed through
+        #=======================================================================================================================================================================
+        #   ____                   _                   ____                         _     _____                          _    _               
+        #  / ___|   ___  ___  ___ (_)  ___   _ __     | __ )   __ _  ___   ___   __| |   | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
+        #  \___ \  / _ \/ __|/ __|| | / _ \ | '_ \    |  _ \  / _` |/ __| / _ \ / _` |   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \ 
+        #   ___) ||  __/\__ \\__ \| || (_) || | | |   | |_) || (_| |\__ \|  __/| (_| |   | |___  >  <|  __/| (__ | |_| || |_ | || (_) || | | |
+        #  |____/  \___||___/|___/|_| \___/ |_| |_|   |____/  \__,_||___/ \___| \__,_|   |_____|/_/\_\\___| \___| \__,_| \__||_| \___/ |_| |_|
+        #
+        #=======================================================================================================================================================================
+        # A session is established to each endpoint, and queries are executed through it
 
         elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based' -and $script:RpcCommandCount -eq 0 -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
             $ExecutionStartTime = Get-Date 
@@ -6582,12 +6832,20 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
             $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
             $PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)
             $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)            
-            #$script:ProgressBarQueriesProgressBar.Maximum = $CommandCountTotalBothQueryAndSection
-            $script:ProgressBarQueriesProgressBar.Maximum = ($script:CommandsCheckedBoxesSelected).count
+            #$script:ProgressBarQueriesProgressBar.Maximum = $CommandCountTotalBothQueryAndSection           
+            if ($NoGUI) { $ProgressBarQueriesCommandLineMaximum = ($script:CommandsCheckedBoxesSelected).count }
 
-            New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
+            $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
+            New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
 
-            $PSSession = New-PSSession -ComputerName $ComputerList | Sort-Object ComputerName
+            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                if (!$script:Credential) { Create-NewCredentials }
+                $PSSession = New-PSSession -ComputerName $ComputerList -Credential $script:Credential | Sort-Object ComputerName
+            }
+            else {
+                $PSSession = New-PSSession -ComputerName $ComputerList | Sort-Object ComputerName
+            }
+
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Session Based Collection Started to $($PSSession.count) Endpoints"
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
 
@@ -6600,7 +6858,7 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
             elseif ($PSSession.count -gt 1) { 
                 $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Sessions Created to $($PSSession.count) Endpoints")
             }
-            else {
+            else {                
                 $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  No Sessions Created")
                 [system.media.systemsounds]::Exclamation.play()
             }
@@ -6702,6 +6960,9 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
         $PoShEasyWin.Refresh()
 }
 
+# Selects the computers to query using command line parameters and arguments
+. "$Dependencies\Code\Execution\Command Line\Select-ComputersAndCommandsFromCommandLine.ps1"
+
 # This needs to be here to execute the script
 # Note the Execution button itself is located in the Select Computer section
 $ComputerListExecuteButton.Add_Click($ExecuteScriptHandler)
@@ -6717,4 +6978,10 @@ $OnLoadForm_StateCorrection = { $PoShEasyWin.WindowState = $InitialFormWindowSta
 $PoShEasyWin.add_Load($OnLoadForm_StateCorrection)
 
 #Show the Form
-$PoShEasyWin.ShowDialog() | Out-Null 
+if ($NoGUI) {
+    #Write-Host -ForegroundColor Green 'Using PoSh-EasyWin in command line mode.'
+    continue
+}
+else {
+    $PoShEasyWin.ShowDialog() | Out-Null 
+}

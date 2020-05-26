@@ -1,18 +1,18 @@
 # PoSh-EasyWin
 #### PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs
-#### Formerly known as: PoSh-ACME
+#### Formerly known as: PoSh-ACME (Anayst Collection Made Easy)
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v.4.0                                                          |
-|  Author        |  high101bro                                                     |
+|  Version       |  v.4.1                                                          |
+|  Author        |  Dan Komnick (high101bro)                                       |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
 |  Requirements  |  PowerShell v3 (Ideally v5)                                     |
 |                |  WinRM and/or DCOM/RPC                                          |
 |  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe              |
 |                |                                                                 |
-|  Updated       |  23 APR 2020                                                    |
+|  Updated       |  26 May 2020                                                    |
 |  Created       |  21 AUG 2018                                                    |
 
 ***
@@ -31,7 +31,7 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 ***
 ### Executing Queries
 
-![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot001.jpg)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PoSh-EasyWin_GUI.png)
 
 PoSh-EasyWin is a tool that allows you to run any number of queries against any number of hosts. The queries primarily consist of one liner commands, but several are made of scripts that allows for more comprehensive results. PoSh-EasyWin consists of queries speicific for endpoiint hosts and servers in an Active Directory domain. It allows you to easily query event logs from multiple sources within specified date ranges; query for filenames, parts of filenames, file hashes in any number of specified directores at any recursion depth; query for network connections by IP addresses, ports, and connections started by specified process names. 
 
@@ -39,9 +39,9 @@ PoSh-EasyWin is a tool that allows you to run any number of queries against any 
 ***
 ### Query Selection Features
 
-|![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot002.jpg)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot016.jpg)|
+|![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandToolTip.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandHighLighting.png)|
 |:-----------------:|:--------------------:|
-|  Command Preview  |  Query Highlighting  |
+|  Command Preview  |  Tree Highlighting  |
 
 Queries are organized and displayed by Method and Commands. The Method view displays queries nested within RPC or WinRM categories followed by they type of command. The Commands view displays queries by they type of commands, with the RPC/WinRM command types nested within. For ease of viewing, commands and their category are highlighted blue when selected, and also maintain selection when changing between views. Selecting commands and endpoints by way of a simple checkbox clicks has the benefit of preventing errors on commandline and increase the speed of querying for data. A preview of the command is provided as queries are hovered over to provide the user with a basic understanding of what is being executed. Category checkboxes allows for all sub-checkboxes to automatiicaly be checked. You can use the search feature to find commands by full or partial name, and even by tags.
 
@@ -49,7 +49,7 @@ Queries are organized and displayed by Method and Commands. The Method view disp
 ***
 ### Resource Files
 
-|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot027.jpg)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot006.jpg)  |
+|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/LookupTables.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Sysinternals.png)  |
 |:-----------------------------:|:-----------------------------:|
 |  Suports VariosLookup Tables  |  Sysinternals Tools Provided  |
 
@@ -68,9 +68,9 @@ Queries are returned in a csv format for easy review and can be viewed with Powe
 ***
 ### PowerShell Charts
 
-|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot019.jpg)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ProcessesDonut.PNG)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ProcessesWorkingSetSize.PNG)  |
-|:------------------------:|:-----------------------:|:----------------------:|
-| Example of an AutoChart  |  Build Your Own Donut   |  Build Your Own Graph  |
+|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboard.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-Series.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesAlterateChartPie.png)  |
+|:-------------------------------:|:----------------------------------:|:--------------------------------:|
+| Example of a Process Dashboard  |  Comapre with Multi-Series Chart   |  Supports Alternate Chart Types  |
 
 Charts can be built to represent the data visually rather than just filterable lists. There are two ways to use charts, 1) Auto Create Charts and 2) Build Chart. Both options allow you simple save the chart as an image with a simple push of a button, but only the Auto Create Charts supports the feature to automatically save charts generated. To do this,  go to the Options tab you can select where they are saved automatically. 
 1. <b>Auto Create Charts</b> - There are several preselect charts that can be automatically created. This are created as bar charts, and provide you the option to view the Baseline (the very first of that query type), Previous, and Most Recent query results. You can create a chart with multiple series, otherwise stated as showing up to all tree at the save time. This is useful useful to compare results from different collections and automaticially only shows endpoints that are common between each query. Note that the more endpoints within a query, the longer it takes to generate the chart; especially if doing more than one series.

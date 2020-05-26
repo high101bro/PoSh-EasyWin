@@ -5,12 +5,12 @@ $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 foreach ($TargetComputer in $ComputerList) {
     param(
-        $CollectedDataTimeStampDirectory, 
+        $script:CollectedDataTimeStampDirectory, 
         $script:IndividualHostResults, 
         $CollectionName,
         $TargetComputer
     )
-    Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $CollectedDataTimeStampDirectory `
+    Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                             -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                             -TargetComputer $TargetComputer
     Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName

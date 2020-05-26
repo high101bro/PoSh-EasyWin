@@ -1,4 +1,0 @@
-====================================================================================================
-Named Pipes
-====================================================================================================
-   A pipe, also known as a FIFO, is a method that allows for one-way or duplex interprocess communication (IPC) locally within a host or over a network. There are two types of pipes, named and unnamed. A traditional pipe is 'unnammed' and lasts only as long as the process. A named pipe, however, can last as long as the system is up, beyond the life of the process; it can be deleted if no longer used. Usually a named pipe appears as a file, and generally processes attach to it for IPC. Pipes are connection-oriented communication, reliable, and either byte or packet oriented.
