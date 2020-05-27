@@ -68,11 +68,13 @@ Queries are returned in a csv format for easy review and can be viewed with Powe
 ***
 ### PowerShell Charts
 
-|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboard.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboardWithTools.png)  |
+|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboard.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboardWithOptions.png)  |
 |:------------------------------:|:---------------------------------:|
 | Example of a Process Dashboard | Supports Options to Modify Charts | 
 
 |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-Series.png)           |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesAlterateChartBar.png)  |
+|:---------------------------------:|:--------------------------------:|
+
 |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesWithTools.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesAlterateChartPie.png)  |
 |:---------------------------------:|:--------------------------------:|
 | Comapre with Multi-Series Chart   |  Supports Alternate Chart Types  |
