@@ -68,10 +68,14 @@ Queries are returned in a csv format for easy review and can be viewed with Powe
 ***
 ### PowerShell Charts
 
-|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboard.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-Series.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesAlterateChartPie.png)  |
-|:-------------------------------:|:----------------------------------:|:--------------------------------:|
-| Example of a Process Dashboard  |  Comapre with Multi-Series Chart   |  Supports Alternate Chart Types  |
-
+|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboard.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboardWithTools.png)  |
+|:------------------------------:|:---------------------------------:|
+| Example of a Process Dashboard | Supports Options to Modify Charts | 
+|:------------------------------:|:---------------------------------:|
+|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-Series.png)           |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesAlterateChartBar.png)  |
+|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesWithTools.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesAlterateChartPie.png)  |
+|:---------------------------------:|:--------------------------------:|
+| Comapre with Multi-Series Chart   |  Supports Alternate Chart Types  |
 Charts can be built to represent the data visually rather than just filterable lists. There are two ways to use charts, 1) Auto Create Charts and 2) Build Chart. Both options allow you simple save the chart as an image with a simple push of a button, but only the Auto Create Charts supports the feature to automatically save charts generated. To do this,  go to the Options tab you can select where they are saved automatically. 
 1. <b>Auto Create Charts</b> - There are several preselect charts that can be automatically created. This are created as bar charts, and provide you the option to view the Baseline (the very first of that query type), Previous, and Most Recent query results. You can create a chart with multiple series, otherwise stated as showing up to all tree at the save time. This is useful useful to compare results from different collections and automaticially only shows endpoints that are common between each query. Note that the more endpoints within a query, the longer it takes to generate the chart; especially if doing more than one series.
 2. <b>Build Chart</b> - You can also explore data and build your own charts manually. This supports picking any of the query csv results, and chosing any property as the X and Y axes. Additionally, you can chose between numerous types of ways to display the data, such as horizontal or vertical bars, line or area graphs, pie or donut charts, and much more. Note that you can easily make charts where the data doesn't make sense or is even misleading if you're not sure what you're doing when selecting which properties as X and Y axes. 
