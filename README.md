@@ -68,16 +68,15 @@ Queries are returned in a csv format for easy review and can be viewed with Powe
 ***
 ### PowerShell Charts
 
-|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboard.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboardWithOptions.png)  |
 |:------------------------------:|:---------------------------------:|
+|  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboard.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartDashboardWithOptions.png)  |
 | Example of a Process Dashboard | Supports Options to Modify Charts | 
 
 Dashboards are a collection of charts generated from a single collection, such as processes. The intent is to create as many useful charts with the given dataset to provide as much visibility in to the data. This allows analysts to compare results visually and easily determine any outliers. The charts have options that can modify the chart type and well as allow you to change the amount of data displayed. You can also pivot each dashboard chart to a multi-series chart to compare baseline, previous, and most recent collections.
 
+|:---------------------------------:|:--------------------------------:|
 |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-Series.png)           |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesAlterateChartBar.png)  |
-|:---------------------------------:|:--------------------------------:|
 |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesWithTools.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ChartMulti-SeriesAlterateChartPie.png)  |
-|:---------------------------------:|:--------------------------------:|
 | Comapre with Multi-Series Chart   |  Supports Alternate Chart Types  |
 
 Charts can be built to represent the data visually rather than just filterable lists. There are two ways to use charts, 1) Auto Create Charts and 2) Build Chart. Both options allow you simple save the chart as an image with a simple push of a button, but only the Auto Create Charts supports the feature to automatically save charts generated. To do this,  go to the Options tab you can select where they are saved automatically. 
