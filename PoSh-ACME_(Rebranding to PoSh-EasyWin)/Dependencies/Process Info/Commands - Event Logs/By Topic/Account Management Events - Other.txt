@@ -1,9 +1,0 @@
-====================================================================================================
-Other Account Management Events
-====================================================================================================
-Base Command Ran:
-   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4782') OR (EventCode='4793'))"
-====================================================================================================
-https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-other-account-management-events
-4782(S): The password hash an account was accessed.
-4793(S): The Password Policy Checking API was called.

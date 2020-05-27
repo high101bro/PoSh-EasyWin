@@ -1,6 +1,0 @@
-====================================================================================================
-Drivers - Valid Signatures
-====================================================================================================
-   Gets information about the authenticode signature for System Drivers. If the 
-file is not signed, the information is retrieved, but the fields are blank.
-

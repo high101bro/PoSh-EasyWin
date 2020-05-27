@@ -1,0 +1,33 @@
+2020/05/27 13:08:01  ====================================================================================================
+2020/05/27 13:08:01  PoSh-EasyWin Started By: MOBILELAB\admin
+2020/05/27 13:08:02  PoSh-EasyWin User Agreemennt Accepted By: MOBILELAB\admin
+2020/05/27 13:08:03  ====================================================================================================
+2020/05/27 13:09:09  Attempting to Establish Sessions to 6 Endpoints
+2020/05/27 13:09:09  [!] Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:09:21  Created New Credentials and stored them locally as an XML using Windows Data Protection API.
+2020/05/27 13:09:23  Session Based Collection Started to 6 Endpoints
+2020/05/27 13:09:23  New-PSSession -ComputerName Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:09:27  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-NetIPAddress } | Select-Object -Property PSComputerName, IPAddress, InterfaceIndex, InterfaceAlias, AddressFamily, Type, PrefixLength, PrefixOrigin, SuffixOrigin, AddressState, ValidLifetime, PreferredLifetime, SkipAsSource, PolicyStore); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-NetIPAddress } | Select-Object -Property PSComputerName, IPAddress, InterfaceIndex, InterfaceAlias, AddressFamily, Type, PrefixLength, PrefixOrigin, SuffixOrigin, AddressState, ValidLifetime, PreferredLifetime, SkipAsSource, PolicyStore } -argumentlist Invoke-Command -ScriptBlock { Get-NetIPAddress } | Select-Object -Property PSComputerName, IPAddress, InterfaceIndex, InterfaceAlias, AddressFamily, Type, PrefixLength, PrefixOrigin, SuffixOrigin, AddressState, ValidLifetime, PreferredLifetime, SkipAsSource, PolicyStore -Session $PSSession
+2020/05/27 13:09:27  Remove-PSSession -ComputerName Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:12:12  Attempting to Establish Sessions to 6 Endpoints
+2020/05/27 13:12:12  [!] Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:12:12  Session Based Collection Started to 6 Endpoints
+2020/05/27 13:12:12  New-PSSession -ComputerName Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:12:13  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description } -argumentlist Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description -Session $PSSession
+2020/05/27 13:12:13  Remove-PSSession -ComputerName Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:13:59  Credentials Used: administrator@mobilelab.home
+2020/05/27 13:13:59  Enter-PSSession -ComputerName Win81-05
+2020/05/27 13:14:23  Attempting to Establish Sessions to 6 Endpoints
+2020/05/27 13:14:23  [!] Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:14:24  Session Based Collection Started to 6 Endpoints
+2020/05/27 13:14:24  New-PSSession -ComputerName Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:14:24  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description } -argumentlist Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description -Session $PSSession
+2020/05/27 13:14:24  Remove-PSSession -ComputerName Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:14:54  Credentials Used: administrator@mobilelab.home
+2020/05/27 13:14:54  Enter-PSSession -ComputerName Win81-05
+2020/05/27 13:15:41  Attempting to Establish Sessions to 6 Endpoints
+2020/05/27 13:15:41  [!] Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:15:42  Session Based Collection Started to 6 Endpoints
+2020/05/27 13:15:42  New-PSSession -ComputerName Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09
+2020/05/27 13:15:43  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description } -argumentlist Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description -Session $PSSession
+2020/05/27 13:15:43  Remove-PSSession -ComputerName Win81-05, Win81-05a, Win81-06, Win81-07, Win81-08, Win81-09

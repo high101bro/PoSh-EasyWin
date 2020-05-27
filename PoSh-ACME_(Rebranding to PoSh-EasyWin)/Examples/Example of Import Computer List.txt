@@ -1,5 +1,0 @@
-CompList1
-CompList2
-CompList3
-CompList4
-CompList5
