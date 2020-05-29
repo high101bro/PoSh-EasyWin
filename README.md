@@ -39,7 +39,7 @@ PoSh-EasyWin is a tool that allows you to run any number of queries against any 
 ***
 ### Query Selection Features
 
-|![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandToolTip.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandHighLighting.png)| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/QueryHistory.png) |
+| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandToolTip.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandHighLighting.png) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/QueryHistory.png) |
 |:-----------------:|:-------------------:|:---------------:|
 |  Command Preview  |  Tree Highlighting  |  Query History  |
 
@@ -125,9 +125,9 @@ The computers tree view displays the computers either by Operating Systems (OS) 
 
 ***
 ***
-### Manage the Computer Treeview with Context Menus and t
+### Manage the Computer Treeview via the Context Menu and Manage List Tab
 
-| ![Alt Text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ContextMenu.jpg) | ![Alt Text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabManageList.png) |
+| ![Alt Text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ContextMenu.png) | ![Alt Text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabManageList.png) |
 |:------------------------------:|:---------------------------------:|
 |          Context Menu          |     Import Endpoints/Hostnames    |
 
