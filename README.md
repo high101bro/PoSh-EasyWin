@@ -39,7 +39,7 @@ PoSh-EasyWin is a tool that allows you to run any number of queries against any 
 ***
 ### Query Selection Features
 
-| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandToolTip.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandHighLighting.png) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/QueryHistory.png) |
+| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandToolTip.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandHighLighting.png) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandQueryHistory.png) |
 |:-----------------:|:-------------------:|:---------------:|
 |  Command Preview  |  Tree Highlighting  |  Query History  |
 
@@ -54,15 +54,6 @@ Queries are organized and displayed by Method and Commands. The Method view disp
 |  Suports VariosLookup Tables  |  Sysinternals Tools Provided  |
 
 If the Resource folder is present, it adds additional functionality. Such as the ability to select ports/protocols or Event IDs from a GUI rather than memorizing them all or looking them up externally. It also allows you to now push various Sysinternals tools to remote hosts and pull back data for analysis (procmon & autoruns); moreover, you can install sysmon to selected endpoints with XML configurations. Other items of interest in the Resource folder is the PoSh-EasyWin Icon; the Checklist, Processes, adn About tabs, and tags.
-
-***
-***
-### Query Results
-##### Easy to view with no external dependencies
-
-![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot021.jpg)
-
-Queries are returned in a csv format for easy review and can be viewed with PowerShell's native Out-GridView - no need for 3rd party software like Microsoft Excel. Query results are saved in datetime folders by each query name, and are both stored individually by hosts as well as compiled all together. 
 
 ***
 ***
@@ -82,6 +73,15 @@ Dashboards are a collection of charts generated from a single collection, such a
 Charts can be built to represent the data visually rather than just filterable lists. There are two ways to use charts, 1) Auto Create Charts and 2) Build Chart. Both options allow you simple save the chart as an image with a simple push of a button, but only the Auto Create Charts supports the feature to automatically save charts generated. To do this,  go to the Options tab you can select where they are saved automatically. 
 1. <b>Auto Create Charts</b> - There are several preselect charts that can be automatically created. This are created as bar charts, and provide you the option to view the Baseline (the very first of that query type), Previous, and Most Recent query results. You can create a chart with multiple series, otherwise stated as showing up to all tree at the save time. This is useful useful to compare results from different collections and automaticially only shows endpoints that are common between each query. Note that the more endpoints within a query, the longer it takes to generate the chart; especially if doing more than one series.
 2. <b>Build Chart</b> - You can also explore data and build your own charts manually. This supports picking any of the query csv results, and chosing any property as the X and Y axes. Additionally, you can chose between numerous types of ways to display the data, such as horizontal or vertical bars, line or area graphs, pie or donut charts, and much more. Note that you can easily make charts where the data doesn't make sense or is even misleading if you're not sure what you're doing when selecting which properties as X and Y axes. 
+
+***
+***
+### Query Results
+##### Easy to view with no external dependencies
+
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot021.jpg)
+
+Queries are returned in a csv format for easy review and can be viewed with PowerShell's native Out-GridView - no need for 3rd party software like Microsoft Excel. Query results are saved in datetime folders by each query name, and are both stored individually by hosts as well as compiled all together. 
 
 ***
 ***
