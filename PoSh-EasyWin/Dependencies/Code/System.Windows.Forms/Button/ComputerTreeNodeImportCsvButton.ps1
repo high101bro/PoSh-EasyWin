@@ -16,7 +16,7 @@ $ComputerTreeNodeImportCsvButtonAdd_Click = {
     foreach ($Computer in $ComputerTreeNodeImportCsv) {
         # Checks if data already exists
         if ($script:ComputerTreeViewData.Name -contains $Computer.Name) {
-            Message-HostAlreadyExists -Message "Import .CSV:  Warning"
+            Message-HostAlreadyExists -Message "Import .CSV:  Warning" -Computer $Computer.Name
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {

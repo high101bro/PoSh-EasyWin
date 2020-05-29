@@ -3,11 +3,13 @@ function AddHost-ComputerTreeNode {
         [system.media.systemsounds]::Exclamation.play()
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Add Hostname/IP:  Error")
-        $ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Add("Error:  Enter a suitable non-default value")
+        [System.Windows.MessageBox]::Show('Enter a suitable name:
+- Cannot be blank
+- Cannot already exists
+- Cannot be the default value ','Error')
     }
     elseif ($script:ComputerTreeViewData.Name -contains $ComputerTreeNodePopupAddTextBox.Text) {
-        Message-HostAlreadyExists -Message "Add Hostname/IP:  Error"
+        Message-HostAlreadyExists -Message "Add Hostname/IP:  Error" -Computer $ComputerTreeNodePopupAddTextBox.Text
     }
     else {
         $StatusListBox.Items.Clear()
@@ -32,6 +34,7 @@ function AddHost-ComputerTreeNode {
         $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
         $script:ComputerTreeView.ExpandAll()
         $ComputerTreeNodePopup.close()
+        Save-HostData
         KeepChecked-ComputerTreeNode -NoMessage
         Update-NeedToSaveTreeView
     }

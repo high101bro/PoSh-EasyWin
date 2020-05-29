@@ -11,7 +11,7 @@ elseif ($script:SingleHostIPCheckBox.Checked -eq $false) {
     #$StatusListBox.Items.Clear()
     #$StatusListBox.Items.Add("Multiple Host Collection")
     
-    # If the root computerlist checkbox is checked, all hosts will be queried
+    # If the root computerlist checkbox is checked, All Endpoints will be queried
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
     if ($script:ComputerListSearch.Checked) { 
         foreach ($root in $AllHostsNode) { 
@@ -26,7 +26,7 @@ elseif ($script:SingleHostIPCheckBox.Checked -eq $false) {
     }     
     if ($script:TreeNodeComputerList.Checked) {
         foreach ($root in $AllHostsNode) { 
-            if ($root.text -imatch "All Hosts") {
+            if ($root.text -imatch "All Endpoints") {
                 foreach ($Category in $root.Nodes) { 
                     foreach ($Entry in $Category.nodes) { 
                         $ComputerList += $Entry.text 
@@ -36,7 +36,7 @@ elseif ($script:SingleHostIPCheckBox.Checked -eq $false) {
         }
     }
     foreach ($root in $AllHostsNode) {         
-        # This loop will select all hosts in a Category    
+        # This loop will select All Endpoints in a Category    
         foreach ($Category in $root.Nodes) {
             if ($Category.Checked) {
                 foreach ($Entry in $Category.Nodes) {

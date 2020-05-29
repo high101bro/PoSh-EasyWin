@@ -4,7 +4,7 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v.4.1                                                          |
+|  Version       |  v.4.2                                                          |
 |  Author        |  Dan Komnick (high101bro)                                       |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
@@ -12,7 +12,7 @@
 |                |  WinRM and/or DCOM/RPC                                          |
 |  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe              |
 |                |                                                                 |
-|  Updated       |  26 May 2020                                                    |
+|  Updated       |  28 May 2020                                                    |
 |  Created       |  21 AUG 2018                                                    |
 
 ***
@@ -39,9 +39,9 @@ PoSh-EasyWin is a tool that allows you to run any number of queries against any 
 ***
 ### Query Selection Features
 
-|![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandToolTip.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandHighLighting.png)|
-|:-----------------:|:--------------------:|
-|  Command Preview  |  Tree Highlighting  |
+|![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandToolTip.png)  |  ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandHighLighting.png)| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/QueryHistory.png) |
+|:-----------------:|:-------------------:|:---------------:|
+|  Command Preview  |  Tree Highlighting  |  Query History  |
 
 Queries are organized and displayed by Method and Commands. The Method view displays queries nested within RPC or WinRM categories followed by they type of command. The Commands view displays queries by they type of commands, with the RPC/WinRM command types nested within. For ease of viewing, commands and their category are highlighted blue when selected, and also maintain selection when changing between views. Selecting commands and endpoints by way of a simple checkbox clicks has the benefit of preventing errors on commandline and increase the speed of querying for data. A preview of the command is provided as queries are hovered over to provide the user with a basic understanding of what is being executed. Category checkboxes allows for all sub-checkboxes to automatiicaly be checked. You can use the search feature to find commands by full or partial name, and even by tags.
 
@@ -85,14 +85,20 @@ Charts can be built to represent the data visually rather than just filterable l
 
 ***
 ***
-### Multi-Threaded
-##### Faster! Don't be hindered with unresponsive hosts.
+### Session Based
+##### Much faster than most traditional scripts!
+
+Queries by default are session based, as opposed to individually executed. A session is established to each host and all selected queries are tunneled through them. Endpoints that don't get an established session are removed from being queried, eliminating queries that hang due to unresponsive/non-existing hosts until they timeout.
+
+### Individual Execution via PowerShell Jobs
+##### Queries are multi-threaded, providing another faster method.
 
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot018.jpg)
 
-Unlike many other scripts that execute serially, PoSh-EasyWin executes its queries multi-threaded as Jobs (up to 32 at a time by default). This prevents the script from hanging if one query or host is unresponsive. Additionly, there are two progress bars provided: 
+Unlike many other scripts that execute serially, PoSh-EasyWin can execute its queries multi-threaded with PowerShell Jobs (up to 32 at a time by default). This prevents the script from hanging if one query or host is unresponsive. Additionly, there are two progress bars provided: 
 1. The <b>Section</b> progress bar shows the status of the number of endpoints that have completed a given query while 
 2. The <b>Overall</b> progress bar shows the status how many queries have been completed altogether. It is recommended that you don't run excessive queries against excessive number of endpoints. Aside from poor tradecraft, excessive queries can take a long time to process.
+
 
 ***
 ***
@@ -119,21 +125,32 @@ The computers tree view displays the computers either by Operating Systems (OS) 
 
 ***
 ***
-### Managing Computer Treeview
+### Manage the Computer Treeview with Context Menus and t
 
-![Alt Text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot015.jpg)
+| ![Alt Text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ContextMenu.jpg) | ![Alt Text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabManageList.png) |
+|:------------------------------:|:---------------------------------:|
+|          Context Menu          |     Import Endpoints/Hostnames    |
 
-The computer treeview can be managed via the Manage List tab, where you can conduct the following actions: Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save.
-1) <b>Deselect All</b> - This button unchecks all categories and endpoints.
-2) <b>Collapse/Expand</b> - This button shows all endpoints within a category. Once clicked, it will become an Expand button that will show all endpoints within each category and then once again become an Expand button.
-3) <b>Import .csv</b> - This button allows you to import endpoint names from a csv file. The file's needs to have one endpoint name per line under a 'Name" header field to be read in properly. Supported fields are: "Name", "OperatingSystem", "CanonicalName", "IPv4Address", "MACAddress", and "Notes" - any addtional fields will be automatically purged. PoSh-EasyWin prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
-4) <b>Import .txt</b> - This button allows you to import endpoint names from a txt file. The file's needs to have one endpoint name per line to be read in properly. The endpoints ingested will not contain OS or OU/CN metadata and will be placed within Unknown categories. They can be moved afterwareds to their proper categories with the move button. PoSh-EasyWin prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
-5) <b>Add</b> - This button allows you to manually ad an enpoint to the computer treeview. You can either select existing OS or OU/CN categories, which auto-populte, or enter new names. PoSh-EasyWin prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
-6) <b>Delete</b> - This button will delete one ore more endpoints. If a category no longer contains an endpoint after deletion, it will be automatically removed.
-7) <b>Move</b> - This button will move one or more endpoints between categories. Depending on the treeview, OS or OU/CN, it will move endpoints under a different Operating System or Organizational Unit/Canonical Name categories. You can select a category checkbox to move all endpoints contained within. If a category no longer contains an endpoint after they're moved, it will be automatically removed. If you move an endpoint to a non-existing category, it will be automatically moved to an Unknown category.
-8) <b>Rename</b> - This button renames a single endpoint name. Currently, there is no way to rename a category as it automatically selects all endoints within, thus it would attempt to rename all of them which is not permitted. There are two work arounds for this: 9) Close PoSh-EasyWin and modify the CSV file namually, or 2) Add a new endpoint, and enter a custom/New OS or OU/CN name, then move the endpoint over.
-10) <b>Save</b> - This button saves the Computer TreeView, allowing it to be loaded automatically upon the next time PoSh-EasyWin is started. The save button within the Host Data tab will both save the contents of the notes and the treeview state.
-    - <b>Note:</b> Any modification to the treeview is not saved automatically, this way you can revert if you make a mistake by just closing out PoSh-EasyWin without clicking the Save button. Conversely, if you hypothetically made a lot of changes but PoSh-EasyWin is closed untintentionally, you can recover as an auto-saved file is generated whenever you make any changes even if you don't save. Just manually delete/rename "Computer List TreeView (Saved).csv", then launch PoSh-EasyWin and import the "Computer List TreeView (Auto-Save).csv" version... (To Do: Add feature to create loading of separate files) 
+The computer treeview can be managed via Context Menues, where you can conduct the following actions: Deselect All, Collapse/Exapnd the treeview, Import .csv, Import .txt, Add, Delete, Move, Rename, and Save.
+Endpoint Specific:
+1) <b>Collapse/Expand</b> - Shows all endpoints within a category. Once clicked, it will become an Expand button that will show all endpoints within each category and then once again become an Expand button.
+2) <b>Tag</b> - Quickly tag a single endpoint with a pre-generated/manually entered tag or comment. This is added to the Host Data for later reference and is also searchable to find the endpoint.
+3) <b>Add Endpoint</b> - Manually add a single enpoint to the computer treeview. You can either select existing OS or OU/CN categories, which auto-populte, or enter new names. PoSh-EasyWin prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
+4) <b>Rename</b> - Rename a single endpoint; the previous is added to the host data notes section for later reference. Currently, there is no way to rename a category as it automatically selects all endoints within, thus it would attempt to rename all of them which is not permitted. There are two work arounds for this: 1) Close PoSh-EasyWin and modify the CSV file namually, or 2) Add a new endpoint, and enter a custom/New OS or OU/CN name, then move the endpoint over.
+5) <b>Move</b> - Move a single endpoint between categories. Depending on the treeview, OS or OU/CN, it will move endpoints under a different Operating System or Organizational Unit/Canonical Name categories. You can select a category checkbox to move all endpoints contained within. If a category no longer contains an endpoint after they're moved, it will be automatically removed. If you move an endpoint to a non-existing category, it will be automatically moved to an Unknown category.
+6) <b>Delete</b> - Delete a single endpoint. All metadata and notes on the endpoint will be lost, but any previously collected data will remain. If a category no longer contains an endpoint after deletion, it will be automatically removed.
+
+Checked Endpoints:
+1) <b>Uncheck All</b> - This button unchecks all categories and endpoints.
+2) <b>Tag All</b> - Quickly tag an endpoint with a single pre-generated/manually entered tag or comment. This is added to the Host Data for later reference and is also searchable to find the endpoint.
+3) <b>Move All</b> - This button will move one or more endpoints between categories. Depending on the treeview, OS or OU/CN, it will move endpoints under a different Operating System or Organizational Unit/Canonical Name categories. You can select a category checkbox to move all endpoints contained within. If a category no longer contains an endpoint after they're moved, it will be automatically removed. If you move an endpoint to a non-existing category, it will be automatically moved to an Unknown category.
+4) <b>Delete All</b> - This button will delete one ore more endpoints. If a category no longer contains an endpoint after deletion, it will be automatically removed.
+
+Manage List Tab has support for the following:
+1) <b>Import from AD</b> - Import endpoints and various metadata directly from Active Directory. The metadata it pulls in addition to the hostname are the Operating System, Organizational Unit/Container Name, IPv4 address, and MAC Address. You can either select an existing node that is a domain controller or enter a single hostname or ip to the left of the computer treeview.
+2) <b>Import from .csv</b> - Import endpoint names from a csv file. The file's needs to have one endpoint name per line under a 'Name" header field to be read in properly. Supported fields are: "Name", "OperatingSystem", "CanonicalName", "IPv4Address", "MACAddress", and "Notes" - any addtional fields will be automatically purged. PoSh-EasyWin prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
+3) <b>Import from .txt</b> - Import endpoint names from a txt file. The file's needs to have one endpoint name per line to be read in properly. The endpoints ingested will not contain OS or OU/CN metadata and will be placed within Unknown categories. They can be moved afterwareds to their proper categories with the move button. PoSh-EasyWin prevents you from entering duplicate endpoint names, and notifies you of the existing endpoints OS and OU/CN.
+4) <b>Save TreeView</b> - Saves the Computer TreeView, allowing it to be loaded automatically upon the next time PoSh-EasyWin is started. The save button within the Host Data tab will both save the contents of the notes and the treeview state.
 
 ***
 ***
@@ -191,6 +208,12 @@ You can view individual endpoint data and notes by selecting and highlighting, n
 8. <b>Host Notes</b> - This field is populated is data by the operator; be it manually entered or with Tags. Additionally, the Add Host Data To OpNotes button adds all text within the Host Notes to the OpNotes.
 9. <b>Save</b> - After makeing any edits to the Host Data, be sure to save immediately... otherwise you will lose your data.
 
+***
+***
+### Basic Command Line support
+##### Currently under development. The overall commandline GUI is created, with overall flow to streamline querying... as the GUI provides much, much more.
+
+
 ### This following Images are place holders for more information... and is under construction.
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot003.jpg)
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot004.jpg)
@@ -198,3 +221,25 @@ You can view individual endpoint data and notes by selecting and highlighting, n
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot007.jpg)
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot013.jpg)
 ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/ScreenShot014.jpg)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabAction.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabChecklist.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabEnumeration.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabEventLogs.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabFileSearch.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabHostData.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabManageList.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabManageListOld.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabNetworkConnections.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabNetworkConnections-SelectPorts.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabOpNotes-SelectObjects.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabOpNotes.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabOptions.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabProcesses.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabQueryExploration.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabRegistry.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/TabResults.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandLineNoGUI01.png)
+![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/CommandLineNoGUI02.png)
+
+
+

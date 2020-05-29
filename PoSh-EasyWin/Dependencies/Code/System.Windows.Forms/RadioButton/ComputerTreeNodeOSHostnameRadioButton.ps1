@@ -17,6 +17,7 @@ $ComputerTreeNodeOSHostnameRadioButtonAdd_Click = {
     $script:ComputerTreeView.Nodes.Clear()
     Initialize-ComputerTreeNodes
     Populate-ComputerTreeNodeDefaultData
+    Save-HostData
     AutoSave-HostData
     Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address }    
     KeepChecked-ComputerTreeNode

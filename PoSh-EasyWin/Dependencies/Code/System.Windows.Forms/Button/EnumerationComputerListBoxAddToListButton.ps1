@@ -4,11 +4,12 @@ $EnumerationComputerListBoxAddToListButtonAdd_Click = {
     $ResultsListBox.Items.Clear()
     foreach ($Selected in $EnumerationComputerListBox.SelectedItems) {      
         if ($script:ComputerTreeViewData.Name -contains $Selected) {
-            Message-HostAlreadyExists -Message "Port Scan Import:  Warning"
+            Message-HostAlreadyExists -Message "Port Scan Import:  Warning" -Computer $Selected
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
                 Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Selected -ToolTip $Computer.IPv4Address
+                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
                 $ResultsListBox.Items.Add("$($Selected) has been added to the Unknown category")
             }
             elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {

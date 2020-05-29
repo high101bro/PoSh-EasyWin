@@ -18,6 +18,7 @@ $ComputerTreeNodeOUHostnameRadioButtonAdd_Click = {
     }            
     $script:ComputerTreeView.Nodes.Clear()
     Initialize-ComputerTreeNodes
+    Save-HostData
     Populate-ComputerTreeNodeDefaultData
     AutoSave-HostData
 

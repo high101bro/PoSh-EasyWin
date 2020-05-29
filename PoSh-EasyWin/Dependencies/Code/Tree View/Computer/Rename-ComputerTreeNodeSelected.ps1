@@ -1,6 +1,7 @@
 function Rename-ComputerTreeNodeSelected {                       
-    if ($script:ComputerTreeViewData.Name -contains $ComputerTreeNodeRenamePopupTextBox.Text) {
-        Message-HostAlreadyExists -Message "Rename Hostname/IP:  Error"
+    if ($script:ComputerTreeViewData.Name -contains $script:ComputerTreeNodeRenamePopupTextBox.Text) {
+        Message-HostAlreadyExists -Message "Rename Hostname/IP:  Error" -computer $script:ComputerTreeNodeRenamePopupTextBox.Text
+
     }
     else {
         # Makes a copy of the checkboxed node name in the new Category
@@ -13,9 +14,15 @@ function Rename-ComputerTreeNodeSelected {
             foreach ($Category in $root.Nodes) { 
                 if ($Category.Checked) { $Category.Checked = $false }
                 foreach ($Entry in $Category.nodes) { 
-                    if ($Entry.Checked) {
-                        Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Category.Text -Entry $ComputerTreeNodeRenamePopupTextBox.text #-ToolTip "No Data Available"
+                    if ($Entry.IsSelected) {
+                        Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Category.Text -Entry $script:ComputerTreeNodeRenamePopupTextBox.text #-ToolTip "No Data Available"
                         $ComputerTreeNodeToRename.Add($Entry.text)
+
+                        $script:PreviousEndpointName = $script:EntrySelected.Text
+                        $Section3HostDataNotesTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes + "`r`nPrevious Endpoint Name: $script:PreviousEndpointName"
+                        Save-ComputerTreeNodeHostData
+                        Check-HostDataIfModified
+                        break
                     }
                 }
             }
@@ -25,8 +32,8 @@ function Rename-ComputerTreeNodeSelected {
             foreach ($root in $AllHostsNode) { 
                 foreach ($Category in $root.Nodes) { 
                     foreach ($Entry in $Category.nodes) { 
-                        if (($i -contains $Entry.text) -and ($Entry.Checked)) {
-                            $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name = $ComputerTreeNodeRenamePopupTextBox.text
+                        if (($i -contains $Entry.text) -and ($Entry.IsSelected)) {
+                            $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name = $script:ComputerTreeNodeRenamePopupTextBox.text
                             $ResultsListBox.Items.Add($Entry.text)
                             $Entry.remove()
                         }
@@ -34,10 +41,11 @@ function Rename-ComputerTreeNodeSelected {
                 }
             }
         }
+        Save-HostData
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Rename Selection:  $($ComputerTreeNodeToRename.Count) Hosts")
         $ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Add("The computer has been renamed to $($ComputerTreeNodeRenamePopupTextBox.Text)")
+        $ResultsListBox.Items.Add("The computer has been renamed to $($script:ComputerTreeNodeRenamePopupTextBox.Text)")
         Update-NeedToSaveTreeView
     }
     $ComputerTreeNodeRenamePopup.close()

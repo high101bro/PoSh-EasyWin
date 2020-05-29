@@ -192,7 +192,7 @@ while ($true) {
             $PoShEasyWin.Refresh()
         }
     }
-    # Breaks the loop when Sysmon is running on all hosts or the job time is exceeded
+    # Breaks the loop when Sysmon is running on All Endpoints or the job time is exceeded
     if ( ((Invoke-Command -ScriptBlock {param($SysmonName) Get-Service -Name "$SysmonName" -ErrorAction SilentlyContinue } -ArgumentList $SysmonName -Session $PSSession).PScomputerName).count -eq $PSSession.count ) {
         break
     }

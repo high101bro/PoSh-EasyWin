@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.4.1
+    Version        : v.4.2
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -27,10 +27,10 @@
                                      TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
     Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe
 
-    Updated        : 26 MAY 2020
+    Updated        : 28 MAY 2020
     Created        : 21 AUG 2018
 
-    Author         : Dan Komnick (high101bro)
+    Author         : Daniel Komnick (high101bro)
     Email          : high101bro@gmail.com
     Website        : https://github.com/high101bro/PoSh-EasyWin
 
@@ -340,7 +340,6 @@ $PoShHome                         = Split-Path -parent $MyInvocation.MyCommand.D
     # Files
     $LogFile                      = "$PoShHome\Log File.txt"
     $IPListFile                   = "$PoShHome\iplist.txt"
-    $CustomPortsToScan            = "$PoShHome\Custom Ports To Scan.txt"
                                                     
     $ComputerTreeNodeFileAutoSave = "$PoShHome\Computer List TreeView (Auto-Save).csv"
     $ComputerTreeNodeFileSave     = "$PoShHome\Computer List TreeView (Saved).csv"
@@ -374,6 +373,9 @@ $PoShHome                         = Split-Path -parent $MyInvocation.MyCommand.D
 
         # CSV list of Event IDs numbers, names, and description
         $TagAutoListFile                      = "$Dependencies\Tags - Auto Populate.txt"
+
+        # list of ports that can be updated for custom port scans
+        $CustomPortsToScan            = "$Dependencies\Custom Ports To Scan.txt"
 
     # Directory where auto saved chart images are saved
     $AutosavedChartsDirectory                 = "$PoShHome\Autosaved Charts"
@@ -674,9 +676,9 @@ $script:HostQueryTreeViewSelected = ""
 # The TreeNodes are organized by the Query/Commannd Topic the queries are conducted, eg: Processes, Services
 . "$Dependencies\Code\Tree View\Command\View-CommandTreeNodeQuery.ps1"
 
-# Provides a message thst the host has already exists within the tree view
-. "$Dependencies\Code\Tree View\Command\Message-HostAlreadyExists"
-
+# Deselects all nodes within the indicated treeview
+. "$Dependencies\Code\Main Body\DeselectAllCommands.ps1"
+. "$Dependencies\Code\Main Body\DeselectAllComputers.ps1"
 
 #============================================================================================================================================================
 # Commands - Treeview Options at the top
@@ -811,7 +813,6 @@ CommonButtonSettings -Button $CommandsTreeViewSearchButton
 # Commands Treeview - Deselect All Button
 #-----------------------------------------
 . "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeviewDeselectAllButton.ps1"
-. "$Dependencies\Code\Main Body\DeselectAllCommands.ps1"
 $CommandsTreeviewDeselectAllButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Deselect All'
     Location = @{ X = 335
@@ -4648,6 +4649,225 @@ $PoShEasyWin.Controls.Add($ComputerTreeNodeSearchButton)
 CommonButtonSettings -Button $ComputerTreeNodeSearchButton
 
 
+# Code to remove empty categoryies
+. "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1"
+Remove-EmptyCategory
+
+
+$ComputerListContextMenuStrip = New-Object System.Windows.Forms.ContextMenuStrip -Property @{
+    ShowCheckMargin = $false
+    ShowImageMargin = $false
+    ShowItemToolTips = $True
+    Width    = 100
+    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    ForeColor = 'Black'
+}
+        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+            Text      = "Select an Endpoint"
+            Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
+            ForeColor = 'Blue'
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+        $ComputerListContextMenuStrip.Items.Add('-')
+
+        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+            Text      = "Left-Click an Endpoint Node,`r`nthen Right-Click for more Options"
+            ForeColor = 'DarkRed'
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListCollapseToolStripButton.ps1"
+        $ComputerListCollapseToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Collapse"
+            Add_CLick = $ComputerListCollapseToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListCollapseToolStripButton)
+
+        . "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1"
+        . "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListAddEndpointToolStripButton.ps1"
+        $ComputerListAddEndpointToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Add Endpoint"
+            Add_CLick = $ComputerListAddEndpointToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListAddEndpointToolStripButton)
+
+        $ComputerListContextMenuStrip.Items.Add('-')
+
+        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+            Text      = 'Checked Endpoints'
+            Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
+            ForeColor = 'Blue'
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+        $ComputerListContextMenuStrip.Items.Add('-')
+
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
+        $ComputerListDeselectAllToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Uncheck All"
+            Add_CLick = $ComputerListDeselectAllToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListDeselectAllToolStripButton)
+
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
+        $ComputerListMassTagToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Tag All"
+            Add_CLick = $ComputerListTagAllCheckedToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListMassTagToolStripButton)
+
+        . "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNodeSelected.ps1"
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
+        $ComputerListMoveToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Move All"
+            Add_CLick = $ComputerListMoveAllCheckedToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListMoveToolStripButton)
+       
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
+        $ComputerListDeleteToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Delete All"
+            Add_CLick = $ComputerListDeleteAllCheckedToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListDeleteToolStripButton)
+
+        # The following are used within Conduct-TreeNodeAction via the ContextMenuStips
+        # They're placed here to be loaded once, rather than multiple times 
+        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
+
+
+
+
+
+
+
+
+
+
+
+function Display-ContextMenu {
+    Create-ComputerNodeCheckBoxArray
+
+    $ComputerListContextMenuStrip.Items.Remove($ComputerListRenameToolStripButton)
+    $ComputerListContextMenuStrip = New-Object System.Windows.Forms.ContextMenuStrip -Property @{
+        ShowCheckMargin = $false
+        ShowImageMargin = $false
+        ShowItemToolTips = $True
+        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        ForeColor = 'Black'
+    }
+
+    #$ComputerListContextMenuStrip.Items.Add("$($Entry.Text)")
+    $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+        Text      = "$($Entry.Text)"
+        Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
+        ForeColor = 'Blue'
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+      
+    #$comboBoxMenuItem = New-Object System.Windows.Forms.ToolStripComboBox
+    #$comboBoxMenuItem.Items.Add('Option 1')
+    #$comboBoxMenuItem.Items.Add('Option 2')
+    #$ComputerListContextMenuStrip.Items.Add($comboBoxMenuItem)
+
+    $ComputerListContextMenuStrip.Items.Add('-')
+
+    $script:ExpandCollapseStatus = "Collapse"
+    $ComputerListCollapseToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text      = "Collapse"
+        Add_CLick = $ComputerListCollapseToolStripButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListCollapseToolStripButton)
+
+    $ComputerListTagSelectedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text      = "Tag"
+        Add_CLick = $ComputerListTagSelectedToolStripButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListTagSelectedToolStripButton)
+
+    $ComputerListAddEndpointToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text      = "Add Endpoint"
+        Add_CLick = $ComputerListAddEndpointToolStripButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListAddEndpointToolStripButton)
+
+    $ComputerListRenameToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text      = "Rename"
+        Add_CLick = $ComputerListRenameToolStripButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripButton)
+    
+    $ComputerListMoveToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text      = "Move"
+        Add_CLick = $ComputerListMoveSelectedToolStripButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListMoveToolStripButton)
+
+    $ComputerListDeleteSelectedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        #Text      = "Delete:  $($script:EntrySelected.text)"
+        Text      = "Delete"
+        Add_CLick = $ComputerListDeleteSelectedToolStripButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListDeleteSelectedToolStripButton)
+
+    
+
+    if ($script:ComputerTreeViewSelected.count -gt 0) {
+        $ComputerListContextMenuStrip.Items.Add('-')
+        #$ComputerListContextMenuStrip.Items.Add('Checked Endpoints')
+        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+            Text      = 'Checked Endpoints'
+            Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
+            ForeColor = 'Blue'
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+        $ComputerListContextMenuStrip.Items.Add('-')
+    
+        $ComputerListDeselectAllToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Uncheck All"
+            Add_CLick = $ComputerListDeselectAllToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListDeselectAllToolStripButton)
+
+        $ComputerListTagAllCheckedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Tag All"
+            Add_CLick = $ComputerListTagAllCheckedToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListTagAllCheckedToolStripButton)
+
+        $ComputerListMoveToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Move All"
+            Add_CLick = $ComputerListMoveAllCheckedToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListMoveToolStripButton)
+
+        $ComputerListDeleteAllCheckedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Delete All"
+            Add_CLick = $ComputerListDeleteAllCheckedToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListDeleteAllCheckedToolStripButton)
+    }
+
+    $Entry.ContextMenuStrip = $ComputerListContextMenuStrip
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Display-ContextMenu
+
 #-----------------------------
 # ComputerList Treeview Nodes
 #-----------------------------
@@ -4662,13 +4882,13 @@ $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     #LabelEdit         = $True  #Not implementing yet...
     ShowLines         = $True
     ShowNodeToolTips  = $True
-    #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
-    #ContextMenuStrip  = $ComputerTreeNodeContextMenuStrip #Used for ContextMenuStrip
     Add_Click         = $ComputerTreeViewAdd_Click
     Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
     Add_MouseHover    = $ComputerTreeViewAdd_MouseHover
     #Add_MouseEnter    = $ComputerTreeViewAdd_MouseEnter
     Add_MouseLeave    = $ComputerTreeViewAdd_MouseLeave
+    #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
+    ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
 }
 $script:ComputerTreeView.Sort()
 $PoShEasyWin.Controls.Add($script:ComputerTreeView)
@@ -4706,7 +4926,7 @@ $ComputerTreeNodeViewByLabel = New-Object System.Windows.Forms.Label -Property @
 $PoShEasyWin.Controls.Add($ComputerTreeNodeViewByLabel)
 
 . "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOSHostnameRadioButton.ps1"
-$ComputerTreeNodeOSHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+$script:ComputerTreeNodeOSHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
     Text     = "OS"
     Location = @{ X = $ComputerTreeNodeViewByLabel.Location.X + $ComputerTreeNodeViewByLabel.Size.Width
                   Y = $ComputerTreeNodeViewByLabel.Location.Y - 5 }
@@ -4714,16 +4934,16 @@ $ComputerTreeNodeOSHostnameRadioButton = New-Object System.Windows.Forms.RadioBu
                   Width  = 50 }
     Checked  = $True
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    Add_Click      = $ComputerTreeNodeOSHostnameRadioButtonAdd_Click
-    Add_MouseHover = $ComputerTreeNodeOSHostnameRadioButtonAdd_MouseHover
+    Add_Click      = $script:ComputerTreeNodeOSHostnameRadioButtonAdd_Click
+    Add_MouseHover = $script:ComputerTreeNodeOSHostnameRadioButtonAdd_MouseHover
 }
-$PoShEasyWin.Controls.Add($ComputerTreeNodeOSHostnameRadioButton)
+$PoShEasyWin.Controls.Add($script:ComputerTreeNodeOSHostnameRadioButton)
 
 . "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOUHostnameRadioButton.ps1"
 $ComputerTreeNodeOUHostnameRadioButton  = New-Object System.Windows.Forms.RadioButton -Property @{
     Text     = "OU / CN"
-    Location = @{ X = $ComputerTreeNodeOSHostnameRadioButton.Location.X + $ComputerTreeNodeOSHostnameRadioButton.Size.Width + 5
-                  Y = $ComputerTreeNodeOSHostnameRadioButton.Location.Y }
+    Location = @{ X = $script:ComputerTreeNodeOSHostnameRadioButton.Location.X + $script:ComputerTreeNodeOSHostnameRadioButton.Size.Width + 5
+                  Y = $script:ComputerTreeNodeOSHostnameRadioButton.Location.Y }
     Size     = @{ Height = 25
                   Width  = 75 }
     Checked  = $false
@@ -5127,42 +5347,6 @@ $Column5DownPosition = $Column5DownPositionStart
 . "$Dependencies\Code\Tree View\Computer\Update-NeedToSaveTreeView.ps1"
 
 
-#------------------------------------------------
-# Computer List - Treeview - Deselect All Button
-#------------------------------------------------
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListDeselectAllButton.ps1"
-. "$Dependencies\Code\Main Body\DeselectAllComputers.ps1"
-$ComputerListDeselectAllButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = 'Deselect All'
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight }
-    Add_Click = $ComputerListDeselectAllButtonAdd_Click
-}
-$Section3ManageListTab.Controls.Add($ComputerListDeselectAllButton) 
-CommonButtonSettings -Button $ComputerListDeselectAllButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
-
-#-----------------------------------------------------
-# Computer List - Treeview - Collapse / Expand Button
-#-----------------------------------------------------
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeCollapseAllButton.ps1"
-$ComputerTreeNodeCollapseAllButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Collapse"
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight }
-    Add_Click = $ComputerTreeNodeCollapseAllButtonAdd_Click
-}
-$Section3ManageListTab.Controls.Add($ComputerTreeNodeCollapseAllButton) 
-CommonButtonSettings -Button $ComputerTreeNodeCollapseAllButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
 
 #-------------------------------------------------------------
 # ComputerList TreeView - Import From Active Directory Button
@@ -5218,114 +5402,19 @@ CommonButtonSettings -Button $ComputerTreeNodeImportTxtButton
 $Column5DownPosition += $Column5DownPositionShift
 
 
-# Adds a host to computer treenode under the specified node
-. "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
-
-
-#----------------------------------
-# ComputerList TreeView Add Button
-#----------------------------------
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeAddHostnameIPButton.ps1"
-$ComputerTreeNodeAddHostnameIPButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Add"
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight }
-    Add_Click = $ComputerTreeNodeAddHostnameIPButtonAdd_Click
-}
-$Section3ManageListTab.Controls.Add($ComputerTreeNodeAddHostnameIPButton) 
-CommonButtonSettings -Button $ComputerTreeNodeAddHostnameIPButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
-
-#------------------------------------------
-# Computer List - Treeview - Delete Button
-#------------------------------------------
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListDeleteButton.ps1"
-$ComputerListDeleteButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Delete"
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight }
-    Add_Click = $ComputerListDeleteButtonAdd_Click
-}
-$Section3ManageListTab.Controls.Add($ComputerListDeleteButton) 
-CommonButtonSettings -Button $ComputerListDeleteButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
-
-#----------------------------------------
-# Computer List - Treeview - Move Button
-#----------------------------------------
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListMoveButton.ps1"
-$ComputerListMoveButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = 'Move'
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight }
-    Add_Click = $ComputerListMoveButtonAdd_Click
-}
-$Section3ManageListTab.Controls.Add($ComputerListMoveButton) 
-CommonButtonSettings -Button $ComputerListMoveButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
-
-#------------------------------------------
-# Computer List - Treeview - Rename Button
-#------------------------------------------
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListRenameButton.ps1"
-$ComputerListRenameButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = 'Rename'
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight }
-    Add_Click = $ComputerListRenameButtonAdd_Click
-}
-$Section3ManageListTab.Controls.Add($ComputerListRenameButton) 
-CommonButtonSettings -Button $ComputerListRenameButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
-
-#-------------------------------------
-# Computer List - TreeView - Mass Tag
-#-------------------------------------
-$script:ComputerListMassTagValue = ''
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeMassTagButton.ps1"
-$ComputerTreeNodeMassTagButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Mass Tag"
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight }
-    Add_Click = $ComputerTreeNodeMassTagButtonAdd_Click
-}
-$Section3ManageListTab.Controls.Add($ComputerTreeNodeMassTagButton) 
-CommonButtonSettings -Button $ComputerTreeNodeMassTagButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
-
 #----------------------------------------
 # Computer List - TreeView - Save Button
 #----------------------------------------
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSaveButton.ps1"
 $ComputerTreeNodeSaveButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "TreeView`nSaved"
+    Text     = "TreeView`r`nSaved"
     Location = @{ X = $Column5RightPosition
                   Y = $Column5DownPosition }
     Size     = @{ Width  = $Column5BoxWidth
                   Height = ($Column5BoxHeight * 2) - 10 }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    Add_Click               = $ComputerTreeNodeSaveButtonAdd_Click
-    Add_MouseHover          = $ComputerTreeNodeSaveButtonAdd_MouseHover
+    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Add_Click      = $ComputerTreeNodeSaveButtonAdd_Click
+    Add_MouseHover = $ComputerTreeNodeSaveButtonAdd_MouseHover
 }
 $Section3ManageListTab.Controls.Add($ComputerTreeNodeSaveButton)
 CommonButtonSettings -Button $ComputerTreeNodeSaveButton

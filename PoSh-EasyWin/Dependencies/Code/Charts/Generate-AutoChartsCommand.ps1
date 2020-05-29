@@ -246,7 +246,7 @@ function Generate-AutoChartsCommand {
         Clear-Variable -Name CSVFilePathMostRecent
         Clear-Variable -Name CsvFileMostRecentHosts
     }
-    # Creates a sorted and unique listing of all hosts (PSComputerName), this will be used to compare each csv file against
+    # Creates a sorted and unique listing of All Endpoints (PSComputerName), this will be used to compare each csv file against
     $script:CsvUniqueHosts  = @()
     $script:CsvUniqueHosts += $script:CsvAllHosts | Sort-Object -Unique
 

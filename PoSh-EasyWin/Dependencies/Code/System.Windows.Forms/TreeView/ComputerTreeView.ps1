@@ -149,8 +149,7 @@ $ComputerTreeViewAdd_AfterSelect = {
                         $Section3HostDataSelectionDateTimeComboBox.Text = "Host Data - Date & Time"
                         Check-HostDataIfModified
                     }
-
-                    if ($script:Section3HostDataNotesSaveCheck -ne $Section3HostDataNotesTextBox.Text) { 
+                    if ($script:Section3HostDataNotesSaveCheck -ne $Section3HostDataNotesTextBox.Text -and $script:FirstCheck) { 
                         [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic")
                         $verify = [Microsoft.VisualBasic.Interaction]::MsgBox(`
                             "Host Data Notes have not been saved!`n`nIf you continue without saving, any`nmodifications will be lost!`n`nDo you want to continue?",`
@@ -161,11 +160,15 @@ $ComputerTreeViewAdd_AfterSelect = {
                         'No' { $Entry.isselected -eq $true  #... this line isn't working as expected, but isn't causing errors
                             $StatusListBox.Items.Clear()
                             $StatusListBox.Items.Add($Section3HostDataNameTextBox.Text)
+                            $script:EntrySelected.isselected = $true
                         }
                         #'Cancel' { continue } #cancel option not needed
                         }
                     }
                     else { Update-HostDataNotes }
+                    
+                    #This is used to prevent the above Visual Basic script from running the first time... a bit of a workaround
+                    $script:FirstCheck = $true
                 }
             }       
         }         

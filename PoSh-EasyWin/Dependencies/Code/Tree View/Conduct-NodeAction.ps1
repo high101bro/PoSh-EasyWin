@@ -36,7 +36,12 @@ function Conduct-NodeAction {
                 }          
             }
         }
-        if ($root.isselected) { 
+        if ($root.isselected) {
+            $script:rootSelected     = $root
+            $script:CategorySelected = $null
+            $script:EntrySelected    = $null
+            Display-ContextMenu
+
             $script:HostQueryTreeViewSelected = ""
             $StatusListBox.Items.clear()
             $StatusListBox.Items.Add("Category:  $($root.Text)")
@@ -154,6 +159,11 @@ function Conduct-NodeAction {
                 }
             }            
             if ($Category.isselected) { 
+                $script:rootSelected     = $null
+                $script:CategorySelected = $Category
+                $script:EntrySelected    = $null
+                Display-ContextMenu
+
                 $script:HostQueryTreeViewSelected = ""
                 $StatusListBox.Items.clear()
                 $StatusListBox.Items.Add("Category:  $($Category.Text)")
@@ -174,6 +184,11 @@ function Conduct-NodeAction {
                 $EntryNodesWithinCategory += 1
 
                 if ($Entry.isselected) {
+                    $script:rootSelected     = $null
+                    $script:CategorySelected = $Category
+                    $script:EntrySelected    = $Entry
+                            Display-ContextMenu
+
                     $script:HostQueryTreeViewSelected = $Entry.Text
                     $StatusListBox.Items.clear()
                     $StatusListBox.Items.Add("$($Entry.Text)")
@@ -248,7 +263,7 @@ function Conduct-NodeAction {
                         $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSaveButton) 
                         $Section3QueryExplorationTabPage.Controls.Remove($Section3QueryExplorationViewScriptButton) 
                     }
-                    $MainBottomTabControl.SelectedTab   = $Section3QueryExplorationTabPage
+                    if ($TreeView -match 'Command') { $MainBottomTabControl.SelectedTab   = $Section3QueryExplorationTabPage }
                     
                     foreach ($Entry in $Category.nodes) {                     
                         if ($entry.checked) {

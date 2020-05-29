@@ -39,6 +39,6 @@ Function Completed-QueryExecution {
     $OpenCsvResultsButton.BackColor = 'LightGreen'
     $OpenXmlResultsButton.BackColor = 'LightGreen'
 
-    Deselect-AllComputers
+    #Deselect-AllComputers
     Deselect-AllCommands
 }

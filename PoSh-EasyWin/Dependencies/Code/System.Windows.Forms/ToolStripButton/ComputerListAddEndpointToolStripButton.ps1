@@ -1,8 +1,7 @@
-$ComputerTreeNodeAddHostnameIPButtonAdd_Click = {
+$ComputerListAddEndpointToolStripButtonAdd_Click = {
+
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Add hostname/IP:")
-    $ResultsListBox.Items.Clear()
-    $ResultsListBox.Items.Add("Enter a hostname/IP")
 
     #----------------------------------
     # ComputerList TreeView Popup Form
@@ -23,13 +22,6 @@ $ComputerTreeNodeAddHostnameIPButtonAdd_Click = {
         Size     = @{ Width  = 300
                       Height = 25 }
         Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
-        # Add_Load = {  }
-        # Add_AfterSelect = {  }
-        # Add_KeyDown = {  }
-        # Add_Click = {  }
-        # Add_MouseHover = {  }
-        # Add_MouseEnter = {  }
-        # Add_MouseLeave = {  }
     }
     $ComputerTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
     $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddTextBox)
@@ -38,7 +30,7 @@ $ComputerTreeNodeAddHostnameIPButtonAdd_Click = {
     # ComputerList TreeView Popup OS ComboBox
     #-----------------------------------------
     $ComputerTreeNodePopupOSComboBox  = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text     = "Select an Operating System (or type in a new one)"
+        Text = "Select an Operating System (or type in a new one)"
         Location = @{ X = 10
                       Y = $ComputerTreeNodePopupAddTextBox.Location.Y + $ComputerTreeNodePopupAddTextBox.Size.Height + 10 }
         Size     = @{ Width  = 300
@@ -48,15 +40,18 @@ $ComputerTreeNodeAddHostnameIPButtonAdd_Click = {
         Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
     $ComputerTreeNodeOSCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty OperatingSystem -Unique
+
+
     # Dynamically creates the OS Category combobox list used for OS Selection
     ForEach ($OS in $ComputerTreeNodeOSCategoryList) { $ComputerTreeNodePopupOSComboBox.Items.Add($OS) }
     $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupOSComboBox)
+
 
     #-----------------------------------------
     # ComputerList TreeView Popup OU ComboBox
     #-----------------------------------------
     $ComputerTreeNodePopupOUComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text     = "Select an Organizational Unit / Canonical Name (or type a new one)"
+        Text  = "Select an Organizational Unit / Canonical Name (or type a new one)"
         Location = @{ X = 10
                       Y = $ComputerTreeNodePopupOSComboBox.Location.Y + $ComputerTreeNodePopupOSComboBox.Size.Height + 10 }
         Size     = @{ Width  = 300
@@ -71,6 +66,19 @@ $ComputerTreeNodeAddHostnameIPButtonAdd_Click = {
     $ComputerTreeNodePopupOUComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
     $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupOUComboBox)
 
+
+    if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
+        if ($Script:CategorySelected){ $ComputerTreeNodePopupOSComboBox.Text = $Script:CategorySelected.text }
+        elseif ($Script:EntrySelected){ $ComputerTreeNodePopupOSComboBox.Text = $Script:EntrySelected.text }
+        else { $ComputerTreeNodePopupOSComboBox.Text = "Select an Operating System (or type in a new one)" }
+    }
+    elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
+        if ($Script:CategorySelected){ $ComputerTreeNodePopupOUComboBox.Text = $Script:CategorySelected.text }
+        elseif ($Script:EntrySelected){ $ComputerTreeNodePopupOUComboBox.Text = $Script:EntrySelected.text }
+        else { $ComputerTreeNodePopupOUComboBox.Text  = "Select an Organizational Unit / Canonical Name (or type a new one)" }
+    }
+
+
     #---------------------------------------------
     # ComputerList TreeView Popup Add Host Button
     #---------------------------------------------
@@ -83,11 +91,12 @@ $ComputerTreeNodeAddHostnameIPButtonAdd_Click = {
     }
     CommonButtonSettings -Button $ComputerTreeNodePopupAddHostButton
     $ComputerTreeNodePopupAddHostButton.Add_Click({ AddHost-ComputerTreeNode })
-    $ComputerTreeNodePopupAddHostButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })    
+    $ComputerTreeNodePopupAddHostButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
     $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddHostButton)
 
     $script:ComputerTreeView.ExpandAll()
+    Remove-EmptyCategory
     Populate-ComputerTreeNodeDefaultData
     AutoSave-HostData
-    $ComputerTreeNodePopup.ShowDialog()               
+    $ComputerTreeNodePopup.ShowDialog()
 }

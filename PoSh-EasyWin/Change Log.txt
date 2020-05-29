@@ -1,10 +1,32 @@
 ==================================================
-v4.2 - DATE????????????????/
+v4.2 - 28 May 2020
 ==================================================
 
+Added Context Menus for Computer TreeView
+	Individual Endpoint Selection
+	- Collapse/Expand
+	- Tag
+	- Add Endpoint
+	- Rename
+	- Move
+	- Delete
+	Checked Endpoints
+	- Uncheck All
+	- Tag All
+	- Move All
+	- Delete All
 
+Added autosave function to all all features of Computer TreeView
 
+Added confirmation when deleting computer nodes
 
+Conversely, removed all the above equivalent buttons from the Manage List Tab
+
+Developed a working concept for packet capture at each endpoint
+	- Will be implemented in the next release
+
+Fixed various bugs and optimized code
+	
 ==================================================
 v4.1 - 26 May 2020
 ==================================================

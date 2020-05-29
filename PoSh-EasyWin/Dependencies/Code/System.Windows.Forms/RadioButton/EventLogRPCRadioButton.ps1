@@ -4,7 +4,7 @@ $EventLogRPCRadioButtonAdd_Click = {
         switch ($MessageBox){
             "OK" {
                 # This brings specific tabs to the forefront/front view
-                $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
+                $MainLeftTabControl.SelectedTab   = $Section1CollectionsTab
                 $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
                 $StatusListBox.Items.Clear()
