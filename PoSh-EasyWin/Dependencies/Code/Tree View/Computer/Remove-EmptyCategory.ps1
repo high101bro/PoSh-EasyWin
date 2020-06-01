@@ -11,8 +11,8 @@ function Remove-EmptyCategory {
                 }
             }
             # Removes a category node if it is empty
-            if ($CategoryNodeContentCount -eq 0 ) { $Category.remove() 
-            [system.windows.messagebox]::show('komnick test')
+            if ($CategoryNodeContentCount -eq 0 ) { 
+                $Category.remove() 
             }
         }
     }

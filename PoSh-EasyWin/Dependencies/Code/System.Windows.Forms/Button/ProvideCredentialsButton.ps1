@@ -1,4 +1,5 @@
 $ProvideCredentialsButtonAdd_Click = {
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     # Launches the Credential Management Form
     # Provides the abiltiy to select create, select, and save credentials
     # Provides the option to enable password auto rolling

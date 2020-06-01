@@ -1,4 +1,5 @@
 $ComputerListPsExecButtonAdd_Click = {
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     Create-ComputerNodeCheckBoxArray
     if ($script:ComputerTreeViewSelected.count -eq 1) {        
         if (Verify-Action -Title "Verification: PSExec" -Question "Enter a PSEexec session to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {

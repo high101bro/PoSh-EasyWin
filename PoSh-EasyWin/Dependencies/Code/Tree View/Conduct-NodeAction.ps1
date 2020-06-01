@@ -3,7 +3,7 @@ function Conduct-NodeAction {
         $TreeView,
         [switch]$Commands,
         [switch]$ComputerList
-        )
+    )
     if ($Commands)     { $script:TreeeViewCommandsCount = 0 }
     if ($ComputerList) { $script:TreeeViewComputerListCount = 0 }
 
@@ -206,7 +206,7 @@ function Conduct-NodeAction {
                         $Section3QueryExplorationPropertiesWMITextBox.Text  = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
                         $Section3QueryExplorationWinRSWmicTextBox.Text      = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
                         $Section3QueryExplorationWinRSCmdTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
-                        $Section3QueryExplorationDescriptionTextbox.Text    = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
+                        $Section3QueryExplorationDescriptionRichTextbox.Text    = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
                     }
                     elseif ($root.text -match 'Active Directory Commands') {
                         $Section3QueryExplorationNameTextBox.Text           = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name                    
@@ -220,7 +220,7 @@ function Conduct-NodeAction {
                         $Section3QueryExplorationPropertiesWMITextBox.Text  = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
                         $Section3QueryExplorationWinRSWmicTextBox.Text      = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
                         $Section3QueryExplorationWinRSCmdTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
-                        $Section3QueryExplorationDescriptionTextbox.Text    = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description                    
+                        $Section3QueryExplorationDescriptionRichTextbox.Text    = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description                    
                     }
                     elseif ($root.text -match 'Search Results'){
                         if ($($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name) {
@@ -235,7 +235,7 @@ function Conduct-NodeAction {
                             $Section3QueryExplorationPropertiesWMITextBox.Text  = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
                             $Section3QueryExplorationWinRSWmicTextBox.Text      = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
                             $Section3QueryExplorationWinRSCmdTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
-                            $Section3QueryExplorationDescriptionTextbox.Text    = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
+                            $Section3QueryExplorationDescriptionRichTextbox.Text    = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
                         }
                         else {
                             $Section3QueryExplorationNameTextBox.Text           = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name                    
@@ -249,7 +249,7 @@ function Conduct-NodeAction {
                             $Section3QueryExplorationPropertiesWMITextBox.Text  = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
                             $Section3QueryExplorationWinRSWmicTextBox.Text      = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
                             $Section3QueryExplorationWinRSCmdTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
-                            $Section3QueryExplorationDescriptionTextbox.Text    = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description                        
+                            $Section3QueryExplorationDescriptionRichTextbox.Text    = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description                        
                         }
                     }
                     
@@ -311,6 +311,7 @@ function Conduct-NodeAction {
         if ($EventLogsEventIDsManualEntryCheckbox.Checked)           { $script:TreeeViewCommandsCount++ }
         if ($EventLogsEventIDsToMonitorCheckbox.Checked)             { $script:TreeeViewCommandsCount++ }
         if ($EventLogsQuickPickSelectionCheckbox.Checked)            { $script:TreeeViewCommandsCount++ }
+        if ($NetworkEndpointPacketCaptureCheckBox.Checked)           { $script:TreeeViewCommandsCount++ }
         if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { $script:TreeeViewCommandsCount++ }
         if ($NetworkConnectionSearchRemotePortCheckbox.checked)      { $script:TreeeViewCommandsCount++ }
         if ($NetworkConnectionSearchLocalPortCheckbox.checked)       { $script:TreeeViewCommandsCount++ }
@@ -333,4 +334,5 @@ function Conduct-NodeAction {
         $ComputerListExecuteButton.Enabled   = $true 
         CommonButtonSettings -Button $ComputerListExecuteButton
     }
+    $StatisticsRefreshButton.PerformClick()
 }

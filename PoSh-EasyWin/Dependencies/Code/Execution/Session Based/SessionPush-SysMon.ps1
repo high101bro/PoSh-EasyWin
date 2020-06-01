@@ -197,8 +197,8 @@ while ($true) {
         break
     }
     # Not supported
-    elseif ((Get-Date) -gt ( ($CollectionCommandStartTime).addseconds([int]$OptionJobTimeoutSelectionComboBox.text))) {
-        $ResultsListBox.Items.Insert(3,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Timeout: $CollectionName ($([int]$OptionJobTimeoutSelectionComboBox.Text) Seconds)")
+    elseif ((Get-Date) -gt ( ($CollectionCommandStartTime).addseconds([int]$script:OptionJobTimeoutSelectionComboBox.text))) {
+        $ResultsListBox.Items.Insert(3,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Timeout: $CollectionName ($([int]$script:OptionJobTimeoutSelectionComboBox.Text) Seconds)")
         $PoShEasyWin.Refresh()
         break 
     }

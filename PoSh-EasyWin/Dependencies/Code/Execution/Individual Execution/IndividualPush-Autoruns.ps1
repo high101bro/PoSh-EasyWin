@@ -22,9 +22,6 @@ if ($SysinternalsAutorunsRenameProcessTextBox.text -ne 'Autoruns') {
     $LocalPathForAutorunsExecutable = "$ExternalPrograms\$AutorunsExecutable"
 }
 
-        
-
-
 
 foreach ($TargetComputer in $ComputerList) {
     $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName - $TargetComputer")

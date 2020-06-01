@@ -1,7 +1,7 @@
 $CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged = {
     $SelectedIndexTemp = $this.SelectedIndex
     if ( ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked ) -and $this.SelectedItem -eq 'Session Based' ) {
-        $MessageBox = [System.Windows.Forms.MessageBox]::Show("The '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' mode does not support the RPC Protocol.`nThe 'Individual Execution' mode supports the RPC Protocol, but is much slower.`n`nDo you want to change the Event Log collection Protocol to WinRM?","RPC Protocol Alert",[System.Windows.Forms.MessageBoxButtons]::OKCancel)	
+        $MessageBox = [System.Windows.Forms.MessageBox]::Show("The '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' mode does not support the RPC Protocol.`nThe 'Individual Execution' mode supports the RPC Protocol, but slower.`n`nDo you want to change the Event Log collection Protocol to WinRM?","RPC Protocol Alert",[System.Windows.Forms.MessageBoxButtons]::OKCancel)	
         switch ($MessageBox){
             "OK" {
                 $StatusListBox.Items.Clear()

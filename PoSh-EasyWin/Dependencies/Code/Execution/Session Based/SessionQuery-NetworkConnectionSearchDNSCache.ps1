@@ -22,7 +22,7 @@ Invoke-Command -ScriptBlock {
     }
     $DNSQueryFoundList | Select-Object -Property PSComputerName, Entry, Name, Data, Type, Status, Section, TTL, DataLength
 
-} -argumentlist $($NetworkConnectionSearchDNSCache,$null) -Session $PSSession `
+} -argumentlist @($NetworkConnectionSearchDNSCache,$null) -Session $PSSession `
 | Set-Variable SessionData
 $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
 $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force

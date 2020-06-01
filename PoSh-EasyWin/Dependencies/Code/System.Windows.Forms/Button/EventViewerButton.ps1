@@ -1,4 +1,5 @@
 $EventViewerButtonAdd_Click = {
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     Create-ComputerNodeCheckBoxArray
     function Launch-EventViewer {
         if ($script:ComputerTreeViewSelected.count -gt 0) {

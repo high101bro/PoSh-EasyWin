@@ -1,6 +1,6 @@
 Function Count-SectionQueries {
     $script:SectionQueryCount = 0
-
+ 
     if ($RegistrySearchCheckbox.checked)                         { $script:SectionQueryCount++ }
     if ($FileSearchDirectoryListingCheckbox.Checked)             { $script:SectionQueryCount++ }
     if ($FileSearchFileSearchCheckbox.Checked)                   { $script:SectionQueryCount++ }
@@ -10,6 +10,7 @@ Function Count-SectionQueries {
     if ($SysinternalsProcessMonitorCheckbox.Checked)             { $script:SectionQueryCount++ }        
     if ($EventLogsEventIDsManualEntryCheckbox.Checked)           { $script:SectionQueryCount++ }
     if ($EventLogsEventIDsToMonitorCheckbox.Checked)             { $script:SectionQueryCount++ }
+    if ($NetworkEndpointPacketCaptureCheckBox.Checked)           { $script:SectionQueryCount++ }
     if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { $script:SectionQueryCount++ }
     if ($NetworkConnectionSearchRemotePortCheckbox.checked)      { $script:SectionQueryCount++ }
     if ($NetworkConnectionSearchLocalPortCheckbox.checked)       { $script:SectionQueryCount++ }

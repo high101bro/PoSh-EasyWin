@@ -3,7 +3,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
         $Section3QueryExplorationSaveButton.Text        = "Locked"
         $Section3QueryExplorationSaveButton.ForeColor   = "Green"
         $Section3QueryExplorationEditCheckBox.checked   = $false
-        $Section3QueryExplorationDescriptionTextbox.ReadOnly    = $true
+        $Section3QueryExplorationDescriptionRichTextbox.ReadOnly    = $true
         $Section3QueryExplorationWinRSCmdTextBox.ReadOnly       = $true
         $Section3QueryExplorationWinRSWmicTextBox.ReadOnly      = $true
         $Section3QueryExplorationPropertiesWMITextBox.ReadOnly  = $true
@@ -49,7 +49,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
                     Properties_WMI     = $Section3QueryExplorationPropertiesWMITextBox.Text
                     Command_WinRS_WMIC = $Section3QueryExplorationWinRSWmicTextBox.Text
                     Command_WinRS_CMD  = $Section3QueryExplorationWinRSCmdTextBox.Text
-                    Description        = $Section3QueryExplorationDescriptionTextbox.Text
+                    Description        = $Section3QueryExplorationDescriptionRichTextbox.Text
                     ExportFileName     = $Query.ExportFileName
                 }
             }
@@ -92,7 +92,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
                     Properties_WMI     = $Section3QueryExplorationPropertiesWMITextBox.Text
                     Command_WinRS_WMIC = $Section3QueryExplorationWinRSWmicTextBox.Text
                     Command_WinRS_CMD  = $Section3QueryExplorationWinRSCmdTextBox.Text
-                    Description        = $Section3QueryExplorationDescriptionTextbox.Text
+                    Description        = $Section3QueryExplorationDescriptionRichTextbox.Text
                     ExportFileName     = $Query.ExportFileName
                 }
             }
@@ -107,7 +107,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
         KeepChecked-CommandTreeNode
 
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-        $CommandTextBoxList = @($Section3QueryExplorationNameTextBox,$Section3QueryExplorationTagWordsTextBox,$Section3QueryExplorationWinRMPoShTextBox,$Section3QueryExplorationWinRMWMITextBox,$Section3QueryExplorationWinRMCmdTextBox,$Section3QueryExplorationRPCPoShTextBox,$Section3QueryExplorationRPCWMITextBox,$Section3QueryExplorationPropertiesPoshTextBox,$Section3QueryExplorationPropertiesWMITextBox,$Section3QueryExplorationWinRSWmicTextBox,$Section3QueryExplorationWinRSCmdTextBox,$Section3QueryExplorationDescriptionTextbox)
+        $CommandTextBoxList = @($Section3QueryExplorationNameTextBox,$Section3QueryExplorationTagWordsTextBox,$Section3QueryExplorationWinRMPoShTextBox,$Section3QueryExplorationWinRMWMITextBox,$Section3QueryExplorationWinRMCmdTextBox,$Section3QueryExplorationRPCPoShTextBox,$Section3QueryExplorationRPCWMITextBox,$Section3QueryExplorationPropertiesPoshTextBox,$Section3QueryExplorationPropertiesWMITextBox,$Section3QueryExplorationWinRSWmicTextBox,$Section3QueryExplorationWinRSCmdTextBox,$Section3QueryExplorationDescriptionRichTextbox)
         foreach ( $TextBox in $CommandTextBoxList ) { $TextBox.Text = '' }
         $StatusListBox.Items.Add("Command updated.")
         $ResultsListBox.Items.Clear()

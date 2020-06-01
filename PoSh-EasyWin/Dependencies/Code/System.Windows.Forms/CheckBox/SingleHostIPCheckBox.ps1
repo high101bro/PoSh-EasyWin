@@ -1,8 +1,8 @@
 $SingleHostIPCheckBoxAdd_Click = {
     if ($script:SingleHostIPCheckBox.Checked -eq $true){
-        $script:SingleHostIPTextBox.Text       = ""
-        $script:ComputerTreeView.Enabled   = $false
-        $script:ComputerTreeView.BackColor = "lightgray"
+        $script:SingleHostIPTextBox.Text      = ""
+        $script:ComputerTreeView.Enabled     = $false
+        $script:ComputerTreeView.BackColor   = "lightgray"
     }
     elseif ($script:SingleHostIPCheckBox.Checked -eq $false) {
         $script:SingleHostIPTextBox.Text = $DefaultSingleHostIPText
@@ -12,7 +12,7 @@ $SingleHostIPCheckBoxAdd_Click = {
 }
 
 $SingleHostIPCheckBoxAdd_MouseHover = {
-    Show-ToolTip -Title "Query A Single Host" -Icon "Info" -Message @"
+    Show-ToolTip -Title "Query A Single Endpoint" -Icon "Info" -Message @"
 +  Queries a single host provided in the input field,
      disabling the computer treeview list.
 +  This is compatiable with the 'Import from AD' button to pull-in

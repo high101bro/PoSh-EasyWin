@@ -1,7 +1,8 @@
 function Monitor-Jobs {
     param(
         $CollectionName,
-        [String]$SaveProperties
+        [String]$SaveProperties,
+        [switch]$NotExportFiles
     )
     # Initially updates statistics
     $StatisticsResults = Get-PoShEasyWinStatistics
@@ -11,7 +12,7 @@ function Monitor-Jobs {
     $script:ProgressBarEndpointsProgressBar.Value = 0
     
     # Sets the job timeout value, so they don't run forever
-    $JobsTimer  = [int]$($OptionJobTimeoutSelectionComboBox.Text)
+    $JobsTimer  = [int]$($script:OptionJobTimeoutSelectionComboBox.Text)
 
     # This is how often the statistics page updates, be default it is 20 which is 5 Seconds (250 ms x 4)
     $StatisticsUpdateInterval      = (1000 / $SleepMilliSeconds) * $OptionStatisticsUpdateIntervalCombobox.text
@@ -73,26 +74,28 @@ function Monitor-Jobs {
                 $JobName     = $Job.Name  -replace 'PoSh-EasyWin: ',''
                 $JobReceived = $Job | Receive-Job #-Keep 
 
-                if ($job.Location -notmatch $(($Job.Name -split ' ')[-1]) ) {
-                    if ($SaveProperties) {
-                        # This is needed because when jobs are started locally that use inovke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
-                        $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:IndividualHostResults)\$CollectionName\$JobName.csv" -NoTypeInformation
-                        $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:IndividualHostResults)\$CollectionName\$JobName.xml" 
+                if (-not $NotExportFiles) {
+                    if ($job.Location -notmatch $(($Job.Name -split ' ')[-1]) ) {
+                        if ($SaveProperties) {
+                            # This is needed because when jobs are started locally that use inovke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
+                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:IndividualHostResults)\$CollectionName\$JobName.csv" -NoTypeInformation
+                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:IndividualHostResults)\$CollectionName\$JobName.xml" 
+                        }
+                        else {
+                            # This is needed because when jobs are started locally that use inovke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
+                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-CSV    "$($script:IndividualHostResults)\$CollectionName\$JobName.csv" -NoTypeInformation
+                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-Clixml "$($script:IndividualHostResults)\$CollectionName\$JobName.xml" 
+                        }
                     }
                     else {
-                        # This is needed because when jobs are started locally that use inovke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
-                        $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-CSV    "$($script:IndividualHostResults)\$CollectionName\$JobName.csv" -NoTypeInformation
-                        $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-Clixml "$($script:IndividualHostResults)\$CollectionName\$JobName.xml" 
-                    }
-                }
-                else {
-                    if ($SaveProperties) {
-                        $JobReceived | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:IndividualHostResults)\$CollectionName\$JobName.csv" -NoTypeInformation
-                        $JobReceived | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:IndividualHostResults)\$CollectionName\$JobName.xml" 
-                    }
-                    else {
-                        $JobReceived | Export-CSV    "$($script:IndividualHostResults)\$CollectionName\$JobName.csv" -NoTypeInformation
-                        $JobReceived | Export-Clixml "$($script:IndividualHostResults)\$CollectionName\$JobName.xml" 
+                        if ($SaveProperties) {
+                            $JobReceived | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:IndividualHostResults)\$CollectionName\$JobName.csv" -NoTypeInformation
+                            $JobReceived | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:IndividualHostResults)\$CollectionName\$JobName.xml" 
+                        }
+                        else {
+                            $JobReceived | Export-CSV    "$($script:IndividualHostResults)\$CollectionName\$JobName.csv" -NoTypeInformation
+                            $JobReceived | Export-Clixml "$($script:IndividualHostResults)\$CollectionName\$JobName.xml" 
+                        }
                     }
                 }
                 $Job | Remove-Job -Force

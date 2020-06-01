@@ -11,7 +11,7 @@ Function Completed-QueryExecution {
     else {$TotalElapsedTimeOrder = @(1,2,3)}
 
     $StatusListBox.Items.Clear()
-    if ($CountCommandQueries -eq 1 -and $ComputerList.Count -eq 1) { $StatusListBox.Items.Add("Completed Executing $($CountCommandQueries) Command to $($ComputerList.Count) Endpoint") }
+    if     ($CountCommandQueries -eq 1 -and $ComputerList.Count -eq 1) { $StatusListBox.Items.Add("Completed Executing $($CountCommandQueries) Command to $($ComputerList.Count) Endpoint") }
     elseif ($CountCommandQueries -gt 1 -and $ComputerList.Count -eq 1) { $StatusListBox.Items.Add("Completed Executing $($CountCommandQueries) Commands to $($ComputerList.Count) Endpoint") }
     elseif ($CountCommandQueries -eq 1 -and $ComputerList.Count -gt 1) { $StatusListBox.Items.Add("Completed Executing $($CountCommandQueries) Command to $($ComputerList.Count) Endpoints") }
     elseif ($CountCommandQueries -eq 1 -and $ComputerList.Count -gt 1) { $StatusListBox.Items.Add("Completed Executing $($CountCommandQueries) Commands to $($ComputerList.Count) Endpoints") }

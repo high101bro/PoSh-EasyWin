@@ -3,15 +3,15 @@ Formerly known as PoSh-ACME:  PowerShell - Analyst's Collection Made Easy
 I know, I know... but who doesn't love tools with catchy acronym names? 
 Rebranded because another tool had the same name, which made it hard to locate online.
 
-     Author         : high101bro
+     Author         : Daniel Komnick (high101bro)
      Email          : high101bro@gmail.com
      Website        : https://github.com/high101bro/PoSh-EasyWin
 
-     Updated        : 23 APR 2020
+     Updated        : 01 JUN 2020
      Created        : 21 AUG 2018
 
      File Name      : PoSh-EasyWin.ps1
-     Version        : v4.0
+     Version        : v4.3
 
      Requirements   : PowerShell v3+ for PowerShell Charts
                     : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)

@@ -12,11 +12,18 @@ function Check-Connection {
     else {
         $StatusListBox.Items.Clear()    
         $StatusListBox.Items.Add("$($CheckType):  $($script:ComputerTreeViewSelected.count) hosts")    
+
+        $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerTreeViewSelected.count
+        $script:ProgressBarEndpointsProgressBar.Value   = 0
+    
+
         Start-Sleep -Milliseconds 50
         $NotReachable = @()
         foreach ($target in $script:ComputerTreeViewSelected){
             
-            if ($CheckType -eq "Ping") { $CheckCommand = Test-Connection -Count 1 -ComputerName $target }
+            if ($CheckType -eq "Ping") { 
+                $CheckCommand = Test-Connection -Count 1 -ComputerName $target 
+            }
             elseif ($CheckType -eq "WinRM Check") {
                 $CheckCommand = Test-WSman -ComputerName $target
                 # The following does a ping first...
@@ -39,13 +46,19 @@ function Check-Connection {
                 # Test-NetConnection -Port 135 -ComputerName <Target>
             }
             foreach ($line in $target){
-                if($CheckCommand){$ResultsListBox.Items.Insert(0,"$($MessageTrue):    $target"); Start-Sleep -Milliseconds 50}
+                if($CheckCommand){
+                    $ResultsListBox.Items.Insert(0,"$($MessageTrue):    $target")
+                    Start-Sleep -Milliseconds 50
+                    $PoShEasyWin.Refresh()
+                }
                 else {
                     $ResultsListBox.Items.Insert(0,"$($MessageFalse):  $target")
                     $NotReachable += $target
                     }
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message " - $CheckCommand"
-            }
+                    $PoShEasyWin.Refresh()
+                }
+            $script:ProgressBarEndpointsProgressBar.Value += 1
         }
         # Popup windows requesting user action
         [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic")

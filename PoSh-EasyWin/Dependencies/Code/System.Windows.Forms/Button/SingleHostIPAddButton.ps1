@@ -39,7 +39,7 @@ $SingleHostIPAddButtonAdd_Click = {
 }
 
 $SingleHostIPAddButtonAdd_MouseHover = {
-    Show-ToolTip -Title "Query A Single Host" -Icon "Info" -Message @"
+    Show-ToolTip -Title "Query A Single Endpoint" -Icon "Info" -Message @"
 +  Adds a single host to the computer treeview.
 +  The host is added under
 "@ 

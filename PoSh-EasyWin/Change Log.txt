@@ -1,7 +1,34 @@
 ==================================================
-v4.2 - 28 May 2020
+v4.3 - 1 June 2020
 ==================================================
 
+Added Endpoint Network Packet Capture
+	- Uses netsh trace command
+	- Able to specify duration
+	- Able to specify the max file size
+
+Added support for Progress bar for Ping, WinRM, and RPC Checks
+
+Query History update
+	- New history nodes are added with the most recent (date wise) on top
+
+Within the Query Exploration Tab, changed the Details section .textbox to .RichTextBox 
+	- Among other things, this now displays the command description where it recognizes the return cariages
+	- Also added support for copy and past...
+
+Added code to auto-select the Rusults Tab when Event Logs Quick Selection or Event Logs To Monitor are selected 
+
+Fixed bugs
+	- The endpoint name now shows up when 'Importing from AD' when using 'Query from a Single Host'.
+	- Moved SingleHostIPCheckBox.ps1 from the combobox dir to checkbox dir...oops... allows for the checkbox to correctly grey/white the treeview when checked/uncheded
+	- Moved code around to fix issue RPC command count... working now
+	- The statistics section wasn't working... ended up renaming a script file from Get-PoShACMEStatistics.ps1 to Get-PoShEasyWinStatistics.ps1 ... this one escaped me when I was upgrading the overall program name
+	- Fixed statistics counting of commands to update number of commands selected
+	- Fixed an issue where the Results List section was clearing after the execution completion
+
+==================================================
+v4.2 - 28 May 2020
+==================================================
 Added Context Menus for Computer TreeView
 	Individual Endpoint Selection
 	- Collapse/Expand

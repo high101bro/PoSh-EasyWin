@@ -1,4 +1,8 @@
-function Get-PoShEasyWinStatistics {
+function Get-PoShEasyWinStatistics {   
+    Count-SectionQueries
+    Compile-SelectedCommandTreeNode
+    $QueryCount = $script:SectionQueryCount + $script:CommandsCheckedBoxesSelected.count
+
     $StatisticsResults             = ""
     $StatisticsAllCSVFiles         = Get-Childitem -Path $CollectedDataDirectory -Recurse -Include "*.csv"
     $StatisticsAllCSVFilesMeasured = $StatisticsAllCSVFiles | Measure-Object -Property Length -Sum -Average -Maximum -Minimum
@@ -67,7 +71,7 @@ function Get-PoShEasyWinStatistics {
     [System.Windows.Forms.TreeNodeCollection]$StatisticsAllHostsNode = $script:ComputerTreeView.Nodes
     foreach ($root in $StatisticsAllHostsNode) {foreach ($Category in $root.Nodes) {foreach ($Entry in $Category.nodes) {if ($Entry.Checked) { $StatisticsComputerCount++ }}}}
     $StatisticsResults += "$('{0,-25}{1}' -f "Computers Selected:", $StatisticsComputerCount)`r`n"   
-    $StatisticsResults += "$('{0,-25}{1}' -f "Queries Selected:", $CountCommandQueries)`r`n"
+    $StatisticsResults += "$('{0,-25}{1}' -f "Queries Selected:", $QueryCount)`r`n"
 
     $ResourcesDirCheck = Test-Path -Path "$Dependencies"
     $StatisticsResults += "$('{0,-25}{1}' -f "Dependancies Check:", $ResourcesDirCheck)`r`n"

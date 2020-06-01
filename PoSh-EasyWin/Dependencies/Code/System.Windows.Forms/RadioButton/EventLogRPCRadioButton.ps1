@@ -1,6 +1,6 @@
 $EventLogRPCRadioButtonAdd_Click = {
     if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-        $MessageBox = [System.Windows.Forms.MessageBox]::Show("The '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' mode does not support the RPC Protocol.`nThe 'Individual Execution' mode supports the RPC Protocol, but is much slower.`n`nDo you want to change the collection mode to 'Individual Execution'?","RPC Protocol Alert",[System.Windows.Forms.MessageBoxButtons]::OKCancel)	
+        $MessageBox = [System.Windows.Forms.MessageBox]::Show("The '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' mode does not support the RPC Protocol.`nThe 'Individual Execution' mode supports the RPC Protocol, but slower.`n`nDo you want to change the collection mode to 'Individual Execution'?","RPC Protocol Alert",[System.Windows.Forms.MessageBoxButtons]::OKCancel)	
         switch ($MessageBox){
             "OK" {
                 # This brings specific tabs to the forefront/front view

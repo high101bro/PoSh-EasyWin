@@ -1,4 +1,5 @@
 $ComputerListPSSessionButtonAdd_Click = {
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     Create-ComputerNodeCheckBoxArray
     if ($script:ComputerTreeViewSelected.count -eq 1) {        
         if (Verify-Action -Title "Verification: PowerShell Session" -Question "Enter a PowerShell Session to the following?" -Computer $($script:ComputerTreeViewSelected)) {

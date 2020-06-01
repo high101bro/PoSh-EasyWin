@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.4.2
+    Version        : v.4.3
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -27,7 +27,7 @@
                                      TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
     Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe
 
-    Updated        : 28 MAY 2020
+    Updated        : 01 JUN 2020
     Created        : 21 AUG 2018
 
     Author         : Daniel Komnick (high101bro)
@@ -857,8 +857,7 @@ $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     ShowLines        = $True
     ShowNodeToolTips = $True
     Add_Click       = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
-    Add_AfterSelect = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
-    
+    Add_AfterSelect = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }    
 }
 $script:CommandsTreeView.Sort()
 $Section1CommandsTab.Controls.Add($script:CommandsTreeView)
@@ -1369,7 +1368,7 @@ foreach ( $Query in $script:EventLogSeverityQueries ) {
     $EventLogsEventIDsToMonitorCheckListBox.Items.Add("$($Query.EventID) [$($Query.Severity)] $($Query.Message)")    
 }
     $EventLogsEventIDsToMonitorCheckListBox.Items.Add("4624 [test] An account was successfully logged on")    
-    $EventLogsEventIDsToMonitorCheckListBox.Items.Add("4634 [test] An account was logged off")    
+    $EventLogsEventIDsToMonitorCheckListBox.Items.Add("4634 [test] An account was logged off") 
 $EventLogsEventIDsToMonitorCheckListBox.Font = New-Object System.Drawing.Font("$Font",11,0,0,0)
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorCheckListBox)
 
@@ -1957,7 +1956,7 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
 $NetworkConnectionSearchDownPosition = -10
 
 $Section1NetworkConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text     = "Network Connections"
+    Text     = "Network"
     Location = @{ X = 3
                   Y = $NetworkConnectionSearchDownPosition }
     Size     = @{ Width  = 450
@@ -1967,14 +1966,81 @@ $Section1NetworkConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
 
+#batman
+        #------------------------------------------
+        # Network - Endpoint Pcap Capture CheckBox
+        #------------------------------------------
+        $NetworkEndpointPacketCaptureCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
+            Text     = "EndPoint Packet Capture"
+            Location = @{ X = 3
+                          Y = $Section1NetworkConnectionsSearchTab.Location.Y + $Section1NetworkConnectionsSearchTab.Size.Height + 5 }
+            Size     = @{ Width  = 175
+                          Height = 22 }
+            Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+            ForeColor = 'Blue'
+            Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+        }
+        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPacketCaptureCheckBox)
 
-        #---------------------------------------------------------
-        # Network Connections Search - Remote IP Address CheckBox
-        #---------------------------------------------------------
+        #---------------------------------------
+        # Network - Endpoint Pcap Capture Label
+        #---------------------------------------
+        $NetworkEndpointPcapCaptureDurationLabel = New-Object System.Windows.Forms.Label -Property @{
+            Text     = "Duration (Secs)"
+            Location = @{ X = $NetworkEndpointPacketCaptureCheckBox.Location.X + $NetworkEndpointPacketCaptureCheckBox.Size.Width + 12
+                          Y = $NetworkEndpointPacketCaptureCheckBox.Location.Y + 5 }
+            Size     = @{ Width  = 88
+                          Height = 22 }
+            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        }
+        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPcapCaptureDurationLabel)
+
+        #------------------------------------------
+        # Network - Endpoint Pcap Capture CheckBox
+        #------------------------------------------
+        $NetworkEndpointPacketCaptureDurationTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+            Text     = "60"
+            Location = @{ X = $NetworkEndpointPcapCaptureDurationLabel.Location.X + $NetworkEndpointPcapCaptureDurationLabel.Size.Width
+                          Y = $NetworkEndpointPcapCaptureDurationLabel.Location.Y - 2 }
+            Size     = @{ Width  = 30
+                          Height = 22 }
+            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        }
+        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPacketCaptureDurationTextBox)
+
+        #---------------------------------------
+        # Network - Endpoint Pcap Capture Label
+        #---------------------------------------
+        $NetworkEndpointPcapCaptureMaxSizeLabel = New-Object System.Windows.Forms.Label -Property @{
+            Text     = "Max (MB)"
+            Location = @{ X = $NetworkEndpointPacketCaptureDurationTextBox.Location.X + $NetworkEndpointPacketCaptureDurationTextBox.Size.Width + 35
+                          Y = $NetworkEndpointPacketCaptureDurationTextBox.Location.Y + 2 }
+            Size     = @{ Width  = 60
+                          Height = 22 }
+            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        }
+        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPcapCaptureMaxSizeLabel)
+
+        #------------------------------------------
+        # Network - Endpoint Pcap Capture CheckBox
+        #------------------------------------------
+        $NetworkEndpointPacketCaptureMaxSizeTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+            Text     = "50"
+            Location = @{ X = $NetworkEndpointPcapCaptureMaxSizeLabel.Location.X + $NetworkEndpointPcapCaptureMaxSizeLabel.Size.Width
+                          Y = $NetworkEndpointPcapCaptureMaxSizeLabel.Location.Y - 2 }
+            Size     = @{ Width  = 30
+                          Height = 22 }
+            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        }
+        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPacketCaptureMaxSizeTextBox)
+
+        #---------------------------------------
+        # Network  - Remote IP Address CheckBox
+        #---------------------------------------
         $NetworkConnectionSearchRemoteIPAddressCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
             Text     = "Remote IP Address"
             Location = @{ X = 3
-                          Y = $Section1NetworkConnectionsSearchTab.Location.Y + $Section1NetworkConnectionsSearchTab.Size.Height + 5 }
+                          Y = $NetworkEndpointPacketCaptureCheckBox.Location.Y + $NetworkEndpointPacketCaptureCheckBox.Size.Height + 10 }
             Size     = @{ Width  = 180
                           Height = 22 }
             Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
@@ -1984,9 +2050,9 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemoteIPAddressCheckbox)
 
 
-        #------------------------------------------------------------------
-        # Network Connections Search - Remote IP address Selection Button
-        #------------------------------------------------------------------
+        #-----------------------------------------------
+        # Network  - Remote IP address Selection Button
+        #-----------------------------------------------
         . "$Dependencies\Code\System.Windows.Forms\Button\NetworkConnectionSearchRemoteIPAddressSelectionButton.ps1"
         $NetworkConnectionSearchRemoteIPAddressSelectionButton = New-Object System.Windows.Forms.Button -Property @{
             Text      = "Select IP Addresses"
@@ -1999,9 +2065,9 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemoteIPAddressSelectionButton) 
         CommonButtonSettings -Button $NetworkConnectionSearchRemoteIPAddressSelectionButton
 
-        #---------------------------------------------------------
-        # Network Connections Search -  Remote IP Address Textbox
-        #---------------------------------------------------------
+        #---------------------------------------
+        # Network  -  Remote IP Address Textbox
+        #---------------------------------------
         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchRemoteIPAddressRichTextbox.ps1"
         $NetworkConnectionSearchRemoteIPAddressRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines     = "Enter Remote IPs; One Per Line"
@@ -2021,9 +2087,9 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemoteIPAddressRichTextbox)
 
 
-#--------------------------------------------------------
-# Network Connections Search - Remote Port CheckBox
-#--------------------------------------------------------
+#---------------------------------
+# Network  - Remote Port CheckBox
+#---------------------------------
 $NetworkConnectionSearchRemotePortCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Remote Port"
     Location = @{ X = $NetworkConnectionSearchRemoteIPAddressCheckbox.Location.X + $NetworkConnectionSearchRemoteIPAddressCheckbox.Size.Width + 10
@@ -2037,9 +2103,9 @@ $NetworkConnectionSearchRemotePortCheckbox = New-Object System.Windows.Forms.Che
 $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemotePortCheckbox)
 
 
-        #------------------------------------------------------------------
-        # Network Connections Search - Remote Port - Port Selection Button
-        #------------------------------------------------------------------
+        #------------------------------------------------
+        # Network  - Remote Port - Port Selection Button
+        #------------------------------------------------
         . "$Dependencies\Code\System.Windows.Forms\Button\NetworkConnectionSearchRemotePortSelectionButton.ps1"
         $NetworkConnectionSearchRemotePortSelectionButton = New-Object System.Windows.Forms.Button -Property @{
             Text      = "Select Ports"
@@ -2053,9 +2119,9 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemote
         CommonButtonSettings -Button $NetworkConnectionSearchRemotePortSelectionButton         
 
 
-        #-------------------------------------------------------
-        # Network Connections Search -  Remote Port RichTextbox
-        #-------------------------------------------------------
+        #-------------------------------------
+        # Network  -  Remote Port RichTextbox
+        #-------------------------------------
         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchRemotePortRichTextbox.ps1"
         $NetworkConnectionSearchRemotePortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines     = "Enter Remote Ports; One Per Line"
@@ -2075,9 +2141,9 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemote
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemotePortRichTextbox)
 
 
-#--------------------------------------------------------
-# Network Connections Search - Local Port CheckBox
-#--------------------------------------------------------
+#--------------------------------
+# Network  - Local Port CheckBox
+#--------------------------------
 $NetworkConnectionSearchLocalPortCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Local Port"
     Location = @{ X = $NetworkConnectionSearchRemotePortCheckbox.Location.X + $NetworkConnectionSearchRemotePortCheckbox.Size.Width + 10
@@ -2091,9 +2157,9 @@ $NetworkConnectionSearchLocalPortCheckbox = New-Object System.Windows.Forms.Chec
 $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalPortCheckbox)
 
 
-        #------------------------------------------------------------------
-        # Network Connections Search - Local Port - Port Selection Button
-        #------------------------------------------------------------------
+        #-----------------------------------------------
+        # Network  - Local Port - Port Selection Button
+        #-----------------------------------------------
         . "$Dependencies\Code\System.Windows.Forms\Button\NetworkConnectionSearchLocalPortSelectionButton.ps1"
         $NetworkConnectionSearchLocalPortSelectionButton = New-Object System.Windows.Forms.Button -Property @{
             Text      = "Select Ports"
@@ -2107,9 +2173,9 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalP
         CommonButtonSettings -Button $NetworkConnectionSearchLocalPortSelectionButton
 
 
-        #-------------------------------------------------------
-        # Network Connections Search -  Local Port RichTextbox
-        #-------------------------------------------------------
+        #------------------------------------
+        # Network  -  Local Port RichTextbox
+        #------------------------------------
         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchLocalPortRichTextbox.ps1"
         $NetworkConnectionSearchLocalPortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines     = "Enter Local Ports; One Per Line"
@@ -2130,9 +2196,9 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalP
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalPortRichTextbox)
 
 
-#--------------------------------------------------------
-# Network Connections Search - Process CheckBox
-#--------------------------------------------------------
+#-----------------------------
+# Network  - Process CheckBox
+#-----------------------------
 $NetworkConnectionSearchProcessCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Process Name      (Min: Win10 / Server2016 +)"
     Location = @{ X = 3
@@ -2146,13 +2212,13 @@ $NetworkConnectionSearchProcessCheckbox = New-Object System.Windows.Forms.CheckB
 $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProcessCheckbox)
 
 
-            #--------------------------------------------
-            # Network Connections Search - Process Label
-            #--------------------------------------------
+            #--------------------------
+            # Network  - Process Label
+            #--------------------------
             $NetworkConnectionSearchProcessLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text     = "Check hosts for connections created by a given process."
                 Location = @{ X = 3
-                              Y = $NetworkConnectionSearchProcessCheckbox.Location.Y + $NetworkConnectionSearchProcessCheckbox.Size.Height + 5 }
+                              Y = $NetworkConnectionSearchProcessCheckbox.Location.Y + $NetworkConnectionSearchProcessCheckbox.Size.Height + 3 }
                 Size     = @{ Width  = 430
                               Height = 22 }
                 ForeColor = "Black"
@@ -2161,16 +2227,16 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProces
             $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProcessLabel)
 
 
-            #-----------------------------------------------
-            # Network Connections Search -  Process Textbox
-            #-----------------------------------------------
+            #-----------------------------
+            # Network  -  Process Textbox
+            #-----------------------------
             . "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchProcessRichTextbox.ps1"
             $NetworkConnectionSearchProcessRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
                 Lines    = "Enter Process Names; One Per Line"
                 Location = @{ X = 3
                               Y = $NetworkConnectionSearchProcessLabel.Location.Y + $NetworkConnectionSearchProcessLabel.Size.Height + 5 }
                 Size     = @{ Width  = 430
-                              Height = 120 }
+                              Height = 100 }
                 Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
                 MultiLine     = $True
                 ScrollBars    = "Vertical"
@@ -2183,9 +2249,9 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProces
             $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProcessRichTextbox)
 
 
-#-------------------------------------------------
-# Network Connections Search - DNS Cache CheckBox
-#-------------------------------------------------
+#-------------------------------
+# Network  - DNS Cache CheckBox
+#-------------------------------
 $NetworkConnectionSearchDNSCacheCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "DNS Cache Entry"
     Location = @{ X = 3
@@ -2199,13 +2265,13 @@ $NetworkConnectionSearchDNSCacheCheckbox = New-Object System.Windows.Forms.Check
 $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCacheCheckbox)
 
 
-            #----------------------------------------------
-            # Network Connections Search - DNS Cache Label
-            #----------------------------------------------
+            #----------------------------
+            # Network  - DNS Cache Label
+            #----------------------------
             $NetworkConnectionSearchDNSCacheLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text     = "Check hosts' DNS Cache for entries that match given criteria."
                 Location = @{ X = 3
-                              Y = $NetworkConnectionSearchDNSCacheCheckbox.Location.Y + $NetworkConnectionSearchDNSCacheCheckbox.Size.Height + 5 }
+                              Y = $NetworkConnectionSearchDNSCacheCheckbox.Location.Y + $NetworkConnectionSearchDNSCacheCheckbox.Size.Height + 3 }
                 Size     = @{ Width  = 430
                               Height = 22 }
                 Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -2214,9 +2280,9 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCac
             $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCacheLabel)
 
 
-            #-------------------------------------------------
-            # Network Connections Search -  DNS Cache Textbox
-            #-------------------------------------------------
+            #-------------------------------
+            # Network  -  DNS Cache Textbox
+            #-------------------------------
             . "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchDNSCacheRichTextbox.ps1"
             $NetworkConnectionSearchDNSCacheRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
                 Lines     = "Enter DNS query information or IP addresses; One Per Line"
@@ -3650,7 +3716,7 @@ $OpNotesDownPositionShift  = 22
 # OpNoptes - Enter your OpNotes Label
 #-------------------------------------
 $OpNotesLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text      = "Enter Your OpNotes (Auto-Timestamp):"
+    Text      = "Enter Your Operator Notes (OpNotes) - Auto-Timestamp:"
     Location = @{ X = $OpNotesRightPosition
                   Y = $OpNotesDownPosition }
     Size     = @{ Width  = $OpNotesInputTextBoxWidth
@@ -3991,7 +4057,7 @@ $DefaultSingleHostIPText = "<Type In A Hostname / IP>"
 # This checkbox highlights when selecting computers from the ComputerList
 . "$Dependencies\Code\System.Windows.Forms\Checkbox\SingleHostIPCheckBox.ps1"
 $script:SingleHostIPCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-    Text      = "Query A Single Host:"
+    Text      = "Query A Single Endpoint:"
     Location  = @{ X = 3
                    Y = 11 }
     Size      = @{ Width  = 210
@@ -4269,7 +4335,7 @@ $MainCenterTabControl.Controls.Add($Section2OptionsTab)
 # Option - Job Timeout Combobox
 #-------------------------------
 . "$Dependencies\Code\System.Windows.Forms\ComboBox\OptionJobTimeoutSelectionComboBox.ps1"
-$OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.Forms.Combobox -Property @{
+$script:OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.Forms.Combobox -Property @{
     #Text    = 600     #The default is set with the Cmdlet Parameter Options
     Text = $JobTimeOutSeconds
     Location = @{ X = 3
@@ -4278,11 +4344,11 @@ $OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.Forms.C
                   Height = 22 }
     Font     = New-Object System.Drawing.Font("$Font",9,0,3,0)
     AutoCompleteMode = "SuggestAppend" 
-    Add_MouseHover = $OptionJobTimeoutSelectionComboBoxAdd_MouseHover
+    Add_MouseHover = $script:OptionJobTimeoutSelectionComboBoxAdd_MouseHover
 }
 $JobTimesAvailable = @(15,30,45,60,120,180,240,300,600)
-ForEach ($Item in $JobTimesAvailable) { $OptionJobTimeoutSelectionComboBox.Items.Add($Item) }
-$Section2OptionsTab.Controls.Add($OptionJobTimeoutSelectionComboBox)
+ForEach ($Item in $JobTimesAvailable) { $script:OptionJobTimeoutSelectionComboBox.Items.Add($Item) }
+$Section2OptionsTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
 
 
 #----------------------------
@@ -4290,8 +4356,8 @@ $Section2OptionsTab.Controls.Add($OptionJobTimeoutSelectionComboBox)
 #----------------------------
 $OptionJobTimeoutSelectionLabel = New-Object -TypeName System.Windows.Forms.Label -Property @{
     Text     = "Job Timeout in Seconds"
-    Location = @{ X = $OptionJobTimeoutSelectionComboBox.Size.Width + 10
-                  Y = $OptionJobTimeoutSelectionComboBox.Location.Y + 3 }
+    Location = @{ X = $script:OptionJobTimeoutSelectionComboBox.Size.Width + 10
+                  Y = $script:OptionJobTimeoutSelectionComboBox.Location.Y + 3 }
     Size     = @{ Width  = 150
                   Height = 25 }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -4306,7 +4372,7 @@ $Section2OptionsTab.Controls.Add($OptionJobTimeoutSelectionLabel)
 $OptionStatisticsUpdateIntervalCombobox = New-Object System.Windows.Forms.Combobox -Property @{
     Text     = 5
     Location = @{ X = 3
-                  Y = $OptionJobTimeoutSelectionComboBox.Location.Y + $OptionJobTimeoutSelectionComboBox.Size.Height + 5 }
+                  Y = $script:OptionJobTimeoutSelectionComboBox.Location.Y + $script:OptionJobTimeoutSelectionComboBox.Size.Height + 5 }
     Size     = @{ Width  = 50
                   Height = 22 }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -5713,9 +5779,9 @@ $Section3HostDataTab.Controls.Add($Section3HostDataOUTextBox)
 . "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataIPTextBox.ps1" 
 $Section3HostDataIPTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
-                    Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + 4 }
+                  Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + 4 }
     Size     = @{ Width  = 120
-                    Height = 25 }
+                  Height = 25 }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
     ReadOnly = $false
     Add_MouseHover = $Section3HostDataIPTextBoxAdd_MouseHover
@@ -6152,7 +6218,7 @@ $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationWi
 #---------------------------------
 # Query Exploration - Description
 #---------------------------------
-$Section3QueryExplorationDescriptionTextbox = New-Object System.Windows.Forms.TextBox -Property @{
+$Section3QueryExplorationDescriptionRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Location   = @{ X = $Section3QueryExplorationNameTextBox.Location.X + $Section3QueryExplorationNameTextBox.Size.Width + 10 
                     Y = $Section3QueryExplorationNameTextBox.Location.Y }
     Size       = @{ Width  = 428
@@ -6162,8 +6228,9 @@ $Section3QueryExplorationDescriptionTextbox = New-Object System.Windows.Forms.Te
     ScrollBars = 'Vertical'
     WordWrap   = $True
     ReadOnly   = $true
+    ShortcutsEnabled = $true
 }
-$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationDescriptionTextbox)
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationDescriptionRichTextbox)
 
 
 #-------------------------------
@@ -6171,8 +6238,8 @@ $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationDescripti
 #-------------------------------
 $Section3QueryExplorationTagWordsLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "Tags"
-    Location = @{ X = $Section3QueryExplorationDescriptionTextbox.Location.X
-                  Y = $Section3QueryExplorationDescriptionTextbox.location.Y + $Section3QueryExplorationDescriptionTextbox.Size.Height + 5 }
+    Location = @{ X = $Section3QueryExplorationDescriptionRichTextbox.Location.X
+                  Y = $Section3QueryExplorationDescriptionRichTextbox.location.Y + $Section3QueryExplorationDescriptionRichTextbox.Size.Height + 5 }
     Size     = @{ Width  = 35
                   Height = 22 }
     Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
@@ -6194,8 +6261,8 @@ $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationTa
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\Section3QueryExplorationEditCheckBox.ps1"
 $Section3QueryExplorationEditCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text      = "Edit"
-    Location  = @{ X = $Section3QueryExplorationDescriptionTextbox.Location.X + 255
-                   Y = $Section3QueryExplorationDescriptionTextbox.Location.Y + $Section3QueryExplorationDescriptionTextbox.Size.Height + 3 }
+    Location  = @{ X = $Section3QueryExplorationDescriptionRichTextbox.Location.X + 255
+                   Y = $Section3QueryExplorationDescriptionRichTextbox.Location.Y + $Section3QueryExplorationDescriptionRichTextbox.Size.Height + 3 }
     Size      = @{ Height = 25
                    Width  = 50 }
     Font      = New-Object System.Drawing.Font("$Font",11,0,2,1)
@@ -6309,8 +6376,6 @@ $ExecuteScriptHandler = {
     if ( $ComputerSearch ) { continue }
     else { $ComputerList = @() }
 
-    if ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked) { $script:RpcCommandCount += 1 }
-
     # Generate list of endpoints to query
     if ( $ComputerSearch ){ continue }
     else { . "$Dependencies\Code\Main Body\Generate-ComputerListToQuery.ps1" }
@@ -6348,7 +6413,7 @@ $ExecuteScriptHandler = {
         $ResultsListBox.Items.Add("            Check one or more target computers")
         $ResultsListBox.Items.Add("            Check a category to collect data from all nested target computers")
         $ResultsListBox.Items.Add("       2) Enter a Single Host to collect from:")
-        $ResultsListBox.Items.Add("            Check the Query A Single Host Checkbox")
+        $ResultsListBox.Items.Add("            Check the Query A Single Endpoint Checkbox")
         $ResultsListBox.Items.Add("            Enter a valid host to collect data from")
     }
     elseif ($CommandCountTotalBothQueryAndSection -eq 0) {
@@ -6409,7 +6474,7 @@ $ExecuteScriptHandler = {
         $PoShEasyWin.Refresh()
 
 
-        $ResultsListBox.Items.Clear();
+        $ResultsListBox.Items.Clear()
         $CollectionTimerStart = Get-Date
         $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss'))  Collection Start Time")    
         $ResultsListBox.Items.Insert(0,"")
@@ -6446,6 +6511,7 @@ $ExecuteScriptHandler = {
         if ($SysinternalsProcessMonitorCheckbox.Checked)             { $CountCommandQueries++ }        
         if ($EventLogsEventIDsManualEntryCheckbox.Checked)           { $CountCommandQueries++ }
         if ($EventLogsEventIDsToMonitorCheckbox.Checked)             { $CountCommandQueries++ }
+        if ($NetworkEndpointPacketCaptureCheckBox.Checked)           { $CountCommandQueries++ }
         if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { $CountCommandQueries++ }
         if ($NetworkConnectionSearchRemotePortCheckbox.checked)      { $CountCommandQueries++ }
         if ($NetworkConnectionSearchLocalPortCheckbox.checked)       { $CountCommandQueries++ }        
@@ -6454,7 +6520,6 @@ $ExecuteScriptHandler = {
         if ($EventLogsQuickPickSelectionCheckbox.Checked) { foreach ($Query in $script:EventLogQueries) { if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) { $CountCommandQueries++ } } }
         $script:CommandsCheckedBoxesSelected          = $CommandsCheckedBoxesSelectedDedup
         $script:ProgressBarQueriesProgressBar.Maximum = $CountCommandQueries
-   
 
         # Adds executed commands to query history commands variable
         $script:QueryHistoryCommands += $script:CommandsCheckedBoxesSelected
@@ -6524,6 +6589,10 @@ $ExecuteScriptHandler = {
             # Combines the inputs from the various GUI fields to query for Alternate Data Streams
             if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AlternateDataStream.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
 
+            # Endpoint Packet Capture
+            # Conducts a packet capture on the endpoints using netsh
+            if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCapture.ps1" }
+                    
             # Network Connection Search Remote IP Address 
             # Checks network connections for remote ip addresses and only returns those that match
             if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionRemoteIPAddress.ps1" }
@@ -6563,6 +6632,8 @@ $ExecuteScriptHandler = {
             
             Completed-QueryExecution
         }
+
+        if ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked) { $script:RpcCommandCount += 1 }
 
         if ($NoGui -and $script:RpcCommandCount -gt 0 -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
             Conduct-IndividualExecution
@@ -6987,6 +7058,10 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
                 # Combines the inputs from the various GUI fields to query for Alternate Data Streams
                 if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-FileSearchAlternateDataStream.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' } 
             
+                # Endpoint Packet Capture
+                # Conducts a packet capture on the endpoints using netsh
+                if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-EndpointPacketCapture.ps1" }
+
                 # Network Connection Search Remote IP Address
                 # Checks network connections for remote ip addresses and only returns those that match
                 if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchRemoteIPAddress.ps1" }

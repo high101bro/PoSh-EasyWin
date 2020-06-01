@@ -29,6 +29,7 @@ function Deselect-AllCommands {
     $FileSearchDirectoryListingCheckbox.checked             = $false
     $FileSearchFileSearchCheckbox.checked                   = $false
     $FileSearchAlternateDataStreamCheckbox.checked          = $false
+    $NetworkEndpointPacketCaptureCheckBox.checked           = $false
     $NetworkConnectionSearchRemoteIPAddressCheckbox.checked = $false
     $NetworkConnectionSearchRemotePortCheckbox.checked      = $false
     $NetworkConnectionSearchLocalPortCheckbox.checked       = $false
@@ -38,6 +39,6 @@ function Deselect-AllCommands {
     $SysinternalsAutorunsCheckbox.checked                   = $false
     $SysinternalsProcessMonitorCheckbox.checked             = $false
     
-    Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands    
+    #Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands    
 }
  

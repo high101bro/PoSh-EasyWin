@@ -79,7 +79,7 @@ $RetrieveFilesButtonAdd_Click = {
                 # If the target item is a directory, the directory will be directly compressed
                 # If the target item is not a directory, it will copy the item to c:\Windows\Temp
                 # Uses .Net Framework System.IO.Compression.FileSystem
-                Invoke-Command -ScriptBlock ${function:Zip-File} -argumentlist $($File.FullName),"c:\Windows\Temp","Optimal" -Session $session
+                Invoke-Command -ScriptBlock ${function:Zip-File} -argumentlist @($File.FullName),"c:\Windows\Temp","Optimal" -Session $session
 #                Copy-Item -Path "c:\Windows\Temp\$($File.BaseName).zip" -Destination $LocalSavePath -FromSession $session
 
                 # File is hashed remotely on endpoint, then copied back over the network
@@ -104,7 +104,7 @@ $RetrieveFilesButtonAdd_Click = {
                 # no need for new session as there is already one open to the target computer  
 
                 # Reference notes above
-                Invoke-Command -ScriptBlock ${function:Zip-File} -argumentlist $($File.FullName),"c:\Windows\Temp","Optimal" -Session $session
+                Invoke-Command -ScriptBlock ${function:Zip-File} -argumentlist @($File.FullName),"c:\Windows\Temp","Optimal" -Session $session
 #                Copy-Item -Path "c:\Windows\Temp\$($File.BaseName).zip" -Destination $LocalSavePath -FromSession $session
 
                 # Reference notes above
@@ -133,7 +133,7 @@ $RetrieveFilesButtonAdd_Click = {
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "- New-PSSession -ComputerName $RetrieveFilesCurrentComputer"
                 
                 # Reference notes above
-                Invoke-Command -ScriptBlock ${function:Zip-File} -argumentlist $($File.FullName),"c:\Windows\Temp","Optimal" -Session $session
+                Invoke-Command -ScriptBlock ${function:Zip-File} -argumentlist @($File.FullName),"c:\Windows\Temp","Optimal" -Session $session
 #                Copy-Item -Path "c:\Windows\Temp\$($File.BaseName).zip" -Destination $LocalSavePath -FromSession $session
 
                 # Reference notes above

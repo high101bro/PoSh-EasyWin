@@ -1,7 +1,9 @@
 $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
     Create-ComputerNodeCheckBoxArray    
     if ($script:SingleHostIPCheckBox.Checked -eq $true) {
-        if (Verify-Action -Title "Verification: Active Directory Import" -Question "Make sure to select the proper server.`nImport Active Directory hosts from the following?" -Computer $script:SingleHostIPTextBoxTarget) {
+        if (Verify-Action -Title "Verification: Active Directory Import" -Question "Either manually enter a name under 'Query a Single Endpoint' or select an endpoinit from the computer treeview.
+
+Import Active Directory hosts from the following?" -Computer $script:SingleHostIPTextBox.text) {
             # This brings specific tabs to the forefront/front view
             $MainBottomTabControl.SelectedTab = $Section3ResultsTab
             $script:SingleHostIPTextBoxTarget = $script:SingleHostIPTextBox.Text
@@ -81,7 +83,8 @@ $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
     foreach ($Computer in $ImportedActiveDirectoryHosts) {
         # Checks if data already exists
         if ($script:ComputerTreeViewData.Name -contains $Computer.Name) {
-            Message-HostAlreadyExists -Message "Importing Hosts:  Warning" -Computer $Computer.Name
+            #Message-HostAlreadyExists -Message "Importing Hosts:  Warning" -Computer $Computer.Name
+            Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address 
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {

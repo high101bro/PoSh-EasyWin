@@ -2,7 +2,7 @@ $Section3QueryExplorationEditCheckBoxAdd_Click = {
     if ($Section3QueryExplorationEditCheckBox.checked){
         $Section3QueryExplorationSaveButton.Text      = "Save"
         $Section3QueryExplorationSaveButton.ForeColor = "Red"
-        $Section3QueryExplorationDescriptionTextbox.ReadOnly    = $false
+        $Section3QueryExplorationDescriptionRichTextbox.ReadOnly    = $false
         $Section3QueryExplorationWinRSCmdTextBox.ReadOnly       = $false
         $Section3QueryExplorationWinRSWmicTextBox.ReadOnly      = $false
         $Section3QueryExplorationPropertiesWMITextBox.ReadOnly  = $false
@@ -17,7 +17,7 @@ $Section3QueryExplorationEditCheckBoxAdd_Click = {
     else {
         $Section3QueryExplorationSaveButton.Text      = "Locked"
         $Section3QueryExplorationSaveButton.ForeColor = "Green"
-        $Section3QueryExplorationDescriptionTextbox.ReadOnly    = $true
+        $Section3QueryExplorationDescriptionRichTextbox.ReadOnly    = $true
         $Section3QueryExplorationWinRSCmdTextBox.ReadOnly       = $true
         $Section3QueryExplorationWinRSWmicTextBox.ReadOnly      = $true
         $Section3QueryExplorationPropertiesWMITextBox.ReadOnly  = $true
