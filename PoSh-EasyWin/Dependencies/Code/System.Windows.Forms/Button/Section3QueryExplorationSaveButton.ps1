@@ -17,7 +17,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
 
         $SaveAllEndpointCommands = @()
         Foreach($Query in $script:AllEndpointCommands) {
-            if ($Section3QueryExplorationNameTextBox.Text -ne $Query.Name -and $Query.Type -ne 'script') {
+            if ($Section3QueryExplorationNameTextBox.Text -ne $Query.Name -and $Query.Type -notmatch 'script') {
                 # For those commands not selected, this just copies their unmodified data to be saved.
                 $SaveAllEndpointCommands += [PSCustomObject]@{
                     Name               = $Query.Name
@@ -35,7 +35,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
                     ExportFileName     = $Query.ExportFileName
                 }
             }
-            elseif ($Section3QueryExplorationNameTextBox.Text -eq $Query.Name -and $Query.Type -ne 'script') {
+            elseif ($Section3QueryExplorationNameTextBox.Text -eq $Query.Name -and $Query.Type -notmatch 'script') {
                 # if the node is selected, it saves the information in the text boxes
                 $SaveAllEndpointCommands += [PSCustomObject]@{
                     Name               = $Section3QueryExplorationNameTextBox.Text
@@ -60,7 +60,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
 
         $SaveAllActiveDirectoryCommands = @()
         Foreach($Query in $script:AllActiveDirectoryCommands) {
-            if ($Section3QueryExplorationNameTextBox.Text -ne $Query.Name -and $Query.Type -ne 'script') {
+            if ($Section3QueryExplorationNameTextBox.Text -ne $Query.Name -and $Query.Type -notmatch 'script') {
                 # if the node is selected, it saves the information in the text boxes
                 $SaveAllActiveDirectoryCommands += [PSCustomObject]@{
                     Name               = $Query.Name
@@ -78,7 +78,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
                     ExportFileName     = $Query.ExportFileName
                 }
             }
-            elseif ($Section3QueryExplorationNameTextBox.Text -eq $Query.Name -and $Query.Type -ne 'script') {
+            elseif ($Section3QueryExplorationNameTextBox.Text -eq $Query.Name -and $Query.Type -notmatch 'script') {
                 # if the node is selected, it saves the information in the text boxes
                 $SaveAllActiveDirectoryCommands += [PSCustomObject]@{
                     Name               = $Section3QueryExplorationNameTextBox.Text

@@ -195,7 +195,7 @@ function Conduct-NodeAction {
                     $ResultsListBox.Items.clear()
                     $ResultsListBox.Items.Add("$((($Entry.Text) -split ' -- ')[-1])")
                     if ($root.text -match 'Endpoint Commands') {
-                        $Section3QueryExplorationNameTextBox.Text           = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name                    
+                        $Section3QueryExplorationNameTextBox.Text           = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name
                         $Section3QueryExplorationTagWordsTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
                         $Section3QueryExplorationWinRMPoShTextBox.Text      = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
                         $Section3QueryExplorationWinRMWMITextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
@@ -254,11 +254,13 @@ function Conduct-NodeAction {
                     }
                     
                     if ($Category.text -match 'PowerShell Scripts'){
+                        # Replaces the edit checkbox and save button with View Script button
                         $Section3QueryExplorationTabPage.Controls.Remove($Section3QueryExplorationEditCheckBox) 
                         $Section3QueryExplorationTabPage.Controls.Remove($Section3QueryExplorationSaveButton) 
-                        $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationViewScriptButton) 
+                        $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationViewScriptButton)                        
                     }
                     else { 
+                        # Replaces the View Script button with the edit checkbox and save button 
                         $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationEditCheckBox) 
                         $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSaveButton) 
                         $Section3QueryExplorationTabPage.Controls.Remove($Section3QueryExplorationViewScriptButton) 
