@@ -1,4 +1,6 @@
 $EnumerationComputerListBoxAddToListButtonAdd_Click = {
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Enumeration:  Added $($EnumerationComputerListBox.SelectedItems.Count) IPs")
     $ResultsListBox.Items.Clear()
@@ -29,4 +31,5 @@ $EnumerationComputerListBoxAddToListButtonAdd_Click = {
     $script:ComputerTreeView.ExpandAll()
     Populate-ComputerTreeNodeDefaultData
     AutoSave-HostData
+    Save-HostData
 }

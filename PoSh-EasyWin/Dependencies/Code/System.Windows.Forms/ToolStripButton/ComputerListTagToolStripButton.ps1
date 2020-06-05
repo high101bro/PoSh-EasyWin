@@ -6,6 +6,7 @@ function Show-TagForm {
                       Height = 115 }
         StartPosition = "CenterScreen"
         Font = New-Object System.Drawing.Font('Courier New',11,0,0,0)
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
     }
     #$ComputerListMassTagForm | select *
     $ComputerListMassTagNewTagNameLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -26,7 +27,9 @@ function Show-TagForm {
         #DataSource         = $ArrayIfNotAddedWIth .Items.Add
     }
     #$TagListFileContents = Get-Content -Path $TagAutoListFile
-    ForEach ($Tag in $TagListFileContents) { $ComputerListMassTagNewTagNameComboBox.Items.Add($Tag) }
+    ForEach ($Tag in $TagListFileContents) { 
+        $ComputerListMassTagNewTagNameComboBox.Items.Add($Tag) 
+    }
     $ComputerListMassTagNewTagNameComboBox.Add_KeyDown({ 
         if ($_.KeyCode -eq "Enter" -and $ComputerListMassTagNewTagNameComboBox.text -ne '') {
             $script:ComputerListMassTagValue = $ComputerListMassTagNewTagNameComboBox.text
@@ -61,7 +64,6 @@ $ComputerListTagSelectedToolStripButtonAdd_Click = {
     if ($script:EntrySelected) {
         Show-TagForm
         if ($script:ComputerListMassTagValue) {
-            $MainBottomTabControl.SelectedTab  = $Section3HostDataTab
             $Section3HostDataNameTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Name
             $Section3HostDataOSTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).OperatingSystem
             $Section3HostDataOUTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).CanonicalName
@@ -81,20 +83,24 @@ $ComputerListTagSelectedToolStripButtonAdd_Click = {
 $ComputerListTagAllCheckedToolStripButtonAdd_Click = {
     $MainBottomTabControl.SelectedTab = $Section3HostDataTab
 
+    $script:ProgressBarEndpointsProgressBar.Value     = 0
+    $script:ProgressBarQueriesProgressBar.Value       = 0
+
     Create-ComputerNodeCheckBoxArray 
     if ($script:ComputerTreeViewSelected.count -ge 0) {
         Show-TagForm
 
+        $script:ProgressBarEndpointsProgressBar.Maximum  = $script:ComputerTreeViewSelected.count
+        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+
         if ($script:ComputerListMassTagValue) {
             $ComputerListMassTageArray = @()
             foreach ($node in $script:ComputerTreeViewSelected) {    
-                [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
                 foreach ($root in $AllHostsNode) {
                     foreach ($Category in $root.Nodes) { 
                         foreach ($Entry in $Category.Nodes) {
                             if ($Entry.Checked -and $Entry.Text -notin $ComputerListMassTageArray) {
                                 $ComputerListMassTageArray += $Entry.Text
-                                $MainBottomTabControl.SelectedTab = $Section3HostDataTab
                                 $Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
                                 $Section3HostDataOSTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
                                 $Section3HostDataOUTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
@@ -102,12 +108,13 @@ $ComputerListTagAllCheckedToolStripButtonAdd_Click = {
                                 $Section3HostDataMACTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
                                 $Section3HostDataNotesTextBox.Text = "[$($script:ComputerListMassTagValue)] " + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                             }
-                            Save-ComputerTreeNodeHostData
-                            Check-HostDataIfModified
+                            $script:ProgressBarEndpointsProgressBar.Value += 1
                         }
                     }
                 }  
             }
+            Save-ComputerTreeNodeHostData -SaveAllChecked
+            Check-HostDataIfModified
             $StatusListBox.Items.clear()
             $StatusListBox.Items.Add("Tag Complete: $($script:ComputerTreeViewSelected.count) Endpoints")
         }

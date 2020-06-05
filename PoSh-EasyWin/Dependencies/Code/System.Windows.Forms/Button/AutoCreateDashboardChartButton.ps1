@@ -57,8 +57,13 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     })
     $AutoChartsAvailable = @(
         "Hunt",
+        "Network Interfaces",
         "Processes",
-        "Services"
+        "Security Patches",
+        "Services",
+        "SMB Shares",
+        "Software",
+        "Startups"
     )
     ForEach ($Item in $AutoChartsAvailable) { [void] $AutoChartSelectChartComboBox.Items.Add($Item) }
     $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox) 
@@ -138,29 +143,46 @@ $AutoCreateDashboardChartButtonAdd_Click = {
 
         # Dashboard with multiple charts
         if ($AutoChartSelectChartComboBox.SelectedItem -eq "Hunt") { 
-            # Import code that shows displays the hunt dashboard chart
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Hunt.ps1"
-
-            # Launches the form
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Network Interfaces") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_NetworkInterfaces.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Processes") { 
-            # Import code that shows displays the hunt dashboard chart
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Process.ps1"
-
-            # Launches the form
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Processes.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Security Patches") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_SecurityPatches.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Services") { 
-            # Import code that shows displays the hunt dashboard chart
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Service.ps1"
-
-            # Launches the form
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "SMB Shares") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_SmbShare.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }                
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Software") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Software.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startups") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Startups.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+
     }
     $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)   
     [void] $AutoChartsSelectionForm.ShowDialog()

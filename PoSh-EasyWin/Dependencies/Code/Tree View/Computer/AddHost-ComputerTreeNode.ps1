@@ -36,6 +36,5 @@ function AddHost-ComputerTreeNode {
         $ComputerTreeNodePopup.close()
         Save-HostData
         KeepChecked-ComputerTreeNode -NoMessage
-        Update-NeedToSaveTreeView
     }
 }

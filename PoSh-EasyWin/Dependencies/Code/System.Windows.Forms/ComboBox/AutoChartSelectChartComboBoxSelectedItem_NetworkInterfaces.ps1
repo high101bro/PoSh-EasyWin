@@ -5,7 +5,7 @@ Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
 ### Creates Tabs From Each File
 $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = 'Process Info'
+    Text   = 'Network Infterfaces'
     Size   = @{ Width  = 1700
                 Height = 1050 }
     #Anchor = $AnchorAll
@@ -15,7 +15,7 @@ $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Pro
 }
 $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTab01)
  
-# Searches though the all Collection Data Directories to find files that match the 'Processes'
+# Searches though the all Collection Data Directories to find files that match
 $script:ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
 
 $script:AutoChartsProgressBar.ForeColor = 'Black'
@@ -27,11 +27,11 @@ $script:AutoChartsProgressBar.Update()
 $script:AutoChart01CSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
-    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Processes') { $script:AutoChart01CSVFileMatch += $CSVFile } }
+    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Network Settings') { $script:AutoChart01CSVFileMatch += $CSVFile } }
 } 
 $script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01CSVFileMatch | Select-Object -Last 1
-$script:AutoChartDataSourceProcesses = $null
-$script:AutoChartDataSourceProcesses = Import-Csv $script:AutoChartCSVFileMostRecentCollection
+$script:AutoChartDataSource = $null
+$script:AutoChartDataSource = Import-Csv $script:AutoChartCSVFileMostRecentCollection
 
 $script:AutoChartsProgressBar.Value = 1
 $script:AutoChartsProgressBar.Update()
@@ -62,7 +62,7 @@ function Close-AllOptions {
 
 ### Main Label at the top
 $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property @{
-    Text   = 'Process Info'
+    Text   = 'Network Interfaces Info'
     Location = @{ X = 5
                   Y = 5 }
     Size   = @{ Width  = 1150
@@ -90,25 +90,25 @@ $AutoChartSelectFileButton.Add_Click({
     $AutoChartOpenResultsOpenFileDialog.ShowDialog() | Out-Null
     $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
     $script:AutoChartOpenResultsOpenFileDialogfilename = $AutoChartOpenResultsOpenFileDialog.filename
-    $script:AutoChartDataSourceProcesses = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
+    $script:AutoChartDataSource = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
 
     # This variable is used elsewhere
-    $script:AutoChartDataSourceProcessesFileName = $AutoChartOpenResultsOpenFileDialog.filename
+    $script:AutoChartDataSourceFileName = $AutoChartOpenResultsOpenFileDialog.filename
 
-    Generate-ProcessesAutoChart01
-    Generate-ProcessesAutoChart02
-    Generate-ProcessesAutoChart03
-    Generate-ProcessesAutoChart04
-    Generate-ProcessesAutoChart05
-    Generate-ProcessesAutoChart06
-    Generate-ProcessesAutoChart07
-    Generate-ProcessesAutoChart08
-    Generate-ProcessesAutoChart09
-    Generate-ProcessesAutoChart10
+    Generate-AutoChart01
+    Generate-AutoChart02
+    Generate-AutoChart03
+    Generate-AutoChart04
+    Generate-AutoChart05
+    Generate-AutoChart06
+    Generate-AutoChart07
+    Generate-AutoChart08
+    Generate-AutoChart09
+    Generate-AutoChart10
 })
 $AutoChartSelectFileButton.Add_MouseHover = {
     Show-ToolTip -Title "View Results" -Icon "Info" -Message @"
-+  Select a file to view Process Info.
++  Select a file to view Network Interface Info.
 "@ 
 }
 
@@ -179,21 +179,21 @@ $script:AutoChart01Area.Area3DStyle.Inclination = 75
 $script:AutoChart01.ChartAreas.Add($script:AutoChart01Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart01.Series.Add("Unique Processes")
-$script:AutoChart01.Series["Unique Processes"].Enabled           = $True
-$script:AutoChart01.Series["Unique Processes"].BorderWidth       = 1
-$script:AutoChart01.Series["Unique Processes"].IsVisibleInLegend = $false
-$script:AutoChart01.Series["Unique Processes"].Chartarea         = 'Chart Area'
-$script:AutoChart01.Series["Unique Processes"].Legend            = 'Legend'
-$script:AutoChart01.Series["Unique Processes"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart01.Series["Unique Processes"]['PieLineColor']   = 'Black'
-$script:AutoChart01.Series["Unique Processes"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart01.Series["Unique Processes"].ChartType         = 'Column'
-$script:AutoChart01.Series["Unique Processes"].Color             = 'Red'
+$script:AutoChart01.Series.Add("Interface Alias")
+$script:AutoChart01.Series["Interface Alias"].Enabled           = $True
+$script:AutoChart01.Series["Interface Alias"].BorderWidth       = 1
+$script:AutoChart01.Series["Interface Alias"].IsVisibleInLegend = $false
+$script:AutoChart01.Series["Interface Alias"].Chartarea         = 'Chart Area'
+$script:AutoChart01.Series["Interface Alias"].Legend            = 'Legend'
+$script:AutoChart01.Series["Interface Alias"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart01.Series["Interface Alias"]['PieLineColor']   = 'Black'
+$script:AutoChart01.Series["Interface Alias"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart01.Series["Interface Alias"].ChartType         = 'Column'
+$script:AutoChart01.Series["Interface Alias"].Color             = 'Red'
 
-        function Generate-ProcessesAutoChart01 {
-            $script:AutoChart01CsvFileHosts      = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart01UniqueDataFields  = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Name' | Sort-Object -Property 'Name' -Unique
+        function Generate-AutoChart01 {
+            $script:AutoChart01CsvFileHosts      = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart01UniqueDataFields  = $script:AutoChartDataSource | Select-Object -Property 'InterfaceAlias' | Sort-Object -Property 'InterfaceAlias' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
             $script:AutoChartsProgressBar.Minimum = 0
@@ -201,11 +201,11 @@ $script:AutoChart01.Series["Unique Processes"].Color             = 'Red'
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart01.Series["Unique Processes"].Points.Clear()
+            $script:AutoChart01.Series["Interface Alias"].Points.Clear()
 
             if ($script:AutoChart01UniqueDataFields.count -gt 0){
                 $script:AutoChart01Title.ForeColor = 'Black'
-                $script:AutoChart01Title.Text = "Unique Processes"
+                $script:AutoChart01Title.Text = "Interface Alias"
 
                 # If the Second field/Y Axis equals PSComputername, it counts it
                 $script:AutoChart01OverallDataResults = @()
@@ -214,8 +214,8 @@ $script:AutoChart01.Series["Unique Processes"].Color             = 'Red'
                 foreach ($DataField in $script:AutoChart01UniqueDataFields) {
                     $Count        = 0
                     $script:AutoChart01CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSourceProcesses ) {
-                        if ($($Line.Name) -eq $DataField.Name) {
+                    foreach ( $Line in $script:AutoChartDataSource ) {
+                        if ($($Line.InterfaceAlias) -eq $DataField.InterfaceAlias) {
                             $Count += 1
                             if ( $script:AutoChart01CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01CsvComputers += $($Line.PSComputerName) }
                         }
@@ -226,23 +226,23 @@ $script:AutoChart01.Series["Unique Processes"].Color             = 'Red'
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart01UniqueCount
                         Computers   = $script:AutoChart01CsvComputers 
-                    }
+                    }           
                     $script:AutoChart01OverallDataResults += $script:AutoChart01DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart01.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount) }
+                $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount) }
                 $script:AutoChart01TrimOffLastTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))
                 $script:AutoChart01TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))
             }
             else {
                 $script:AutoChart01Title.ForeColor = 'Red'
-                $script:AutoChart01Title.Text = "Unique Processes`n
+                $script:AutoChart01Title.Text = "Interface Alias`n
 [ No data not available ]`n
-Run a query to collect process data.`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart01
+        Generate-AutoChart01
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart01OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -305,8 +305,8 @@ $script:AutoChart01TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart01TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart01TrimOffFirstTrackBarValue = $script:AutoChart01TrimOffFirstTrackBar.Value
         $script:AutoChart01TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart01TrimOffFirstTrackBar.Value)"
-        $script:AutoChart01.Series["Unique Processes"].Points.Clear()
-        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
+        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     })
     $script:AutoChart01TrimOffFirstGroupBox.Controls.Add($script:AutoChart01TrimOffFirstTrackBar)
 $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01TrimOffFirstGroupBox)
@@ -340,8 +340,8 @@ $script:AutoChart01TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart01TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart01TrimOffLastTrackBarValue = $($script:AutoChart01OverallDataResults.count) - $script:AutoChart01TrimOffLastTrackBar.Value
         $script:AutoChart01TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart01OverallDataResults.count) - $script:AutoChart01TrimOffLastTrackBar.Value)"
-        $script:AutoChart01.Series["Unique Processes"].Points.Clear()
-        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
+        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     })
 $script:AutoChart01TrimOffLastGroupBox.Controls.Add($script:AutoChart01TrimOffLastTrackBar)
 $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01TrimOffLastGroupBox)
@@ -360,9 +360,9 @@ $script:AutoChart01ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart01ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart01.Series["Unique Processes"].ChartType = $script:AutoChart01ChartTypeComboBox.SelectedItem
-#    $script:AutoChart01.Series["Unique Processes"].Points.Clear()
-#    $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+    $script:AutoChart01.Series["Interface Alias"].ChartType = $script:AutoChart01ChartTypeComboBox.SelectedItem
+#    $script:AutoChart01.Series["Interface Alias"].Points.Clear()
+#    $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
 })
 $script:AutoChart01ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart01ChartTypesAvailable) { $script:AutoChart01ChartTypeComboBox.Items.Add($Item) }
@@ -386,22 +386,22 @@ $script:AutoChart013DToggleButton.Add_Click({
         $script:AutoChart01Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
         $script:AutoChart013DToggleButton.Text  = "3D On ($script:AutoChart013DInclination)"
-#        $script:AutoChart01.Series["Unique Processes"].Points.Clear()
-#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+#        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
+#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     }
     elseif ( $script:AutoChart013DInclination -le 90 ) {
         $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
         $script:AutoChart013DToggleButton.Text  = "3D On ($script:AutoChart013DInclination)" 
-#        $script:AutoChart01.Series["Unique Processes"].Points.Clear()
-#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+#        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
+#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     }
     else { 
         $script:AutoChart013DToggleButton.Text  = "3D Off" 
         $script:AutoChart013DInclination = 0
         $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
         $script:AutoChart01Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart01.Series["Unique Processes"].Points.Clear()
-#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+#        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
+#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     }
 })
 $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart013DToggleButton)
@@ -420,7 +420,7 @@ $script:AutoChart01ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart01ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart01ColorsAvailable) { $script:AutoChart01ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart01ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart01.Series["Unique Processes"].Color = $script:AutoChart01ChangeColorComboBox.SelectedItem
+    $script:AutoChart01.Series["Interface Alias"].Color = $script:AutoChart01ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01ChangeColorComboBox)
 
@@ -430,12 +430,12 @@ $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01ChangeColor
 #=====================================
 function script:InvestigateDifference-AutoChart01 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart01ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'Name' -eq $($script:AutoChart01InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'InterfaceAlias' -eq $($script:AutoChart01InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart01InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart01ImportCsvPosResults) { $script:AutoChart01InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart01ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -464,7 +464,7 @@ $script:AutoChart01CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart01CheckDiffButton
 $script:AutoChart01CheckDiffButton.Add_Click({
-    $script:AutoChart01InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+    $script:AutoChart01InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'InterfaceAlias' -ExpandProperty 'InterfaceAlias' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart01InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -570,7 +570,7 @@ $AutoChart01ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart01CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Unique Processes" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "Interface Alias" -PropertyX "InterfaceAlias" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01ExpandChartButton
 $script:AutoChart01ManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
@@ -596,7 +596,7 @@ $script:AutoChart01ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01ViewResults
-$script:AutoChart01ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart01ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01ViewResults)
 
 
@@ -633,8 +633,8 @@ $script:AutoChart01NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01NoticeTextbox)
 
-$script:AutoChart01.Series["Unique Processes"].Points.Clear()
-$script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+$script:AutoChart01.Series["Interface Alias"].Points.Clear()
+$script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
 
 
 
@@ -693,21 +693,21 @@ $script:AutoChart02Area.Area3DStyle.Inclination = 75
 $script:AutoChart02.ChartAreas.Add($script:AutoChart02Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart02.Series.Add("Processes Per Host")  
-$script:AutoChart02.Series["Processes Per Host"].Enabled           = $True
-$script:AutoChart02.Series["Processes Per Host"].BorderWidth       = 1
-$script:AutoChart02.Series["Processes Per Host"].IsVisibleInLegend = $false
-$script:AutoChart02.Series["Processes Per Host"].Chartarea         = 'Chart Area'
-$script:AutoChart02.Series["Processes Per Host"].Legend            = 'Legend'
-$script:AutoChart02.Series["Processes Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart02.Series["Processes Per Host"]['PieLineColor']   = 'Black'
-$script:AutoChart02.Series["Processes Per Host"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart02.Series["Processes Per Host"].ChartType         = 'DoughNut'
-$script:AutoChart02.Series["Processes Per Host"].Color             = 'Blue'
-        
-        function Generate-ProcessesAutoChart02 {
-            $script:AutoChart02CsvFileHosts     = ($script:AutoChartDataSourceProcesses).PSComputerName | Sort-Object -Unique
-            $script:AutoChart02UniqueDataFields = ($script:AutoChartDataSourceProcesses).ProcessID | Sort-Object -Property 'ProcessID'
+$script:AutoChart02.Series.Add("Interfaces with IPs Per Host")  
+$script:AutoChart02.Series["Interfaces with IPs Per Host"].Enabled           = $True
+$script:AutoChart02.Series["Interfaces with IPs Per Host"].BorderWidth       = 1
+$script:AutoChart02.Series["Interfaces with IPs Per Host"].IsVisibleInLegend = $false
+$script:AutoChart02.Series["Interfaces with IPs Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart02.Series["Interfaces with IPs Per Host"].Legend            = 'Legend'
+$script:AutoChart02.Series["Interfaces with IPs Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart02.Series["Interfaces with IPs Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart02.Series["Interfaces with IPs Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart02.Series["Interfaces with IPs Per Host"].ChartType         = 'DoughNut'
+$script:AutoChart02.Series["Interfaces with IPs Per Host"].Color             = 'Blue'
+
+        function Generate-AutoChart02 {
+            $script:AutoChart02CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
+            $script:AutoChart02UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
             $script:AutoChartsProgressBar.Minimum = 0
@@ -717,7 +717,7 @@ $script:AutoChart02.Series["Processes Per Host"].Color             = 'Blue'
 
             if ($script:AutoChart02UniqueDataFields.count -gt 0){
                 $script:AutoChart02Title.ForeColor = 'Black'
-                $script:AutoChart02Title.Text = "Processes Per Host"
+                $script:AutoChart02Title.Text = "Interfaces with IPs Per Host"
 
                 $AutoChart02CurrentComputer  = ''
                 $AutoChart02CheckIfFirstLine = $false
@@ -726,12 +726,12 @@ $script:AutoChart02.Series["Processes Per Host"].Color             = 'Blue'
                 $AutoChart02YResults         = @()
                 $script:AutoChart02OverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceProcesses | Sort-Object PSComputerName) ) {
+                foreach ( $Line in $($script:AutoChartDataSource | Sort-Object PSComputerName) ) {
                     if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
                     if ( $AutoChart02CheckIfFirstLine -eq $true ) { 
                         if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
-                            if ( $AutoChart02YResults -notcontains $Line.ProcessID ) {
-                                if ( $Line.ProcessID -ne "" ) { $AutoChart02YResults += $Line.ProcessID ; $AutoChart02ResultsCount += 1 }
+                            if ( $AutoChart02YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart02YResults += $Line.IPAddress ; $AutoChart02ResultsCount += 1 }
                                 if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
                             }       
                         }
@@ -745,8 +745,8 @@ $script:AutoChart02.Series["Processes Per Host"].Color             = 'Blue'
                             $AutoChart02YResults     = @()
                             $AutoChart02ResultsCount = 0
                             $AutoChart02Computer     = @()
-                            if ( $AutoChart02YResults -notcontains $Line.ProcessID ) {
-                                if ( $Line.ProcessID -ne "" ) { $AutoChart02YResults += $Line.ProcessID ; $AutoChart02ResultsCount += 1 }
+                            if ( $AutoChart02YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart02YResults += $Line.IPAddress ; $AutoChart02ResultsCount += 1 }
                                 if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
                             }
                         }
@@ -756,23 +756,23 @@ $script:AutoChart02.Series["Processes Per Host"].Color             = 'Blue'
                 }
                 $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }    
                 $script:AutoChart02OverallDataResults += $AutoChart02YDataResults
-                $script:AutoChart02OverallDataResults | ForEach-Object { $script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+                $script:AutoChart02OverallDataResults | ForEach-Object { $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
-                $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
-                $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+                $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
+                $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
                 $script:AutoChart02TrimOffLastTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))
                 $script:AutoChart02TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))
             }
             else {
-                $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
+                $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
                 $script:AutoChart02Title.ForeColor = 'Red'
-                $script:AutoChart02Title.Text = "Processes Per Host`n
+                $script:AutoChart02Title.Text = "Interfaces with IPs Per Host`n
 [ No data not available ]`n
-Run a query to collect process data.`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart02
+        Generate-AutoChart02
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart02OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -834,8 +834,8 @@ $script:AutoChart02TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart02TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart02TrimOffFirstTrackBarValue = $script:AutoChart02TrimOffFirstTrackBar.Value
         $script:AutoChart02TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart02TrimOffFirstTrackBar.Value)"
-        $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
-        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
+        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
     $script:AutoChart02TrimOffFirstGroupBox.Controls.Add($script:AutoChart02TrimOffFirstTrackBar)
 $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffFirstGroupBox)
@@ -869,8 +869,8 @@ $script:AutoChart02TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart02TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart02TrimOffLastTrackBarValue = $($script:AutoChart02OverallDataResults.count) - $script:AutoChart02TrimOffLastTrackBar.Value
         $script:AutoChart02TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart02OverallDataResults.count) - $script:AutoChart02TrimOffLastTrackBar.Value)"
-        $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
-        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
+        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
 $script:AutoChart02TrimOffLastGroupBox.Controls.Add($script:AutoChart02TrimOffLastTrackBar)
 $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffLastGroupBox)
@@ -889,9 +889,9 @@ $script:AutoChart02ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart02ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart02.Series["Processes Per Host"].ChartType = $script:AutoChart02ChartTypeComboBox.SelectedItem
-#    $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
-#    $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    $script:AutoChart02.Series["Interfaces with IPs Per Host"].ChartType = $script:AutoChart02ChartTypeComboBox.SelectedItem
+#    $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
+#    $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
 $script:AutoChart02ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart02ChartTypesAvailable) { $script:AutoChart02ChartTypeComboBox.Items.Add($Item) }
@@ -913,23 +913,23 @@ $script:AutoChart023DToggleButton.Add_Click({
         $script:AutoChart02Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
         $script:AutoChart023DToggleButton.Text  = "3D On ($script:AutoChart023DInclination)"
-#        $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
-#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+#        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
+#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
     }
     elseif ( $script:AutoChart023DInclination -le 90 ) {
         $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
         $script:AutoChart023DToggleButton.Text  = "3D On ($script:AutoChart023DInclination)" 
-#        $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
-#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+#        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
+#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
         $script:AutoChart023DToggleButton.Text  = "3D Off" 
         $script:AutoChart023DInclination = 0
         $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
         $script:AutoChart02Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
-#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+#        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
+#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
 $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart023DToggleButton)
@@ -948,7 +948,7 @@ $script:AutoChart02ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart02ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart02ColorsAvailable) { $script:AutoChart02ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart02ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart02.Series["Processes Per Host"].Color = $script:AutoChart02ChangeColorComboBox.SelectedItem
+    $script:AutoChart02.Series["Interfaces with IPs Per Host"].Color = $script:AutoChart02ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02ChangeColorComboBox)
 
@@ -957,12 +957,12 @@ $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02ChangeColor
 #=====================================
 function script:InvestigateDifference-AutoChart02 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart02ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'Name' -eq $($script:AutoChart02InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart02InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart02InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02ImportCsvPosResults) { $script:AutoChart02InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart02ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -991,7 +991,7 @@ $script:AutoChart02CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart02CheckDiffButton
 $script:AutoChart02CheckDiffButton.Add_Click({
-    $script:AutoChart02InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+    $script:AutoChart02InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart02InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -1097,7 +1097,7 @@ $AutoChart02ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart02CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Processes per Endpoint" -PropertyX "PSComputerName" -PropertyY "ProcessID" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "Interfaces with IPs Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart02ExpandChartButton
 $script:AutoChart02ManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
@@ -1123,7 +1123,7 @@ $script:AutoChart02ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02ViewResults
-$script:AutoChart02ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart02ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02ViewResults)
 
 
@@ -1160,8 +1160,13 @@ $script:AutoChart02NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02NoticeTextbox)
 
-$script:AutoChart02.Series["Processes Per Host"].Points.Clear()
-$script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
+$script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
+
+
+
+
 
 
 
@@ -1202,7 +1207,7 @@ $script:AutoChart03.Add_MouseHover({ Close-AllOptions })
 ### Auto Create Charts Title 
 $script:AutoChart03Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
-    Alignment = "topcenter"
+    Alignment = "topcenter" #"topLeft"
 }
 $script:AutoChart03.Titles.Add($script:AutoChart03Title)
 
@@ -1217,21 +1222,21 @@ $script:AutoChart03Area.Area3DStyle.Inclination = 75
 $script:AutoChart03.ChartAreas.Add($script:AutoChart03Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart03.Series.Add("Process Company")  
-$script:AutoChart03.Series["Process Company"].Enabled           = $True
-$script:AutoChart03.Series["Process Company"].BorderWidth       = 1
-$script:AutoChart03.Series["Process Company"].IsVisibleInLegend = $false
-$script:AutoChart03.Series["Process Company"].Chartarea         = 'Chart Area'
-$script:AutoChart03.Series["Process Company"].Legend            = 'Legend'
-$script:AutoChart03.Series["Process Company"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart03.Series["Process Company"]['PieLineColor']   = 'Black'
-$script:AutoChart03.Series["Process Company"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart03.Series["Process Company"].ChartType         = 'Column'
-$script:AutoChart03.Series["Process Company"].Color             = 'Green'
+$script:AutoChart03.Series.Add("IPv4 Interfaces Per Host")  
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Enabled           = $True
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"].BorderWidth       = 1
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"].IsVisibleInLegend = $false
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Legend            = 'Legend'
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"].ChartType         = 'Column'
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Color             = 'Green'
 
-        function Generate-ProcessesAutoChart03 {
-            $script:AutoChart03CsvFileHosts      = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart03UniqueDataFields  = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Company' | Sort-Object -Property 'Company' -Unique
+        function Generate-AutoChart03 {
+            $script:AutoChart03CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
+            $script:AutoChart03UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Green'
             $script:AutoChartsProgressBar.Minimum = 0
@@ -1239,49 +1244,64 @@ $script:AutoChart03.Series["Process Company"].Color             = 'Green'
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart03.Series["Process Company"].Points.Clear()
-
             if ($script:AutoChart03UniqueDataFields.count -gt 0){
                 $script:AutoChart03Title.ForeColor = 'Black'
-                $script:AutoChart03Title.Text = "Process Company"
-                
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                $script:AutoChart03Title.Text = "IPv4 Interfaces Per Host"
+
+                $AutoChart03CurrentComputer  = ''
+                $AutoChart03CheckIfFirstLine = $false
+                $AutoChart03ResultsCount     = 0
+                $AutoChart03Computer         = @()
+                $AutoChart03YResults         = @()
                 $script:AutoChart03OverallDataResults = @()
 
-                # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart03UniqueDataFields) {
-                    $Count        = 0
-                    $script:AutoChart03CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSourceProcesses ) {
-                        if ($Line.Company -eq $DataField.Company) {
-                            $Count += 1
-                            if ( $script:AutoChart03CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03CsvComputers += $($Line.PSComputerName) }                        
+                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.AddressFamily -eq 'IPv4'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart03CheckIfFirstLine -eq $false ) { $AutoChart03CurrentComputer  = $Line.PSComputerName ; $AutoChart03CheckIfFirstLine = $true }
+                    if ( $AutoChart03CheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart03CurrentComputer ) {
+                            if ( $AutoChart03YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart03YResults += $Line.IPAddress ; $AutoChart03ResultsCount += 1 }
+                                if ( $AutoChart03Computer -notcontains $Line.PSComputerName ) { $AutoChart03Computer = $Line.PSComputerName }
+                            }       
+                        }
+                        elseif ( $Line.PSComputerName -ne $AutoChart03CurrentComputer ) { 
+                            $AutoChart03CurrentComputer = $Line.PSComputerName
+                            $AutoChart03YDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart03ResultsCount
+                                Computer     = $AutoChart03Computer 
+                            }
+                            $script:AutoChart03OverallDataResults += $AutoChart03YDataResults
+                            $AutoChart03YResults     = @()
+                            $AutoChart03ResultsCount = 0
+                            $AutoChart03Computer     = @()
+                            if ( $AutoChart03YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart03YResults += $Line.IPAddress ; $AutoChart03ResultsCount += 1 }
+                                if ( $AutoChart03Computer -notcontains $Line.PSComputerName ) { $AutoChart03Computer = $Line.PSComputerName }
+                            }
                         }
                     }
-                    $script:AutoChart03UniqueCount = $script:AutoChart03CsvComputers.Count
-                    $script:AutoChart03DataResults = New-Object PSObject -Property @{
-                        DataField   = $DataField
-                        TotalCount  = $Count
-                        UniqueCount = $script:AutoChart03UniqueCount
-                        Computers   = $script:AutoChart03CsvComputers 
-                    }
-                    $script:AutoChart03OverallDataResults += $script:AutoChart03DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart03.Series["Process Company"].Points.AddXY($_.DataField.Company,$_.UniqueCount) }
+                $AutoChart03YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart03ResultsCount ; Computer = $AutoChart03Computer }    
+                $script:AutoChart03OverallDataResults += $AutoChart03YDataResults
+                $script:AutoChart03OverallDataResults | ForEach-Object { $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+
+                $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
+                $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
                 $script:AutoChart03TrimOffLastTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
                 $script:AutoChart03TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
             }
             else {
+                $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
                 $script:AutoChart03Title.ForeColor = 'Red'
-                $script:AutoChart03Title.Text = "Process Company`n
+                $script:AutoChart03Title.Text = "IPv4 Interfaces Per Host`n
 [ No data not available ]`n
-Either run 'Get-Process' or 'Get-EnrichedProcesses to obtain company data... Get-WmiObject Win32_Process does not contain the company property.`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart03
+        Generate-AutoChart03
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart03OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -1343,8 +1363,8 @@ $script:AutoChart03TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart03TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart03TrimOffFirstTrackBarValue = $script:AutoChart03TrimOffFirstTrackBar.Value
         $script:AutoChart03TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart03TrimOffFirstTrackBar.Value)"
-        $script:AutoChart03.Series["Process Company"].Points.Clear()
-        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Process Company"].Points.AddXY($_.DataField.Company,$_.UniqueCount)}    
+        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
+        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
     $script:AutoChart03TrimOffFirstGroupBox.Controls.Add($script:AutoChart03TrimOffFirstTrackBar)
 $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffFirstGroupBox)
@@ -1353,9 +1373,9 @@ $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffFirs
 $script:AutoChart03TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
     Location    = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + $script:AutoChart03TrimOffFirstGroupBox.Size.Width + 5
-                     Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y }
+                        Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = 165
-                     Height = 85 }
+                        Height = 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
     ForeColor   = 'Black'
@@ -1378,8 +1398,8 @@ $script:AutoChart03TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart03TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart03TrimOffLastTrackBarValue = $($script:AutoChart03OverallDataResults.count) - $script:AutoChart03TrimOffLastTrackBar.Value
         $script:AutoChart03TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart03OverallDataResults.count) - $script:AutoChart03TrimOffLastTrackBar.Value)"
-        $script:AutoChart03.Series["Process Company"].Points.Clear()
-        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Process Company"].Points.AddXY($_.DataField.Company,$_.UniqueCount)}
+        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
+        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
 $script:AutoChart03TrimOffLastGroupBox.Controls.Add($script:AutoChart03TrimOffLastTrackBar)
 $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffLastGroupBox)
@@ -1398,9 +1418,9 @@ $script:AutoChart03ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart03ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart03.Series["Process Company"].ChartType = $script:AutoChart03ChartTypeComboBox.SelectedItem
-#    $script:AutoChart03.Series["Process Company"].Points.Clear()
-#    $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Process Company"].Points.AddXY($_.DataField.Company,$_.UniqueCount)}
+    $script:AutoChart03.Series["IPv4 Interfaces Per Host"].ChartType = $script:AutoChart03ChartTypeComboBox.SelectedItem
+#    $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
+#    $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
 $script:AutoChart03ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart03ChartTypesAvailable) { $script:AutoChart03ChartTypeComboBox.Items.Add($Item) }
@@ -1422,22 +1442,23 @@ $script:AutoChart033DToggleButton.Add_Click({
         $script:AutoChart03Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
         $script:AutoChart033DToggleButton.Text  = "3D On ($script:AutoChart033DInclination)"
-#        $script:AutoChart03.Series["Process Company"].Points.Clear()
-#        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Process Company"].Points.AddXY($_.DataField.Company,$_.UniqueCount)}
+#        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
     }
     elseif ( $script:AutoChart033DInclination -le 90 ) {
         $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
         $script:AutoChart033DToggleButton.Text  = "3D On ($script:AutoChart033DInclination)" 
-#        $script:AutoChart03.Series["Process Company"].Points.Clear()
-#        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Process Company"].Points.AddXY($_.DataField.Company,$_.UniqueCount)}
+#        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
         $script:AutoChart033DToggleButton.Text  = "3D Off" 
         $script:AutoChart033DInclination = 0
         $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
         $script:AutoChart03Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart03.Series["Process Company"].Points.Clear()
-#        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Process Company"].Points.AddXY($_.DataField.Company,$_.UniqueCount)}
+#        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
 $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart033DToggleButton)
@@ -1456,7 +1477,7 @@ $script:AutoChart03ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart03ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart03ColorsAvailable) { $script:AutoChart03ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart03ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart03.Series["Process Company"].Color = $script:AutoChart03ChangeColorComboBox.SelectedItem
+    $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Color = $script:AutoChart03ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03ChangeColorComboBox)
 
@@ -1465,12 +1486,12 @@ $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03ChangeColor
 #=====================================
 function script:InvestigateDifference-AutoChart03 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart03ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'Company' -eq $($script:AutoChart03InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart03InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart03InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart03ImportCsvPosResults) { $script:AutoChart03InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart03ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart03ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1499,7 +1520,7 @@ $script:AutoChart03CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart03CheckDiffButton
 $script:AutoChart03CheckDiffButton.Add_Click({
-    $script:AutoChart03InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Company' -ExpandProperty 'Company' | Sort-Object -Unique
+    $script:AutoChart03InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart03InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -1597,7 +1618,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03CheckDiffButton)
-    
+
 
 $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -1605,7 +1626,7 @@ $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart03CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Process Company" -PropertyX "Company" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPv4 Interfaces Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart03ExpandChartButton
 $script:AutoChart03ManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
@@ -1631,7 +1652,7 @@ $script:AutoChart03ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03ViewResults
-$script:AutoChart03ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart03ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03ViewResults)
 
 
@@ -1668,8 +1689,15 @@ $script:AutoChart03NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03NoticeTextbox)
 
-$script:AutoChart03.Series["Process Company"].Points.Clear()
-$script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Process Company"].Points.AddXY($_.DataField.Company,$_.UniqueCount)}    
+$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
+$script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
+
+
+
+
+
+
 
 
 
@@ -1711,7 +1739,7 @@ $script:AutoChart04.Add_MouseHover({ Close-AllOptions })
 ### Auto Create Charts Title 
 $script:AutoChart04Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
-    Alignment = "topcenter"
+    Alignment = "topcenter" #"topLeft"
 }
 $script:AutoChart04.Titles.Add($script:AutoChart04Title)
 
@@ -1726,71 +1754,86 @@ $script:AutoChart04Area.Area3DStyle.Inclination = 75
 $script:AutoChart04.ChartAreas.Add($script:AutoChart04Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart04.Series.Add("Process Product")  
-$script:AutoChart04.Series["Process Product"].Enabled           = $True
-$script:AutoChart04.Series["Process Product"].BorderWidth       = 1
-$script:AutoChart04.Series["Process Product"].IsVisibleInLegend = $false
-$script:AutoChart04.Series["Process Product"].Chartarea         = 'Chart Area'
-$script:AutoChart04.Series["Process Product"].Legend            = 'Legend'
-$script:AutoChart04.Series["Process Product"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart04.Series["Process Product"]['PieLineColor']   = 'Black'
-$script:AutoChart04.Series["Process Product"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart04.Series["Process Product"].ChartType         = 'Column'
-$script:AutoChart04.Series["Process Product"].Color             = 'Orange'
+$script:AutoChart04.Series.Add("IPv6 Interfaces Per Host")  
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Enabled           = $True
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"].BorderWidth       = 1
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"].IsVisibleInLegend = $false
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Legend            = 'Legend'
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"].ChartType         = 'Column'
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Color             = 'orange'
 
-        function Generate-ProcessesAutoChart04 {
-            $script:AutoChart04CsvFileHosts      = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart04UniqueDataFields  = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Product' | Sort-Object -Property 'Product' -Unique
+        function Generate-AutoChart04 {
+            $script:AutoChart04CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
+            $script:AutoChart04UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
 
-            $script:AutoChartsProgressBar.ForeColor = 'Orange'
+            $script:AutoChartsProgressBar.ForeColor = 'orange'
             $script:AutoChartsProgressBar.Minimum = 0
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart04UniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart04.Series["Process Product"].Points.Clear()
-
             if ($script:AutoChart04UniqueDataFields.count -gt 0){
                 $script:AutoChart04Title.ForeColor = 'Black'
-                $script:AutoChart04Title.Text = "Process Product"
+                $script:AutoChart04Title.Text = "IPv6 Interfaces Per Host"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                $AutoChart04CurrentComputer  = ''
+                $AutoChart04CheckIfFirstLine = $false
+                $AutoChart04ResultsCount     = 0
+                $AutoChart04Computer         = @()
+                $AutoChart04YResults         = @()
                 $script:AutoChart04OverallDataResults = @()
 
-                # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart04UniqueDataFields) {
-                    $Count        = 0
-                    $script:AutoChart04CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSourceProcesses ) {
-                        if ($($Line.Product) -eq $DataField.Product) {
-                            $Count += 1
-                            if ( $script:AutoChart04CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04CsvComputers += $($Line.PSComputerName) }                        
+                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.AddressFamily -eq 'IPv6'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart04CheckIfFirstLine -eq $false ) { $AutoChart04CurrentComputer  = $Line.PSComputerName ; $AutoChart04CheckIfFirstLine = $true }
+                    if ( $AutoChart04CheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart04CurrentComputer ) {
+                            if ( $AutoChart04YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart04YResults += $Line.IPAddress ; $AutoChart04ResultsCount += 1 }
+                                if ( $AutoChart04Computer -notcontains $Line.PSComputerName ) { $AutoChart04Computer = $Line.PSComputerName }
+                            }       
+                        }
+                        elseif ( $Line.PSComputerName -ne $AutoChart04CurrentComputer ) { 
+                            $AutoChart04CurrentComputer = $Line.PSComputerName
+                            $AutoChart04YDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart04ResultsCount
+                                Computer     = $AutoChart04Computer 
+                            }
+                            $script:AutoChart04OverallDataResults += $AutoChart04YDataResults
+                            $AutoChart04YResults     = @()
+                            $AutoChart04ResultsCount = 0
+                            $AutoChart04Computer     = @()
+                            if ( $AutoChart04YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart04YResults += $Line.IPAddress ; $AutoChart04ResultsCount += 1 }
+                                if ( $AutoChart04Computer -notcontains $Line.PSComputerName ) { $AutoChart04Computer = $Line.PSComputerName }
+                            }
                         }
                     }
-                    $script:AutoChart04UniqueCount = $script:AutoChart04CsvComputers.Count
-                    $script:AutoChart04DataResults = New-Object PSObject -Property @{
-                        DataField   = $DataField
-                        TotalCount  = $Count
-                        UniqueCount = $script:AutoChart04UniqueCount
-                        Computers   = $script:AutoChart04CsvComputers 
-                    }
-                    $script:AutoChart04OverallDataResults += $script:AutoChart04DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart04.Series["Process Product"].Points.AddXY($_.DataField.Product,$_.UniqueCount) }
+                $AutoChart04YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart04ResultsCount ; Computer = $AutoChart04Computer }    
+                $script:AutoChart04OverallDataResults += $AutoChart04YDataResults
+                $script:AutoChart04OverallDataResults | ForEach-Object { $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+
+                $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
+                $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
                 $script:AutoChart04TrimOffLastTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
                 $script:AutoChart04TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
             }
             else {
+                $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
                 $script:AutoChart04Title.ForeColor = 'Red'
-                $script:AutoChart04Title.Text = "Process Product`n
+                $script:AutoChart04Title.Text = "IPv6 Interfaces Per Host`n
 [ No data not available ]`n
-Either run 'Get-Process' or 'Get-EnrichedProcesses to obtain company data... Get-WmiObject Win32_Process does not contain the product property.`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart04
+        Generate-AutoChart04
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart04OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -1852,8 +1895,8 @@ $script:AutoChart04TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart04TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart04TrimOffFirstTrackBarValue = $script:AutoChart04TrimOffFirstTrackBar.Value
         $script:AutoChart04TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart04TrimOffFirstTrackBar.Value)"
-        $script:AutoChart04.Series["Process Product"].Points.Clear()
-        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Process Product"].Points.AddXY($_.DataField.Product,$_.UniqueCount)}    
+        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
+        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
     $script:AutoChart04TrimOffFirstGroupBox.Controls.Add($script:AutoChart04TrimOffFirstTrackBar)
 $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffFirstGroupBox)
@@ -1862,9 +1905,9 @@ $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffFirs
 $script:AutoChart04TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
     Location    = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + $script:AutoChart04TrimOffFirstGroupBox.Size.Width + 5
-                     Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y }
+                        Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = 165
-                     Height = 85 }
+                        Height = 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
     ForeColor   = 'Black'
@@ -1887,8 +1930,8 @@ $script:AutoChart04TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart04TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart04TrimOffLastTrackBarValue = $($script:AutoChart04OverallDataResults.count) - $script:AutoChart04TrimOffLastTrackBar.Value
         $script:AutoChart04TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart04OverallDataResults.count) - $script:AutoChart04TrimOffLastTrackBar.Value)"
-        $script:AutoChart04.Series["Process Product"].Points.Clear()
-        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Process Product"].Points.AddXY($_.DataField.Product,$_.UniqueCount)}
+        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
+        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
 $script:AutoChart04TrimOffLastGroupBox.Controls.Add($script:AutoChart04TrimOffLastTrackBar)
 $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffLastGroupBox)
@@ -1907,9 +1950,9 @@ $script:AutoChart04ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart04ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart04.Series["Process Product"].ChartType = $script:AutoChart04ChartTypeComboBox.SelectedItem
-#    $script:AutoChart04.Series["Process Product"].Points.Clear()
-#    $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Process Product"].Points.AddXY($_.DataField.Product,$_.UniqueCount)}
+    $script:AutoChart04.Series["IPv6 Interfaces Per Host"].ChartType = $script:AutoChart04ChartTypeComboBox.SelectedItem
+#    $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
+#    $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
 $script:AutoChart04ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart04ChartTypesAvailable) { $script:AutoChart04ChartTypeComboBox.Items.Add($Item) }
@@ -1931,22 +1974,23 @@ $script:AutoChart043DToggleButton.Add_Click({
         $script:AutoChart04Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
         $script:AutoChart043DToggleButton.Text  = "3D On ($script:AutoChart043DInclination)"
-#        $script:AutoChart04.Series["Process Product"].Points.Clear()
-#        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Process Product"].Points.AddXY($_.DataField.Product,$_.UniqueCount)}
+#        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
     }
     elseif ( $script:AutoChart043DInclination -le 90 ) {
         $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
         $script:AutoChart043DToggleButton.Text  = "3D On ($script:AutoChart043DInclination)" 
-#        $script:AutoChart04.Series["Process Product"].Points.Clear()
-#        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Process Product"].Points.AddXY($_.DataField.Product,$_.UniqueCount)}
+#        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
         $script:AutoChart043DToggleButton.Text  = "3D Off" 
         $script:AutoChart043DInclination = 0
         $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
         $script:AutoChart04Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart04.Series["Process Product"].Points.Clear()
-#        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Process Product"].Points.AddXY($_.DataField.Product,$_.UniqueCount)}
+#        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
 $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart043DToggleButton)
@@ -1965,7 +2009,7 @@ $script:AutoChart04ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart04ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart04ColorsAvailable) { $script:AutoChart04ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart04ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart04.Series["Process Product"].Color = $script:AutoChart04ChangeColorComboBox.SelectedItem
+    $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Color = $script:AutoChart04ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04ChangeColorComboBox)
 
@@ -1974,12 +2018,12 @@ $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04ChangeColor
 #=====================================
 function script:InvestigateDifference-AutoChart04 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart04ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'Product' -eq $($script:AutoChart04InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart04InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart04InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart04ImportCsvPosResults) { $script:AutoChart04InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart04ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart04ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2008,7 +2052,7 @@ $script:AutoChart04CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart04CheckDiffButton
 $script:AutoChart04CheckDiffButton.Add_Click({
-    $script:AutoChart04InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Product' -ExpandProperty 'Product' | Sort-Object -Unique
+    $script:AutoChart04InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart04InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -2050,7 +2094,7 @@ $script:AutoChart04CheckDiffButton.Add_Click({
         Width    = 100 
         Height   = 20
     }
-    CommonButtonSettings -Button $script:AutoChart04InvestDiffExecuteButton 
+    CommonButtonSettings -Button $script:AutoChart04InvestDiffExecuteButton
     $script:AutoChart04InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
     $script:AutoChart04InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04 })
 
@@ -2106,7 +2150,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04CheckDiffButton)
-    
+
 
 $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -2114,7 +2158,7 @@ $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart04CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Process Product" -PropertyX "Product" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPv6 Interfaces Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart04ExpandChartButton
 $script:AutoChart04ManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)
@@ -2140,7 +2184,7 @@ $script:AutoChart04ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04ViewResults
-$script:AutoChart04ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart04ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04ViewResults)
 
 
@@ -2177,8 +2221,16 @@ $script:AutoChart04NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04NoticeTextbox)
 
-$script:AutoChart04.Series["Process Product"].Points.Clear()
-$script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Process Product"].Points.AddXY($_.DataField.Product,$_.UniqueCount)}    
+$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
+$script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
+
+
+
+
+
+
+
 
 
 
@@ -2218,7 +2270,7 @@ $script:AutoChart05.Add_MouseHover({ Close-AllOptions })
 ### Auto Create Charts Title 
 $script:AutoChart05Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
-    Alignment = "topcenter"
+    Alignment = "topcenter" #"topLeft"
 }
 $script:AutoChart05.Titles.Add($script:AutoChart05Title)
 
@@ -2233,22 +2285,21 @@ $script:AutoChart05Area.Area3DStyle.Inclination = 75
 $script:AutoChart05.ChartAreas.Add($script:AutoChart05Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart05.Series.Add("Processes with Network Activity")  
-$script:AutoChart05.Series["Processes with Network Activity"].Enabled           = $True
-$script:AutoChart05.Series["Processes with Network Activity"].BorderWidth       = 1
-$script:AutoChart05.Series["Processes with Network Activity"].IsVisibleInLegend = $false
-$script:AutoChart05.Series["Processes with Network Activity"].Chartarea         = 'Chart Area'
-$script:AutoChart05.Series["Processes with Network Activity"].Legend            = 'Legend'
-$script:AutoChart05.Series["Processes with Network Activity"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart05.Series["Processes with Network Activity"]['PieLineColor']   = 'Black'
-$script:AutoChart05.Series["Processes with Network Activity"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart05.Series["Processes with Network Activity"].ChartType         = 'Column'
-$script:AutoChart05.Series["Processes with Network Activity"].Color             = 'Brown'
+$script:AutoChart05.Series.Add("IPs (Manual) Per Host")  
+$script:AutoChart05.Series["IPs (Manual) Per Host"].Enabled           = $True
+$script:AutoChart05.Series["IPs (Manual) Per Host"].BorderWidth       = 1
+$script:AutoChart05.Series["IPs (Manual) Per Host"].IsVisibleInLegend = $false
+$script:AutoChart05.Series["IPs (Manual) Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart05.Series["IPs (Manual) Per Host"].Legend            = 'Legend'
+$script:AutoChart05.Series["IPs (Manual) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart05.Series["IPs (Manual) Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart05.Series["IPs (Manual) Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart05.Series["IPs (Manual) Per Host"].ChartType         = 'Column'
+$script:AutoChart05.Series["IPs (Manual) Per Host"].Color             = 'Brown'
 
-        function Generate-ProcessesAutoChart05 {
-            $script:AutoChart05CsvFileHosts       = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart05UniqueDataFields   = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Name' | Sort-Object -Property 'Name' -Unique
-            $script:AutoChart05NetworkConnections = $script:AutoChart05UniqueDataFields | Select-Object -Property 'NetworkConnections'
+        function Generate-AutoChart05 {
+            $script:AutoChart05CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
+            $script:AutoChart05UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Brown'
             $script:AutoChartsProgressBar.Minimum = 0
@@ -2256,53 +2307,64 @@ $script:AutoChart05.Series["Processes with Network Activity"].Color             
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
-
-            if ($script:AutoChart05NetworkConnections.count -gt 0){
+            if ($script:AutoChart05UniqueDataFields.count -gt 0){
                 $script:AutoChart05Title.ForeColor = 'Black'
-                $script:AutoChart05Title.Text = "Processes with Network Activity"
+                $script:AutoChart05Title.Text = "IPs (Manual) Per Host"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                $AutoChart05CurrentComputer  = ''
+                $AutoChart05CheckIfFirstLine = $false
+                $AutoChart05ResultsCount     = 0
+                $AutoChart05Computer         = @()
+                $AutoChart05YResults         = @()
                 $script:AutoChart05OverallDataResults = @()
 
-                # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart05UniqueDataFields) {
-                    $Count = 0
-                    $script:AutoChart05CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSourceProcesses ) {
-                        if ($Line.Name -eq $DataField.Name -and $Line.NetworkConnectionCount -gt 0) {
-                            $Count += 1
-                            if ( $script:AutoChart05CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart05CsvComputers += $($Line.PSComputerName) }                        
+                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.PrefixOrigin -eq 'Manual'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart05CheckIfFirstLine -eq $false ) { $AutoChart05CurrentComputer  = $Line.PSComputerName ; $AutoChart05CheckIfFirstLine = $true }
+                    if ( $AutoChart05CheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart05CurrentComputer ) {
+                            if ( $AutoChart05YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart05YResults += $Line.IPAddress ; $AutoChart05ResultsCount += 1 }
+                                if ( $AutoChart05Computer -notcontains $Line.PSComputerName ) { $AutoChart05Computer = $Line.PSComputerName }
+                            }       
+                        }
+                        elseif ( $Line.PSComputerName -ne $AutoChart05CurrentComputer ) { 
+                            $AutoChart05CurrentComputer = $Line.PSComputerName
+                            $AutoChart05YDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart05ResultsCount
+                                Computer     = $AutoChart05Computer 
+                            }
+                            $script:AutoChart05OverallDataResults += $AutoChart05YDataResults
+                            $AutoChart05YResults     = @()
+                            $AutoChart05ResultsCount = 0
+                            $AutoChart05Computer     = @()
+                            if ( $AutoChart05YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart05YResults += $Line.IPAddress ; $AutoChart05ResultsCount += 1 }
+                                if ( $AutoChart05Computer -notcontains $Line.PSComputerName ) { $AutoChart05Computer = $Line.PSComputerName }
+                            }
                         }
                     }
-                    if ($Count -gt 0) {
-                        $script:AutoChart05UniqueCount = $script:AutoChart05CsvComputers.Count
-                        $script:AutoChart05DataResults = New-Object PSObject -Property @{
-                            DataField   = $DataField
-                            TotalCount  = $Count
-                            UniqueCount = $script:AutoChart05UniqueCount
-                            Computers   = $script:AutoChart05CsvComputers 
-                        }
-                        $script:AutoChart05OverallDataResults += $script:AutoChart05DataResults
-                        $script:AutoChartsProgressBar.Value += 1
-                        $script:AutoChartsProgressBar.Update()
-                    }
+                    $script:AutoChartsProgressBar.Value += 1
+                    $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart05OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["Processes with Network Activity"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}    
+                $AutoChart05YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart05ResultsCount ; Computer = $AutoChart05Computer }    
+                $script:AutoChart05OverallDataResults += $AutoChart05YDataResults
+                $script:AutoChart05OverallDataResults | ForEach-Object { $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+
+                $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
+                $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
                 $script:AutoChart05TrimOffLastTrackBar.SetRange(0, $($script:AutoChart05OverallDataResults.count))
                 $script:AutoChart05TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05OverallDataResults.count))
             }
             else {
-                $script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
+                $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
                 $script:AutoChart05Title.ForeColor = 'Red'
-                $script:AutoChart05Title.Text = "Processes with Network Activity`n
+                $script:AutoChart05Title.Text = "IPs (Manual) Per Host`n
 [ No data not available ]`n
-Run 'Get-EnrichedProcesses' to obtain Network Connections
-associated with processes.`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart05
+        Generate-AutoChart05
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart05OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -2364,8 +2426,8 @@ $script:AutoChart05TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart05TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart05TrimOffFirstTrackBarValue = $script:AutoChart05TrimOffFirstTrackBar.Value
         $script:AutoChart05TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart05TrimOffFirstTrackBar.Value)"
-        $script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
-        $script:AutoChart05OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["Processes with Network Activity"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}    
+        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
+        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
     $script:AutoChart05TrimOffFirstGroupBox.Controls.Add($script:AutoChart05TrimOffFirstTrackBar)
 $script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05TrimOffFirstGroupBox)
@@ -2374,9 +2436,9 @@ $script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05TrimOffFirs
 $script:AutoChart05TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
     Location    = @{ X = $script:AutoChart05TrimOffFirstGroupBox.Location.X + $script:AutoChart05TrimOffFirstGroupBox.Size.Width + 5
-                     Y = $script:AutoChart05TrimOffFirstGroupBox.Location.Y }
+                        Y = $script:AutoChart05TrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = 165
-                     Height = 85 }
+                        Height = 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
     ForeColor   = 'Black'
@@ -2399,8 +2461,8 @@ $script:AutoChart05TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart05TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart05TrimOffLastTrackBarValue = $($script:AutoChart05OverallDataResults.count) - $script:AutoChart05TrimOffLastTrackBar.Value
         $script:AutoChart05TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart05OverallDataResults.count) - $script:AutoChart05TrimOffLastTrackBar.Value)"
-        $script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
-        $script:AutoChart05OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["Processes with Network Activity"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
+        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
 $script:AutoChart05TrimOffLastGroupBox.Controls.Add($script:AutoChart05TrimOffLastTrackBar)
 $script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05TrimOffLastGroupBox)
@@ -2419,9 +2481,9 @@ $script:AutoChart05ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart05ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart05.Series["Processes with Network Activity"].ChartType = $script:AutoChart05ChartTypeComboBox.SelectedItem
-#    $script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
-#    $script:AutoChart05OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["Processes with Network Activity"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+    $script:AutoChart05.Series["IPs (Manual) Per Host"].ChartType = $script:AutoChart05ChartTypeComboBox.SelectedItem
+#    $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
+#    $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
 $script:AutoChart05ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart05ChartTypesAvailable) { $script:AutoChart05ChartTypeComboBox.Items.Add($Item) }
@@ -2443,22 +2505,23 @@ $script:AutoChart053DToggleButton.Add_Click({
         $script:AutoChart05Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart05Area.Area3DStyle.Inclination = $script:AutoChart053DInclination
         $script:AutoChart053DToggleButton.Text  = "3D On ($script:AutoChart053DInclination)"
-#        $script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
-#        $script:AutoChart05OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["Processes with Network Activity"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+#        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
+#        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
     }
     elseif ( $script:AutoChart053DInclination -le 90 ) {
         $script:AutoChart05Area.Area3DStyle.Inclination = $script:AutoChart053DInclination
         $script:AutoChart053DToggleButton.Text  = "3D On ($script:AutoChart053DInclination)" 
-#        $script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
-#        $script:AutoChart05OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["Processes with Network Activity"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+#        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
+#        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
         $script:AutoChart053DToggleButton.Text  = "3D Off" 
         $script:AutoChart053DInclination = 0
         $script:AutoChart05Area.Area3DStyle.Inclination = $script:AutoChart053DInclination
         $script:AutoChart05Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
-#        $script:AutoChart05OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["Processes with Network Activity"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
+#        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
+#        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
 $script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart053DToggleButton)
@@ -2477,22 +2540,21 @@ $script:AutoChart05ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart05ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart05ColorsAvailable) { $script:AutoChart05ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart05ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart05.Series["Processes with Network Activity"].Color = $script:AutoChart05ChangeColorComboBox.SelectedItem
+    $script:AutoChart05.Series["IPs (Manual) Per Host"].Color = $script:AutoChart05ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05ChangeColorComboBox)
-
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
 function script:InvestigateDifference-AutoChart05 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart05ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'Name' -eq $($script:AutoChart05InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart05InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart05InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart05ImportCsvPosResults) { $script:AutoChart05InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart05ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart05ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2521,7 +2583,7 @@ $script:AutoChart05CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart05CheckDiffButton
 $script:AutoChart05CheckDiffButton.Add_Click({
-    $script:AutoChart05InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+    $script:AutoChart05InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart05InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -2619,7 +2681,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart05ManipulationPanel.controls.Add($script:AutoChart05CheckDiffButton)
-    
+
 
 $AutoChart05ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -2627,7 +2689,7 @@ $AutoChart05ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart05CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Processes With Network Activity" -PropertyX "NetworkConnections" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPs (Manual) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart05ExpandChartButton
 $script:AutoChart05ManipulationPanel.Controls.Add($AutoChart05ExpandChartButton)
@@ -2653,7 +2715,7 @@ $script:AutoChart05ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart05ViewResults
-$script:AutoChart05ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart05ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart05ManipulationPanel.controls.Add($script:AutoChart05ViewResults)
 
 
@@ -2690,8 +2752,14 @@ $script:AutoChart05NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05NoticeTextbox)
 
-$script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
-$script:AutoChart05OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["Processes with Network Activity"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}    
+$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
+$script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
+
+
+
+
+
 
 
 
@@ -2731,7 +2799,7 @@ $script:AutoChart06.Add_MouseHover({ Close-AllOptions })
 ### Auto Create Charts Title 
 $script:AutoChart06Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
-    Alignment = "topcenter"
+    Alignment = "topcenter" #"topLeft"
 }
 $script:AutoChart06.Titles.Add($script:AutoChart06Title)
 
@@ -2746,21 +2814,21 @@ $script:AutoChart06Area.Area3DStyle.Inclination = 75
 $script:AutoChart06.ChartAreas.Add($script:AutoChart06Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart06.Series.Add("Process MD5 Hash")  
-$script:AutoChart06.Series["Process MD5 Hash"].Enabled           = $True
-$script:AutoChart06.Series["Process MD5 Hash"].BorderWidth       = 1
-$script:AutoChart06.Series["Process MD5 Hash"].IsVisibleInLegend = $false
-$script:AutoChart06.Series["Process MD5 Hash"].Chartarea         = 'Chart Area'
-$script:AutoChart06.Series["Process MD5 Hash"].Legend            = 'Legend'
-$script:AutoChart06.Series["Process MD5 Hash"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart06.Series["Process MD5 Hash"]['PieLineColor']   = 'Black'
-$script:AutoChart06.Series["Process MD5 Hash"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart06.Series["Process MD5 Hash"].ChartType         = 'Column'
-$script:AutoChart06.Series["Process MD5 Hash"].Color             = 'Gray'
+$script:AutoChart06.Series.Add("IPs (DHCP) Per Host")  
+$script:AutoChart06.Series["IPs (DHCP) Per Host"].Enabled           = $True
+$script:AutoChart06.Series["IPs (DHCP) Per Host"].BorderWidth       = 1
+$script:AutoChart06.Series["IPs (DHCP) Per Host"].IsVisibleInLegend = $false
+$script:AutoChart06.Series["IPs (DHCP) Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart06.Series["IPs (DHCP) Per Host"].Legend            = 'Legend'
+$script:AutoChart06.Series["IPs (DHCP) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart06.Series["IPs (DHCP) Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart06.Series["IPs (DHCP) Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart06.Series["IPs (DHCP) Per Host"].ChartType         = 'Column'
+$script:AutoChart06.Series["IPs (DHCP) Per Host"].Color             = 'Gray'
 
-        function Generate-ProcessesAutoChart06 {
-            $script:AutoChart06CsvFileHosts      = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart06UniqueDataFields  = $script:AutoChartDataSourceProcesses | Select-Object -Property 'MD5Hash' | Sort-Object -Property 'MD5Hash' -Unique
+        function Generate-AutoChart06 {
+            $script:AutoChart06CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
+            $script:AutoChart06UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Gray'
             $script:AutoChartsProgressBar.Minimum = 0
@@ -2768,49 +2836,64 @@ $script:AutoChart06.Series["Process MD5 Hash"].Color             = 'Gray'
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart06.Series["Process MD5 Hash"].Points.Clear()
-
             if ($script:AutoChart06UniqueDataFields.count -gt 0){
                 $script:AutoChart06Title.ForeColor = 'Black'
-                $script:AutoChart06Title.Text = "Process MD5 Hash"
+                $script:AutoChart06Title.Text = "IPs (DHCP) Per Host"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                $AutoChart06CurrentComputer  = ''
+                $AutoChart06CheckIfFirstLine = $false
+                $AutoChart06ResultsCount     = 0
+                $AutoChart06Computer         = @()
+                $AutoChart06YResults         = @()
                 $script:AutoChart06OverallDataResults = @()
 
-                # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart06UniqueDataFields) {
-                    $Count = 0
-                    $script:AutoChart06CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSourceProcesses ) {
-                        if ($($Line.MD5Hash) -eq $DataField.MD5Hash) {
-                            $Count += 1
-                            if ( $script:AutoChart06CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart06CsvComputers += $($Line.PSComputerName) }                        
+                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.PrefixOrigin -eq 'DHCP'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart06CheckIfFirstLine -eq $false ) { $AutoChart06CurrentComputer  = $Line.PSComputerName ; $AutoChart06CheckIfFirstLine = $true }
+                    if ( $AutoChart06CheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart06CurrentComputer ) {
+                            if ( $AutoChart06YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart06YResults += $Line.IPAddress ; $AutoChart06ResultsCount += 1 }
+                                if ( $AutoChart06Computer -notcontains $Line.PSComputerName ) { $AutoChart06Computer = $Line.PSComputerName }
+                            }       
+                        }
+                        elseif ( $Line.PSComputerName -ne $AutoChart06CurrentComputer ) { 
+                            $AutoChart06CurrentComputer = $Line.PSComputerName
+                            $AutoChart06YDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart06ResultsCount
+                                Computer     = $AutoChart06Computer 
+                            }
+                            $script:AutoChart06OverallDataResults += $AutoChart06YDataResults
+                            $AutoChart06YResults     = @()
+                            $AutoChart06ResultsCount = 0
+                            $AutoChart06Computer     = @()
+                            if ( $AutoChart06YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart06YResults += $Line.IPAddress ; $AutoChart06ResultsCount += 1 }
+                                if ( $AutoChart06Computer -notcontains $Line.PSComputerName ) { $AutoChart06Computer = $Line.PSComputerName }
+                            }
                         }
                     }
-                    $script:AutoChart06UniqueCount = $script:AutoChart06CsvComputers.Count
-                    $script:AutoChart06DataResults = New-Object PSObject -Property @{
-                        DataField   = $DataField
-                        TotalCount  = $Count
-                        UniqueCount = $script:AutoChart06UniqueCount
-                        Computers   = $script:AutoChart06CsvComputers 
-                    }
-                    $script:AutoChart06OverallDataResults += $script:AutoChart06DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart06OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart06.Series["Process MD5 Hash"].Points.AddXY($_.DataField.MD5Hash,$_.UniqueCount) }
+                $AutoChart06YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart06ResultsCount ; Computer = $AutoChart06Computer }    
+                $script:AutoChart06OverallDataResults += $AutoChart06YDataResults
+                $script:AutoChart06OverallDataResults | ForEach-Object { $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+
+                $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
+                $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
                 $script:AutoChart06TrimOffLastTrackBar.SetRange(0, $($script:AutoChart06OverallDataResults.count))
                 $script:AutoChart06TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06OverallDataResults.count))
             }
             else {
+                $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
                 $script:AutoChart06Title.ForeColor = 'Red'
-                $script:AutoChart06Title.Text = "Process MD5 Hash`n
+                $script:AutoChart06Title.Text = "IPs (DHCP) Per Host`n
 [ No data not available ]`n
-Run 'Get-EnrichedProcesses' to obtain MD5 Hash data`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart06
+        Generate-AutoChart06
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart06OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -2872,8 +2955,8 @@ $script:AutoChart06TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart06TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart06TrimOffFirstTrackBarValue = $script:AutoChart06TrimOffFirstTrackBar.Value
         $script:AutoChart06TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart06TrimOffFirstTrackBar.Value)"
-        $script:AutoChart06.Series["Process MD5 Hash"].Points.Clear()
-        $script:AutoChart06OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Process MD5 Hash"].Points.AddXY($_.DataField.MD5Hash,$_.UniqueCount)}    
+        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
+        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
     $script:AutoChart06TrimOffFirstGroupBox.Controls.Add($script:AutoChart06TrimOffFirstTrackBar)
 $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06TrimOffFirstGroupBox)
@@ -2882,9 +2965,9 @@ $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06TrimOffFirs
 $script:AutoChart06TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
     Location    = @{ X = $script:AutoChart06TrimOffFirstGroupBox.Location.X + $script:AutoChart06TrimOffFirstGroupBox.Size.Width + 5
-                     Y = $script:AutoChart06TrimOffFirstGroupBox.Location.Y }
+                        Y = $script:AutoChart06TrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = 165
-                     Height = 85 }
+                        Height = 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
     ForeColor   = 'Black'
@@ -2907,8 +2990,8 @@ $script:AutoChart06TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart06TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart06TrimOffLastTrackBarValue = $($script:AutoChart06OverallDataResults.count) - $script:AutoChart06TrimOffLastTrackBar.Value
         $script:AutoChart06TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart06OverallDataResults.count) - $script:AutoChart06TrimOffLastTrackBar.Value)"
-        $script:AutoChart06.Series["Process MD5 Hash"].Points.Clear()
-        $script:AutoChart06OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Process MD5 Hash"].Points.AddXY($_.DataField.MD5Hash,$_.UniqueCount)}
+        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
+        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
 $script:AutoChart06TrimOffLastGroupBox.Controls.Add($script:AutoChart06TrimOffLastTrackBar)
 $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06TrimOffLastGroupBox)
@@ -2927,9 +3010,9 @@ $script:AutoChart06ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart06ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart06.Series["Process MD5 Hash"].ChartType = $script:AutoChart06ChartTypeComboBox.SelectedItem
-#    $script:AutoChart06.Series["Process MD5 Hash"].Points.Clear()
-#    $script:AutoChart06OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Process MD5 Hash"].Points.AddXY($_.DataField.MD5Hash,$_.UniqueCount)}
+    $script:AutoChart06.Series["IPs (DHCP) Per Host"].ChartType = $script:AutoChart06ChartTypeComboBox.SelectedItem
+#    $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
+#    $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
 $script:AutoChart06ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart06ChartTypesAvailable) { $script:AutoChart06ChartTypeComboBox.Items.Add($Item) }
@@ -2951,22 +3034,23 @@ $script:AutoChart063DToggleButton.Add_Click({
         $script:AutoChart06Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart06Area.Area3DStyle.Inclination = $script:AutoChart063DInclination
         $script:AutoChart063DToggleButton.Text  = "3D On ($script:AutoChart063DInclination)"
-#        $script:AutoChart06.Series["Process MD5 Hash"].Points.Clear()
-#        $script:AutoChart06OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Process MD5 Hash"].Points.AddXY($_.DataField.MD5Hash,$_.UniqueCount)}
+#        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
+#        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
     }
     elseif ( $script:AutoChart063DInclination -le 90 ) {
         $script:AutoChart06Area.Area3DStyle.Inclination = $script:AutoChart063DInclination
         $script:AutoChart063DToggleButton.Text  = "3D On ($script:AutoChart063DInclination)" 
-#        $script:AutoChart06.Series["Process MD5 Hash"].Points.Clear()
-#        $script:AutoChart06OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Process MD5 Hash"].Points.AddXY($_.DataField.MD5Hash,$_.UniqueCount)}
+#        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
+#        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
         $script:AutoChart063DToggleButton.Text  = "3D Off" 
         $script:AutoChart063DInclination = 0
         $script:AutoChart06Area.Area3DStyle.Inclination = $script:AutoChart063DInclination
         $script:AutoChart06Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart06.Series["Process MD5 Hash"].Points.Clear()
-#        $script:AutoChart06OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Process MD5 Hash"].Points.AddXY($_.DataField.MD5Hash,$_.UniqueCount)}
+#        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
+#        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
 $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart063DToggleButton)
@@ -2985,7 +3069,7 @@ $script:AutoChart06ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart06ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart06ColorsAvailable) { $script:AutoChart06ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart06ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart06.Series["Process MD5 Hash"].Color = $script:AutoChart06ChangeColorComboBox.SelectedItem
+    $script:AutoChart06.Series["IPs (DHCP) Per Host"].Color = $script:AutoChart06ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06ChangeColorComboBox)
 
@@ -2994,12 +3078,12 @@ $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06ChangeColor
 #=====================================
 function script:InvestigateDifference-AutoChart06 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart06ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'MD5Hash' -eq $($script:AutoChart06InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart06InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart06InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart06ImportCsvPosResults) { $script:AutoChart06InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart06ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart06ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -3028,7 +3112,7 @@ $script:AutoChart06CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart06CheckDiffButton
 $script:AutoChart06CheckDiffButton.Add_Click({
-    $script:AutoChart06InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'MD5Hash' -ExpandProperty 'MD5Hash' | Sort-Object -Unique
+    $script:AutoChart06InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart06InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -3126,7 +3210,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart06ManipulationPanel.controls.Add($script:AutoChart06CheckDiffButton)
-    
+
 
 $AutoChart06ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -3134,7 +3218,7 @@ $AutoChart06ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart06CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Process MD5 Hashes" -PropertyX "MD5Hash" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPs (DHCP) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart06ExpandChartButton
 $script:AutoChart06ManipulationPanel.Controls.Add($AutoChart06ExpandChartButton)
@@ -3160,7 +3244,7 @@ $script:AutoChart06ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart06ViewResults
-$script:AutoChart06ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart06ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart06ManipulationPanel.controls.Add($script:AutoChart06ViewResults)
 
 
@@ -3197,8 +3281,8 @@ $script:AutoChart06NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06NoticeTextbox)
 
-$script:AutoChart06.Series["Process MD5 Hash"].Points.Clear()
-$script:AutoChart06OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Process MD5 Hash"].Points.AddXY($_.DataField.MD5Hash,$_.UniqueCount)}    
+$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
+$script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
 
@@ -3240,7 +3324,7 @@ $script:AutoChart07.Add_MouseHover({ Close-AllOptions })
 ### Auto Create Charts Title 
 $script:AutoChart07Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
-    Alignment = "topcenter"
+    Alignment = "topcenter" #"topLeft"
 }
 $script:AutoChart07.Titles.Add($script:AutoChart07Title)
 
@@ -3255,71 +3339,86 @@ $script:AutoChart07Area.Area3DStyle.Inclination = 75
 $script:AutoChart07.ChartAreas.Add($script:AutoChart07Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart07.Series.Add("Signer Certificate")  
-$script:AutoChart07.Series["Signer Certificate"].Enabled           = $True
-$script:AutoChart07.Series["Signer Certificate"].BorderWidth       = 1
-$script:AutoChart07.Series["Signer Certificate"].IsVisibleInLegend = $false
-$script:AutoChart07.Series["Signer Certificate"].Chartarea         = 'Chart Area'
-$script:AutoChart07.Series["Signer Certificate"].Legend            = 'Legend'
-$script:AutoChart07.Series["Signer Certificate"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart07.Series["Signer Certificate"]['PieLineColor']   = 'Black'
-$script:AutoChart07.Series["Signer Certificate"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart07.Series["Signer Certificate"].ChartType         = 'Column'
-$script:AutoChart07.Series["Signer Certificate"].Color             = 'SlateBLue'
+$script:AutoChart07.Series.Add("IPs (Well Known) Per Host")  
+$script:AutoChart07.Series["IPs (Well Known) Per Host"].Enabled           = $True
+$script:AutoChart07.Series["IPs (Well Known) Per Host"].BorderWidth       = 1
+$script:AutoChart07.Series["IPs (Well Known) Per Host"].IsVisibleInLegend = $false
+$script:AutoChart07.Series["IPs (Well Known) Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart07.Series["IPs (Well Known) Per Host"].Legend            = 'Legend'
+$script:AutoChart07.Series["IPs (Well Known) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart07.Series["IPs (Well Known) Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart07.Series["IPs (Well Known) Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart07.Series["IPs (Well Known) Per Host"].ChartType         = 'Column'
+$script:AutoChart07.Series["IPs (Well Known) Per Host"].Color             = 'SlateBLue'
 
-        function Generate-ProcessesAutoChart07 {
-            $script:AutoChart07CsvFileHosts      = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart07UniqueDataFields  = $script:AutoChartDataSourceProcesses | Select-Object -Property 'SignerCertificate' | Sort-Object -Property 'SignerCertificate' -Unique
+        function Generate-AutoChart07 {
+            $script:AutoChart07CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
+            $script:AutoChart07UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
 
-            $script:AutoChartsProgressBar.ForeColor = 'SlateBlue'
+            $script:AutoChartsProgressBar.ForeColor = 'SlateBLue'
             $script:AutoChartsProgressBar.Minimum = 0
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart07UniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart07.Series["Signer Certificate"].Points.Clear()
-
             if ($script:AutoChart07UniqueDataFields.count -gt 0){
                 $script:AutoChart07Title.ForeColor = 'Black'
-                $script:AutoChart07Title.Text = "Signer Certificate"
+                $script:AutoChart07Title.Text = "IPs (Well Known) Per Host"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                $AutoChart07CurrentComputer  = ''
+                $AutoChart07CheckIfFirstLine = $false
+                $AutoChart07ResultsCount     = 0
+                $AutoChart07Computer         = @()
+                $AutoChart07YResults         = @()
                 $script:AutoChart07OverallDataResults = @()
 
-                # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart07UniqueDataFields) {
-                    $Count = 0
-                    $script:AutoChart07CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSourceProcesses ) {
-                        if ($($Line.SignerCertificate) -eq $DataField.SignerCertificate) {
-                            $Count += 1
-                            if ( $script:AutoChart07CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart07CsvComputers += $($Line.PSComputerName) }                        
+                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.PrefixOrigin -eq 'WellKnown'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart07CheckIfFirstLine -eq $false ) { $AutoChart07CurrentComputer  = $Line.PSComputerName ; $AutoChart07CheckIfFirstLine = $true }
+                    if ( $AutoChart07CheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart07CurrentComputer ) {
+                            if ( $AutoChart07YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart07YResults += $Line.IPAddress ; $AutoChart07ResultsCount += 1 }
+                                if ( $AutoChart07Computer -notcontains $Line.PSComputerName ) { $AutoChart07Computer = $Line.PSComputerName }
+                            }       
+                        }
+                        elseif ( $Line.PSComputerName -ne $AutoChart07CurrentComputer ) { 
+                            $AutoChart07CurrentComputer = $Line.PSComputerName
+                            $AutoChart07YDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart07ResultsCount
+                                Computer     = $AutoChart07Computer 
+                            }
+                            $script:AutoChart07OverallDataResults += $AutoChart07YDataResults
+                            $AutoChart07YResults     = @()
+                            $AutoChart07ResultsCount = 0
+                            $AutoChart07Computer     = @()
+                            if ( $AutoChart07YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart07YResults += $Line.IPAddress ; $AutoChart07ResultsCount += 1 }
+                                if ( $AutoChart07Computer -notcontains $Line.PSComputerName ) { $AutoChart07Computer = $Line.PSComputerName }
+                            }
                         }
                     }
-                    $script:AutoChart07UniqueCount = $script:AutoChart07CsvComputers.Count
-                    $script:AutoChart07DataResults = New-Object PSObject -Property @{
-                        DataField   = $DataField
-                        TotalCount  = $Count
-                        UniqueCount = $script:AutoChart07UniqueCount
-                        Computers   = $script:AutoChart07CsvComputers 
-                    }
-                    $script:AutoChart07OverallDataResults += $script:AutoChart07DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart07OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart07.Series["Signer Certificate"].Points.AddXY($_.DataField.SignerCertificate,$_.UniqueCount) }
+                $AutoChart07YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart07ResultsCount ; Computer = $AutoChart07Computer }    
+                $script:AutoChart07OverallDataResults += $AutoChart07YDataResults
+                $script:AutoChart07OverallDataResults | ForEach-Object { $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+
+                $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
+                $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
                 $script:AutoChart07TrimOffLastTrackBar.SetRange(0, $($script:AutoChart07OverallDataResults.count))
                 $script:AutoChart07TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart07OverallDataResults.count))
             }
             else {
+                $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
                 $script:AutoChart07Title.ForeColor = 'Red'
-                $script:AutoChart07Title.Text = "Signer Certificate`n
+                $script:AutoChart07Title.Text = "IPs (Well Known) Per Host`n
 [ No data not available ]`n
-Run 'Get-EnrichedProcesses' to obtain Signer Certificate data`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart07
+        Generate-AutoChart07
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart07OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -3381,8 +3480,8 @@ $script:AutoChart07TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart07TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart07TrimOffFirstTrackBarValue = $script:AutoChart07TrimOffFirstTrackBar.Value
         $script:AutoChart07TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart07TrimOffFirstTrackBar.Value)"
-        $script:AutoChart07.Series["Signer Certificate"].Points.Clear()
-        $script:AutoChart07OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["Signer Certificate"].Points.AddXY($_.DataField.SignerCertificate,$_.UniqueCount)}    
+        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
+        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
     $script:AutoChart07TrimOffFirstGroupBox.Controls.Add($script:AutoChart07TrimOffFirstTrackBar)
 $script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07TrimOffFirstGroupBox)
@@ -3391,9 +3490,9 @@ $script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07TrimOffFirs
 $script:AutoChart07TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
     Location    = @{ X = $script:AutoChart07TrimOffFirstGroupBox.Location.X + $script:AutoChart07TrimOffFirstGroupBox.Size.Width + 5
-                     Y = $script:AutoChart07TrimOffFirstGroupBox.Location.Y }
+                        Y = $script:AutoChart07TrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = 165
-                     Height = 85 }
+                        Height = 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
     ForeColor   = 'Black'
@@ -3416,8 +3515,8 @@ $script:AutoChart07TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart07TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart07TrimOffLastTrackBarValue = $($script:AutoChart07OverallDataResults.count) - $script:AutoChart07TrimOffLastTrackBar.Value
         $script:AutoChart07TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart07OverallDataResults.count) - $script:AutoChart07TrimOffLastTrackBar.Value)"
-        $script:AutoChart07.Series["Signer Certificate"].Points.Clear()
-        $script:AutoChart07OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["Signer Certificate"].Points.AddXY($_.DataField.SignerCertificate,$_.UniqueCount)}
+        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
+        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
 $script:AutoChart07TrimOffLastGroupBox.Controls.Add($script:AutoChart07TrimOffLastTrackBar)
 $script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07TrimOffLastGroupBox)
@@ -3436,9 +3535,9 @@ $script:AutoChart07ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart07ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart07.Series["Signer Certificate"].ChartType = $script:AutoChart07ChartTypeComboBox.SelectedItem
-#    $script:AutoChart07.Series["Signer Certificate"].Points.Clear()
-#    $script:AutoChart07OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["Signer Certificate"].Points.AddXY($_.DataField.SignerCertificate,$_.UniqueCount)}
+    $script:AutoChart07.Series["IPs (Well Known) Per Host"].ChartType = $script:AutoChart07ChartTypeComboBox.SelectedItem
+#    $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
+#    $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
 $script:AutoChart07ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart07ChartTypesAvailable) { $script:AutoChart07ChartTypeComboBox.Items.Add($Item) }
@@ -3460,22 +3559,23 @@ $script:AutoChart073DToggleButton.Add_Click({
         $script:AutoChart07Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart07Area.Area3DStyle.Inclination = $script:AutoChart073DInclination
         $script:AutoChart073DToggleButton.Text  = "3D On ($script:AutoChart073DInclination)"
-#        $script:AutoChart07.Series["Signer Certificate"].Points.Clear()
-#        $script:AutoChart07OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["Signer Certificate"].Points.AddXY($_.DataField.SignerCertificate,$_.UniqueCount)}
+#        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
+#        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
     }
     elseif ( $script:AutoChart073DInclination -le 90 ) {
         $script:AutoChart07Area.Area3DStyle.Inclination = $script:AutoChart073DInclination
         $script:AutoChart073DToggleButton.Text  = "3D On ($script:AutoChart073DInclination)" 
-#        $script:AutoChart07.Series["Signer Certificate"].Points.Clear()
-#        $script:AutoChart07OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["Signer Certificate"].Points.AddXY($_.DataField.SignerCertificate,$_.UniqueCount)}
+#        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
+#        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
         $script:AutoChart073DToggleButton.Text  = "3D Off" 
         $script:AutoChart073DInclination = 0
         $script:AutoChart07Area.Area3DStyle.Inclination = $script:AutoChart073DInclination
         $script:AutoChart07Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart07.Series["Signer Certificate"].Points.Clear()
-#        $script:AutoChart07OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["Signer Certificate"].Points.AddXY($_.DataField.SignerCertificate,$_.UniqueCount)}
+#        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
+#        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
 $script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart073DToggleButton)
@@ -3494,7 +3594,7 @@ $script:AutoChart07ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart07ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart07ColorsAvailable) { $script:AutoChart07ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart07ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart07.Series["Signer Certificate"].Color = $script:AutoChart07ChangeColorComboBox.SelectedItem
+    $script:AutoChart07.Series["IPs (Well Known) Per Host"].Color = $script:AutoChart07ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07ChangeColorComboBox)
 
@@ -3503,12 +3603,12 @@ $script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07ChangeColor
 #=====================================
 function script:InvestigateDifference-AutoChart07 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart07ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'SignerCertificate' -eq $($script:AutoChart07InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart07ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart07InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart07InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart07ImportCsvPosResults) { $script:AutoChart07InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart07ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart07ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart07ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -3537,7 +3637,7 @@ $script:AutoChart07CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart07CheckDiffButton
 $script:AutoChart07CheckDiffButton.Add_Click({
-    $script:AutoChart07InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'SignerCertificate' -ExpandProperty 'SignerCertificate' | Sort-Object -Unique
+    $script:AutoChart07InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart07InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -3635,7 +3735,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart07ManipulationPanel.controls.Add($script:AutoChart07CheckDiffButton)
-    
+
 
 $AutoChart07ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -3643,7 +3743,7 @@ $AutoChart07ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart07CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Process Signer Certificate" -PropertyX "SignerCertificate" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPs (Well Known) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart07ExpandChartButton
 $script:AutoChart07ManipulationPanel.Controls.Add($AutoChart07ExpandChartButton)
@@ -3669,7 +3769,7 @@ $script:AutoChart07ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart07ViewResults
-$script:AutoChart07ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart07ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart07ManipulationPanel.controls.Add($script:AutoChart07ViewResults)
 
 
@@ -3706,8 +3806,12 @@ $script:AutoChart07NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07NoticeTextbox)
 
-$script:AutoChart07.Series["Signer Certificate"].Points.Clear()
-$script:AutoChart07OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["Signer Certificate"].Points.AddXY($_.DataField.SignerCertificate,$_.UniqueCount)}    
+$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
+$script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
+
+
+
 
 
 
@@ -3750,7 +3854,7 @@ $script:AutoChart08.Add_MouseHover({ Close-AllOptions })
 ### Auto Create Charts Title 
 $script:AutoChart08Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
-    Alignment = "topcenter"
+    Alignment = "topcenter" #"topLeft"
 }
 $script:AutoChart08.Titles.Add($script:AutoChart08Title)
 
@@ -3765,21 +3869,21 @@ $script:AutoChart08Area.Area3DStyle.Inclination = 75
 $script:AutoChart08.ChartAreas.Add($script:AutoChart08Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart08.Series.Add("Signer Company")  
-$script:AutoChart08.Series["Signer Company"].Enabled           = $True
-$script:AutoChart08.Series["Signer Company"].BorderWidth       = 1
-$script:AutoChart08.Series["Signer Company"].IsVisibleInLegend = $false
-$script:AutoChart08.Series["Signer Company"].Chartarea         = 'Chart Area'
-$script:AutoChart08.Series["Signer Company"].Legend            = 'Legend'
-$script:AutoChart08.Series["Signer Company"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart08.Series["Signer Company"]['PieLineColor']   = 'Black'
-$script:AutoChart08.Series["Signer Company"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart08.Series["Signer Company"].ChartType         = 'Column'
-$script:AutoChart08.Series["Signer Company"].Color             = 'Purple'
+$script:AutoChart08.Series.Add("IPs (Router Advertisement) Per Host")  
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Enabled           = $True
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].BorderWidth       = 1
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].IsVisibleInLegend = $false
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Legend            = 'Legend'
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].ChartType         = 'Column'
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Color             = 'Purple'
 
-        function Generate-ProcessesAutoChart08 {
-            $script:AutoChart08CsvFileHosts      = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart08UniqueDataFields  = $script:AutoChartDataSourceProcesses | Select-Object -Property 'SignerCompany' | Sort-Object -Property 'SignerCompany' -Unique
+        function Generate-AutoChart08 {
+            $script:AutoChart08CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
+            $script:AutoChart08UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Purple'
             $script:AutoChartsProgressBar.Minimum = 0
@@ -3787,49 +3891,64 @@ $script:AutoChart08.Series["Signer Company"].Color             = 'Purple'
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart08.Series["Signer Company"].Points.Clear()
-
             if ($script:AutoChart08UniqueDataFields.count -gt 0){
                 $script:AutoChart08Title.ForeColor = 'Black'
-                $script:AutoChart08Title.Text = "Signer Company"
+                $script:AutoChart08Title.Text = "IPs (Router Advertisement) Per Host"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                $AutoChart08CurrentComputer  = ''
+                $AutoChart08CheckIfFirstLine = $false
+                $AutoChart08ResultsCount     = 0
+                $AutoChart08Computer         = @()
+                $AutoChart08YResults         = @()
                 $script:AutoChart08OverallDataResults = @()
 
-                # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart08UniqueDataFields) {
-                    $Count        = 0
-                    $script:AutoChart08CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSourceProcesses ) {
-                        if ($($Line.SignerCompany) -eq $DataField.SignerCompany) {
-                            $Count += 1
-                            if ( $script:AutoChart08CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart08CsvComputers += $($Line.PSComputerName) }                        
+                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.PrefixOrigin -eq 'RouterAdvertisement'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart08CheckIfFirstLine -eq $false ) { $AutoChart08CurrentComputer  = $Line.PSComputerName ; $AutoChart08CheckIfFirstLine = $true }
+                    if ( $AutoChart08CheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart08CurrentComputer ) {
+                            if ( $AutoChart08YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart08YResults += $Line.IPAddress ; $AutoChart08ResultsCount += 1 }
+                                if ( $AutoChart08Computer -notcontains $Line.PSComputerName ) { $AutoChart08Computer = $Line.PSComputerName }
+                            }       
+                        }
+                        elseif ( $Line.PSComputerName -ne $AutoChart08CurrentComputer ) { 
+                            $AutoChart08CurrentComputer = $Line.PSComputerName
+                            $AutoChart08YDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart08ResultsCount
+                                Computer     = $AutoChart08Computer 
+                            }
+                            $script:AutoChart08OverallDataResults += $AutoChart08YDataResults
+                            $AutoChart08YResults     = @()
+                            $AutoChart08ResultsCount = 0
+                            $AutoChart08Computer     = @()
+                            if ( $AutoChart08YResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart08YResults += $Line.IPAddress ; $AutoChart08ResultsCount += 1 }
+                                if ( $AutoChart08Computer -notcontains $Line.PSComputerName ) { $AutoChart08Computer = $Line.PSComputerName }
+                            }
                         }
                     }
-                    $script:AutoChart08UniqueCount = $script:AutoChart08CsvComputers.Count
-                    $script:AutoChart08DataResults = New-Object PSObject -Property @{
-                        DataField   = $DataField
-                        TotalCount  = $Count
-                        UniqueCount = $script:AutoChart08UniqueCount
-                        Computers   = $script:AutoChart08CsvComputers 
-                    }
-                    $script:AutoChart08OverallDataResults += $script:AutoChart08DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart08OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart08.Series["Signer Company"].Points.AddXY($_.DataField.SignerCompany,$_.UniqueCount) }
+                $AutoChart08YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart08ResultsCount ; Computer = $AutoChart08Computer }    
+                $script:AutoChart08OverallDataResults += $AutoChart08YDataResults
+                $script:AutoChart08OverallDataResults | ForEach-Object { $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+
+                $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+                $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
                 $script:AutoChart08TrimOffLastTrackBar.SetRange(0, $($script:AutoChart08OverallDataResults.count))
                 $script:AutoChart08TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart08OverallDataResults.count))
             }
             else {
+                $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
                 $script:AutoChart08Title.ForeColor = 'Red'
-                $script:AutoChart08Title.Text = "Signer Company`n
+                $script:AutoChart08Title.Text = "IPs (Router Advertisement) Per Host`n
 [ No data not available ]`n
-Run 'Get-EnrichedProcesses' to obtain MD5 Hash data`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart08
+        Generate-AutoChart08
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart08OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -3891,8 +4010,8 @@ $script:AutoChart08TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart08TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart08TrimOffFirstTrackBarValue = $script:AutoChart08TrimOffFirstTrackBar.Value
         $script:AutoChart08TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart08TrimOffFirstTrackBar.Value)"
-        $script:AutoChart08.Series["Signer Company"].Points.Clear()
-        $script:AutoChart08OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Signer Company"].Points.AddXY($_.DataField.SignerCompany,$_.UniqueCount)}    
+        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
     $script:AutoChart08TrimOffFirstGroupBox.Controls.Add($script:AutoChart08TrimOffFirstTrackBar)
 $script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08TrimOffFirstGroupBox)
@@ -3901,9 +4020,9 @@ $script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08TrimOffFirs
 $script:AutoChart08TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
     Location    = @{ X = $script:AutoChart08TrimOffFirstGroupBox.Location.X + $script:AutoChart08TrimOffFirstGroupBox.Size.Width + 5
-                     Y = $script:AutoChart08TrimOffFirstGroupBox.Location.Y }
+                        Y = $script:AutoChart08TrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = 165
-                     Height = 85 }
+                        Height = 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
     ForeColor   = 'Black'
@@ -3926,8 +4045,8 @@ $script:AutoChart08TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart08TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart08TrimOffLastTrackBarValue = $($script:AutoChart08OverallDataResults.count) - $script:AutoChart08TrimOffLastTrackBar.Value
         $script:AutoChart08TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart08OverallDataResults.count) - $script:AutoChart08TrimOffLastTrackBar.Value)"
-        $script:AutoChart08.Series["Signer Company"].Points.Clear()
-        $script:AutoChart08OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Signer Company"].Points.AddXY($_.DataField.SignerCompany,$_.UniqueCount)}
+        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
 $script:AutoChart08TrimOffLastGroupBox.Controls.Add($script:AutoChart08TrimOffLastTrackBar)
 $script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08TrimOffLastGroupBox)
@@ -3946,9 +4065,9 @@ $script:AutoChart08ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart08ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart08.Series["Signer Company"].ChartType = $script:AutoChart08ChartTypeComboBox.SelectedItem
-#    $script:AutoChart08.Series["Signer Company"].Points.Clear()
-#    $script:AutoChart08OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Signer Company"].Points.AddXY($_.DataField.SignerCompany,$_.UniqueCount)}
+    $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].ChartType = $script:AutoChart08ChartTypeComboBox.SelectedItem
+#    $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+#    $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
 $script:AutoChart08ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart08ChartTypesAvailable) { $script:AutoChart08ChartTypeComboBox.Items.Add($Item) }
@@ -3970,22 +4089,23 @@ $script:AutoChart083DToggleButton.Add_Click({
         $script:AutoChart08Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart08Area.Area3DStyle.Inclination = $script:AutoChart083DInclination
         $script:AutoChart083DToggleButton.Text  = "3D On ($script:AutoChart083DInclination)"
-#        $script:AutoChart08.Series["Signer Company"].Points.Clear()
-#        $script:AutoChart08OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Signer Company"].Points.AddXY($_.DataField.SignerCompany,$_.UniqueCount)}
+#        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+#        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
     }
     elseif ( $script:AutoChart083DInclination -le 90 ) {
         $script:AutoChart08Area.Area3DStyle.Inclination = $script:AutoChart083DInclination
         $script:AutoChart083DToggleButton.Text  = "3D On ($script:AutoChart083DInclination)" 
-#        $script:AutoChart08.Series["Signer Company"].Points.Clear()
-#        $script:AutoChart08OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Signer Company"].Points.AddXY($_.DataField.SignerCompany,$_.UniqueCount)}
+#        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+#        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
         $script:AutoChart083DToggleButton.Text  = "3D Off" 
         $script:AutoChart083DInclination = 0
         $script:AutoChart08Area.Area3DStyle.Inclination = $script:AutoChart083DInclination
         $script:AutoChart08Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart08.Series["Signer Company"].Points.Clear()
-#        $script:AutoChart08OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Signer Company"].Points.AddXY($_.DataField.SignerCompany,$_.UniqueCount)}
+#        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+#        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
 $script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart083DToggleButton)
@@ -4004,22 +4124,21 @@ $script:AutoChart08ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart08ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart08ColorsAvailable) { $script:AutoChart08ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart08ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart08.Series["Signer Company"].Color = $script:AutoChart08ChangeColorComboBox.SelectedItem
+    $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Color = $script:AutoChart08ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08ChangeColorComboBox)
-
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
 function script:InvestigateDifference-AutoChart08 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart08ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'SignerCompany' -eq $($script:AutoChart08InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart08ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart08InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart08InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart08ImportCsvPosResults) { $script:AutoChart08InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart08ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart08ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart08ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -4048,7 +4167,7 @@ $script:AutoChart08CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart08CheckDiffButton
 $script:AutoChart08CheckDiffButton.Add_Click({
-    $script:AutoChart08InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'SignerCompany' -ExpandProperty 'SignerCompany' | Sort-Object -Unique
+    $script:AutoChart08InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart08InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -4090,7 +4209,7 @@ $script:AutoChart08CheckDiffButton.Add_Click({
         Width    = 100 
         Height   = 20
     }
-    CommonButtonSettings -Button $script:AutoChart08InvestDiffExecuteButton 
+    CommonButtonSettings -Button $script:AutoChart08InvestDiffExecuteButton
     $script:AutoChart08InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart08 }})
     $script:AutoChart08InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart08 })
 
@@ -4146,7 +4265,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart08ManipulationPanel.controls.Add($script:AutoChart08CheckDiffButton)
-    
+
 
 $AutoChart08ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -4154,7 +4273,7 @@ $AutoChart08ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart08CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Processes Signer Company" -PropertyX "SignerCompany" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPs (Router Advertisement) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart08ExpandChartButton
 $script:AutoChart08ManipulationPanel.Controls.Add($AutoChart08ExpandChartButton)
@@ -4180,7 +4299,7 @@ $script:AutoChart08ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart08ViewResults
-$script:AutoChart08ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart08ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart08ManipulationPanel.controls.Add($script:AutoChart08ViewResults)
 
 
@@ -4217,8 +4336,13 @@ $script:AutoChart08NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08NoticeTextbox)
 
-$script:AutoChart08.Series["Signer Company"].Points.Clear()
-$script:AutoChart08OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Signer Company"].Points.AddXY($_.DataField.SignerCompany,$_.UniqueCount)}
+$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+$script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
+
+
+
+
 
 
 
@@ -4276,21 +4400,21 @@ $script:AutoChart09Area.Area3DStyle.Inclination = 75
 $script:AutoChart09.ChartAreas.Add($script:AutoChart09Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart09.Series.Add("Process Path")  
-$script:AutoChart09.Series["Process Path"].Enabled           = $True
-$script:AutoChart09.Series["Process Path"].BorderWidth       = 1
-$script:AutoChart09.Series["Process Path"].IsVisibleInLegend = $false
-$script:AutoChart09.Series["Process Path"].Chartarea         = 'Chart Area'
-$script:AutoChart09.Series["Process Path"].Legend            = 'Legend'
-$script:AutoChart09.Series["Process Path"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart09.Series["Process Path"]['PieLineColor']   = 'Black'
-$script:AutoChart09.Series["Process Path"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart09.Series["Process Path"].ChartType         = 'Column'
-$script:AutoChart09.Series["Process Path"].Color             = 'Yellow'
+$script:AutoChart09.Series.Add("Address State")  
+$script:AutoChart09.Series["Address State"].Enabled           = $True
+$script:AutoChart09.Series["Address State"].BorderWidth       = 1
+$script:AutoChart09.Series["Address State"].IsVisibleInLegend = $false
+$script:AutoChart09.Series["Address State"].Chartarea         = 'Chart Area'
+$script:AutoChart09.Series["Address State"].Legend            = 'Legend'
+$script:AutoChart09.Series["Address State"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart09.Series["Address State"]['PieLineColor']   = 'Black'
+$script:AutoChart09.Series["Address State"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart09.Series["Address State"].ChartType         = 'Column'
+$script:AutoChart09.Series["Address State"].Color             = 'Yellow'
 
-        function Generate-ProcessesAutoChart09 {
-            $script:AutoChart09CsvFileHosts      = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart09UniqueDataFields  = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Path' | Sort-Object -Property 'Path' -Unique
+        function Generate-AutoChart09 {
+            $script:AutoChart09CsvFileHosts      = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart09UniqueDataFields  = $script:AutoChartDataSource | Select-Object -Property 'AddressState' | Sort-Object -Property 'AddressState' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Yellow'
             $script:AutoChartsProgressBar.Minimum = 0
@@ -4298,11 +4422,11 @@ $script:AutoChart09.Series["Process Path"].Color             = 'Yellow'
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart09.Series["Process Path"].Points.Clear()
+            $script:AutoChart09.Series["Address State"].Points.Clear()
 
             if ($script:AutoChart09UniqueDataFields.count -gt 0){
                 $script:AutoChart09Title.ForeColor = 'Black'
-                $script:AutoChart09Title.Text = "Process Path"
+                $script:AutoChart09Title.Text = "Address State"
 
                 # If the Second field/Y Axis equals PSComputername, it counts it
                 $script:AutoChart09OverallDataResults = @()
@@ -4311,8 +4435,8 @@ $script:AutoChart09.Series["Process Path"].Color             = 'Yellow'
                 foreach ($DataField in $script:AutoChart09UniqueDataFields) {
                     $Count        = 0
                     $script:AutoChart09CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSourceProcesses ) {
-                        if ($($Line.Path) -eq $DataField.Path) {
+                    foreach ( $Line in $script:AutoChartDataSource ) {
+                        if ($($Line.AddressState) -eq $DataField.AddressState) {
                             $Count += 1
                             if ( $script:AutoChart09CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart09CsvComputers += $($Line.PSComputerName) }                        
                         }
@@ -4328,19 +4452,19 @@ $script:AutoChart09.Series["Process Path"].Color             = 'Yellow'
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart09.Series["Process Path"].Points.AddXY($_.DataField.Path,$_.UniqueCount) }
+                $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount) }
 
                 $script:AutoChart09TrimOffLastTrackBar.SetRange(0, $($script:AutoChart09OverallDataResults.count))
                 $script:AutoChart09TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart09OverallDataResults.count))
             }
             else {
                 $script:AutoChart09Title.ForeColor = 'Red'
-                $script:AutoChart09Title.Text = "Process Path`n
+                $script:AutoChart09Title.Text = "Address State`n
 [ No data not available ]`n
-Run a query to collect process data.`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart09
+        Generate-AutoChart09
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart09OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -4402,8 +4526,8 @@ $script:AutoChart09TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart09TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart09TrimOffFirstTrackBarValue = $script:AutoChart09TrimOffFirstTrackBar.Value
         $script:AutoChart09TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart09TrimOffFirstTrackBar.Value)"
-        $script:AutoChart09.Series["Process Path"].Points.Clear()
-        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Process Path"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}    
+        $script:AutoChart09.Series["Address State"].Points.Clear()
+        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}    
     })
     $script:AutoChart09TrimOffFirstGroupBox.Controls.Add($script:AutoChart09TrimOffFirstTrackBar)
 $script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09TrimOffFirstGroupBox)
@@ -4437,8 +4561,8 @@ $script:AutoChart09TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart09TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart09TrimOffLastTrackBarValue = $($script:AutoChart09OverallDataResults.count) - $script:AutoChart09TrimOffLastTrackBar.Value
         $script:AutoChart09TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart09OverallDataResults.count) - $script:AutoChart09TrimOffLastTrackBar.Value)"
-        $script:AutoChart09.Series["Process Path"].Points.Clear()
-        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Process Path"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}
+        $script:AutoChart09.Series["Address State"].Points.Clear()
+        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
     })
 $script:AutoChart09TrimOffLastGroupBox.Controls.Add($script:AutoChart09TrimOffLastTrackBar)
 $script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09TrimOffLastGroupBox)
@@ -4457,9 +4581,9 @@ $script:AutoChart09ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart09ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart09.Series["Process Path"].ChartType = $script:AutoChart09ChartTypeComboBox.SelectedItem
-#    $script:AutoChart09.Series["Process Path"].Points.Clear()
-#    $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Process Path"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}
+    $script:AutoChart09.Series["Address State"].ChartType = $script:AutoChart09ChartTypeComboBox.SelectedItem
+#    $script:AutoChart09.Series["Address State"].Points.Clear()
+#    $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
 })
 $script:AutoChart09ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart09ChartTypesAvailable) { $script:AutoChart09ChartTypeComboBox.Items.Add($Item) }
@@ -4481,22 +4605,22 @@ $script:AutoChart093DToggleButton.Add_Click({
         $script:AutoChart09Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart09Area.Area3DStyle.Inclination = $script:AutoChart093DInclination
         $script:AutoChart093DToggleButton.Text  = "3D On ($script:AutoChart093DInclination)"
-#        $script:AutoChart09.Series["Process Path"].Points.Clear()
-#        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Process Path"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}
+#        $script:AutoChart09.Series["Address State"].Points.Clear()
+#        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
     }
     elseif ( $script:AutoChart093DInclination -le 90 ) {
         $script:AutoChart09Area.Area3DStyle.Inclination = $script:AutoChart093DInclination
         $script:AutoChart093DToggleButton.Text  = "3D On ($script:AutoChart093DInclination)" 
-#        $script:AutoChart09.Series["Process Path"].Points.Clear()
-#        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Process Path"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}
+#        $script:AutoChart09.Series["Address State"].Points.Clear()
+#        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
     }
     else { 
         $script:AutoChart093DToggleButton.Text  = "3D Off" 
         $script:AutoChart093DInclination = 0
         $script:AutoChart09Area.Area3DStyle.Inclination = $script:AutoChart093DInclination
         $script:AutoChart09Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart09.Series["Process Path"].Points.Clear()
-#        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Process Path"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}
+#        $script:AutoChart09.Series["Address State"].Points.Clear()
+#        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
     }
 })
 $script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart093DToggleButton)
@@ -4515,7 +4639,7 @@ $script:AutoChart09ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart09ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart09ColorsAvailable) { $script:AutoChart09ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart09ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart09.Series["Process Path"].Color = $script:AutoChart09ChangeColorComboBox.SelectedItem
+    $script:AutoChart09.Series["Address State"].Color = $script:AutoChart09ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09ChangeColorComboBox)
 
@@ -4525,12 +4649,12 @@ $script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09ChangeColor
 #=====================================
 function script:InvestigateDifference-AutoChart09 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart09ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'Path' -eq $($script:AutoChart09InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart09ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'AddressState' -eq $($script:AutoChart09InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart09InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart09ImportCsvPosResults) { $script:AutoChart09InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart09ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart09ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart09ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -4559,7 +4683,7 @@ $script:AutoChart09CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart09CheckDiffButton
 $script:AutoChart09CheckDiffButton.Add_Click({
-    $script:AutoChart09InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'Path' -ExpandProperty 'Path' | Sort-Object -Unique
+    $script:AutoChart09InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'AddressState' -ExpandProperty 'AddressState' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart09InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -4665,7 +4789,7 @@ $AutoChart09ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart09CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Process Paths" -PropertyX "Path" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "Address States" -PropertyX "AddressState" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart09ExpandChartButton
 $script:AutoChart09ManipulationPanel.Controls.Add($AutoChart09ExpandChartButton)
@@ -4691,7 +4815,7 @@ $script:AutoChart09ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart09ViewResults
-$script:AutoChart09ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart09ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart09ManipulationPanel.controls.Add($script:AutoChart09ViewResults)
 
 
@@ -4728,8 +4852,8 @@ $script:AutoChart09NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09NoticeTextbox)
 
-$script:AutoChart09.Series["Process Path"].Points.Clear()
-$script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Process Path"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}    
+$script:AutoChart09.Series["Address State"].Points.Clear()
+$script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}    
 
 
 
@@ -4787,21 +4911,21 @@ $script:AutoChart10Area.Area3DStyle.Inclination = 75
 $script:AutoChart10.ChartAreas.Add($script:AutoChart10Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart10.Series.Add("Services Started By Processes")  
-$script:AutoChart10.Series["Services Started By Processes"].Enabled           = $True
-$script:AutoChart10.Series["Services Started By Processes"].BorderWidth       = 1
-$script:AutoChart10.Series["Services Started By Processes"].IsVisibleInLegend = $false
-$script:AutoChart10.Series["Services Started By Processes"].Chartarea         = 'Chart Area'
-$script:AutoChart10.Series["Services Started By Processes"].Legend            = 'Legend'
-$script:AutoChart10.Series["Services Started By Processes"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart10.Series["Services Started By Processes"]['PieLineColor']   = 'Black'
-$script:AutoChart10.Series["Services Started By Processes"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart10.Series["Services Started By Processes"].ChartType         = 'Column'
-$script:AutoChart10.Series["Services Started By Processes"].Color             = 'Red'
+$script:AutoChart10.Series.Add("Address Family")  
+$script:AutoChart10.Series["Address Family"].Enabled           = $True
+$script:AutoChart10.Series["Address Family"].BorderWidth       = 1
+$script:AutoChart10.Series["Address Family"].IsVisibleInLegend = $false
+$script:AutoChart10.Series["Address Family"].Chartarea         = 'Chart Area'
+$script:AutoChart10.Series["Address Family"].Legend            = 'Legend'
+$script:AutoChart10.Series["Address Family"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart10.Series["Address Family"]['PieLineColor']   = 'Black'
+$script:AutoChart10.Series["Address Family"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart10.Series["Address Family"].ChartType         = 'Column'
+$script:AutoChart10.Series["Address Family"].Color             = 'Red'
 
-        function Generate-ProcessesAutoChart10 {
-            $script:AutoChart10CsvFileHosts      = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart10UniqueDataFields  = $script:AutoChartDataSourceProcesses | Select-Object -Property 'ServiceInfo' | Sort-Object -Property 'ServiceInfo' -Unique
+        function Generate-AutoChart10 {
+            $script:AutoChart10CsvFileHosts      = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart10UniqueDataFields  = $script:AutoChartDataSource | Select-Object -Property 'AddressFamily' | Sort-Object -Property 'AddressFamily' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
             $script:AutoChartsProgressBar.Minimum = 0
@@ -4809,11 +4933,11 @@ $script:AutoChart10.Series["Services Started By Processes"].Color             = 
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart10.Series["Services Started By Processes"].Points.Clear()
+            $script:AutoChart10.Series["Address Family"].Points.Clear()
 
             if ($script:AutoChart10UniqueDataFields.count -gt 0){
                 $script:AutoChart10Title.ForeColor = 'Black'
-                $script:AutoChart10Title.Text = "Services Started By Processes"
+                $script:AutoChart10Title.Text = "Address Family"
 
                 # If the Second field/Y Axis equals PSComputername, it counts it
                 $script:AutoChart10OverallDataResults = @()
@@ -4822,8 +4946,8 @@ $script:AutoChart10.Series["Services Started By Processes"].Color             = 
                 foreach ($DataField in $script:AutoChart10UniqueDataFields) {
                     $Count = 0
                     $script:AutoChart10CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSourceProcesses ) {
-                        if ($($Line.ServiceInfo) -eq $DataField.ServiceInfo) {
+                    foreach ( $Line in $script:AutoChartDataSource ) {
+                        if ($($Line.AddressFamily) -eq $DataField.AddressFamily) {
                             $Count += 1
                             if ( $script:AutoChart10CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart10CsvComputers += $($Line.PSComputerName) }                        
                         }
@@ -4839,19 +4963,19 @@ $script:AutoChart10.Series["Services Started By Processes"].Color             = 
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart10.Series["Services Started By Processes"].Points.AddXY($_.DataField.ServiceInfo,$_.UniqueCount) }
+                $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount) }
 
                 $script:AutoChart10TrimOffLastTrackBar.SetRange(0, $($script:AutoChart10OverallDataResults.count))
                 $script:AutoChart10TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart10OverallDataResults.count))
             }
             else {
                 $script:AutoChart10Title.ForeColor = 'Red'
-                $script:AutoChart10Title.Text = "Services Started By Processes`n
+                $script:AutoChart10Title.Text = "Address Family`n
 [ No data not available ]`n
-Run a query to collect process data.`n`n"                
+Run a query to collect Network Interface data.`n`n"                
             }
         }
-        Generate-ProcessesAutoChart10
+        Generate-AutoChart10
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart10OptionsButton = New-Object Windows.Forms.Button -Property @{
@@ -4913,8 +5037,8 @@ $script:AutoChart10TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
     $script:AutoChart10TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart10TrimOffFirstTrackBarValue = $script:AutoChart10TrimOffFirstTrackBar.Value
         $script:AutoChart10TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart10TrimOffFirstTrackBar.Value)"
-        $script:AutoChart10.Series["Services Started By Processes"].Points.Clear()
-        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Services Started By Processes"].Points.AddXY($_.DataField.ServiceInfo,$_.UniqueCount)}    
+        $script:AutoChart10.Series["Address Family"].Points.Clear()
+        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}    
     })
     $script:AutoChart10TrimOffFirstGroupBox.Controls.Add($script:AutoChart10TrimOffFirstTrackBar)
 $script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10TrimOffFirstGroupBox)
@@ -4948,8 +5072,8 @@ $script:AutoChart10TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBo
     $script:AutoChart10TrimOffLastTrackBar.add_ValueChanged({
         $script:AutoChart10TrimOffLastTrackBarValue = $($script:AutoChart10OverallDataResults.count) - $script:AutoChart10TrimOffLastTrackBar.Value
         $script:AutoChart10TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart10OverallDataResults.count) - $script:AutoChart10TrimOffLastTrackBar.Value)"
-        $script:AutoChart10.Series["Services Started By Processes"].Points.Clear()
-        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Services Started By Processes"].Points.AddXY($_.DataField.ServiceInfo,$_.UniqueCount)}
+        $script:AutoChart10.Series["Address Family"].Points.Clear()
+        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
     })
 $script:AutoChart10TrimOffLastGroupBox.Controls.Add($script:AutoChart10TrimOffLastTrackBar)
 $script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10TrimOffLastGroupBox)
@@ -4968,9 +5092,9 @@ $script:AutoChart10ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox 
     AutoCompleteMode   = "SuggestAppend"
 }
 $script:AutoChart10ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart10.Series["Services Started By Processes"].ChartType = $script:AutoChart10ChartTypeComboBox.SelectedItem
-#    $script:AutoChart10.Series["Services Started By Processes"].Points.Clear()
-#    $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Services Started By Processes"].Points.AddXY($_.DataField.ServiceInfo,$_.UniqueCount)}
+    $script:AutoChart10.Series["Address Family"].ChartType = $script:AutoChart10ChartTypeComboBox.SelectedItem
+#    $script:AutoChart10.Series["Address Family"].Points.Clear()
+#    $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
 })
 $script:AutoChart10ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
 ForEach ($Item in $script:AutoChart10ChartTypesAvailable) { $script:AutoChart10ChartTypeComboBox.Items.Add($Item) }
@@ -4992,22 +5116,22 @@ $script:AutoChart103DToggleButton.Add_Click({
         $script:AutoChart10Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart10Area.Area3DStyle.Inclination = $script:AutoChart103DInclination
         $script:AutoChart103DToggleButton.Text  = "3D On ($script:AutoChart103DInclination)"
-#        $script:AutoChart10.Series["Services Started By Processes"].Points.Clear()
-#        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Services Started By Processes"].Points.AddXY($_.DataField.ServiceInfo,$_.UniqueCount)}
+#        $script:AutoChart10.Series["Address Family"].Points.Clear()
+#        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
     }
     elseif ( $script:AutoChart103DInclination -le 90 ) {
         $script:AutoChart10Area.Area3DStyle.Inclination = $script:AutoChart103DInclination
         $script:AutoChart103DToggleButton.Text  = "3D On ($script:AutoChart103DInclination)" 
-#        $script:AutoChart10.Series["Services Started By Processes"].Points.Clear()
-#        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Services Started By Processes"].Points.AddXY($_.DataField.ServiceInfo,$_.UniqueCount)}
+#        $script:AutoChart10.Series["Address Family"].Points.Clear()
+#        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
     }
     else { 
         $script:AutoChart103DToggleButton.Text  = "3D Off" 
         $script:AutoChart103DInclination = 0
         $script:AutoChart10Area.Area3DStyle.Inclination = $script:AutoChart103DInclination
         $script:AutoChart10Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart10.Series["Services Started By Processes"].Points.Clear()
-#        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Services Started By Processes"].Points.AddXY($_.DataField.ServiceInfo,$_.UniqueCount)}
+#        $script:AutoChart10.Series["Address Family"].Points.Clear()
+#        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
     }
 })
 $script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart103DToggleButton)
@@ -5026,7 +5150,7 @@ $script:AutoChart10ChangeColorComboBox = New-Object System.Windows.Forms.ComboBo
 $script:AutoChart10ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
 ForEach ($Item in $script:AutoChart10ColorsAvailable) { $script:AutoChart10ChangeColorComboBox.Items.Add($Item) }
 $script:AutoChart10ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart10.Series["Services Started By Processes"].Color = $script:AutoChart10ChangeColorComboBox.SelectedItem
+    $script:AutoChart10.Series["Address Family"].Color = $script:AutoChart10ChangeColorComboBox.SelectedItem
 })
 $script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10ChangeColorComboBox)
 
@@ -5036,12 +5160,12 @@ $script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10ChangeColor
 #=====================================
 function script:InvestigateDifference-AutoChart10 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart10ImportCsvPosResults = $script:AutoChartDataSourceProcesses | Where-Object 'ServiceInfo' -eq $($script:AutoChart10InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart10ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'AddressFamily' -eq $($script:AutoChart10InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart10InvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart10ImportCsvPosResults) { $script:AutoChart10InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart10ImportCsvAll = $script:AutoChartDataSourceProcesses | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart10ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
     $script:AutoChart10ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -5070,7 +5194,7 @@ $script:AutoChart10CheckDiffButton = New-Object Windows.Forms.Button -Property @
 }
 CommonButtonSettings -Button $script:AutoChart10CheckDiffButton
 $script:AutoChart10CheckDiffButton.Add_Click({
-    $script:AutoChart10InvestDiffDropDownArray = $script:AutoChartDataSourceProcesses | Select-Object -Property 'ServiceInfo' -ExpandProperty 'ServiceInfo' | Sort-Object -Unique
+    $script:AutoChart10InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'AddressFamily' -ExpandProperty 'AddressFamily' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart10InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -5176,7 +5300,7 @@ $AutoChart10ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart10CheckDiffButton.Location.Y }
     Size   = @{ Width  = 100
                 Height = 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceProcessesFileName -QueryName "Processes" -QueryTabName "Services Started By Processes" -PropertyX "ServiceInfo" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "Address Family" -PropertyX "AddressFamily" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart10ExpandChartButton
 $script:AutoChart10ManipulationPanel.Controls.Add($AutoChart10ExpandChartButton)
@@ -5202,7 +5326,7 @@ $script:AutoChart10ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = 23 }
 }
 CommonButtonSettings -Button $script:AutoChart10ViewResults
-$script:AutoChart10ViewResults.Add_Click({ $script:AutoChartDataSourceProcesses | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart10ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
 $script:AutoChart10ManipulationPanel.controls.Add($script:AutoChart10ViewResults)
 
 
@@ -5239,8 +5363,8 @@ $script:AutoChart10NoticeTextbox = New-Object System.Windows.Forms.Textbox -Prop
 }
 $script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10NoticeTextbox)
 
-$script:AutoChart10.Series["Services Started By Processes"].Points.Clear()
-$script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Services Started By Processes"].Points.AddXY($_.DataField.ServiceInfo,$_.UniqueCount)}    
+$script:AutoChart10.Series["Address Family"].Points.Clear()
+$script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}    
 
 
 

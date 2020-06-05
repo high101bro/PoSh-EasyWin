@@ -1,89 +1,169 @@
 $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
-    Create-ComputerNodeCheckBoxArray    
-    if ($script:SingleHostIPCheckBox.Checked -eq $true) {
-        if (Verify-Action -Title "Verification: Active Directory Import" -Question "Either manually enter a name under 'Query a Single Endpoint' or select an endpoinit from the computer treeview.
 
-Import Active Directory hosts from the following?" -Computer $script:SingleHostIPTextBox.text) {
-            # This brings specific tabs to the forefront/front view
-            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-            $script:SingleHostIPTextBoxTarget = $script:SingleHostIPTextBox.Text
-
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
-                $Username = $script:Credential.UserName
-                $Password = '"PASSWORD HIDDEN"'
-                
-                [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:SingleHostIPTextBoxTarget -Credential $script:Credential
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $($script:SingleHostIPTextBox.Text) -Credential [ $UserName | $Password ]"
-            }
-            else {
-                [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:SingleHostIPTextBoxTarget
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $($script:SingleHostIPTextBox.Text)"
-            }
-            $script:SingleHostIPCheckBox.Checked = $false
-            $script:SingleHostIPTextBox.Text     = $DefaultSingleHostIPText
-            $script:ComputerTreeView.Enabled     = $true
-            $script:ComputerTreeView.BackColor   = "white"
-
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Importing Hosts")
-            $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("Importing hosts from Active Directory")
-            $ResultsListBox.Items.Add("Make sure to select a domain server to import from")
-            $ResultsListBox.Items.Add("")
-            Start-Sleep -Seconds 1
-            Update-NeedToSaveTreeView
-        }
-        else {
-            [system.media.systemsounds]::Exclamation.play()
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Import from Active Directory:  Cancelled")
-        }
+    $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
+        Text          = 'Import Endpoint Data using Directory Searcher'
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Width         = 500
+        Height        = 410
+        StartPosition = "CenterScreen"
+        Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
     }
-    elseif ($script:ComputerTreeViewSelected.count -eq 1) {
-        Create-ComputerNodeCheckBoxArray
-        if (Verify-Action -Title "Verification: Active Directory Import" -Question "Make sure to select the proper server.`nImport Active Directory hosts from the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
-            # This brings specific tabs to the forefront/front view
-            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-            $script:SingleHostIPTextBoxTarget = $script:SingleHostIPTextBox.Text
 
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
-                $Username = $script:Credential.UserName
-                $Password = '"PASSWORD HIDDEN"'
-
-                [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:ComputerTreeViewSelected -Credential [ $UserName | $Password ]"
-            }
-            else {
-                [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:ComputerTreeViewSelected
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:ComputerTreeViewSelected"
-            }
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Importing Hosts")
-            $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("Importing hosts from Active Directory")
-            $ResultsListBox.Items.Add("Make sure to select a domain server to import from")
-            $ResultsListBox.Items.Add("")
-            Start-Sleep -Seconds 1
-            Update-NeedToSaveTreeView
-        }
-        else {
-            [system.media.systemsounds]::Exclamation.play()
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Import from Active Directory:  Cancelled")
-        }
+    $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+        text      = "Import from Domain using Directory Searcher"
+        left      = 10
+        top       = 10
+        Width     = 465
+        Height    = 125
+        Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+        ForeColor = "Blue"
     }
-    elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Importing Hosts' }
-    elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Importing Hosts' }
-    
+        $ImportFromDomainNoteLabel = New-Object System.Windows.Forms.Label -Property @{
+            Text      = "This method can be exeucted from any domained host. It uses a Directory Searcher object to search and perform queries against an Active Directory Domain Services hierarchy using Lightweight Directory Access Protocol (LDAP). This will only pull hostnames and none of the metadata such as Operating Systems or Organizational Units. Endpoint nodes imported this way are labeled with an Unknown OS and with the OU being the domain name; these can be later manually moved."
+            left      = 5
+            top       = 20
+            Width     = 445
+            Height    = 70
+            Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+            ForeColor = "Black"
+        }
+        $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromDomainNoteLabel)  
+
+
+        $ImportFromADManualEntryTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+            Text      = "<Domain Name>"
+            left      = 5
+            top       = $ImportFromDomainNoteLabel.top + $ImportFromDomainNoteLabel.height + 5
+            Width     = 185
+            Height    = 22   
+            Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+            ForeColor = "Black"
+        }
+        $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromADManualEntryTextBox)
+
+
+        $ImportFromADAutoCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+            Text      = "Auto Pull"
+            left      = $ImportFromADManualEntryTextBox.Left + $ImportFromADManualEntryTextBox.Width + 5
+            top       = $ImportFromADManualEntryTextBox.Top
+            Width     = 155
+            Height    = 22    
+            Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+            ForeColor = "Black"
+            Add_Click = {
+                if ($This.checked) {
+                    $ImportFromADManualEntryTextBox.text = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
+                }
+                else {
+                    $ImportFromADManualEntryTextBox.text = '<Fully Qualified Domain Name>'
+                }
+            }
+        }
+        $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromADAutoCheckBox)
+
+
+        $ImportFromADImportButton = New-Object System.Windows.Forms.Button -Property @{
+            Text      = "Import Hosts"
+            left      = $ImportFromADAutoCheckBox.Left + $ImportFromADAutoCheckBox.Width + 5
+            top       = $ImportFromADManualEntryTextBox.Top
+            Width     = 100
+            Height    = 20
+            Add_Click = { 
+                if (($ImportFromADManualEntryTextBox.Text -ne '<Domain Name>') -or $ImportFromADAutoCheckBox.Checked) {
+                    if (($ImportFromADManualEntryTextBox.Text -ne '') -or ($ImportFromADAutoCheckBox.Checked)) {
+                        # Checks if the domain input field is either blank or contains the default info
+                        If ($ImportFromADAutoCheckBox.Checked  -eq $true){. Import-HostsFromDomain "Auto"}
+                        else {
+                            . Import-HostsFromDomain "Manual" "$($ImportFromADManualEntryTextBox.Text)"
+                        }
+            
+                        $CurrentDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
+                        $ResultsListBox.Items.Clear()
+                        foreach ($Computer in $ComputerList) {
+                            if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
+                                if ($script:ComputerTreeViewData.Name -contains $computer) {
+                                    Message-HostAlreadyExists -Message "Add Hostname/IP:  Error" -Computer $Computer -ResultsListBoxMessage
+                                }
+                                elseif ($ImportFromADAutoCheckBox.Checked) {
+                                    Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer #-ToolTip $Computer.IPv4Address
+                                    $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 
+                                        Name            = $Computer
+                                        OperatingSystem = 'Unknown'
+                                        CanonicalName   = "/$CurrentDomain"
+                                        IPv4Address     = ''
+                                    }
+                                    $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP    
+                                }
+                                else {
+                                    Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer #-ToolTip $Computer.IPv4Address
+                                    $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 
+                                        Name            = $Computer
+                                        OperatingSystem = 'Unknown'
+                                        CanonicalName   = "/$($ImportFromADManualEntryTextBox.Text)"
+                                        IPv4Address     = ''
+                                    }
+                                    $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP    
+                                }
+                                   
+                                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                            }
+                            elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
+                                if ($ImportFromADAutoCheckBox.Checked) {
+                                    Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $CurrentDomain -Entry $Computer #-ToolTip $Computer.IPv4Address
+                                    $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 
+                                        Name            = $Computer
+                                        OperatingSystem = 'Unknown'
+                                        CanonicalName   = "/$CurrentDomain"
+                                        IPv4Address     = ''
+                                    }
+                                    $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP    
+                                }
+                                else {
+                                    Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $($ImportFromADManualEntryTextBox.Text) -Entry $Computer #-ToolTip $Computer.IPv4Address
+                                    $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 
+                                        Name            = $Computer
+                                        OperatingSystem = 'Unknown'
+                                        CanonicalName   = "/$($ImportFromADManualEntryTextBox.Text)"
+                                        IPv4Address     = ''
+                                    }
+                                    $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP    
+                                }
+                            }
+                            $script:ComputerTreeView.ExpandAll()
+                            Populate-ComputerTreeNodeDefaultData
+                        }
+                    }
+                }                
+                AutoSave-HostData
+                Save-HostData
+            }
+        }
+        $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromADImportButton) 
+        CommonButtonSettings -Button $ImportFromADImportButton
+    $ImportFromADFrom.Controls.Add($ImportFromADAutoPullGroupBox)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function Import-EndpointsFromDomain {
+    param(
+        $ADComputer
+    )
     # Imports data
-    foreach ($Computer in $ImportedActiveDirectoryHosts) {
+    foreach ($Computer in $ADComputer) {
         # Checks if data already exists
         if ($script:ComputerTreeViewData.Name -contains $Computer.Name) {
-            #Message-HostAlreadyExists -Message "Importing Hosts:  Warning" -Computer $Computer.Name
+            Message-HostAlreadyExists -Message "Importing Hosts:  Warning" -Computer $Computer.Name -ResultsListBoxMessage
             Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address 
         }
         else {
@@ -119,6 +199,284 @@ Import Active Directory hosts from the following?" -Computer $script:SingleHostI
     Populate-ComputerTreeNodeDefaultData
     Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
     $script:ComputerTreeView.ExpandAll()
+    Save-HostData
     AutoSave-HostData
-    Update-NeedToSaveTreeView
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    $ImportFromADWinRMGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+        text      = "Import from Active Directory remotely using WinRM"
+        left      = 10
+        top       = $ImportFromADAutoPullGroupBox.Top + $ImportFromADAutoPullGroupBox.Height + 20
+        Width     = 465
+        Height    = 95
+        Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+        ForeColor = "Blue"
+    }
+        $ImportFromADWinRMNoteLabel = New-Object System.Windows.Forms.Label -Property @{
+            Text      = "This method pulls endpoints from within Active Directory from a single server. It uses PowerShell remoting to communitcate with the server to obtain the data, so this method requires that WinRM is enabled and configured properly on the server."
+            left      = 5
+            top       = 20
+            Width     = 445
+            Height    = 40
+            Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+            ForeColor = "Black"
+        }
+        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMNoteLabel)  
+
+
+        $ImportFromADWinRMManuallEntryTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+            Text      = "<Enter a hostname/IP>"
+            left      = 5
+            top       = $ImportFromADWinRMNoteLabel.top + $ImportFromADWinRMNoteLabel.height + 5
+            Width     = 185
+            Height    = 22   
+            Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+            ForeColor = "Black"
+        }
+        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMManuallEntryTextBox)
+
+
+        $ImportFromADWinRMAutoCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+            Text      = "Single Endpoint Checked"
+            left      = $ImportFromADWinRMManuallEntryTextBox.Left + $ImportFromADWinRMManuallEntryTextBox.Width + 5
+            top       = $ImportFromADWinRMManuallEntryTextBox.Top
+            Width     = 155
+            Height    = 22    
+            Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+            ForeColor = "Black"
+            Add_Click = {
+                if ($ImportFromADWinRMManuallEntryTextBox.Enabled) {
+                    $ImportFromADWinRMManuallEntryTextBox.Enabled = $false
+                    $ImportFromADWinRMManuallEntryTextBox.Text    = ''
+                }
+                else {
+                    $ImportFromADWinRMManuallEntryTextBox.Enabled = $true
+                    $ImportFromADWinRMManuallEntryTextBox.Text    = "<Enter a hostname/IP>"
+                }
+            }
+        }
+        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMAutoCheckBox)
+
+
+        $ImportFromADWinRMImportButton = New-Object System.Windows.Forms.Button -Property @{
+            Text      = "Import Hosts"
+            left      = $ImportFromADWinRMAutoCheckBox.Left + $ImportFromADWinRMAutoCheckBox.Width + 5
+            top       = $ImportFromADWinRMManuallEntryTextBox.Top
+            Width     = 100
+            Height    = 20
+            Add_Click = { 
+                Create-ComputerNodeCheckBoxArray
+                if ($ImportFromADWinRMManuallEntryTextBox.Text -ne '<Enter a hostname/IP>' -and $ImportFromADWinRMManuallEntryTextBox.Text -ne '' -and $ImportFromADWinRMAutoCheckBox.checked -eq $false ) {
+                    if (Verify-Action -Title "Verification: Active Directory Import" -Question "Either manually enter a hostname or select one from the computer treeview.
+
+Import Active Directory hosts from the following?" -Computer $ImportFromADWinRMManuallEntryTextBox.text) {
+                        $StatusListBox.Items.Clear()
+                        $StatusListBox.Items.Add("Importing Hosts From Active Directory")
+                            
+                        # This brings specific tabs to the forefront/front view
+                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                        $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
+                        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                            if (!$script:Credential) { Create-NewCredentials }
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                            $Username = $script:Credential.UserName
+                            $Password = '"PASSWORD HIDDEN"'
+                            [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
+                        }
+                        else {
+                            [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
+                        }    
+                    }
+                    else {
+                        [system.media.systemsounds]::Exclamation.play()
+                        $StatusListBox.Items.Clear()
+                        $StatusListBox.Items.Add("Import from Active Directory:  Cancelled")
+                    }
+                }
+
+                elseif ($ImportFromADWinRMAutoCheckBox.checked -and $script:ComputerTreeViewSelected.count -eq 1) {
+                    Create-ComputerNodeCheckBoxArray
+                    if (Verify-Action -Title "Verification: Active Directory Import" -Question "Make sure to select the proper server.`nImport Active Directory hosts from the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+            
+                        $StatusListBox.Items.Clear()
+                        $StatusListBox.Items.Add("Importing Hosts From Active Directory")
+
+                        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                            if (!$script:Credential) { Create-NewCredentials }
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                            $Username = $script:Credential.UserName
+                            $Password = '"PASSWORD HIDDEN"'
+            
+                            [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:ComputerTreeViewSelected -Credential [ $UserName | $Password ]"
+                        }
+                        else {
+                            [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:ComputerTreeViewSelected
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $script:ComputerTreeViewSelected"
+                        }
+                    }
+                    else {
+                        [system.media.systemsounds]::Exclamation.play()
+                        $StatusListBox.Items.Clear()
+                        $StatusListBox.Items.Add("Import from Active Directory:  Cancelled")
+                    }
+                }
+                elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Importing Hosts' }
+                elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Importing Hosts' }
+            
+                Import-EndpointsFromDomain -ADComputer $ImportedActiveDirectoryHosts
+            }
+        }
+        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMImportButton) 
+        CommonButtonSettings -Button $ImportFromADWinRMImportButton
+    $ImportFromADFrom.Controls.Add($ImportFromADWinRMGroupBox)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+    $ImportFromADLocalhostGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+        text      = "Import from Active Directory locallly ($($env:COMPUTERNAME))"
+        left      = 10
+        top       = $ImportFromADWinRMGroupBox.Top + $ImportFromADWinRMGroupBox.Height + 20
+        Width     = 465
+        Height    = 90
+        Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+        ForeColor = "Blue"
+    }
+        $ImportFromADLocalhostNoteLabel = New-Object System.Windows.Forms.Label -Property @{
+            Text      = "This method is to be executed on the localhost ($($env:COMPUTERNAME)) if it is a server with Active Directory Domain Services installed. It obtains endpoint information from within Active Directory using the Get-ADComputer cmdlet."
+            left      = 5
+            top       = 20
+            Width     = 445
+            Height    = 35
+            Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+            ForeColor = "Black"
+        }
+        $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostNoteLabel)  
+
+
+        $ImportFromADLocalhostModuleCheckLabel = New-Object System.Windows.Forms.Label -Property @{
+            Text      = 'Active Directory PowerShell Module Detected Locally:'
+            left      = 5
+            top       = $ImportFromADLocalhostNoteLabel.top + $ImportFromADLocalhostNoteLabel.height + 10
+            Width     = 255
+            Height    = 22   
+            Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+            ForeColor = "Black"
+        }
+        $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostModuleCheckLabel)
+
+
+        $ImportFromADLocalhostDetectedLabel = New-Object System.Windows.Forms.Label -Property @{
+            left      = $ImportFromADLocalhostModuleCheckLabel.Left + $ImportFromADLocalhostModuleCheckLabel.Width
+            top       = $ImportFromADLocalhostModuleCheckLabel.Top
+            Width     = 90
+            Height    = 22    
+            Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        }
+        $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostDetectedLabel)
+        $ADModuleCheck = Get-Module -ListAvailable -Name ActiveDirectory
+        if ($ADModuleCheck) {
+            $ImportFromADLocalhostDetectedLabel.text      = "Available"
+            $ImportFromADLocalhostDetectedLabel.ForeColor = 'Green'
+        }
+        else {
+            $ImportFromADLocalhostDetectedLabel.text      = "NOT Available"
+            $ImportFromADLocalhostDetectedLabel.ForeColor = 'Red'
+        }
+
+
+        $ImportFromADLocalhostImportButton = New-Object System.Windows.Forms.Button -Property @{
+            Text      = "Import Hosts"
+            left      = $ImportFromADLocalhostDetectedLabel.Left + $ImportFromADLocalhostDetectedLabel.Width + 5
+            top       = $ImportFromADLocalhostDetectedLabel.Top - 5
+            Width     = 100
+            Height    = 20
+            Add_Click = { 
+                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                    if (!$script:Credential) { Create-NewCredentials }
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                    $Username = $script:Credential.UserName
+                    $Password = '"PASSWORD HIDDEN"'
+                    [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -Credential $script:Credential
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -Credential [ $UserName | $Password ]"
+                }
+                else {
+                    [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress }
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress }"
+                }                
+                Import-EndpointsFromDomain -ADComputer $ImportedActiveDirectoryHosts
+            }
+        }
+        $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostImportButton) 
+        CommonButtonSettings -Button $ImportFromADLocalhostImportButton
+    $ImportFromADFrom.Controls.Add($ImportFromADLocalhostGroupBox)
+
+    $ImportFromADFrom.ShowDialog()
+}
+
+    
+
+
+$ComputerTreeNodeImportFromActiveDirectoryButtonAdd_MouseHover = {
+    Show-ToolTip -Title "Import From Active Directory" -Icon "Info" -Message @"
++  Opens a form that provides you options on how to import endpoint data from Acitve Directory
++  Options include:
+     - Import from Domain with Directory Searcher
+     - Import from Active Directory remotely using WinRM
+     - Import from Active Directory Locally
+"@
+}
+    
+

@@ -15,8 +15,6 @@ $SingleHostIPCheckBoxAdd_MouseHover = {
     Show-ToolTip -Title "Query A Single Endpoint" -Icon "Info" -Message @"
 +  Queries a single host provided in the input field,
      disabling the computer treeview list.
-+  This is compatiable with the 'Import from AD' button to pull-in
-     data on all domain hosts to populate the computer treeview.
 +  Enter a valid hostname or IP address to collect data from. 
      Depending upon host or domain configurations, some queries 
      such as WinRM against valid IPs may not yield results.

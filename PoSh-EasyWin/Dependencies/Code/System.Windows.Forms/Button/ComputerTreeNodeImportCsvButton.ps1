@@ -1,4 +1,6 @@
 $ComputerTreeNodeImportCsvButtonAdd_Click = {
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $ComputerTreeNodeImportCsvOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog -Property @{
         Title            = "Import .csv Data"
@@ -16,7 +18,7 @@ $ComputerTreeNodeImportCsvButtonAdd_Click = {
     foreach ($Computer in $ComputerTreeNodeImportCsv) {
         # Checks if data already exists
         if ($script:ComputerTreeViewData.Name -contains $Computer.Name) {
-            Message-HostAlreadyExists -Message "Import .CSV:  Warning" -Computer $Computer.Name
+            Message-HostAlreadyExists -Message "Import .CSV:  Warning" -Computer $Computer.Name -ResultsListBoxMessage
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
@@ -41,3 +43,22 @@ $ComputerTreeNodeImportCsvButtonAdd_Click = {
         }
     }
 }
+
+
+$ComputerTreeNodeImportCsvButtonAdd_MouseHover = {
+    Show-ToolTip -Title "Import From CSV File" -Icon "Info" -Message @"
++  Imports data from a selected Comma Separated Value file
++  This file can be easily generated with the following command:
+     - Get-ADComputer -Filter * -Properties Name,OperatingSystem,CanonicalName,IPv4Address,MACAddress,Notes | Export-Csv "Domain Computers.csv"
++  This file should be formatted with the following headers, though the import script should populate default missing data:
+     - Name
+     - OperatingSystem
+     - CanonicalName
+     - IPv4Address
+     - MACAddress
+     - Notes
+"@
+}
+    
+
+

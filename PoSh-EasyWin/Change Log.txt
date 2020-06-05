@@ -1,0 +1,440 @@
+==================================================
+v4.4 - 5 June 2020
+==================================================
+Created serveral more dashboards
+	- Network Interfaces
+	- Security Patches
+	- SMB Shares
+	- Startups
+	- Software
+	- ... more to follow upon next update, I've pleanty of ideas... I also welcome to recommendations
+
+Import From AD - Created new Form to assist with easier Importing via 3 options
+	- 1. Import from Domain
+	- 2. Import from Active Directory via WinRM
+	- 3. Import from Active Directory (localhost)
+
+Updated Get-RegistryStartupCommands.ps1 to include the name property within it's object data
+	- Name = Split-Path $value -Leaf
+
+Computer Treeview Search
+	- Optimized searching speed
+	- Results how are tagged with their source to assist in narrowing down data
+	- Fixed issue with search feature that searches through processes, services, and network connections collections for search criteria... this problem arose from when I upgraded to session based queries and that those results no longer saved data in 'Individual Results'
+
+Updated Function Message-HostAlreadyExists to support both displaying data on ResultsListBox and the popup messagebox depending on the context and parameter provided
+
+Tweeked the Conduct-NodeAction script
+	- Commented out several $StatusListBox and $ResultsListBox updates... not really necessary, more annoying now that anything
+	- Commented out .SelectedTabs that selected the $ResultsListBox... no longer needed
+
+MouseHover Help##################################
+	- Import from AD steps##################################
+	- Import from CSV steps##################################
+	- Import from txt steps##################################
+
+Added some missing PoSh-EasyWin icons to several System.Windows.Forms.Form that were missing them
+
+Created a popup messagebox that notifies you that you must manually save certain computer treeview modifications, such as
+	- Importing from AD
+	- Importing from CSV
+	- Importing from TXT
+
+Optimized the Tag All feature, it now saves faster and also provides a status update on the progress bar.
+
+Fixed Bugs
+	- When selecting hosts to query using session based querying, subsequent queries didn't reflect a different computer count
+	- Looked into a bug where with the Retrieved File function wasn't working... well at least not on the online range, but it works perfectly on my local lab... added a Start-Sleep -Milliseconds 250 to see if it helps...? otherwise idk, may have to ts the script live while in the cloud
+
+==================================================
+v4.3 - 1 June 2020
+==================================================
+
+Added Endpoint Network Packet Capture pcapng
+	- Uses netsh trace command
+	- Able to specify duration
+	- Able to specify the max file size
+
+Added support for Progress bar for Ping, WinRM, and RPC Checks
+
+Query History update
+	- New history nodes are added with the most recent (date wise) on top
+
+Within the Query Exploration Tab, changed the Details section .textbox to .RichTextBox 
+	- Among other things, this now displays the command description where it recognizes the return cariages
+	- Also added support for copy and past...
+
+Added code to auto-select the Rusults Tab when Event Logs Quick Selection or Event Logs To Monitor are selected 
+
+Fixed bugs
+	- The endpoint name now shows up when 'Importing from AD' when using 'Query from a Single Host'.
+	- Moved SingleHostIPCheckBox.ps1 from the combobox dir to checkbox dir...oops... allows for the checkbox to correctly grey/white the treeview when checked/uncheded
+	- Moved code around to fix issue RPC command count... working now
+	- The statistics section wasn't working... ended up renaming a script file from Get-PoShACMEStatistics.ps1 to Get-PoShEasyWinStatistics.ps1 ... this one escaped me when I was upgrading the overall program name
+	- Fixed statistics counting of commands to update number of commands selected
+	- Fixed an issue where the Results List section was clearing after the execution completion
+
+==================================================
+v4.2 - 28 May 2020
+==================================================
+Added Context Menus for Computer TreeView
+	Individual Endpoint Selection
+	- Collapse/Expand
+	- Tag
+	- Add Endpoint
+	- Rename
+	- Move
+	- Delete
+	Checked Endpoints
+	- Uncheck All
+	- Tag All
+	- Move All
+	- Delete All
+
+Added autosave function to all all features of Computer TreeView
+
+Added confirmation when deleting computer nodes
+
+Conversely, removed all the above equivalent buttons from the Manage List Tab
+
+Developed a working concept for packet capture at each endpoint
+	- Will be implemented in the next release
+
+Fixed various bugs and optimized code
+	
+==================================================
+v4.1 - 26 May 2020
+==================================================
+Updated the main code to have large graphcial text to assist with viewing and finding separate sections of code
+
+Fixed Multi-Series Bug
+	- Issue with 'Most Recent', Baseline, and Previous chart values not aligning
+
+Not specific to PoSh-EasyWin
+	- But I created a new PowerShell project on my GitHub: PoSh-PopQuiz
+		As the name alludes to, it'a PowerShell Quiz generator, it pulls its question bank from Get-Help
+	- Uploaded PoSh-PortMonitor as a separate GitHub Project too
+		It's no longer package with PoSh-EasyWin
+
+PoSh-EasyWin cmdlet/script Parameters (commandline support)
+	- Renamed a few parameter switches and gave them defaults
+	- Added the -Credential parameter to immedately launch PoSh-EasyWin with alternate credentials
+	- Added support for Get-Help PoSh-EasyWin -Online
+		- This will now open my github page
+	- Added the abilty to change font based, valid fonts are included in the font validation set
+	- Added parameter to accepts EULA from command line, this prevents that gui from displaying
+	- Added GUI as the default parameteranameset
+		- When computer names are provided via command line, the computer tree nodes will auto check/select
+	- Added No GUI parameternameset
+		- when computer names are provided via command line, the hosts will be auto check/select
+	- Added ComputerName parameter
+		- added aliass for common variants
+			- PSComputerName
+			- CN	
+			- MachineName
+		- added acceptpipeline input for this parameter
+		- allows support for more than one input [string[]]
+	- Added ComputerSearch parameterset
+		- allows you to search for computers by their NetBIOS name, IP, MAC, OS, OU/CN, Tags, and notes (all metadata essentailly)
+		- allows support for more than one input [string[]]
+	- Added FilterOutComputer parameter
+		- allows support for more than one input [string[]]
+		- filters out only by computer's NetBIOS name, nothing else
+	- Added FilterInComputer parameter
+		- allows support for more than one input [string[]]
+		- filters back in only by computer's NetBIOS name, nothing else
+			- and they have had to be originally a part of the initial search
+	- Added Protocol parameter
+		- WinRM
+		- RPC *****Still need to add support*****
+	- Added CommandSearch parameter
+		- allows you to search for commands by thier displayed name, command, notes, and tags
+		- allows support for more than one input [string[]]
+		- added ability to find command via string entry that searches through the command syntax
+	- Added FilterOutCommand parameter
+	- Added FilterInCommand parameter
+	- Added AudioCompletionMessage parameter
+	- Added JobTimeout parameter
+	- Added SaveDirectory parameter
+
+
+
+Fixed search feature where results selected didn't show and populate the 'Query Exploration' Tab
+	- This was a big issue because when analyst searched for commands, they often clicked on them to see what they would do or see other command options... now this works
+
+Commands Search
+	- Updated script to support command line search
+
+Optimization
+	-Moved Common button settings to its own file
+
+Bug Fix
+	- Had the results tab be automatically switched to when RPC protocols commands are used
+	- Fixes get-help toolname graphical text... the help menu apparently doesn't support prepended spaces, so I chage the text art from slant to standard
+
+==================================================
+v4.0 - 23 APR 2020
+==================================================
+
+Rebranded PoSh-ACME to PoSh-EasyWin
+	- PoSh-ACME		PowerShell - Analyst Collection Made Easy
+	- PoSh-EasyWin		PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs
+	- I did this for a few reasons:
+		1. There was another PowerShell project with a similar name, so when co-worker searched for PoSh-ACME 
+		they would often get the wrong tool unless they also searched for my handle high101bro
+		2. The new name better reflects the tools intent and capability
+		3. I kept it an ancronym because who doesn't love tools with catchy names like this? No? ...just me. Okay.
+	- Spent some time trying to ensure a smooth transition between the tool name
+
+Created new About tab
+	- Added PoSh-EasyWin Graphic and icon
+		- Icon needs improvement, I'll have to tinker with it...
+	- Added testbox to easily read and PoSh-EasyWin about file
+	- Added button to quickly view the GNU GPLv3 license
+
+Added new Session Based querying (the new default)
+	- Endpoints that were unable to establish PowerShell Sessions are now automatically unchecked
+		- This reduces any hanging connections awaiting to timeout - speeding up the script
+	- read more below
+
+There are now three ways to run queries:
+	- 1) Individual Execution (No longer the default)
+		- Slowest, provides the most visibility of queries by endpoint via the two Progress Bars
+			- Noisiest on the network; eg: 10 queries x 10 endpoints = 100 remote connections
+			- Also the most localhost (the host running PoSh-EasyWin resource intensive)
+		- WinRM and RPC/DCOM protocols are both supported
+		- Each query is executed within its own PowerShell session via PowerShell jobs
+			- Includes a changeable timeout, defaulted at 600 seconds (10 minutes)
+			- This timeout is per command execute per endpoint
+			- Query/Protocols can be mixed
+		- Results are saved by each command per endpoint as well as compiled by command
+	- 2) Compiled script
+		- Fast, provides some visibility of endpoint completion via a single Progress Bar
+		- Only supports WinRM protocol, non-WinRM commands are wrapped within the WinRM protocol 
+		- The compiled script is executed within its own PowerShell session via PowerShell jobs
+			- Includes a changeable timeout, defaulted at 600 seconds (10 minutes) 
+			- This timeout applies to the whole script and all embedded code has to be completed within that time
+			- Queries of other protocols are wrapped within WinRM/Invoke-Command
+		- Each query is compiled into a single script and in addition to other endpoint searches
+			- The compiled querie are nested into a single Invoke-Command
+			- Queries results from an endpoint are returned at the same time
+				- Then de-interleaved and saved separately and compiled too
+		- The compiled script can be viewed, modified, and validated before execution 
+		- Results are saved by each command per endpoint as well as compiled by command
+	- 3) Session Based (This is now the default)
+		- Fastest, provides limited visibility on task completion
+		- Only supports WinRM protocol, non-WinRM commands are wrapped within the WinRM protocol 
+		- Each query to an endpoint goes through a single session; one session per endpoint
+			- All endpoints are equeried at the same time/near same time (limited by throttle)
+			- TO DO: add throttle adjustment
+		- Results are saved as compiled files, no separate files per query and endpoint
+
+Compiled script collection mode
+	- I have experienced errors when compiling a lot of commands into a single query, but mainly when added in script code nodes
+	- http://systemcentersynergy.com/max-script-block-size-when-passing-to-powershell-exe-or-invoke-command/
+		- Apparently there is a byte code limit on how much data can be passed to a new PowerShell session as a parameter
+		- Apparently this limiit also esist for the Invoke-Command cmdlet
+	- The 2014 artical stats:
+		- "There is a 12190 byte MAX limit of any script block passed to powershell.exe or invoke-command."
+	- Though upon testing, the amount I can pass varies and seems to be much higher; Microsoft may have raised this, but I haven't confirmed it
+	- This isn't really a big issue, becuase you should just use Session Based querying instead, but on the other hand this mode does allow you to review the code first
+	- Anyways, Added a byte code counter (UTF7) for Compiled Script to help troubleshoot/test this concept
+		- I'm having issues nailing down exactly why it fails, with inconsistant byte counts between selecting just scripts and commands
+			- note sure if commented out text when passed to PowerShell.exe or Invoke-Command count against the byte count
+		- When passing just scripts, a simple quick test shows that 45000 bytes pass, but 46500 would not
+			- this ended up bing like 10 scripts passed, though this will vary on file size of those selected
+		- When passing just commands, as in ALL query both (WinRM) Posh and (WinRM) WMI commands, I was able to pass up to 64151 bytes successfully
+	- Point is the feature works when anaysts don't go crazy and include too many scripts. I'll troubleshoot this more if it is reported to me and becomes an issue somehow
+
+Addded some script checking
+	- Checks if any RPC commands are selected and switches collection mode from Session Based to Individual Execution
+	- Checks if only WinRM commands are selected while you're in Individual Execution mode, prompts user to use Session Based as it's faster
+
+Working on Rich Text Support for PoSh-EasyWin!!!
+	- Many text boxes have been upgraded form textboxes to Rich Textboxes
+	- Added support for copy, cut, and paste
+	- Currently working on some cool features... mtf
+
+Added Verification popup prior to conducting any task that would put packets on the wire
+	- Added verification windows to buttons that result on communication to hosts
+	- Still working on the overall one, but most of the simple ones are done
+
+Event Log Collection Tab
+	- There is now a default limit on collections of 100; there use to be none, and individuals would end up unnecessarily trying to pull all logs...
+	- The date time range is now on by default with a range of 1 day; individuals would not configure it and would end up unnecessarily pulling logs from forever...!
+
+Event Viewer
+	- Added the abilty to use alternate credentials! Yay, this is not natively supported with Show-EventLog, but it now works!
+
+Jobs
+	- Modified how 'Individual Execution' saves the results from started jobs
+ 	  Data is now saved from from Receive-Job rather from within the script
+	- Added saving the results as XML data for individual hosts, which saves the data as a complete object
+	  Useful for later processing of data... more to follow, needs development, otherwise it may be just a waste of space if no one uses use
+	  That said, I should add an option to toggle it on/off...
+
+New Analyst Button - 'Open Data in Shell'
+	- Allows you to view and manipulate the results as object data from xml files
+	- The results are stored in $Results and passed into a new PowerShell terminal
+	- The 'C:\Windows\Temp\PoSh-EasyWin' dir is created, mounted as a PSDrive, and used
+	- Also implemented some processing of the data to provide precreated variables for either easy statistics viewing or just to use
+
+Charts
+	- Added Auto Generated Filename when saving PowerShell Charts
+		- "20YYMMDD @ HHMM.SS - PoSh-EasyWin Chart.png"
+	- Change the default saved charts format from .jpg to .png -- it's has better picture quality
+	- Fixed Dashbaords where a few charts didn't load initially, now they do
+	- Fixed a bug with the 'Services per Host' dashboard chart; also defauled the chart to 'DoughNut'
+	- Fixed a bug with the 'Processes per Host' dashboard chart; also defauled the chart to 'DoughNut'
+	- Added the ability to pivot from dashboard view to multi-series view!
+
+Treeview
+	- When searching for commands, the treeview pane will now auto display the Search Results' new nodes (results) at the top
+	- Older searches will auto collapse, but will still clear if channging between views (command & method)
+	- Worked on the Query History nodes, optimized the code a bit
+
+Sysinternals 
+	- Added support to push Sysinternal tools over WinRM protocol (sysmon, autoruns, procmon)
+	- Redesigned the sections appearance
+		- Added WinRM or RPC radio buttons
+		- Added a recheck time (default 15s) - this is how often the tool will check the status of a sysinternals collection
+		- Add groupboxes for easier viewing
+	- Added the ability to rename tool names, and also the sysmon's driver name for obfuscation
+
+Network Connections Collection
+	- Added the abilty to now easily query for local ports too, not just remote ports
+	- Added support code for backwards compatabiliy for processes that started network connections
+		- In older Windows/PowerShell versions, the Get-NetTCPConnection cmdlet didn't support the 'OwningProcess' parameter
+		- Wrote a script that uses netstat if the parameter doesn't exist to obtain the process data, yay!
+	- Added Select Ports button for also the Local Ports query
+	- Added Select IPs button to the Remote IP Address query that provides a list to select from which is 
+	  populated from the computer tree node, esentiall computers within the network
+
+Modified PoSh-EasyWin GUI
+	- Changed 'Execute Query As' from two radio button to a combobox
+	- Moved the above combobox to right above the start collection/execute button
+	- Buttons now go green after a collection is completed to help prompt the user of what they can do next
+	- ProgressBar, changed background color to white
+
+Code Optimization
+	- Separated and reorganized code for easy management and navigation
+		- Essentially using a lot of 'Dot Sourcing', which is working well
+		- Maybe one day I'll start creating/using modules... which will be fun, but I'll do it later
+	- This broke a lot initially, spent quite a bit of time trying to test and fix many features... but it should be all good now
+	- Rewrote the recursive search section for easier implementation and backwards compatability with older OSs
+
+Fixed random bugs
+	- Added messge box if no queries were selected when trying to execute commands as a compile script
+
+... and much more. 
+
+==================================================
+v3.3.2
+==================================================
+
+Created 'PoSh-EasyWin-Archive' respository
+	- Intent is to store past commits online for reference and troubleshooting
+	- The PoSh-EasyWin repository will now only contain the most recent release
+
+Started Making Change Log... should have done this a long time ago
+	- Attempting to retroactively create/update it
+
+Added Credential Management
+	- Elimiates need to constantly enter credentials over and over again when connecting to hosts
+	- Able to save/import credentials locally
+		- Selected credentials are used to query remote endpoints
+		- Encrypted with Windows Data Protection API
+		- Decryption restricted to the user and computer that created them
+			- Able to view decypted credentials locally
+	 	- Supports any number of credentials
+	- Able to automatically roll credentials
+		- The specified credentials will be automatically changed after every query
+		- Two credentials are required:
+			- One to query endpoints (this one gets rolled)
+			- One to change the rolled credentials within Active Directory
+		- Rolled credentials are automatically generated
+			- Password Length consists of 250 random characters
+			- Passowrd character set: abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890 
+			- Able to manually roll credentials too
+	- Credentials are able to be used with
+		- All remote queries and searches
+			- Able to be automaticaly rolled
+		- Remote Desktop
+			- TO DO: Add auto credential rolling, currently have to manually do so
+		- PS Session (remote CLI)
+			- TO DO: Add auto credential rolling, currently have to manually do so
+		- PSEXEC
+			- TO DO: Add auto credential rolling, currently have to manually do so
+
+Added the abiltiy to retrieve any number of files from any number of hosts
+	- You first need to query for files using the 'File Search' section
+		- Then click on the 'Retrieve Files' button and select one of the csv files
+		- Select any number of files to download
+	- Retrieved files are zipped on the target enpoint
+		- to the C:\windows\temp directory
+		- then copied back using WinRM (a single session for multiple files on each endpoint)
+			- TO DO: Added WinRM copy function (rather than RPC) to the sysinternals section
+	- Files are stored locally as a compressed/zipped files
+		- Each file retrieved has metadata collected on it from the endpoint
+			- File Properties (extended)
+			- File Hashes of individual files (MD5, SHA1, SHA256, SHA512)
+				- No hashes if downloading a directory recursively
+			- Authenticode Signature Information of individual files (extended)
+		- This metadata is saved within the compressed file as 'file details.txt'
+	- This establishes a PSSession to each endpoint for the duration of the file copies
+		- automatically closes each PSSessions after the last file is copied from each endpoint
+	- Button is called 'Retireve Files' and is located in the Main Tab Section beneath 'Analyst Options'
+	- Reorganized the buttons in the Main Tab section
+
+Updated Query History Command Nodes
+	- Added Persistence
+		- Automatically saves previous queries
+		- Previous query history is auto-loaded upon startup
+	- Able to delete query history nodes
+		- Checkbox the query history node then click on the 'Remove Query History' button that appears
+		- Auto saves afterwards
+
+Added Regex Examples button to the Registry querying section
+
+Updated the Charts section and fixed some issues
+	- TO DO: Added more charts!
+	- TO DO: Have the Build Charts section able to create persistent charts/dashboards
+
+Optimized various sections of code
+	- Further segmented code from massive single script to imported code sections
+
+Fixed random Bugs
+
+==================================================
+v3.3.1
+==================================================
+
+Added Registry Querying
+	- Query for any number of registry paths for key names, value names, and value data
+	- Supports regex and recursive search
+
+Added Copyright License
+	- Reference https://www.gnu.org/licenses/
+	- The Copyright acknowledgement now display upon every startup
+		- This servers as a constant annoyance to notify users
+		- And... this is kind of a work around for a resizing issue 	
+			- Identified when testing on newer systems when opening results with Out-GridView
+			- I can't seem to troubleshoot an exact fix, but others online have had this issue too
+	- Attempting to site online references and give credtit to where credit is due
+
+Removed the Memory Collection button
+	- Not many users have reported using it
+	- TO DO: Refine it and add support for reading the memory dump locally
+
+Added button to reload compile code section
+	- Identified an issue where the data was importing weirdly on newer systems
+	- Data is read-in two different ways buy clicking a button
+
+Identifed/fixed issue with the Event Log querying
+	- WinRM mode was only returning results for queries on the local host, issue was not present with RPC mode
+
+Optimized various sections of code
+	- Segmented code from massive single script to imported code sections
+
+Fixed random Bugs
+	 

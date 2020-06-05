@@ -34,7 +34,6 @@ $ComputerListDeleteSelectedToolStripButtonAdd_Click = {
                 Remove-EmptyCategory
                 Save-HostData
                 AutoSave-HostData
-                Update-NeedToSaveTreeView
             }
             'No' {
                 $StatusListBox.Items.Clear()
@@ -115,7 +114,6 @@ $ComputerListDeleteAllCheckedToolStripButtonAdd_Click = {
                 Remove-EmptyCategory
                 Save-HostData
                 AutoSave-HostData
-                Update-NeedToSaveTreeView
             }
             else { ComputerNodeSelectedLessThanOne -Message 'Delete Selection' }
         }

@@ -13,6 +13,7 @@ function Show-MoveForm {
         Text          = "Move"
         Size          = New-Object System.Drawing.Size(330,107)
         StartPosition = "CenterScreen"
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
     }
     $ComputerTreeNodePopup.Text = $FormTitleEndpoints
     
@@ -88,7 +89,6 @@ $ComputerListMoveSelectedToolStripButtonAdd_Click = {
         Remove-EmptyCategory
         Save-HostData
         KeepChecked-ComputerTreeNode -NoMessage
-        Update-NeedToSaveTreeView
 
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Moved:  $($script:EntrySelected.text)")

@@ -1,4 +1,5 @@
 $RetrieveFilesButtonAdd_Click = {  
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     try {
 #       [System.Reflection.Assembly]::LoadWithPartialName("System .Windows.Forms") | Out-Null
         $RetrieveFileOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
@@ -86,6 +87,8 @@ $RetrieveFilesButtonAdd_Click = {
                 $RetrievedFileHashMD5 = Invoke-Command -ScriptBlock { param($File) (Get-FileHash -Algorithm md5 -Path "$($File.FullName)").Hash } -argumentlist $File -Session $session
                 Copy-Item -Path "c:\Windows\Temp\$($File.BaseName).zip" -Destination "$LocalSavePath\$($File.BaseName) [MD5=$RetrievedFileHashMD5].zip" -FromSession $session
                 
+                Start-Sleep -Milliseconds 250
+
                 # The zipped file is removed from the endpoint
                 Invoke-Command -ScriptBlock { 
                     param($File)
@@ -111,8 +114,13 @@ $RetrieveFilesButtonAdd_Click = {
                 $RetrievedFileHashMD5 = Invoke-Command -ScriptBlock { param($File) (Get-FileHash -Algorithm md5 -Path "$($File.FullName)").Hash } -argumentlist $File -Session $session
                 Copy-Item -Path "c:\Windows\Temp\$($File.BaseName).zip" -Destination "$LocalSavePath\$($File.BaseName) [MD5=$RetrievedFileHashMD5].zip" -FromSession $session
 
+                Start-Sleep -Milliseconds 250
+
                 # Reference notes above
-                Invoke-Command -ScriptBlock { param($File); Remove-Item "c:\Windows\Temp\$($File.BaseName).zip" } -ArgumentList $File -Session $session
+                Invoke-Command -ScriptBlock { 
+                    param($File)
+                    Remove-Item "c:\Windows\Temp\$($File.BaseName).zip" 
+                } -ArgumentList $File -Session $session
 
                 # Reference notes above
                 Create-RetrievedFileDetails -LocalSavePath $LocalSavePath -File $File
@@ -140,8 +148,13 @@ $RetrieveFilesButtonAdd_Click = {
                 $RetrievedFileHashMD5 = Invoke-Command -ScriptBlock { param($File) (Get-FileHash -Algorithm md5 -Path "$($File.FullName)").Hash } -argumentlist $File -Session $session
                 Copy-Item -Path "c:\Windows\Temp\$($File.BaseName).zip" -Destination "$LocalSavePath\$($File.BaseName) [MD5=$RetrievedFileHashMD5].zip" -FromSession $session
 
+                Start-Sleep -Milliseconds 250
+
                 # Reference notes above
-                Invoke-Command -ScriptBlock { param($File); Remove-Item "c:\Windows\Temp\$($File.BaseName).zip" } -ArgumentList $File -Session $session
+                Invoke-Command -ScriptBlock {
+                    param($File)
+                    Remove-Item "c:\Windows\Temp\$($File.BaseName).zip" 
+                } -ArgumentList $File -Session $session
 
                 # Reference notes above
                 Create-RetrievedFileDetails -LocalSavePath $LocalSavePath -File $File

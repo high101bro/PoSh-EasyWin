@@ -1,6 +1,6 @@
 function KeepChecked-ComputerTreeNode {
     param(
-	[switch]$NoMessage
+    	[switch]$NoMessage
     )
     $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
     $script:ComputerTreeView.ExpandAll()

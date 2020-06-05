@@ -12,10 +12,10 @@ $ComputerTreeNodeImportTxtButtonAdd_Click = {
     $StatusListBox.Items.Clear()
     $ResultsListBox.Items.Clear()
 
-    foreach ($Computer in $ComputerTreeNodeImportTxt) {
+    foreach ($Computer in $($ComputerTreeNodeImportTxt | Where-Object {$_ -ne ''}) ) {
         # Checks if the data already exists
         if ($script:ComputerTreeViewData.Name -contains $Computer) {
-            Message-HostAlreadyExists -Message "Import .CSV:  Warning" -Computer $Computer
+            Message-HostAlreadyExists -Message "Import .CSV:  Warning" -Computer $Computer -ResultsListBoxMessage
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked -and $Computer -ne "") {
@@ -42,3 +42,16 @@ $ComputerTreeNodeImportTxtButtonAdd_Click = {
         }
     }
 }
+
+
+
+$ComputerTreeNodeImportTxtButtonAdd_MouseHover = {
+    Show-ToolTip -Title "Import From TXT File" -Icon "Info" -Message @"
++  Imports data from a selected Text file
++  Useful if you recieve a computer list file from an Admin or outputted from nmap
++  This file should be formatted with one hostname or IP address per line
+"@
+}
+    
+
+

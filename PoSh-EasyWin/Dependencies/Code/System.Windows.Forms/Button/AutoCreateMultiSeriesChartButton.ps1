@@ -210,10 +210,10 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         # Mapped Drives
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Disk Drives by Model") { Generate-AutoChartsCommand -QueryName "Disk - Physical Info" -QueryTabName "Disk Drives by Model" -PropertyX "PSComputerName" -PropertyY "Model" }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Disk Drive Models per Endpoint") { Generate-AutoChartsCommand -QueryName "Disk - Physical Info" -QueryTabName "Disk Drive Models per Endpoint" -PropertyX "Model" -PropertyY "PSComputerName" }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drives by Device ID") { Generate-AutoChartsCommand -QueryName "Logical Drives Mapped" -QueryTabName "Mapped Drives by Device ID" -PropertyX "PSComputerName" -PropertyY "DeviceID" }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drive Device IDs per Endpoint") { Generate-AutoChartsCommand -QueryName "Logical Drives Mapped" -QueryTabName "Mapped Drive Device IDs per Endpoint" -PropertyX "DeviceID" -PropertyY "PSComputerName" }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drives by Volume Name") { Generate-AutoChartsCommand -QueryName "Logical Drives Mapped" -QueryTabName "Mapped Drives by Volume Name" -PropertyX "PSComputerName" -PropertyY "VolumeName" }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drive Volume Names per Endpoint") { Generate-AutoChartsCommand -QueryName "Logical Drives Mapped" -QueryTabName "Mapped Drive Volume Names per Endpoint" -PropertyX "VolumeName" -PropertyY "PSComputerName" }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drives by Device ID") { Generate-AutoChartsCommand -QueryName "LogicalDisk" -QueryTabName "Mapped Drives by Device ID" -PropertyX "PSComputerName" -PropertyY "DeviceID" }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drive Device IDs per Endpoint") { Generate-AutoChartsCommand -QueryName "LogicalDisk" -QueryTabName "Mapped Drive Device IDs per Endpoint" -PropertyX "DeviceID" -PropertyY "PSComputerName" }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drives by Volume Name") { Generate-AutoChartsCommand -QueryName "LogicalDisk" -QueryTabName "Mapped Drives by Volume Name" -PropertyX "PSComputerName" -PropertyY "VolumeName" }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drive Volume Names per Endpoint") { Generate-AutoChartsCommand -QueryName "LogicalDisk" -QueryTabName "Mapped Drive Volume Names per Endpoint" -PropertyX "VolumeName" -PropertyY "PSComputerName" }
 
         # Processes 
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Process Names") { Generate-AutoChartsCommand -QueryName "Processes" -QueryTabName "Process Names" -PropertyX "Name" -PropertyY "PSComputerName"}

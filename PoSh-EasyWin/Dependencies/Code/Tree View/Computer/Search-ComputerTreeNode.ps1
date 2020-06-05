@@ -13,7 +13,7 @@ function Search-ComputerTreeNode {
         if ($root.text -imatch 'Search Results') { $SearchNode = $true }
     }
     if ($SearchNode -eq $false) { $script:ComputerTreeView.Nodes.Add($script:ComputerListSearch) }
-
+    
     
     # Sets the value of $ComputerSearchText from that of the command line line parameter -ComputerSearch
     if ($ComputerSearchInput) {
@@ -23,27 +23,27 @@ function Search-ComputerTreeNode {
         foreach ($ComputerSearchText in $ComputerSearchInput) {
             Foreach($Computer in $script:ComputerTreeViewData) {
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.Notes -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Notes]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.Name -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Name]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.OperatingSystem -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OS]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.CanonicalName -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OU/CN]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.IPv4address -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData IP]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }                
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.MACAddress -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData MAC]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }                
             }                
@@ -69,27 +69,27 @@ function Search-ComputerTreeNode {
         if ($ComputerSearchText -ne "" -and $SearchCheck -eq $false) {
             Foreach($Computer in $script:ComputerTreeViewData) {
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.Notes -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Notes]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.Name -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Name]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.OperatingSystem -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OS]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.CanonicalName -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OU/CN]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.IPv4address -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData IP]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }                
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.MACAddress -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData MAC]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }                
             }    
@@ -102,18 +102,16 @@ function Search-ComputerTreeNode {
                 $script:CSVFileMatch = @()
 
                 foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
-                    $CSVFiles = $(Get-ChildItem -Path $CollectionDir -Filter "*.csv" -Recurse).FullName 
+                    $CSVFiles = $(Get-ChildItem -Path $CollectionDir -Filter "*.csv" -Recurse).FullName | Where {$_ -match  "Collected Data" -and $_ -notmatch "Individual Host Results"}
                     foreach ($CSVFile in $CSVFiles) { 
                         if ($OptionSearchProcessesCheckBox.Checked) {
                             # Searches for the CSV file that matches the data selected
-                            if (($CSVFile -match "Processes") -and ($CSVFile -match "Individual Host Results") -and ($CSVFile -match ".csv")) {
-                                if ($(Import-CSV -Path $CSVFile | select -Property Name, Description | `
-                                    where {($_.Name -imatch $ComputerSearchText) -or ($_.Description -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
-                                    )) {
-                                    #note: .split(@(' - '),'none') allows me to split on " - ", which is three characters
-                                    $ComputerWithResults = $CSVFile.Split('\')[-1].split(@(' - '),'none')[-1].split('.')[-2].replace(' ','')
-                                    if (($SearchFound -inotcontains $ComputerWithResults) -and ($ComputerWithResults -ne ''))  {
-                                        Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $ComputerWithResults #-ToolTip $Computer.IPv4Address
+                            if ($CSVFile -match "Processes") {
+                                $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property PSComputerName, Name, Description  | where {($_.Name -imatch $ComputerSearchText) -or ($_.Description -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
+                                $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty PSComputerName -Unique 
+                                if ( $SearchImportedCsvData ) {
+                                    foreach ($PSComputerName in $SearchImportedCsvData) {
+                                        Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Process]') -Entry $PSComputerName #-ToolTip $Computer.IPv4Address
                                         $SearchFound += $ComputerWithResults
                                     }
                                 }
@@ -121,14 +119,12 @@ function Search-ComputerTreeNode {
                         }
                         if ($OptionSearchServicesCheckBox.Checked) {
                             # Searches for the CSV file that matches the data selected
-                            if (($CSVFile -match "Services") -and ($CSVFile -match "Individual Host Results") -and ($CSVFile -match ".csv")) {
-                                if ($(Import-CSV -Path $CSVFile | select -Property Name, DisplayName | `
-                                    where {($_.Name -imatch $ComputerSearchText) -or ($_.DisplayName -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
-                                    )) {
-                                    #note: .split(@(' - '),'none') allows me to split on " - ", which is three characters
-                                    $ComputerWithResults = $CSVFile.Split('\')[-1].split(@(' - '),'none')[-1].split('.')[-2].replace(' ','')
-                                    if (($SearchFound -inotcontains $ComputerWithResults) -and ($ComputerWithResults -ne ''))  {
-                                        Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $ComputerWithResults #-ToolTip $Computer.IPv4Address
+                            if ($CSVFile -match "Services") {
+                                $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property PSComputerName, Name, DisplayName  | where {($_.Name -imatch $ComputerSearchText) -or ($_.DisplayName -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
+                                $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty PSComputerName -Unique 
+                                if ( $SearchImportedCsvData ) {
+                                    foreach ($PSComputerName in $SearchImportedCsvData) {
+                                        Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Service]') -Entry $PSComputerName #-ToolTip $Computer.IPv4Address
                                         $SearchFound += $ComputerWithResults
                                     }
                                 }
@@ -136,14 +132,12 @@ function Search-ComputerTreeNode {
                         }
                         if ($OptionSearchNetworkTCPConnectionsCheckBox.Checked) {
                             # Searches for the CSV file that matches the data selected
-                            if (($CSVFile -match "Network") -and ($CSVFile -match "Individual Host Results") -and ($CSVFile -match ".csv")) {
-                                if ($(Import-CSV -Path $CSVFile | select -Property RemoteAddress, RemotePort, LocalPort | `
-                                    where {($_.RemoteAddress -imatch $ComputerSearchText) -or ($_.RemotePort -imatch $ComputerSearchText) -or ($_.LocalPort -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
-                                    )) {
-                                    #note: .split(@(' - '),'none') allows me to split on " - ", which is three characters
-                                    $ComputerWithResults = $CSVFile.Split('\')[-1].split(@(' - '),'none')[-1].split('.')[-2].replace(' ','')
-                                    if (($SearchFound -inotcontains $ComputerWithResults) -and ($ComputerWithResults -ne ''))  {
-                                        Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $ComputerSearchText -Entry $ComputerWithResults #-ToolTip $Computer.IPv4Address
+                            if ($CSVFile -match "Network") {
+                                $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property PSComputerName, RemoteAddress, RemotePort, LocalPort | where {($_.RemoteAddress -imatch $ComputerSearchText) -or ($_.RemotePort -imatch $ComputerSearchText) -or ($_.LocalPort -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
+                                $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty PSComputerName -Unique 
+                                if ( $SearchImportedCsvData ) {
+                                    foreach ($PSComputerName in $SearchImportedCsvData) {
+                                        Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Network]') -Entry $PSComputerName #-ToolTip $Computer.IPv4Address
                                         $SearchFound += $ComputerWithResults
                                     }
                                 }

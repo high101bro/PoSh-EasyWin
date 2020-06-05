@@ -43,19 +43,12 @@ function Conduct-NodeAction {
             Display-ContextMenu
 
             $script:HostQueryTreeViewSelected = ""
-            $StatusListBox.Items.clear()
-            $StatusListBox.Items.Add("Category:  $($root.Text)")
-            $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("- Checkbox This Node to Execute All Commands Within")
-
             $Section3QueryExplorationName.Text      = "N/A"
             $Section3QueryExplorationTypeTextBox.Text      = "N/A"
             $Section3QueryExplorationWinRMPoShTextBox.Text = "N/A"
             $Section3QueryExplorationWinRMWMITextBox.Text  = "N/A"
             $Section3QueryExplorationRPCPoShTextBox.Text   = "N/A"
             $Section3QueryExplorationRPCWMITextBox.Text    = "N/A"
-
-            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
         }
 
         foreach ($Category in $root.Nodes) { 
@@ -165,10 +158,10 @@ function Conduct-NodeAction {
                 Display-ContextMenu
 
                 $script:HostQueryTreeViewSelected = ""
-                $StatusListBox.Items.clear()
-                $StatusListBox.Items.Add("Category:  $($Category.Text)")
-                $ResultsListBox.Items.Clear()
-                $ResultsListBox.Items.Add("- Checkbox This Node to Execute All Commands Within")
+                #$StatusListBox.Items.clear()
+                #$StatusListBox.Items.Add("Category:  $($Category.Text)")
+                #$ResultsListBox.Items.Clear()
+                #$ResultsListBox.Items.Add("- Checkbox This Node to Execute All Commands Within")
 
                 $Section3QueryExplorationName.Text             = "N/A"
                 $Section3QueryExplorationTypeTextBox.Text      = "N/A"
@@ -177,7 +170,7 @@ function Conduct-NodeAction {
                 $Section3QueryExplorationRPCPoShTextBox.Text   = "N/A"
                 $Section3QueryExplorationRPCWMITextBox.Text    = "N/A"
 
-                $MainBottomTabControl.SelectedTab   = $Section3ResultsTab
+                #$MainBottomTabControl.SelectedTab   = $Section3ResultsTab
             }
 
             foreach ($Entry in $Category.nodes) { 
@@ -190,10 +183,10 @@ function Conduct-NodeAction {
                             Display-ContextMenu
 
                     $script:HostQueryTreeViewSelected = $Entry.Text
-                    $StatusListBox.Items.clear()
-                    $StatusListBox.Items.Add("$($Entry.Text)")
-                    $ResultsListBox.Items.clear()
-                    $ResultsListBox.Items.Add("$((($Entry.Text) -split ' -- ')[-1])")
+                    #$StatusListBox.Items.clear()
+                    #$StatusListBox.Items.Add("$($Entry.Text)")
+                    #$ResultsListBox.Items.clear()
+                    #$ResultsListBox.Items.Add("$((($Entry.Text) -split ' -- ')[-1])")
                     if ($root.text -match 'Endpoint Commands') {
                         $Section3QueryExplorationNameTextBox.Text           = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name
                         $Section3QueryExplorationTagWordsTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type

@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.4.3
+    Version        : v.4.4
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -25,9 +25,10 @@
                    : DCOM    RPC   - TCP/135 and dynamic ports, typically:
                                      TCP 49152-65535 (Windows Vista, Server 2008 and above)
                                      TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
-    Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, WinPmem.exe
+    Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, 
+                     etl2pcapng.exe, WinPmem.exe
 
-    Updated        : 01 JUN 2020
+    Updated        : 05 JUN 2020
     Created        : 21 AUG 2018
 
     Author         : Daniel Komnick (high101bro)
@@ -5424,7 +5425,8 @@ $ComputerTreeNodeImportFromActiveDirectoryButton = New-Object System.Windows.For
                    Y = $Column5DownPosition }
     Size      = @{ Width  = $Column5BoxWidth
                    Height = $Column5BoxHeight }
-    Add_Click = $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click
+    Add_Click      = $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click
+    Add_MouseHover = $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_MouseHover
 }
 $Section3ManageListTab.Controls.Add($ComputerTreeNodeImportFromActiveDirectoryButton)
 CommonButtonSettings -Button $ComputerTreeNodeImportFromActiveDirectoryButton
@@ -5442,7 +5444,8 @@ $ComputerTreeNodeImportCsvButton = New-Object System.Windows.Forms.Button -Prope
                    Y = $Column5DownPosition }
     Size      = @{ Width  = $Column5BoxWidth
                    Height = $Column5BoxHeight }
-    Add_Click = $ComputerTreeNodeImportCsvButtonAdd_Click
+    Add_Click      = $ComputerTreeNodeImportCsvButtonAdd_Click
+    Add_MouseHover = $ComputerTreeNodeImportCsvButtonAdd_MouseHover
 }
 $Section3ManageListTab.Controls.Add($ComputerTreeNodeImportCsvButton)
 CommonButtonSettings -Button $ComputerTreeNodeImportCsvButton
@@ -5460,7 +5463,8 @@ $ComputerTreeNodeImportTxtButton = New-Object System.Windows.Forms.Button -Prope
                    Y = $Column5DownPosition }
     Size      = @{ Width  = $Column5BoxWidth
                    Height = $Column5BoxHeight }
-    Add_Click = $ComputerTreeNodeImportTxtButtonAdd_Click
+    Add_Click      = $ComputerTreeNodeImportTxtButtonAdd_Click
+    Add_MouseHover = $ComputerTreeNodeImportTxtButtonAdd_MouseHover
 }
 $Section3ManageListTab.Controls.Add($ComputerTreeNodeImportTxtButton)
 CommonButtonSettings -Button $ComputerTreeNodeImportTxtButton
