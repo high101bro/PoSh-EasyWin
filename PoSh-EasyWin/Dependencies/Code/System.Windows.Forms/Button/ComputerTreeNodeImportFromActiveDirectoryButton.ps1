@@ -55,7 +55,7 @@ $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
                     $ImportFromADManualEntryTextBox.text = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
                 }
                 else {
-                    $ImportFromADManualEntryTextBox.text = '<Fully Qualified Domain Name>'
+                    $ImportFromADManualEntryTextBox.text = '<Domain Name>'
                 }
             }
         }

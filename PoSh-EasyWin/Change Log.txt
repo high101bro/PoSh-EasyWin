@@ -21,17 +21,17 @@ Computer Treeview Search
 	- Optimized searching speed
 	- Results how are tagged with their source to assist in narrowing down data
 	- Fixed issue with search feature that searches through processes, services, and network connections collections for search criteria... this problem arose from when I upgraded to session based queries and that those results no longer saved data in 'Individual Results'
-
+	- Fixed the same issue as above... but for Retrievinig alternate data stream files
 Updated Function Message-HostAlreadyExists to support both displaying data on ResultsListBox and the popup messagebox depending on the context and parameter provided
 
 Tweeked the Conduct-NodeAction script
 	- Commented out several $StatusListBox and $ResultsListBox updates... not really necessary, more annoying now that anything
 	- Commented out .SelectedTabs that selected the $ResultsListBox... no longer needed
 
-MouseHover Help##################################
-	- Import from AD steps##################################
-	- Import from CSV steps##################################
-	- Import from txt steps##################################
+MouseHover Help
+	- Import from AD steps
+	- Import from CSV steps
+	- Import from txt steps
 
 Added some missing PoSh-EasyWin icons to several System.Windows.Forms.Form that were missing them
 
@@ -45,6 +45,7 @@ Optimized the Tag All feature, it now saves faster and also provides a status up
 Fixed Bugs
 	- When selecting hosts to query using session based querying, subsequent queries didn't reflect a different computer count
 	- Looked into a bug where with the Retrieved File function wasn't working... well at least not on the online range, but it works perfectly on my local lab... added a Start-Sleep -Milliseconds 250 to see if it helps...? otherwise idk, may have to ts the script live while in the cloud
+	- Retrieve files from remote hosts wasn't working... ended up that I forgot to add the code that supported usinig alternate credentials
 
 ==================================================
 v4.3 - 1 June 2020
