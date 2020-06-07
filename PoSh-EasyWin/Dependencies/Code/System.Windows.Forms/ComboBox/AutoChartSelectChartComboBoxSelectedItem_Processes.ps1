@@ -238,8 +238,7 @@ $script:AutoChart01.Series["Unique Processes"].Color             = 'Red'
             else {
                 $script:AutoChart01Title.ForeColor = 'Red'
                 $script:AutoChart01Title.Text = "Unique Processes`n
-[ No data not available ]`n
-Run a query to collect process data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart01
@@ -768,8 +767,7 @@ $script:AutoChart02.Series["Processes Per Host"].Color             = 'Blue'
                 $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
                 $script:AutoChart02Title.ForeColor = 'Red'
                 $script:AutoChart02Title.Text = "Processes Per Host`n
-[ No data not available ]`n
-Run a query to collect process data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart02
@@ -1277,8 +1275,7 @@ $script:AutoChart03.Series["Process Company"].Color             = 'Green'
             else {
                 $script:AutoChart03Title.ForeColor = 'Red'
                 $script:AutoChart03Title.Text = "Process Company`n
-[ No data not available ]`n
-Either run 'Get-Process' or 'Get-EnrichedProcesses to obtain company data... Get-WmiObject Win32_Process does not contain the company property.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart03
@@ -1786,8 +1783,7 @@ $script:AutoChart04.Series["Process Product"].Color             = 'Orange'
             else {
                 $script:AutoChart04Title.ForeColor = 'Red'
                 $script:AutoChart04Title.Text = "Process Product`n
-[ No data not available ]`n
-Either run 'Get-Process' or 'Get-EnrichedProcesses to obtain company data... Get-WmiObject Win32_Process does not contain the product property.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart04
@@ -2297,9 +2293,7 @@ $script:AutoChart05.Series["Processes with Network Activity"].Color             
                 $script:AutoChart05.Series["Processes with Network Activity"].Points.Clear()
                 $script:AutoChart05Title.ForeColor = 'Red'
                 $script:AutoChart05Title.Text = "Processes with Network Activity`n
-[ No data not available ]`n
-Run 'Get-EnrichedProcesses' to obtain Network Connections
-associated with processes.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart05
@@ -2806,8 +2800,7 @@ $script:AutoChart06.Series["Process MD5 Hash"].Color             = 'Gray'
             else {
                 $script:AutoChart06Title.ForeColor = 'Red'
                 $script:AutoChart06Title.Text = "Process MD5 Hash`n
-[ No data not available ]`n
-Run 'Get-EnrichedProcesses' to obtain MD5 Hash data`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart06
@@ -3315,8 +3308,7 @@ $script:AutoChart07.Series["Signer Certificate"].Color             = 'SlateBLue'
             else {
                 $script:AutoChart07Title.ForeColor = 'Red'
                 $script:AutoChart07Title.Text = "Signer Certificate`n
-[ No data not available ]`n
-Run 'Get-EnrichedProcesses' to obtain Signer Certificate data`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart07
@@ -3825,8 +3817,7 @@ $script:AutoChart08.Series["Signer Company"].Color             = 'Purple'
             else {
                 $script:AutoChart08Title.ForeColor = 'Red'
                 $script:AutoChart08Title.Text = "Signer Company`n
-[ No data not available ]`n
-Run 'Get-EnrichedProcesses' to obtain MD5 Hash data`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart08
@@ -4336,8 +4327,7 @@ $script:AutoChart09.Series["Process Path"].Color             = 'Yellow'
             else {
                 $script:AutoChart09Title.ForeColor = 'Red'
                 $script:AutoChart09Title.Text = "Process Path`n
-[ No data not available ]`n
-Run a query to collect process data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart09
@@ -4847,8 +4837,7 @@ $script:AutoChart10.Series["Services Started By Processes"].Color             = 
             else {
                 $script:AutoChart10Title.ForeColor = 'Red'
                 $script:AutoChart10Title.Text = "Services Started By Processes`n
-[ No data not available ]`n
-Run a query to collect process data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart10

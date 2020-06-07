@@ -242,8 +242,7 @@ $script:AutoChart01.Series["Running Services"].Color             = 'Red'
             else {
                 $script:AutoChart01Title.ForeColor = 'Red'
                 $script:AutoChart01Title.Text = "$Filter Services`n
-[ No data not available ]`n
-Run a query to collect service data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart01 -Filter 'Running'
@@ -797,8 +796,7 @@ $script:AutoChart02.Series["Running Services Per Host"].Color             = 'Blu
                 $script:AutoChart02.Series["Running Services Per Host"].Points.Clear()
                 $script:AutoChart02Title.ForeColor = 'Red'
                 $script:AutoChart02Title.Text = "$Filter Services Per Host`n
-[ No data not available ]`n
-Run a query to collect service data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart02 -Filter 'Running'
@@ -1329,8 +1327,7 @@ $script:AutoChart03.Series["Automatic Startup Services"].Color             = 'Gr
             else {
                 $script:AutoChart03Title.ForeColor = 'Red'
                 $script:AutoChart03Title.Text = "$Filter Startup Services`n
-[ No data not available ]`n
-Run a query to collect service info`n`n"
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart03 -Filter 'Auto'
@@ -1864,8 +1861,7 @@ $script:AutoChart04.Series["Services Started By LocalSystem"].Color             
             else {
                 $script:AutoChart04Title.ForeColor = 'Red'
                 $script:AutoChart04Title.Text = "Services Started By $Filter`n
-[ No data not available ]`n
-Run Get-WmiObject Win32_Service to view which accounts started services`n`n"
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart04 -Filter 'LocalSystem'
@@ -2401,9 +2397,7 @@ $script:AutoChart05.Series["Processes That Started Services "].Color            
             else {
                 $script:AutoChart05Title.ForeColor = 'Red'
                 $script:AutoChart05Title.Text = "Processes That Started Services `n
-[ No data not available ]`n
-Run 'Get-EnrichedServices' to obtain Processes`n
-that Started Services.`n`n"
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart05
@@ -2913,9 +2907,7 @@ $script:AutoChart06.Series["Accounts That Started Services"].Color             =
             else {
                 $script:AutoChart06Title.ForeColor = 'Red'
                 $script:AutoChart06Title.Text = "Accounts That Started Services`n
-[ No data not available ]`n
-Run 'Get-WmiOBject Win32_Service' or 'Get-EnrichedService'
-to obtain Account Start Name data`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart06

@@ -56,7 +56,9 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
     })
     $AutoChartsAvailable = @(
-        "Hunt",
+        "Active Directory Users",
+        "Active Directory Computers",
+        "Dashboard Quick View",
         "Network Interfaces",
         "Processes",
         "Security Patches",
@@ -142,7 +144,17 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
         # Dashboard with multiple charts
-        if ($AutoChartSelectChartComboBox.SelectedItem -eq "Hunt") { 
+        if ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Users") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryUserAccounts.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Computers") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryComputerAccounts.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Quick View") { 
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Hunt.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()

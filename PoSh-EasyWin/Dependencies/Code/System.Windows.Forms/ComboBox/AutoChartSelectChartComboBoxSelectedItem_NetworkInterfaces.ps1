@@ -238,8 +238,7 @@ $script:AutoChart01.Series["Interface Alias"].Color             = 'Red'
             else {
                 $script:AutoChart01Title.ForeColor = 'Red'
                 $script:AutoChart01Title.Text = "Interface Alias`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart01
@@ -768,8 +767,7 @@ $script:AutoChart02.Series["Interfaces with IPs Per Host"].Color             = '
                 $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
                 $script:AutoChart02Title.ForeColor = 'Red'
                 $script:AutoChart02Title.Text = "Interfaces with IPs Per Host`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart02
@@ -1297,8 +1295,7 @@ $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Color             = 'Gree
                 $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
                 $script:AutoChart03Title.ForeColor = 'Red'
                 $script:AutoChart03Title.Text = "IPv4 Interfaces Per Host`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart03
@@ -1829,8 +1826,7 @@ $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Color             = 'oran
                 $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
                 $script:AutoChart04Title.ForeColor = 'Red'
                 $script:AutoChart04Title.Text = "IPv6 Interfaces Per Host`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart04
@@ -2360,8 +2356,7 @@ $script:AutoChart05.Series["IPs (Manual) Per Host"].Color             = 'Brown'
                 $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
                 $script:AutoChart05Title.ForeColor = 'Red'
                 $script:AutoChart05Title.Text = "IPs (Manual) Per Host`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart05
@@ -2889,8 +2884,7 @@ $script:AutoChart06.Series["IPs (DHCP) Per Host"].Color             = 'Gray'
                 $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
                 $script:AutoChart06Title.ForeColor = 'Red'
                 $script:AutoChart06Title.Text = "IPs (DHCP) Per Host`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart06
@@ -3414,8 +3408,7 @@ $script:AutoChart07.Series["IPs (Well Known) Per Host"].Color             = 'Sla
                 $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
                 $script:AutoChart07Title.ForeColor = 'Red'
                 $script:AutoChart07Title.Text = "IPs (Well Known) Per Host`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart07
@@ -3944,8 +3937,7 @@ $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Color         
                 $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
                 $script:AutoChart08Title.ForeColor = 'Red'
                 $script:AutoChart08Title.Text = "IPs (Router Advertisement) Per Host`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart08
@@ -4460,8 +4452,7 @@ $script:AutoChart09.Series["Address State"].Color             = 'Yellow'
             else {
                 $script:AutoChart09Title.ForeColor = 'Red'
                 $script:AutoChart09Title.Text = "Address State`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart09
@@ -4971,8 +4962,7 @@ $script:AutoChart10.Series["Address Family"].Color             = 'Red'
             else {
                 $script:AutoChart10Title.ForeColor = 'Red'
                 $script:AutoChart10Title.Text = "Address Family`n
-[ No data not available ]`n
-Run a query to collect Network Interface data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart10

@@ -238,8 +238,7 @@ $script:AutoChart01.Series["Software Names"].Color             = 'Red'
             else {
                 $script:AutoChart01Title.ForeColor = 'Red'
                 $script:AutoChart01Title.Text = "Software Names`n
-[ No data not available ]`n
-Run a query to collect Software data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart01
@@ -768,8 +767,7 @@ $script:AutoChart02.Series["Software Count Per Host"].Color             = 'Blue'
                 $script:AutoChart02.Series["Software Count Per Host"].Points.Clear()
                 $script:AutoChart02Title.ForeColor = 'Red'
                 $script:AutoChart02Title.Text = "Software Count Per Host`n
-[ No data not available ]`n
-Run a query to collect Software data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart02
@@ -1277,8 +1275,7 @@ $script:AutoChart03.Series["Software Vendor"].Color             = 'Green'
             else {
                 $script:AutoChart03Title.ForeColor = 'Red'
                 $script:AutoChart03Title.Text = "Software Vendor`n
-[ No data not available ]`n
-Run a query to collect Software data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart03
@@ -1786,8 +1783,7 @@ $script:AutoChart04.Series["Install Dates"].Color             = 'Orange'
             else {
                 $script:AutoChart04Title.ForeColor = 'Red'
                 $script:AutoChart04Title.Text = "Install Dates`n
-[ No data not available ]`n
-Run a query to collect Software data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart04

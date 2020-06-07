@@ -1,4 +1,14 @@
 ==================================================
+v4.5 - 7 June 2020
+==================================================
+Modified a couple of commands within the 'Commands - Active Directory.csv'
+	- Added specific queries for AD User and Computers specific to creating charts based of their various property dates
+
+Added two new Dashboard charts
+	- Active Directory Users
+	- Active Directory Computers
+
+==================================================
 v4.4 - 5 June 2020
 ==================================================
 Created serveral more dashboards

@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.4.4
+    Version        : v.4.5
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -28,7 +28,7 @@
     Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, 
                      etl2pcapng.exe, WinPmem.exe
 
-    Updated        : 05 JUN 2020
+    Updated        : 07 JUN 2020
     Created        : 21 AUG 2018
 
     Author         : Daniel Komnick (high101bro)
@@ -376,7 +376,7 @@ $PoShHome                         = Split-Path -parent $MyInvocation.MyCommand.D
         $TagAutoListFile                      = "$Dependencies\Tags - Auto Populate.txt"
 
         # list of ports that can be updated for custom port scans
-        $CustomPortsToScan            = "$Dependencies\Custom Ports To Scan.txt"
+        $CustomPortsToScan                    = "$Dependencies\Custom Ports To Scan.txt"
 
     # Directory where auto saved chart images are saved
     $AutosavedChartsDirectory                 = "$PoShHome\Autosaved Charts"

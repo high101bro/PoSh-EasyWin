@@ -238,8 +238,7 @@ $script:AutoChart01.Series["Share Names"].Color             = 'Red'
             else {
                 $script:AutoChart01Title.ForeColor = 'Red'
                 $script:AutoChart01Title.Text = "Share Names`n
-[ No data not available ]`n
-Run a query to collect SMB Share data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart01
@@ -768,8 +767,7 @@ $script:AutoChart02.Series["Shares Per Host"].Color             = 'Blue'
                 $script:AutoChart02.Series["Shares Per Host"].Points.Clear()
                 $script:AutoChart02Title.ForeColor = 'Red'
                 $script:AutoChart02Title.Text = "Shares Per Host`n
-[ No data not available ]`n
-Run a query to collect SMB Share data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart02
@@ -1282,8 +1280,7 @@ $script:AutoChart03.Series["Share Paths"].Color             = 'Green'
             else {
                 $script:AutoChart03Title.ForeColor = 'Red'
                 $script:AutoChart03Title.Text = "Share Paths`n
-[ No data not available ]`n
-Run a query to collect SMB Share data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart03
@@ -1798,8 +1795,7 @@ $script:AutoChart04.Series["Current Users"].Color             = 'Orange'
             else {
                 $script:AutoChart04Title.ForeColor = 'Red'
                 $script:AutoChart04Title.Text = "Current Users`n
-[ No data not available ]`n
-Run a query to collect SMB Share data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart04
@@ -2327,8 +2323,7 @@ $script:AutoChart05.Series["Unencrypted Shares"].Color             = 'Brown'
                 $script:AutoChart05.Series["Unencrypted Shares"].Points.Clear()
                 $script:AutoChart05Title.ForeColor = 'Red'
                 $script:AutoChart05Title.Text = "Unencrypted Shares`n
-[ No data not available ]`n
-Run a query to collect SMB Share data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart05
@@ -2857,8 +2852,7 @@ $script:AutoChart06.Series["Encrypted Shares"].Color             = 'Brown'
                 $script:AutoChart06.Series["Encrypted Shares"].Points.Clear()
                 $script:AutoChart06Title.ForeColor = 'Red'
                 $script:AutoChart06Title.Text = "Encrypted Shares`n
-[ No data not available ]`n
-Run a query to collect SMB Share data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart06

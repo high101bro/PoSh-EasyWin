@@ -238,8 +238,7 @@ $script:AutoChart01.Series["Security Patches"].Color             = 'Red'
             else {
                 $script:AutoChart01Title.ForeColor = 'Red'
                 $script:AutoChart01Title.Text = "Security Patches`n
-[ No data not available ]`n
-Run a query to collect Security Patches data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart01
@@ -768,8 +767,7 @@ $script:AutoChart02.Series["Security Patches Per Host"].Color             = 'Blu
                 $script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
                 $script:AutoChart02Title.ForeColor = 'Red'
                 $script:AutoChart02Title.Text = "Security Patches Per Host`n
-[ No data not available ]`n
-Run a query to collect Security Patches data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart02
@@ -1277,8 +1275,7 @@ $script:AutoChart03.Series["Service Pack In Effect"].Color             = 'Green'
             else {
                 $script:AutoChart03Title.ForeColor = 'Red'
                 $script:AutoChart03Title.Text = "Service Pack In Effect`n
-[ No data not available ]`n
-Run a query to collect Security Patches data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart03
@@ -1786,8 +1783,7 @@ $script:AutoChart04.Series["Install Date"].Color             = 'Orange'
             else {
                 $script:AutoChart04Title.ForeColor = 'Red'
                 $script:AutoChart04Title.Text = "Install Date`n
-[ No data not available ]`n
-Run a query to collect Security Patches data.`n`n"                
+[ No Data Available ]`n"                
             }
         }
         Generate-AutoChart04
