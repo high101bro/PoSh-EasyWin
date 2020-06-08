@@ -348,7 +348,7 @@ $PoShHome                         = Split-Path -parent $MyInvocation.MyCommand.D
     $OpNotesFile                  = "$PoShHome\OpNotes.txt"
     $OpNotesWriteOnlyFile         = "$PoShHome\OpNotes (Write Only).txt"
   
-    $CredentialManagementPath     = "$PoShHome\Credential Management\"
+    $script:CredentialManagementPath     = "$PoShHome\Credential Management\"
 
     # Dependencies
     $Dependencies                 = "$PoShHome\Dependencies"

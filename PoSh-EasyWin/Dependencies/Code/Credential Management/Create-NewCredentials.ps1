@@ -10,10 +10,10 @@ function Create-NewCredentials {
     $NewCredentialsUsername = ($script:Credential.UserName).replace('\','-')
     $DateTime = "{0:yyyy-MM-dd @ HHmm.ss}" -f (Get-Date)
     $CredentialName = "$NewCredentialsUsername ($DateTime).xml"
-    $script:Credential | Export-Clixml -path "$CredentialManagementPath\$CredentialName"
+    $script:Credential | Export-Clixml -path "$script:CredentialManagementPath\$CredentialName"
 
     $CredentialManagementSelectCredentialsTextBox.text = $CredentialName
-    $CredentialName | Out-File "$CredentialManagementPath\Specified Credentials.txt"
+    $CredentialName | Out-File "$script:CredentialManagementPath\Specified Credentials.txt"
 
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Credentials:  $CredentialName")

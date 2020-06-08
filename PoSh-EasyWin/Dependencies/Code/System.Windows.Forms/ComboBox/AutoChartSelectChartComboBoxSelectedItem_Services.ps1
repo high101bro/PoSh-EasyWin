@@ -24,6 +24,7 @@ $script:AutoChartsProgressBar.Maximum = 1
 $script:AutoChartsProgressBar.Value   = 0
 $script:AutoChartsProgressBar.Update()
 
+
 $script:AutoChart01CSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
@@ -35,6 +36,7 @@ $script:AutoChartDataSource = Import-Csv $script:AutoChartCSVFileMostRecentColle
 
 $script:AutoChartsProgressBar.Value = 1
 $script:AutoChartsProgressBar.Update()
+
 function Close-AllOptions {
     $script:AutoChart01OptionsButton.Text = 'Options v'
     $script:AutoChart01.Controls.Remove($script:AutoChart01ManipulationPanel)
@@ -48,14 +50,12 @@ function Close-AllOptions {
     $script:AutoChart05.Controls.Remove($script:AutoChart05ManipulationPanel)
     $script:AutoChart06OptionsButton.Text = 'Options v'
     $script:AutoChart06.Controls.Remove($script:AutoChart06ManipulationPanel)
-<#
     $script:AutoChart07OptionsButton.Text = 'Options v'
     $script:AutoChart07.Controls.Remove($script:AutoChart07ManipulationPanel)
     $script:AutoChart08OptionsButton.Text = 'Options v'
     $script:AutoChart08.Controls.Remove($script:AutoChart08ManipulationPanel)
     $script:AutoChart09OptionsButton.Text = 'Options v'
     $script:AutoChart09.Controls.Remove($script:AutoChart09ManipulationPanel)
-#>
 }
 
 ### Main Label at the top
@@ -200,6 +200,7 @@ $script:AutoChart01.Series["Running Services"].Color             = 'Red'
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart01UniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
+            
 
             $script:AutoChart01.Series["Running Services"].Points.Clear()
 
@@ -216,13 +217,17 @@ $script:AutoChart01.Series["Running Services"].Color             = 'Red'
                 foreach ($DataField in $script:AutoChart01UniqueDataFields) {
                     $Count        = 0
                     $script:AutoChart01CsvComputers = @()
-                    
                     foreach ( $Line in $FilteredData ) {
                         if ($Line.Name -eq $DataField.Name) {
                             $Count += 1
                             if ( $script:AutoChart01CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01CsvComputers += $($Line.PSComputerName) }                        
                         }
-                    }
+                    }                    
+                    ### much slower than the above code
+                    #$DataMatch = $FilteredData | Where-Object {$_.name -eq $DataField.Name}
+                    #$Count = $DataMatch.Count
+                    #$script:AutoChart01CsvComputers = $DataMatch | Select-Object PSComputerName -unique
+                    
                     $script:AutoChart01UniqueCount = $script:AutoChart01CsvComputers.Count
                     $script:AutoChart01DataResults = New-Object PSObject -Property @{
                         DataField   = $DataField
@@ -233,6 +238,7 @@ $script:AutoChart01.Series["Running Services"].Color             = 'Red'
                     $script:AutoChart01OverallDataResults += $script:AutoChart01DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
+                    
                 }                
                 $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart01.Series["Running Services"].Points.AddXY($_.DataField.Name,$_.UniqueCount) }
 
@@ -740,6 +746,7 @@ $script:AutoChart02.Series["Running Services Per Host"].Color             = 'Blu
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart03UniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
+            
 
             if ($script:AutoChart02UniqueDataFields.count -gt 0){
                 $script:AutoChart02Title.ForeColor = 'Black'
@@ -781,6 +788,7 @@ $script:AutoChart02.Series["Running Services Per Host"].Color             = 'Blu
                     }
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
+                    
                 }
                 $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }    
                 $script:AutoChart02OverallDataResults += $AutoChart02YDataResults
@@ -1286,6 +1294,7 @@ $script:AutoChart03.Series["Automatic Startup Services"].Color             = 'Gr
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart03UniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
+            
 
             $script:AutoChart03.Series["Automatic Startup Services"].Points.Clear()
 
@@ -1318,6 +1327,7 @@ $script:AutoChart03.Series["Automatic Startup Services"].Color             = 'Gr
                     $script:AutoChart03OverallDataResults += $script:AutoChart03DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
+                    
                 }
                 $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart03.Series["Automatic Startup Services"].Points.AddXY($_.DataField.Name,$_.UniqueCount) }
 
@@ -1820,6 +1830,7 @@ $script:AutoChart04.Series["Services Started By LocalSystem"].Color             
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart04UniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
+            
 
             $script:AutoChart04.Series["Services Started By LocalSystem"].Points.Clear()
 
@@ -1852,6 +1863,7 @@ $script:AutoChart04.Series["Services Started By LocalSystem"].Color             
                     $script:AutoChart04OverallDataResults += $script:AutoChart04DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
+                    
                 }
                 $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart04.Series["Services Started By LocalSystem"].Points.AddXY($_.DataField.Name,$_.UniqueCount) }
 
@@ -2353,6 +2365,7 @@ $script:AutoChart05.Series["Processes That Started Services "].Color            
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart05UniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
+            
 
             $script:AutoChart05.Series["Processes That Started Services "].Points.Clear()
 
@@ -2386,6 +2399,7 @@ $script:AutoChart05.Series["Processes That Started Services "].Color            
                         $script:AutoChart05OverallDataResults += $script:AutoChart05DataResults
                         $script:AutoChartsProgressBar.Value += 1
                         $script:AutoChartsProgressBar.Update()
+                        
                     }
                 }
                 $script:AutoChart05.Series["Processes That Started Services "].Points.Clear()
@@ -2868,6 +2882,7 @@ $script:AutoChart06.Series["Accounts That Started Services"].Color             =
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart06UniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
+            
 
             $script:AutoChart06.Series["Accounts That Started Services"].Points.Clear()
 
@@ -2898,6 +2913,7 @@ $script:AutoChart06.Series["Accounts That Started Services"].Color             =
                     $script:AutoChart06OverallDataResults += $script:AutoChart06DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
+                    
                 }
                 $script:AutoChart06OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart06.Series["Accounts That Started Services"].Points.AddXY($_.DataField.StartName,$_.UniqueCount) }
 

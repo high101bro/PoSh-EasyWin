@@ -1,6 +1,10 @@
 ==================================================
-v4.5 - 7 June 2020
+v4.5 - 8 June 2020
 ==================================================
+Updated Credential Management section and Auto Credential Rolling
+	- Added domain name entry to increase credential support
+	- Revised logic to optimize performance, better flow and performance
+
 Modified a couple of commands within the 'Commands - Active Directory.csv'
 	- Added specific queries for AD User and Computers specific to creating charts based of their various property dates
 
