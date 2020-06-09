@@ -116,6 +116,9 @@ function Conduct-NodeAction {
             elseif (!($Category.checked)) {
                 foreach ($Entry in $Category.nodes) { 
                     if ($Entry.checked) {
+                        # Currently used to support cmdkey /delete:$script:EntryChecked to clear out credentials when using Remote Desktop
+                        $script:EntryChecked = $entry.text
+
                         if ($Entry.Text -match '[\[(]rpc[)\]]') {
                             $script:RpcCommandCount += 1
                             if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
@@ -180,13 +183,10 @@ function Conduct-NodeAction {
                     $script:rootSelected     = $null
                     $script:CategorySelected = $Category
                     $script:EntrySelected    = $Entry
-                            Display-ContextMenu
+                    Display-ContextMenu
 
                     $script:HostQueryTreeViewSelected = $Entry.Text
-                    #$StatusListBox.Items.clear()
-                    #$StatusListBox.Items.Add("$($Entry.Text)")
-                    #$ResultsListBox.Items.clear()
-                    #$ResultsListBox.Items.Add("$((($Entry.Text) -split ' -- ')[-1])")
+
                     if ($root.text -match 'Endpoint Commands') {
                         $Section3QueryExplorationNameTextBox.Text           = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name
                         $Section3QueryExplorationTagWordsTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type

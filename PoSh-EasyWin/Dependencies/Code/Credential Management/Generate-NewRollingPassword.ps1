@@ -6,7 +6,8 @@ function Generate-NewRollingPassword {
     }
     
     # Active Directory has a max password length of 256 characters
-    $NumberOfCharacters = 250
+    # note: Previous versions had the random password set at 250 characters, but this was scalled back because during testing cmdkey doesn't seem to support anything larger
+    $NumberOfCharacters = 32 #100 #150 #200 #250
     $GeneratedPassword  = Get-RandomCharacters -length $NumberOfCharacters -characters @"
 abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890 
 "@
@@ -22,14 +23,15 @@ $script:CredentialManagementGeneratedRollingPasswordTextBox.text = $GeneratedPas
     else {
         $PoShEasyWinDomainNameAndAccount = $PoShEasyWinAccount
     }
+    $script:credential = $null
     $script:Credential = New-Object System.Management.Automation.PSCredential("$PoShEasyWinDomainNameAndAccount",$SecurePassword)
     # Rolls the PoSh-EasyWin Account Credential
     $ActiveDirectoryServer = $script:CredentialManagementActiveDirectoryTextBox.text
 
     if ($script:CredentialManagementPasswordRollingAccountCheckbox.checked) {
         $CredentialRoller = Get-Content "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt"
-        $script:AdminCredsToRollPassword = Import-CliXml "$script:CredentialManagementPath\$CredentialRoller" 
-        Invoke-Command -ComputerName $ActiveDirectoryServer -Credential $script:AdminCredsToRollPassword -ScriptBlock { 
+        $script:AdminCredsToRollPassword = Import-CliXml "$script:CredentialManagementPath\$CredentialRoller"
+        Invoke-Command -ComputerName $ActiveDirectoryServer -Credential $script:AdminCredsToRollPassword -ScriptBlock {
             param(
                 $PoShEasyWinAccount,
                 $SecurePassword

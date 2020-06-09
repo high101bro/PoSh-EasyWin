@@ -12,6 +12,17 @@ Added two new Dashboard charts
 	- Active Directory Users
 	- Active Directory Computers
 
+Added mouseenter,mouseleave, and mousehover to two textboxes within the Import from AD button:
+	- Domain Name - moving the curse over removes the default text and also provides a tool tip
+	- Hostname/IP - moving the curse over removes the default text and also provides a tool tip
+
+Minor GUI tweaks throughout... lol, OCD
+
+Bug Fixes
+	- Fixed remote desktop issue with swithing between stored credentials. The rdp session held on to the previous credentials despite assigning new credentials to the credential object of $script:credential. Ended up being that the cmdkey native program was the one storeing previous credentials in memory, had to use cmd /delete <computer> and cmd /delete /<username> to clear the credentials from cmdkey memory, then I was able to assign new credtials with it. cmdkey is only being used to support mstsc's lack of accepting credential objects.  
+	- Changed the 250 character random alpha-numeric password to 32, mainly there were performance issues with Remote Desktop and cmdkey not passing the credential well. In fact, my testing showed that I couldn't use a password longer than 64 characters, but demenstarted more success attempts when the password length was at 32. 
+	- Also added a 5 second delay after rolling creds for Remote Desktop connections, this seems to help with the stability of cmdkey passing creds to mstsc... possibly a race condition with changing the account credentials, but not likely. Couldn't quite narrow it down... sometimes I still have to click on Remote Desktop button a few times before being able to connect.
+
 ==================================================
 v4.4 - 5 June 2020
 ==================================================

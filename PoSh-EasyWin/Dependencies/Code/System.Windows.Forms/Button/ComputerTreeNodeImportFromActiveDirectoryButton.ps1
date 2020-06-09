@@ -30,7 +30,8 @@ $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
         $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromDomainNoteLabel)  
 
 
-        $ImportFromADManualEntryTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+        . "$Dependencies\Code\System.Windows.Forms\RichTextBox\ImportFromADManualEntryRichTextBox.ps1"
+        $ImportFromADManualEntryRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Text      = "<Domain Name>"
             left      = 5
             top       = $ImportFromDomainNoteLabel.top + $ImportFromDomainNoteLabel.height + 5
@@ -38,24 +39,27 @@ $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
             Height    = 22   
             Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
             ForeColor = "Black"
+            Add_MouseEnter = $ImportFromADManualEntryRichTextBoxAdd_MouseEnter
+            Add_MouseLeave = $ImportFromADManualEntryRichTextBoxAdd_MouseLeave
+            Add_MouseHover = $ImportFromADManualEntryRichTextBoxAdd_MouseHover
         }
-        $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromADManualEntryTextBox)
+        $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromADManualEntryRichTextBox)
 
 
         $ImportFromADAutoCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
             Text      = "Auto Pull"
-            left      = $ImportFromADManualEntryTextBox.Left + $ImportFromADManualEntryTextBox.Width + 5
-            top       = $ImportFromADManualEntryTextBox.Top
+            left      = $ImportFromADManualEntryRichTextBox.Left + $ImportFromADManualEntryRichTextBox.Width + 5
+            top       = $ImportFromADManualEntryRichTextBox.Top
             Width     = 155
             Height    = 22    
             Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
             ForeColor = "Black"
             Add_Click = {
                 if ($This.checked) {
-                    $ImportFromADManualEntryTextBox.text = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
+                    $ImportFromADManualEntryRichTextBox.text = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
                 }
                 else {
-                    $ImportFromADManualEntryTextBox.text = '<Domain Name>'
+                    $ImportFromADManualEntryRichTextBox.text = '<Domain Name>'
                 }
             }
         }
@@ -65,16 +69,16 @@ $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
         $ImportFromADImportButton = New-Object System.Windows.Forms.Button -Property @{
             Text      = "Import Hosts"
             left      = $ImportFromADAutoCheckBox.Left + $ImportFromADAutoCheckBox.Width + 5
-            top       = $ImportFromADManualEntryTextBox.Top
+            top       = $ImportFromADManualEntryRichTextBox.Top
             Width     = 100
             Height    = 20
             Add_Click = { 
-                if (($ImportFromADManualEntryTextBox.Text -ne '<Domain Name>') -or $ImportFromADAutoCheckBox.Checked) {
-                    if (($ImportFromADManualEntryTextBox.Text -ne '') -or ($ImportFromADAutoCheckBox.Checked)) {
+                if (($ImportFromADManualEntryRichTextBox.Text -ne '<Domain Name>') -or $ImportFromADAutoCheckBox.Checked) {
+                    if (($ImportFromADManualEntryRichTextBox.Text -ne '') -or ($ImportFromADAutoCheckBox.Checked)) {
                         # Checks if the domain input field is either blank or contains the default info
                         If ($ImportFromADAutoCheckBox.Checked  -eq $true){. Import-HostsFromDomain "Auto"}
                         else {
-                            . Import-HostsFromDomain "Manual" "$($ImportFromADManualEntryTextBox.Text)"
+                            . Import-HostsFromDomain "Manual" "$($ImportFromADManualEntryRichTextBox.Text)"
                         }
             
                         $CurrentDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
@@ -99,7 +103,7 @@ $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
                                     $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 
                                         Name            = $Computer
                                         OperatingSystem = 'Unknown'
-                                        CanonicalName   = "/$($ImportFromADManualEntryTextBox.Text)"
+                                        CanonicalName   = "/$($ImportFromADManualEntryRichTextBox.Text)"
                                         IPv4Address     = ''
                                     }
                                     $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP    
@@ -119,11 +123,11 @@ $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click = {
                                     $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP    
                                 }
                                 else {
-                                    Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $($ImportFromADManualEntryTextBox.Text) -Entry $Computer #-ToolTip $Computer.IPv4Address
+                                    Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $($ImportFromADManualEntryRichTextBox.Text) -Entry $Computer #-ToolTip $Computer.IPv4Address
                                     $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 
                                         Name            = $Computer
                                         OperatingSystem = 'Unknown'
-                                        CanonicalName   = "/$($ImportFromADManualEntryTextBox.Text)"
+                                        CanonicalName   = "/$($ImportFromADManualEntryRichTextBox.Text)"
                                         IPv4Address     = ''
                                     }
                                     $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP    
@@ -243,7 +247,8 @@ function Import-EndpointsFromDomain {
         $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMNoteLabel)  
 
 
-        $ImportFromADWinRMManuallEntryTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+        . "$Dependencies\Code\System.Windows.Forms\RichTextBox\ImportFromADWinRMManuallEntryRichTextBox.ps1"
+        $ImportFromADWinRMManuallEntryRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Text      = "<Enter a hostname/IP>"
             left      = 5
             top       = $ImportFromADWinRMNoteLabel.top + $ImportFromADWinRMNoteLabel.height + 5
@@ -251,26 +256,29 @@ function Import-EndpointsFromDomain {
             Height    = 22   
             Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
             ForeColor = "Black"
+            Add_MouseEnter = $ImportFromADWinRMManuallEntryRichTextBoxAdd_MouseEnter
+            Add_MouseLeave = $ImportFromADWinRMManuallEntryRichTextBoxAdd_MouseLeave
+            Add_MouseHover = $ImportFromADWinRMManuallEntryRichTextBoxAdd_MouseHover
         }
-        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMManuallEntryTextBox)
+        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMManuallEntryRichTextBox)
 
 
         $ImportFromADWinRMAutoCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
             Text      = "Single Endpoint Checked"
-            left      = $ImportFromADWinRMManuallEntryTextBox.Left + $ImportFromADWinRMManuallEntryTextBox.Width + 5
-            top       = $ImportFromADWinRMManuallEntryTextBox.Top
+            left      = $ImportFromADWinRMManuallEntryRichTextBox.Left + $ImportFromADWinRMManuallEntryRichTextBox.Width + 5
+            top       = $ImportFromADWinRMManuallEntryRichTextBox.Top
             Width     = 155
             Height    = 22    
             Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
             ForeColor = "Black"
             Add_Click = {
-                if ($ImportFromADWinRMManuallEntryTextBox.Enabled) {
-                    $ImportFromADWinRMManuallEntryTextBox.Enabled = $false
-                    $ImportFromADWinRMManuallEntryTextBox.Text    = ''
+                if ($ImportFromADWinRMManuallEntryRichTextBox.Enabled) {
+                    $ImportFromADWinRMManuallEntryRichTextBox.Enabled = $false
+                    $ImportFromADWinRMManuallEntryRichTextBox.Text    = ''
                 }
                 else {
-                    $ImportFromADWinRMManuallEntryTextBox.Enabled = $true
-                    $ImportFromADWinRMManuallEntryTextBox.Text    = "<Enter a hostname/IP>"
+                    $ImportFromADWinRMManuallEntryRichTextBox.Enabled = $true
+                    $ImportFromADWinRMManuallEntryRichTextBox.Text    = "<Enter a hostname/IP>"
                 }
             }
         }
@@ -280,32 +288,32 @@ function Import-EndpointsFromDomain {
         $ImportFromADWinRMImportButton = New-Object System.Windows.Forms.Button -Property @{
             Text      = "Import Hosts"
             left      = $ImportFromADWinRMAutoCheckBox.Left + $ImportFromADWinRMAutoCheckBox.Width + 5
-            top       = $ImportFromADWinRMManuallEntryTextBox.Top
+            top       = $ImportFromADWinRMManuallEntryRichTextBox.Top
             Width     = 100
             Height    = 20
             Add_Click = { 
                 Create-ComputerNodeCheckBoxArray
-                if ($ImportFromADWinRMManuallEntryTextBox.Text -ne '<Enter a hostname/IP>' -and $ImportFromADWinRMManuallEntryTextBox.Text -ne '' -and $ImportFromADWinRMAutoCheckBox.checked -eq $false ) {
+                if ($ImportFromADWinRMManuallEntryRichTextBox.Text -ne '<Enter a hostname/IP>' -and $ImportFromADWinRMManuallEntryRichTextBox.Text -ne '' -and $ImportFromADWinRMAutoCheckBox.checked -eq $false ) {
                     if (Verify-Action -Title "Verification: Active Directory Import" -Question "Either manually enter a hostname or select one from the computer treeview.
 
-Import Active Directory hosts from the following?" -Computer $ImportFromADWinRMManuallEntryTextBox.text) {
+Import Active Directory hosts from the following?" -Computer $ImportFromADWinRMManuallEntryRichTextBox.text) {
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Importing Hosts From Active Directory")
                             
                         # This brings specific tabs to the forefront/front view
                         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-                        $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
+                        $ImportFromADWinRMManuallEntryRichTextBoxTarget = $ImportFromADWinRMManuallEntryRichTextBox.Text
                         if ($ComputerListProvideCredentialsCheckBox.Checked) {
                             if (!$script:Credential) { Create-NewCredentials }
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName
                             $Password = '"PASSWORD HIDDEN"'
-                            [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential
-                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
+                            [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $ImportFromADWinRMManuallEntryRichTextBoxTarget -Credential $script:Credential
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $($ImportFromADWinRMManuallEntryRichTextBox.Text) -Credential [ $UserName | $Password ]"
                         }
                         else {
-                            [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget
-                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
+                            [array]$ImportedActiveDirectoryHosts = Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $ImportFromADWinRMManuallEntryRichTextBoxTarget
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress } -ComputerName $($ImportFromADWinRMManuallEntryRichTextBox.Text)"
                         }    
                     }
                     else {
