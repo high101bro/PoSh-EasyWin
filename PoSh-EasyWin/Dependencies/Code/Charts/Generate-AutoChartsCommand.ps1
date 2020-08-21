@@ -93,14 +93,14 @@ function Generate-AutoChartsCommand {
     . "$Dependencies\Code\System.Windows.Forms\DataVisualization\Charting\AutoChartCharting.ps1"
     Clear-Variable -Name AutoChart -Scope script
     $script:AutoChartCharting = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-        Width           = 1115
-        Height          = 552
-        Left            = 5
-        Top             = 7
+        Width           = $FormScale * 1115
+        Height          = $FormScale * 552
+        Left            = $FormScale * 5
+        Top             = $FormScale * 7
         BackColor       = [System.Drawing.Color]::White
         BorderColor     = 'Black'
         BorderDashStyle = 'Solid'
-        Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
+        Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif',$($FormScale * 18), [System.Drawing.FontStyle]::Bold)
         Anchor          = $AnchorAll
         Add_MouseEnter  = $AutoChartChartingAdd_MouseEnter
     }
@@ -119,7 +119,7 @@ function Generate-AutoChartsCommand {
         $script:AutoChartTitle.Text = "`Missing Data!`n1). Run The Appropriate Query`n2). Ensure To Select At Least One Series"
         $script:AutoChartTitle.ForeColor = "Red"
     }
-    $script:AutoChartTitle.Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
+    $script:AutoChartTitle.Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif',$($FormScale * 16), [System.Drawing.FontStyle]::Bold)
     $script:AutoChartTitle.Alignment = "topcenter" #"topLeft"
     $script:AutoChartCharting.Titles.Add($script:AutoChartTitle)
 
@@ -147,7 +147,7 @@ function Generate-AutoChartsCommand {
     $script:Legend.Name                 = "Collection Legend"
     $script:Legend.Title                = "Legend"
     $script:Legend.TitleAlignment       = "topleft"
-    $script:Legend.TitleFont            = New-Object System.Drawing.Font @('Microsoft Sans Serif','11', [System.Drawing.FontStyle]::Bold)    
+    $script:Legend.TitleFont            = New-Object System.Drawing.Font @('Microsoft Sans Serif',$($FormScale * 11), [System.Drawing.FontStyle]::Bold)    
     $script:Legend.IsEquallySpacedItems = $True
     $script:Legend.BorderColor          = 'White'
     $script:AutoChartCharting.Legends.Add($script:Legend)
@@ -792,7 +792,7 @@ script:Update-MultiSeriesChart
     $script:AutoChartsIndividualTabPage.Text    = "$QueryTabName"
     $script:AutoChartsIndividualTabPage.Name    = "$QueryTabName"
     $script:AutoChartsIndividualTabPage.Anchor  = $AnchorAll
-    $script:AutoChartsIndividualTabPage.Font    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    $script:AutoChartsIndividualTabPage.Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     $script:AutoChartsIndividualTabPage.UseVisualStyleBackColor = $True
     $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTabPage)            
     $AutoChartsTabControl.SelectedTab = $script:AutoChartsIndividualTabPage 
@@ -800,10 +800,10 @@ script:Update-MultiSeriesChart
     ### Auto Chart Panel that contains all the options to manage open/close feature 
     $script:AutoChartsOptionsButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Options v"
-        Location  = @{ X = $script:AutoChartCharting.Location.X + 10
-                    Y = $script:AutoChartCharting.Location.Y + $script:AutoChartCharting.Size.Height - 29 }
-        Size      = @{ Width  = 75
-                    Height = 20 }
+        Location  = @{ X = $script:AutoChartCharting.Location.X + $($FormScale * 10)
+                    Y = $script:AutoChartCharting.Location.Y + $script:AutoChartCharting.Size.Height - $($FormScale * 29) }
+        Size      = @{ Width  = $FormScale * 75
+                    Height = $FormScale * 20 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Left;
     }
     CommonButtonSettings -Button $script:AutoChartsOptionsButton
@@ -822,10 +822,10 @@ script:Update-MultiSeriesChart
 
     $script:AutoChartsCloseTabButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Close Tab"
-        Location  = @{ X = $script:AutoChartCharting.Location.X + $script:AutoChartCharting.Width - 85
-                    Y = $script:AutoChartCharting.Location.Y + 10 }
-        Size      = @{ Width  = 75
-                        Height = 20 }
+        Location  = @{ X = $script:AutoChartCharting.Location.X + $script:AutoChartCharting.Width - $($FormScale * 85)
+                    Y = $script:AutoChartCharting.Location.Y + $($FormScale * 10) }
+        Size      = @{ Width  = $FormScale * 75
+                        Height = $FormScale * 20 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsCloseTabButton
@@ -839,10 +839,10 @@ script:Update-MultiSeriesChart
 
     $script:AutoChartsManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
         Location    = @{ X = 0
-                        Y = $script:AutoChartCharting.Size.Height - 150 }
+                        Y = $script:AutoChartCharting.Size.Height - $($FormScale * 150) }
         Size        = @{ Width  = $script:AutoChartCharting.Size.Width
-                        Height = 150 }
-        Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+                        Height = $FormScale * 150 }
+        Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor   = 'Black'
         BackColor   = 'White'
         BorderStyle = 'FixedSingle'
@@ -858,22 +858,22 @@ script:Update-MultiSeriesChart
     #--------------------------------------
     $script:AutoChartsTrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
         Text        = "Trim Off First: 0"
-        Location    = @{ X = 10
-                         Y = 5 }
-        Size        = @{ Width  = 290
-                         Height = 67}
+        Location    = @{ X = $FormScale * 10
+                         Y = $($FormScale * 5) }
+        Size        = @{ Width  = $FormScale * 290
+                         Height = $FormScale * 67}
         Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-        Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+        Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor   = 'Black'
     }
         #--------------------------------------
         # AutoCharts - Trim Off First TrackBar
         #--------------------------------------
         $script:AutoChartsTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-            Location    = @{ X = 1
-                             Y = 20 }
-            Size        = @{ Width  = 285
-                             Height = 22 }                
+            Location    = @{ X = $($FormScale * 1)
+                             Y = $($FormScale * 20) }
+            Size        = @{ Width  = $FormScale * 285
+                             Height = $FormScale * 22 }                
             Orientation   = "Horizontal"
             TickFrequency = 1
             TickStyle     = "TopLeft"
@@ -898,22 +898,22 @@ script:Update-MultiSeriesChart
     #--------------------------------------
     $script:AutoChartsTrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
         Text        = "Trim Off Last: 0"
-        Location    = @{ X = $script:AutoChartsTrimOffFirstGroupBox.Location.X + $script:AutoChartsTrimOffFirstGroupBox.Size.Width + 10
+        Location    = @{ X = $script:AutoChartsTrimOffFirstGroupBox.Location.X + $script:AutoChartsTrimOffFirstGroupBox.Size.Width + $($FormScale * 10)
                          Y = $script:AutoChartsTrimOffFirstGroupBox.Location.Y }
-        Size        = @{ Width  = 290
-                         Height = 67 }
+        Size        = @{ Width  = $FormScale * 290
+                         Height = $FormScale * 67 }
         Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-        Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+        Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor   = 'Black'
     }
         #-------------------------------------
         # AutoCharts - Trim Off Last TrackBar
         #-------------------------------------
         $script:AutoChartsTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-            Location      = @{ X = 1
-                               Y = 20 }
-            Size          = @{ Width  = 285
-                               Height = 22}                
+            Location      = @{ X = $($FormScale * 1)
+                               Y = $($FormScale * 20) }
+            Size          = @{ Width  = $FormScale * 285
+                               Height = $FormScale * 22}                
             Orientation   = "Horizontal"
             TickFrequency = 1
             TickStyle     = "TopLeft"
@@ -937,10 +937,10 @@ script:Update-MultiSeriesChart
     #----------------------------------
     $script:AutoChartsTitleNameTextbox = New-Object System.Windows.Forms.Textbox -Property @{
         Location    = @{ X = $script:AutoChartsTrimOffFirstGroupBox.Location.X
-                         Y = $script:AutoChartsTrimOffFirstGroupBox.Location.Y + $script:AutoChartsTrimOffFirstGroupBox.Size.Height + 6 }
+                         Y = $script:AutoChartsTrimOffFirstGroupBox.Location.Y + $script:AutoChartsTrimOffFirstGroupBox.Size.Height + $($FormScale * 6)  }
         Size        = @{ Width  = $script:AutoChartsTrimOffFirstGroupBox.Size.Width
-                         Height = 62 }
-        Font        = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+                         Height = $FormScale * 62 }
+        Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
         ForeColor   = 'Black'
         BackColor   = 'White'
         Multiline   = $true
@@ -959,11 +959,11 @@ script:Update-MultiSeriesChart
     #------------------------------
     $script:AutoChartsNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
         Location    = @{ X = $script:AutoChartsTrimOffLastGroupBox.Location.X
-                         Y = $script:AutoChartsTrimOffLastGroupBox.Location.Y + $script:AutoChartsTrimOffLastGroupBox.Size.Height + 6 }
+                         Y = $script:AutoChartsTrimOffLastGroupBox.Location.Y + $script:AutoChartsTrimOffLastGroupBox.Size.Height + $($FormScale * 6)  }
         Size        = @{ Width  = $script:AutoChartsTrimOffLastGroupBox.Size.Width - 1
-                         Height = 62 }
+                         Height = $FormScale * 62 }
 #        Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-        Font        = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+        Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
         ForeColor   = 'Black'
         BackColor   = "White"
         Text        = "- Total Hosts In Series:      $(($script:CsvAllHosts | Sort-Object -Unique).Count)`r`n- Common Hosts Displayed:     $(($Script:MergedCSVUniquePropertyDataResults | Select-Object -ExpandProperty PSComputerName -Unique).Count)`r`n- Hosts Not Displayed:        $((($script:CsvAllHosts | Sort-Object -Unique).Count) - $(($Script:MergedCSVUniquePropertyDataResults | Select-Object -ExpandProperty PSComputerName -Unique).Count))`r`n- Number Of Unique Values:    $($script:OverallDataResultsMostRecent.count)"
@@ -1015,8 +1015,8 @@ script:Update-MultiSeriesChart
         #-----------------------------------------------
         $AutoChartsInvestigateDifferenceForm = New-Object System.Windows.Forms.Form -Property @{
             Text   = "Investigate Difference"
-            Size   = @{ Width  = 330
-                        Height = 360 }
+            Size   = @{ Width  = $FormScale * 330
+                        Height = $FormScale * 360 }
             Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
             StartPosition = "CenterScreen"
             ControlBox = $true
@@ -1026,18 +1026,18 @@ script:Update-MultiSeriesChart
         #---------------------------------------------------
         $AutoChartsInvestigateDifferenceDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
             Text     = "Investigate the difference between computers."
-            Location = @{ X = 10
-                            Y = 5 }
-            Size     = @{ Width  = 290
-                            Height = 45 }
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FormScale * 10
+                            Y = $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 290
+                            Height = $FormScale * 45 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $AutoChartsInvestigateDifferenceDropDownComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-            Location = @{ X = 10
+            Location = @{ X = $FormScale * 10
                             Y = $AutoChartsInvestigateDifferenceDropDownLabel.Location.y + $AutoChartsInvestigateDifferenceDropDownLabel.Size.Height }
-            Width    = 290
-            Height   = 30
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Width    = $FormScale * 290
+            Height   = $FormScale * 30
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             AutoCompleteSource = "ListItems"
             AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
         }
@@ -1051,10 +1051,10 @@ script:Update-MultiSeriesChart
         #---------------------------------------
         $AutoChartsInvestigateDifferenceExecuteButton = New-Object System.Windows.Forms.Button -Property @{
             Text     = "Execute"
-            Location = @{ X = 10
-                            Y = $AutoChartsInvestigateDifferenceDropDownComboBox.Location.y + $AutoChartsInvestigateDifferenceDropDownComboBox.Size.Height + 10 }
-            Width    = 100 
-            Height   = 20
+            Location = @{ X = $FormScale * 10
+                            Y = $AutoChartsInvestigateDifferenceDropDownComboBox.Location.y + $AutoChartsInvestigateDifferenceDropDownComboBox.Size.Height + $($FormScale * 10) }
+            Width    = $FormScale * 100 
+            Height   = $FormScale * 20
         }
         CommonButtonSettings -Button $AutoChartsInvestigateDifferenceExecuteButton
         $AutoChartsInvestigateDifferenceExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { InvestigateDifference-AutoChart }})
@@ -1067,18 +1067,18 @@ script:Update-MultiSeriesChart
         #---------------------------------------------------------
         $AutoChartsInvestigateDifferencePositiveResultsLabel = New-Object System.Windows.Forms.Label -Property @{
             Text       = "Positive Match (+)"
-            Location   = @{ X = 10
-                            Y = $AutoChartsInvestigateDifferenceExecuteButton.Location.y + $AutoChartsInvestigateDifferenceExecuteButton.Size.Height + 10 }
-            Size       = @{ Width  = 140
-                            Height = 22 }
-            Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location   = @{ X = $FormScale * 10
+                            Y = $AutoChartsInvestigateDifferenceExecuteButton.Location.y + $AutoChartsInvestigateDifferenceExecuteButton.Size.Height + $($FormScale * 10) }
+            Size       = @{ Width  = $FormScale * 140
+                            Height = $FormScale * 22 }
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }        
         $AutoChartsInvestigateDifferencePositiveResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-            Location   = @{ X = 10
+            Location   = @{ X = $FormScale * 10
                             Y = $AutoChartsInvestigateDifferencePositiveResultsLabel.Location.y + $AutoChartsInvestigateDifferencePositiveResultsLabel.Size.Height }
-            Size       = @{ Width  = 140
-                            Height = 178 }
-            Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Size       = @{ Width  = $FormScale * 140
+                            Height = $FormScale * 178 }
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ReadOnly   = $true
             BackColor  = 'White'
             WordWrap   = $false
@@ -1091,20 +1091,20 @@ script:Update-MultiSeriesChart
         #---------------------------------------------------------
         $AutoChartsInvestigateDifferenceNegativeResultsLabel = New-Object System.Windows.Forms.Label -Property @{
             Text       = "Negative Match (-)"
-            Location   = @{ X = $AutoChartsInvestigateDifferencePositiveResultsLabel.Location.x + $AutoChartsInvestigateDifferencePositiveResultsLabel.Size.Width + 10
+            Location   = @{ X = $AutoChartsInvestigateDifferencePositiveResultsLabel.Location.x + $AutoChartsInvestigateDifferencePositiveResultsLabel.Size.Width + $($FormScale * 10)
                             Y = $AutoChartsInvestigateDifferencePositiveResultsLabel.Location.y }
-            Size       = @{ Width  = 140
-                            Height = 22 }
-            Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Size       = @{ Width  = $FormScale * 140
+                            Height = $FormScale * 22 }
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $AutoChartsInvestigateDifferenceForm.Controls.Add($AutoChartsInvestigateDifferenceNegativeResultsLabel)
 
         $AutoChartsInvestigateDifferenceNegativeResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
             Location   = @{ X = $AutoChartsInvestigateDifferenceNegativeResultsLabel.Location.x
                             Y = $AutoChartsInvestigateDifferenceNegativeResultsLabel.Location.y + $AutoChartsInvestigateDifferenceNegativeResultsLabel.Size.Height }
-            Size       = @{ Width  = 140
-                            Height = 178 }
-            Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Size       = @{ Width  = $FormScale * 140
+                            Height = $FormScale * 178 }
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ReadOnly   = $true
             BackColor  = 'White'
             WordWrap   = $false
@@ -1123,11 +1123,11 @@ script:Update-MultiSeriesChart
     #==================================================================================================================
     $script:AutoChartsTitleCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Display Title'
-        Location  = @{ X = $script:AutoChartsTrimOffLastGroupBox.Location.X + $script:AutoChartsTrimOffLastGroupBox.Size.Width + 6
-                      Y = $script:AutoChartsTrimOffLastGroupBox.Location.Y + 2 }
-        Size      = @{ Width  = 125
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location  = @{ X = $script:AutoChartsTrimOffLastGroupBox.Location.X + $script:AutoChartsTrimOffLastGroupBox.Size.Width + $($FormScale * 6) 
+                      Y = $script:AutoChartsTrimOffLastGroupBox.Location.Y + $($FormScale * 2) }
+        Size      = @{ Width  = $FormScale * 125
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Checked   = $true
     }
     $script:AutoChartsTitleCheckBox.Add_Click({
@@ -1142,10 +1142,10 @@ script:Update-MultiSeriesChart
     #================================
     $script:AutoChartsSaveChartImageButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Save Image"
-        Location  = @{ X = $script:AutoChartsTitleCheckBox.Location.X + $script:AutoChartsTitleCheckBox.Size.Width + 6  
+        Location  = @{ X = $script:AutoChartsTitleCheckBox.Location.X + $script:AutoChartsTitleCheckBox.Size.Width + $($FormScale * 6)   
                        Y = $script:AutoChartsTitleCheckBox.Location.Y }
-        Size      = @{ Width = 100
-                       Height = 22 }
+        Size      = @{ Width = $FormScale * 100
+                       Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsSaveChartImageButton 
@@ -1160,11 +1160,11 @@ script:Update-MultiSeriesChart
     #=======================================
     $script:AutoChartsChartTypeFilterLabel = New-Object System.Windows.Forms.Label -Property @{
         Text      = 'Category Filter -->' 
-        Location = @{ X = $script:AutoChartsSaveChartImageButton.Location.X + $script:AutoChartsSaveChartImageButton.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsSaveChartImageButton.Location.X + $script:AutoChartsSaveChartImageButton.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsSaveChartImageButton.Location.Y + 4 }
-        Size      = @{ Width  = 100
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeFilterLabel)
 
@@ -1174,11 +1174,11 @@ script:Update-MultiSeriesChart
     #======================================
     $script:AutoChartsChartTypeFilterComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Column' 
-        Location = @{ X = $script:AutoChartsChartTypeFilterLabel.Location.X + $script:AutoChartsChartTypeFilterLabel.Size.Width + 6 
-                      Y = $script:AutoChartsChartTypeFilterLabel.Location.Y - 4 }
-        Size      = @{ Width  = 75
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $script:AutoChartsChartTypeFilterLabel.Location.X + $script:AutoChartsChartTypeFilterLabel.Size.Width + $($FormScale * 6)  
+                      Y = $script:AutoChartsChartTypeFilterLabel.Location.Y - $($FormScale * 4) }
+        Size      = @{ Width  = $FormScale * 75
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
@@ -1259,10 +1259,10 @@ script:Update-MultiSeriesChart
     $script:AutoChartsDisplayMostRecentSeriesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Most Recent Series'
         Location  = @{ X = $script:AutoChartsTitleCheckBox.Location.X
-                       Y = $script:AutoChartsTitleCheckBox.Location.Y + $script:AutoChartsTitleCheckBox.Size.Height + 6 }
-        Size      = @{ Width  = 125
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                       Y = $script:AutoChartsTitleCheckBox.Location.Y + $script:AutoChartsTitleCheckBox.Size.Height + $($FormScale * 6)  }
+        Size      = @{ Width  = $FormScale * 125
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
         Checked   = $true
     }
@@ -1286,10 +1286,10 @@ script:Update-MultiSeriesChart
     #==========================================
     $script:AutoChartsResultsMostRecentButton = New-Object Windows.Forms.Button -Property @{
         Text      = "View Results"
-        Location  = @{ X = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.X + $script:AutoChartsDisplayMostRecentSeriesCheckBox.Size.Width + 6
+        Location  = @{ X = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.X + $script:AutoChartsDisplayMostRecentSeriesCheckBox.Size.Width + $($FormScale * 6) 
                        Y = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.Y }
-        Size      = @{ Width  = 100
-                       Height = 22 }
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsResultsMostRecentButton
@@ -1307,10 +1307,10 @@ script:Update-MultiSeriesChart
     #=====================================
     $script:AutoChartsInvestigateMostRecentButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Investigate"
-        Location = @{ X = $script:AutoChartsResultsMostRecentButton.Location.X + $script:AutoChartsResultsMostRecentButton.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsResultsMostRecentButton.Location.X + $script:AutoChartsResultsMostRecentButton.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsResultsMostRecentButton.Location.Y}
-        Size      = @{ Width  = 100
-                       Height = 22 }
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsInvestigateMostRecentButton
@@ -1329,11 +1329,11 @@ script:Update-MultiSeriesChart
     #======================================
     $script:AutoChartsChartTypeMostRecentComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Column' 
-        Location = @{ X = $script:AutoChartsInvestigateMostRecentButton.Location.X + $script:AutoChartsInvestigateMostRecentButton.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsInvestigateMostRecentButton.Location.X + $script:AutoChartsInvestigateMostRecentButton.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsInvestigateMostRecentButton.Location.Y }
-        Size      = @{ Width  = 75
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size      = @{ Width  = $FormScale * 75
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
@@ -1352,11 +1352,11 @@ script:Update-MultiSeriesChart
     #===============================
     $script:AutoChartsChangeColorMostRecentComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Blue"
-        Location = @{ X = $script:AutoChartsChartTypeMostRecentComboBox.Location.X + $script:AutoChartsChartTypeMostRecentComboBox.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsChartTypeMostRecentComboBox.Location.X + $script:AutoChartsChartTypeMostRecentComboBox.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsChartTypeMostRecentComboBox.Location.Y}
-        Size      = @{ Width  = 75
-                       Height = 20 }
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size      = @{ Width  = $FormScale * 75
+                       Height = $FormScale * 20 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
@@ -1384,10 +1384,10 @@ script:Update-MultiSeriesChart
     $script:AutoChartsDisplayPreviousSeriesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Previous Series'
         Location = @{ X = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.X 
-                      Y = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.Y + $script:AutoChartsDisplayMostRecentSeriesCheckBox.Size.Height + 6 }
-        Size      = @{ Width  = 125
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Y = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.Y + $script:AutoChartsDisplayMostRecentSeriesCheckBox.Size.Height + $($FormScale * 6)  }
+        Size      = @{ Width  = $FormScale * 125
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Red"
         Checked   = $true
     }
@@ -1411,10 +1411,10 @@ script:Update-MultiSeriesChart
     #=======================================
     $script:AutoChartsResultsPreviousButton = New-Object Windows.Forms.Button -Property @{
         Text      = "View Results"
-        Location = @{ X = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.X + $script:AutoChartsDisplayPreviousSeriesCheckBox.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.X + $script:AutoChartsDisplayPreviousSeriesCheckBox.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.Y }
-        Size     = @{ Width  = 100
-                      Height = 22 }
+        Size     = @{ Width  = $FormScale * 100
+                      Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsResultsPreviousButton
@@ -1432,10 +1432,10 @@ script:Update-MultiSeriesChart
     #=====================================
     $script:AutoChartsInvestigatePreviousButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Investigate"
-        Location = @{ X = $script:AutoChartsResultsPreviousButton.Location.X + $script:AutoChartsResultsPreviousButton.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsResultsPreviousButton.Location.X + $script:AutoChartsResultsPreviousButton.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsResultsPreviousButton.Location.Y}
-        Size      = @{ Width  = 100
-                       Height = 22 }
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsInvestigatePreviousButton
@@ -1454,11 +1454,11 @@ script:Update-MultiSeriesChart
     #======================================
     $script:AutoChartsChartTypePreviousComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Point'
-        Location = @{ X = $script:AutoChartsInvestigatePreviousButton.Location.X + $script:AutoChartsInvestigatePreviousButton.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsInvestigatePreviousButton.Location.X + $script:AutoChartsInvestigatePreviousButton.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsInvestigatePreviousButton.Location.Y }
-        Size      = @{ Width  = 75
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size      = @{ Width  = $FormScale * 75
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Red"
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
@@ -1477,11 +1477,11 @@ script:Update-MultiSeriesChart
     #===============================
     $script:AutoChartsChangeColorPreviousComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Red"
-        Location = @{ X = $script:AutoChartsChartTypePreviousComboBox.Location.X + $script:AutoChartsChartTypePreviousComboBox.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsChartTypePreviousComboBox.Location.X + $script:AutoChartsChartTypePreviousComboBox.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsChartTypePreviousComboBox.Location.Y}
-        Size      = @{ Width  = 75
-                       Height = 20 }
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size      = @{ Width  = $FormScale * 75
+                       Height = $FormScale * 20 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Red"
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
@@ -1509,10 +1509,10 @@ script:Update-MultiSeriesChart
     $script:AutoChartsDisplayBaselineSeriesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Baseline Series'
         Location = @{ X = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.X 
-                      Y = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.Y + $script:AutoChartsDisplayPreviousSeriesCheckBox.Size.Height + 6 }
-        Size      = @{ Width  = 125
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Y = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.Y + $script:AutoChartsDisplayPreviousSeriesCheckBox.Size.Height + $($FormScale * 6)  }
+        Size      = @{ Width  = $FormScale * 125
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Orange"
         Checked   = $true
     }
@@ -1536,10 +1536,10 @@ script:Update-MultiSeriesChart
     #=======================================
     $script:AutoChartsResultsBaselineButton = New-Object Windows.Forms.Button -Property @{
         Text      = "View Results"
-        Location = @{ X = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.X + $script:AutoChartsDisplayBaselineSeriesCheckBox.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.X + $script:AutoChartsDisplayBaselineSeriesCheckBox.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.Y }
-        Size     = @{ Width  = 100
-                      Height = 22 }
+        Size     = @{ Width  = $FormScale * 100
+                      Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsResultsBaselineButton
@@ -1557,10 +1557,10 @@ script:Update-MultiSeriesChart
     #==================================
     $script:AutoChartsInvestigateBaselineButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Investigate"
-        Location  = @{ X = $script:AutoChartsResultsBaselineButton.Location.X + $script:AutoChartsResultsBaselineButton.Size.Width + 6
+        Location  = @{ X = $script:AutoChartsResultsBaselineButton.Location.X + $script:AutoChartsResultsBaselineButton.Size.Width + $($FormScale * 6) 
                        Y = $script:AutoChartsResultsBaselineButton.Location.Y }
-        Size      = @{ Width  = 100
-                       Height = 22 }
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsInvestigateBaselineButton
@@ -1579,11 +1579,11 @@ script:Update-MultiSeriesChart
     #======================================
     $script:AutoChartsChartTypeBaselineComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Point' 
-        Location = @{ X = $script:AutoChartsInvestigateBaselineButton.Location.X + $script:AutoChartsInvestigateBaselineButton.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsInvestigateBaselineButton.Location.X + $script:AutoChartsInvestigateBaselineButton.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsInvestigateBaselineButton.Location.Y }
-        Size      = @{ Width  = 75
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size      = @{ Width  = $FormScale * 75
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Orange"
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
@@ -1602,11 +1602,11 @@ script:Update-MultiSeriesChart
     #===============================
     $script:AutoChartsChangeColorBaselineComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Orange"
-        Location = @{ X = $script:AutoChartsChartTypeBaselineComboBox.Location.X + $script:AutoChartsChartTypeBaselineComboBox.Size.Width + 6 
+        Location = @{ X = $script:AutoChartsChartTypeBaselineComboBox.Location.X + $script:AutoChartsChartTypeBaselineComboBox.Size.Width + $($FormScale * 6)  
                       Y = $script:AutoChartsChartTypeBaselineComboBox.Location.Y}
-        Size      = @{ Width  = 75
-                       Height = 20 }
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size      = @{ Width  = $FormScale * 75
+                       Height = $FormScale * 20 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Orange"
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
@@ -1634,10 +1634,10 @@ script:Update-MultiSeriesChart
     $script:AutoChartsLegendCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Display Legend' 
         Location  = @{ X = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.X 
-                       Y = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.Y + $script:AutoChartsDisplayBaselineSeriesCheckBox.Size.Height + 6 }
-        Size      = @{ Width  = 125
-                       Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                       Y = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.Y + $script:AutoChartsDisplayBaselineSeriesCheckBox.Size.Height + $($FormScale * 6)  }
+        Size      = @{ Width  = $FormScale * 125
+                       Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Checked   = $true
     }
     $script:AutoChartsLegendCheckBox.Add_Click({
@@ -1653,10 +1653,10 @@ script:Update-MultiSeriesChart
     $script:AutoChartsChartTypeApplyAllLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = 'Apply To All -->' 
         Location = @{ X = $script:AutoChartsInvestigateBaselineButton.Location.X
-                      Y = $script:AutoChartsInvestigateBaselineButton.Location.Y + $script:AutoChartsInvestigateBaselineButton.Size.Height + 6 + 2 }
-        Size     = @{ Width  = 100
-                      Height = 22 }     
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Y = $script:AutoChartsInvestigateBaselineButton.Location.Y + $script:AutoChartsInvestigateBaselineButton.Size.Height + $($FormScale * 6)  + $($FormScale * 2) }
+        Size     = @{ Width  = $FormScale * 100
+                      Height = $FormScale * 22 }     
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeApplyAllLabel)
 
@@ -1667,10 +1667,10 @@ script:Update-MultiSeriesChart
     $script:AutoChartsChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Column' 
         Location = @{ X = $script:AutoChartsChartTypeBaselineComboBox.Location.X
-                        Y = $script:AutoChartsChartTypeBaselineComboBox.Location.Y + $script:AutoChartsChartTypeBaselineComboBox.Size.Height + 6 }
-        Size      = @{ Width  = 75
-                        Height = 22 }     
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                        Y = $script:AutoChartsChartTypeBaselineComboBox.Location.Y + $script:AutoChartsChartTypeBaselineComboBox.Size.Height + $($FormScale * 6)  }
+        Size      = @{ Width  = $FormScale * 75
+                        Height = $FormScale * 22 }     
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
@@ -1705,9 +1705,9 @@ script:Update-MultiSeriesChart
     $script:AutoCharts3DToggleButton = New-Object Windows.Forms.Button -Property @{
         Text      = "3D Off"
         Location  = @{ X = $script:AutoChartsResultsBaselineButton.Location.X
-                        Y = $script:AutoChartsResultsBaselineButton.Location.Y + $script:AutoChartsResultsBaselineButton.Size.Height + 6 }
+                        Y = $script:AutoChartsResultsBaselineButton.Location.Y + $script:AutoChartsResultsBaselineButton.Size.Height + $($FormScale * 6)  }
         Size      = @{ Width  = $script:AutoChartsResultsBaselineButton.Size.Width
-                        Height = 22 }
+                        Height = $FormScale * 22 }
     }
     CommonButtonSettings -Button $script:AutoCharts3DToggleButton
     $script:AutoCharts3DInclination = 0

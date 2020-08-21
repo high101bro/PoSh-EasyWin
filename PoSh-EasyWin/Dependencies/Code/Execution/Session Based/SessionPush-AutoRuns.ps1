@@ -61,10 +61,10 @@ foreach ($Session in $PSSession) {
             $TargetFolder,
             $AutorunsName
         )
-        Start-Process -NoNewWindow -FilePath "$TargetFolder\$AutorunsName.exe" -ArgumentList "/AcceptEula -a $TargetFolder\$AutorunsName.arn"
+        Start-Process -NoNewWindow -FilePath "$TargetFolder\$AutorunsName.exe" -ArgumentList "/AcceptEULA -a $TargetFolder\$AutorunsName.arn"
     } -ArgumentList @($RemoteDrive,$TargetFolder,$AutorunsName) -Session $Session
     $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
-    Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -Wait -FilePath '$TargetFolder\$AutorunsName.exe' -ArgumentList '/AcceptEula -a $TargetFolder\$AutorunsName.arn'"
+    Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -Wait -FilePath '$TargetFolder\$AutorunsName.exe' -ArgumentList '/AcceptEULA -a $TargetFolder\$AutorunsName.arn'"
     $PoShEasyWin.Refresh()
     $script:ProgressBarEndpointsProgressBar.Value += 1
     $PoShEasyWin.Refresh()
@@ -109,7 +109,7 @@ while ($true) {
             else {
                 if (-not (Test-Path "$script:IndividualHostResults\Autoruns\$AutorunsName-$($Session.ComputerName).arn")) {
                     try { 
-                        # Attempts to send a copy of Procmon to the endpoints
+                        # Attempts to send a copy of Autoruns to the endpoints
                         $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Copying Autoruns data from $($Session.ComputerName) for analysis")
                         Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path '$TargetFolder\Autoruns.arn' -Destination '$script:IndividualHostResults\Autoruns' -FromSession $Session -Force -ErrorAction Stop"
                         $PoShEasyWin.Refresh()

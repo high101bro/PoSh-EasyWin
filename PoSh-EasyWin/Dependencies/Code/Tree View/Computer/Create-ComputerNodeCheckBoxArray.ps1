@@ -22,5 +22,5 @@ function Create-ComputerNodeCheckBoxArray {
         }         
     }
     $script:ComputerTreeViewSelected = $script:ComputerTreeViewSelected | Select-Object -Unique
-    return $script:ComputerTreeViewSelected
+    #return $script:ComputerTreeViewSelected
 }

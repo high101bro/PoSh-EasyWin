@@ -1,15 +1,15 @@
 $MainCenterTabControlAdd_Click = { 
     if ($this.SelectedTab -match 'Main') {
-        $this.Width  = 370
-        $this.Height = 278
+        $this.Width  = $FormScale * 370
+        $this.Height = $FormScale * 278
     }
     elseif ($this.SelectedTab -match 'Options') {
-        $this.Width  = 370
-        $this.Height = 340
+        $this.Width  = $FormScale * 370
+        $this.Height = $FormScale * 340
     }
     elseif ($this.SelectedTab -match 'Statistics') {
-        $this.Width  = 370
-        $this.Height = 278
+        $this.Width  = $FormScale * 370
+        $this.Height = $FormScale * 278
     }
 }
 

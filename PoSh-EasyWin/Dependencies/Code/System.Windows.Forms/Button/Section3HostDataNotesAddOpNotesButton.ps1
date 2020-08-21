@@ -1,10 +1,10 @@
 $Section3HostDataNotesAddOpNotesButtonAdd_Click = {
     $MainLeftTabControl.SelectedTab   = $Section1OpNotesTab
-    if ($Section3HostDataNotesTextBox.text) {
+    if ($Section3HostDataNotesRichTextBox.text) {
         $TimeStamp = Get-Date
         $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($Section3HostDataNameTextBox.Text)")
         Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($Section3HostDataNameTextBox.Text)" -Force        
-        foreach ( $Line in ($Section3HostDataNotesTextBox.text -split "`r`n") ){
+        foreach ( $Line in ($Section3HostDataNotesRichTextBox.text -split "`r`n") ){
             $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line")
             Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line" -Force        
         }

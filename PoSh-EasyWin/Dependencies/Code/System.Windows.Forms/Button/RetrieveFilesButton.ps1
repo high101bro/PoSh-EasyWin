@@ -62,7 +62,7 @@ $RetrieveFilesButtonAdd_Click = {
         Foreach ($File in $SelectedFilesToDownload) {
             if ($RetrieveFilesCurrentComputer -eq '') {        
                 $RetrieveFilesCurrentComputer = $File.PSComputerName
-                $script:ProgressBarQueriesProgressBar.Maximum = ($SelectedFilesToDownload | Where {$_.PSComputerName -eq $RetrieveFilesCurrentComputer}).count
+                $script:ProgressBarQueriesProgressBar.Maximum = ($SelectedFilesToDownload | Where-Object {$_.PSComputerName -eq $RetrieveFilesCurrentComputer}).count
                 $script:ProgressBarQueriesProgressBar.Value   = 0
 
 
@@ -138,7 +138,7 @@ $RetrieveFilesButtonAdd_Click = {
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "   Remove-PSSession -ComputerName $RetrieveFilesCurrentComputer"
 
                 $RetrieveFilesCurrentComputer = $File.PSComputerName
-                $script:ProgressBarQueriesProgressBar.Maximum = ($SelectedFilesToDownload | Where {$_.PSComputerName -eq $RetrieveFilesCurrentComputer}).count
+                $script:ProgressBarQueriesProgressBar.Maximum = ($SelectedFilesToDownload | Where-Object {$_.PSComputerName -eq $RetrieveFilesCurrentComputer}).count
                 $script:ProgressBarQueriesProgressBar.Value   = 0
 
                 $LocalSavePath = "$RetrieveFilesSaveDirectory\Retrieved Files - $RetrieveFilesCurrentComputer"

@@ -72,7 +72,7 @@ $CompareButton.Add_Click({
         $DropDownLabel.Location = New-Object System.Drawing.Point(10,10) 
         $DropDownLabel.size     = New-Object System.Drawing.Size(290,45) 
         $DropDownLabel.Text     = "What Property Field Do You Want To Compare?`n  <=   Found in the Reference File`n  =>   Found in the Difference File`n`nReplace the 'Name' property as necessary..."
-        $DropDownLabel.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $DropDownLabel.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         $CompareCsvFilesForm.Controls.Add($DropDownLabel)
 
         #-----------------
@@ -84,7 +84,7 @@ $CompareButton.Add_Click({
         ForEach ($Item in $DropDownArray) {
          [void] $DropDownField.Items.Add($Item)
         }
-        $DropDownField.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $DropDownField.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         $CompareCsvFilesForm.Controls.Add($DropDownField)
 
         #------------------

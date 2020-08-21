@@ -76,14 +76,14 @@ function Conduct-PortScan {
         $LastPortsScanned = $((Get-Content $LogFile | Select-String -Pattern "Ports To Be Scanned" | Select-Object -Last 1) -split '  ')[2]
         $LastPortsScannedConvertedToList = @()
         Foreach ($Port in $(($LastPortsScanned) -split',')){ $LastPortsScannedConvertedToList += $Port }
-        $PortsToScan += $LastPortsScannedConvertedToList | Where {$_ -ne ""}
+        $PortsToScan += $LastPortsScannedConvertedToList | Where-Object {$_ -ne ""}
     }
     elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "CustomPortsToScan") {
         Generate-PortsStatusMessage
-        $CustomSavedPorts = $($PortList="";(Get-Content $CustomPortsToScan | foreach {$PortList += $_ + ','}); $PortList)
+        $CustomSavedPorts = $($PortList="";(Get-Content $CustomPortsToScan | ForEach-Object {$PortList += $_ + ','}); $PortList)
         $CustomSavedPortsConvertedToList = @()
         Foreach ($Port in $(($CustomSavedPorts) -split',')){ $CustomSavedPortsConvertedToList += $Port }
-        $PortsToScan += $CustomSavedPortsConvertedToList | Where {$_ -ne ""}
+        $PortsToScan += $CustomSavedPortsConvertedToList | Where-Object {$_ -ne ""}
     }
     elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -eq "") { $PortsToScan += $null }
 
@@ -96,7 +96,7 @@ function Conduct-PortScan {
     # Validates Unique Port List To Scan
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Validating Unique Port List To Scan")
-    $PortsToScan = $PortsToScan | Sort-Object -Unique | ? {$_ -ne ""}
+    $PortsToScan = $PortsToScan | Sort-Object -Unique | Where-Object {$_ -ne ""}
 
     if ($($PortsToScan).count -eq 0) {
         $ResultsListBox.Items.Clear()

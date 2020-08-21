@@ -15,13 +15,13 @@ $ComputerListPsExecButtonAdd_Click = {
                 $Username = $script:Credential.UserName
                 $Password = $script:Credential.GetNetworkCredential().Password
                 $UseCredential = "-u $Username -p $Password"
-                $ResultsListBox.Items.Add("./PsExec.exe /AcceptEula \\$script:ComputerTreeViewSelected '<domain\username>' -p '<password>' cmd")
-                Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '/AcceptEula \\$script:ComputerTreeViewSelected $UseCredential cmd'"        
+                $ResultsListBox.Items.Add("./PsExec.exe -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected '<domain\username>' -p '<password>' cmd")
+                Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected $UseCredential cmd'"
             }
             else { 
-                $ResultsListBox.Items.Add("./PsExec.exe /AcceptEula \\$script:ComputerTreeViewSelected cmd")
-                $ResultsListBox.Items.Add("$PsExecPath /AcceptEula \\$script:ComputerTreeViewSelected cmd")
-                Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '/AcceptEula \\$script:ComputerTreeViewSelected cmd'"
+                $ResultsListBox.Items.Add("./PsExec.exe -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd")
+                $ResultsListBox.Items.Add("$PsExecPath -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd")
+                Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd'"
             }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PsExec: $($script:ComputerTreeViewSelected)"
 
@@ -43,8 +43,8 @@ $ComputerListPsExecButtonAdd_MouseHover = {
 +  PsExec is a Windows Sysinternals tool.
 +  Some anti-virus scanners will alert on this.
 +  Command:
-        PsExec.exe /AcceptEula \\<target> cmd
-        PsExec.exe /AcceptEula \\<target> -u <domain\username> -p <password> cmd
+        PsExec.exe -AcceptEULA -NoBanner \\<target> cmd
+        PsExec.exe -AcceptEULA -NoBanner \\<target> -u <domain\username> -p <password> cmd
 +  Compatiable with 'Specify Credentials'
 "@ 
 }

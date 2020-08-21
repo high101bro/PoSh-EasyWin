@@ -32,7 +32,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
         $SysmonDriverName = "$($SysinternalsSysmonRenameDriverTextBox.text)"
     }
 
-    foreach ($TargetComputer in $ComputerList) {
+    foreach ($TargetComputer in $script:ComputerList) {
         $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName - $TargetComputer")
         $PoShEasyWin.Refresh()
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
@@ -55,14 +55,14 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Updating $SysmonName configuration on $TargetComputer")
             $PoShEasyWin.Refresh()
-            #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEula -c '$LocalDrive\$TargetFolder\$Script:SysmonXMLName' -d $SysmonDriverName" -PassThru | Out-Null
+            #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -c '$LocalDrive\$TargetFolder\$Script:SysmonXMLName' -d $SysmonDriverName" -PassThru | Out-Null
             if ($SysinternalsSysmonRenameDriverTextBox.text -ne 'SysmonDrv' -and ($SysinternalsSysmonRenameDriverTextBox.text).length -ne 0 ) {
-                Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -accepteula -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName"
-                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -accepteula -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
+                Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName"
+                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
             }
             else {
-                Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -accepteula -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName"
-                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -accepteula -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName`""
+                Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName"
+                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -c $LocalDrive\$TargetFolder\$Script:SysmonXMLName`""
             }
             Start-Sleep -Seconds 5
 
@@ -84,14 +84,14 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Installing $SysmonName on $TargetComputer")
             $PoShEasyWin.Refresh()
-            #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysmonExecutable /AcceptEula -i '$LocalDrive\$TargetFolder\$Script:SysmonXMLName' -d $SysmonDriverName" -PassThru | Out-Null
+            #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA -s \\$TargetComputer $LocalDrive\$TargetFolder\$SysmonExecutable /AcceptEULA -i '$LocalDrive\$TargetFolder\$Script:SysmonXMLName' -d $SysmonDriverName" -PassThru | Out-Null
             if ($SysinternalsSysmonRenameDriverTextBox.text -ne 'SysmonDrv' -and ($SysinternalsSysmonRenameDriverTextBox.text).length -ne 0 ) {
-                Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -accepteula -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName"
-                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -accepteula -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
+                Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName"
+                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
             }
             else {
-                Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -accepteula -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName"
-                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -accepteula -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName`""
+                Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName"
+                Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$LocalDrive\$TargetFolder\$SysmonExecutable -AcceptEULA -i $LocalDrive\$TargetFolder\$Script:SysmonXMLName`""
             }
             Start-Sleep -Seconds 5
 
@@ -122,7 +122,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 elseif ($ExternalProgramsWinRMRadioButton.checked) {
     New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
 
-    $PSSession = New-PSSession -ComputerName $ComputerList | Sort-Object ComputerName
+    $PSSession = New-PSSession -ComputerName $script:ComputerList | Sort-Object ComputerName
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "WinRM Collection Started to $($PSSession.count) Endpoints"
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
 

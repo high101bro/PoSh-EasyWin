@@ -1,8 +1,0 @@
-====================================================================================================
-Central Access Policy Staging
-====================================================================================================
-Base Command Ran:
-   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND (EventCode='4818')"
-====================================================================================================
-https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-central-access-policy-staging
-4818(S): Proposed Central Access Policy does not grant the same access permissions as the current Central Access Policy.

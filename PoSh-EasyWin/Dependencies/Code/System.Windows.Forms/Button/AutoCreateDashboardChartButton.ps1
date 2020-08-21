@@ -12,12 +12,12 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     $AutoChartsSelectionForm = New-Object System.Windows.Forms.Form -Property @{
         Name          = "Dashboard Charts"
         Text          = "Dashboard Charts"
-        Size      = @{ Width  = 327
-                       Height = 155 }
+        Size      = @{ Width  = $FormScale * 327
+                       Height = $FormScale * 155 }
         StartPosition = "CenterScreen"
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         #ControlBox    = $true
-        Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
         #FormBorderStyle =  "fixed3d"
     }
@@ -27,11 +27,11 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     #------------------------------
     $AutoChartsMainLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Generates a dashboard with multiple charts "
-        Location = @{ X = 10
-                      Y = 10 }
-        Size     = @{ Width  = 300
-                      Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                      Y = $FormScale * 10 }
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $AutoChartsSelectionForm.Controls.Add($AutoChartsMainLabel)
 
@@ -41,11 +41,11 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     #----------------------------------
     $AutoChartSelectChartComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Select A Chart"
-        Location  = @{ X = 10
-                     Y = $AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 5 }
-        Size      = @{ Width  = 292
-                       Height = 25 }
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location  = @{ X = $FormScale * 10
+                     Y = $AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + $($FormScale * 5) }
+        Size      = @{ Width  = $FormScale * 292
+                       Height = $FormScale * 25 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Red'
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
@@ -78,10 +78,10 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         Style    = "Continuous"
         #Maximum = 10
         Minimum  = 0
-        Location = @{ X = 10
+        Location = @{ X = $FormScale * 10
                       Y = $AutoChartSelectChartComboBox.Location.y + $AutoChartSelectChartComboBox.Size.Height + 10 }
-        Size     = @{ Width  = 290
-                      Height = 10 }
+        Size     = @{ Width  = $FormScale * 290
+                      Height = $FormScale * 10 }
         Value   = 0
     }
     $AutoChartsSelectionForm.Controls.Add($script:AutoChartsProgressBar)
@@ -93,9 +93,9 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     $AutoChartsExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "View Dashboard"
         Location = @{ X = $AutoChartsProgressBar.Location.X
-                      Y = $AutoChartsProgressBar.Location.y + $AutoChartsProgressBar.Size.Height + 5 }
+                      Y = $AutoChartsProgressBar.Location.y + $AutoChartsProgressBar.Size.Height + $($FormScale * 5) }
         Size     = @{ Width  = $AutoChartsProgressBar.Size.Width
-                      Height = 22 }
+                      Height = $FormScale * 22 }
     }
     CommonButtonSettings -Button $AutoChartsExecuteButton
     $AutoChartsExecuteButton.Add_Click({ 
@@ -113,16 +113,17 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         #####################################################################################################################################
         $AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
             [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
-        $script:AutoChartsForm               = New-Object Windows.Forms.Form -Property @{        
-            Location = @{ X = 5
-                          Y = 5 }
+        $script:AutoChartsForm = New-Object Windows.Forms.Form -Property @{        
+            Location = @{ X = $FormScale * 5
+                          Y = $FormScale * 5 }
             Size     = @{ Width  = $PoShEasyWin.Size.Width    #1241
                           Height = $PoShEasyWin.Size.Height } #638    
             StartPosition = "CenterScreen"
             Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+            Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
-        $script:AutoChartsForm.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-
+        
+        
         #####################################################################################################################################
         ##
         ## Auto Create Charts TabControl
@@ -132,15 +133,15 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         $AutoChartsTabControl = New-Object System.Windows.Forms.TabControl -Property @{
             Name     = "Auto Charts"
             Text     = "Auto Charts"
-            Location = @{ X = 5
-                          Y = 5 }
-            Size     = @{ Width  = $PoShEasyWin.Size.Width - 25
-                          Height = $PoShEasyWin.Size.Height - 50 }        
+            Location = @{ X = $FormScale * 5
+                          Y = $FormScale * 5 }
+            Size     = @{ Width  = $PoShEasyWin.Size.Width - $($FormScale * 25)
+                          Height = $PoShEasyWin.Size.Height - $($FormScale * 50) }        
         }
         $AutoChartsTabControl.ShowToolTips  = $True
         $AutoChartsTabControl.SelectedIndex = 0
         $AutoChartsTabControl.Anchor        = $AnchorAll
-        $AutoChartsTabControl.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $AutoChartsTabControl.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
         # Dashboard with multiple charts

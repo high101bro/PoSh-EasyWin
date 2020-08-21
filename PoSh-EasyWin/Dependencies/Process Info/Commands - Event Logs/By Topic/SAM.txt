@@ -1,8 +1,0 @@
-====================================================================================================
-SAM
-====================================================================================================
-Base Command Ran:
-   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND (EventCode='4661')"
-====================================================================================================
-https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-sam
-4661(S, F): A handle to an object was requested.

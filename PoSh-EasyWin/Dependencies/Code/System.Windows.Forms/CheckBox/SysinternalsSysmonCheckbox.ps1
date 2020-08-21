@@ -4,7 +4,7 @@ $SysinternalsSysmonCheckBoxAdd_Click = {
     
     # Manages how the checkbox is handeled to ensure that a config is selected if sysmon is checked
     if ($SysinternalsSysmonCheckbox.checked -and $SysinternalsSysmonConfigTextBox.Text -eq "Config:") { 
-        Get-SysinternalsSysmonXMLConfigSelection 
+        Select-SysinternalsSysmonXmlConfig 
     }
     if ($SysinternalsSysmonConfigTextBox.Text -eq "Config:"){ 
         $SysinternalsSysmonCheckbox.checked = $false 

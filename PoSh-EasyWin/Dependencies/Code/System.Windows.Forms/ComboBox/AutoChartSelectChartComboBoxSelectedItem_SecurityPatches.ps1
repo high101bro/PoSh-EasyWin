@@ -1,4 +1,4 @@
-$CollectedDataDirectory = "$PoShHome\Collected Data"
+$CollectedDataDirectorY = $FormScale * "$PoShHome\Collected Data"
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Windows.Forms.DataVisualization
@@ -6,10 +6,10 @@ Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 ### Creates Tabs From Each File
 $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = 'Security Patches'
-    Size   = @{ Width  = 1700
-                Height = 1050 }
+    Size   = @{ Width  = $FormScale * 1700
+                Height = $FormScale * 1050 }
     #Anchor = $AnchorAll
-    Font   = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
     AutoScroll    = $True
 }
@@ -63,10 +63,10 @@ function Close-AllOptions {
 ### Main Label at the top
 $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property @{
     Text   = 'Security Patches'
-    Location = @{ X = 5
-                  Y = 5 }
-    Size   = @{ Width  = 1150
-                Height = 25 }
+    Location = @{ X = $FormScale * 5
+                  Y = $FormScale * 5 }
+    Size   = @{ Width  = $FormScale * 1150
+                Height = $FormScale * 25 }
     Font   = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
     TextAlign = 'MiddleCenter' 
 }
@@ -74,10 +74,10 @@ $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property 
 ### Import select file to view information
 $AutoChartSelectFileButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Select File To Analyze'
-    Location = @{ X = 5
-                  Y = 5 }
-    Size   = @{ Width  = 200
-                Height = 25 }
+    Location = @{ X = $FormScale * 5
+                  Y = $FormScale * 5 }
+    Size   = @{ Width  = $FormScale * 200
+                Height = $FormScale * 25 }
 }
 CommonButtonSettings -Button $AutoChartSelectFileButton
 $script:AutoChartOpenResultsOpenFileDialogfilename = $null
@@ -85,7 +85,7 @@ $AutoChartSelectFileButton.Add_Click({
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $AutoChartOpenResultsOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog
     $AutoChartOpenResultsOpenFileDialog.Title            = "Open XML Data"
-    $AutoChartOpenResultsOpenFileDialog.InitialDirectory = "$(if (Test-Path $($CollectionSavedDirectoryTextBox.Text)) {$($CollectionSavedDirectoryTextBox.Text)} else {$CollectedDataDirectory})"
+    $AutoChartOpenResultsOpenFileDialog.InitialDirectorY = $FormScale * "$(if (Test-Path $($CollectionSavedDirectoryTextBox.Text)) {$($CollectionSavedDirectoryTextBox.Text)} else {$CollectedDataDirectory})"
     $AutoChartOpenResultsOpenFileDialog.filter           = "Results (*.txt;*.csv;*.xlsx;*.xls)|*.txt;*.csv;*.xls;*.xlsx|Text (*.txt)|*.txt|CSV (*.csv)|*.csv|Excel (*.xlsx)|*.xlsx|Excel (*.xls)|*.xls|All files (*.*)|*.*"
     $AutoChartOpenResultsOpenFileDialog.ShowDialog() | Out-Null
     $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
@@ -150,10 +150,10 @@ function AutoChartOpenDataInShell {
 
 ### Auto Create Charts Object
 $script:AutoChart01 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = 5
-                  Y = 50 }
-    Size     = @{ Width  = 560
-                  Height = 375 }
+    Location = @{ X = $FormScale * 5
+                  Y = $FormScale * 50 }
+    Size     = @{ Width  = $FormScale * 560
+                  Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
     BorderColor     = 'Black'
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','20', [System.Drawing.FontStyle]::Bold)
@@ -246,10 +246,10 @@ $script:AutoChart01.Series["Security Patches"].Color             = 'Red'
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart01OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart01.Location.X + 5
-                   Y = $script:AutoChart01.Location.Y + 350 }
-    Size      = @{ Width  = 75
-                   Height = 20 }
+    Location  = @{ X = $script:AutoChart01.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart01.Location.Y + $($FormScale * 350) }
+    Size      = @{ Width  = $FormScale * 75
+                   Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart01OptionsButton
 $script:AutoChart01OptionsButton.Add_Click({  
@@ -268,33 +268,33 @@ $script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart01)
 
 $script:AutoChart01ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart01.Size.Height - 121 }
+                     Y = $script:AutoChart01.Size.Height - $($FormScale * 121) }
     Size        = @{ Width  = $script:AutoChart01.Size.Width
-                     Height = 121 }
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+                     Height = $FormScale * 121 }
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
     BackColor   = 'White'
     BorderStyle = 'FixedSingle'
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart01TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart01TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
-    Location    = @{ X = 5
-                     Y = 5 }
-    Size        = @{ Width  = 165
-                     Height = 85 }
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+    Location    = @{ X = $FormScale * 5
+                     Y = $FormScale * 5 }
+    Size        = @{ Width  = $FormScale * 165
+                     Height = $FormScale * 85 }
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
     $script:AutoChart01TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-        Location    = @{ X = 1
-                         Y = 30 }
-        Size        = @{ Width  = 160
-                         Height = 25}                
+        Location    = @{ X = $FormScale * 1
+                         Y = $FormScale * 30 }
+        Size        = @{ Width  = $FormScale * 160
+                         Height = $FormScale * 25}                
         Orientation   = "Horizontal"
-        TickFrequency = 1
+        TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
         Value         = 0 
@@ -311,24 +311,24 @@ $script:AutoChart01TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
 $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01TrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart01TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart01TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart01TrimOffFirstGroupBox.Location.X + $script:AutoChart01TrimOffFirstGroupBox.Size.Width + 8
+    Location    = @{ X = $script:AutoChart01TrimOffFirstGroupBox.Location.X + $script:AutoChart01TrimOffFirstGroupBox.Size.Width + $($FormScale * 8)
                      Y = $script:AutoChart01TrimOffFirstGroupBox.Location.Y }
-    Size        = @{ Width  = 165
-                     Height = 85 }
+    Size        = @{ Width  = $FormScale * 165
+                     Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
     $script:AutoChart01TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-        Location      = @{ X = 1
-                           Y = 30 }
-        Size          = @{ Width  = 160
-                           Height = 25}                
+        Location      = @{ X = $FormScale * 1
+                           Y = $FormScale * 30 }
+        Size          = @{ Width  = $FormScale * 160
+                           Height = $FormScale * 25}                
         Orientation   = "Horizontal"
-        TickFrequency = 1
+        TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
@@ -348,13 +348,13 @@ $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01TrimOffLast
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart01ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart01ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart01TrimOffFirstGroupBox.Location.X + 80
-                    Y = $script:AutoChart01TrimOffFirstGroupBox.Location.Y + $script:AutoChart01TrimOffFirstGroupBox.Size.Height + 5 }
-    Size      = @{ Width  = 85
-                    Height = 20 }     
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location  = @{ X = $script:AutoChart01TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart01TrimOffFirstGroupBox.Location.Y + $script:AutoChart01TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 85
+                    Height = $FormScale * 20 }     
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
@@ -371,10 +371,10 @@ $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01ChartTypeCo
 ### Auto Charts Toggle 3D on/off and inclination angle
 $script:AutoChart013DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart01ChartTypeComboBox.Location.X + $script:AutoChart01ChartTypeComboBox.Size.Width + 8
+    Location  = @{ X = $script:AutoChart01ChartTypeComboBox.Location.X + $script:AutoChart01ChartTypeComboBox.Size.Width + $($FormScale * 8)
                    Y = $script:AutoChart01ChartTypeComboBox.Location.Y }
-    Size      = @{ Width  = 65
-                   Height = 20 }
+    Size      = @{ Width  = $FormScale * 65
+                   Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart013DToggleButton
 $script:AutoChart013DInclination = 0
@@ -406,13 +406,13 @@ $script:AutoChart013DToggleButton.Add_Click({
 $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart013DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart01ChangeColorComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart01ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart013DToggleButton.Location.X + $script:AutoChart013DToggleButton.Size.Width + 5
+    Location  = @{ X = $script:AutoChart013DToggleButton.Location.X + $script:AutoChart013DToggleButton.Size.Width + $($FormScale * 5)
                    Y = $script:AutoChart013DToggleButton.Location.Y }
-    Size      = @{ Width  = 95
-                   Height = 20 }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size      = @{ Width  = $FormScale * 95
+                   Height = $FormScale * 20 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
@@ -455,41 +455,41 @@ function script:InvestigateDifference-AutoChart01 {
 ### Auto Create Charts Check Diff Button
 $script:AutoChart01CheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart01TrimOffLastGroupBox.Location.X + $script:AutoChart01TrimOffLastGroupBox.Size.Width + 5
-                   Y = $script:AutoChart01TrimOffLastGroupBox.Location.Y + 5 }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+    Location  = @{ X = $script:AutoChart01TrimOffLastGroupBox.Location.X + $script:AutoChart01TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart01TrimOffLastGroupBox.Location.Y + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
 CommonButtonSettings -Button $script:AutoChart01CheckDiffButton
 $script:AutoChart01CheckDiffButton.Add_Click({
-    $script:AutoChart01InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'HotFixID' -ExpandProperty 'HotFixID' | Sort-Object -Unique
+    $script:AutoChart01InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'HotFixID' -ExpandProperty 'HotFixID' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart01InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
-        Size   = @{ Width  = 330
-                    Height = 360 }
+        Size   = @{ Width  = $FormScale * 330
+                    Height = $FormScale * 360 }
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
-        ControlBox = $true
+        ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
     $script:AutoChart01InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
-        Location = @{ X = 10
-                        Y = 10 }
-        Size     = @{ Width  = 290
-                        Height = 45 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                        Y = $FormScale * 10 }
+        Size     = @{ Width  = $FormScale * 290
+                        Height = $FormScale * 45 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart01InvestDiffDropDownComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Location = @{ X = 10
+    $script:AutoChart01InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+        Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart01InvestDiffDropDownLabel.Location.y + $script:AutoChart01InvestDiffDropDownLabel.Size.Height }
-        Width    = 290
-        Height   = 30
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Width    = $FormScale * 290
+        Height   = $FormScale * 30
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
@@ -500,10 +500,10 @@ $script:AutoChart01CheckDiffButton.Add_Click({
     ### Investigate Difference Execute Button
     $script:AutoChart01InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
-        Location = @{ X = 10
-                        Y = $script:AutoChart01InvestDiffDropDownComboBox.Location.y + $script:AutoChart01InvestDiffDropDownComboBox.Size.Height + 10 }
-        Width    = 100 
-        Height   = 20
+        Location = @{ X = $FormScale * 10
+                        Y = $script:AutoChart01InvestDiffDropDownComboBox.Location.y + $script:AutoChart01InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+        Width    = $FormScale * 100 
+        Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart01InvestDiffExecuteButton
     $script:AutoChart01InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01 }})
@@ -512,18 +512,18 @@ $script:AutoChart01CheckDiffButton.Add_Click({
     ### Investigate Difference Positive Results Label & TextBox
     $script:AutoChart01InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
-        Location   = @{ X = 10
-                        Y = $script:AutoChart01InvestDiffExecuteButton.Location.y + $script:AutoChart01InvestDiffExecuteButton.Size.Height + 10 }
-        Size       = @{ Width  = 100
-                        Height = 22 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location   = @{ X = $FormScale * 10
+                        Y = $script:AutoChart01InvestDiffExecuteButton.Location.y + $script:AutoChart01InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart01InvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = 10
+    $script:AutoChart01InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart01InvestDiffPosResultsLabel.Location.y + $script:AutoChart01InvestDiffPosResultsLabel.Size.Height }
-        Size       = @{ Width  = 100
-                        Height = 178 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 178 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ReadOnly   = $true
         BackColor  = 'White'
         WordWrap   = $false
@@ -534,18 +534,18 @@ $script:AutoChart01CheckDiffButton.Add_Click({
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart01InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart01InvestDiffPosResultsLabel.Location.x + $script:AutoChart01InvestDiffPosResultsLabel.Size.Width + 10
+        Location   = @{ X = $script:AutoChart01InvestDiffPosResultsLabel.Location.x + $script:AutoChart01InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
                         Y = $script:AutoChart01InvestDiffPosResultsLabel.Location.y }
-        Size       = @{ Width  = 100
-                        Height = 22 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart01InvestDiffNegResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart01InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $script:AutoChart01InvestDiffNegResultsLabel.Location.x
                         Y = $script:AutoChart01InvestDiffNegResultsLabel.Location.y + $script:AutoChart01InvestDiffNegResultsLabel.Size.Height }
-        Size       = @{ Width  = 100
-                        Height = 178 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 178 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ReadOnly   = $true
         BackColor  = 'White'
         WordWrap   = $false
@@ -565,10 +565,10 @@ $script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01CheckDiffBu
 
 $AutoChart01ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart01CheckDiffButton.Location.X + $script:AutoChart01CheckDiffButton.Size.Width + 5
+    Location = @{ X = $script:AutoChart01CheckDiffButton.Location.X + $script:AutoChart01CheckDiffButton.Size.Width + $($FormScale * 5)
                   Y = $script:AutoChart01CheckDiffButton.Location.Y }
-    Size   = @{ Width  = 100
-                Height = 23 }
+    Size   = @{ Width  = $FormScale * 100
+                Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Security Patches" -QueryTabName "Security Patches" -PropertyX "HotFixID" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01ExpandChartButton
@@ -578,9 +578,9 @@ $script:AutoChart01ManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
 $script:AutoChart01OpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
     Location  = @{ X = $script:AutoChart01CheckDiffButton.Location.X
-                   Y = $script:AutoChart01CheckDiffButton.Location.Y + $script:AutoChart01CheckDiffButton.Size.Height + 5 }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+                   Y = $script:AutoChart01CheckDiffButton.Location.Y + $script:AutoChart01CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01OpenInShell
 $script:AutoChart01OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
@@ -589,10 +589,10 @@ $script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01OpenInShell
 
 $script:AutoChart01ViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart01OpenInShell.Location.X + $script:AutoChart01OpenInShell.Size.Width + 5
+    Location  = @{ X = $script:AutoChart01OpenInShell.Location.X + $script:AutoChart01OpenInShell.Size.Width + $($FormScale * 5)
                    Y = $script:AutoChart01OpenInShell.Location.Y }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01ViewResults
 $script:AutoChart01ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
@@ -603,9 +603,9 @@ $script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01ViewResults
 $script:AutoChart01SaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
     Location = @{ X = $script:AutoChart01OpenInShell.Location.X
-                  Y = $script:AutoChart01OpenInShell.Location.Y + $script:AutoChart01OpenInShell.Size.Height + 5 }
-    Size     = @{ Width  = 205
-                  Height = 23 }
+                  Y = $script:AutoChart01OpenInShell.Location.Y + $script:AutoChart01OpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 205
+                  Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01SaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
@@ -617,13 +617,13 @@ $script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01SaveButton)
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart01NoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
+$script:AutoChart01NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart01SaveButton.Location.X 
-                        Y = $script:AutoChart01SaveButton.Location.Y + $script:AutoChart01SaveButton.Size.Height + 6 }
-    Size        = @{ Width  = 205
-                        Height = 25 }
+                        Y = $script:AutoChart01SaveButton.Location.Y + $script:AutoChart01SaveButton.Size.Height + $($FormScale * 6) }
+    Size        = @{ Width  = $FormScale * 205
+                        Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    Font        = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+    Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
     Text        = "Endpoints:  $($script:AutoChart01CsvFileHosts.Count)"
     Multiline   = $false
@@ -663,10 +663,10 @@ $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Sele
 
 ### Auto Create Charts Object
 $script:AutoChart02 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart01.Location.X + $script:AutoChart01.Size.Width + 20
+    Location = @{ X = $script:AutoChart01.Location.X + $script:AutoChart01.Size.Width + $($FormScale * 20)
                   Y = $script:AutoChart01.Location.Y }
-    Size     = @{ Width  = 560
-                  Height = 375 }
+    Size     = @{ Width  = $FormScale * 560
+                  Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
     BorderColor     = 'Black'
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
@@ -775,10 +775,10 @@ $script:AutoChart02.Series["Security Patches Per Host"].Color             = 'Blu
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart02OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart02.Location.X + 5
-                   Y = $script:AutoChart02.Location.Y + 350 }
-    Size      = @{ Width  = 75
-                   Height = 20 }
+    Location  = @{ X = $script:AutoChart02.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart02.Location.Y + $($FormScale * 350) }
+    Size      = @{ Width  = $FormScale * 75
+                   Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart02OptionsButton
 $script:AutoChart02OptionsButton.Add_Click({  
@@ -796,33 +796,33 @@ $script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart02)
 
 $script:AutoChart02ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart02.Size.Height - 121 }
+                     Y = $script:AutoChart02.Size.Height - $($FormScale * 121) }
     Size        = @{ Width  = $script:AutoChart02.Size.Width
-                     Height = 121 }
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+                     Height = $FormScale * 121 }
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
     BackColor   = 'White'
     BorderStyle = 'FixedSingle'
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart02TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart02TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
-    Location    = @{ X = 5
-                     Y = 5 }
-    Size        = @{ Width  = 165
-                     Height = 85 }
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+    Location    = @{ X = $FormScale * 5
+                     Y = $FormScale * 5 }
+    Size        = @{ Width  = $FormScale * 165
+                     Height = $FormScale * 85 }
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
     $script:AutoChart02TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-        Location    = @{ X = 1
-                         Y = 30 }
-        Size        = @{ Width  = 160
-                         Height = 25}                
+        Location    = @{ X = $FormScale * 1
+                         Y = $FormScale * 30 }
+        Size        = @{ Width  = $FormScale * 160
+                         Height = $FormScale * 25}                
         Orientation   = "Horizontal"
-        TickFrequency = 1
+        TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
         Value         = 0 
@@ -839,24 +839,24 @@ $script:AutoChart02TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
 $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart02TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart02TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart02TrimOffFirstGroupBox.Location.X + $script:AutoChart02TrimOffFirstGroupBox.Size.Width + 5
+    Location    = @{ X = $script:AutoChart02TrimOffFirstGroupBox.Location.X + $script:AutoChart02TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
                         Y = $script:AutoChart02TrimOffFirstGroupBox.Location.Y }
-    Size        = @{ Width  = 165
-                        Height = 85 }
+    Size        = @{ Width  = $FormScale * 165
+                        Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
     $script:AutoChart02TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-        Location      = @{ X = 1
-                           Y = 30 }
-        Size          = @{ Width  = 160
-                           Height = 25}                
+        Location      = @{ X = $FormScale * 1
+                           Y = $FormScale * 30 }
+        Size          = @{ Width  = $FormScale * 160
+                           Height = $FormScale * 25}                
         Orientation   = "Horizontal"
-        TickFrequency = 1
+        TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
@@ -876,13 +876,13 @@ $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffLast
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart02ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart02ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart02TrimOffFirstGroupBox.Location.X + 80
-                    Y = $script:AutoChart02TrimOffFirstGroupBox.Location.Y + $script:AutoChart02TrimOffFirstGroupBox.Size.Height + 5 }
-    Size      = @{ Width  = 85
-                    Height = 20 }     
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location  = @{ X = $script:AutoChart02TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart02TrimOffFirstGroupBox.Location.Y + $script:AutoChart02TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 85
+                    Height = $FormScale * 20 }     
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
@@ -898,10 +898,10 @@ $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02ChartTypeCo
 ### Auto Charts Toggle 3D on/off and inclination angle
 $script:AutoChart023DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart02ChartTypeComboBox.Location.X + $script:AutoChart02ChartTypeComboBox.Size.Width + 8
+    Location  = @{ X = $script:AutoChart02ChartTypeComboBox.Location.X + $script:AutoChart02ChartTypeComboBox.Size.Width + $($FormScale * 8)
                    Y = $script:AutoChart02ChartTypeComboBox.Location.Y }
-    Size      = @{ Width  = 65
-                   Height = 20 }
+    Size      = @{ Width  = $FormScale * 65
+                   Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart023DToggleButton
 $script:AutoChart023DInclination = 0
@@ -933,13 +933,13 @@ $script:AutoChart023DToggleButton.Add_Click({
 $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart023DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart02ChangeColorComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart02ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart023DToggleButton.Location.X + $script:AutoChart023DToggleButton.Size.Width + 5
+    Location  = @{ X = $script:AutoChart023DToggleButton.Location.X + $script:AutoChart023DToggleButton.Size.Width + $($FormScale * 5)
                    Y = $script:AutoChart023DToggleButton.Location.Y }
-    Size      = @{ Width  = 95
-                   Height = 20 }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size      = @{ Width  = $FormScale * 95
+                   Height = $FormScale * 20 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
@@ -981,41 +981,41 @@ function script:InvestigateDifference-AutoChart02 {
 ### Auto Create Charts Check Diff Button
 $script:AutoChart02CheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart02TrimOffLastGroupBox.Location.X + $script:AutoChart02TrimOffLastGroupBox.Size.Width + 5
-                   Y = $script:AutoChart02TrimOffLastGroupBox.Location.Y + 5  }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+    Location  = @{ X = $script:AutoChart02TrimOffLastGroupBox.Location.X + $script:AutoChart02TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart02TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
 CommonButtonSettings -Button $script:AutoChart02CheckDiffButton
 $script:AutoChart02CheckDiffButton.Add_Click({
-    $script:AutoChart02InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+    $script:AutoChart02InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart02InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
-        Size   = @{ Width  = 330
-                    Height = 360 }
+        Size   = @{ Width  = $FormScale * 330
+                    Height = $FormScale * 360 }
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
-        ControlBox = $true
+        ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
     $script:AutoChart02InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
-        Location = @{ X = 10
-                        Y = 10 }
-        Size     = @{ Width  = 290
-                        Height = 45 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                        Y = $FormScale * 10 }
+        Size     = @{ Width  = $FormScale * 290
+                        Height = $FormScale * 45 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart02InvestDiffDropDownComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Location = @{ X = 10
+    $script:AutoChart02InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+        Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart02InvestDiffDropDownLabel.Location.y + $script:AutoChart02InvestDiffDropDownLabel.Size.Height }
-        Width    = 290
-        Height   = 30
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Width    = $FormScale * 290
+        Height   = $FormScale * 30
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
@@ -1026,10 +1026,10 @@ $script:AutoChart02CheckDiffButton.Add_Click({
     ### Investigate Difference Execute Button
     $script:AutoChart02InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
-        Location = @{ X = 10
-                        Y = $script:AutoChart02InvestDiffDropDownComboBox.Location.y + $script:AutoChart02InvestDiffDropDownComboBox.Size.Height + 10 }
-        Width    = 100 
-        Height   = 20
+        Location = @{ X = $FormScale * 10
+                        Y = $script:AutoChart02InvestDiffDropDownComboBox.Location.y + $script:AutoChart02InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+        Width    = $FormScale * 100 
+        Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart02InvestDiffExecuteButton
     $script:AutoChart02InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02 }})
@@ -1038,18 +1038,18 @@ $script:AutoChart02CheckDiffButton.Add_Click({
     ### Investigate Difference Positive Results Label & TextBox
     $script:AutoChart02InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
-        Location   = @{ X = 10
-                        Y = $script:AutoChart02InvestDiffExecuteButton.Location.y + $script:AutoChart02InvestDiffExecuteButton.Size.Height + 10 }
-        Size       = @{ Width  = 100
-                        Height = 22 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location   = @{ X = $FormScale * 10
+                        Y = $script:AutoChart02InvestDiffExecuteButton.Location.y + $script:AutoChart02InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart02InvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = 10
+    $script:AutoChart02InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart02InvestDiffPosResultsLabel.Location.y + $script:AutoChart02InvestDiffPosResultsLabel.Size.Height }
-        Size       = @{ Width  = 100
-                        Height = 178 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 178 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ReadOnly   = $true
         BackColor  = 'White'
         WordWrap   = $false
@@ -1060,18 +1060,18 @@ $script:AutoChart02CheckDiffButton.Add_Click({
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart02InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart02InvestDiffPosResultsLabel.Location.x + $script:AutoChart02InvestDiffPosResultsLabel.Size.Width + 10
+        Location   = @{ X = $script:AutoChart02InvestDiffPosResultsLabel.Location.x + $script:AutoChart02InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
                         Y = $script:AutoChart02InvestDiffPosResultsLabel.Location.y }
-        Size       = @{ Width  = 100
-                        Height = 22 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart02InvestDiffNegResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart02InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $script:AutoChart02InvestDiffNegResultsLabel.Location.x
                         Y = $script:AutoChart02InvestDiffNegResultsLabel.Location.y + $script:AutoChart02InvestDiffNegResultsLabel.Size.Height }
-        Size       = @{ Width  = 100
-                        Height = 178 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 178 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ReadOnly   = $true
         BackColor  = 'White'
         WordWrap   = $false
@@ -1091,10 +1091,10 @@ $script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02CheckDiffBu
 
 $AutoChart02ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart02CheckDiffButton.Location.X + $script:AutoChart02CheckDiffButton.Size.Width + 5
+    Location = @{ X = $script:AutoChart02CheckDiffButton.Location.X + $script:AutoChart02CheckDiffButton.Size.Width + $($FormScale * 5)
                   Y = $script:AutoChart02CheckDiffButton.Location.Y }
-    Size   = @{ Width  = 100
-                Height = 23 }
+    Size   = @{ Width  = $FormScale * 100
+                Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Security Patches" -QueryTabName "Security Patches Per Host" -PropertyX "PSComputerName" -PropertyY "HotFixID" }
 }
 CommonButtonSettings -Button $AutoChart02ExpandChartButton
@@ -1104,9 +1104,9 @@ $script:AutoChart02ManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
 $script:AutoChart02OpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
     Location  = @{ X = $script:AutoChart02CheckDiffButton.Location.X
-                   Y = $script:AutoChart02CheckDiffButton.Location.Y + $script:AutoChart02CheckDiffButton.Size.Height + 5 }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+                   Y = $script:AutoChart02CheckDiffButton.Location.Y + $script:AutoChart02CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02OpenInShell
 $script:AutoChart02OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
@@ -1115,10 +1115,10 @@ $script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02OpenInShell
 
 $script:AutoChart02ViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart02OpenInShell.Location.X + $script:AutoChart02OpenInShell.Size.Width + 5
+    Location  = @{ X = $script:AutoChart02OpenInShell.Location.X + $script:AutoChart02OpenInShell.Size.Width + $($FormScale * 5)
                    Y = $script:AutoChart02OpenInShell.Location.Y }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02ViewResults
 $script:AutoChart02ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
@@ -1129,9 +1129,9 @@ $script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02ViewResults
 $script:AutoChart02SaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
     Location = @{ X = $script:AutoChart02OpenInShell.Location.X
-                  Y = $script:AutoChart02OpenInShell.Location.Y + $script:AutoChart02OpenInShell.Size.Height + 5 }
-    Size     = @{ Width  = 205
-                  Height = 23 }
+                  Y = $script:AutoChart02OpenInShell.Location.Y + $script:AutoChart02OpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 205
+                  Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02SaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
@@ -1143,13 +1143,13 @@ $script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02SaveButton)
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart02NoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
+$script:AutoChart02NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart02SaveButton.Location.X 
-                        Y = $script:AutoChart02SaveButton.Location.Y + $script:AutoChart02SaveButton.Size.Height + 6 }
-    Size        = @{ Width  = 205
-                        Height = 25 }
+                        Y = $script:AutoChart02SaveButton.Location.Y + $script:AutoChart02SaveButton.Size.Height + $($FormScale * 6) }
+    Size        = @{ Width  = $FormScale * 205
+                        Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    Font        = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+    Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
     Text        = "Endpoints:  $($script:AutoChart02CsvFileHosts.Count)"
     Multiline   = $false
@@ -1187,9 +1187,9 @@ $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Sel
 ### Auto Create Charts Object
 $script:AutoChart03 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
     Location = @{ X = $script:AutoChart01.Location.X
-                  Y = $script:AutoChart01.Location.Y + $script:AutoChart01.Size.Height + 20 }
-    Size     = @{ Width  = 560
-                  Height = 375 }
+                  Y = $script:AutoChart01.Location.Y + $script:AutoChart01.Size.Height + $($FormScale * 20) }
+    Size     = @{ Width  = $FormScale * 560
+                  Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
     BorderColor     = 'Black'
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
@@ -1283,10 +1283,10 @@ $script:AutoChart03.Series["Service Pack In Effect"].Color             = 'Green'
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart03OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart03.Location.X + 5
-                   Y = $script:AutoChart03.Location.Y + 350 }
-    Size      = @{ Width  = 75
-                   Height = 20 }
+    Location  = @{ X = $script:AutoChart03.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart03.Location.Y + $($FormScale * 350) }
+    Size      = @{ Width  = $FormScale * 75
+                   Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart03OptionsButton
 $script:AutoChart03OptionsButton.Add_Click({  
@@ -1304,33 +1304,33 @@ $script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03)
 
 $script:AutoChart03ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart03.Size.Height - 121 }
+                     Y = $script:AutoChart03.Size.Height - $($FormScale * 121) }
     Size        = @{ Width  = $script:AutoChart03.Size.Width
-                     Height = 121 }
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+                     Height = $FormScale * 121 }
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
     BackColor   = 'White'
     BorderStyle = 'FixedSingle'
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart03TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart03TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
-    Location    = @{ X = 5
-                     Y = 5 }
-    Size        = @{ Width  = 165
-                     Height = 85 }
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+    Location    = @{ X = $FormScale * 5
+                     Y = $FormScale * 5 }
+    Size        = @{ Width  = $FormScale * 165
+                     Height = $FormScale * 85 }
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
     $script:AutoChart03TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-        Location    = @{ X = 1
-                         Y = 30 }
-        Size        = @{ Width  = 160
-                         Height = 25}                
+        Location    = @{ X = $FormScale * 1
+                         Y = $FormScale * 30 }
+        Size        = @{ Width  = $FormScale * 160
+                         Height = $FormScale * 25}                
         Orientation   = "Horizontal"
-        TickFrequency = 1
+        TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
         Value         = 0 
@@ -1347,24 +1347,24 @@ $script:AutoChart03TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
 $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart03TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart03TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + $script:AutoChart03TrimOffFirstGroupBox.Size.Width + 5
+    Location    = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + $script:AutoChart03TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
                      Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y }
-    Size        = @{ Width  = 165
-                     Height = 85 }
+    Size        = @{ Width  = $FormScale * 165
+                     Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
     $script:AutoChart03TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-        Location      = @{ X = 1
-                           Y = 30 }
-        Size          = @{ Width  = 160
-                           Height = 25}                
+        Location      = @{ X = $FormScale * 1
+                           Y = $FormScale * 30 }
+        Size          = @{ Width  = $FormScale * 160
+                           Height = $FormScale * 25}                
         Orientation   = "Horizontal"
-        TickFrequency = 1
+        TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
@@ -1384,13 +1384,13 @@ $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffLast
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart03ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart03ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + 80
-                    Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y + $script:AutoChart03TrimOffFirstGroupBox.Size.Height + 5 }
-    Size      = @{ Width  = 85
-                    Height = 20 }     
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location  = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y + $script:AutoChart03TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 85
+                    Height = $FormScale * 20 }     
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
@@ -1406,10 +1406,10 @@ $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03ChartTypeCo
 ### Auto Charts Toggle 3D on/off and inclination angle
 $script:AutoChart033DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart03ChartTypeComboBox.Location.X + $script:AutoChart03ChartTypeComboBox.Size.Width + 8
+    Location  = @{ X = $script:AutoChart03ChartTypeComboBox.Location.X + $script:AutoChart03ChartTypeComboBox.Size.Width + $($FormScale * 8)
                    Y = $script:AutoChart03ChartTypeComboBox.Location.Y }
-    Size      = @{ Width  = 65
-                   Height = 20 }
+    Size      = @{ Width  = $FormScale * 65
+                   Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart033DToggleButton
 $script:AutoChart033DInclination = 0
@@ -1440,13 +1440,13 @@ $script:AutoChart033DToggleButton.Add_Click({
 $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart033DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart03ChangeColorComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart03ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart033DToggleButton.Location.X + $script:AutoChart033DToggleButton.Size.Width + 5
+    Location  = @{ X = $script:AutoChart033DToggleButton.Location.X + $script:AutoChart033DToggleButton.Size.Width + $($FormScale * 5)
                    Y = $script:AutoChart033DToggleButton.Location.Y }
-    Size      = @{ Width  = 95
-                   Height = 20 }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size      = @{ Width  = $FormScale * 95
+                   Height = $FormScale * 20 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
@@ -1488,41 +1488,41 @@ function script:InvestigateDifference-AutoChart03 {
 ### Auto Create Charts Check Diff Button
 $script:AutoChart03CheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart03TrimOffLastGroupBox.Location.X + $script:AutoChart03TrimOffLastGroupBox.Size.Width + 5
-                   Y = $script:AutoChart03TrimOffLastGroupBox.Location.Y + 5  }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+    Location  = @{ X = $script:AutoChart03TrimOffLastGroupBox.Location.X + $script:AutoChart03TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart03TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
 CommonButtonSettings -Button $script:AutoChart03CheckDiffButton
 $script:AutoChart03CheckDiffButton.Add_Click({
-    $script:AutoChart03InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'ServicePackInEffect' -ExpandProperty 'ServicePackInEffect' | Sort-Object -Unique
+    $script:AutoChart03InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'ServicePackInEffect' -ExpandProperty 'ServicePackInEffect' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart03InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
-        Size   = @{ Width  = 330
-                    Height = 360 }
+        Size   = @{ Width  = $FormScale * 330
+                    Height = $FormScale * 360 }
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
-        ControlBox = $true
+        ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
     $script:AutoChart03InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
-        Location = @{ X = 10
-                        Y = 10 }
-        Size     = @{ Width  = 290
-                        Height = 45 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                        Y = $FormScale * 10 }
+        Size     = @{ Width  = $FormScale * 290
+                        Height = $FormScale * 45 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart03InvestDiffDropDownComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Location = @{ X = 10
+    $script:AutoChart03InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+        Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart03InvestDiffDropDownLabel.Location.y + $script:AutoChart03InvestDiffDropDownLabel.Size.Height }
-        Width    = 290
-        Height   = 30
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Width    = $FormScale * 290
+        Height   = $FormScale * 30
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
@@ -1533,10 +1533,10 @@ $script:AutoChart03CheckDiffButton.Add_Click({
     ### Investigate Difference Execute Button
     $script:AutoChart03InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
-        Location = @{ X = 10
-                        Y = $script:AutoChart03InvestDiffDropDownComboBox.Location.y + $script:AutoChart03InvestDiffDropDownComboBox.Size.Height + 10 }
-        Width    = 100 
-        Height   = 20
+        Location = @{ X = $FormScale * 10
+                        Y = $script:AutoChart03InvestDiffDropDownComboBox.Location.y + $script:AutoChart03InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+        Width    = $FormScale * 100 
+        Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart03InvestDiffExecuteButton
     $script:AutoChart03InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03 }})
@@ -1545,18 +1545,18 @@ $script:AutoChart03CheckDiffButton.Add_Click({
     ### Investigate Difference Positive Results Label & TextBox
     $script:AutoChart03InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
-        Location   = @{ X = 10
-                        Y = $script:AutoChart03InvestDiffExecuteButton.Location.y + $script:AutoChart03InvestDiffExecuteButton.Size.Height + 10 }
-        Size       = @{ Width  = 100
-                        Height = 22 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location   = @{ X = $FormScale * 10
+                        Y = $script:AutoChart03InvestDiffExecuteButton.Location.y + $script:AutoChart03InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart03InvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = 10
+    $script:AutoChart03InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart03InvestDiffPosResultsLabel.Location.y + $script:AutoChart03InvestDiffPosResultsLabel.Size.Height }
-        Size       = @{ Width  = 100
-                        Height = 178 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 178 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ReadOnly   = $true
         BackColor  = 'White'
         WordWrap   = $false
@@ -1567,18 +1567,18 @@ $script:AutoChart03CheckDiffButton.Add_Click({
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart03InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart03InvestDiffPosResultsLabel.Location.x + $script:AutoChart03InvestDiffPosResultsLabel.Size.Width + 10
+        Location   = @{ X = $script:AutoChart03InvestDiffPosResultsLabel.Location.x + $script:AutoChart03InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
                         Y = $script:AutoChart03InvestDiffPosResultsLabel.Location.y }
-        Size       = @{ Width  = 100
-                        Height = 22 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart03InvestDiffNegResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart03InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $script:AutoChart03InvestDiffNegResultsLabel.Location.x
                         Y = $script:AutoChart03InvestDiffNegResultsLabel.Location.y + $script:AutoChart03InvestDiffNegResultsLabel.Size.Height }
-        Size       = @{ Width  = 100
-                        Height = 178 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 178 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ReadOnly   = $true
         BackColor  = 'White'
         WordWrap   = $false
@@ -1598,10 +1598,10 @@ $script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03CheckDiffBu
 
 $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart03CheckDiffButton.Location.X + $script:AutoChart03CheckDiffButton.Size.Width + 5
+    Location = @{ X = $script:AutoChart03CheckDiffButton.Location.X + $script:AutoChart03CheckDiffButton.Size.Width + $($FormScale * 5)
                   Y = $script:AutoChart03CheckDiffButton.Location.Y }
-    Size   = @{ Width  = 100
-                Height = 23 }
+    Size   = @{ Width  = $FormScale * 100
+                Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Security Patches" -QueryTabName "Service Pack In Effect" -PropertyX "ServicePackInEffect" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart03ExpandChartButton
@@ -1611,9 +1611,9 @@ $script:AutoChart03ManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
 $script:AutoChart03OpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
     Location  = @{ X = $script:AutoChart03CheckDiffButton.Location.X
-                   Y = $script:AutoChart03CheckDiffButton.Location.Y + $script:AutoChart03CheckDiffButton.Size.Height + 5 }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+                   Y = $script:AutoChart03CheckDiffButton.Location.Y + $script:AutoChart03CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03OpenInShell
 $script:AutoChart03OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
@@ -1622,10 +1622,10 @@ $script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03OpenInShell
 
 $script:AutoChart03ViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart03OpenInShell.Location.X + $script:AutoChart03OpenInShell.Size.Width + 5
+    Location  = @{ X = $script:AutoChart03OpenInShell.Location.X + $script:AutoChart03OpenInShell.Size.Width + $($FormScale * 5)
                    Y = $script:AutoChart03OpenInShell.Location.Y }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03ViewResults
 $script:AutoChart03ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
@@ -1636,9 +1636,9 @@ $script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03ViewResults
 $script:AutoChart03SaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
     Location = @{ X = $script:AutoChart03OpenInShell.Location.X
-                  Y = $script:AutoChart03OpenInShell.Location.Y + $script:AutoChart03OpenInShell.Size.Height + 5 }
-    Size     = @{ Width  = 205
-                  Height = 23 }
+                  Y = $script:AutoChart03OpenInShell.Location.Y + $script:AutoChart03OpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 205
+                  Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03SaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
@@ -1650,13 +1650,13 @@ $script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03SaveButton)
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart03NoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
+$script:AutoChart03NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart03SaveButton.Location.X 
-                        Y = $script:AutoChart03SaveButton.Location.Y + $script:AutoChart03SaveButton.Size.Height + 6 }
-    Size        = @{ Width  = 205
-                        Height = 25 }
+                        Y = $script:AutoChart03SaveButton.Location.Y + $script:AutoChart03SaveButton.Size.Height + $($FormScale * 6) }
+    Size        = @{ Width  = $FormScale * 205
+                        Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    Font        = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+    Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
     Text        = "Endpoints:  $($script:AutoChart03CsvFileHosts.Count)"
     Multiline   = $false
@@ -1695,9 +1695,9 @@ $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Sele
 ### Auto Create Charts Object
 $script:AutoChart04 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
     Location = @{ X = $script:AutoChart02.Location.X
-                  Y = $script:AutoChart02.Location.Y + $script:AutoChart02.Size.Height + 20 }
-    Size     = @{ Width  = 560
-                  Height = 375 }
+                  Y = $script:AutoChart02.Location.Y + $script:AutoChart02.Size.Height + $($FormScale * 20) }
+    Size     = @{ Width  = $FormScale * 560
+                  Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
     BorderColor     = 'Black'
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
@@ -1791,10 +1791,10 @@ $script:AutoChart04.Series["Install Date"].Color             = 'Orange'
 ### Auto Chart Panel that contains all the options to manage open/close feature 
 $script:AutoChart04OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart04.Location.X + 5
-                   Y = $script:AutoChart04.Location.Y + 350 }
-    Size      = @{ Width  = 75
-                   Height = 20 }
+    Location  = @{ X = $script:AutoChart04.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart04.Location.Y + $($FormScale * 350) }
+    Size      = @{ Width  = $FormScale * 75
+                   Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart04OptionsButton
 $script:AutoChart04OptionsButton.Add_Click({  
@@ -1812,33 +1812,33 @@ $script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04)
 
 $script:AutoChart04ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart04.Size.Height - 121 }
+                     Y = $script:AutoChart04.Size.Height - $($FormScale * 121) }
     Size        = @{ Width  = $script:AutoChart04.Size.Width
-                     Height = 121 }
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+                     Height = $FormScale * 121 }
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
     BackColor   = 'White'
     BorderStyle = 'FixedSingle'
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart04TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart04TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
-    Location    = @{ X = 5
-                     Y = 5 }
-    Size        = @{ Width  = 165
-                     Height = 85 }
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+    Location    = @{ X = $FormScale * 5
+                     Y = $FormScale * 5 }
+    Size        = @{ Width  = $FormScale * 165
+                     Height = $FormScale * 85 }
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
     $script:AutoChart04TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-        Location    = @{ X = 1
-                         Y = 30 }
-        Size        = @{ Width  = 160
-                         Height = 25}                
+        Location    = @{ X = $FormScale * 1
+                         Y = $FormScale * 30 }
+        Size        = @{ Width  = $FormScale * 160
+                         Height = $FormScale * 25}                
         Orientation   = "Horizontal"
-        TickFrequency = 1
+        TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
         Value         = 0 
@@ -1855,24 +1855,24 @@ $script:AutoChart04TrimOffFirstGroupBox = New-Object System.Windows.Forms.GroupB
 $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart04TrimOffLastGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart04TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + $script:AutoChart04TrimOffFirstGroupBox.Size.Width + 5
+    Location    = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + $script:AutoChart04TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
                      Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y }
-    Size        = @{ Width  = 165
-                     Height = 85 }
+    Size        = @{ Width  = $FormScale * 165
+                     Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    Font        = New-Object System.Drawing.Font("$font",11,0,0,0)
+    Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
     $script:AutoChart04TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
-        Location      = @{ X = 1
-                           Y = 30 }
-        Size          = @{ Width  = 160
-                           Height = 25}                
+        Location      = @{ X = $FormScale * 1
+                           Y = $FormScale * 30 }
+        Size          = @{ Width  = $FormScale * 160
+                           Height = $FormScale * 25}                
         Orientation   = "Horizontal"
-        TickFrequency = 1
+        TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
@@ -1892,13 +1892,13 @@ $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffLast
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart04ChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart04ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + 80
-                    Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y + $script:AutoChart04TrimOffFirstGroupBox.Size.Height + 5 }
-    Size      = @{ Width  = 85
-                    Height = 20 }     
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location  = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y + $script:AutoChart04TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 85
+                    Height = $FormScale * 20 }     
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
@@ -1914,10 +1914,10 @@ $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04ChartTypeCo
 ### Auto Charts Toggle 3D on/off and inclination angle
 $script:AutoChart043DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart04ChartTypeComboBox.Location.X + $script:AutoChart04ChartTypeComboBox.Size.Width + 8
+    Location  = @{ X = $script:AutoChart04ChartTypeComboBox.Location.X + $script:AutoChart04ChartTypeComboBox.Size.Width + $($FormScale * 8)
                    Y = $script:AutoChart04ChartTypeComboBox.Location.Y }
-    Size      = @{ Width  = 65
-                   Height = 20 }
+    Size      = @{ Width  = $FormScale * 65
+                   Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart043DToggleButton
 $script:AutoChart043DInclination = 0
@@ -1948,13 +1948,13 @@ $script:AutoChart043DToggleButton.Add_Click({
 $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart043DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart04ChangeColorComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart04ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart043DToggleButton.Location.X + $script:AutoChart043DToggleButton.Size.Width + 5
+    Location  = @{ X = $script:AutoChart043DToggleButton.Location.X + $script:AutoChart043DToggleButton.Size.Width + $($FormScale * 5)
                    Y = $script:AutoChart043DToggleButton.Location.Y }
-    Size      = @{ Width  = 95
-                   Height = 20 }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size      = @{ Width  = $FormScale * 95
+                   Height = $FormScale * 20 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
@@ -1996,41 +1996,41 @@ function script:InvestigateDifference-AutoChart04 {
 ### Auto Create Charts Check Diff Button
 $script:AutoChart04CheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart04TrimOffLastGroupBox.Location.X + $script:AutoChart04TrimOffLastGroupBox.Size.Width + 5
-                   Y = $script:AutoChart04TrimOffLastGroupBox.Location.Y + 5  }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+    Location  = @{ X = $script:AutoChart04TrimOffLastGroupBox.Location.X + $script:AutoChart04TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart04TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
 CommonButtonSettings -Button $script:AutoChart04CheckDiffButton
 $script:AutoChart04CheckDiffButton.Add_Click({
-    $script:AutoChart04InvestDiffDropDownArray = $script:AutoChartDataSource | Select-Object -Property 'InstalledOn' -ExpandProperty 'InstalledOn' | Sort-Object -Unique
+    $script:AutoChart04InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'InstalledOn' -ExpandProperty 'InstalledOn' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart04InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
-        Size   = @{ Width  = 330
-                    Height = 360 }
+        Size   = @{ Width  = $FormScale * 330
+                    Height = $FormScale * 360 }
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
-        ControlBox = $true
+        ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
     $script:AutoChart04InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
-        Location = @{ X = 10
-                        Y = 10 }
-        Size     = @{ Width  = 290
-                        Height = 45 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                        Y = $FormScale * 10 }
+        Size     = @{ Width  = $FormScale * 290
+                        Height = $FormScale * 45 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart04InvestDiffDropDownComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Location = @{ X = 10
+    $script:AutoChart04InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+        Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart04InvestDiffDropDownLabel.Location.y + $script:AutoChart04InvestDiffDropDownLabel.Size.Height }
-        Width    = 290
-        Height   = 30
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Width    = $FormScale * 290
+        Height   = $FormScale * 30
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
@@ -2041,10 +2041,10 @@ $script:AutoChart04CheckDiffButton.Add_Click({
     ### Investigate Difference Execute Button
     $script:AutoChart04InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
-        Location = @{ X = 10
-                        Y = $script:AutoChart04InvestDiffDropDownComboBox.Location.y + $script:AutoChart04InvestDiffDropDownComboBox.Size.Height + 10 }
-        Width    = 100 
-        Height   = 20
+        Location = @{ X = $FormScale * 10
+                        Y = $script:AutoChart04InvestDiffDropDownComboBox.Location.y + $script:AutoChart04InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+        Width    = $FormScale * 100 
+        Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart04InvestDiffExecuteButton 
     $script:AutoChart04InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
@@ -2053,18 +2053,18 @@ $script:AutoChart04CheckDiffButton.Add_Click({
     ### Investigate Difference Positive Results Label & TextBox
     $script:AutoChart04InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
-        Location   = @{ X = 10
-                        Y = $script:AutoChart04InvestDiffExecuteButton.Location.y + $script:AutoChart04InvestDiffExecuteButton.Size.Height + 10 }
-        Size       = @{ Width  = 100
-                        Height = 22 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location   = @{ X = $FormScale * 10
+                        Y = $script:AutoChart04InvestDiffExecuteButton.Location.y + $script:AutoChart04InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart04InvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = 10
+    $script:AutoChart04InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart04InvestDiffPosResultsLabel.Location.y + $script:AutoChart04InvestDiffPosResultsLabel.Size.Height }
-        Size       = @{ Width  = 100
-                        Height = 178 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 178 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ReadOnly   = $true
         BackColor  = 'White'
         WordWrap   = $false
@@ -2075,18 +2075,18 @@ $script:AutoChart04CheckDiffButton.Add_Click({
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart04InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart04InvestDiffPosResultsLabel.Location.x + $script:AutoChart04InvestDiffPosResultsLabel.Size.Width + 10
+        Location   = @{ X = $script:AutoChart04InvestDiffPosResultsLabel.Location.x + $script:AutoChart04InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
                         Y = $script:AutoChart04InvestDiffPosResultsLabel.Location.y }
-        Size       = @{ Width  = 100
-                        Height = 22 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart04InvestDiffNegResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart04InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $script:AutoChart04InvestDiffNegResultsLabel.Location.x
                         Y = $script:AutoChart04InvestDiffNegResultsLabel.Location.y + $script:AutoChart04InvestDiffNegResultsLabel.Size.Height }
-        Size       = @{ Width  = 100
-                        Height = 178 }
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size       = @{ Width  = $FormScale * 100
+                        Height = $FormScale * 178 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ReadOnly   = $true
         BackColor  = 'White'
         WordWrap   = $false
@@ -2106,10 +2106,10 @@ $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04CheckDiffBu
 
 $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart04CheckDiffButton.Location.X + $script:AutoChart04CheckDiffButton.Size.Width + 5
+    Location = @{ X = $script:AutoChart04CheckDiffButton.Location.X + $script:AutoChart04CheckDiffButton.Size.Width + $($FormScale * 5)
                   Y = $script:AutoChart04CheckDiffButton.Location.Y }
-    Size   = @{ Width  = 100
-                Height = 23 }
+    Size   = @{ Width  = $FormScale * 100
+                Height = $FormScale * 23 }
     Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Security Patches" -QueryTabName "Install Date" -PropertyX "InstalledOn" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart04ExpandChartButton
@@ -2119,9 +2119,9 @@ $script:AutoChart04ManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)
 $script:AutoChart04OpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
     Location  = @{ X = $script:AutoChart04CheckDiffButton.Location.X
-                   Y = $script:AutoChart04CheckDiffButton.Location.Y + $script:AutoChart04CheckDiffButton.Size.Height + 5 }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+                   Y = $script:AutoChart04CheckDiffButton.Location.Y + $script:AutoChart04CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04OpenInShell
 $script:AutoChart04OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
@@ -2130,10 +2130,10 @@ $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04OpenInShell
 
 $script:AutoChart04ViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart04OpenInShell.Location.X + $script:AutoChart04OpenInShell.Size.Width + 5
+    Location  = @{ X = $script:AutoChart04OpenInShell.Location.X + $script:AutoChart04OpenInShell.Size.Width + $($FormScale * 5)
                    Y = $script:AutoChart04OpenInShell.Location.Y }
-    Size      = @{ Width  = 100
-                   Height = 23 }
+    Size      = @{ Width  = $FormScale * 100
+                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04ViewResults
 $script:AutoChart04ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
@@ -2144,9 +2144,9 @@ $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04ViewResults
 $script:AutoChart04SaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
     Location = @{ X = $script:AutoChart04OpenInShell.Location.X
-                  Y = $script:AutoChart04OpenInShell.Location.Y + $script:AutoChart04OpenInShell.Size.Height + 5 }
-    Size     = @{ Width  = 205
-                  Height = 23 }
+                  Y = $script:AutoChart04OpenInShell.Location.Y + $script:AutoChart04OpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 205
+                  Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04SaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
@@ -2158,13 +2158,13 @@ $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04SaveButton)
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart04NoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
+$script:AutoChart04NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
     Location    = @{ X = $script:AutoChart04SaveButton.Location.X 
-                        Y = $script:AutoChart04SaveButton.Location.Y + $script:AutoChart04SaveButton.Size.Height + 6 }
-    Size        = @{ Width  = 205
-                        Height = 25 }
+                        Y = $script:AutoChart04SaveButton.Location.Y + $script:AutoChart04SaveButton.Size.Height + $($FormScale * 6) }
+    Size        = @{ Width  = $FormScale * 205
+                        Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
-    Font        = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+    Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
     Text        = "Endpoints:  $($script:AutoChart04CsvFileHosts.Count)"
     Multiline   = $false

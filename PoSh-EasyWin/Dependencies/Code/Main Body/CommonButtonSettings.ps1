@@ -1,7 +1,7 @@
 
 function CommonButtonSettings {
     param($Button)
-    $Button.Font      = New-Object System.Drawing.Font("$ButtonFont",11,0,0,0)
+    $Button.Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     $Button.ForeColor = "Black"
     $Button.Flatstyle = 'Flat'
     $Button.UseVisualStyleBackColor = $true

@@ -1,9 +1,10 @@
-# This is used just to track if any WinRM queries are being conducted and provided a message before execution
+# These are used just to track if any SMB or WinRM queries are being conducted and provided a message before execution
 $WinRMCommandCount = 0
+$SMBCommandCount   = 0
 
 # If the -ComputerName parameter is provided from command line...
 if ($ComputerName) {
-    $ComputerList = @()
+    $script:ComputerList = @()
     [System.Windows.Forms.TreeNodeCollection]$AllComputerNodes = $script:ComputerTreeView.Nodes
     foreach ($TargetComputer in $ComputerName) {
         foreach ($root in $AllComputerNodes) { 
@@ -11,7 +12,7 @@ if ($ComputerName) {
                 foreach ($Entry in $Category.nodes) {
                     if ($Entry.Text -eq $TargetComputer) {
                         $Entry.Checked = $true
-                        $ComputerList += $Entry.Text
+                        $script:ComputerList += $Entry.Text
                     }
                 }
             }
@@ -20,7 +21,7 @@ if ($ComputerName) {
 }        
 elseif ($ComputerSearch) {
     Search-ComputerTreeNode -ComputerSearchInput $ComputerSearch
-    $ComputerList = @()
+    $script:ComputerList = @()
     [System.Windows.Forms.TreeNodeCollection]$AllComputerNode = $script:ComputerTreeView.Nodes 
     foreach ($root in $AllComputerNode) { 
         if ($root.text -match 'Search Results'){ 
@@ -29,19 +30,19 @@ elseif ($ComputerSearch) {
                     if ($Category.text -match $Search) {
                         foreach ($Entry in $Category.Nodes) {
                             $Entry.Checked = $true
-                            $ComputerList += $Entry.Text
+                            $script:ComputerList += $Entry.Text
                             if ($FilterOutComputer) {        
                                 foreach ($Filter in $FilterOutComputer) {
                                     if ($Entry.Text -match $Filter) {
                                         $Entry.Checked = $false
-                                    #    $ComputerList = $ComputerList | Where-Object { $_ -ne "$($Entry.Text)"}
+                                    #    $script:ComputerList = $script:ComputerList | Where-Object { $_ -ne "$($Entry.Text)"}
                                     }
                                 }
                                 if ($FilterInComputer) {          
                                     foreach ($Filter in $FilterInComputer)  {
                                         if ($Entry.Text -match $Filter) {
                                             $Entry.Checked = $true
-                                      #      $ComputerList += $Entry.Text
+                                      #      $script:ComputerList += $Entry.Text
                                         }
                                     }
                                 }
@@ -79,6 +80,9 @@ if ($CommandSearch) {
                                         if ($Entry.Text -match "[\[\(]RPC[\)\]].+") { 
                                             $script:RpcCommandCount += 1                            
                                         }
+                                        elseif ($Entry.Text -match "[\[\(]SMB[\)\]].+"){
+                                            $SMBCommandCount += 1
+                                        }
                                         elseif ($Entry.Text -match "[\[\(]WinRM[\)\]].+"){
                                             $WinRMCommandCount += 1
                                         }
@@ -92,6 +96,9 @@ if ($CommandSearch) {
                                 $Entry.Checked = $true
                                 if ($Entry.Text -match "[\[\(]RPC[\)\]].+") { 
                                     $script:RpcCommandCount += 1                            
+                                }
+                                elseif ($Entry.Text -match "[\[\(]SMB[\)\]].+"){
+                                    $SMBCommandCount += 1
                                 }
                                 elseif ($Entry.Text -match "[\[\(]WinRM[\)\]].+"){
                                     $WinRMCommandCount += 1
@@ -156,10 +163,10 @@ if ($CommandSearch) {
         elseif ($ComputerSearch) {
             Write-Host -ForegroundColor Cyan "The -ComputerSearch parameter uses RegEx to query for computers via their saved metadata within PoSh-EasyWin's database."
             Write-Host -ForegroundColor Green "The following " -NoNewLine
-            Write-Host -ForegroundColor Red "$($ComputerList.Count)" -NoNewLine
+            Write-Host -ForegroundColor Red "$($script:ComputerList.Count)" -NoNewLine
             Write-Host -ForegroundColor Green " endpoints will be queried:"
             Write-Host -ForegroundColor Yellow "   [!] " -NoNewLine
-            Write-Host -ForegroundColor White   "$($ComputerList -join ', ')"
+            Write-Host -ForegroundColor White   "$($script:ComputerList -join ', ')"
         }
         else{
             Write-Host -ForegroundColor Red    "Missing requirement:" -NoNewLine
@@ -203,6 +210,9 @@ if ($CommandSearch) {
         $ProtocolsUsed = @()
         if ($WinRMCommandCount -gt 0) {
             $ProtocolsUsed += 'WinRM'
+        }
+        if ($SMBCommandCount -gt 0) {
+            $ProtocolsUsed += 'SMB'
         }
         if ($script:RpcCommandCount -gt 0) {
             $ProtocolsUsed += 'RPC'

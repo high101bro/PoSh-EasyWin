@@ -1,10 +1,10 @@
 $CredentialManagementForm = New-Object system.Windows.Forms.Form -Property @{
     Text          = "Credential Management"
     StartPosition = "CenterScreen"
-    Size          = @{ Width  = 510
-                       Height = 588 }
+    Size          = @{ Width  = $FormScale * 510
+                       Height = $FormScale * 588 }
     Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor     = 'Black'
 }
 
@@ -161,21 +161,21 @@ function Check-RollingAccountPrerequisites {
 #---------------------------------------------------
 $CredentialManagementAvailableCredentialsGroupBox  = New-Object System.Windows.Forms.Groupbox -Property @{
     Text     = "Specify Credentials:"
-    Location = @{ X = 10
-                  Y = 10 }
-    Size     = @{ Width  = 475
-                  Height = 178 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location = @{ X = $FormScale * 10
+                  Y = $FormScale * 10 }
+    Size     = @{ Width  = $FormScale * 475
+                  Height = $FormScale * 178 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
 }
 
     $CredentialManagementSelectCredentialsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Select the credentials that PoSh-EasyWin will use while executing queries and for remote access. If no store XML credentials are selected, the credentials used will default to those that launched PoSh-EasyWin."
-        Location = @{ X = 5
-                      Y = 20 }
-        Size     = @{ Width  = 465
-                      Height = 44 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 5
+                      Y = $FormScale * 20 }
+        Size     = @{ Width  = $FormScale * 465
+                      Height = $FormScale * 44 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $CredentialManagementAvailableCredentialsGroupBox.Controls.Add($CredentialManagementSelectCredentialsLabel)
@@ -184,9 +184,9 @@ $CredentialManagementAvailableCredentialsGroupBox  = New-Object System.Windows.F
     $CredentialManagementSelectCredentialsTextBox = New-Object System.Windows.Forms.Textbox -Property @{
         Location = @{ X = $CredentialManagementSelectCredentialsLabel.Location.X
                       Y = $CredentialManagementSelectCredentialsLabel.Location.Y + $CredentialManagementSelectCredentialsLabel.Size.Height }
-        Size     = @{ Width  = 300
-                      Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         BackColor = 'White'
         Enabled   = $false
@@ -196,10 +196,10 @@ $CredentialManagementAvailableCredentialsGroupBox  = New-Object System.Windows.F
 
     $CredentialManagementSelectCredentialsButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Select Credentials"
-        Location = @{ X = $CredentialManagementSelectCredentialsTextBox.Location.X + $CredentialManagementSelectCredentialsTextBox.Size.Width + 10
-                      Y = $CredentialManagementSelectCredentialsTextBox.Location.Y - 1}
-        Size     = @{ Width  = 150
-                      Height = 20 }
+        Location = @{ X = $CredentialManagementSelectCredentialsTextBox.Location.X + $CredentialManagementSelectCredentialsTextBox.Size.Width + $($FormScale * 10)
+                      Y = $CredentialManagementSelectCredentialsTextBox.Location.Y - $($FormScale * 1) }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $CredentialManagementSelectCredentialsButton
     $CredentialManagementSelectCredentialsButton.Add_Click({ 
@@ -233,10 +233,10 @@ $CredentialManagementAvailableCredentialsGroupBox  = New-Object System.Windows.F
     $CredentialManagementCreateCredentialsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "You can create and store credentials locally of existing accounts and easily switch between them as necessary. These credentials are stored in XML format and encrypted using Windows Data Protection API, which restricts decryption of the password to the user account and computer that created them."
         Location = @{ X = $CredentialManagementSelectCredentialsTextBox.Location.X
-                      Y = $CredentialManagementSelectCredentialsTextBox.Location.Y + $CredentialManagementSelectCredentialsTextBox.Size.Height + 10 }
-        Size     = @{ Width  = 465
-                      Height = 52 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Y = $CredentialManagementSelectCredentialsTextBox.Location.Y + $CredentialManagementSelectCredentialsTextBox.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 465
+                      Height = $FormScale * 52 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $CredentialManagementAvailableCredentialsGroupBox.Controls.Add($CredentialManagementCreateCredentialsLabel)
@@ -246,8 +246,8 @@ $CredentialManagementAvailableCredentialsGroupBox  = New-Object System.Windows.F
         Text     = "Create New Credentials"
         Location = @{ X = $CredentialManagementSelectCredentialsButton.Location.X
                       Y = $CredentialManagementCreateCredentialsLabel.Location.Y + $CredentialManagementCreateCredentialsLabel.Size.Height }
-        Size     = @{ Width  = 150
-                      Height = 20 }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $CredentialManagementCreateNewCredentialsButton
     $CredentialManagementCreateNewCredentialsButton.Add_Click({        
@@ -262,10 +262,10 @@ $CredentialManagementAvailableCredentialsGroupBox  = New-Object System.Windows.F
 
     $CredentialManagementDecryptCredentialButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Decrypt Credentials"
-        Location = @{ X = $CredentialManagementCreateNewCredentialsButton.Location.X - $CredentialManagementCreateNewCredentialsButton.Size.Width - 10
+        Location = @{ X = $CredentialManagementCreateNewCredentialsButton.Location.X - $CredentialManagementCreateNewCredentialsButton.Size.Width - $($FormScale * 10)
                       Y = $CredentialManagementCreateNewCredentialsButton.Location.Y }
-        Size     = @{ Width  = 150
-                      Height = 20 }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $CredentialManagementDecryptCredentialButton
     $CredentialManagementDecryptCredentialButton.Add_Click({
@@ -292,19 +292,19 @@ $CredentialManagementForm.Controls.Add($CredentialManagementAvailableCredentials
 $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text     = "Automatic Password Rolling:"
     Location = @{ X = $CredentialManagementAvailableCredentialsGroupBox.Location.X
-                  Y = $CredentialManagementAvailableCredentialsGroupBox.Location.Y + $CredentialManagementAvailableCredentialsGroupBox.Size.Height + 10 }
+                  Y = $CredentialManagementAvailableCredentialsGroupBox.Location.Y + $CredentialManagementAvailableCredentialsGroupBox.Size.Height + $($FormScale * 10) }
     Size     = @{ Width  = $CredentialManagementAvailableCredentialsGroupBox.Size.Width
-                  Height = 342 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+                  Height = $FormScale * 342 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
 }
     $script:CredentialManagementPasswordRollingAccountCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text     = "Enable rolling of credentials after queries and remote connections"
-        Location = @{ X = 5
-                      Y = 18 }
-        Size     = @{ Width  = 465
-                    Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 5
+                      Y = $FormScale * 18 }
+        Size     = @{ Width  = $FormScale * 465
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Checked  = $script:RollCredentialsState
     }
@@ -340,11 +340,11 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     #------------------------------------------------
     $CredentialManagementPasswordRollingAccountLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Enter the account name that will be used for password rolling after queries and remote connections are executed. This does not create the account, it just changes the account's password. You must coordinate with the administrator to create an account like: `"EasyWin`"" 
-        Location = @{ X = 5
-                      Y = $script:CredentialManagementPasswordRollingAccountCheckbox.Location.Y + $script:CredentialManagementPasswordRollingAccountCheckbox.Size.Height + 5 }
-        Size     = @{ Width  = 465
-                      Height = 45 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 5
+                      Y = $script:CredentialManagementPasswordRollingAccountCheckbox.Location.Y + $script:CredentialManagementPasswordRollingAccountCheckbox.Size.Height + $($FormScale * 5) }
+        Size     = @{ Width  = $FormScale * 465
+                      Height = $FormScale * 45 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $CredentialManagementPasswordRollingAccountGroupBox.Controls.Add($CredentialManagementPasswordRollingAccountLabel)
@@ -353,9 +353,9 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     $script:CredentialManagementPasswordRollingAccountTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location = @{ X = $CredentialManagementPasswordRollingAccountLabel.Location.X 
                       Y = $CredentialManagementPasswordRollingAccountLabel.Location.Y + $CredentialManagementPasswordRollingAccountLabel.Size.Height }
-        Size     = @{ Width  = 300
-                      Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $script:CredentialManagementPasswordRollingAccountTextBox.Add_MouseEnter({ Check-RollingAccountPrerequisites })
@@ -371,10 +371,10 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     $script:CredentialManagementPasswordRollingAccountButton = New-Object System.Windows.Forms.Button -Property @{
-        Location = @{ X = $script:CredentialManagementPasswordRollingAccountTextBox.Location.X + $script:CredentialManagementPasswordRollingAccountTextBox.Size.Width + 10 
+        Location = @{ X = $script:CredentialManagementPasswordRollingAccountTextBox.Location.X + $script:CredentialManagementPasswordRollingAccountTextBox.Size.Width + $($FormScale * 10) 
                       Y = $script:CredentialManagementPasswordRollingAccountTextBox.Location.Y }
-        Size     = @{ Width  = 150
-                      Height = 20 }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $script:CredentialManagementPasswordRollingAccountButton
     $script:CredentialManagementPasswordRollingAccountButton.Add_Click({ 
@@ -406,11 +406,11 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     #-----------------------------------------------------
     $CredentialManagementActiveDirectoryLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Enter the domain controller name that is used for credential management." 
-        Location = @{ X = 5
-                      Y = $script:CredentialManagementPasswordRollingAccountTextBox.Location.Y + $script:CredentialManagementPasswordRollingAccountTextBox.Size.Height + 10 }
-        Size     = @{ Width  = 465
-                      Height = 20 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 5
+                      Y = $script:CredentialManagementPasswordRollingAccountTextBox.Location.Y + $script:CredentialManagementPasswordRollingAccountTextBox.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 465
+                      Height = $FormScale * 20 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $CredentialManagementPasswordRollingAccountGroupBox.Controls.Add($CredentialManagementActiveDirectoryLabel)
@@ -419,9 +419,9 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     $script:CredentialManagementActiveDirectoryTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location = @{ X = $CredentialManagementActiveDirectoryLabel.Location.X 
                       Y = $CredentialManagementActiveDirectoryLabel.Location.Y  + $CredentialManagementActiveDirectoryLabel.Size.Height }
-        Size     = @{ Width  = 300
-                      Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $script:CredentialManagementActiveDirectoryTextBox.Add_MouseEnter({ Check-RollingAccountPrerequisites })
@@ -437,10 +437,10 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     $script:CredentialManagementActiveDirectoryButton = New-Object System.Windows.Forms.Button -Property @{
-        Location = @{ X = $CredentialManagementActiveDirectoryTextBox.Location.X + $CredentialManagementActiveDirectoryTextBox.Size.Width + 10 
+        Location = @{ X = $CredentialManagementActiveDirectoryTextBox.Location.X + $CredentialManagementActiveDirectoryTextBox.Size.Width + $($FormScale * 10)
                       Y = $CredentialManagementActiveDirectoryTextBox.Location.Y}
-        Size     = @{ Width  = 150
-                      Height = 20 }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $script:CredentialManagementActiveDirectoryButton
     $script:CredentialManagementActiveDirectoryButton.Add_Click({ 
@@ -480,11 +480,11 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     #--------------------------------------------
     $CredentialManagementPasswordDomainNameLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Enter the Domain Name for the credential rolling account." 
-        Location = @{ X = 5
-                      Y = $script:CredentialManagementActiveDirectoryButton.Location.Y + $script:CredentialManagementActiveDirectoryButton.Size.Height + 10 }
-        Size     = @{ Width  = 465
-                      Height = 22 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 5
+                      Y = $script:CredentialManagementActiveDirectoryButton.Location.Y + $script:CredentialManagementActiveDirectoryButton.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 465
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $CredentialManagementPasswordRollingAccountGroupBox.Controls.Add($CredentialManagementPasswordDomainNameLabel)
@@ -493,9 +493,9 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     $script:CredentialManagementPasswordDomainNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location = @{ X = $CredentialManagementPasswordDomainNameLabel.Location.X 
                       Y = $CredentialManagementPasswordDomainNameLabel.Location.Y + $CredentialManagementPasswordDomainNameLabel.Size.Height }
-        Size     = @{ Width  = 300
-                      Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $script:CredentialManagementPasswordDomainNameTextBox.Add_MouseEnter({ Check-RollingAccountPrerequisites })
@@ -511,10 +511,10 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     $script:CredentialManagementPasswordDomainNameButton = New-Object System.Windows.Forms.Button -Property @{
-        Location = @{ X = $script:CredentialManagementPasswordDomainNameTextBox.Location.X + $script:CredentialManagementPasswordDomainNameTextBox.Size.Width + 10 
+        Location = @{ X = $script:CredentialManagementPasswordDomainNameTextBox.Location.X + $script:CredentialManagementPasswordDomainNameTextBox.Size.Width + $($FormScale * 10) 
                       Y = $script:CredentialManagementPasswordDomainNameTextBox.Location.Y }
-        Size     = @{ Width  = 150
-                      Height = 20 }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $script:CredentialManagementPasswordDomainNameButton
     $script:CredentialManagementPasswordDomainNameButton.Add_Click({ 
@@ -555,11 +555,11 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
     $CredentialManagementSelectCredentialRollingAccountLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Select the credentials that roll the credentials used to query and connect to endpoints."
-        Location = @{ X = 5
-                      Y = $script:CredentialManagementPasswordDomainNameButton.Location.Y + $script:CredentialManagementPasswordDomainNameButton.Size.Height + 10 }
-        Size     = @{ Width  = 465
-                      Height = 22 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 5
+                      Y = $script:CredentialManagementPasswordDomainNameButton.Location.Y + $script:CredentialManagementPasswordDomainNameButton.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 465
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $CredentialManagementPasswordRollingAccountGroupBox.Controls.Add($CredentialManagementSelectCredentialRollingAccountLabel)
@@ -568,9 +568,9 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     $CredentialManagementSelectCredentialRollingAccountTextBox = New-Object System.Windows.Forms.Textbox -Property @{
         Location = @{ X = $CredentialManagementSelectCredentialRollingAccountLabel.Location.X
                       Y = $CredentialManagementSelectCredentialRollingAccountLabel.Location.Y + $CredentialManagementSelectCredentialRollingAccountLabel.Size.Height }
-        Size     = @{ Width  = 300
-                      Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         BackColor = 'White'
         Enabled   = $false
@@ -580,10 +580,10 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
     $CredentialManagementSelectCredentialRollingAccountButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Select Credentials"
-        Location = @{ X = $CredentialManagementSelectCredentialRollingAccountTextBox.Location.X + $CredentialManagementSelectCredentialRollingAccountTextBox.Size.Width + 10
-                      Y = $CredentialManagementSelectCredentialRollingAccountTextBox.Location.Y - 1}
-        Size     = @{ Width  = 150
-                      Height = 20 }
+        Location = @{ X = $CredentialManagementSelectCredentialRollingAccountTextBox.Location.X + $CredentialManagementSelectCredentialRollingAccountTextBox.Size.Width + $($FormScale * 10)
+                      Y = $CredentialManagementSelectCredentialRollingAccountTextBox.Location.Y - $($FormScale * 1) }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $CredentialManagementSelectCredentialRollingAccountButton
     $CredentialManagementSelectCredentialRollingAccountButton.Add_Click({ 
@@ -647,11 +647,11 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     # a-z,A-Z,0-9``~!@#$%^&*()_+-=[]\{}|;:',`"./<>?
     $CredentialManagementGenerateNewPasswordLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Generates a new password for the rolling account consisting of 32 alpha-numeric random characters. This is done automatically after connections, but can be executed on demand."
-        Location = @{ X = 5
-                      Y = $CredentialManagementSelectCredentialRollingAccountButton.Location.Y + $CredentialManagementSelectCredentialRollingAccountButton.Size.Height + 10 }
-        Size     = @{ Width  = 465
-                      Height = 35 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 5
+                      Y = $CredentialManagementSelectCredentialRollingAccountButton.Location.Y + $CredentialManagementSelectCredentialRollingAccountButton.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 465
+                      Height = $FormScale * 35 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
     $CredentialManagementPasswordRollingAccountGroupBox.Controls.Add($CredentialManagementGenerateNewPasswordLabel)
@@ -660,9 +660,9 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     $script:CredentialManagementGeneratedRollingPasswordTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location = @{ X = $CredentialManagementGenerateNewPasswordLabel.Location.X 
                       Y = $CredentialManagementGenerateNewPasswordLabel.Location.Y + $CredentialManagementGenerateNewPasswordLabel.Size.Height }
-        Size     = @{ Width  = 300
-                      Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Enabled    = $false
         BackColor = 'White'
@@ -674,8 +674,8 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
         Text     = "Generate New Password"
         Location = @{ X = $script:CredentialManagementPasswordRollingAccountButton.Location.X
                       Y = $script:CredentialManagementGeneratedRollingPasswordTextBox.Location.Y }
-        Size     = @{ Width  = 150
-                      Height = 20 }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 20 }
         Enabled   = $true
     }
     CommonButtonSettings -Button $CredentialManagementGenerateNewPasswordButton

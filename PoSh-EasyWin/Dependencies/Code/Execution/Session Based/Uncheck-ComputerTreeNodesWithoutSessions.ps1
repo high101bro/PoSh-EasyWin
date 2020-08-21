@@ -1,5 +1,5 @@
 $EndpointsWithNoSessions = @()
-Foreach ($Endpoint in $ComputerList) {
+Foreach ($Endpoint in $script:ComputerList) {
     if ($Endpoint -notin $PSSession.ComputerName) { $EndpointsWithNoSessions += $Endpoint }
 }
 if ($EndpointsWithNoSessions.count -gt 0) {
@@ -15,7 +15,7 @@ if ($EndpointsWithNoSessions.count -gt 0) {
             foreach ($Entry in $Category.nodes) {
                 if ($EndpointsWithNoSessions -icontains $($Entry.Text)) {
                     $Entry.Checked         = $False
-                    $Entry.NodeFont        = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                    $Entry.NodeFont        = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Entry.ForeColor       = [System.Drawing.Color]::FromArgb(0,0,0,0)
                 }
                 if ($Entry.Checked) {
@@ -23,7 +23,7 @@ if ($EndpointsWithNoSessions.count -gt 0) {
                 }
             }   
             if ($EntryNodeCheckedCount -eq 0) {
-                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
             }
         }         

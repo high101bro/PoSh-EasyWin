@@ -10,13 +10,13 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
     # Auto Create Charts Selection Form
     #----------------------------------
     $AutoChartsSelectionForm = New-Object System.Windows.Forms.Form -Property @{
-        width         = 327
-        height        = 205
+        width         = $FormScale * 327
+        height        = $FormScale * 205
         StartPosition = "CenterScreen"
         Text          = "Multi-Series Chart"
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         ControlBox    = $true
-        Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
     }
     #------------------------------
@@ -24,11 +24,11 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
     #------------------------------
     $AutoChartsMainLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Create A Multi-Series Chart From Past Collected Data"
-        Location = @{ X = 10
-                      Y = 10 }
-        Size     = @{ Width  = 300
-                      Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                      Y = $FormScale * 10 }
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $AutoChartsSelectionForm.Controls.Add($AutoChartsMainLabel)
 
@@ -38,11 +38,11 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
     #----------------------------------
     $AutoChartSelectChartComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Select A Chart"
-        Location  = @{ X = 10
-                     Y = $AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + 5 }
-        Size      = @{ Width  = 292
-                       Height = 25 }
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location  = @{ X = $FormScale * 10
+                     Y = $AutoChartsMainLabel.Location.y + $AutoChartsMainLabel.Size.Height + $($FormScale * 5) }
+        Size      = @{ Width  = $FormScale * 292
+                       Height = $FormScale * 25 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Red'
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
@@ -98,10 +98,10 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         Style    = "Continuous"
         #Maximum = 10
         Minimum  = 0
-        Location = @{ X = 10
-                      Y = $AutoChartSelectChartComboBox.Location.y + $AutoChartSelectChartComboBox.Size.Height + 10 }
-        Size     = @{ Width  = 290
-                      Height = 10 }
+        Location = @{ X = $FormScale * 10
+                      Y = $AutoChartSelectChartComboBox.Location.y + $AutoChartSelectChartComboBox.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 290
+                      Height = $FormScale * 10 }
         Value   = 0
     }
     $AutoChartsSelectionForm.Controls.Add($script:AutoChartsProgressBar)
@@ -113,35 +113,35 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
     # Create a group that will contain your radio buttons
     $AutoChartsCreateChartsFromGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
         text     = "Filter Results Using:"
-        Location = @{ X = 10
-                      Y = $script:AutoChartsProgressBar.Location.y + $script:AutoChartsProgressBar.Size.Height + 8 }
-        Size     = @{ Width  = 185
-                      Height = 65 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                      Y = $script:AutoChartsProgressBar.Location.y + $script:AutoChartsProgressBar.Size.Height + $($FormScale * 8) }
+        Size     = @{ Width  = $FormScale * 185
+                      Height = $FormScale * 65 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
         ### View Chart WMI Results Checkbox
         $AutoChartsWmiCollectionsCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
             Text     = "WMI Collections"
-            Location = @{ X = 10
-                          Y = 15 }
-            Size     = @{ Width  = 164
-                          Height = 25 }
+            Location = @{ X = $FormScale * 10
+                          Y = $FormScale * 15 }
+            Size     = @{ Width  = $FormScale * 164
+                          Height = $FormScale * 25 }
             Checked  = $false
             Enabled  = $true
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }        
         $AutoChartsWmiCollectionsCheckBox.Add_Click({ $AutoChartsPoShCollectionsCheckBox.Checked = $false })
 
         ### View Chart WinRM Results Checkbox
         $AutoChartsPoShCollectionsCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-            Location = @{ X = 10
-                          Y = 38 }
-            Size     = @{ Width  = 165
-                          Height = 25 }
+            Location = @{ X = $FormScale * 10
+                          Y = $FormScale * 38 }
+            Size     = @{ Width  = $FormScale * 165
+                          Height = $FormScale * 25 }
             Checked  = $false
             Enabled  = $true
             Text     = "PoSh Collections"
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $AutoChartsPoShCollectionsCheckBox.Add_Click({ $AutoChartsWmiCollectionsCheckBox.Checked  = $false })
         
@@ -154,10 +154,10 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
     #-----------------------------------
     $AutoChartsExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "View Chart"
-        Location = @{ X = $AutoChartsCreateChartsFromGroupBox.Location.X + $AutoChartsCreateChartsFromGroupBox.Size.Width + 5
-                     Y = $AutoChartsCreateChartsFromGroupBox.Location.y + 5 }
-        Size     = @{ Width  = 101
-                      Height = 59 }
+        Location = @{ X = $AutoChartsCreateChartsFromGroupBox.Location.X + $AutoChartsCreateChartsFromGroupBox.Size.Width + $($FormScale * 5)
+                     Y = $AutoChartsCreateChartsFromGroupBox.Location.y + $($FormScale * 5) }
+        Size     = @{ Width  = $FormScale * 101
+                      Height = $FormScale * 59 }
     }
     CommonButtonSettings -Button $AutoChartsExecuteButton
     $AutoChartsExecuteButton.Add_Click({ 
@@ -180,7 +180,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         $script:AutoChartsForm.Width         = $PoShEasyWin.Size.Width  #1160
         $script:AutoChartsForm.Height        = $PoShEasyWin.Size.Height #638
         $script:AutoChartsForm.StartPosition = "CenterScreen"
-        $script:AutoChartsForm.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $script:AutoChartsForm.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 
         #####################################################################################################################################
         ##
@@ -191,12 +191,12 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         $AutoChartsTabControl               = New-Object System.Windows.Forms.TabControl
         $AutoChartsTabControl.Name          = "Auto Charts"
         $AutoChartsTabControl.Text          = "Auto Charts"
-        $AutoChartsTabControl.Location      = New-Object System.Drawing.Point(5,5)
-        $AutoChartsTabControl.Size          = New-Object System.Drawing.Size(1535,590) 
+        $AutoChartsTabControl.Location      = New-Object System.Drawing.Point($($FormScale * 5),$($FormScale * 5))
+        $AutoChartsTabControl.Size          = New-Object System.Drawing.Size($($FormScale * 1535),$($FormScale * 590)) 
         $AutoChartsTabControl.ShowToolTips  = $True
         $AutoChartsTabControl.SelectedIndex = 0
         $AutoChartsTabControl.Anchor        = $AnchorAll
-        $AutoChartsTabControl.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $AutoChartsTabControl.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
         # Accounts

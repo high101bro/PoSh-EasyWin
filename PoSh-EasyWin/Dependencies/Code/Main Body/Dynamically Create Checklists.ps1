@@ -1,3 +1,6 @@
+$ChecklistDownPosition      = 10
+$ChecklistDownPositionShift = 30
+
 foreach ($File in $ResourceChecklistFiles) {
     #-------------------------
     # Creates Tabs From Files
@@ -6,7 +9,7 @@ foreach ($File in $ResourceChecklistFiles) {
         Text                    = $File.BaseName
         AutoScroll              = $True
         UseVisualStyleBackColor = $True
-        Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $MainLeftChecklistTabControl.Controls.Add($Section1ChecklistSubTab)
 
@@ -17,16 +20,16 @@ foreach ($File in $ResourceChecklistFiles) {
     foreach ($line in $TabContents) {
         $Checklist = New-Object System.Windows.Forms.CheckBox -Property @{
             Text     = "$line"
-            Location = @{ X = $ChecklistRightPosition
-                          Y = $ChecklistDownPosition }
-            Size     = @{ Width  = $CheckListBoxWidth
-                          Height = $CheckListBoxHeight }
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FormScale * 5
+                          Y = $FormScale * $ChecklistDownPosition }
+            Size     = @{ Width  = $FormScale * 410
+                          Height = $FormScale * 30 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         if ($Checklist.Check -eq $True) { $Checklist.ForeColor = "Blue" }
         $Section1ChecklistSubTab.Controls.Add($Checklist)          
 
         $ChecklistDownPosition += $ChecklistDownPositionShift
     }
-    $ChecklistDownPosition = $ChecklistDownPositionStart
+    $ChecklistDownPosition = $FormScale * 10
 }

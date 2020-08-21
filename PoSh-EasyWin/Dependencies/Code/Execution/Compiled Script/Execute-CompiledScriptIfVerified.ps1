@@ -13,7 +13,7 @@ if ($CommandReviewEditVerifyCheckbox.checked){
     $ClearJobs | Remove-Job -Force
 
     # Each command to each target host is executed on it's own process thread, which utilizes more memory overhead on the localhost [running PoSh-EasyWin] and produces many more network connections to targets [noisier on the network].
-    Foreach ($TargetComputer in $ComputerList) {
+    Foreach ($TargetComputer in $script:ComputerList) {
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Sent to $($TargetComputer): `r`n$($script:CommandReviewEditRichTextbox.text)"
         
         # Executes the compiled jobs
@@ -31,7 +31,7 @@ if ($CommandReviewEditVerifyCheckbox.checked){
     # Checks Jobs for completion
     # This is similar to the Monitor-Job function, but specific to execution of compiled commands
     # Start: Job Monitoring
-    $TargetComputerCount = $ComputerList.count
+    $TargetComputerCount = $script:ComputerList.count
     $CompletedJobs = @()
     $ResultsListBox.Items.Insert(0,"")
 

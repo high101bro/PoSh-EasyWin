@@ -19,7 +19,7 @@ function Add-ComputerTreeNode {
             Text        = $Category
             Tag         = $Category
             ToolTipText = "Checkbox this Category to query all its hosts"
-            NodeFont    = New-Object System.Drawing.Font("$Font",11,1,2,1)
+            NodeFont    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
             ForeColor   = [System.Drawing.Color]::FromArgb(0,0,0,0)
         }
         $Null     = $RootNode.Nodes.Add($CategoryNode)

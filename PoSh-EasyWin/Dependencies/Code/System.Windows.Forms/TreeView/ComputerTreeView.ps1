@@ -1,7 +1,7 @@
 $ComputerTreeViewAdd_MouseHover = { 
     $this.size = @{ 
-        Width = 230
-        Height = 544 
+        Width  = $FormScale * 230
+        Height = $FormScale * 544 
     } 
 }
 # Prefer to use MourseHover as it provides better compatability in this case with the scrollbars
@@ -14,14 +14,14 @@ $ComputerTreeViewAdd_MouseHover = {
 
 $ComputerTreeViewAdd_MouseLeave = { 
     $this.size = @{ 
-        Width = 230
-        Height = 308 
+        Width  = $FormScale * 230
+        Height = $FormScale * 308 
     } 
 }
 
 
 $ComputerTreeViewAdd_Click = {
-    Conduct-NodeAction -TreeView $this.Nodes -ComputerList
+    Conduct-NodeAction -TreeView $this.Nodes -Endpoints
 
     # When the node is checked, it updates various items
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $this.Nodes
@@ -32,11 +32,11 @@ $ComputerTreeViewAdd_Click = {
                 $Category.Expand()
                 foreach ($Entry in $Category.nodes) {
                     $Entry.Checked      = $True
-                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                    $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                    $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                    $Root.NodeFont      = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                    $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
                 }                            
             }
@@ -45,14 +45,14 @@ $ComputerTreeViewAdd_Click = {
             $EntryNodeCheckedCount = 0                        
             if ($Category.checked) {
                 $Category.Expand()
-                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                $Root.NodeFont      = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
                 foreach ($Entry in $Category.nodes) {
                     $EntryNodeCheckedCount  += 1
                     $Entry.Checked      = $True
-                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                    $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
                 }            
             }
@@ -61,28 +61,28 @@ $ComputerTreeViewAdd_Click = {
                     #if ($Entry.isselected) { 
                     if ($Entry.checked) {
                         $EntryNodeCheckedCount  += 1
-                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                        $Root.NodeFont      = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                        $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
                     }
                     elseif (!($Entry.checked)) { 
                         if ($CategoryCheck -eq $False) {$Category.Checked = $False}
-                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,0)
                     }            
                 }        
             }            
             if ($EntryNodeCheckedCount -gt 0) {
-                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                $Root.NodeFont      = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
             }
             else {
-                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
-                $Root.NodeFont      = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,0)
             }
         }
@@ -90,7 +90,7 @@ $ComputerTreeViewAdd_Click = {
 }
 
 $ComputerTreeViewAdd_AfterSelect = {
-    Conduct-NodeAction -TreeView $this.Nodes -ComputerList 
+    Conduct-NodeAction -TreeView $this.Nodes -Endpoints 
 
     # This will return data on hosts selected/highlight, but not necessarily checked
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $this.Nodes
@@ -107,7 +107,7 @@ $ComputerTreeViewAdd_AfterSelect = {
             $Section3HostDataOUTextBox.Text    = "N/A"
             $Section3HostDataIPTextBox.Text    = "N/A"
             $Section3HostDataTags.Text  = "N/A"
-            $Section3HostDataNotesTextBox.Text = "N/A"
+            $Section3HostDataNotesRichTextBox.Text = "N/A"
 
             # Brings the Host Data Tab to the forefront/front view
             $MainBottomTabControl.SelectedTab   = $Section3HostDataTab
@@ -127,7 +127,7 @@ $ComputerTreeViewAdd_AfterSelect = {
                 $Section3HostDataIPTextBox.Text    = "N/A"
                 $Section3HostDataMACTextBox.Text   = "N/A"
                 $Section3HostDataTags.Text  = "N/A"
-                $Section3HostDataNotesTextBox.Text = "N/A"
+                $Section3HostDataNotesRichTextBox.Text = "N/A"
 
                 # Brings the Host Data Tab to the forefront/front view
                 $MainBottomTabControl.SelectedTab = $Section3HostDataTab
@@ -143,32 +143,39 @@ $ComputerTreeViewAdd_AfterSelect = {
                         $Section3HostDataOUTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
                         $Section3HostDataIPTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
                         $Section3HostDataMACTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
-                        $script:Section3HostDataNotesSaveCheck = $Section3HostDataNotesTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
+                        $script:Section3HostDataNotesSaveCheck = $Section3HostDataNotesRichTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                    
                         $Section3HostDataSelectionComboBox.Text         = "Host Data - Selection"
                         $Section3HostDataSelectionDateTimeComboBox.Text = "Host Data - Date & Time"
                         Check-HostDataIfModified
                     }
-                    if ($script:Section3HostDataNotesSaveCheck -ne $Section3HostDataNotesTextBox.Text -and $script:FirstCheck) { 
-                        [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic")
-                        $verify = [Microsoft.VisualBasic.Interaction]::MsgBox(`
-                            "Host Data Notes have not been saved!`n`nIf you continue without saving, any`nmodifications will be lost!`n`nDo you want to continue?",`
-                            'YesNo,Question',` #'YesNoCancel,Question',`
-                            "PoSh-EasyWin")
-                        switch ($verify) {
-                        'Yes'{ Update-HostDataNotes }
-                        'No' { $Entry.isselected -eq $true  #... this line isn't working as expected, but isn't causing errors
-                            $StatusListBox.Items.Clear()
-                            $StatusListBox.Items.Add($Section3HostDataNameTextBox.Text)
-                            $script:EntrySelected.isselected = $true
-                        }
-                        #'Cancel' { continue } #cancel option not needed
-                        }
-                    }
-                    else { Update-HostDataNotes }
-                    
-                    #This is used to prevent the above Visual Basic script from running the first time... a bit of a workaround
-                    $script:FirstCheck = $true
+                    <# This provides a prompt to save or not if a different node was selected and data wasn't saved... decided to save automatically instead
+                                if ($script:Section3HostDataNotesSaveCheck -ne $Section3HostDataNotesRichTextBox.Text) { 
+                                    [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic")
+                                    $verify = [Microsoft.VisualBasic.Interaction]::MsgBox(`
+                                        "Host Data Notes have not been saved!`n`nIf you continue without saving, any`nmodifications will be lost!`n`nDo you want to continue?",`
+                                        'YesNo,Question',` #'YesNoCancel,Question',`
+                                        "PoSh-EasyWin")
+                                    switch ($verify) {
+                                    'Yes'{ Update-HostDataNotes }
+                                    'No' { $Entry.isselected -eq $true  #... this line isn't working as expected, but isn't causing errors
+                                        $StatusListBox.Items.Clear()
+                                        $StatusListBox.Items.Add($Section3HostDataNameTextBox.Text)
+                                        $script:EntrySelected.isselected = $true
+                                    }
+                                    'Cancel' { continue } #cancel option not needed
+                                    }
+                                }
+                                else { Update-HostDataNotes }
+                    #>
+
+                    # Automatically saves the hostdata notes if modified
+                    Save-ComputerTreeNodeHostData
+                    Update-HostDataNotes
+
+                    #                    $StatusListBox.Items.Clear()
+#                    $StatusListBox.Items.Add($Section3HostDataNameTextBox.Text)
+#                    $script:EntrySelected.isselected = $true
                 }
             }       
         }         

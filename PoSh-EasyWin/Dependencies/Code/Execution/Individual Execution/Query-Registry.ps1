@@ -108,7 +108,7 @@
     
 
 
-    foreach ($TargetComputer in $ComputerList) {
+    foreach ($TargetComputer in $script:ComputerList) {
         #param(
         #    $script:CollectedDataTimeStampDirectory, 
         #    $script:IndividualHostResults, 

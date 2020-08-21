@@ -10,13 +10,13 @@ function Deselect-AllComputers {
             foreach ($Entry in $Category.nodes) { 
                 #if ($Entry.Checked) { $Entry.Checked = $false }
                 $Entry.Checked = $false
-                $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,0)
-                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
             }
         }
     }
-    Conduct-NodeAction -TreeView $script:ComputerTreeView.Nodes -ComputerList
+    Conduct-NodeAction -TreeView $script:ComputerTreeView.Nodes -Endpoints
 }
  

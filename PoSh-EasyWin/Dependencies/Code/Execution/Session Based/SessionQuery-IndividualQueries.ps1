@@ -29,10 +29,26 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
         $OutputFileFileType = "csv"
     }
-    elseif ($Command.Type -eq "(WinRM) CMD") {
+
+
+
+
+    elseif ($Command.Type -eq "(SMB) PoSh") {
         $CommandString = "$($Command.Command)"
         $OutputFileFileType = "txt"
     }
+    elseif ($Command.Type -eq "(SMB) WMI") {
+        $CommandString = "$($Command.Command)"
+        $OutputFileFileType = "txt"
+    }
+    elseif ($Command.Type -eq "(SMB) CMD") {
+        $CommandString = "$($Command.Command)"
+        $OutputFileFileType = "txt"
+    }
+
+
+
+
     elseif ($Command.Type -eq "(RPC) PoSh") {
         $CommandString = "$($Command.Command) | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
         $OutputFileFileType = "csv"

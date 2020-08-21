@@ -22,23 +22,25 @@ $BuildChartButtonAdd_Click = {
         #--------------------------
         # Custom View Chart Object
         #--------------------------
-            $Chart = New-object System.Windows.Forms.DataVisualization.Charting.Chart
-            $Chart.Width           = 700
-            $Chart.Height          = 400
-            $Chart.Left            = 10
-            $Chart.Top             = 10
-            $Chart.BackColor       = [System.Drawing.Color]::White
-            $Chart.BorderColor     = 'Black'
-            $Chart.BorderDashStyle = 'Solid'
-            $Chart.Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
+            $Chart = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+                Width           = $FormScale * 700
+                Height          = $FormScale * 400
+                Left            = $FormScale * 10
+                Top             = $FormScale * 10
+                BackColor       = [System.Drawing.Color]::White
+                BorderColor     = 'Black'
+                BorderDashStyle = 'Solid'
+                Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
+            }
         #-------------------------
         # Custom View Chart Title 
         #-------------------------
-            $ChartTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title
-            $ChartTitle.text      = ($ViewChartOpenFileDialog.FileName.split('\'))[-1] -replace '.csv',''
-            $ChartTitle.Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
-            $ChartTitle.ForeColor = "black"
-            $ChartTitle.Alignment = "topcenter" #"topLeft"
+            $ChartTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+                text      = ($ViewChartOpenFileDialog.FileName.split('\'))[-1] -replace '.csv',''
+                Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
+                ForeColor = "black"
+                Alignment = "topcenter" #"topLeft"
+            }
             $Chart.Titles.Add($ChartTitle)
         #------------------------
         # Custom View Chart Area
@@ -153,10 +155,10 @@ $BuildChartButtonAdd_Click = {
                 [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
             $ViewChartForm               = New-Object Windows.Forms.Form
             $ViewChartForm.Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
-            $ViewChartForm.Width         = 740
-            $ViewChartForm.Height        = 490
+            $ViewChartForm.Width         = $FormScale * 740
+            $ViewChartForm.Height        = $FormScale * 490
             $ViewChartForm.StartPosition = "CenterScreen"
-            $ViewChartForm.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            $ViewChartForm.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             $ViewChartForm.controls.Add($Chart)
             $Chart.Anchor = $AnchorAll
         #-------------------------------
@@ -164,8 +166,8 @@ $BuildChartButtonAdd_Click = {
         #-------------------------------
             $SaveButton        = New-Object Windows.Forms.Button
             $SaveButton.Text   = "Save Image"
-            $SaveButton.Top    = 420
-            $SaveButton.Left   = 600
+            $SaveButton.Top    = $FormScale * 420
+            $SaveButton.Left   = $FormScale * 600
             $SaveButton.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
              [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
             $SaveButton.Add_Click({
@@ -182,7 +184,7 @@ $BuildChartButtonAdd_Click = {
         # Autosaves the chart if checked
         $FileName           = ($ViewChartOpenFileDialog.FileName.split('\'))[-1] -replace '.csv',''
         $FileDate           = ($ViewChartOpenFileDialog.FileName.split('\'))[-2] -replace '.csv',''
-        if ($OptionsAutoSaveChartsAsImages.checked) { $Chart.SaveImage("$AutosavedChartsDirectory\$FileDate-$FileName.png", 'png') }    }
+        if ($OptionsAutoSaveChartsAsImages.checked) { $Chart.SaveImage("$AutosavedChartsDirectory\$FileDate-$FileName.png", 'png') } }
 
     #=================================================
     # Custom View Chart Select Property Form Function
@@ -230,8 +232,8 @@ $BuildChartButtonAdd_Click = {
             # Custom View Chart Selection Form
             #----------------------------------
             $ViewChartSelectionForm        = New-Object System.Windows.Forms.Form 
-            $ViewChartSelectionForm.width  = 327
-            $ViewChartSelectionForm.height = 287 
+            $ViewChartSelectionForm.width  = $FormScale * 327
+            $ViewChartSelectionForm.height = $FormScale * 287 
             $ViewChartSelectionForm.StartPosition = "CenterScreen"
             $ViewChartSelectionForm.Text   = ”View Chart - Select Fields ”
             $ViewChartSelectionForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
@@ -242,103 +244,118 @@ $BuildChartButtonAdd_Click = {
             # Custom View Chart Main Label
             #------------------------------
             $ViewChartMainLabel          = New-Object System.Windows.Forms.Label
-            $ViewChartMainLabel.Location = New-Object System.Drawing.Point(10,10) 
-            $ViewChartMainLabel.size     = New-Object System.Drawing.Size(290,25) 
+            $ViewChartMainLabel.Location = New-Object System.Drawing.Point($($FormScale * 10),$($FormScale * 10)) 
+            $ViewChartMainLabel.size     = New-Object System.Drawing.Size($($FormScale * 290),$($FormScale * 25)) 
             $ViewChartMainLabel.Text     = "Fill out the bellow to view a chart of a csv file:`nNote: Currently some limitations with compiled results files."
-            $ViewChartMainLabel.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            $ViewChartMainLabel.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             $ViewChartSelectionForm.Controls.Add($ViewChartMainLabel)
 
             #------------------------------
             # Custom View Chart X ComboBox
             #------------------------------
             $ViewChartXComboBox          = New-Object System.Windows.Forms.ComboBox
-            $ViewChartXComboBox.Location = New-Object System.Drawing.Point(10,($ViewChartMainLabel.Location.y + $ViewChartMainLabel.Size.Height + 5))
-            $ViewChartXComboBox.Size     = New-Object System.Drawing.Size(185,25)
+            $ViewChartXComboBox.Location = New-Object System.Drawing.Point($($FormScale * 10),($ViewChartMainLabel.Location.y + $ViewChartMainLabel.Size.Height + $($FormScale * 5)))
+            $ViewChartXComboBox.Size     = New-Object System.Drawing.Size($($FormScale * 185),$($FormScale * 25))
             $ViewChartXComboBox.Text     = "Field 1 - X Axis"
             $ViewChartXComboBox.AutoCompleteSource = "ListItems"
             $ViewChartXComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
             $ViewChartXComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewChartExecute} })
             ForEach ($Item in $ViewChartArray) { $ViewChartXComboBox.Items.Add($Item) }
-            $ViewChartXComboBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            $ViewChartXComboBox.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             $ViewChartSelectionForm.Controls.Add($ViewChartXComboBox)
 
             #------------------------------
             # Custom View Chart Y ComboBox
             #------------------------------
             $ViewChartYComboBox          = New-Object System.Windows.Forms.ComboBox
-            $ViewChartYComboBox.Location = New-Object System.Drawing.Point(10,($ViewChartXComboBox.Location.y + $ViewChartXComboBox.Size.Height + 5))
-            $ViewChartYComboBox.Size     = New-Object System.Drawing.Size(185,25)
+            $ViewChartYComboBox.Location = New-Object System.Drawing.Point($($FormScale * 10),($ViewChartXComboBox.Location.y + $ViewChartXComboBox.Size.Height + $($FormScale * 5)))
+            $ViewChartYComboBox.Size     = New-Object System.Drawing.Size($($FormScale * 185),$($FormScale * 25))
             $ViewChartYComboBox.Text     = "Field 2 - Y Axis"
             $ViewChartYComboBox.AutoCompleteSource = "ListItems"
             $ViewChartYComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
             $ViewChartYComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewChartExecute} })
             ForEach ($Item in $ViewChartArray) { $ViewChartYComboBox.Items.Add($Item) }
-            $ViewChartYComboBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            $ViewChartYComboBox.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             $ViewChartSelectionForm.Controls.Add($ViewChartYComboBox)
 
             #----------------------------------
             # Custom View Chart Types ComboBox
             #----------------------------------
-            $ViewChartChartTypesComboBox          = New-Object System.Windows.Forms.ComboBox
-            $ViewChartChartTypesComboBox.Location = New-Object System.Drawing.Point(10,($ViewChartYComboBox.Location.y + $ViewChartYComboBox.Size.Height + 5))
-            $ViewChartChartTypesComboBox.Size     = New-Object System.Drawing.Size(185,25)
-            $ViewChartChartTypesComboBox.Text     = "Chart Types"
-            $ViewChartChartTypesComboBox.AutoCompleteSource = "ListItems"
-            $ViewChartChartTypesComboBox.AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-            $ViewChartChartTypesComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewChartExecute} })
+            $ViewChartChartTypesComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                left     = $FormScale * 10
+                top      = $ViewChartYComboBox.Location.y + $ViewChartYComboBox.Size.Height + $($FormScale * 5)
+                width    = $FormScale * 185
+                height   = $FormScale * 25
+                Text     = "Chart Types"
+                AutoCompleteSource = "ListItems"
+                AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+                Add_KeyDown = { if ($_.KeyCode -eq "Enter") {ViewChartExecute} }
+            }
             $ChartTypesAvailable = @('Pie','Column','Line','Bar','Doughnut','Area','--- Less Commonly Used Below ---','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
             ForEach ($Item in $ChartTypesAvailable) {
              [void] $ViewChartChartTypesComboBox.Items.Add($Item)
             }
-            $ViewChartChartTypesComboBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            $ViewChartChartTypesComboBox.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             $ViewChartSelectionForm.Controls.Add($ViewChartChartTypesComboBox) 
 
             #---------------------------------------
             # Custom View Chart Limit Results Label
             #---------------------------------------
-            $ViewChartLimitResultsLabel          = New-Object System.Windows.Forms.Label
-            $ViewChartLimitResultsLabel.Location = New-Object System.Drawing.Point(10,($ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + 8)) 
-            $ViewChartLimitResultsLabel.size     = New-Object System.Drawing.Size(120,25) 
-            $ViewChartLimitResultsLabel.Text     = "Limit Results to:"
-            $ViewChartLimitResultsLabel.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            $ViewChartLimitResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+                left     = $FormScale * 10
+                top      = $ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + $($FormScale * 8)
+                width    = $FormScale * 120
+                height   = $FormScale * 25 
+                Text     = "Limit Results to:"
+                Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            }
             $ViewChartSelectionForm.Controls.Add($ViewChartLimitResultsLabel)
 
             #-----------------------------------------
             # Custom View Chart Limit Results Textbox
             #-----------------------------------------
-            $ViewChartLimitResultsTextBox          = New-Object System.Windows.Forms.TextBox
-            $ViewChartLimitResultsTextBox.Text     = 10
-            $ViewChartLimitResultsTextBox.Location = New-Object System.Drawing.Point(135,($ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + 5))
-            $ViewChartLimitResultsTextBox.Size     = New-Object System.Drawing.Size(60,25)
-            $ViewChartLimitResultsTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {ViewChartExecute} })
-            $ViewChartLimitResultsTextBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            $ViewChartLimitResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+                Text     = 10
+                left     = $FormScale * 135
+                top      = $ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + $($FormScale * 5)
+                width    = $FormScale * 60
+                height   = $FormScale * 25
+                Add_KeyDown = { if ($_.KeyCode -eq "Enter") {ViewChartExecute} }
+                Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            }
             $ViewChartSelectionForm.Controls.Add($ViewChartLimitResultsTextBox)
 
             #---------------------------------------
             # Custom View Chart Sort Order GroupBox
             #---------------------------------------
             # Create a group that will contain your radio buttons
-            $ViewChartSortOrderGroupBox          = New-Object System.Windows.Forms.GroupBox
-            $ViewChartSortOrderGroupBox.Location = New-Object System.Drawing.Point(10,($ViewChartLimitResultsTextBox.Location.y + $ViewChartLimitResultsTextBox.Size.Height + 7))
-            $ViewChartSortOrderGroupBox.size     = '290,65'
-            $ViewChartSortOrderGroupBox.text     = "Select how to Sort Data:"
-
+            $ViewChartSortOrderGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+                left     = $FormScale * 10
+                top      = $ViewChartLimitResultsTextBox.Location.y + $ViewChartLimitResultsTextBox.Size.Height + $($FormScale * 10)
+                width    = $FormScale * 290
+                height   = $FormScale * 65
+                text     = "Select how to Sort Data:"
+            }
                 ### Ascending Radio Button
-                $ViewChartAscendingRadioButton          = New-Object System.Windows.Forms.RadioButton
-                $ViewChartAscendingRadioButton.Location = New-Object System.Drawing.Point(20,15)
-                $ViewChartAscendingRadioButton.size     = '250,25'
-                $ViewChartAscendingRadioButton.Checked  = $false
-                $ViewChartAscendingRadioButton.Text     = "Ascending / Lowest to Highest"
-                $ViewChartAscendingRadioButton.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-                
+                $ViewChartAscendingRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                    left     = $FormScale * 20
+                    top      = $FormScale * 15
+                    width    = $FormScale * 250
+                    height   = $FormScale * 25
+                    Checked  = $false
+                    Text     = "Ascending / Lowest to Highest"
+                    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                }
                 ### Descending Radio Button
-                $ViewChartDescendingRadioButton          = New-Object System.Windows.Forms.RadioButton
-                $ViewChartDescendingRadioButton.Location = New-Object System.Drawing.Point(20,38)
-                $ViewChartDescendingRadioButton.size     = '250,25'
-                $ViewChartDescendingRadioButton.Checked  = $true
-                $ViewChartDescendingRadioButton.Text     = "Descending / Highest to Lowest"
-                $ViewChartDescendingRadioButton.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
-                
+                $ViewChartDescendingRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                    left     = $FormScale * 20
+                    top      = $FormScale * 38
+                    width    = $FormScale * 250
+                    height   = $FormScale * 25
+                    Checked  = $true
+                    Text     = "Descending / Highest to Lowest"
+                    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                }
                 $ViewChartSortOrderGroupBox.Controls.AddRange(@($ViewChartAscendingRadioButton,$ViewChartDescendingRadioButton))
             $ViewChartSelectionForm.Controls.Add($ViewChartSortOrderGroupBox) 
 
@@ -346,51 +363,63 @@ $BuildChartButtonAdd_Click = {
             # Custom View Chart Options GroupBox
             #------------------------------------
             # Create a group that will contain your radio buttons
-            $ViewChartOptionsGroupBox          = New-Object System.Windows.Forms.GroupBox
-            $ViewChartOptionsGroupBox.Location = New-Object System.Drawing.Point(($ViewChartXComboBox.Location.X + $ViewChartXComboBox.Size.Width + 5),$ViewChartXComboBox.Location.Y)
-            $ViewChartOptionsGroupBox.size     = '100,105'
-            $ViewChartOptionsGroupBox.text     = "Options:"
-
+            $ViewChartOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+                left     = $ViewChartXComboBox.Location.X + $ViewChartXComboBox.Size.Width + $($FormScale * 5)
+                top      = $ViewChartXComboBox.Location.Y
+                width    = $FormScale * 100
+                height   = $FormScale * 105
+                text     = "Options:"
+            }
                 ### View Chart Legend CheckBox
-                $ViewChartLegendCheckBox          = New-Object System.Windows.Forms.Checkbox
-                $ViewChartLegendCheckBox.Location = New-Object System.Drawing.Point(10,15)
-                $ViewChartLegendCheckBox.Size     = '85,25'
-                $ViewChartLegendCheckBox.Checked  = $false
-                $ViewChartLegendCheckBox.Enabled  = $true
-                $ViewChartLegendCheckBox.Text     = "Legend"
-                $ViewChartLegendCheckBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-
+                $ViewChartLegendCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+                    left     = $FormScale * 10
+                    top      = $FormScale * 15
+                    width    = $FormScale * 85
+                    height   = $FormScale * 25
+                    Checked  = $false
+                    Enabled  = $true
+                    Text     = "Legend"
+                    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                }
                 ### View Chart 3D Chart CheckBox
-                $ViewChart3DChartCheckBox          = New-Object System.Windows.Forms.Checkbox
-                $ViewChart3DChartCheckBox.Location = New-Object System.Drawing.Point(10,38)
-                $ViewChart3DChartCheckBox.Size     = '85,25'
-                $ViewChart3DChartCheckBox.Checked  = $false
-                $ViewChart3DChartCheckBox.Enabled  = $true
-                $ViewChart3DChartCheckBox.Text     = "3D Chart"
-                $ViewChart3DChartCheckBox.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
-                
+                $ViewChart3DChartCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+                    left     = $FormScale * 10
+                    top      = $FormScale * 38
+                    width    = $FormScale * 85
+                    height   = $FormScale * 25
+                    Checked  = $false
+                    Enabled  = $true
+                    Text     = "3D Chart"
+                    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                }
                 $ViewChartOptionsGroupBox.Controls.AddRange(@($ViewChartLegendCheckBox,$ViewChart3DChartCheckBox))
             $ViewChartSelectionForm.Controls.Add($ViewChartOptionsGroupBox) 
 
             #----------------------------------
             # Custom View Chart Execute Button
             #----------------------------------
-            $ViewChartExecuteButton          = New-Object System.Windows.Forms.Button
-            $ViewChartExecuteButton.Location = New-Object System.Drawing.Point(200,($ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + 8))
-            $ViewChartExecuteButton.Size     = New-Object System.Drawing.Size(100,23)
-            $ViewChartExecuteButton.Text     = "Execute"
-            $ViewChartExecuteButton.Add_Click({ ViewChartExecute })
+            $ViewChartExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+                left     = $FormScale * 200
+                top      = $ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + $($FormScale * 8)
+                width    = $FormScale * 100
+                height   = $FormScale * 23
+                Text     = "Execute"
+                Add_Click = { ViewChartExecute }
+            }
             $ViewChartSelectionForm.Controls.Add($ViewChartExecuteButton)   
             CommonButtonSettings -Button $ViewChartExecuteButton
                   
             #---------------------------------------------
             # Custom View Chart Execute Button Note Label
             #---------------------------------------------
-            $ViewChartExecuteButtonNoteLabel          = New-Object System.Windows.Forms.Label
-            $ViewChartExecuteButtonNoteLabel.Location = New-Object System.Drawing.Point(10,($ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + 8)) 
-            $ViewChartExecuteButtonNoteLabel.size     = New-Object System.Drawing.Size(190,25) 
-            $ViewChartExecuteButtonNoteLabel.Text     = "Note: Press execute again if the desired chart did not appear."
-            $ViewChartExecuteButtonNoteLabel.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            $ViewChartExecuteButtonNoteLabel = New-Object System.Windows.Forms.Label -Property @{
+                left     = $FormScale * 10
+                top      = $ViewChartSortOrderGroupBox.Location.y + $ViewChartSortOrderGroupBox.Size.Height + $($FormScale * 8)
+                width    = $FormScale * 190
+                height   = $FormScale * 25
+                Text     = "Note: Press execute again if the desired chart did not appear."
+                Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            }
             $ViewChartSelectionForm.Controls.Add($ViewChartExecuteButtonNoteLabel)
 
             [void] $ViewChartSelectionForm.ShowDialog()

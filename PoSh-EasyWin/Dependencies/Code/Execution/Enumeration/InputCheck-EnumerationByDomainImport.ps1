@@ -6,7 +6,7 @@ function InputCheck-EnumerationByDomainImport {
             else {. Import-HostsFromDomain "Manual" "$($EnumerationDomainGeneratedTextBox.Text)"}
 
             $EnumerationComputerListBox.Items.Clear()
-            foreach ($Computer in $ComputerList) {
+            foreach ($Computer in $script:ComputerList) {
                 [void] $EnumerationComputerListBox.Items.Add("$Computer")
             }
         }

@@ -28,7 +28,7 @@ function Open-XmlResultsInShell {
 
         { `$Message = 'Generating Variables and Functions...'; },
         { Write-Host -f Yellow "`$Message" -NoNewLine; },
-        { `$ComputerList        = `$Results | Select-Object PSComputerName -Unique; },
+        { `$script:ComputerList        = `$Results | Select-Object PSComputerName -Unique; },
         { `$ComputerCount       = @(`$Results | Select-Object PSComputerName -Unique).count; },
         { `$TotalObjectCount    = @(`$Results).count; },
         { `$PropertyList          = (`$Results[0] | Get-Member | Where-Object MemberType -Match Property).Name; },
@@ -86,7 +86,7 @@ function Open-XmlResultsInShell {
         { Write-Host ' '; },
 
         { Write-Host -f Yellow       '  Below are some useful variables generated from the results imported:'; },
-        { Write-Host -f Green  "``t" '`$ComputerList'"``t``t"'`$PropertyList'"``t``t"'`$TotalObjectCount'; },
+        { Write-Host -f Green  "``t" '`$script:ComputerList'"``t``t"'`$PropertyList'"``t``t"'`$TotalObjectCount'; },
         { Write-Host -f Green  "``t" '`$ComputerCount'"``t"'`$PropertyUniqueCount'; },
         { Write-Host ' '; },
 

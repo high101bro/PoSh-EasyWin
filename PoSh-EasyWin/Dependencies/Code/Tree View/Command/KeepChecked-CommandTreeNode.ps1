@@ -15,12 +15,12 @@ function KeepChecked-CommandTreeNode {
                 foreach ($Entry in $Category.nodes) { 
                     if ($script:CommandsCheckedBoxesSelected -contains $Entry.text -and $root.text -notmatch 'Query History') {
                         $Entry.Checked      = $true
-                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                        $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                        $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
                         $Category.Expand()
-                        $Root.NodeFont      = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                        $Root.NodeFont      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Root.ForeColor     = [System.Drawing.Color]::FromArgb(0,0,0,224)
                         $Root.Expand()
 #                        $ResultsListBox.Items.Add($Entry.Text)

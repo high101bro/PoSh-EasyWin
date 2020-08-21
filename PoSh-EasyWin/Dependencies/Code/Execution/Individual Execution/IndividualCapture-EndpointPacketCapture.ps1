@@ -33,7 +33,7 @@ Create-LogEntry -LogFile $LogFile -TargetComputer "    $TargetComputer" -Message
 $PoShEasyWin.Refresh()
 
 
-foreach ($TargetComputer in $ComputerList) {
+foreach ($TargetComputer in $script:ComputerList) {
     Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                             -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                             -TargetComputer $TargetComputer

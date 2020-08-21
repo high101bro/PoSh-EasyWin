@@ -1,4 +1,88 @@
 ==================================================
+v4.6 - .................
+==================================================
+
+Added ability to send User Specified Executables and Custom Script to endpoints
+	- Able to select a specific file or a whole directory to copy to the endpoint(s)
+	- Able to specify the script that conducts actions on the endpoint(s)
+	- Data is not copied back nor cleaned up - this has to be done manually or scripted by the user
+	- Able to specify the destination folder that the contents are copied to
+	- Support for both session based and individual execution modes
+
+Remote Desktop - modified command to include /NoConsentPrompt
+
+Created script to collect PowerShell History Commands
+	- Iterates through all user profiles for the PowerShell History
+
+Computer TreeView 
+	- Added code to better handle the checking of host data notes modification. It no longer prompts you when you select a category or root node, only endpoint nodes when data is modified
+	- Fixed bug with unchecking unresponsive hosts... it now unchecks the root computer treeview node, otherwise it would automatically recheck all endpoints
+
+Added support to execute remote Powershell and native cmds via PSExec...
+	- Support for PowerShell Cmdlets
+	- Support for WMI commands
+	- Support for Native Commands
+	- PowerShell cmdlet results are converted to object data
+
+###### Individual Execution - each line/query is not showing up when execution happens
+
+Updated the Endpoint Commands csv file to include:
+	- SMB Connections
+	- SMB Mappings
+	- SMB Open Files
+	- PowerShell Command History
+
+Added two Select All Buttons in the event log section to select all their respective sections
+
+Fixed a Registry checkbox issue, made it so that when the search checkbox was selected at the top that it remembered which of the three below were previous selected
+
+Added parameter for Scaling the GUI
+	- the parameter is -FormScale
+	- the default value is 1
+	- a value of 2 to 3 is ideal for HD and 4k monitors
+	- able to put in decimal values, ex: 2.25
+	- technically able to go smaller... but beware, some form items dont scale well or even at all, like the checkbox
+
+Changed the Host Data Notes from a textbox to a richtextbox
+	- added undo/redo feature
+	- added select all, copy, and paste
+
+Optimized Individual Execution
+	- Added RPC Check option to remove unresponsive hosts
+
+Added an Actions Tab
+	- This section is designed to conduct limited actions on endpoints across the network/domain
+	- Added the ability to stop multiple processes from multiple endpoints. You must first run a get process to conduct this against first.
+	- Added 'Domain Wide Process Stopper'
+	- Added 'Domain Wide Service Stopper'
+	
+Compressed Get-BrowswerDateFromRegistry with 7Zip to avoid Windows Defender triggering on it as malware
+	- Reviewed script and tested it within Virus Total... only Microsoft triggers it as a trojan, but it's not
+	- The script gathers history information from the registry from internet broswers: Chrome, Firefox, IE, Safari
+	- File Name: Get-BrowserDataFromRegistry (Password=EasyWin).7z
+	- Password:  EasyWin
+	- Added code to exclude the zip file from attempted to being imported into the commands treeview
+
+Adding back in support for remote memory capture
+	- Rewriting old code
+	- Added Button to GUI
+
+Removed the following buttons and added them to the computer treeview context menu
+	- Ping
+	- RPC Check
+	- WinRM Check
+
+Computer Treeview Context Menu, Added endpoint number check that ensures at least one endpoint is checked to the following:
+	- Ping
+	- RPC Check
+	- WinRM
+	- Uncheck all
+	- Tag All
+	- Move All
+
+Moved the context menu code to external .ps1 files 		
+
+==================================================
 v4.5 - 8 June 2020
 ==================================================
 Updated Credential Management section and Auto Credential Rolling

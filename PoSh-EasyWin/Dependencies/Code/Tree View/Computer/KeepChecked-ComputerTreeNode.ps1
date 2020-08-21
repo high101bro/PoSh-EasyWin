@@ -17,9 +17,9 @@ function KeepChecked-ComputerTreeNode {
                 foreach ($Entry in $Category.nodes) { 
                     if ($script:ComputerTreeViewSelected -contains $Entry.text -and $root.text -notmatch 'Query History') {
                         $Entry.Checked      = $true
-                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                        $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)
-                        $Category.NodeFont  = New-Object System.Drawing.Font("$Font",10,1,1,1)
+                        $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
                         $ResultsListBox.Items.Add(" - $($Entry.Text)")
                     }            

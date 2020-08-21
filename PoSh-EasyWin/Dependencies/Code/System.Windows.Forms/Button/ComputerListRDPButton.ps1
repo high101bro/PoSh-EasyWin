@@ -21,7 +21,7 @@ $ComputerListRDPButtonAdd_Click = {
 
 
                     cmdkey /generic:"$script:ComputerTreeViewSelected" /user:"$Username" /pass:"$Password"
-                    mstsc /v:$($script:ComputerTreeViewSelected):3389
+                    mstsc /v:$($script:ComputerTreeViewSelected):3389 /NoConsentPrompt
 
                     # There seems to be a delay between the credential passing before credentials can be removed locally from cmdkey and them still being needed
                     Start-Sleep -Seconds 5
@@ -45,7 +45,7 @@ $ComputerListRDPButtonAdd_Click = {
                         # cmdkey /delete:targetname   <-- deletes target credential
                     #cmdkey /generic:TERMSRV/$script:ComputerTreeViewSelected /user:$Username /pass:$Password
                     cmdkey /add:$script:ComputerTreeViewSelected /user:$Username /pass:$Password
-                    mstsc /v:$($script:ComputerTreeViewSelected):3389
+                    mstsc /v:$($script:ComputerTreeViewSelected):3389 /NoConsentPrompt
                     #Start-Sleep -Seconds 1
                     #cmdkey /delete:$script:ComputerTreeViewSelected 
                     
@@ -56,12 +56,12 @@ $ComputerListRDPButtonAdd_Click = {
                 cmdkey /delete:"$script:ComputerTreeViewSelected"
                 cmdkey /delete /ras               
 
-                mstsc /v:$($script:ComputerTreeViewSelected):3389
+                mstsc /v:$($script:ComputerTreeViewSelected):3389 /NoConsentPrompt
             }
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Remote Desktop:  $($script:ComputerTreeViewSelected)")
             $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("mstsc /v:$($script:ComputerTreeViewSelected):3389")
+            $ResultsListBox.Items.Add("mstsc /v:$($script:ComputerTreeViewSelected):3389 /NoConsentPrompt")
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Remote Desktop (RDP): $($script:ComputerTreeViewSelected)"
         }
         else {
@@ -78,8 +78,8 @@ $ComputerListRDPButtonAdd_MouseHover = {
     Show-ToolTip -Title "Remote Desktop Connection" -Icon "Info" -Message @"
 +  Will attempt to RDP into a single host.
 +  Command:
-        mstsc /v:<target>:3389
-        mstsc /v:<target>:3389 /user:USERNAME /pass:PASSWORD
+        mstsc /v:<target>:3389 /NoConsentPrompt
+        mstsc /v:<target>:3389 /user:USERNAME /pass:PASSWORD /NoConsentPrompt
 +  Compatiable with 'Specify Credentials' if permitted by network policy
 "@ 
 }

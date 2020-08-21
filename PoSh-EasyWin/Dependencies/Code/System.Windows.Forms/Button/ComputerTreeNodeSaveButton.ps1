@@ -1,7 +1,7 @@
 $ComputerTreeNodeSaveButtonAdd_Click = {
     Save-HostData
     $ComputerTreeNodeSaveButton.Text      = "TreeView`nSaved"
-    $ComputerTreeNodeSaveButton.Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    $ComputerTreeNodeSaveButton.Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     $ComputerTreeNodeSaveButton.ForeColor = "Green"
 }
 

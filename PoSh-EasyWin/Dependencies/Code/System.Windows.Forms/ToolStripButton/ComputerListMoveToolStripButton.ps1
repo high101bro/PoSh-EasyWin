@@ -28,7 +28,7 @@ function Show-MoveForm {
                       Height = 25 }
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-        Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     # Dynamically creates the combobox's Category list used for the move destination
     $ComputerTreeNodeCategoryList = @()
@@ -76,7 +76,7 @@ $ComputerListMoveSelectedToolStripButtonAdd_Click = {
     Create-ComputerNodeCheckBoxArray
     if ($script:EntrySelected) {
         Show-MoveForm -FormTitleEndpoints "Move: $($script:EntrySelected.Text)" -SelectedEndpoint
-               
+            
         $script:ComputerTreeView.Nodes.Clear()
         Initialize-ComputerTreeNodes
 
@@ -100,31 +100,38 @@ $ComputerListMoveSelectedToolStripButtonAdd_Click = {
 
 
 $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-    
     Create-ComputerNodeCheckBoxArray
-    if ($script:ComputerTreeViewSelected.count -ge 0) {
-        Show-MoveForm -FormTitleEndpoints "Moving $($script:ComputerTreeViewSelected.count) Endpoints"
-
-        $script:ComputerTreeView.Nodes.Clear()
-        Initialize-ComputerTreeNodes
-
-        if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-            Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
-        }
-        elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
-            Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
-        }
-        
-        Remove-EmptyCategory
-        AutoSave-HostData
-        Save-HostData
-        KeepChecked-ComputerTreeNode -NoMessage
-
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Add("Moved $($script:ComputerTreeNodeToMove.Count) Endpoints")
-        $ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Add("The following hostnames/IPs have been moved to $($ComputerTreeNodePopupMoveComboBox.SelectedItem):")
+    
+    if ($script:ComputerTreeViewSelected.count -eq 0){
+        [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Move All')
     }
-    else { ComputerNodeSelectedLessThanOne -Message 'Move Selection' }
+    else {
+        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        
+        Create-ComputerNodeCheckBoxArray
+        if ($script:ComputerTreeViewSelected.count -ge 0) {
+            Show-MoveForm -FormTitleEndpoints "Moving $($script:ComputerTreeViewSelected.count) Endpoints"
+
+            $script:ComputerTreeView.Nodes.Clear()
+            Initialize-ComputerTreeNodes
+
+            if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
+                Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+            }
+            elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
+                Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+            }
+            
+            Remove-EmptyCategory
+            AutoSave-HostData
+            Save-HostData
+            KeepChecked-ComputerTreeNode -NoMessage
+
+            $StatusListBox.Items.Clear()
+            $StatusListBox.Items.Add("Moved $($script:ComputerTreeNodeToMove.Count) Endpoints")
+            $ResultsListBox.Items.Clear()
+            $ResultsListBox.Items.Add("The following hostnames/IPs have been moved to $($ComputerTreeNodePopupMoveComboBox.SelectedItem):")
+        }
+        else { ComputerNodeSelectedLessThanOne -Message 'Move Selection' }
+    }
 }

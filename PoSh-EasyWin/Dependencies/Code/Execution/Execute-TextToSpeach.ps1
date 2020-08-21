@@ -9,7 +9,7 @@ function Execute-TextToSpeach {
         else {$TTSQuerySingularPlural = "queries"}
 
         # TTS for TargetComputer Count
-        if ($ComputerList.Count -eq 1) {$TTSTargetComputerSingularPlural = "host"}
+        if ($script:ComputerList.Count -eq 1) {$TTSTargetComputerSingularPlural = "host"}
         else {$TTSTargetComputerSingularPlural = "hosts"}
     
         # Say Message

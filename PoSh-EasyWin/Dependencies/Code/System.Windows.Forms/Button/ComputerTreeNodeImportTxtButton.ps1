@@ -38,9 +38,10 @@ $ComputerTreeNodeImportTxtButtonAdd_Click = {
             Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
             $script:ComputerTreeView.ExpandAll()
             AutoSave-HostData
-            Update-NeedToSaveTreeView
         }
     }
+    #Update-NeedToSaveTreeView
+    Save-HostData
 }
 
 

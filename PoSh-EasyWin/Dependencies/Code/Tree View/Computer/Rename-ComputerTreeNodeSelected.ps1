@@ -19,7 +19,7 @@ function Rename-ComputerTreeNodeSelected {
                         $ComputerTreeNodeToRename.Add($Entry.text)
 
                         $script:PreviousEndpointName = $script:EntrySelected.Text
-                        $Section3HostDataNotesTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes + "`r`nPrevious Endpoint Name: $script:PreviousEndpointName"
+                        $Section3HostDataNotesRichTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes + "`r`nPrevious Endpoint Name: $script:PreviousEndpointName"
                         Save-ComputerTreeNodeHostData
                         Check-HostDataIfModified
                         break

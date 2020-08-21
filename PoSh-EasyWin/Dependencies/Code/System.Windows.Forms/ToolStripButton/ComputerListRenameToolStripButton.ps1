@@ -14,7 +14,7 @@ $ComputerListRenameToolStripButtonAdd_Click = {
         $ComputerTreeNodeRenamePopup.Text          = "Rename $($script:EntrySelected.text)"
         $ComputerTreeNodeRenamePopup.Size          = New-Object System.Drawing.Size(330,107)
         $ComputerTreeNodeRenamePopup.StartPosition = "CenterScreen"
-        $ComputerTreeNodeRenamePopup.Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $ComputerTreeNodeRenamePopup.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 
         #---------------------------------------------
         # ComputerList TreeView Popup Execute TextBox
@@ -23,7 +23,7 @@ $ComputerListRenameToolStripButtonAdd_Click = {
         $script:ComputerTreeNodeRenamePopupTextBox.Text     = "New Hostname/IP"
         $script:ComputerTreeNodeRenamePopupTextBox.Size     = New-Object System.Drawing.Size(300,25)
         $script:ComputerTreeNodeRenamePopupTextBox.Location = New-Object System.Drawing.Point(10,10)
-        $script:ComputerTreeNodeRenamePopupTextBox.Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        $script:ComputerTreeNodeRenamePopupTextBox.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 
         # Renames the computer treenode to the specified name
         . "$Dependencies\Code\Tree View\Computer\Rename-ComputerTreeNodeSelected.ps1"          

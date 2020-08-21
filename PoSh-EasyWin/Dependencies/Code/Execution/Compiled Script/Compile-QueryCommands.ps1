@@ -44,15 +44,25 @@ $CommandContents
         elseif ($Command.Type -eq "(WinRM) WMI") {
             $script:QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
         }
-        elseif ($Command.Type -eq "(WinRM) CMD") {
+
+
+        elseif ($Command.Type -eq "(SMB) PoSh") {
             $script:QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
         }
+        elseif ($Command.Type -eq "(SMB) WMI") {
+            $script:QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
+        }
+        elseif ($Command.Type -eq "(SMB) CMD") {
+            $script:QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
+        }
+
+        
         #elseif ($Command.Type -eq "(WinRM) WMIC") {
         #    $script:QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
         #}
-        elseif ($Command.Type -eq "(RPC) CMD") {
-            $script:QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
-        }
+        #elseif ($Command.Type -eq "(RPC) CMD") {
+        #    $script:QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
+        #}
         elseif ($Command.Type -eq "(RPC) PoSh") {
             $script:QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
         }

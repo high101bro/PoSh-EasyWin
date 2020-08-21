@@ -1,6 +1,6 @@
 $Section3HostDataTagsAddButtonAdd_Click = { 
     if (!($Section3HostDataTagsComboBox.SelectedItem -eq "Tags")) {
-        $Section3HostDataNotesTextBox.text = "[$($Section3HostDataTagsComboBox.SelectedItem)] " + $Section3HostDataNotesTextBox.text
+        $Section3HostDataNotesRichTextBox.text = "[$($Section3HostDataTagsComboBox.SelectedItem)] " + $Section3HostDataNotesRichTextBox.text
     }
 }
 

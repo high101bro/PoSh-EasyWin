@@ -23,7 +23,7 @@ if ($SysinternalsAutorunsRenameProcessTextBox.text -ne 'Autoruns') {
 }
 
 
-foreach ($TargetComputer in $ComputerList) {
+foreach ($TargetComputer in $script:ComputerList) {
     $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName - $TargetComputer")
     Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                             -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -42,12 +42,12 @@ foreach ($TargetComputer in $ComputerList) {
 
     # Process monitor must be launched as a separate process otherwise the sleep and terminate commands below would never execute and fill the disk
     $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Starting Autoruns on $TargetComputer")
-    #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$AutorunsExecutable /AcceptEula -a $LocalDrive\$TargetFolder\Autoruns-$TargetComputer.arn" -PassThru | Out-Null   
-    Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$RemoteDrive\$TargetFolder\$AutorunsExecutable  /AcceptEula -a $LocalDrive\$TargetFolder\$AutorunsName.arn"
+    #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA -s \\$TargetComputer $LocalDrive\$TargetFolder\$AutorunsExecutable /AcceptEULA -a $LocalDrive\$TargetFolder\Autoruns-$TargetComputer.arn" -PassThru | Out-Null   
+    Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$RemoteDrive\$TargetFolder\$AutorunsExecutable  /AcceptEULA -a $LocalDrive\$TargetFolder\$AutorunsName.arn"
 
 
     #$ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [-] Terminating $AutorunsName process on $TargetComputer")
-    #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/accepteula -s \\$TargetComputer $LocalDrive\$TargetFolder\$procmon /accepteula /terminate /quiet" -PassThru | Out-Null
+    #Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA -s \\$TargetComputer $LocalDrive\$TargetFolder\$procmon /AcceptEULA /terminate /quiet" -PassThru | Out-Null
     Start-Sleep -Seconds $ExternalProgramsCheckTimeTextBox.Text
 
     # Checks to see if the process is still running

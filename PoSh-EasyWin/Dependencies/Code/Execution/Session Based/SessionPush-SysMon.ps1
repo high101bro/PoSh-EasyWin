@@ -9,7 +9,7 @@ $PoShEasyWin.Refresh()
 # Whoopes... don't delete this, because if you push sysmon with other queries you'll delete all the results...
 # Remove-Item -Path $script:CollectionSavedDirectoryTextBox.Text -Recurse -Force -ErrorAction SilentlyContinue
 
-$script:ProgressBarEndpointsProgressBar.Value   = 0
+$script:ProgressBarEndpointsProgressBar.Value = 0
 
 $SysmonName           = "Sysmon"
 $SysmonDriverName     = "SysmonDrv"
@@ -75,19 +75,19 @@ foreach ($Session in $PSSession) {
                 param($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName)                    
                 # Installs Tool if service not detected
                 if (-not (Get-Service -Name "$SysmonName")){
-                    Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEula -i $TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName"
+                    Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEULA -i $TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName"
                 }
                 # If the Tool service exists, it updates the configuration file
                 else {
-                    Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEula -c $TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName "
+                    Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEULA -c $TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName "
                 }
             } -Argumentlist @($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName) -Session $Session
 
             if (-not $(Invoke-Command -ScriptBlock { param($SysmonName); Get-Service -Name "$SysmonName" } -ArgumentList $SysmonName -Session $Session)) {
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -FilePath `"$TargetFolder\$SysmonExecutable`" -ArgumentList `"/AcceptEula -i $TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
+                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -FilePath `"$TargetFolder\$SysmonExecutable`" -ArgumentList `"/AcceptEULA -i $TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
             }
             else {
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -FilePath `"$TargetFolder\$SysmonExecutable`" -ArgumentList `"/AcceptEula -c $TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
+                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -FilePath `"$TargetFolder\$SysmonExecutable`" -ArgumentList `"/AcceptEULA -c $TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName`""
             }
         }
         else {
@@ -95,19 +95,19 @@ foreach ($Session in $PSSession) {
                 param($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName)                    
                 # Installs Tool if service not detected
                 if (-not (Get-Service -Name "$SysmonName")){
-                    Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEula -i $TargetFolder\$Script:SysmonXMLName"
+                    Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEULA -i $TargetFolder\$Script:SysmonXMLName"
                 }
                 # If the Tool service exists, it updates the configuration file
                 else {
-                    Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEula -c $TargetFolder\$Script:SysmonXMLName"
+                    Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEULA -c $TargetFolder\$Script:SysmonXMLName"
                 }
             } -Argumentlist @($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName) -Session $Session            
             
             if (-not $(Invoke-Command -ScriptBlock { param($SysmonName); Get-Service -Name "$SysmonName" } -ArgumentList $SysmonName -Session $Session)) {
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -FilePath `"$TargetFolder\$SysmonExecutable`" -ArgumentList `"/AcceptEula -i $TargetFolder\$Script:SysmonXMLName`""
+                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -FilePath `"$TargetFolder\$SysmonExecutable`" -ArgumentList `"/AcceptEULA -i $TargetFolder\$Script:SysmonXMLName`""
             }
             else {
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -FilePath `"$TargetFolder\$SysmonExecutable`" -ArgumentList `"/AcceptEula -c $TargetFolder\$Script:SysmonXMLName`""
+                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -FilePath `"$TargetFolder\$SysmonExecutable`" -ArgumentList `"/AcceptEULA -c $TargetFolder\$Script:SysmonXMLName`""
             }
         }
 

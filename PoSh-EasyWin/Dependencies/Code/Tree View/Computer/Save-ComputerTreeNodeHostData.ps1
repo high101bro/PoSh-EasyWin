@@ -14,7 +14,7 @@ Function Save-ComputerTreeNodeHostData {
             if ($Computer.Name -in $script:ComputerTreeViewSelected) {
                 $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name IPv4Address -Value $Section3HostDataIPTextBox.Text -Force
                 $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name MACAddress  -Value $Section3HostDataMACTextBox.Text -Force
-                $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Section3HostDataNotesTextBox.Text -Force 
+                $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Section3HostDataNotesRichTextBox.Text -Force 
             }
             # Else, if the node is not selected, it will retain what was saved
             else {
@@ -30,7 +30,7 @@ Function Save-ComputerTreeNodeHostData {
             if ($Computer.Name -eq $Section3HostDataNameTextBox.Text) {
                 $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name IPv4Address -Value $Section3HostDataIPTextBox.Text -Force
                 $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name MACAddress  -Value $Section3HostDataMACTextBox.Text -Force
-                $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Section3HostDataNotesTextBox.Text -Force 
+                $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Section3HostDataNotesRichTextBox.Text -Force 
             }
             # Else, if the node is not selected, it will retain what was saved
             else {
@@ -45,7 +45,7 @@ Function Save-ComputerTreeNodeHostData {
     $ComputerTreeNodeSaveDataTemp = $null
     $ComputerTreeNodeSaveData     = $null
   
-    $script:Section3HostDataNotesSaveCheck = $Section3HostDataNotesTextBox.Text
+    $script:Section3HostDataNotesSaveCheck = $Section3HostDataNotesRichTextBox.Text
     Check-HostDataIfModified
 
     # Saves the TreeView Data to File

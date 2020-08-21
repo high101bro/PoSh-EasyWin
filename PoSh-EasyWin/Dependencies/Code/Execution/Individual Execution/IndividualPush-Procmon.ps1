@@ -56,7 +56,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
     }
 
 
-    foreach ($TargetComputer in $ComputerList) {
+    foreach ($TargetComputer in $script:ComputerList) {
         $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) Collecting $CollectionName - $TargetComputer")
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -94,14 +94,14 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
         # Process monitor must be launched as a separate process otherwise the sleep and terminate commands below would never execute and fill the disk
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Starting process monitor on $TargetComputer")
-        ### $Command = Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/accepteula $script:Credential -s \\$TargetComputer $RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEula /BackingFile $RemoteDrive\$TargetFolder\$TargetComputer /RunTime 10 /Quiet" -PassThru | Out-Null
-        ### $Command = Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/accepteula -s \\$TargetComputer $RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEula /BackingFile `"$RemoteDrive\$TargetFolder\$ProcmonName-$TargetComputer`" /RunTime $ProcMonDuration /Quiet" -PassThru | Out-Null
+        ### $Command = Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA $script:Credential -s \\$TargetComputer $RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$TargetComputer /RunTime 10 /Quiet" -PassThru | Out-Null
+        ### $Command = Start-Process -WindowStyle Hidden -FilePath $PsExecPath -ArgumentList "/AcceptEULA -s \\$TargetComputer $RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEULA /BackingFile `"$RemoteDrive\$TargetFolder\$ProcmonName-$TargetComputer`" /RunTime $ProcMonDuration /Quiet" -PassThru | Out-Null
         ### $Command
-        Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEula /BackingFile $RemoteDrive\$TargetFolder\$ProcmonName /RunTime $ProcMonDuration /Quiet"
+        Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList "$RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$ProcmonName /RunTime $ProcMonDuration /Quiet"
 
         Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "$($SysinternalsProcessMonitorCheckbox.Name)"
         #Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "$Command"
-        Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEula /BackingFile $RemoteDrive\$TargetFolder\$ProcmonName /RunTime $ProcMonDuration /Quiet`""
+        Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "Invoke-WmiMethod -ComputerName $TargetComputer -Class Win32_Process -Name Create -ArgumentList `"$RemoteDrive\$TargetFolder\$ProcmonExecutable /AcceptEULA /BackingFile $RemoteDrive\$TargetFolder\$ProcmonName /RunTime $ProcMonDuration /Quiet`""
 
         $FirstCheck      = $true
         $SecondsToCheck  = $ExternalProgramsCheckTimeTextBox.Text
@@ -187,7 +187,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 elseif ($ExternalProgramsWinRMRadioButton.checked) {
     New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
 
-    $PSSession = New-PSSession -ComputerName $ComputerList | Sort-Object ComputerName
+    $PSSession = New-PSSession -ComputerName $script:ComputerList | Sort-Object ComputerName
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "WinRM Collection Started to $($PSSession.count) Endpoints"
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
 

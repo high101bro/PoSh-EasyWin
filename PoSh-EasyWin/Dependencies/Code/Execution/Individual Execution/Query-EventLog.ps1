@@ -7,7 +7,7 @@ function Query-EventLog {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Query: $CollectionName")                    
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
-    foreach ($TargetComputer in $ComputerList) {
+    foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer

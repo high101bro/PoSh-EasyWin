@@ -114,6 +114,13 @@ param (
     [System.Management.Automation.PSCredential]
     $Credential,
 
+
+    [Parameter(
+        Mandatory=$false,
+        HelpMessage="This allows the scaling of the GUI to support various DPIs due to Legacy, HD, and 4K screen sizes."
+    )]
+    $FormScale = 1,
+
     [Parameter(
         Mandatory=$true,
         ParameterSetName="No GUI Computer Name",
@@ -303,11 +310,13 @@ param (
         HelpMessage="This disables the GUI and uses commandline mode."
     )]
     [switch]
-    $NoGUI,
+    $NoGUI
 
 
 
-
+<# Removed because of inconsistent Winform scaling. The Out-GridView used to show the Copyright/EULA also had the quirk of changing the scaling of WinForms. 
+   I cannot find a solution online, but the OGV EULA allowed forced the quirk to happen, allowing for some level of consistency when scaling the GUI.
+   The -AcceptEULA switch, although useful to bypass the EULA, is not currently implemented until I can find a better solution with the scaling.
     [Parameter(
         Mandatory=$false,
         ParameterSetName="GUI"
@@ -324,7 +333,7 @@ param (
     )]
     [switch]
     $AcceptEULA
-
+#>
 
 
 )
@@ -337,7 +346,8 @@ param (
 $ErrorActionPreference = "SilentlyContinue"
    
 # Location PoSh-EasyWin will save files
-$PoShHome                         = Split-Path -parent $MyInvocation.MyCommand.Definition
+$PoShHome                         =  $MyInvocation.MyCommand.Path
+                                    #Split-Path -parent $MyInvocation.MyCommand.Definition
     # Files
     $LogFile                      = "$PoShHome\Log File.txt"
     $IPListFile                   = "$PoShHome\iplist.txt"
@@ -352,8 +362,8 @@ $PoShHome                         = Split-Path -parent $MyInvocation.MyCommand.D
 
     # Dependencies
     $Dependencies                 = "$PoShHome\Dependencies"
-        # Location of Query Commands and Scripts 
-        $QueryCommandsAndScripts              = "$Dependencies\Query Commands and Scripts"
+        # Location of Commands and Scripts 
+        $QueryCommandsAndScripts              = "$Dependencies\Commands and Scripts"
 
         # Location of Active Directory & Endpoint Commands
             $CommandsEndpoint                 = "$QueryCommandsAndScripts\Commands - Endpoint.csv"
@@ -468,12 +478,32 @@ else {
 [reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
 [reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
 
+
+# Test code for loading and executing C# / C Sharpe code within PowerShell
+$id = get-random
+$code = @"
+using System;
+namespace Loading
+{
+	public class Test$id
+	{
+        public static void Main()
+        {
+			Console.WriteLine("C# Test: Loading PoSh-EasyWin... Enjoy!");
+        }
+    }
+}
+"@
+Add-Type -TypeDefinition $code -Language CSharp	
+iex "[Loading.Test$id]::Main()"
+
+
 #[System.Windows.Forms.Application]::EnableVisualStyles()
 $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     Text          = "PoSh-EasyWin   [$([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)]"
     StartPosition = "CenterScreen"
-    Size          = @{ Width  = 1260 #1241
-                       Height = 660 } #638
+    Size          = @{ Width  = $FormScale * 1260 #1241
+                       Height = $FormScale * 660 } #638
     Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
     AutoScroll    = $True
     FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
@@ -505,11 +535,11 @@ $MainLeftTabControlBoxHeight = 590
 
 $MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Main Tab Window"
-    Location = @{ X = 5
-                  Y = 5 }
-    Size     = @{ Width  = $MainLeftTabControlBoxWidth
-                  Height = $MainLeftTabControlBoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * 5
+                  Y = $FormScale * 5 }
+    Size     = @{ Width  = $FormScale * $MainLeftTabControlBoxWidth
+                  Height = $FormScale * $MainLeftTabControlBoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     SelectedIndex = 0
     ShowToolTips  = $True
 }
@@ -531,7 +561,7 @@ $Section1CollectionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Collections"
     Name                    = "Collections Tab"
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $MainLeftTabControl.Controls.Add($Section1CollectionsTab)
 
@@ -561,13 +591,13 @@ $TextBoxHeight        = 536
 #------------------------
 $MainLeftCollectionsTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Collections TabControl"
-    Location = @{ X = $TabRightPosition
-                  Y = $TabhDownPosition }
-    Size     = @{ Width  = $TabAreaWidth
-                  Height = $TabAreaHeight }
+    Location = @{ X = $FormScale * $TabRightPosition
+                  Y = $FormScale * $TabhDownPosition }
+    Size     = @{ Width  = $FormScale * $TabAreaWidth
+                  Height = $FormScale * $TabAreaHeight }
     ShowToolTips  = $True
     SelectedIndex = 0
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section1CollectionsTab.Controls.Add($MainLeftCollectionsTabControl)
 
@@ -583,23 +613,16 @@ $Section1CollectionsTab.Controls.Add($MainLeftCollectionsTabControl)
 #                                                                              |___/       
 #============================================================================================================================================================
 
-$QueriesRightPosition     = 5
-$QueriesDownPositionStart = 10
-$QueriesDownPosition      = 10
-$QueriesDownPositionShift = 25
-$QueriesBoxWidth          = 410
-$QueriesBoxHeight         = 25
-
 #------------------
 # Commands TabPage
 #------------------
 $Section1CommandsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Queries"
-    Location = @{ X = $Column1RightPosition
-                  Y = $Column1DownPosition }
-    Size     = @{ Width  = $Column1BoxWidth
-                  Height = $Column1BoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $Column1RightPosition
+                  Y = $FormScale * $Column1DownPosition }
+    Size     = @{ Width  = $FormScale * $Column1BoxWidth
+                  Height = $FormScale * $Column1BoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1CommandsTab)
@@ -612,7 +635,7 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1CommandsTab)
 $script:AllEndpointCommands = Import-Csv $CommandsEndpoint
 
 # Imports scripts from the Endpoint script folder and loads them into the treeview
-# New scripts can be added to 'Dependencies\Query Commands and Scripts\Scirpts - Endpoint' to be imported
+# New scripts can be added to 'Dependencies\Commands and Scripts\Scirpts - Endpoint' to be imported
 # Verify that the scripts function properly and return results with the Invoke-Command cmdlet
 . "$Dependencies\Code\Main Body\Import-EndpointScripts.ps1"
 Import-EndpointScripts
@@ -625,7 +648,7 @@ Import-EndpointScripts
 $script:AllActiveDirectoryCommands = Import-Csv $CommandsActiveDirectory
 
 # Imports scripts from the Active Directory script folder and loads them into the treeview
-# New scripts can be added to 'Dependencies\Query Commands and Scripts\Scirpts - Active Directory' to be imported
+# New scripts can be added to 'Dependencies\Commands and Scripts\Scirpts - Active Directory' to be imported
 # Verify that the scripts function properly and return results with the Invoke-Command cmdlet
 . "$Dependencies\Code\Main Body\Import-ActiveDirectoryScripts.ps1"
 Import-ActiveDirectoryScripts
@@ -699,13 +722,13 @@ Update-QueryHistory
 #---------------------------------------------------
 $CommandsTreeViewViewByGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text     = "Display And Group By:"
-    Location = @{ X = 0
-                  Y = 5
+    Location = @{ X = $FormScale * 0
+                  Y = $FormScale * 5
                 }
-    Size     = @{ Width  = 232 #173
-                  Height = 37
+    Size     = @{ Width  = $FormScale * 232 #173
+                  Height = $FormScale * 37
                 }
-    Font     = New-Object System.Drawing.Font("$Font",11,1,2,1)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
 }
 
@@ -715,11 +738,11 @@ $CommandsTreeViewViewByGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
     . "$Dependencies\Code\System.Windows.Forms\RadioButton\CommandsViewMethodRadioButton.ps1"
     $CommandsViewMethodRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
         Text     = "Method"
-        Location = @{ X = 10
-                      Y = 13 }
-        Size     = @{ Width  = 70
-                      Height = 22 }
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                      Y = $FormScale * 13 }
+        Size     = @{ Width  = $FormScale * 70
+                      Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Checked   = $True
         Add_Click = $CommandsViewMethodRadioButtonAdd_Click
@@ -736,9 +759,9 @@ $CommandsTreeViewViewByGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
         Text     = "Commands"
         Location = @{ X = $CommandsViewMethodRadioButton.Location.X + $CommandsViewMethodRadioButton.Size.Width
                       Y = $CommandsViewMethodRadioButton.Location.Y }
-        Size     = @{ Width  = 90
-                      Height = 22 }
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size     = @{ Width  = $FormScale * 90
+                      Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Checked   = $false
         Add_Click      = $CommandsViewQueryRadioButtonAdd_Click
@@ -754,10 +777,10 @@ $Section1CommandsTab.Controls.Add($CommandsTreeViewViewByGroupBox)
 #-------------------------------------
 $PoShEasyWinLogoPictureBox = New-Object System.Windows.Forms.PictureBox -Property @{
     #text     = "PoSh-EasyWin Image"
-    Location = @{ X = $CommandsTreeViewViewByGroupBox.Location.X + $CommandsTreeViewViewByGroupBox.Size.Width + 15
-                  Y = $CommandsTreeViewViewByGroupBox.Location.Y }
-    Size     = @{ Width  = 175
-                  Height = 35 }
+    Location = @{ X = $FormScale * $CommandsTreeViewViewByGroupBox.Location.X + $CommandsTreeViewViewByGroupBox.Size.Width + 15
+                  Y = $FormScale * $CommandsTreeViewViewByGroupBox.Location.Y }
+    Size     = @{ Width  = $FormScale * 175
+                  Height = $FormScale * 35 }
     AutoSize = $true
     SizeMode = 'Stretch'
     Image = [System.Drawing.Image]::FromFile("$Dependencies\PoSh-EasyWin Image.png" )
@@ -778,11 +801,11 @@ $Section1CommandsTab.Controls.Add($PoShEasyWinLogoPictureBox)
 . "$Dependencies\Code\System.Windows.Forms\ComboBox\CommandsTreeViewSearchComboBox.ps1"
 $CommandsTreeViewSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Name     = "Search TextBox"
-    Location = @{ X = 0
-                  Y = 45 }
-    Size     = @{ Width  = 172
-                  Height = 25 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * 0
+                  Y = $FormScale * 45 }
+    Size     = @{ Width  = $FormScale * 172
+                  Height = $FormScale * 25 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
     Add_KeyDown    = $CommandsTreeViewSearchComboBoxAdd_KeyDown
@@ -799,10 +822,10 @@ $Section1CommandsTab.Controls.Add($CommandsTreeViewSearchComboBox)
 . "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeViewSearchButton.ps1"
 $CommandsTreeViewSearchButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Search"
-    Location = @{ X = $CommandsTreeViewSearchComboBox.Size.Width + 5
-                  Y = 45 }
-    Size     = @{ Width  = 55
-                  Height = 22 }
+    Location = @{ X =  $CommandsTreeViewSearchComboBox.Size.Width + $($FormScale * 5)
+                  Y = $FormScale * 45 }
+    Size     = @{ Width  = $FormScale * 55
+                  Height = $FormScale * 22 }
     Add_Click      = $CommandsTreeViewSearchButtonAdd_Click
     Add_MouseHover = $CommandsTreeViewSearchButtonAdd_MouseHover
 }
@@ -816,10 +839,10 @@ CommonButtonSettings -Button $CommandsTreeViewSearchButton
 . "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeviewDeselectAllButton.ps1"
 $CommandsTreeviewDeselectAllButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Deselect All'
-    Location = @{ X = 335
-                  Y = 45 }
-    Size     = @{ Width  = 100
-                  Height = 22 }
+    Location = @{ X = $FormScale * 335
+                  Y = $FormScale * 45 }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
     Add_Click      = $CommandsTreeviewDeselectAllButtonAdd_Click
     Add_MouseHover = $CommandsTreeviewDeselectAllButtonAdd_MouseHover
 }
@@ -833,10 +856,10 @@ CommonButtonSettings -Button $CommandsTreeviewDeselectAllButton
 . "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeViewQueryHistoryRemovalButton.ps1"
 $CommandsTreeViewQueryHistoryRemovalButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Remove Query History"
-    Location = @{ X = 265
-                  Y = 504 }
-    Size     = @{ Width  = 150
-                  Height = 22 }
+    Location = @{ X = $FormScale * 265
+                  Y = $FormScale * 504 }
+    Size     = @{ Width  = $FormScale * 150
+                  Height = $FormScale * 22 }
     Add_Click = $CommandsTreeViewQueryHistoryRemovalButtonAdd_Click
 }
 CommonButtonSettings -Button $CommandsTreeViewQueryHistoryRemovalButton
@@ -848,11 +871,11 @@ CommonButtonSettings -Button $CommandsTreeViewQueryHistoryRemovalButton
 # Commands Treeview Nodes
 #-------------------------
 $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-    Location = @{ X = 0 
-                  Y = 70 }
-    Size     = @{ Width  = 435
-                  Height = 459 }
-    Font             = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * 0 
+                  Y = $FormScale * 70 }
+    Size     = @{ Width  = $FormScale * 435
+                  Height = $FormScale * 459 }
+    Font             = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     CheckBoxes       = $True
     #LabelEdit       = $True
     ShowLines        = $True
@@ -887,10 +910,6 @@ $script:CommandsTreeView.Nodes.Add($script:TreeNodePreviouslyExecutedCommands)
 #                                                  |___/                                          |___/          
 #============================================================================================================================================================
 
-$EventLogsRightPosition     = 5
-$EventLogsDownPositionStart = 10
-$EventLogsDownPosition      = 10
-$EventLogsDownPositionShift = 22
 $EventLogsBoxWidth          = 410
 $EventLogsBoxHeight         = 22
 
@@ -899,11 +918,11 @@ $EventLogsBoxHeight         = 22
 #--------------------
 $Section1EventLogsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Event Logs"
-    Location = @{ X = $Column1RightPosition
-                  Y = $Column1DownPosition }
-    Size     = @{ Width  = $Column1BoxWidth
-                  Height = $Column1BoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $Column1RightPosition
+                  Y = $FormScale * $Column1DownPosition }
+    Size     = @{ Width  = $FormScale * $Column1BoxWidth
+                  Height = $FormScale * $Column1BoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1EventLogsTab)
@@ -914,11 +933,11 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1EventLogsTab)
 #-------------------------
 $EventLogsMainLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "Event Logs can be obtained from workstations and servers."
-    Location = @{ X = 5
-                  Y = 5 }
-    Size     = @{ Width  = $EventLogsBoxWidth
-                  Height = $EventLogsBoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",10,1,3,1)
+    Location = @{ X = $FormScale * 5
+                  Y = $FormScale * 5 }
+    Size     = @{ Width  = $FormScale * $EventLogsBoxWidth
+                  Height = $FormScale * $EventLogsBoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Black"
 }
 $Section1EventLogsTab.Controls.Add($EventLogsMainLabel)
@@ -929,11 +948,11 @@ $Section1EventLogsTab.Controls.Add($EventLogsMainLabel)
 #-------------------------------
 $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text      = "Collection Options"
-    Location = @{ X = 5
+    Location = @{ X = $FormScale * 5
                   Y = $EventLogsMainLabel.Location.Y + $EventLogsMainLabel.Size.Height }
-    Size     = @{ Width  = 425
-                  Height = 94 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Size     = @{ Width  = $FormScale * 425
+                  Height = $FormScale * 94 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
 
@@ -943,11 +962,11 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
     #---------------------------------------
     $EventLogProtocolRadioButtonLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Protocol:"
-        Location = @{ X = 7
-                      Y = 20 }
-        Size     = @{ Width  = 73
-                      Height = 20 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 7
+                      Y = $FormScale * 20 }
+        Size     = @{ Width  = $FormScale * 73
+                      Height = $FormScale * 20 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
 
@@ -958,12 +977,12 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
     . "$Dependencies\Code\System.Windows.Forms\RadioButton\EventLogWinRMRadioButton.ps1"
     $EventLogWinRMRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
         Text     = "WinRM"
-        Location = @{ X = 80
-                      Y = 15 }
-        Size     = @{ Width  = 80
-                      Height = 22 }
+        Location = @{ X = $FormScale * 80
+                      Y = $FormScale * 15 }
+        Size     = @{ Width  = $FormScale * 80
+                      Height = $FormScale * 22 }
         Checked  = $True
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Add_Click      = $EventLogWinRMRadioButtonAdd_Click
         Add_MouseHover = $EventLogWinRMRadioButtonAdd_MouseHover
@@ -976,12 +995,12 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
     . "$Dependencies\Code\System.Windows.Forms\RadioButton\EventLogRPCRadioButton.ps1"
     $EventLogRPCRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
         Text     = "RPC"
-        Location = @{ X = $EventLogWinRMRadioButton.Location.X + $EventLogWinRMRadioButton.Size.Width + 10
+        Location = @{ X = $EventLogWinRMRadioButton.Location.X + $EventLogWinRMRadioButton.Size.Width + $($FormScale * 10)
                       Y = $EventLogWinRMRadioButton.Location.Y }
-        Size     = @{ Width  = 60
-                      Height = 22 }
+        Size     = @{ Width  = $FormScale * 60
+                      Height = $FormScale * 22 }
         Checked  = $False
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Add_Click      = $EventLogRPCRadioButtonAdd_Click
         Add_MouseHover = $EventLogRPCRadioButtonAdd_MouseHover
@@ -994,11 +1013,11 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
     . "$Dependencies\Code\System.Windows.Forms\Label\EventLogsMaximumCollectionLabel.ps1"
     $EventLogsMaximumCollectionLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Max Collection:"
-        Location = @{ X = $EventLogRPCRadioButton.Location.X + $EventLogRPCRadioButton.Size.Width + 35
-                      Y = $EventLogRPCRadioButton.Location.Y + 3 }
-        Size     = @{ Width  = 100
-                      Height = 22 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $EventLogRPCRadioButton.Location.X + $EventLogRPCRadioButton.Size.Width + $($FormScale * 35)
+                      Y = $EventLogRPCRadioButton.Location.Y + $($FormScale * 3) }
+        Size     = @{ Width  = $FormScale * 100
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Black"
         Add_MouseHover = $EventLogsMaximumCollectionLabelAdd_MouseHover
     }
@@ -1011,10 +1030,10 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
         $EventLogsMaximumCollectionTextBox = New-Object System.Windows.Forms.TextBox -Property @{
             Text     = 100
             Location = @{ X = $EventLogsMaximumCollectionLabel.Location.X + $EventLogsMaximumCollectionLabel.Size.Width
-                          Y = $EventLogsMaximumCollectionLabel.Location.Y - 3 }
-            Size     = @{ Width  = 50
-                          Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",10,0,0,0)
+                          Y = $EventLogsMaximumCollectionLabel.Location.Y - $($FormScale * 3) }
+            Size     = @{ Width  = $FormScale * 50
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
             Enabled  = $True
             Add_MouseHover = $EventLogsMaximumCollectionTextBoxAdd_MouseHover
         }
@@ -1025,11 +1044,11 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
     #-----------------------------------
     $EventLogsDatetimeStartLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "DateTime Start:"
-        Location = @{ X = 77
-                      Y = $EventLogProtocolRadioButtonLabel.Location.Y + $EventLogProtocolRadioButtonLabel.Size.Height + 5 }
-        Size     = @{ Width  = 90
-                      Height = 22 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 77
+                      Y = $EventLogProtocolRadioButtonLabel.Location.Y + $EventLogProtocolRadioButtonLabel.Size.Height + $($FormScale * 5) }
+        Size     = @{ Width  = $FormScale * 90
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Black"
     }
 
@@ -1041,9 +1060,9 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
     $EventLogsStartTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
         Location      = @{ X = $EventLogsDatetimeStartLabel.Location.X + $EventLogsDatetimeStartLabel.Size.Width
                            Y = $EventLogProtocolRadioButtonLabel.Location.Y + $EventLogProtocolRadioButtonLabel.Size.Height }
-        Size          = @{ Width  = 250
-                           Height = 100 }
-        Font         = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Size          = @{ Width  = $FormScale * 250
+                           Height = $FormScale * 100 }
+        Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Format       = [windows.forms.datetimepickerFormat]::custom
         CustomFormat = “dddd MMM dd, yyyy hh:mm tt”
         Enabled      = $True
@@ -1071,8 +1090,8 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
         Location = @{ X = $EventLogsDatetimeStartLabel.Location.X
                       Y = $EventLogsDatetimeStartLabel.Location.Y + $EventLogsDatetimeStartLabel.Size.Height }
         Size     = @{ Width  = $EventLogsDatetimeStartLabel.Width
-                      Height = 22 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Black"
     }
 
@@ -1083,10 +1102,10 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
     . "$Dependencies\Code\System.Windows.Forms\DateTimePicker\EventLogsStopTimePicker.ps1"
     $EventLogsStopTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
         Location     = @{ X = $EventLogsDatetimeStopLabel.Location.X + $EventLogsDatetimeStopLabel.Size.Width
-                          Y = $EventLogsDatetimeStartLabel.Location.Y + $EventLogsDatetimeStartLabel.Size.Height - 5 }
+                          Y = $EventLogsDatetimeStartLabel.Location.Y + $EventLogsDatetimeStartLabel.Size.Height - $($FormScale * 5) }
         Size         = @{ Width  = $EventLogsStartTimePicker.Width
-                          Height = 100 }
-        Font         = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                          Height = $FormScale * 100 }
+        Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Format       = [windows.forms.datetimepickerFormat]::custom
         CustomFormat = “dddd MMM dd, yyyy hh:mm tt”
         Enabled      = $True
@@ -1111,11 +1130,11 @@ $Section1EventLogsTab.Controls.Add($EventLogsOptionsGroupBox)
 #-----------------------------------------------
 $EventLogsEventIDsManualEntryCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Event IDs Manual Entry"
-    Location = @{ X = 7
-                  Y = $EventLogsOptionsGroupBox.Location.Y + $EventLogsOptionsGroupBox.Size.Height + 10 }
-    Size     = @{ Width  = 200
-                  Height = $EventLogsBoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location = @{ X = $FormScale * 7
+                  Y = $EventLogsOptionsGroupBox.Location.Y + $EventLogsOptionsGroupBox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * $EventLogsBoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -1127,11 +1146,11 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryCheckbox)
 #--------------------------------------------
 $EventLogsEventIDsManualEntryLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "Enter Event IDs; One Per Line"
-    Location = @{ X = 5
+    Location = @{ X = $FormScale * 5
                   Y = $EventLogsEventIDsManualEntryCheckbox.Location.Y + $EventLogsEventIDsManualEntryCheckbox.Size.Height }
-    Size     = @{ Width  = 200
-                  Height = $EventLogsBoxHeight }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * $EventLogsBoxHeight }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor = "Black"
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryLabel)
@@ -1143,10 +1162,10 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryLabel)
 . "$Dependencies\Code\System.Windows.Forms\Button\EventLogsEventIDsManualEntrySelectionButton.ps1"
 $EventLogsEventIDsManualEntrySelectionButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Select Event IDs"
-    Location = @{ X = 4
+    Location = @{ X = $FormScale * 4
                   Y = $EventLogsEventIDsManualEntryLabel.Location.Y + $EventLogsEventIDsManualEntryLabel.Size.Height }
-    Size     = @{ Width  = 125
-                  Height = 20 }
+    Size     = @{ Width  = $FormScale * 125
+                  Height = $FormScale * 20 }
     Add_Click = $EventLogsEventIDsManualEntrySelectionButtonAdd_Click
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntrySelectionButton) 
@@ -1158,10 +1177,10 @@ CommonButtonSettings -Button $EventLogsEventIDsManualEntrySelectionButton
 #---------------------------------------------------
 $EventLogsEventIDsManualEntryClearButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Clear"
-    Location = @{ X = 136
+    Location = @{ X = $FormScale * 136
                   Y = $EventLogsEventIDsManualEntryLabel.Location.Y + $EventLogsEventIDsManualEntryLabel.Size.Height }
-    Size     = @{ Width  = 75
-                  Height = 20 }
+    Size     = @{ Width  = $FormScale * 75
+                  Height = $FormScale * 20 }
     Add_Click = { $EventLogsEventIDsManualEntryTextbox.Text = "" }
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryClearButton) 
@@ -1173,16 +1192,16 @@ CommonButtonSettings -Button $EventLogsEventIDsManualEntryClearButton
 #----------------------------------------------
 $EventLogsEventIDsManualEntryTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Lines   = $null
-    Location = @{ X = 5
-                  Y = $EventLogsEventIDsManualEntryClearButton.Location.Y + $EventLogsEventIDsManualEntryClearButton.Size.Height + 5 }
-    Size     = @{ Width  = 205
-                  Height = 139 }
+    Location = @{ X = $FormScale * 5
+                  Y = $EventLogsEventIDsManualEntryClearButton.Location.Y + $EventLogsEventIDsManualEntryClearButton.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 205
+                  Height = $FormScale * 139 }
     MultiLine     = $True
     WordWrap      = $True
     AcceptsTab    = $false 
     AcceptsReturn = $false 
     ScrollBars    = "Vertical"
-    Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryTextbox)
 
@@ -1196,11 +1215,11 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryTextbox)
 #--------------------------------------------
 $EventLogsQuickPickSelectionCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Event IDs Quick Selection"
-    Location = @{ X = 220
-                  Y = $EventLogsOptionsGroupBox.Location.Y + $EventLogsOptionsGroupBox.Size.Height + 10 }
-    Size     = @{ Width  = 200
-                  Height = $EventLogsBoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location = @{ X = $FormScale * 220
+                  Y = $EventLogsOptionsGroupBox.Location.Y + $EventLogsOptionsGroupBox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * $EventLogsBoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -1212,13 +1231,14 @@ $Section1EventLogsTab.Controls.Add( $EventLogsQuickPickSelectionCheckbox )
 #-----------------------------------------
 $EventLogsQuickPickSelectionLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = "Event IDs by Topic - Can Select Multiple"
-    Location = @{ X = 218
+    Location = @{ X = $FormScale * 218
                   Y = $EventLogsQuickPickSelectionCheckbox.Location.Y + $EventLogsQuickPickSelectionCheckbox.Size.Height }
-    Size     = @{ Width  = $EventLogsBoxWidth
-                  Height = $EventLogsBoxHeight }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * $EventLogsBoxWidth
+                  Height = $FormScale * $EventLogsBoxHeight }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor = "Black"
 }
+$Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionLabel) 
 
 
 #-----------------------------------------------------------
@@ -1227,15 +1247,29 @@ $EventLogsQuickPickSelectionLabel = New-Object System.Windows.Forms.Label -Prope
 . "$Dependencies\Code\System.Windows.Forms\Button\EventLogsQuickPickSelectionClearButton.ps1"
 $EventLogsQuickPickSelectionClearButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Clear"
-    Location = @{ X = 356
+    Location = @{ X = $FormScale * 356
                   Y = $EventLogsQuickPickSelectionLabel.Location.Y + $EventLogsQuickPickSelectionLabel.Size.Height }
-    Size     = @{ Width  = 75
-                  Height = 20 }
+    Size     = @{ Width  = $FormScale * 75
+                  Height = $FormScale * 20 }
     Add_Click = $EventLogsQuickPickSelectionClearButtonAdd_Click
 }
 $Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionClearButton) 
-$Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionLabel) 
 CommonButtonSettings -Button $EventLogsQuickPickSelectionClearButton
+
+
+#---------------------------------------------------------------
+# Event Logs - Event IDs Quick Pick Selection Select All Button
+#---------------------------------------------------------------
+$EventLogsQuickPickSelectionSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
+    Text     = "Select All"
+    Location = @{ X = $EventLogsQuickPickSelectionClearButton.Location.X - $EventLogsQuickPickSelectionClearButton.Size.Width - $($FormScale + 10)
+                  Y = $EventLogsQuickPickSelectionClearButton.Location.Y }
+    Size     = @{ Width  = $FormScale * 75
+                  Height = $FormScale * 20 }
+    Add_Click = { For ($i=0;$i -lt $EventLogsQuickPickSelectionCheckedlistbox.Items.count;$i++) { $EventLogsQuickPickSelectionCheckedlistbox.SetItemChecked($i,$true) } }
+}
+$Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionSelectAllButton) 
+CommonButtonSettings -Button $EventLogsQuickPickSelectionSelectAllButton
 
 
 #-------------------------------------------------
@@ -1245,12 +1279,12 @@ CommonButtonSettings -Button $EventLogsQuickPickSelectionClearButton
 $EventLogsQuickPickSelectionCheckedListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -Property @{
     Name     = "Event Logs Selection"
     Text     = "Event Logs Selection"
-    Location = @{ X = 220
-                  Y = $EventLogsQuickPickSelectionClearButton.Location.Y + $EventLogsQuickPickSelectionClearButton.Size.Height + 5 }
-    Size     = @{ Width  = 210
-                  Height = 150 }
+    Location = @{ X = $FormScale * 220
+                  Y = $EventLogsQuickPickSelectionClearButton.Location.Y + $EventLogsQuickPickSelectionClearButton.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 210
+                  Height = $FormScale * 150 }
     ScrollAlwaysVisible = $true
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = $EventLogsQuickPickSelectionCheckedListBoxAdd_Click
 }
 foreach ( $Query in $script:EventLogQueries ) { $EventLogsQuickPickSelectionCheckedListBox.Items.Add("$($Query.Name)") }
@@ -1261,7 +1295,6 @@ $Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionCheckedListBox)
 # Event Logs - Event IDs To Monitor
 #============================================================================================================================================================
 $script:EventLogSeverityQueries = @()
-
 
 #####################################################
 # Event Logs - Windows IT Pro Center - From CSV File
@@ -1306,11 +1339,11 @@ foreach ($CSVLine in $EventLogsToMonitorMicrosoft) {
 #--------------------------------------------
 $EventLogsEventIDsToMonitorCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Event IDs To Monitor"
-    Location = @{ X = 7
-                    Y = $EventLogsEventIDsManualEntryTextbox.Location.Y + $EventLogsEventIDsManualEntryTextbox.Size.Height + 15 }
-    Size     = @{ Width  = 350
-                    Height = $EventLogsBoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location = @{ X = $FormScale * 7
+                  Y = $EventLogsEventIDsManualEntryTextbox.Location.Y + $EventLogsEventIDsManualEntryTextbox.Size.Height + $($FormScale * 15) }
+    Size     = @{ Width  = $FormScale * 250
+                  Height = $FormScale * $EventLogsBoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -1323,14 +1356,29 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorCheckbox)
 . "$Dependencies\Code\System.Windows.Forms\Button\EventLogsEventIDsToMonitorClearButton.ps1"
 $EventLogsEventIDsToMonitorClearButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Clear"
-    Location = @{ X = 356
-                  Y = $EventLogsEventIDsToMonitorCheckbox.Location.Y + $EventLogsEventIDsToMonitorCheckbox.Size.Height - 3 }
-    Size     = @{ Width  = 75
-                  Height = 20 }
+    Location = @{ X = $FormScale * 356
+                  Y = $EventLogsEventIDsToMonitorCheckbox.Location.Y + $EventLogsEventIDsToMonitorCheckbox.Size.Height - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 75
+                  Height = $FormScale * 20 }
     Add_Click = $EventLogsEventIDsToMonitorClearButtonAdd_Click
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorClearButton) 
 CommonButtonSettings -Button $EventLogsEventIDsToMonitorClearButton
+
+
+#---------------------------------------------------------------
+# Event Logs - Event IDs Quick Pick Selection Select All Button
+#---------------------------------------------------------------
+$EventLogsEventIDsToMonitorSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
+    Text     = "Select All"
+    Location = @{ X = $EventLogsEventIDsToMonitorClearButton.Location.X - $EventLogsEventIDsToMonitorClearButton.Size.Width - $($FormScale + 10)
+                  Y = $EventLogsEventIDsToMonitorClearButton.Location.Y }
+    Size     = @{ Width  = $FormScale * 75
+                  Height = $FormScale * 20 }
+    Add_Click = { For ($i=0;$i -lt $EventLogsEventIDsToMonitorCheckListBox.Items.count;$i++) { $EventLogsEventIDsToMonitorCheckListBox.SetItemChecked($i,$true) } }
+}
+$Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorSelectAllButton) 
+CommonButtonSettings -Button $EventLogsEventIDsToMonitorSelectAllButton
 
 
 #----------------------------------------------------
@@ -1338,11 +1386,11 @@ CommonButtonSettings -Button $EventLogsEventIDsToMonitorClearButton
 #----------------------------------------------------
 $EventLogsEventIDsToMonitorLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "Events IDs to Monitor for Signs of Compromise"
-    Location = @{ X = 5
-                    Y = $EventLogsEventIDsToMonitorCheckbox.Location.Y + $EventLogsEventIDsToMonitorCheckbox.Size.Height }
-    Size     = @{ Width  = $EventLogsBoxWidth
-                    Height = $EventLogsBoxHeight }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * 5
+                  Y = $EventLogsEventIDsToMonitorCheckbox.Location.Y + $EventLogsEventIDsToMonitorCheckbox.Size.Height }
+    Size     = @{ Width  = $FormScale * $EventLogsBoxWidth
+                  Height = $FormScale * $EventLogsBoxHeight }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor = "Black"
 }
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorLabel)
@@ -1354,10 +1402,10 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorLabel)
 . "$Dependencies\Code\System.Windows.Forms\CheckedListBox\EventLogsEventIDsToMonitorCheckedListBox.ps1"
 $EventLogsEventIDsToMonitorCheckListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -Property @{
     Text     = "Event IDs [Potential Criticality] Event Summary"
-    Location = @{ X = 5
-                    Y = $EventLogsEventIDsToMonitorLabel.Location.Y + $EventLogsEventIDsToMonitorLabel.Size.Height }
-    Size     = @{ Width  = 425
-                    Height = 125 }
+    Location = @{ X = $FormScale * 5
+                  Y = $EventLogsEventIDsToMonitorLabel.Location.Y + $EventLogsEventIDsToMonitorLabel.Size.Height }
+    Size     = @{ Width  = $FormScale * 425
+                  Height = $FormScale * 125 }
     #checked            = $true
     #CheckOnClick       = $true #so we only have to click once to check a box
     #SelectionMode      = One #This will only allow one options at a time
@@ -1370,7 +1418,7 @@ foreach ( $Query in $script:EventLogSeverityQueries ) {
 }
     $EventLogsEventIDsToMonitorCheckListBox.Items.Add("4624 [test] An account was successfully logged on")    
     $EventLogsEventIDsToMonitorCheckListBox.Items.Add("4634 [test] An account was logged off") 
-$EventLogsEventIDsToMonitorCheckListBox.Font = New-Object System.Drawing.Font("$Font",11,0,0,0)
+$EventLogsEventIDsToMonitorCheckListBox.Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorCheckListBox)
 
 
@@ -1387,11 +1435,11 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorCheckListBox)
 
 $Section1RegistryTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Registry"
-    Location = @{ X = $RegistryRightPosition
-                  Y = $RegistryDownPosition }
-    Size     = @{ Width  = 450
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $RegistryRightPosition
+                  Y = $FormScale * $RegistryDownPosition }
+    Size     = @{ Width  = $FormScale * 450
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1RegistryTab)
@@ -1403,11 +1451,11 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1RegistryTab)
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\RegistrySearchCheckbox.ps1"
 $RegistrySearchCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Registry Search (WinRM)"
-    Location = @{ X = 3
-                  Y = 15 }
-    Size     = @{ Width  = 230
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * 15 }
+    Size     = @{ Width  = $FormScale * 230
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = $RegistrySearchCheckboxAdd_Click
 }
@@ -1419,15 +1467,15 @@ $Section1RegistryTab.Controls.Add($RegistrySearchCheckbox)
 #------------------------------------------------------
 $RegistrySearchRecursiveCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text     = "Recursive Search"
-    Location = @{ X = $RegistrySearchCheckbox.Size.Width + 82
-                  Y = $RegistrySearchCheckbox.Location.Y + 3 }
-    Size     = @{ Width  = 200
-                  Height = 22 }
-    Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $RegistrySearchCheckbox.Size.Width + $($FormScale * 82)
+                  Y = $RegistrySearchCheckbox.Location.Y + $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * 22 }
+    Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor  = "Black"
 }
 $Section1RegistryTab.Controls.Add($RegistrySearchRecursiveCheckbox)
-
+$script:RegistrySelected = ''
 
 #-----------------------------------------
 # Registry Search - Registry Search Label
@@ -1435,10 +1483,10 @@ $Section1RegistryTab.Controls.Add($RegistrySearchRecursiveCheckbox)
 $RegistrySearchLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = "Collection time is dependant on the amount of paths and queries; more so if recursive."
     Location = @{ X = $RegistrySearchCheckbox.Location.X
-                  Y = $RegistrySearchRecursiveCheckbox.Location.Y + $RegistrySearchRecursiveCheckbox.Size.Height + 10 }
-    Size     = @{ Width  = 450
-                  Height = 22 }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $RegistrySearchRecursiveCheckbox.Location.Y + $RegistrySearchRecursiveCheckbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 450
+                  Height = $FormScale * 22 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor = "Black"
 }
 $Section1RegistryTab.Controls.Add($RegistrySearchLabel)
@@ -1451,12 +1499,12 @@ $Section1RegistryTab.Controls.Add($RegistrySearchLabel)
 $script:RegistrySearchDirectoryRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Registry Paths; One Per Line"
     Location = @{ X = $RegistrySearchLabel.Location.X
-                  Y = $RegistrySearchLabel.Location.Y + $RegistrySearchLabel.Size.Height + 10 }
-    Size     = @{ Width  = 430
-                  Height = 80 }
+                  Y = $RegistrySearchLabel.Location.Y + $RegistrySearchLabel.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 430
+                  Height = $FormScale * 80 }
     MultiLine     = $True
     ShortcutsEnabled = $true
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseEnter = $RegistrySearchDirectoryRichTextboxAdd_MouseEnter
     Add_MouseLeave = $RegistrySearchDirectoryRichTextboxAdd_MouseLeave
     Add_MouseHover = $RegistrySearchDirectoryRichTextboxAdd_MouseHover    
@@ -1471,10 +1519,10 @@ $Section1RegistryTab.Controls.Add($script:RegistrySearchDirectoryRichTextbox)
 $RegistryKeyNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Key Name (Supports RegEx)"
     Location = @{ X = $script:RegistrySearchDirectoryRichTextbox.Location.X 
-                  Y = $script:RegistrySearchDirectoryRichTextbox.Location.Y + $script:RegistrySearchDirectoryRichTextbox.Size.Height + 10 }
-    Size     = @{ Width  = 300
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $script:RegistrySearchDirectoryRichTextbox.Location.Y + $script:RegistrySearchDirectoryRichTextbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 300
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = $RegistryKeyNameCheckBoxAdd_Click
 }
 $Section1RegistryTab.Controls.Add($RegistryKeyNameCheckbox)
@@ -1485,10 +1533,10 @@ $Section1RegistryTab.Controls.Add($RegistryKeyNameCheckbox)
 #-----------------------------------------
 $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Regex Examples"
-    Location = @{ X = $RegistryKeyNameCheckbox.Location.X + $RegistryKeyNameCheckbox.Size.Width + 28
+    Location = @{ X = $RegistryKeyNameCheckbox.Location.X + $RegistryKeyNameCheckbox.Size.Width + $($FormScale * 28)
                   Y = $RegistryKeyNameCheckbox.Location.Y }
-    Size     = @{ Width  = 100
-                  Height = 22 }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
     Add_Click = { Import-Csv "$Dependencies\RegEx Examples.csv" | Out-GridView }
 }
 $Section1RegistryTab.Controls.Add($SupportsRegexButton)
@@ -1502,12 +1550,12 @@ CommonButtonSettings -Button $SupportsRegexButton
 $script:RegistryKeyNameSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Key Name; One Per Line"
     Location = @{ X = $RegistryKeyNameCheckbox.Location.X
-                  Y = $RegistryKeyNameCheckbox.Location.Y + $RegistryKeyNameCheckbox.Size.Height + 10 }
-    Size     = @{ Width  = 430
-                  Height = 80 }
+                  Y = $RegistryKeyNameCheckbox.Location.Y + $RegistryKeyNameCheckbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 430
+                  Height = $FormScale * 80 }
     MultiLine     = $True
     ShortcutsEnabled = $true
-    Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseEnter = $RegistryKeyNameSearchRichTextboxAdd_MouseEnter
     Add_MouseLeave = $RegistryKeyNameSearchRichTextboxAdd_MouseLeave
     Add_MouseHover = $RegistryKeyNameSearchRichTextboxAdd_MouseHover    
@@ -1522,10 +1570,10 @@ $Section1RegistryTab.Controls.Add($script:RegistryKeyNameSearchRichTextbox)
 $RegistryValueNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Value Name (Supports RegEx)"
     Location = @{ X = $script:RegistryKeyNameSearchRichTextboxv.Location.X
-                  Y = $script:RegistryKeyNameSearchRichTextbox.Location.Y + $script:RegistryKeyNameSearchRichTextbox.Size.Height + 10 }
-    Size     = @{ Width  = 300
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $script:RegistryKeyNameSearchRichTextbox.Location.Y + $script:RegistryKeyNameSearchRichTextbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 300
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = $RegistryValueNameCheckboxAdd_Click
 }
 $Section1RegistryTab.Controls.Add($RegistryValueNameCheckbox)
@@ -1536,10 +1584,10 @@ $Section1RegistryTab.Controls.Add($RegistryValueNameCheckbox)
 #-----------------------------------------
 $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Regex Examples"
-    Location = @{ X = $RegistryValueNameCheckbox.Location.X + $RegistryValueNameCheckbox.Size.Width + 28
+    Location = @{ X = $RegistryValueNameCheckbox.Location.X + $RegistryValueNameCheckbox.Size.Width + $($FormScale * 28)
                   Y = $RegistryValueNameCheckbox.Location.Y }
-    Size     = @{ Width  = 100
-                  Height = 22 }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
 }
 $SupportsRegexButton.Add_Click({ Import-Csv "$Dependencies\RegEx Examples.csv" | Out-GridView }) 
 $Section1RegistryTab.Controls.Add($SupportsRegexButton)
@@ -1553,12 +1601,12 @@ CommonButtonSettings -Button $SupportsRegexButton
 $script:RegistryValueNameSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Value Name; One Per Line"
     Location = @{ X = $RegistryValueNameCheckbox.Location.X
-                  Y = $RegistryValueNameCheckbox.Location.Y + $RegistryValueNameCheckbox.Size.Height + 10 }
-    Size     = @{ Width  = 430
-                  Height = 80 }
+                  Y = $RegistryValueNameCheckbox.Location.Y + $RegistryValueNameCheckbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 430
+                  Height = $FormScale * 80 }
     MultiLine     = $True
     ShortcutsEnabled = $true
-    Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseEnter = $RegistryValueNameSearchRichTextboxAdd_MouseEnter
     Add_MouseLeave = $RegistryValueNameSearchRichTextboxAdd_MouseLeave
     Add_MouseHover = $RegistryValueNameSearchRichTextboxAdd_MouseHover    
@@ -1573,10 +1621,10 @@ $Section1RegistryTab.Controls.Add($script:RegistryValueNameSearchRichTextbox)
 $RegistryValueDataCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Value Data (Supports RegEx)"
     Location = @{ X = $script:RegistryValueNameSearchRichTextbox.Location.X
-                  Y = $script:RegistryValueNameSearchRichTextbox.Location.Y + $script:RegistryValueNameSearchRichTextbox.Size.Height + 10 }
-    Size     = @{ Width  = 300
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $script:RegistryValueNameSearchRichTextbox.Location.Y + $script:RegistryValueNameSearchRichTextbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 300
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = $RegistryValueDataCheckBoxAdd_Click
 }
 $Section1RegistryTab.Controls.Add($RegistryValueDataCheckbox)
@@ -1587,10 +1635,10 @@ $Section1RegistryTab.Controls.Add($RegistryValueDataCheckbox)
 #-----------------------------------------
 $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Regex Examples"
-    Location = @{ X = $RegistryValueDataCheckbox.Location.X + $RegistryValueDataCheckbox.Size.Width + 28
+    Location = @{ X = $RegistryValueDataCheckbox.Location.X + $RegistryValueDataCheckbox.Size.Width + $($FormScale * 28)
                   Y = $RegistryValueDataCheckbox.Location.Y }
-    Size     = @{ Width  = 100
-                  Height = 22 }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
     Add_Click = { Import-Csv "$Dependencies\RegEx Examples.csv" | Out-GridView }
 }
 $Section1RegistryTab.Controls.Add($SupportsRegexButton)
@@ -1604,12 +1652,12 @@ CommonButtonSettings -Button $SupportsRegexButton
 $script:RegistryValueDataSearchRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = "Enter Value Data; One Per Line"
     Location = @{ X = $RegistryValueDataCheckbox.Location.X
-                  Y = $RegistryValueDataCheckbox.Location.Y + $RegistryValueDataCheckbox.Size.Height + 10 }
-    Size     = @{ Width  = 430
-                  Height = 80 }
+                  Y = $RegistryValueDataCheckbox.Location.Y + $RegistryValueDataCheckbox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 430
+                  Height = $FormScale * 80 }
     MultiLine     = $True
     ShortcutsEnabled = $true
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseEnter = $RegistryValueDataSearchRichTextboxAdd_MouseEnter
     Add_MouseLeave = $RegistryValueDataSearchRichTextboxAdd_MouseLeave
     Add_MouseHover = $RegistryValueDataSearchRichTextboxAdd_MouseHover    
@@ -1630,11 +1678,11 @@ $Section1RegistryTab.Controls.Add($script:RegistryValueDataSearchRichTextbox)
 
 $Section1FileSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "File Search"
-    Location = @{ X = 3
-                  Y = -10 }
-    Size     = @{ Width  = 450
-                  Height = 22 }
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * -10 }
+    Size     = @{ Width  = $FormScale * 450
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1FileSearchTab)
@@ -1649,11 +1697,11 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1FileSearchTab)
 #------------------------------------------
 $FileSearchDirectoryListingCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Directory Listing (WinRM)"
-    Location = @{ X = 3
-                  Y = 15 }
-    Size     = @{ Width  = 230
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * 15 }
+    Size     = @{ Width  = $FormScale * 230
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -1665,11 +1713,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
         #-------------------------------------------------
         $FileSearchDirectoryListingMaxDepthLabel = New-Object System.Windows.Forms.Label -Property @{
             Text     = "Recursive Depth"
-            Location = @{ X = $FileSearchDirectoryListingCheckbox.Size.Width + 52
-                        Y = $FileSearchDirectoryListingCheckbox.Location.Y + 5}
-            Size     = @{ Width  = 100
-                        Height = 22 }
-            Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FileSearchDirectoryListingCheckbox.Size.Width + $($FormScale * 52)
+                          Y = $FileSearchDirectoryListingCheckbox.Location.Y + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 100
+                          Height = $FormScale * 22 }
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ForeColor  = "Black"
         }
         $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingMaxDepthLabel)
@@ -1681,12 +1729,12 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
         $FileSearchDirectoryListingMaxDepthTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Text     = 0
             Location = @{ X = $FileSearchDirectoryListingMaxDepthLabel.Location.X + $FileSearchDirectoryListingMaxDepthLabel.Size.Width
-                        Y = $FileSearchDirectoryListingCheckbox.Location.Y + 2}
-            Size     = @{ Width  = 50
-                        Height = 20 }
-            MultiLine      = $false
-            WordWrap       = $false
-            Font           = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                          Y = $FileSearchDirectoryListingCheckbox.Location.Y + $($FormScale * 2) }
+            Size     = @{ Width  = $FormScale * 50
+                          Height = $FormScale * 20 }
+            MultiLine = $false
+            WordWrap  = $false
+            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingMaxDepthTextbox)
 
@@ -1696,11 +1744,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
         #----------------------------------------------
         $FileSearchDirectoryListingLabel = New-Object System.Windows.Forms.Label -Property @{
             Text      = "Collection time is dependant on the directory's contents.`nPoSh v5+ for recursive depth, anything lower will do a full recursive listing."
-            Location = @{ X = 3
-                        Y = $FileSearchDirectoryListingCheckbox.Location.Y + $FileSearchDirectoryListingCheckbox.Size.Height + 5 }
-            Size     = @{ Width  = 450
-                        Height = 30 }
-            Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FormScale * 3
+                          Y = $FileSearchDirectoryListingCheckbox.Location.Y + $FileSearchDirectoryListingCheckbox.Size.Height + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 450
+                          Height = $FormScale * 30 }
+            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ForeColor = "Black"
         }
         $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingLabel)
@@ -1711,16 +1759,16 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
         #----------------------------------------------------
         . "$Dependencies\Code\System.Windows.Forms\TextBox\FileSearchDirectoryListingTextbox.ps1"
         $FileSearchDirectoryListingTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-            Location = @{ X = 3
-                        Y = $FileSearchDirectoryListingLabel.Locaiton.Y + $FileSearchDirectoryListingLabel.Size.Height + 45 }
-            Size     = @{ Width  = 430
-                        Height = 22 }
+            Location = @{ X = $FormScale * 3
+                          Y = $FileSearchDirectoryListingLabel.Locaiton.Y + $FileSearchDirectoryListingLabel.Size.Height + $($FormScale * 45) }
+            Size     = @{ Width  = $FormScale * 430
+                          Height = $FormScale * 22 }
             MultiLine          = $False
             WordWrap           = $false
             Text               = "Enter a single directory"
             AutoCompleteSource = "FileSystem"
             AutoCompleteMode   = "SuggestAppend"
-            Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             Add_MouseEnter = $FileSearchDirectoryListingTextboxAdd_MouseEnter
             Add_MouseLeave = $FileSearchDirectoryListingTextboxAdd_MouseLeave
             Add_MouseHover = $FileSearchDirectoryListingTextboxAdd_MouseHover    
@@ -1733,11 +1781,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
 #---------------------------------------------------
 $FileSearchFileSearchCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "File Search (WinRM)"
-    Location = @{ X = 3
-                  Y = $FileSearchDirectoryListingTextbox.Location.Y + $FileSearchDirectoryListingTextbox.Size.Height + 25}
-    Size     = @{ Width  = 230
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location = @{ X = $FormScale * 3
+                  Y = $FileSearchDirectoryListingTextbox.Location.Y + $FileSearchDirectoryListingTextbox.Size.Height + $($FormScale * 25) }
+    Size     = @{ Width  = $FormScale * 230
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -1749,11 +1797,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
         #--------------------------------------------------
         $FileSearchFileSearchMaxDepthLabel = New-Object System.Windows.Forms.Label -Property @{
             Text       = "Recursive Depth"
-            Location = @{ X = $FileSearchFileSearchCheckbox.Size.Width + 52
-                        Y = $FileSearchFileSearchCheckbox.Location.Y + 5 }
-            Size     = @{ Width  = 100
-                        Height = 22 }
-            Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FileSearchFileSearchCheckbox.Size.Width + $($FormScale * 52)
+                          Y = $FileSearchFileSearchCheckbox.Location.Y + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 100
+                          Height = $FormScale * 22 }
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ForeColor  = "Black"
         }
         $Section1FileSearchTab.Controls.Add($FileSearchFileSearchMaxDepthLabel)
@@ -1765,12 +1813,12 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
         $FileSearchFileSearchMaxDepthTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Text     = 0
             Location = @{ X = $FileSearchFileSearchMaxDepthLabel.Location.X + $FileSearchFileSearchMaxDepthLabel.Size.Width
-                        Y = $FileSearchFileSearchCheckbox.Location.Y + 2}
-            Size     = @{ Width  = 50
-                        Height = 20 }
+                          Y = $FileSearchFileSearchCheckbox.Location.Y + $($FormScale * 2) }
+            Size     = @{ Width  = $FormScale * 50
+                          Height = $FormScale * 20 }
             MultiLine = $false
             WordWrap  = $false
-            Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $Section1FileSearchTab.Controls.Add($FileSearchFileSearchMaxDepthTextbox)
 
@@ -1780,11 +1828,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
         #----------------------------------------------------
         $FileSearchSelectFileHashCheckbox = New-Object System.Windows.Forms.ComboBox -Property @{
             Text     = "Select FileHashes - Default is None"
-            Location = @{ X = 3
-                        Y = $FileSearchDownPosition }
-            Size     = @{ Width  = 200
-                        Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FormScale * 3
+                          Y = $FormScale * $FileSearchDownPosition }
+            Size     = @{ Width  = $FormScale * 200
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $HashList = @('None', 'MD5','SHA1','SHA256','SHA512','MD5 + SHA1','MD5 + SHA256','MD5 + SHA512','MD5 + SHA1 + SHA256 + SHA512')
         ForEach ($Hash in $HashList) { $FileSearchSelectFileHashCheckbox.Items.Add($Hash) }
@@ -1799,11 +1847,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
         #----------------------------------------
         $FileSearchFileSearchLabel = New-Object System.Windows.Forms.Label -Property @{
             Text      = "Collection time depends on the number of files and directories, plus recursive depth.`nPoSh v5+ for recursive depth, anything lower will do a full recursive search."
-            Location = @{ X = 3
-                        Y = $FileSearchFileSearchMaxDepthTextbox.Location.Y + $FileSearchFileSearchMaxDepthTextbox.Size.Height + 2 }
-            Size     = @{ Width  = 450
-                        Height = 30 }
-            Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FormScale * 3
+                          Y = $FileSearchFileSearchMaxDepthTextbox.Location.Y + $FileSearchFileSearchMaxDepthTextbox.Size.Height + $($FormScale * 2) }
+            Size     = @{ Width  = $FormScale * 450
+                          Height = $FormScale * 30 }
+            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ForeColor = "Black"
         }
         $Section1FileSearchTab.Controls.Add($FileSearchFileSearchLabel)
@@ -1815,12 +1863,12 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\FileSearchFileSearchDirectoryRichTextbox.ps1"
         $FileSearchFileSearchDirectoryRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Text     = "Enter Directories; One Per Line"
-            Location = @{ X = 3
-                        Y = $FileSearchFileSearchLabel.Location.Y + $FileSearchFileSearchLabel.Size.Height }
-            Size     = @{ Width  = 430
-                        Height = 80 }
+            Location = @{ X = $FormScale * 3
+                          Y = $FileSearchFileSearchLabel.Location.Y + $FileSearchFileSearchLabel.Size.Height }
+            Size     = @{ Width  = $FormScale * 430
+                          Height = $FormScale * 80 }
             MultiLine = $True
-            Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             Add_MouseEnter = $FileSearchFileSearchDirectoryRichTextboxAdd_MouseEnter
             Add_MouseLeave = $FileSearchFileSearchDirectoryRichTextboxAdd_MouseLeave
             Add_MouseHover = $FileSearchFileSearchDirectoryRichTextboxAdd_MouseHover
@@ -1833,14 +1881,14 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
         #---------------------------------------------
         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\FileSearchFileSearchFileRichTextbox.ps1"
         $FileSearchFileSearchFileRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-            Location = @{ X = 3
-                        Y = $FileSearchFileSearchDirectoryRichTextbox.Location.Y + $FileSearchFileSearchDirectoryRichTextbox.Size.Height + 5}
-            Size     = @{ Width  = 430
-                        Height = 80 }
-            MultiLine     = $True
-            ScrollBars    = "Vertical" #Horizontal
-            Text          = "Enter FileNames; One Per Line"
-            Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FormScale * 3
+                          Y = $FileSearchFileSearchDirectoryRichTextbox.Location.Y + $FileSearchFileSearchDirectoryRichTextbox.Size.Height + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 430
+                          Height = $FormScale * 80 }
+            MultiLine  = $True
+            ScrollBars = "Vertical" #Horizontal
+            Text       = "Enter FileNames; One Per Line"
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             Add_MouseEnter = $FileSearchFileSearchFileRichTextboxAdd_MouseEnter
             Add_MouseLeave = $FileSearchFileSearchFileRichTextboxAdd_MouseLeave
             Add_MouseHover = $FileSearchFileSearchFileRichTextboxAdd_MouseHover    
@@ -1853,11 +1901,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
 #--------------------------------------------------------
 $FileSearchAlternateDataStreamCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Alternate Data Stream Search (WinRM)"
-    Location = @{ X = 3
-                  Y = $FileSearchFileSearchFileRichTextbox.Location.Y + $FileSearchFileSearchFileRichTextbox.Size.Height + 20}
-    Size     = @{ Width  = 260
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location = @{ X = $FormScale * 3
+                  Y = $FileSearchFileSearchFileRichTextbox.Location.Y + $FileSearchFileSearchFileRichTextbox.Size.Height + $($FormScale * 20) }
+    Size     = @{ Width  = $FormScale * 260
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -1869,11 +1917,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
         #-----------------------------------------------------
         $FileSearchAlternateDataStreamMaxDepthLabel = New-Object System.Windows.Forms.Label -Property @{
             Text     = "Recursive Depth"
-            Location = @{ X = $FileSearchFileSearchCheckbox.Size.Width + 52
-                        Y = $FileSearchAlternateDataStreamCheckbox.Location.Y + 5}
-            Size     = @{ Width  = 100
-                        Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FileSearchFileSearchCheckbox.Size.Width + $($FormScale * 52)
+                          Y = $FileSearchAlternateDataStreamCheckbox.Location.Y + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 100
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale *11),0,0,0)
         }
         $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamMaxDepthLabel)
 
@@ -1884,11 +1932,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
         $FileSearchAlternateDataStreamMaxDepthTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Text     = 0
             Location = @{ X = $FileSearchAlternateDataStreamMaxDepthLabel.Location.X + $FileSearchAlternateDataStreamMaxDepthLabel.Size.Width
-                        Y = $FileSearchAlternateDataStreamCheckbox.Location.Y + 2 }
-            Size     = @{ Width  = 50
-                        Height = 20 }
+                          Y = $FileSearchAlternateDataStreamCheckbox.Location.Y + $($FormScale * 2) }
+            Size     = @{ Width  = $FormScale * 50
+                          Height = $FormScale * 20 }
             MultiLine = $false
-            Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamMaxDepthTextbox)
 
@@ -1898,11 +1946,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
         #-------------------------------------------
         $FileSearchAlternateDataStreamLabel = New-Object System.Windows.Forms.Label -Property @{
             Text     = "Exlcudes':`$DATA' stream, and will show the ADS name and its contents."
-            Location = @{ X = 3
-                Y = $FileSearchAlternateDataStreamMaxDepthTextbox.Location.Y + $FileSearchAlternateDataStreamMaxDepthTextbox.Size.Height }
-            Size     = @{ Width  = 450
-                        Height = 22 }
-            Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FormScale * 3
+                          Y = $FileSearchAlternateDataStreamMaxDepthTextbox.Location.Y + $FileSearchAlternateDataStreamMaxDepthTextbox.Size.Height }
+            Size     = @{ Width  = $FormScale * 450
+                          Height = $FormScale * 22 }
+            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ForeColor = "Black"
         }
         $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamLabel)
@@ -1914,11 +1962,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\FileSearchAlternateDataStreamDirectoryRichTextbox.ps1"
         $FileSearchAlternateDataStreamDirectoryRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines          = "Enter Directories; One Per Line"
-            Location = @{ X = 3
-                        Y = $FileSearchAlternateDataStreamLabel.Location.Y + $FileSearchAlternateDataStreamLabel.Size.Height}
-            Size     = @{ Width  = 430
-                        Height = 80 }
-            Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $FormScale * 3
+                          Y = $FileSearchAlternateDataStreamLabel.Location.Y + $FileSearchAlternateDataStreamLabel.Size.Height}
+            Size     = @{ Width  = $FormScale * 430
+                          Height = $FormScale * 80 }
+            Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             MultiLine     = $True
             Add_MouseEnter = $FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseEnter
             Add_MouseLeave = $FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseLeave
@@ -1933,10 +1981,10 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
         . "$Dependencies\Code\System.Windows.Forms\Button\FileSearchAlternateDataStreamDirectoryExtractStreamDataButton.ps1"
         $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton = New-Object System.Windows.Forms.Button -Property @{
             Text      = 'Retrieve & Extract Stream Data'
-            Location = @{ X = $FileSearchAlternateDataStreamDirectoryRichTextbox.Location.X + $FileSearchAlternateDataStreamDirectoryRichTextbox.Size.Width - 200 - 1
-                          Y = $FileSearchAlternateDataStreamDirectoryRichTextbox.Location.Y + $FileSearchAlternateDataStreamDirectoryRichTextbox.Size.Height + 5 }
-            Size     = @{ Width  = 200
-                          Height = 20 }
+            Location = @{ X = $FileSearchAlternateDataStreamDirectoryRichTextbox.Location.X + $FileSearchAlternateDataStreamDirectoryRichTextbox.Size.Width - $($FormScale * 200 - 1)
+                          Y = $FileSearchAlternateDataStreamDirectoryRichTextbox.Location.Y + $FileSearchAlternateDataStreamDirectoryRichTextbox.Size.Height + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 200
+                          Height = $FormScale * 20 }
             Add_Click = $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click
         }
         $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamDirectoryExtractStreamDataButton) 
@@ -1958,26 +2006,26 @@ $NetworkConnectionSearchDownPosition = -10
 
 $Section1NetworkConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Network"
-    Location = @{ X = 3
-                  Y = $NetworkConnectionSearchDownPosition }
-    Size     = @{ Width  = 450
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * $NetworkConnectionSearchDownPosition }
+    Size     = @{ Width  = $FormScale * 450
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
 
-#batman
+
         #------------------------------------------
         # Network - Endpoint Pcap Capture CheckBox
         #------------------------------------------
         $NetworkEndpointPacketCaptureCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
             Text     = "EndPoint Packet Capture"
-            Location = @{ X = 3
-                          Y = $Section1NetworkConnectionsSearchTab.Location.Y + $Section1NetworkConnectionsSearchTab.Size.Height + 5 }
-            Size     = @{ Width  = 175
-                          Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+            Location = @{ X = $FormScale * 3
+                          Y = $Section1NetworkConnectionsSearchTab.Location.Y + $Section1NetworkConnectionsSearchTab.Size.Height + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 175
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
             ForeColor = 'Blue'
             Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
         }
@@ -1988,11 +2036,11 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         #---------------------------------------
         $NetworkEndpointPcapCaptureDurationLabel = New-Object System.Windows.Forms.Label -Property @{
             Text     = "Duration (Secs)"
-            Location = @{ X = $NetworkEndpointPacketCaptureCheckBox.Location.X + $NetworkEndpointPacketCaptureCheckBox.Size.Width + 12
-                          Y = $NetworkEndpointPacketCaptureCheckBox.Location.Y + 5 }
-            Size     = @{ Width  = 88
-                          Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $NetworkEndpointPacketCaptureCheckBox.Location.X + $NetworkEndpointPacketCaptureCheckBox.Size.Width + $($FormScale * 12)
+                          Y = $NetworkEndpointPacketCaptureCheckBox.Location.Y + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 88
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPcapCaptureDurationLabel)
 
@@ -2002,10 +2050,10 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         $NetworkEndpointPacketCaptureDurationTextBox = New-Object System.Windows.Forms.TextBox -Property @{
             Text     = "60"
             Location = @{ X = $NetworkEndpointPcapCaptureDurationLabel.Location.X + $NetworkEndpointPcapCaptureDurationLabel.Size.Width
-                          Y = $NetworkEndpointPcapCaptureDurationLabel.Location.Y - 2 }
-            Size     = @{ Width  = 30
-                          Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                          Y = $NetworkEndpointPcapCaptureDurationLabel.Location.Y - $($FormScale * 2) }
+            Size     = @{ Width  = $FormScale * 30
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPacketCaptureDurationTextBox)
 
@@ -2014,11 +2062,11 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         #---------------------------------------
         $NetworkEndpointPcapCaptureMaxSizeLabel = New-Object System.Windows.Forms.Label -Property @{
             Text     = "Max (MB)"
-            Location = @{ X = $NetworkEndpointPacketCaptureDurationTextBox.Location.X + $NetworkEndpointPacketCaptureDurationTextBox.Size.Width + 35
-                          Y = $NetworkEndpointPacketCaptureDurationTextBox.Location.Y + 2 }
-            Size     = @{ Width  = 60
-                          Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+            Location = @{ X = $NetworkEndpointPacketCaptureDurationTextBox.Location.X + $NetworkEndpointPacketCaptureDurationTextBox.Size.Width + $($FormScale * 35)
+                          Y = $NetworkEndpointPacketCaptureDurationTextBox.Location.Y + $($FormScale * 2) }
+            Size     = @{ Width  = $FormScale * 60
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPcapCaptureMaxSizeLabel)
 
@@ -2028,10 +2076,10 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         $NetworkEndpointPacketCaptureMaxSizeTextBox = New-Object System.Windows.Forms.TextBox -Property @{
             Text     = "50"
             Location = @{ X = $NetworkEndpointPcapCaptureMaxSizeLabel.Location.X + $NetworkEndpointPcapCaptureMaxSizeLabel.Size.Width
-                          Y = $NetworkEndpointPcapCaptureMaxSizeLabel.Location.Y - 2 }
-            Size     = @{ Width  = 30
-                          Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                          Y = $NetworkEndpointPcapCaptureMaxSizeLabel.Location.Y - $($FormScale * 2) }
+            Size     = @{ Width  = $FormScale * 30
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPacketCaptureMaxSizeTextBox)
 
@@ -2039,12 +2087,12 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         # Network  - Remote IP Address CheckBox
         #---------------------------------------
         $NetworkConnectionSearchRemoteIPAddressCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-            Text     = "Remote IP Address"
-            Location = @{ X = 3
-                          Y = $NetworkEndpointPacketCaptureCheckBox.Location.Y + $NetworkEndpointPacketCaptureCheckBox.Size.Height + 10 }
-            Size     = @{ Width  = 180
-                          Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+            Text     = "Remote IP Address (WinRM)"
+            Location = @{ X = $FormScale * 3
+                          Y = $NetworkEndpointPacketCaptureCheckBox.Location.Y + $NetworkEndpointPacketCaptureCheckBox.Size.Height + $($FormScale * 10) }
+            Size     = @{ Width  = $FormScale * 180
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
             ForeColor = 'Blue'
             Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
         }
@@ -2058,9 +2106,9 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         $NetworkConnectionSearchRemoteIPAddressSelectionButton = New-Object System.Windows.Forms.Button -Property @{
             Text      = "Select IP Addresses"
             Location = @{ X = $NetworkConnectionSearchRemoteIPAddressCheckbox.Location.X
-                          Y = $NetworkConnectionSearchRemoteIPAddressCheckbox.Location.Y + $NetworkConnectionSearchRemoteIPAddressCheckbox.Size.Height + 3 }
-            Size     = @{ Width  = 180
-                          Height = 20 }
+                          Y = $NetworkConnectionSearchRemoteIPAddressCheckbox.Location.Y + $NetworkConnectionSearchRemoteIPAddressCheckbox.Size.Height + $($FormScale * 3) }
+            Size     = @{ Width  = $FormScale * 180
+                          Height = $FormScale * 20 }
             Add_Click = $NetworkConnectionSearchRemoteIPAddressSelectionButtonAdd_Click
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemoteIPAddressSelectionButton) 
@@ -2073,10 +2121,10 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         $NetworkConnectionSearchRemoteIPAddressRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines     = "Enter Remote IPs; One Per Line"
             Location = @{ X = $NetworkConnectionSearchRemoteIPAddressSelectionButton.Location.X
-                          Y = $NetworkConnectionSearchRemoteIPAddressSelectionButton.Location.Y + $NetworkConnectionSearchRemoteIPAddressSelectionButton.Size.Height + 5 }                          
-            Size     = @{ Width  = 180
-                          Height = 115 }
-            Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                          Y = $NetworkConnectionSearchRemoteIPAddressSelectionButton.Location.Y + $NetworkConnectionSearchRemoteIPAddressSelectionButton.Size.Height + $($FormScale * 5) }                          
+            Size     = @{ Width  = $FormScale * 180
+                          Height = $FormScale * 115 }
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             MultiLine  = $True
             ScrollBars = "Vertical"
             WordWrap   = $True
@@ -2093,11 +2141,11 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
 #---------------------------------
 $NetworkConnectionSearchRemotePortCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Remote Port"
-    Location = @{ X = $NetworkConnectionSearchRemoteIPAddressCheckbox.Location.X + $NetworkConnectionSearchRemoteIPAddressCheckbox.Size.Width + 10
+    Location = @{ X = $NetworkConnectionSearchRemoteIPAddressCheckbox.Location.X + $NetworkConnectionSearchRemoteIPAddressCheckbox.Size.Width + $($FormScale * 10)
                   Y = $NetworkConnectionSearchRemoteIPAddressCheckbox.Location.Y }
-    Size     = @{ Width  = 115
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -2111,9 +2159,9 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemote
         $NetworkConnectionSearchRemotePortSelectionButton = New-Object System.Windows.Forms.Button -Property @{
             Text      = "Select Ports"
             Location = @{ X = $NetworkConnectionSearchRemotePortCheckbox.Location.X
-                          Y = $NetworkConnectionSearchRemotePortCheckbox.Location.Y + $NetworkConnectionSearchRemotePortCheckbox.Size.Height + 3 }
-            Size     = @{ Width  = 115
-                          Height = 20 }
+                          Y = $NetworkConnectionSearchRemotePortCheckbox.Location.Y + $NetworkConnectionSearchRemotePortCheckbox.Size.Height + $($FormScale * 3) }
+            Size     = @{ Width  = $FormScale * 115
+                          Height = $FormScale * 20 }
             Add_Click = $NetworkConnectionSearchRemotePortSelectionButtonAdd_Click
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemotePortSelectionButton) 
@@ -2127,10 +2175,10 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemote
         $NetworkConnectionSearchRemotePortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines     = "Enter Remote Ports; One Per Line"
             Location = @{ X = $NetworkConnectionSearchRemotePortSelectionButton.Location.X
-                          Y = $NetworkConnectionSearchRemotePortSelectionButton.Location.Y + $NetworkConnectionSearchRemotePortSelectionButton.Size.Height + 5 }
-            Size     = @{ Width  = 115
-                          Height = 115 }
-            Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                          Y = $NetworkConnectionSearchRemotePortSelectionButton.Location.Y + $NetworkConnectionSearchRemotePortSelectionButton.Size.Height + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 115
+                          Height = $FormScale * 115 }
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             MultiLine  = $True
             ScrollBars = "Vertical"
             WordWrap   = $True
@@ -2147,11 +2195,11 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemote
 #--------------------------------
 $NetworkConnectionSearchLocalPortCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Local Port"
-    Location = @{ X = $NetworkConnectionSearchRemotePortCheckbox.Location.X + $NetworkConnectionSearchRemotePortCheckbox.Size.Width + 10
+    Location = @{ X = $NetworkConnectionSearchRemotePortCheckbox.Location.X + $NetworkConnectionSearchRemotePortCheckbox.Size.Width + $($FormScale * 10)
                   Y = $NetworkConnectionSearchRemotePortCheckbox.Location.Y }
-    Size     = @{ Width  = 115
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -2165,9 +2213,9 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalP
         $NetworkConnectionSearchLocalPortSelectionButton = New-Object System.Windows.Forms.Button -Property @{
             Text      = "Select Ports"
             Location = @{ X = $NetworkConnectionSearchLocalPortCheckbox.Location.X
-                        Y = $NetworkConnectionSearchLocalPortCheckbox.Location.Y + $NetworkConnectionSearchLocalPortCheckbox.Size.Height + 3 }
-            Size     = @{ Width  = 115
-                        Height = 20 }
+                          Y = $NetworkConnectionSearchLocalPortCheckbox.Location.Y + $NetworkConnectionSearchLocalPortCheckbox.Size.Height + $($FormScale * 3) }
+            Size     = @{ Width  = $FormScale * 115
+                          Height = $FormScale * 20 }
             Add_Click = $NetworkConnectionSearchLocalPortSelectionButtonAdd_Click
         }
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalPortSelectionButton) 
@@ -2181,10 +2229,10 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalP
         $NetworkConnectionSearchLocalPortRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines     = "Enter Local Ports; One Per Line"
             Location = @{ X = $NetworkConnectionSearchLocalPortSelectionButton.Location.X
-                        Y = $NetworkConnectionSearchLocalPortSelectionButton.Location.Y  + $NetworkConnectionSearchLocalPortSelectionButton.Size.Height + 5 }
-            Size     = @{ Width  = 115
-                        Height = 115 }
-            Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                          Y = $NetworkConnectionSearchLocalPortSelectionButton.Location.Y  + $NetworkConnectionSearchLocalPortSelectionButton.Size.Height + $($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 115
+                          Height = $FormScale * 115 }
+            Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             MultiLine  = $True
             ScrollBars = "Vertical"
             WordWrap   = $True
@@ -2201,12 +2249,12 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalP
 # Network  - Process CheckBox
 #-----------------------------
 $NetworkConnectionSearchProcessCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text     = "Process Name      (Min: Win10 / Server2016 +)"
-    Location = @{ X = 3
-                  Y = $NetworkConnectionSearchRemoteIPAddressRichTextbox.Location.Y + $NetworkConnectionSearchRemoteIPAddressRichTextbox.Size.Height + 5 }
-    Size     = @{ Width  = 430
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Text     = "Process Name (WinRM)"
+    Location = @{ X = $FormScale * 3
+                  Y = $NetworkConnectionSearchRemoteIPAddressRichTextbox.Location.Y + $NetworkConnectionSearchRemoteIPAddressRichTextbox.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 430
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -2218,12 +2266,12 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProces
             #--------------------------
             $NetworkConnectionSearchProcessLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text     = "Check hosts for connections created by a given process."
-                Location = @{ X = 3
-                              Y = $NetworkConnectionSearchProcessCheckbox.Location.Y + $NetworkConnectionSearchProcessCheckbox.Size.Height + 3 }
-                Size     = @{ Width  = 430
-                              Height = 22 }
+                Location = @{ X = $FormScale * 3
+                              Y = $NetworkConnectionSearchProcessCheckbox.Location.Y + $NetworkConnectionSearchProcessCheckbox.Size.Height + $($FormScale * 3) }
+                Size     = @{ Width  = $FormScale * 430
+                              Height = $FormScale * 22 }
                 ForeColor = "Black"
-                Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             }
             $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProcessLabel)
 
@@ -2234,11 +2282,11 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProces
             . "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchProcessRichTextbox.ps1"
             $NetworkConnectionSearchProcessRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
                 Lines    = "Enter Process Names; One Per Line"
-                Location = @{ X = 3
-                              Y = $NetworkConnectionSearchProcessLabel.Location.Y + $NetworkConnectionSearchProcessLabel.Size.Height + 5 }
-                Size     = @{ Width  = 430
-                              Height = 100 }
-                Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                Location = @{ X = $FormScale * 3
+                              Y = $NetworkConnectionSearchProcessLabel.Location.Y + $NetworkConnectionSearchProcessLabel.Size.Height + $($FormScale * 5) }
+                Size     = @{ Width  = $FormScale * 430
+                              Height = $FormScale * 100 }
+                Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 MultiLine     = $True
                 ScrollBars    = "Vertical"
                 WordWrap      = $True
@@ -2254,12 +2302,12 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProces
 # Network  - DNS Cache CheckBox
 #-------------------------------
 $NetworkConnectionSearchDNSCacheCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text     = "DNS Cache Entry"
-    Location = @{ X = 3
-                  Y = $NetworkConnectionSearchProcessRichTextbox.Location.Y + $NetworkConnectionSearchProcessRichTextbox.Size.Height + 5  }
-    Size     = @{ Width  = 430
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Text     = "DNS Cache Entry (WinRM)"
+    Location = @{ X = $FormScale * 3
+                  Y = $NetworkConnectionSearchProcessRichTextbox.Location.Y + $NetworkConnectionSearchProcessRichTextbox.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 430
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
@@ -2271,11 +2319,11 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCac
             #----------------------------
             $NetworkConnectionSearchDNSCacheLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text     = "Check hosts' DNS Cache for entries that match given criteria."
-                Location = @{ X = 3
-                              Y = $NetworkConnectionSearchDNSCacheCheckbox.Location.Y + $NetworkConnectionSearchDNSCacheCheckbox.Size.Height + 3 }
-                Size     = @{ Width  = 430
-                              Height = 22 }
-                Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                Location = @{ X = $FormScale * 3
+                              Y = $NetworkConnectionSearchDNSCacheCheckbox.Location.Y + $NetworkConnectionSearchDNSCacheCheckbox.Size.Height + $($FormScale * 3) }
+                Size     = @{ Width  = $FormScale * 430
+                              Height = $FormScale * 22 }
+                Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
             }
             $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCacheLabel)
@@ -2287,11 +2335,11 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCac
             . "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchDNSCacheRichTextbox.ps1"
             $NetworkConnectionSearchDNSCacheRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
                 Lines     = "Enter DNS query information or IP addresses; One Per Line"
-                Location = @{ X = 3
-                            Y = $NetworkConnectionSearchDNSCacheLabel.Location.Y + $NetworkConnectionSearchDNSCacheLabel.Size.Height + 5 }
-                Size     = @{ Width  = 430
-                            Height = 100 }
-                Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                Location = @{ X = $FormScale * 3
+                              Y = $NetworkConnectionSearchDNSCacheLabel.Location.Y + $NetworkConnectionSearchDNSCacheLabel.Size.Height + $($FormScale * 5) }
+                Size     = @{ Width  = $FormScale * 430
+                              Height = $FormScale * 100 }
+                Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 MultiLine  = $True
                 ScrollBars = "Vertical"
                 WordWrap   = $True
@@ -2320,211 +2368,166 @@ $SysinternalsDownPositionShift = 22
 $SysinternalsButtonWidth       = 110
 $SysinternalsButtonHeight      = 22
 
-$Section1SysinternalsTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text     = "Sysinternals"
-    Location = @{ X = $SysinternalsRightPosition
-                  Y = $SysinternalsDownPosition }
-    Size     = @{ Width  = 440
-                  Height = 22 }
+$Section1ExecutablesTab = New-Object System.Windows.Forms.TabPage -Property @{
+    Text     = "Executables"
+    Location = @{ X = $FormScale * $SysinternalsRightPosition
+                  Y = $FormScale * $SysinternalsDownPosition }
+    Size     = @{ Width  = $FormScale * 440
+                  Height = $FormScale * 22 }
     UseVisualStyleBackColor = $True
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 # Test if the External Programs directory is present; if it's there load the tab
-if (Test-Path $ExternalPrograms) { $MainLeftCollectionsTabControl.Controls.Add($Section1SysinternalsTab) }
+if (Test-Path $ExternalPrograms) { $MainLeftCollectionsTabControl.Controls.Add($Section1ExecutablesTab) }
 
 $SysinternalsDownPosition += $SysinternalsDownPositionShift
 
 
-#--------------------------------------
-# External Programs - Options GroupBox
-#--------------------------------------
+#============================================================================================================================================================
+# Options GroupBox
+#============================================================================================================================================================
 $ExternalProgramsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text      = "Collection Options"
-    Location  = @{ X = $SysinternalsRightPosition
-                   Y = $SysinternalsDownPosition }
-    Size     = @{ Width  = 430
-                  Height = 47 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location  = @{ X = $FormScale * $SysinternalsRightPosition
+                   Y = $FormScale * $SysinternalsDownPosition }
+    Size     = @{ Width  = $FormScale * 430
+                  Height = $FormScale * 47 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
 
-    #-----------------------------------------------
-    # External Programs Protocol Radio Button Label
-    #-----------------------------------------------
+
     $ExternalProgramsProtocolRadioButtonLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Protocol:"
-        Location = @{ X = 7
-                      Y = 22 }
-        Size     = @{ Width  = 73
-                      Height = 20 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 7
+                      Y = $FormScale * 22 }
+        Size     = @{ Width  = $FormScale * 73
+                      Height = $FormScale * 20 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
     }
 
 
-    #-------------------------------------------------
-    # External Programs Protocol WinRM - Radio Button
-    #-------------------------------------------------
     . "$Dependencies\Code\System.Windows.Forms\RadioButton\ExternalProgramsWinRMRadioButton.ps1"
     $ExternalProgramsWinRMRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
         Text     = "WinRM"
-        Location = @{ X = 80
-                      Y = 19 }
-        Size     = @{ Width  = 80
-                      Height = 22 }
+        Location = @{ X = $FormScale * 80
+                      Y = $FormScale * 19 }
+        Size     = @{ Width  = $FormScale * 80
+                      Height = $FormScale * 22 }
         Checked  = $True
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Add_Click      = $ExternalProgramsWinRMRadioButtonAdd_Click
         Add_MouseHover = $ExternalProgramsWinRMRadioButtonAdd_MouseHover
     }
 
 
-    #-----------------------------------------------
-    # External Programs Protocol RPC - Radio Button
-    #-----------------------------------------------
     . "$Dependencies\Code\System.Windows.Forms\RadioButton\ExternalProgramsRPCRadioButton.ps1"
     $ExternalProgramsRPCRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
         Text     = "RPC"
-        Location = @{ X = $ExternalProgramsWinRMRadioButton.Location.X + $ExternalProgramsWinRMRadioButton.Size.Width + 5
+        Location = @{ X = $ExternalProgramsWinRMRadioButton.Location.X + $ExternalProgramsWinRMRadioButton.Size.Width + $($FormScale * 5)
                       Y = $ExternalProgramsWinRMRadioButton.Location.Y }
-        Size     = @{ Width  = 60
-                      Height = 22 }
+        Size     = @{ Width  = $FormScale * 60
+                      Height = $FormScale * 22 }
         Checked  = $False
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
         Add_Click      = $ExternalProgramsRPCRadioButtonAdd_Click
         Add_MouseHover = $ExternalProgramsRPCRadioButtonAdd_MouseHover
     }
 
 
-    #-----------------------------------------------
-    # External Programs - Maximum Collection Label
-    #-----------------------------------------------
     $ExternalProgramsCheckTimeLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Recheck Time (secs):"
-        Location = @{ X = $ExternalProgramsRPCRadioButton.Location.X + $ExternalProgramsRPCRadioButton.Size.Width + 30
-                      Y = $ExternalProgramsRPCRadioButton.Location.Y + 3 }
-        Size     = @{ Width  = 130
-                      Height = 22 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $ExternalProgramsRPCRadioButton.Location.X + $ExternalProgramsRPCRadioButton.Size.Width + $($FormScale * 30)
+                      Y = $ExternalProgramsRPCRadioButton.Location.Y + $($FormScale * 3) }
+        Size     = @{ Width  = $FormScale * 130
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Black"
     }
 
 
-        #-------------------------------------------------
-        # External Programs - Maximum Collection TextBox
-        #-------------------------------------------------
         . "$Dependencies\Code\System.Windows.Forms\TextBox\ExternalProgramsCheckTimeTextBox.ps1"
         $ExternalProgramsCheckTimeTextBox = New-Object System.Windows.Forms.TextBox -Property @{
             Text     = 15
             Location = @{ X = $ExternalProgramsCheckTimeLabel.Location.X + $ExternalProgramsCheckTimeLabel.Size.Width
                           Y = $ExternalProgramsCheckTimeLabel.Location.Y - 3 }
-            Size     = @{ Width  = 30
-                          Height = 22 }
-            Font     = New-Object System.Drawing.Font("$Font",10,0,0,0)
+            Size     = @{ Width  = $FormScale * 30
+                          Height = $FormScale * 22 }
+            Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
             Enabled  = $True
             Add_MouseHover = $ExternalProgramsCheckTimeTextBoxAdd_MouseHover
         }
    
     $ExternalProgramsOptionsGroupBox.Controls.AddRange(@($ExternalProgramsProtocolRadioButtonLabel,$ExternalProgramsRPCRadioButton,$ExternalProgramsWinRMRadioButton,$ExternalProgramsCheckTimeLabel,$ExternalProgramsCheckTimeTextBox))
-$Section1SysinternalsTab.Controls.Add($ExternalProgramsOptionsGroupBox)
-
-
-#------------------------
-# Sysinternals Tab Label
-#------------------------
-$SysinternalsTabLabel = New-Object System.Windows.Forms.Label -Property @{
-    Location = @{ X = $SysinternalsRightPosition
-                  Y = $ExternalProgramsOptionsGroupBox.Location.Y + $ExternalProgramsOptionsGroupBox.Size.Height + 10 }
-    Size     = @{ Width  = 440
-                  Height = 25 }
-    Text      = "The following tools following queries drop/remove files to the target host's temp dir.`nPoSh-EasyWin must be ran with elevated credentials for these to function.`nThese queries to target hosts are not threaded."
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    ForeColor = "Red"
-}
-$Section1SysinternalsTab.Controls.Add($SysinternalsTabLabel)
+$Section1ExecutablesTab.Controls.Add($ExternalProgramsOptionsGroupBox)
 
 
 #============================================================================================================================================================
 # Sysinternals Sysmon
 #============================================================================================================================================================
 
-#------------------------------
-# Sysinternals Sysmon CheckBox
-#------------------------------
+
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\SysinternalsSysmonCheckbox.ps1"
 $SysinternalsSysmonCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text      = "Sysmon"
-    Location  = @{ X = $ExternalProgramsOptionsGroupBox.Location.X + 5
-                   Y = $SysinternalsTabLabel.Location.Y + $SysinternalsTabLabel.Size.Height + 7 }
+    Location  = @{ X = $ExternalProgramsOptionsGroupBox.Location.X + $($FormScale * 5)
+                   Y = $ExternalProgramsOptionsGroupBox.Location.Y + $ExternalProgramsOptionsGroupBox.Size.Height + $($FormScale * 5) }
     AutoSize  = $true
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click      = $SysinternalsSysmonCheckBoxAdd_Click
     Add_MouseHover = $SysinternalsSysmonCheckboxAdd_MouseHover
 }
-$Section1SysinternalsTab.Controls.Add($SysinternalsSysmonCheckbox)
+$Section1ExecutablesTab.Controls.Add($SysinternalsSysmonCheckbox)
 
 
-#------------------------------
-# Sysinternals Sysmon GroupBox
-#------------------------------
 $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Location  = @{ X = $ExternalProgramsOptionsGroupBox.Location.X
-                   Y = $SysinternalsTabLabel.Location.Y + $SysinternalsTabLabel.Size.Height + 10 }
+                   Y =  $ExternalProgramsOptionsGroupBox.Location.Y + $ExternalProgramsOptionsGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width 
-                   Height = 135 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+                   Height = $FormScale * 133 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
-$Section1SysinternalsTab.Controls.Add($ExternalProgramsSysmonGroupBox)
+$Section1ExecutablesTab.Controls.Add($ExternalProgramsSysmonGroupBox)
 
 
-    #---------------------------
-    # Sysinternals Sysmon Label
-    #---------------------------
     $SysinternalsSysmonLabel = New-Object System.Windows.Forms.Label -Property @{
-        Location = @{ X = 5
-                      Y = 20 }
-        Size     = @{ Width  = 420
-                      Height = 25 }
+        Location = @{ X = $FormScale * 5
+                      Y = $FormScale * 20 }
+        Size     = @{ Width  = $FormScale * 420
+                      Height = $FormScale * 25 }
         Text      = "System Monitor (Sysmon) will be installed on the endpoints. Logs created by sysmon can be viewed via command lilne, Windows Event Viewer, or a SIEM."
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Black"
     }
     $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonLabel)
 
     # Selects the .xml configuration file for sysmon
-    . "$Dependencies\Code\Main Body\Get-SysinternalsSysmonXMLConfigSelection.ps1"
+    . "$Dependencies\Code\System.Winforms.Forms\OpenFileDialog\Select-SysinternalsSysmonXmlConfig.ps1"
     $script:SysmonXMLPath = $null
-
-
-    #------------------------------------------
-    # Sysinternals Sysmon Select Config Button
-    #------------------------------------------
     $SysinternalsSysmonSelectConfigButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Select Config"
         Location = @{ X = $SysinternalsSysmonLabel.Location.X
-                      Y = $SysinternalsSysmonLabel.Location.Y + $SysinternalsSysmonLabel.Size.Height + 10 }
-        Size     = @{ Width  = $SysinternalsButtonWidth
-                      Height = $SysinternalsButtonHeight }
-        Add_Click = { Get-SysinternalsSysmonXMLConfigSelection }
+                      Y = $SysinternalsSysmonLabel.Location.Y + $SysinternalsSysmonLabel.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * $SysinternalsButtonWidth
+                      Height = $FormScale * $SysinternalsButtonHeight }
+        Add_Click = { Select-SysinternalsSysmonXmlConfig }
     }
     $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonSelectConfigButton) 
     CommonButtonSettings -Button $SysinternalsSysmonSelectConfigButton
 
 
-    #--------------------------------------
-    # Sysinternals Sysmon Event IDs Button
-    #--------------------------------------
     . "$Dependencies\Code\System.Windows.Forms\Button\SysinternalsSysmonEventIdsButton.ps1"
     $SysinternalsSysmonEventIdsButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Sysmon Event IDs"
         Location = @{ X = $SysinternalsSysmonSelectConfigButton.Location.X
-                      Y = $SysinternalsSysmonSelectConfigButton.Location.Y + $SysinternalsSysmonSelectConfigButton.Size.Height + 5 }
-        Size     = @{ Width  = $SysinternalsButtonWidth
-                      Height = $SysinternalsButtonHeight }
+                      Y = $SysinternalsSysmonSelectConfigButton.Location.Y + $SysinternalsSysmonSelectConfigButton.Size.Height + $($FormScale * 5) }
+        Size     = @{ Width  = $FormScale * $SysinternalsButtonWidth
+                      Height = $FormScale * $SysinternalsButtonHeight }
         Add_Click      = $SysinternalsSysmonEventIdsButtonAdd_Click
         Add_MouseHover = $SysinternalsSysmonEventIdsButtonAdd_MouseHover
     }
@@ -2532,81 +2535,67 @@ $Section1SysinternalsTab.Controls.Add($ExternalProgramsSysmonGroupBox)
     CommonButtonSettings -Button $SysinternalsSysmonEventIdsButton
 
 
-    #-----------------------------
-    # Sysinternals Sysmon TextBox
-    #-----------------------------
     $SysinternalsSysmonConfigTextBox = New-Object System.Windows.Forms.Textbox -Property @{
         Text     = "Config:"
-        Location = @{ X = 125
-                      Y = $SysinternalsSysmonSelectConfigButton.Location.Y + 1 }
-        Size     = @{ Width  = 300
-                      Height = 22 }    
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 125
+                      Y = $SysinternalsSysmonSelectConfigButton.Location.Y + $($FormScale * 1) }
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Black"
         BackColor = "White"
         Enabled   = $false
+        Multiline = $true
     }
     $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonConfigTextBox)
 
 
-    #------------------------------------------------------
-    # Sysinternals Sysmon Rename Process and Service Label
-    #------------------------------------------------------
     $SysinternalsSysmonRenameServiceProcessLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Service/Process Name:"
-        Location = @{ X = 200
-                      Y = $SysinternalsSysmonConfigTextBox.Location.Y + $SysinternalsSysmonConfigTextBox.Size.Height + 8 }
-        Size     = @{ Width  = 130
-                      Height = 22 }    
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 200
+                      Y = $SysinternalsSysmonConfigTextBox.Location.Y + $SysinternalsSysmonConfigTextBox.Size.Height + $($FormScale * 8) }
+        Size     = @{ Width  = $FormScale * 130
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
     }
     $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonRenameServiceProcessLabel)
 
 
-    #--------------------------------------------------------
-    # Sysinternals Sysmon Rename Process and Service TextBox
-    #--------------------------------------------------------
     . "$Dependencies\Code\System.Windows.Forms\Textbox\SysinternalsSysmonRenameServiceProcessTextBox.ps1"
     $SysinternalsSysmonRenameServiceProcessTextBox = New-Object System.Windows.Forms.Textbox -Property @{
         Text     = "Sysmon"
-        Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X + $SysinternalsSysmonRenameServiceProcessLabel.Size.Width + 10
-                      Y = $SysinternalsSysmonRenameServiceProcessLabel.Location.Y - 3}
-        Size     = @{ Width  = 85
-                      Height = 22 }    
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X + $SysinternalsSysmonRenameServiceProcessLabel.Size.Width + $($FormScale * 10)
+                      Y = $SysinternalsSysmonRenameServiceProcessLabel.Location.Y - $($FormScale * 3) }
+        Size     = @{ Width  = $FormScale * 85
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Add_MouseHover = $SysinternalsSysmonRenameServiceProcessTextBoxAdd_MouseHover
     }
     $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonRenameServiceProcessTextBox)
 
 
-    #-----------------------------------------
-    # Sysinternals Sysmon Rename Driver Label
-    #-----------------------------------------
     $SysinternalsSysmonRenameDriverLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Driver Name:"
         Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X
                       Y = $SysinternalsSysmonRenameServiceProcessLabel.Location.Y + $SysinternalsSysmonRenameServiceProcessLabel.Size.Height }
         Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessLabel.Size.Width
-                      Height = 22 }    
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
     }
     $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonRenameDriverLabel)
 
 
-    #-------------------------------------------
-    # Sysinternals Sysmon Rename Driver TextBox
-    #-------------------------------------------
     . "$Dependencies\Code\System.Windows.Forms\Textbox\SysinternalsSysmonRenameDriverTextBox.ps1"
     $SysinternalsSysmonRenameDriverTextBox = New-Object System.Windows.Forms.Textbox -Property @{
         Text     = "SysmonDrv"
         Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X 
-                      Y = $SysinternalsSysmonRenameDriverLabel.Location.Y - 3}
+                      Y = $SysinternalsSysmonRenameDriverLabel.Location.Y - $($FormScale * 3) }
         Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessTextBox.Size.Width
-                      Height = 22 }
+                      Height = $FormScale * 22 }
         MaxLength = 8
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Add_MouseHover = $SysinternalsSysmonRenameDriverTextBoxAdd_MouseHover
     }
     $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonRenameDriverTextBox)
@@ -2616,45 +2605,38 @@ $Section1SysinternalsTab.Controls.Add($ExternalProgramsSysmonGroupBox)
 # Sysinternals Autoruns
 #============================================================================================================================================================
 
-#--------------------------------
-# Sysinternals Autoruns CheckBox
-#--------------------------------
+
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\SysinternalsAutorunsCheckbox.ps1"
 $SysinternalsAutorunsCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text      = "Autoruns"
-    Location  = @{ X = $ExternalProgramsOptionsGroupBox.Location.X + 5
-                   Y = $ExternalProgramsSysmonGroupBox.Location.Y + $ExternalProgramsSysmonGroupBox.Size.Height + 7 }
+    Location  = @{ X = $ExternalProgramsOptionsGroupBox.Location.X + $($FormScale * 5)
+                   Y = $ExternalProgramsSysmonGroupBox.Location.Y + $ExternalProgramsSysmonGroupBox.Size.Height + $($FormScale * 5) }
     AutoSize  = $true
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
     Add_MouseHover = $SysinternalsAutorunsCheckboxAdd_MouseHover
 }
-$Section1SysinternalsTab.Controls.Add($SysinternalsAutorunsCheckbox)
+$Section1ExecutablesTab.Controls.Add($SysinternalsAutorunsCheckbox)
 
 
-#--------------------------------
-# Sysinternals Autoruns GroupBox
-#--------------------------------
 $ExternalProgramsAutorunsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Location  = @{ X = $ExternalProgramsSysmonGroupBox.Location.X
-                   Y = $ExternalProgramsSysmonGroupBox.Location.Y + $ExternalProgramsSysmonGroupBox.Size.Height + 10 }
+                   Y = $ExternalProgramsSysmonGroupBox.Location.Y + $ExternalProgramsSysmonGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width 
-                   Height = 79 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+                   Height = $FormScale * 76 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
 }
-$Section1SysinternalsTab.Controls.Add($ExternalProgramsAutorunsGroupBox)
+$Section1ExecutablesTab.Controls.Add($ExternalProgramsAutorunsGroupBox)
 
-    #-----------------------------
-    # Sysinternals Autoruns Label
-    #-----------------------------
+
     $SysinternalsAutorunsLabel = New-Object System.Windows.Forms.Label -Property @{
-        Location = @{ X = 5
-                      Y = 20 }
+        Location = @{ X = $FormScale * 5
+                      Y = $FormScale * 20 }
         Size     = @{ Width  = $SysinternalsSysmonLabel.Size.Width
-                      Height = 25 }
+                      Height = $FormScale * 25 }
         Text      = "Obtains More Startup Information than Native WMI and other Windows Commands, like various built-in Windows Applications."
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Black"
     }
     $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsLabel)
@@ -2662,48 +2644,39 @@ $Section1SysinternalsTab.Controls.Add($ExternalProgramsAutorunsGroupBox)
     $SysinternalsDownPosition += $SysinternalsDownPositionShift
 
 
-    #------------------------------
-    # Sysinternals Autoruns Button
-    #------------------------------
     . "$Dependencies\Code\System.Windows.Forms\Button\SysinternalsAutorunsButton.ps1"
     $SysinternalsAutorunsButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Open Autoruns"
         Location = @{ X = $SysinternalsAutorunsLabel.Location.X
-                      Y = $SysinternalsAutorunsLabel.Location.Y + $SysinternalsAutorunsLabel.Size.Height + 5 }
-        Size     = @{ Width  = $SysinternalsButtonWidth
-                      Height = $SysinternalsButtonHeight }
+                      Y = $SysinternalsAutorunsLabel.Location.Y + $SysinternalsAutorunsLabel.Size.Height + $($FormScale * 5) }
+        Size     = @{ Width  = $FormScale * $SysinternalsButtonWidth
+                      Height = $FormScale * $SysinternalsButtonHeight }
         Add_Click = $SysinternalsAutorunsButtonAdd_Click
     }
     $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsButton) 
     CommonButtonSettings -Button $SysinternalsAutorunsButton
 
 
-    #--------------------------------------------------------
-    # Sysinternals Autoruns Rename Process and Service Label
-    #--------------------------------------------------------
     $SysinternalsAutorunsRenameProcessLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Process Name:"
         Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X
                       Y = $SysinternalsAutorunsButton.Location.Y }
         Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessLabel.Size.Width
-                      Height = 22 }    
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Height = $FormScale * 22 }    
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
     }
     $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsRenameProcessLabel)
 
 
-    #----------------------------------------------------------
-    # Sysinternals Autoruns Rename Process and Service TextBox
-    #----------------------------------------------------------
     . "$Dependencies\Code\System.Windows.Forms\Textbox\SysinternalsAutorunsRenameProcessTextBox.ps1"
     $SysinternalsAutorunsRenameProcessTextBox = New-Object System.Windows.Forms.Textbox -Property @{
         Text     = "Autoruns"
         Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X
-                      Y = $SysinternalsAutorunsRenameProcessLabel.Location.Y - 3}
+                      Y = $SysinternalsAutorunsRenameProcessLabel.Location.Y - $($FormScale * 3) }
         Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessTextBox.Size.Width
-                      Height = 22 }    
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Add_MouseHover = $SysinternalsAutorunsRenameProcessTextBoxAdd_MouseHover
     }
     $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsRenameProcessTextBox)
@@ -2713,47 +2686,39 @@ $Section1SysinternalsTab.Controls.Add($ExternalProgramsAutorunsGroupBox)
 # Sysinternals Process Monitor
 #============================================================================================================================================================
 
-#--------------------------------
-# Sysinternals Procmon CheckBox
-#--------------------------------
+
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\SysinternalsProcessMonitorCheckbox.ps1"
 $SysinternalsProcessMonitorCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Procmon"
-    Location = @{ X = $ExternalProgramsAutorunsGroupBox.Location.X + 5
-                  Y = $ExternalProgramsAutorunsGroupBox.Location.Y + $ExternalProgramsAutorunsGroupBox.Size.Height + 7 }
+    Location = @{ X = $ExternalProgramsAutorunsGroupBox.Location.X + $($FormScale * 5)
+                  Y = $ExternalProgramsAutorunsGroupBox.Location.Y + $ExternalProgramsAutorunsGroupBox.Size.Height + $($FormScale * 5) }
     AutoSize  = $true
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
     Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
     Add_MouseHover = $SysinternalsProcessMonitorCheckboxAdd_MouseHover
 }
-$Section1SysinternalsTab.Controls.Add($SysinternalsProcessMonitorCheckbox)
+$Section1ExecutablesTab.Controls.Add($SysinternalsProcessMonitorCheckbox)
 
 
-#--------------------------------
-# Sysinternals Autoruns GroupBox
-#--------------------------------
 $ExternalProgramsProcmonGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Location  = @{ X = $ExternalProgramsAutorunsGroupBox.Location.X
-                   Y = $ExternalProgramsAutorunsGroupBox.Location.Y + $ExternalProgramsAutorunsGroupBox.Size.Height + 10 }
+                   Y = $ExternalProgramsAutorunsGroupBox.Location.Y + $ExternalProgramsAutorunsGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width 
-                   Height = 105 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+                   Height = $FormScale * 102 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
-$Section1SysinternalsTab.Controls.Add($ExternalProgramsProcmonGroupBox)
+$Section1ExecutablesTab.Controls.Add($ExternalProgramsProcmonGroupBox)
 
 
-    #------------------------------------
-    # Sysinternals ProcMon Monitor Label
-    #------------------------------------
     $SysinternalsProcessMonitorLabel = New-Object System.Windows.Forms.Label -Property @{
-        Location = @{ X = 5
-                      Y = 20 }
+        Location = @{ X = $FormScale * 5
+                      Y = $FormScale * 20 }
         Size     = @{ Width  = $SysinternalsSysmonLabel.Size.Width
-                      Height = 25 }
+                      Height = $FormScale * 25 }
         Text      = "Obtains process data over a timespan and can easily return data in 100's of MBs. Checks are done to see if 500MB is available on the localhost and endpoints."
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Black"
     }
     $ExternalProgramsProcmonGroupBox.Controls.Add($SysinternalsProcessMonitorLabel)
@@ -2761,81 +2726,406 @@ $Section1SysinternalsTab.Controls.Add($ExternalProgramsProcmonGroupBox)
     $SysinternalsDownPosition += $SysinternalsDownPositionShift
 
 
-    #-----------------------------
-    # Sysinternals ProcMon Button
-    #-----------------------------
     . "$Dependencies\Code\System.Windows.Forms\Button\SysinternalsProcmonButton.ps1"
     $SysinternalsProcmonButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Open Procmon"
         Location = @{ X = $SysinternalsProcessMonitorLabel.Location.X
-                      Y = $SysinternalsProcessMonitorLabel.Location.Y + $SysinternalsProcessMonitorLabel.Size.Height + 5 }
-        Size     = @{ Width  = $SysinternalsButtonWidth
-                      Height = $SysinternalsButtonHeight }
+                      Y = $SysinternalsProcessMonitorLabel.Location.Y + $SysinternalsProcessMonitorLabel.Size.Height + $($FormScale * 5) }
+        Size     = @{ Width  = $FormScale * $SysinternalsButtonWidth
+                      Height = $FormScale * $SysinternalsButtonHeight }
         Add_Click = $SysinternalsProcmonButtonAdd_Click
     }
     $ExternalProgramsProcmonGroupBox.Controls.Add($SysinternalsProcmonButton) 
     CommonButtonSettings -Button $SysinternalsProcmonButton
 
 
-    #-------------------------------------------
-    # Sysinternals Procmon - Capture Time Label
-    #-------------------------------------------
     $SysinternalsProcmonCaptureTimeLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Capture Time:"
         Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X
                       Y = $SysinternalsProcmonButton.Location.Y }
         Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessLabel.Size.Width
-                    Height = 22 }    
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
     }
     $ExternalProgramsProcmonGroupBox.Controls.Add($SysinternalsProcmonCaptureTimeLabel)
 
-    #----------------------------------------------
-    # Sysinternals Procmon - Capture Time ComboBox
-    #----------------------------------------------
+
     $script:SysinternalsProcessMonitorTimeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text     = "5 Seconds"
         Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X
                       Y = $SysinternalsProcmonCaptureTimeLabel.Location.Y }
         Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessTextBox.Size.Width
-                      Height = 22 } 
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Height = $FormScale * 22 } 
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $ProcmonCaptureTimes = @('5 Seconds','10 Seconds','15 Seconds','30 Seconds','1 Minute','2 Minutes','3 Minutes','4 Minutes','5 Minutes')
         ForEach ($time in $ProcmonCaptureTimes) { $script:SysinternalsProcessMonitorTimeComboBox.Items.Add($time) }
     $ExternalProgramsProcmonGroupBox.Controls.Add($script:SysinternalsProcessMonitorTimeComboBox)
 
 
-    #-------------------------------------------------------
-    # Sysinternals Procmon Rename Process and Service Label
-    #-------------------------------------------------------
     $SysinternalsProcmonRenameProcessLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Process Name:"
         Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X
-                      Y = $SysinternalsProcmonCaptureTimeLabel.Location.Y + $SysinternalsProcmonCaptureTimeLabel.Size.Height + 5 }
+                      Y = $SysinternalsProcmonCaptureTimeLabel.Location.Y + $SysinternalsProcmonCaptureTimeLabel.Size.Height + $($FormScale * 5) }
         Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessLabel.Size.Width
-                      Height = 22 }    
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
     }
     $ExternalProgramsProcmonGroupBox.Controls.Add($SysinternalsProcmonRenameProcessLabel)
 
 
-    #---------------------------------------------------------
-    # Sysinternals Procmon Rename Process and Service TextBox
-    #---------------------------------------------------------
     . "$Dependencies\Code\System.Windows.Forms\Textbox\SysinternalsProcmonRenameProcessTextBox.ps1"
     $SysinternalsProcmonRenameProcessTextBox = New-Object System.Windows.Forms.Textbox -Property @{
         Text     = "Procmon"
         Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X
-                      Y = $SysinternalsProcmonRenameProcessLabel.Location.Y - 3}
+                      Y = $SysinternalsProcmonRenameProcessLabel.Location.Y - $($FormScale * 3) }
         Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessTextBox.Size.Width
-                      Height = 22 }    
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Add_MouseHover = $SysinternalsProcmonRenameProcessTextBoxAdd_MouseHover
     }
     $ExternalProgramsProcmonGroupBox.Controls.Add($SysinternalsProcmonRenameProcessTextBox)
+
+
+#============================================================================================================================================================
+# User Specified Files and Custom Script
+#============================================================================================================================================================
+
+. "$Dependencies\Code\System.Windows.Forms\CheckBox\ExeScriptUserSpecifiedExecutableAndScriptCheckbox.ps1"
+$ExeScriptUserSpecifiedExecutableAndScriptCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text      = "User Specified Files and Custom Script (WinRM)"
+    Location  = @{ X = $ExternalProgramsProcmonGroupBox.Location.X + $($FormScale * 5)
+                   Y = $ExternalProgramsProcmonGroupBox.Location.Y + $ExternalProgramsProcmonGroupBox.Size.Height + $($FormScale * 5) }
+    AutoSize  = $true
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click      = $ExeScriptUserSpecifiedExecutableAndScriptCheckboxAdd_Click
+    Add_MouseHover = $ExeScriptUserSpecifiedExecutableAndScriptCheckboxAdd_MouseHover
+}
+$Section1ExecutablesTab.Controls.Add($ExeScriptUserSpecifiedExecutableAndScriptCheckbox)
+
+
+$ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+    Location  = @{ X = $ExternalProgramsProcmonGroupBox.Location.X
+                   Y = $ExternalProgramsProcmonGroupBox.Location.Y + $ExternalProgramsProcmonGroupBox.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $ExternalProgramsProcmonGroupBox.Size.Width 
+                   Height = $FormScale * 135 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = "Blue"
+}
+$Section1ExecutablesTab.Controls.Add($ExeScriptProgramGroupBox)
+
+
+    $ExeScriptProgramLabel = New-Object System.Windows.Forms.Label -Property @{
+        Location = @{ X = $FormScale * 5
+                      Y = $FormScale * 20 }
+        Size     = @{ Width  = $FormScale * 420
+                      Height = $FormScale * 25 }
+        Text      = "Allows for the custom deployment of executables and scripts. Execution flow, cleanup, and retrieval of files is to be managed within the accompanying script."
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = "Black"
+    }
+    $ExeScriptProgramGroupBox.Controls.Add($ExeScriptProgramLabel)
+
+
+    . "$Dependencies\Code\System.Windows.Forms\OpenFileDialog\Select-UserSpecifiedExecutable.ps1"
+    . "$Dependencies\Code\System.Windows.Forms\Button\ExeScriptSelectExecutableButton.ps1"
+    $ExeScriptSelectExecutableButton = New-Object System.Windows.Forms.Button -Property @{
+        Text     = "Select Dir or File"
+        Location = @{ X = $ExeScriptProgramLabel.Location.X
+                      Y = $ExeScriptProgramLabel.Location.Y + $ExeScriptProgramLabel.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 110
+                      Height = $FormScale * 22 }
+        Add_Click      = { Select-UserSpecifiedExecutable }
+        Add_MouseHover = $ExeScriptSelectExecutableButtonAdd_MouseHover
+    }
+    $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectExecutableButton) 
+    CommonButtonSettings -Button $ExeScriptSelectExecutableButton
+
+
+    $ExeScriptSelectExecutableTextBox = New-Object System.Windows.Forms.Textbox -Property @{
+        Text     = "Directory:"
+        Location = @{ X = $FormScale * 125
+                      Y = $ExeScriptSelectExecutableButton.Location.Y + $($FormScale * 1) }
+        Size     = @{ Width  = $FormScale * 200
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = "Black"
+        BackColor = "White"
+        Enabled   = $false
+        Multiline = $true
+    }
+    $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectExecutableTextBox)
+
+
+    $ExeScriptSelectDirRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+        Text     = "Dir"
+        Location = @{ X = $ExeScriptSelectExecutableTextBox.Location.X + $ExeScriptSelectExecutableTextBox.Size.Width + $($FormScale * 10)
+                      Y = $ExeScriptSelectExecutableTextBox.Location.Y }
+        Size     = @{ Width  = $FormScale * 45
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = "Black"
+        Add_Click = { 
+            $ExeScriptSelectExecutableTextBox.text = "Directory:" 
+            if ($ExeScriptSelectExecutableTextBox.text -eq "Directory:") {$ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false}
+        }
+        Checked   = $True
+    }
+    $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectDirRadioButton)
+
+
+    $ExeScriptSelectFileRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+        Text     = "File"
+        Location = @{ X = $ExeScriptSelectDirRadioButton.Location.X + $ExeScriptSelectDirRadioButton.Size.Width 
+                      Y = $ExeScriptSelectDirRadioButton.Location.Y }
+        Size     = @{ Width  = $FormScale * 40
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        Add_Click = { 
+            $ExeScriptSelectExecutableTextBox.text = "File:" 
+            if ($ExeScriptSelectExecutableTextBox.text -eq "File:") {$ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false}
+        }
+        ForeColor = "Black"
+    }
+    $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectFileRadioButton)
+
+
+
+    . "$Dependencies\Code\System.Windows.Forms\OpenFileDialog\Select-UserSpecifiedScript.ps1"
+    . "$Dependencies\Code\System.Windows.Forms\Button\ExeScriptSelectScriptButton.ps1"
+    $ExeScriptSelectScriptButton = New-Object System.Windows.Forms.Button -Property @{
+        Text     = "Select Script"
+        Location = @{ X = $ExeScriptSelectExecutableButton.Location.X
+                      Y = $ExeScriptSelectExecutableButton.Location.Y + $ExeScriptSelectExecutableButton.Size.Height + $($FormScale * 5) }
+        Size     = @{ Width  = $FormScale * 110
+                      Height = $FormScale * 22 }
+        Add_Click      = { Select-UserSpecifiedScript }
+        Add_MouseHover = $ExeScriptSelectScriptButtonAdd_MouseHover
+    }
+    $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectScriptButton) 
+    CommonButtonSettings -Button $ExeScriptSelectScriptButton
+
+    
+    $ExeScriptSelectScriptTextBox = New-Object System.Windows.Forms.Textbox -Property @{
+        Text     = "Script:"
+        Location = @{ X = $FormScale * 125
+                      Y = $ExeScriptSelectScriptButton.Location.Y + $($FormScale * 1) }
+        Size     = @{ Width  = $ExeScriptSelectExecutableTextBox.Size.Width
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = "Black"
+        BackColor = "White"
+        Enabled   = $false
+        Multiline = $true
+    }
+    $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectScriptTextBox)
+
+
+    . "$Dependencies\Code\System.Windows.Forms\Checkbox\ExeScriptScriptOnlyCheckbox.ps1"
+    $ExeScriptScriptOnlyCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
+        Text     = "Script Only"
+        Location = @{ X = $ExeScriptSelectDirRadioButton.Location.X
+                      Y = $ExeScriptSelectScriptTextBox.Location.Y }
+        Size     = @{ Width  = $FormScale * 90
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = "Black"
+        Add_Click = $ExeScriptScriptOnlyCheckboxAdd_Click 
+    }
+    $ExeScriptProgramGroupBox.Controls.Add($ExeScriptScriptOnlyCheckbox)
+
+
+    $ExeScriptDestinationDirectoryLabel = New-Object System.Windows.Forms.Label -Property @{
+        Text     = "Destination Folder:"
+        Location = @{ X = $ExeScriptSelectScriptButton.Location.X
+                      Y = $ExeScriptSelectScriptButton.Location.Y + $ExeScriptSelectScriptButton.Size.Height + $($FormScale * 7) }
+        Size     = @{ Width  = $FormScale * 110
+                      Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = "Black"
+    }
+    $ExeScriptProgramGroupBox.Controls.Add($ExeScriptDestinationDirectoryLabel) 
+
+
+    $script:ExeScriptDestinationDirectoryTextBox = New-Object System.Windows.Forms.Textbox -Property @{
+        Text     = "C:\Windows\Temp\"
+        Location = @{ X = $FormScale * 125
+                      Y = $ExeScriptDestinationDirectoryLabel.Location.Y - $($FormScale * 2) }
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 22 }    
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        AutoCompleteSource = "FileSystem"
+        AutoCompleteMode   = "SuggestAppend"
+        }
+    $ExeScriptProgramGroupBox.Controls.Add($script:ExeScriptDestinationDirectoryTextBox)
+    
+
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Left TabControl -> Collections TabControl
+#    _          _    _                        _____       _      ____                     
+#   / \    ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#  / _ \  / __|| __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
+# / ___ \| (__ | |_ | || (_) || | | |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
+#/_/   \_\\___| \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
+#                                                                          |___/       
+#=======================================================================================================================================================================
+#batman
+$Section1ActionOnEndpointTab = New-Object System.Windows.Forms.TabPage -Property @{
+    Text     = "Actions"
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * -10 }
+    Size     = @{ Width  = $FormScale * 440
+                  Height = $FormScale * 22 }
+    UseVisualStyleBackColor = $True
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$MainLeftCollectionsTabControl.Controls.Add($Section1ActionOnEndpointTab)
+
+
+#----------------------------------------------------
+# Actions Tab - Domain Wide Process Stopper GroupBox
+#----------------------------------------------------
+$ActionsTabDomainWideProcessKillerGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+    Text      = "Domain Wide Process Stopper (WinRM)"
+    Location = @{ X = $FormScale * 5
+                  Y = $FormScale * 10 }
+    Size     = @{ Width  = $FormScale * 425
+                  Height = $FormScale * 89 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = "Blue"
+}
+    $ActionsTabDomainWideProcessKillerLabel = New-Object System.Windows.Forms.Label -Property @{
+        Text     = "Stop multiple processes on multiple endpoints."
+        Location = @{ X = $FormScale * 7
+                      Y = $FormScale * 22 }
+        Size     = @{ Width  = $FormScale * 410
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = 'Black'
+    }
+    $ActionsTabDomainWideProcessKillerGroupBox.Controls.Add($ActionsTabDomainWideProcessKillerLabel)
+
+
+    $ActionsTabDomainWideProcessKillerCollectNewProcessDataRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+        Text     = "Collect Process Data from Endpoints"
+        Location = @{ X = $FormScale * 12
+                      Y = $ActionsTabDomainWideProcessKillerLabel.Location.Y + $ActionsTabDomainWideProcessKillerLabel.Size.Height }
+        Size     = @{ Width  = $FormScale * 220
+                      Height = $FormScale * 20 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = 'Black'
+        Checked   = $true
+    }
+    $ActionsTabDomainWideProcessKillerGroupBox.Controls.Add($ActionsTabDomainWideProcessKillerCollectNewProcessDataRadioButton)
+
+
+    $ActionsTabDomainWideProcessKillerSelectFileRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+        Text     = "Open Process Data from CSV File"
+        Location = @{ X = $FormScale * 12
+                      Y = $ActionsTabDomainWideProcessKillerCollectNewProcessDataRadioButton.Location.Y + $ActionsTabDomainWideProcessKillerCollectNewProcessDataRadioButton.Size.Height }
+        Size     = @{ Width  = $FormScale * 220
+                      Height = $FormScale * 20 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = 'Black'
+    }
+    $ActionsTabDomainWideProcessKillerGroupBox.Controls.Add($ActionsTabDomainWideProcessKillerSelectFileRadioButton)
+
+
+    . "$Dependencies\Code\Execution\Action\Stop-ProcessesOnMultipleComputers.ps1"
+    $ActionsTabDomainWideProcessKillerButton = New-Object System.Windows.Forms.Button -Property @{
+        Text     = "Select Processes To Stop"
+        Location = @{ X = $FormScale * 268
+                      Y = $ActionsTabDomainWideProcessKillerSelectFileRadioButton.Location.Y - $($FormScale * 5) }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 22 }
+        Add_Click = { 
+            if ($ActionsTabDomainWideProcessKillerCollectNewProcessDataRadioButton.checked){
+                Stop-ProcessesOnMultipleComputers -CollectNewProcessData
+            }
+            if ($ActionsTabDomainWideProcessKillerSelectFileRadioButton.checked){
+                Stop-ProcessesOnMultipleComputers -SelectProcessCsvFile
+            }
+        }
+    }
+    $ActionsTabDomainWideProcessKillerGroupBox.Controls.Add($ActionsTabDomainWideProcessKillerButton)
+    CommonButtonSettings -Button $ActionsTabDomainWideProcessKillerButton
+
+$Section1ActionOnEndpointTab.Controls.Add($ActionsTabDomainWideProcessKillerGroupBox)
+
+
+#----------------------------------------------------
+# Actions Tab - Domain Wide Service Stopper GroupBox
+#----------------------------------------------------
+$ActionsTabDomainWideServiceKillerGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+    Text      = "Domain Wide Service Stopper (WinRM)"
+    Location = @{ X = $FormScale * 5
+                  Y = $ActionsTabDomainWideProcessKillerGroupBox.Location.Y + $ActionsTabDomainWideProcessKillerGroupBox.Size.Height + $($FormScale * 10) }
+    Size     = @{ Width  = $FormScale * 425
+                  Height = $FormScale * 89 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = "Blue"
+}
+    $ActionsTabDomainWideServiceKillerLabel = New-Object System.Windows.Forms.Label -Property @{
+        Text     = "Stop multiple Services on multiple endpoints."
+        Location = @{ X = $FormScale * 7
+                      Y = $FormScale * 22 }
+        Size     = @{ Width  = $FormScale * 410
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = 'Black'
+    }
+    $ActionsTabDomainWideServiceKillerGroupBox.Controls.Add($ActionsTabDomainWideServiceKillerLabel)
+
+
+    $ActionsTabDomainWideServiceKillerCollectNewServiceDataRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+        Text     = "Collect Service Data from Endpoints"
+        Location = @{ X = $FormScale * 12
+                      Y = $ActionsTabDomainWideServiceKillerLabel.Location.Y + $ActionsTabDomainWideServiceKillerLabel.Size.Height }
+        Size     = @{ Width  = $FormScale * 220
+                      Height = $FormScale * 20 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = 'Black'
+        Checked   = $true
+    }
+    $ActionsTabDomainWideServiceKillerGroupBox.Controls.Add($ActionsTabDomainWideServiceKillerCollectNewServiceDataRadioButton)
+
+
+    $ActionsTabDomainWideServiceKillerSelectFileRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+        Text     = "Open Service Data from CSV File"
+        Location = @{ X = $FormScale * 12
+                      Y = $ActionsTabDomainWideServiceKillerCollectNewServiceDataRadioButton.Location.Y + $ActionsTabDomainWideServiceKillerCollectNewServiceDataRadioButton.Size.Height }
+        Size     = @{ Width  = $FormScale * 220
+                      Height = $FormScale * 20 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = 'Black'
+    }
+    $ActionsTabDomainWideServiceKillerGroupBox.Controls.Add($ActionsTabDomainWideServiceKillerSelectFileRadioButton)
+
+
+    . "$Dependencies\Code\Execution\Action\Stop-ServicesOnMultipleComputers.ps1"
+    $ActionsTabDomainWideServiceKillerButton = New-Object System.Windows.Forms.Button -Property @{
+        Text     = "Select Services To Stop"
+        Location = @{ X = $FormScale * 268
+                      Y = $ActionsTabDomainWideServiceKillerSelectFileRadioButton.Location.Y - $($FormScale * 5) }
+        Size     = @{ Width  = $FormScale * 150
+                      Height = $FormScale * 22 }
+        Add_Click = { 
+            if ($ActionsTabDomainWideServiceKillerCollectNewServiceDataRadioButton.checked){
+                Stop-ServicesOnMultipleComputers -CollectNewServiceData
+            }
+            if ($ActionsTabDomainWideServiceKillerSelectFileRadioButton.checked){
+                Stop-ServicesOnMultipleComputers -SelectServiceCsvFile
+            }
+        }
+    }
+    $ActionsTabDomainWideServiceKillerGroupBox.Controls.Add($ActionsTabDomainWideServiceKillerButton)
+    CommonButtonSettings -Button $ActionsTabDomainWideServiceKillerButton
+
+$Section1ActionOnEndpointTab.Controls.Add($ActionsTabDomainWideServiceKillerGroupBox)
 
 
 #=======================================================================================================================================================================
@@ -2851,22 +3141,19 @@ $Section1SysinternalsTab.Controls.Add($ExternalProgramsProcmonGroupBox)
 
 $EnumerationRightPosition     = 3
 $EnumerationDownPosition      = 0
-$EnumerationDownPositionShift = 25
 $EnumerationLabelWidth        = 450
 $EnumerationLabelHeight       = 25
-$EnumerationButtonWidth       = 110
-$EnumerationButtonHeight      = 22
 $EnumerationGroupGap          = 15
 
 
 $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
     Name     = "Enumeration"
     Text     = "Enumeration"
-    Location = @{ X = $EnumerationRightPosition
-                  Y = $EnumerationDownPosition }
-    Size     = @{ Width  = $EnumerationLabelWidth
-                  Height = $EnumerationLabelHeight }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $EnumerationRightPosition
+                  Y = $FormScale * $EnumerationDownPosition }
+    Size     = @{ Width  = $FormScale * $EnumerationLabelWidth
+                  Height = $FormScale * $EnumerationLabelHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainLeftTabControl.Controls.Add($Section1EnumerationTab)
@@ -2882,10 +3169,12 @@ $EnumerationDownPosition += 13
 # Enumeration - Port Scan - GroupBox
 #------------------------------------
 $EnumerationDomainGenerateGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Location  = New-Object System.Drawing.Point(0,$EnumerationDownPosition)
-    size      = New-Object System.Drawing.Size(294,100)
     text      = "Import Hosts From Domain"
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location  = @{ X = $FormScale * 0
+                   Y = $FormScale * $EnumerationDownPosition }
+    Size      = @{ Width  = $FormScale * 294
+                   Height = $FormScale * 100 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
 
@@ -2897,10 +3186,12 @@ $EnumerationDomainGenerateDownPositionShift = 25
     # Enumeration - Domain Generated - Label
     #----------------------------------------
     $EnumerationDomainGeneratedLabelNote = New-Object System.Windows.Forms.Label -Property @{
-        Location  = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationDomainGenerateDownPosition + 3)) 
-        Size      = New-Object System.Drawing.Size(220,22)
         Text      = "This host must be domained for this feature."    
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $FormScale * $EnumerationRightPosition
+                       Y = $FormScale * $EnumerationDomainGenerateDownPosition + 3 }
+        Size      = @{ Width  = $FormScale * 220
+                       Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
     }
     $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedLabelNote)  
@@ -2912,9 +3203,11 @@ $EnumerationDomainGenerateDownPositionShift = 25
     . "$Dependencies\Code\System.Windows.Forms\Checkbox\EnumerationDomainGeneratedAutoCheckBox.ps1"
     $EnumerationDomainGeneratedAutoCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = "Auto Pull"
-        Location  = New-Object System.Drawing.Point(($EnumerationDomainGeneratedLabelNote.Size.Width + 3),($EnumerationDomainGenerateDownPosition - 1))
-        Size      = New-Object System.Drawing.Size(100,$EnumerationLabelHeight)
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $EnumerationDomainGeneratedLabelNote.Size.Width + $($FormScale * 3)
+                       Y = $FormScale * $EnumerationDomainGenerateDownPosition - 1 }
+        Size      = @{ Width  = $FormScale * 70
+                       Height = $FormScale * $EnumerationLabelHeight }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
         Add_Click = $EnumerationDomainGeneratedAutoCheckBoxAdd_Click
     }
@@ -2928,9 +3221,11 @@ $EnumerationDomainGenerateDownPositionShift = 25
     #------------------------------------------------
     $EnumerationDomainGeneratedTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text      = "<Domain Name>"
-        Location  = New-Object System.Drawing.Point($EnumerationRightPosition,$EnumerationDomainGenerateDownPosition)
-        Size      = New-Object System.Drawing.Size(286,$EnumerationLabelHeight)
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $FormScale * $EnumerationRightPosition
+                       Y = $FormScale * $EnumerationDomainGenerateDownPosition }
+        Size      = @{ Width  = $FormScale * 286
+                       Height = $FormScale * $EnumerationLabelHeight }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
         Add_KeyDown = { if ($_.KeyCode -eq "Enter") { InputCheck-EnumerationByDomainImport } }
     }
@@ -2944,8 +3239,10 @@ $EnumerationDomainGenerateDownPositionShift = 25
     #----------------------------------------------------------
     $EnumerationDomainGeneratedListButton = New-Object System.Windows.Forms.Button -Property @{
         Text      = "Import Hosts"
-        Location  = New-Object System.Drawing.Point(190,($EnumerationDomainGenerateDownPosition - 1))
-        Size      = New-Object System.Drawing.Size(100,22)
+        Location  = @{ X = $FormScale * 190
+                       Y = $FormScale * $EnumerationDomainGenerateDownPosition - 1 }
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * 22 }
         Add_Click = { InputCheck-EnumerationByDomainImport }
     }
     $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedListButton) 
@@ -2974,10 +3271,10 @@ if (!(Test-Path $CustomPortsToScan)) {
 $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text      = "Create List From TCP Port Scan"
     Location = @{ X = 0
-                  Y = $EnumerationDomainGenerateGroupBox.Location.Y + $EnumerationDomainGenerateGroupBox.Size.Height + $EnumerationGroupGap }
-    Size     = @{ Width  = 294
-                  Height = 270 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+                  Y = $EnumerationDomainGenerateGroupBox.Location.Y + $EnumerationDomainGenerateGroupBox.Size.Height + $($FormScale * $EnumerationGroupGap) }
+    Size     = @{ Width  = $FormScale * 294
+                  Height = $FormScale * 310 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
 $EnumerationPortScanGroupDownPosition      = 18
@@ -2989,9 +3286,11 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #----------------------------------------
     $EnumerationPortScanIPNote1Label = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Enter Comma Separated IPs"
-        Location   = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationPortScanGroupDownPosition + 3))
-        Size       = New-Object System.Drawing.Size(170,22) 
-        Font       = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $FormScale * $EnumerationRightPosition
+                       Y = $FormScale * $EnumerationPortScanGroupDownPosition + 3 }
+        Size      = @{ Width  = $FormScale * 170
+                       Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor  = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPNote1Label)
@@ -3002,9 +3301,11 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #-----------------------------------------
     $EnumerationPortScanIPNote2Label = New-Object System.Windows.Forms.Label -Property @{
         Text       = "(ex: 10.0.0.1,10.0.0.2)"
-        Location   = New-Object System.Drawing.Point(($EnumerationPortScanIPNote1Label.Size.Width + 3),($EnumerationPortScanGroupDownPosition + 4)) 
-        Size       = New-Object System.Drawing.Size(110,20) 
-        Font       = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $EnumerationPortScanIPNote1Label.Size.Width + $($FormScale * 3)
+                       Y = $FormScale * $EnumerationPortScanGroupDownPosition + 4 }
+        Size      = @{ Width  = $FormScale * 110
+                       Height = $FormScale * 20 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor  = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPNote2Label)
@@ -3016,13 +3317,15 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #--------------------------------------------------------------
     $EnumerationPortScanSpecificIPTextbox = New-Object System.Windows.Forms.TextBox -Property @{
         Text          = ""
-        Location      = New-Object System.Drawing.Point($EnumerationRightPosition,$EnumerationPortScanGroupDownPosition) 
-        Size          = New-Object System.Drawing.Size(287,22)
+        Location  = @{ X = $FormScale * $EnumerationRightPosition
+                       Y = $FormScale * $EnumerationPortScanGroupDownPosition }
+        Size      = @{ Width  = $FormScale * 287
+                       Height = $FormScale * 22 }
         MultiLine     = $False
         WordWrap      = $True
         AcceptsTab    = $false
         AcceptsReturn = $false
-        Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor     = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificIPTextbox)
@@ -3034,29 +3337,15 @@ $EnumerationPortScanGroupDownPositionShift = 25
     # Enumeration - Port Scan - IP Range
     #------------------------------------
     $EnumerationPortScanIPRangeNote1Label = New-Object System.Windows.Forms.Label -Property @{
-        Text       = "Network Range:"
-        Location   = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationPortScanGroupDownPosition + 3)) 
-        Size       = New-Object System.Drawing.Size(140,22) 
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
-        ForeColor  = "Black"
+        Text       = "Network Range:  (ex: [ 192.168.1 ]  [ 1 ]  [ 100 ])"
+        Location  = @{ X = $FormScale * $EnumerationRightPosition
+                       Y = $FormScale * $EnumerationPortScanGroupDownPosition + 3 }
+        Size      = @{ Width  = $FormScale * 250
+                       Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor  = "Blue"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNote1Label)
-
-
-    #-----------------------------------------------
-    # Enumeration - Port Scan - IP Range Note Label
-    #-----------------------------------------------
-    $EnumerationPortScanIPRangeNote2Label = New-Object System.Windows.Forms.Label -Property @{
-        Text       = "(ex: [ 192.168.1 ]  [ 1 ]  [ 100 ])"
-        Location   = New-Object System.Drawing.Point(($EnumerationPortScanIPRangeNote1Label.Size.Width),($EnumerationPortScanGroupDownPosition + 4)) 
-        Size       = New-Object System.Drawing.Size(150,20) 
-        Font       = New-Object System.Drawing.Font("$Font",10,0,0,0)
-        ForeColor  = "Black"
-    }
-    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNote2Label)
-
-    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
-    $RightShift = $EnumerationRightPosition
 
 
     #--------------------------------------------------
@@ -3064,9 +3353,11 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #--------------------------------------------------
     $EnumerationPortScanIPRangeNetworkLabel = New-Object System.Windows.Forms.Label -Property @{
         Text      = "Network"
-        Location  = New-Object System.Drawing.Point($RightShift,($EnumerationPortScanGroupDownPosition + 3)) 
-        Size      = New-Object System.Drawing.Size(50,22) 
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $EnumerationPortScanIPNote1Label.Location.X
+                       Y = $EnumerationPortScanIPRangeNote1Label.Location.Y + $EnumerationPortScanIPRangeNote1Label.Size.Height }
+        Size      = @{ Width  = $FormScale * 80
+                       Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNetworkLabel)
@@ -3079,13 +3370,15 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #----------------------------------------------------
     $EnumerationPortScanIPRangeNetworkTextbox = New-Object System.Windows.Forms.TextBox -Property @{
         Text          = ""
-        Location      = New-Object System.Drawing.Point($RightShift,$EnumerationPortScanGroupDownPosition) 
-        Size          = New-Object System.Drawing.Size(77,22)
+        Location  = @{ X = $EnumerationPortScanIPRangeNetworkLabel.Location.X
+                       Y = $EnumerationPortScanIPRangeNetworkLabel.Location.Y + $EnumerationPortScanIPRangeNetworkLabel.Size.Height }
+        Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
+                       Height = $FormScale * 22 }
         MultiLine     = $False
         WordWrap      = $True
         AcceptsTab    = $false
         AcceptsReturn = $false
-        Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor     = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNetworkTextbox)
@@ -3098,9 +3391,11 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #------------------------------------------------
     $EnumerationPortScanIPRangeFirstLabel = New-Object System.Windows.Forms.Label -Property @{
         Text      = "First IP"
-        Location  = New-Object System.Drawing.Point($RightShift,($EnumerationPortScanGroupDownPosition + 3)) 
-        Size      = New-Object System.Drawing.Size(40,22) 
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $EnumerationPortScanIPRangeNetworkLabel.Location.X + $EnumerationPortScanIPRangeNetworkLabel.Size.Width + $($FormScale * 20)
+                       Y = $EnumerationPortScanIPRangeNetworkLabel.Location.Y }
+        Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
+                       Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeFirstLabel)
@@ -3113,13 +3408,15 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #--------------------------------------------------
     $EnumerationPortScanIPRangeFirstTextbox = New-Object System.Windows.Forms.TextBox -Property @{
         Text          = ""
-        Location      = New-Object System.Drawing.Point($RightShift,$EnumerationPortScanGroupDownPosition) 
-        Size          = New-Object System.Drawing.Size(40,22)
+        Location  = @{ X = $EnumerationPortScanIPRangeFirstLabel.Location.X
+                       Y = $EnumerationPortScanIPRangeFirstLabel.Location.Y + $EnumerationPortScanIPRangeFirstLabel.Size.Height }
+        Size      = @{ Width  = $EnumerationPortScanIPRangeFirstLabel.Size.Width
+                       Height = $FormScale * 22 }
         MultiLine     = $False
         WordWrap      = $True
         AcceptsTab    = $false
         AcceptsReturn = $false
-        Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor     = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeFirstTextbox)
@@ -3132,9 +3429,11 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #-----------------------------------------------
     $EnumerationPortScanIPRangeLastLabel = New-Object System.Windows.Forms.Label -Property @{
         Text      = "Last IP"
-        Location  = New-Object System.Drawing.Point($RightShift,($EnumerationPortScanGroupDownPosition + 3)) 
-        Size      = New-Object System.Drawing.Size(40,22) 
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $EnumerationPortScanIPRangeFirstLabel.Location.X + $EnumerationPortScanIPRangeFirstLabel.Size.Width + $($FormScale * 20)
+                       Y = $EnumerationPortScanIPRangeFirstLabel.Location.Y }
+        Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
+                       Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeLastLabel)
@@ -3147,13 +3446,15 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #-------------------------------------------------
     $EnumerationPortScanIPRangeLastTextbox = New-Object System.Windows.Forms.TextBox -Property @{
         Text          = ""
-        Location      = New-Object System.Drawing.Size($RightShift,$EnumerationPortScanGroupDownPosition) 
-        Size          = New-Object System.Drawing.Size(40,22)
+        Location  = @{ X = $EnumerationPortScanIPRangeLastLabel.Location.X
+                       Y = $EnumerationPortScanIPRangeLastLabel.Location.Y + $EnumerationPortScanIPRangeLastLabel.Size.Height }
+        Size      = @{ Width  = $EnumerationPortScanIPRangeLastLabel.Size.Width
+                       Height = $FormScale * 20 }
         MultiLine     = $False
         WordWrap      = $True
         AcceptsTab    = $false
         AcceptsReturn = $false
-        Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor     = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeLastTextbox)
@@ -3165,28 +3466,15 @@ $EnumerationPortScanGroupDownPositionShift = 25
     # Enumeration - Port Scan - Note1 Label
     #---------------------------------------
     $EnumerationPortScanPortNote1Label = New-Object System.Windows.Forms.Label -Property @{
-        Text       = "Comma Separated Ports"
-        Location   = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationPortScanGroupDownPosition + 3)) 
-        Size       = New-Object System.Drawing.Size(170,22) 
-        Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
-        ForeColor  = "Black"
+        Text       = "Comma Separated Ports:  (ex: 22,80,135,445)"
+        Location  = @{ X = $FormScale * $EnumerationRightPosition
+                       Y = $EnumerationPortScanIPRangeLastTextbox.Location.Y + $EnumerationPortScanIPRangeLastTextbox.Size.Height + $($FormScale * 5) }
+        Size      = @{ Width  = $FormScale * 290
+                       Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor  = "Blue"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortNote1Label)
-
-
-    #---------------------------------------
-    # Enumeration - Port Scan - Note2 Label
-    #---------------------------------------
-    $EnumerationPortScanPortNote2Label = New-Object System.Windows.Forms.Label -Property @{
-        Location  = New-Object System.Drawing.Point(($EnumerationPortScanPortNote1Label.Size.Width + 3),($EnumerationPortScanGroupDownPosition + 4)) 
-        Size      = New-Object System.Drawing.Size(110,20)
-        Text      = "(ex: 22,80,135,445)"
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
-        ForeColor = "Black"
-    }
-    $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortNote2Label)
-
-    $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
 
 
     #--------------------------------------------------
@@ -3194,13 +3482,15 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #--------------------------------------------------
     $EnumerationPortScanSpecificPortsTextbox = New-Object System.Windows.Forms.TextBox -Property @{
         Text          = ""
-        Location      = New-Object System.Drawing.Point($EnumerationRightPosition,$EnumerationPortScanGroupDownPosition) 
-        Size          = New-Object System.Drawing.Size(288,22)
+        Location  = @{ X = $FormScale * $EnumerationRightPosition
+                       Y = $EnumerationPortScanPortNote1Label.Location.Y + $EnumerationPortScanPortNote1Label.Size.Height }
+        Size      = @{ Width  = $FormScale * 288
+                       Height = $FormScale * 22 }
         MultiLine     = $False
         WordWrap      = $True
         AcceptsTab    = $false
         AcceptsReturn = $false
-        Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor     = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificPortsTextbox)
@@ -3214,9 +3504,11 @@ $EnumerationPortScanGroupDownPositionShift = 25
     . "$Dependencies\Code\System.Windows.Forms\ComboBox\EnumerationPortScanPortQuickPickComboBox.ps1"
     $EnumerationPortScanPortQuickPickComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text          = "Quick-Pick Port Selection"
-        Location      = New-Object System.Drawing.Point($EnumerationRightPosition,$EnumerationPortScanGroupDownPosition) 
-        Size          = New-Object System.Drawing.Size(183,20)
-        Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $FormScale * $EnumerationRightPosition
+                       Y = $EnumerationPortScanSpecificPortsTextbox.Location.Y + $EnumerationPortScanSpecificPortsTextbox.Size.Height + $($FormScale * 10) }
+        Size      = @{ Width  = $FormScale * 183
+                       Height = $FormScale * 20 }
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor     = "Black"
         Add_Click = $EnumerationPortScanPortQuickPickComboBoxAdd_Click
     }
@@ -3230,8 +3522,10 @@ $EnumerationPortScanGroupDownPositionShift = 25
     . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPortScanPortsSelectionButton.ps1"
     $EnumerationPortScanPortsSelectionButton = New-Object System.Windows.Forms.Button -Property @{
         Text      = "Select Ports"
-        Location  = New-Object System.Drawing.Point(($EnumerationPortScanPortQuickPickComboBox.Size.Width + 8),$EnumerationPortScanGroupDownPosition) 
-        Size      = New-Object System.Drawing.Size(100,20) 
+        Location  = @{ X = $EnumerationPortScanPortQuickPickComboBox.Size.Width + $($FormScale * 8)
+                       Y = $EnumerationPortScanPortQuickPickComboBox.Location.Y }
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * 20 }
         Add_Click = $EnumerationPortScanPortsSelectionButtonAdd_Click
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortsSelectionButton) 
@@ -3246,11 +3540,13 @@ $EnumerationPortScanGroupDownPositionShift = 25
     $EnumerationPortScanRightShift = $EnumerationRightPosition
 
     $EnumerationPortScanPortRangeNetworkLabel = New-Object System.Windows.Forms.Label -Property @{
-        Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition + 3)) 
-        Size      = New-Object System.Drawing.Size(83,22) 
         Text      = "Port Range"
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
-        ForeColor = "Black"
+        Location  = @{ X = $FormScale * $EnumerationPortScanRightShift
+                       Y = $EnumerationPortScanPortsSelectionButton.Location.Y + $EnumerationPortScanPortsSelectionButton.Size.Height + $($FormScale * 10) }
+        Size      = @{ Width  = $FormScale * 83
+                       Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+        ForeColor = "Blue"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeNetworkLabel)
 
@@ -3262,9 +3558,11 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #----------------------------------------
     $EnumerationPortScanPortRangeFirstLabel = New-Object System.Windows.Forms.Label -Property @{
         Text      = "First Port"
-        Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition + 3)) 
-        Size      = New-Object System.Drawing.Size(50,22) 
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $EnumerationPortScanIPRangeFirstLabel.Location.X
+                       Y = $EnumerationPortScanPortRangeNetworkLabel.Location.Y }
+        Size      = @{ Width  = $EnumerationPortScanIPRangeFirstLabel.Size.Width
+                       Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeFirstLabel)
@@ -3273,13 +3571,15 @@ $EnumerationPortScanGroupDownPositionShift = 25
 
     $EnumerationPortScanPortRangeFirstTextbox = New-Object System.Windows.Forms.TextBox -Property @{
         Text          = ""
-        Location      = New-Object System.Drawing.Point($EnumerationPortScanRightShift,$EnumerationPortScanGroupDownPosition) 
-        Size          = New-Object System.Drawing.Size(50,22)
+        Location  = @{ X = $EnumerationPortScanPortRangeFirstLabel.Location.X
+                       Y = $EnumerationPortScanPortRangeFirstLabel.Location.Y + $EnumerationPortScanPortRangeFirstLabel.Size.Height }
+        Size      = @{ Width  = $EnumerationPortScanPortRangeFirstLabel.Size.Width
+                       Height = $FormScale * 22 }
         MultiLine     = $False
         WordWrap      = $True
         AcceptsTab    = $false # Allows you to enter in tabs into the textbox
         AcceptsReturn = $false # Allows you to enter in returnss into the textbox
-        Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor     = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeFirstTextbox)
@@ -3292,9 +3592,11 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #-----------------------------------------
     $EnumerationPortScanPortRangeLastLabel = New-Object System.Windows.Forms.Label -Property @{
         Text      = "Last Port"
-        Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition + 3)) 
-        Size      = New-Object System.Drawing.Size(50,22) 
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $EnumerationPortScanIPRangeLastLabel.Location.X
+                       Y = $EnumerationPortScanPortRangeFirstLabel.Location.Y }
+        Size      = @{ Width  = $EnumerationPortScanPortRangeFirstTextbox.Size.Width
+                       Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeLastLabel)
@@ -3303,13 +3605,15 @@ $EnumerationPortScanGroupDownPositionShift = 25
 
     $EnumerationPortScanPortRangeLastTextbox = New-Object System.Windows.Forms.TextBox -Property @{
         Text          = ""
-        Location      = New-Object System.Drawing.Point($EnumerationPortScanRightShift,$EnumerationPortScanGroupDownPosition) 
-        Size          = New-Object System.Drawing.Size(50,22)
+        Location  = @{ X = $EnumerationPortScanPortRangeLastLabel.Location.X
+                       Y = $EnumerationPortScanPortRangeLastLabel.Location.Y + $EnumerationPortScanPortRangeLastLabel.Size.Height}
+        Size      = @{ Width  = $EnumerationPortScanPortRangeLastLabel.Size.Width
+                       Height = $FormScale * 22 }
         MultiLine     = $False
         WordWrap      = $True
         AcceptsTab    = $false # Allows you to enter in tabs into the textbox
         AcceptsReturn = $false # Allows you to enter in returnss into the textbox
-        Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor     = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeLastTextbox)
@@ -3322,11 +3626,13 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #--------------------------------------
     $EnumerationPortScanRightShift = $EnumerationRightPosition
 
-    $EnumerationPortScanTestICMPFirstCheckBox           = New-Object System.Windows.Forms.CheckBox -Property @{
-        Text      = "Test ICMP First (ping)"
-        Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition)) 
-        Size      = New-Object System.Drawing.Size(130,22) 
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+    $EnumerationPortScanTestICMPFirstCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
+        Text      = "Test ICMP`r`nFirst (ping)"
+        Location  = @{ X = $EnumerationPortScanPortRangeNetworkLabel.Location.X
+                       Y = $EnumerationPortScanPortRangeLastTextbox.Location.Y + $EnumerationPortScanPortRangeLastTextbox.Size.Height + $($FormScale * 10) }
+        Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
+                       Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
         Checked   = $False
     }
@@ -3340,9 +3646,11 @@ $EnumerationPortScanGroupDownPositionShift = 25
     #---------------------------------
     $EnumerationPortScanTimeoutLabel = New-Object System.Windows.Forms.Label -Property @{
         Text      = "Timeout (ms)"
-        Location  = New-Object System.Drawing.Point($EnumerationPortScanRightShift,($EnumerationPortScanGroupDownPosition + 3)) 
-        Size      = New-Object System.Drawing.Size(75,22) 
-        Font      = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $EnumerationPortScanPortRangeFirstLabel.Location.X
+                       Y = $EnumerationPortScanTestICMPFirstCheckBox.Location.Y }
+        Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkTextbox.Size.Width
+                       Height = $FormScale * 22 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTimeoutLabel)
@@ -3350,14 +3658,16 @@ $EnumerationPortScanGroupDownPositionShift = 25
     $EnumerationPortScanRightShift += $EnumerationPortScanTimeoutLabel.Size.Width
 
     $EnumerationPortScanTimeoutTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-        Text          = 50
-        Location      = New-Object System.Drawing.Point($EnumerationPortScanRightShift,$EnumerationPortScanGroupDownPosition) 
-        Size          = New-Object System.Drawing.Size(50,22)
+        Text      = 50
+        Location  = @{ X = $EnumerationPortScanTimeoutLabel.Location.X
+                       Y = $EnumerationPortScanTimeoutLabel.Location.Y + $EnumerationPortScanTimeoutLabel.Size.Height }
+        Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkTextbox.Size.Width
+                       Height = $FormScale * 22 }
         MultiLine     = $False
         WordWrap      = $True
         AcceptsTab    = $false
         AcceptsReturn = $false
-        Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor     = "Black"
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTimeoutTextbox)
@@ -3372,8 +3682,10 @@ $EnumerationPortScanGroupDownPositionShift = 25
     . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPortScanExecutionButton.ps1"
     $EnumerationPortScanExecutionButton = New-Object System.Windows.Forms.Button -Property @{
         Text      = "Execute Scan"
-        Location  = New-Object System.Drawing.Point(190,$EnumerationPortScanGroupDownPosition)
-        Size      = New-Object System.Drawing.Size(100,22)
+        Location  = @{ X = $FormScale * 190
+                       Y = $EnumerationPortScanTimeoutTextbox.Location.Y }
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * 22 }
         Add_Click = $EnumerationPortScanExecutionButtonAdd_Click
     }
     $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanExecutionButton) 
@@ -3395,9 +3707,11 @@ $Section1EnumerationTab.Controls.Add($EnumerationPortScanGroupBox)
 # Create a group that will contain your radio buttons
 $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text      = "Create List From Ping Sweep"
-    Location  = New-Object System.Drawing.Point(0,($EnumerationPortScanGroupBox.Location.Y + $EnumerationPortScanGroupBox.Size.Height + $EnumerationGroupGap))
-    Size      = New-Object System.Drawing.Size(294,70)
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location  = @{ X = 0
+                   Y = $EnumerationPortScanGroupBox.Location.Y + $EnumerationPortScanGroupBox.Size.Height + $($FormScale * $EnumerationGroupGap) }
+    Size      = @{ Width  = $FormScale * 294
+                   Height = $FormScale * 70 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
 
@@ -3409,9 +3723,11 @@ $EnumerationPingSweepGroupDownPositionShift = 25
     #-------------------------------------------------
     $EnumerationPingSweepNote1Label = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Enter Network/CIDR:"
-        Location   = New-Object System.Drawing.Point($EnumerationRightPosition,($EnumerationPingSweepGroupDownPosition + 3)) 
-        Size       = New-Object System.Drawing.Size(105,22) 
-        Font       = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $FormScale * $EnumerationRightPosition
+                       Y = $FormScale * $EnumerationPingSweepGroupDownPosition + 3 }
+        Size      = @{ Width  = $FormScale * 105
+                       Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor  = "Black"
     }
     $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepNote1Label)
@@ -3422,9 +3738,11 @@ $EnumerationPingSweepGroupDownPositionShift = 25
     #---------------------------------
     $EnumerationPingSweepNote2Label = New-Object System.Windows.Forms.Label -Property @{
         Text       = "(ex: 10.0.0.0/24)"
-        Location   = New-Object System.Drawing.Point(($EnumerationPingSweepNote1Label.Size.Width + 5),($EnumerationPingSweepGroupDownPosition + 4)) 
-        Size       = New-Object System.Drawing.Size(80,22)
-        Font       = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Location  = @{ X = $EnumerationPingSweepNote1Label.Size.Width + $($FormScale * 5)
+                       Y = $EnumerationPingSweepGroupDownPosition + $($FormScale * 4) }
+        Size      = @{ Width  = $FormScale * 80
+                       Height = $FormScale * 22 }
+        Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor  = "Black"
     }
     $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepNote2Label)
@@ -3436,13 +3754,15 @@ $EnumerationPingSweepGroupDownPositionShift = 25
     . "$Dependencies\Code\System.Windows.Forms\TextBox\EnumerationPingSweepIPNetworkCIDRTextbox.ps1"
     $EnumerationPingSweepIPNetworkCIDRTextbox = New-Object System.Windows.Forms.TextBox -Property @{
         Text          = ""
-        Location      = New-Object System.Drawing.Size(190,($EnumerationPingSweepGroupDownPosition)) 
-        Size          = New-Object System.Drawing.Size(100,$EnumerationLabelHeight)
+        Location  = @{ X = $FormScale * 190
+                       Y = $FormScale * $EnumerationPingSweepGroupDownPosition }
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * $EnumerationLabelHeight }
         MultiLine     = $False
         WordWrap      = $True
         AcceptsTab    = $false
         AcceptsReturn = $false
-        Font          = New-Object System.Drawing.Font("$Font",10,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         ForeColor     = "Black"
         Add_KeyDown   = $EnumerationPingSweepIPNetworkCIDRTextboxAdd_KeyDown
     }
@@ -3457,8 +3777,10 @@ $EnumerationPingSweepGroupDownPositionShift = 25
     . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPingSweepExecutionButton.ps1"
     $EnumerationPingSweepExecutionButton = New-Object System.Windows.Forms.Button -Property @{
         Text      = "Execute Sweep"
-        Location  = New-Object System.Drawing.Size(190,$EnumerationPingSweepGroupDownPosition)
-        Size      = New-Object System.Drawing.Size(100,22)
+        Location  = @{ X = $FormScale * 190
+                       Y = $FormScale * $EnumerationPingSweepGroupDownPosition }
+        Size      = @{ Width  = $FormScale * 100
+                       Height = $FormScale * 22 }
         Add_Click = $EnumerationPingSweepExecutionButtonAdd_Click
     }
     $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepExecutionButton) 
@@ -3473,8 +3795,10 @@ $Section1EnumerationTab.Controls.Add($EnumerationPingSweepGroupBox)
 . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationResolveDNSNameButton.ps1"
 $EnumerationResolveDNSNameButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "DNS Resolution"
-    Location  = New-Object System.Drawing.Point(296,19)
-    Size      = New-Object System.Drawing.Size(152,22)
+    Location  = @{ X = $FormScale * 296
+                   Y = $FormScale * 19 }
+    Size      = @{ Width  = $FormScale * 152
+                   Height = $FormScale * 22 }
     Add_Click = $EnumerationResolveDNSNameButtonAdd_Click
 }
 $Section1EnumerationTab.Controls.Add($EnumerationResolveDNSNameButton) 
@@ -3485,9 +3809,11 @@ CommonButtonSettings -Button $EnumerationResolveDNSNameButton
 # Enumeration - Computer List Listbox
 #-------------------------------------
 $EnumerationComputerListBox = New-Object System.Windows.Forms.ListBox -Property @{
-    Location      = New-Object System.Drawing.Point(297,(10  + ($EnumerationResolveDNSNameButton.Size.Height + 13)))
-    Size          = New-Object System.Drawing.Size(150,(480 - ($EnumerationResolveDNSNameButton.Size.Height + 13)))
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location  = @{ X = $FormScale * 297
+                   Y = $EnumerationResolveDNSNameButton.Location.Y + $EnumerationResolveDNSNameButton.Size.Height + $($FormScale * 5) }
+    Size      = @{ Width  = $FormScale * 150
+                   Height = $EnumerationResolveDNSNameButton.Size.Height + $( $FormScale * 410) }
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     SelectionMode = 'MultiExtended'
 }
 $EnumerationComputerListBox.Items.Add("127.0.0.1")
@@ -3500,8 +3826,10 @@ $Section1EnumerationTab.Controls.Add($EnumerationComputerListBox)
 . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxAddToListButton.ps1"
 $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Add To Computer List"
-    Location  = New-Object System.Drawing.Point(($EnumerationComputerListBox.Location.X - 1),($EnumerationComputerListBox.Location.Y + $EnumerationComputerListBox.Size.Height - 3))
-    Size      = New-Object System.Drawing.Size(($EnumerationComputerListBox.Size.Width + 2),22) 
+    Location  = @{ X = $EnumerationComputerListBox.Location.X - $($FormScale * 2)
+                   Y = $EnumerationComputerListBox.Location.Y + $EnumerationComputerListBox.Size.Height + $($FormScale * 4) }
+    Size      = @{ Width  = $EnumerationComputerListBox.Size.Width + $($FormScale * 2)
+                   Height = $FormScale * 22 }
     Add_Click = $EnumerationComputerListBoxAddToListButtonAdd_Click
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxAddToListButton) 
@@ -3513,8 +3841,10 @@ CommonButtonSettings -Button $EnumerationComputerListBoxAddToListButton
 #---------------------------------
 . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxSelectAllButton.ps1"
 $EnumerationComputerListBoxSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
-    Location = New-Object System.Drawing.Size($EnumerationComputerListBoxAddToListButton.Location.X,($EnumerationComputerListBoxAddToListButton.Location.Y + $EnumerationComputerListBoxAddToListButton.Size.Height + 4))
-    Size     = New-Object System.Drawing.Size($EnumerationComputerListBoxAddToListButton.Size.Width,22)
+    Location  = @{ X = $EnumerationComputerListBoxAddToListButton.Location.X
+                   Y = $EnumerationComputerListBoxAddToListButton.Location.Y + $EnumerationComputerListBoxAddToListButton.Size.Height + $($FormScale * 4) }
+    Size      = @{ Width  = $EnumerationComputerListBoxAddToListButton.Size.Width
+                   Height = $FormScale * 22 }
     Text     = "Select All"
     Add_Click = $EnumerationComputerListBoxSelectAllButtonAdd_Click
 }
@@ -3527,8 +3857,10 @@ CommonButtonSettings -Button $EnumerationComputerListBoxSelectAllButton
 #-----------------------------------
 . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxClearButton.ps1"
 $EnumerationComputerListBoxClearButton = New-Object System.Windows.Forms.Button -Property @{
-    Location  = New-Object System.Drawing.Size($EnumerationComputerListBoxSelectAllButton.Location.X,($EnumerationComputerListBoxSelectAllButton.Location.Y + $EnumerationComputerListBoxSelectAllButton.Size.Height + 4))
-    Size      = New-Object System.Drawing.Size($EnumerationComputerListBoxSelectAllButton.Size.Width,22)
+    Location  = @{ X = $EnumerationComputerListBoxSelectAllButton.Location.X
+                   Y = $EnumerationComputerListBoxSelectAllButton.Location.Y + $EnumerationComputerListBoxSelectAllButton.Size.Height + $($FormScale * 4) }
+    Size      = @{ Width  = $EnumerationComputerListBoxSelectAllButton.Size.Width
+                   Height = $FormScale * 22 }
     Text      = 'Clear List'
     Add_Click = $EnumerationComputerListBoxClearButtonAdd_Click
 }
@@ -3550,7 +3882,7 @@ CommonButtonSettings -Button $EnumerationComputerListBoxClearButton
 $MainLeftChecklistTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Checklist"
     Name                    = "Checklist Tab"
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 if (Test-Path "$Dependencies\Checklists") { $MainLeftTabControl.Controls.Add($MainLeftChecklistTab) }
@@ -3578,21 +3910,15 @@ $TextBoxHeight        = 536
 
 $MainLeftChecklistTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name          = "Checklist TabControl"
-    Location      = New-Object System.Drawing.Point($TabRightPosition,$TabhDownPosition)
-    Size          = New-Object System.Drawing.Size($TabAreaWidth,$TabAreaHeight) 
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location  = @{ X = $FormScale * $TabRightPosition
+                   Y = $FormScale * $TabhDownPosition }
+    Size      = @{ Width  = $FormScale * $TabAreaWidth
+                   Height = $FormScale * $TabAreaHeight }
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ShowToolTips  = $True
     SelectedIndex = 0
 }
 $MainLeftChecklistTab.Controls.Add($MainLeftChecklistTabControl)
-
-
-$ChecklistRightPosition     = 5
-$ChecklistDownPositionStart = 10
-$ChecklistDownPosition      = 10
-$ChecklistDownPositionShift = 30
-$CheckListBoxWidth          = 410
-$CheckListBoxHeight         = 30
 
 
 #-------------------------------------------------------
@@ -3619,7 +3945,7 @@ $Section1ProcessesTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Processes"
     Name                    = "Processes Tab"
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 if (Test-Path "$Dependencies\Process Info") { $MainLeftTabControl.Controls.Add($Section1ProcessesTab) }
 
@@ -3646,11 +3972,11 @@ $TextBoxHeight          = 536
 
 $MainLeftProcessesTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Processes TabControl"
-    Location = @{ X = $TabRightPosition
-                  Y = $TabhDownPosition }
-    Size     = @{ Width  = $TabAreaWidth
-                  Height = $TabAreaHeight }
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $TabRightPosition
+                  Y = $FormScale * $TabhDownPosition }
+    Size     = @{ Width  = $FormScale * $TabAreaWidth
+                  Height = $FormScale * $TabAreaHeight }
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ShowToolTips  = $True
     SelectedIndex = 0
 }
@@ -3687,7 +4013,7 @@ $Section1OpNotesTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "OpNotes"
     Name                    = "OpNotes Tab"
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $MainLeftTabControl.Controls.Add($Section1OpNotesTab)
 
@@ -3718,16 +4044,16 @@ $OpNotesDownPositionShift  = 22
 #-------------------------------------
 $OpNotesLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = "Enter Your Operator Notes (OpNotes) - Auto-Timestamp:"
-    Location = @{ X = $OpNotesRightPosition
-                  Y = $OpNotesDownPosition }
-    Size     = @{ Width  = $OpNotesInputTextBoxWidth
-                  Height = $OpNotesInputTextBoxHeight }
-    Font      = New-Object System.Drawing.Font("$Font",13,1,2,1)
+    Location = @{ X = $FormScale * $OpNotesRightPosition 
+                  Y = $FormScale * $OpNotesDownPosition }
+    Size     = @{ Width  = $FormScale * $OpNotesInputTextBoxWidth
+                  Height = $FormScale * $OpNotesInputTextBoxHeight }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 13),1,2,1)
     ForeColor = "Blue"
 }
 $Section1OpNotesTab.Controls.Add($OpNotesLabel)
 
-$OpNotesDownPosition += $OpNotesDownPositionShift
+$OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 
 
 #--------------------------
@@ -3735,14 +4061,16 @@ $OpNotesDownPosition += $OpNotesDownPositionShift
 #--------------------------
 . "$Dependencies\Code\System.Windows.Forms\TextBox\OpNotesInputTextBox.ps1"
 $OpNotesInputTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = New-Object System.Drawing.Point($OpNotesRightPosition,$OpNotesDownPosition)
-    Size     = New-Object System.Drawing.Size($OpNotesInputTextBoxWidth,$OpNotesInputTextBoxHeight)
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $OpNotesRightPosition
+                  Y = $FormScale * $OpNotesDownPosition }
+    Size     = @{ Width  = $FormScale * $OpNotesInputTextBoxWidth
+                  Height = $FormScale * $OpNotesInputTextBoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_KeyDown = $OpNotesInputTextBoxAdd_KeyDown
 }
 $Section1OpNotesTab.Controls.Add($OpNotesInputTextBox)
 
-$OpNotesDownPosition += $OpNotesDownPositionShift
+$OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 
 
 #----------------------
@@ -3750,9 +4078,11 @@ $OpNotesDownPosition += $OpNotesDownPositionShift
 #----------------------
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesAddButton.ps1"
 $OpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Add"
-    Location  = New-Object System.Drawing.Point($OpNotesRightPosition,$OpNotesDownPosition)
-    Size      = New-Object System.Drawing.Size($OpNotesButtonWidth,$OpNotesButtonHeight)
+    Text     = "Add"
+    Location = @{ X = $FormScale * $OpNotesRightPosition
+                  Y = $FormScale * $OpNotesDownPosition }
+    Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
+                  Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesAddButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesAddButton) 
@@ -3767,8 +4097,10 @@ $OpNotesRightPosition += $OpNotesRightPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesSelectAllButton.ps1"
 $OpNotesSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Select All"
-    Location = New-Object System.Drawing.Point($OpNotesRightPosition,$OpNotesDownPosition)
-    Size     = New-Object System.Drawing.Size($OpNotesButtonWidth,$OpNotesButtonHeight)
+    Location = @{ X = $FormScale * $OpNotesRightPosition
+                  Y = $FormScale * $OpNotesDownPosition }
+    Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
+                  Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesSelectAllButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesSelectAllButton) 
@@ -3783,10 +4115,10 @@ $OpNotesRightPosition += $OpNotesRightPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesOpenOpNotesButton.ps1"
 $OpNotesOpenOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Open OpNotes"
-    Location = @{ X = $OpNotesRightPosition
-                  Y = $OpNotesDownPosition }
-    Size     = @{ Width  = $OpNotesButtonWidth
-                  Height = $OpNotesButtonHeight }
+    Location = @{ X = $FormScale * $OpNotesRightPosition
+                  Y = $FormScale * $OpNotesDownPosition }
+    Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
+                  Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesOpenOpNotesButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesOpenOpNotesButton)
@@ -3801,16 +4133,16 @@ $OpNotesRightPosition += $OpNotesRightPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveUpButton.ps1"
 $OpNotesMoveUpButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Move Up'
-    Location = @{ X = $OpNotesRightPosition
-                  Y = $OpNotesDownPosition }
-    Size     = @{ Width  = $OpNotesButtonWidth
-                  Height = $OpNotesButtonHeight }
+    Location = @{ X = $FormScale * $OpNotesRightPosition
+                  Y = $FormScale * $OpNotesDownPosition }
+    Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
+                  Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesMoveUpButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesMoveUpButton) 
 CommonButtonSettings -Button $OpNotesMoveUpButton
 
-$OpNotesDownPosition += $OpNotesDownPositionShift
+$OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 $OpNotesRightPosition = $OpNotesRightPositionStart
 
 
@@ -3820,8 +4152,10 @@ $OpNotesRightPosition = $OpNotesRightPositionStart
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesRemoveButton.ps1"
 $OpNotesRemoveButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Remove'
-    Location = New-Object System.Drawing.Point($OpNotesRightPosition,$OpNotesDownPosition)
-    Size     = New-Object System.Drawing.Size($OpNotesButtonWidth,$OpNotesButtonHeight)
+            Location = @{ X = $FormScale * $OpNotesRightPosition
+                      Y = $FormScale * $OpNotesDownPosition }
+        Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
+                      Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesRemoveButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesRemoveButton) 
@@ -3836,8 +4170,10 @@ $OpNotesRightPosition += $OpNotesRightPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesCreateReportButton.ps1"
 $OpNotesCreateReportButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Create Report"
-    Location = New-Object System.Drawing.Point($OpNotesRightPosition,$OpNotesDownPosition)
-    Size     = New-Object System.Drawing.Size($OpNotesButtonWidth,$OpNotesButtonHeight)
+    Location = @{ X = $FormScale * $OpNotesRightPosition
+                  Y = $FormScale * $OpNotesDownPosition }
+    Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
+                  Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesCreateReportButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesCreateReportButton) 
@@ -3851,8 +4187,10 @@ $OpNotesRightPosition += $OpNotesRightPositionShift
 #-------------------------------
 $OpNotesOpenReportsButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Open Reports"
-    Location = New-Object System.Drawing.Point($OpNotesRightPosition,$OpNotesDownPosition)
-    Size     = New-Object System.Drawing.Size($OpNotesButtonWidth,$OpNotesButtonHeight) 
+        Location = @{ X = $FormScale * $OpNotesRightPosition
+                      Y = $FormScale * $OpNotesDownPosition }
+        Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
+                      Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = { Invoke-Item -Path "$PoShHome\Reports" }
 }
 $Section1OpNotesTab.Controls.Add($OpNotesOpenReportsButton)
@@ -3867,14 +4205,16 @@ $OpNotesRightPosition += $OpNotesRightPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesMoveDownButton.ps1"
 $OpNotesMoveDownButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Move Down'
-    Location = New-Object System.Drawing.Point($OpNotesRightPosition,$OpNotesDownPosition)
-    Size     = New-Object System.Drawing.Size($OpNotesButtonWidth,$OpNotesButtonHeight)
+    Location = @{ X = $FormScale * $OpNotesRightPosition
+                  Y = $FormScale * $OpNotesDownPosition }
+    Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
+                  Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesMoveDownButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesMoveDownButton) 
 CommonButtonSettings -Button $OpNotesMoveDownButton
 
-$OpNotesDownPosition += $OpNotesDownPositionShift
+$OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
 
 
 #-------------------
@@ -3882,10 +4222,12 @@ $OpNotesDownPosition += $OpNotesDownPositionShift
 #-------------------
 . "$Dependencies\Code\System.Windows.Forms\ListBox\OpNotesListBox.ps1"
 $OpNotesListBox = New-Object System.Windows.Forms.ListBox -Property @{
-    Name                = "OpNotesListBox"
-    Location            = New-Object System.Drawing.Point($OpNotesRightPositionStart,($OpNotesDownPosition + 5)) 
-    Size                = New-Object System.Drawing.Size($OpNotesMainTextBoxWidth,$OpNotesMainTextBoxHeight)
-    Font                = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Name     = "OpNotesListBox"
+    Location = @{ X = $FormScale * $OpNotesRightPositionStart
+                  Y = $FormScale * $OpNotesDownPosition + 5 }
+    Size     = @{ Width  = $FormScale * $OpNotesMainTextBoxWidth
+                  Height = $FormScale * $OpNotesMainTextBoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     FormattingEnabled   = $True
     SelectionMode       = 'MultiExtended'
     ScrollAlwaysVisible = $True
@@ -3920,7 +4262,7 @@ if (Test-Path -Path $OpNotesFile) {
 
 $MainLeftInfoTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Info"
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainLeftTabControl.Controls.Add($MainLeftInfoTab)
@@ -3946,9 +4288,11 @@ $TextBoxHeight          = 536
 #============================================================================================================================================================
 
 $MainLeftInfoTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-    Location      = New-Object System.Drawing.Point($TabRightPosition,$TabhDownPosition)
-    Size          = New-Object System.Drawing.Size($TabAreaWidth,$TabAreaHeight) 
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $TabRightPosition
+                  Y = $FormScale * $TabhDownPosition }
+    Size     = @{ Width  = $FormScale * $TabAreaWidth
+                  Height = $FormScale * $TabAreaHeight }
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ShowToolTips  = $True
     SelectedIndex = 0
 }
@@ -3976,23 +4320,25 @@ foreach ($File in $ResourceFiles) {
     $Section1AboutSubTab = New-Object System.Windows.Forms.TabPage -Property @{
         Text                    = $File.BaseName
         UseVisualStyleBackColor = $True
-        Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $MainLeftInfoTabControl.Controls.Add($Section1AboutSubTab)
 
 
     #-----------------------------
     # Imports Data Into Textboxes
-    #-----------------------------
-    $TabContents = Get-Content -Path $File.FullName -Force | foreach {$_ + "`r`n"} 
+    #----------------------------- BATMAN
+    $TabContents = Get-Content -Path $File.FullName -Force | ForEach-Object {$_ + "`r`n"} 
     $Section1AboutSubTabTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text       = "$TabContents"
         Name       = "$file"
-        Location   = New-Object System.Drawing.Point($TextBoxRightPosition,$TextBoxDownPosition) 
-        Size       = New-Object System.Drawing.Size($TextBoxWidth,$TextBoxHeight)
+        Location = @{ X = $FormScale * $TextBoxRightPosition
+                      Y = $FormScale * $TextBoxDownPosition }
+        Size     = @{ Width  = $FormScale * $TextBoxWidth
+                      Height = $FormScale * $TextBoxHeight }
         MultiLine  = $True
         ScrollBars = "Vertical"
-        Font       = New-Object System.Drawing.Font("Courier New",9,0,0,0)
+        Font       = New-Object System.Drawing.Font("Courier New",$($FormScale * 9),0,0,0)
     }
     $Section1AboutSubTab.Controls.Add($Section1AboutSubTabTextBox)    
 }
@@ -4012,13 +4358,13 @@ foreach ($File in $ResourceFiles) {
 . "$Dependencies\Code\System.Windows.Forms\TabControl\Section2TabControl.ps1"
 $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name          = "Main Tab Window"
-    Location      = @{ X = 470
-                       Y = 5 }
-    Size          = @{ Width =  370
-                       Height = 278 }
+    Location      = @{ X = $FormScale * 470
+                       Y = $FormScale * 5 }
+    Size          = @{ Width  = $FormScale *  370
+                       Height = $FormScale * 278 }
     SelectedIndex = 0
     ShowToolTips  = $True
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click      = $MainCenterTabControlAdd_Click
     Add_MouseHover = $MainCenterTabControlAdd_MouseHover
 }
@@ -4040,13 +4386,12 @@ $MainCenterMainTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Main"
     Name                    = "Main"
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $MainCenterTabControl.Controls.Add($MainCenterMainTab)
 
 $Column3RightPosition     = 3
 $Column3DownPosition      = 11
-$Column3BoxWidth          = 300
 $Column3BoxHeight         = 22
 $Column3DownPositionShift = 26
 
@@ -4059,11 +4404,11 @@ $DefaultSingleHostIPText = "<Type In A Hostname / IP>"
 . "$Dependencies\Code\System.Windows.Forms\Checkbox\SingleHostIPCheckBox.ps1"
 $script:SingleHostIPCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text      = "Query A Single Endpoint:"
-    Location  = @{ X = 3
-                   Y = 11 }
-    Size      = @{ Width  = 210
-                   Height = $Column3BoxHeight }
-    Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
+    Location  = @{ X = $FormScale * 3
+                   Y = $FormScale * 11 }
+    Size      = @{ Width  = $FormScale * 210
+                   Height = $FormScale * $Column3BoxHeight }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     Forecolor = 'Blue'
     Enabled   = $true
     Add_Click      = $SingleHostIPCheckBoxAdd_Click
@@ -4079,11 +4424,11 @@ $Column3DownPosition += $Column3DownPositionShift
 . "$Dependencies\Code\System.Windows.Forms\TextBox\SingleHostIPTextBox.ps1"
 $script:SingleHostIPTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Text     = $DefaultSingleHostIPText
-    Location = @{ X = $Column3RightPosition
-                  Y = $Column3DownPosition + 1 }
-    Size     = @{ Width  = 235
-                  Height = $Column3BoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $Column3RightPosition
+                  Y = $FormScale * $Column3DownPosition + 1 }
+    Size     = @{ Width  = $FormScale * 235
+                  Height = $FormScale * $Column3BoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_KeyDown    = $SingleHostIPTextBoxAdd_KeyDown
     Add_MouseHover = $SingleHostIPTextBoxAdd_MouseHover
     Add_MouseEnter = $SingleHostIPTextBoxAdd_MouseEnter
@@ -4098,10 +4443,10 @@ $MainCenterMainTab.Controls.Add($script:SingleHostIPTextBox)
 . "$Dependencies\Code\System.Windows.Forms\Button\SingleHostIPAddButton.ps1"
 $SingleHostIPAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Add To List"
-    Location = @{ X = $Column3RightPosition + 240
-                  Y = $Column3DownPosition }
-    Size     = @{ Width  = 115
-                  Height = $Column3BoxHeight } 
+    Location = @{ X = $FormScale * ($Column3RightPosition + 240)
+                  Y = $FormScale * $Column3DownPosition }
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * $Column3BoxHeight } 
     Add_Click      = $SingleHostIPAddButtonAdd_Click
     Add_MouseHover = $SingleHostIPAddButtonAdd_MouseHover
 }
@@ -4117,11 +4462,11 @@ $Column3DownPosition += $Column3DownPositionShift - 3
 #-------------------------------------------
 $DirectoryListLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = "Results Folder:"
-    Location  = @{ X = $Column3RightPosition
-                   Y = $SingleHostIPAddButton.Location.Y + $SingleHostIPAddButton.Size.Height + 30 }
-    Size      = @{ Width  = 120
-                   Height = 22 }
-    Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
+    Location  = @{ X = $FormScale * $Column3RightPosition
+                   Y = $SingleHostIPAddButton.Location.Y + $SingleHostIPAddButton.Size.Height + $($FormScale * 30) }
+    Size      = @{ Width  = $FormScale * 120
+                   Height = $FormScale * 22 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = "Blue"
 }
 $MainCenterMainTab.Controls.Add($DirectoryListLabel)
@@ -4135,16 +4480,16 @@ $MainCenterMainTab.Controls.Add($DirectoryListLabel)
 $script:CollectionSavedDirectoryTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Name     = "Saved Directory List Box"
     Text    = $SaveDirectory
-    Location = @{ X = $Column3RightPosition
+    Location = @{ X = $FormScale * $Column3RightPosition
                   Y = $DirectoryListLabel.Location.Y + $DirectoryListLabel.Size.Height } 
-    Size     = @{ Width  = 354
-                  Height = 22 }
+    Size     = @{ Width  = $FormScale * 354
+                  Height = $FormScale * 22 }
     WordWrap = $false
     AcceptsTab = $true
     TabStop    = $true
     Multiline  = $false
     AutoSize   = $false
-    Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "FileSystem"
     AutoCompleteMode   = "SuggestAppend"
     Add_MouseHover     = $CollectionSavedDirectoryTextBoxAdd_MouseHover
@@ -4158,10 +4503,10 @@ $MainCenterMainTab.Controls.Add($script:CollectionSavedDirectoryTextBox)
 . "$Dependencies\Code\System.Windows.Forms\Button\DirectoryOpenButton.ps1"
 $DirectoryOpenButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Open Folder"
-    Location = @{ X = $Column3RightPosition + 120
-                  Y = $script:CollectionSavedDirectoryTextBox.Location.Y + $script:CollectionSavedDirectoryTextBox.Size.Height + 5 }
-    Size     = @{ Width  = 115
-                  Height = $Column3BoxHeight } 
+    Location = @{ X = $FormScale * ($Column3RightPosition + 120)
+                  Y = $script:CollectionSavedDirectoryTextBox.Location.Y + $script:CollectionSavedDirectoryTextBox.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * $Column3BoxHeight } 
     Add_Click      = $DirectoryOpenButtonAdd_Click 
     Add_MouseHover = $DirectoryOpenButtonAdd_MouseHover
 }
@@ -4175,10 +4520,10 @@ CommonButtonSettings -Button $DirectoryOpenButton
 . "$Dependencies\Code\System.Windows.Forms\Button\DirectoryUpdateButton.ps1"
 $DirectoryUpdateButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "New Timestamp"
-    Location = @{ X = $DirectoryOpenButton.Location.X + $DirectoryOpenButton.Size.Width + 5
+    Location = @{ X = $DirectoryOpenButton.Location.X + $DirectoryOpenButton.Size.Width + $($FormScale * 5)
                   Y = $DirectoryOpenButton.Location.Y }
-    Size     = @{ Width  = 115
-                  Height = $Column3BoxHeight } 
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * $Column3BoxHeight } 
     Add_Click      = $DirectoryUpdateButtonAdd_Click
     Add_MouseHover = $DirectoryUpdateButtonAdd_MouseHover
 }
@@ -4191,11 +4536,11 @@ CommonButtonSettings -Button $DirectoryUpdateButton
 #-----------------
 $ResultsSectionLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = "Analyst Options:"
-    Location  = @{ X = 2
-                   Y = $DirectoryUpdateButton.Location.Y + $DirectoryUpdateButton.Size.Height + 15 }
-    Size      = @{ Width  = 230
-                   Height = $Column3BoxHeight } 
-    Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
+    Location  = @{ X = $FormScale * 2
+                   Y = $DirectoryUpdateButton.Location.Y + $DirectoryUpdateButton.Size.Height + $($FormScale * 15) }
+    Size      = @{ Width  = $FormScale * 230
+                   Height = $FormScale * $Column3BoxHeight } 
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = "Blue"
 }
 $MainCenterMainTab.Controls.Add($ResultsSectionLabel)
@@ -4208,9 +4553,9 @@ $MainCenterMainTab.Controls.Add($ResultsSectionLabel)
 $BuildChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Build Charts"
     Location = @{ X = $ResultsSectionLabel.Location.X
-                  Y = $ResultsSectionLabel.Location.Y + $ResultsSectionLabel.Size.Height}
-    Size     = @{ Width  = 115
-                  Height = 22 }
+                  Y = $ResultsSectionLabel.Location.Y + $ResultsSectionLabel.Size.Height }
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * 22 }
     Add_Click      = $BuildChartButtonAdd_Click
     Add_MouseHover = $BuildChartButtonAdd_MouseHover
 }
@@ -4225,10 +4570,10 @@ CommonButtonSettings -Button $BuildChartButton
 . "$Dependencies\Code\System.Windows.Forms\Button\AutoCreateMultiSeriesChartButton.ps1"
 $AutoCreateMultiSeriesChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Multi-Series Charts"
-    Location = @{ X = $BuildChartButton.Location.X + $BuildChartButton.Size.Width + 5
-                    Y = $BuildChartButton.Location.Y }
-    Size     = @{ Width  = 115
-                    Height = 22 }
+    Location = @{ X = $BuildChartButton.Location.X + $BuildChartButton.Size.Width + $($FormScale * 5)
+                  Y = $BuildChartButton.Location.Y }
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * 22 }
     Add_Click = $AutoCreateMultiSeriesChartButtonAdd_Click
     Add_MouseHover = $AutoCreateMultiSeriesChartButtonAdd_MouseHover
 }
@@ -4243,10 +4588,10 @@ CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
 . "$Dependencies\Code\System.Windows.Forms\Button\AutoCreateDashboardChartButton.ps1"
 $AutoCreateDashboardChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Dashboard Charts"
-    Location = @{ X = $AutoCreateMultiSeriesChartButton.Location.X + $AutoCreateMultiSeriesChartButton.Size.Width + 5
-                    Y = $AutoCreateMultiSeriesChartButton.Location.Y }
-    Size     = @{ Width = 115
-                    Height = 22 }
+    Location = @{ X = $AutoCreateMultiSeriesChartButton.Location.X + $AutoCreateMultiSeriesChartButton.Size.Width + $($FormScale * 5)
+                  Y = $AutoCreateMultiSeriesChartButton.Location.Y }
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * 22 }
     Add_Click      = $AutoCreateDashboardChartButtonAdd_Click
     Add_MouseHover = $AutoCreateDashboardChartButtonAdd_MouseHover
 }
@@ -4261,9 +4606,9 @@ CommonButtonSettings -Button $AutoCreateDashboardChartButton
 $RetrieveFilesButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Retrieve Files"
     Location = @{ X = $BuildChartButton.Location.X
-                  Y = $BuildChartButton.Location.Y + $BuildChartButton.Size.Height + 5 }
-    Size     = @{ Width  = 115
-                  Height = 22 }
+                  Y = $AutoCreateMultiSeriesChartButton.Location.Y + $AutoCreateMultiSeriesChartButton.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * 22 }
     Add_Click      = $RetrieveFilesButtonAdd_Click
     Add_MouseHover = $RetrieveFilesButtonAdd_MouseHover
 }
@@ -4278,9 +4623,9 @@ CommonButtonSettings -Button $RetrieveFilesButton
 $OpenXmlResultsButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Open Data In Shell"
     Location = @{ X = $AutoCreateMultiSeriesChartButton.Location.X
-                  Y = $AutoCreateMultiSeriesChartButton.Location.Y + $AutoCreateMultiSeriesChartButton.Size.Height + 5 }
-    Size     = @{ Width  = 115
-                  Height = 22 }
+                  Y = $AutoCreateMultiSeriesChartButton.Location.Y + $AutoCreateMultiSeriesChartButton.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * 22 }
     Add_Click      = $OpenXmlResultsButtonAdd_Click
     Add_MouseHover = $OpenXmlResultsButtonAdd_MouseHover
 }
@@ -4295,9 +4640,9 @@ CommonButtonSettings -Button $OpenXmlResultsButton
 $OpenCsvResultsButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "View CSV Results"
     Location = @{ X = $AutoCreateDashboardChartButton.Location.X
-                  Y = $AutoCreateDashboardChartButton.Location.Y + $AutoCreateDashboardChartButton.Size.Height + 5 }
-    Size     = @{ Width  = 115
-                  Height = 22 }
+                  Y = $AutoCreateDashboardChartButton.Location.Y + $AutoCreateDashboardChartButton.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 115
+                  Height = $FormScale * 22 }
     Add_Click = $OpenCsvResultsButtonAdd_Click
     Add_MouseHover = $OpenCsvResultsButtonAdd_MouseHover
 }
@@ -4324,9 +4669,9 @@ CommonButtonSettings -Button $OpenCsvResultsButton
 #=======================================================================================================================================================================
 
 $Section2OptionsTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text                    = "Options"
-    Name                    = "Options"
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Text = "Options"
+    Name = "Options"
+    Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainCenterTabControl.Controls.Add($Section2OptionsTab)
@@ -4339,13 +4684,13 @@ $MainCenterTabControl.Controls.Add($Section2OptionsTab)
 $script:OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.Forms.Combobox -Property @{
     #Text    = 600     #The default is set with the Cmdlet Parameter Options
     Text = $JobTimeOutSeconds
-    Location = @{ X = 3
-                  Y = 11 }
-    Size     = @{ Width  = 50
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",9,0,3,0)
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * 11 }
+    Size     = @{ Width  = $FormScale * 50
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 9),0,2,0)
     AutoCompleteMode = "SuggestAppend" 
-    Add_MouseHover = $script:OptionJobTimeoutSelectionComboBoxAdd_MouseHover
+    Add_MouseHover   = $script:OptionJobTimeoutSelectionComboBoxAdd_MouseHover
 }
 $JobTimesAvailable = @(15,30,45,60,120,180,240,300,600)
 ForEach ($Item in $JobTimesAvailable) { $script:OptionJobTimeoutSelectionComboBox.Items.Add($Item) }
@@ -4357,11 +4702,11 @@ $Section2OptionsTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
 #----------------------------
 $OptionJobTimeoutSelectionLabel = New-Object -TypeName System.Windows.Forms.Label -Property @{
     Text     = "Job Timeout in Seconds"
-    Location = @{ X = $script:OptionJobTimeoutSelectionComboBox.Size.Width + 10
-                  Y = $script:OptionJobTimeoutSelectionComboBox.Location.Y + 3 }
-    Size     = @{ Width  = 150
-                  Height = 25 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $script:OptionJobTimeoutSelectionComboBox.Size.Width + $($FormScale * 10)
+                  Y = $script:OptionJobTimeoutSelectionComboBox.Location.Y + $($FormScale + 3) }
+    Size     = @{ Width  = $FormScale * 150
+                  Height = $FormScale * 25 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section2OptionsTab.Controls.Add($OptionJobTimeoutSelectionLabel)
 
@@ -4372,11 +4717,11 @@ $Section2OptionsTab.Controls.Add($OptionJobTimeoutSelectionLabel)
 . "$Dependencies\Code\System.Windows.Forms\Combobox\OptionStatisticsUpdateIntervalComboBox.ps1"
 $OptionStatisticsUpdateIntervalCombobox = New-Object System.Windows.Forms.Combobox -Property @{
     Text     = 5
-    Location = @{ X = 3
-                  Y = $script:OptionJobTimeoutSelectionComboBox.Location.Y + $script:OptionJobTimeoutSelectionComboBox.Size.Height + 5 }
-    Size     = @{ Width  = 50
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * 3
+                  Y = $script:OptionJobTimeoutSelectionComboBox.Location.Y + $script:OptionJobTimeoutSelectionComboBox.Size.Height + $($FormScale + 5) }
+    Size     = @{ Width  = $FormScale * 50
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseHover = $OptionStatisticsUpdateIntervalComboboxAdd_MouseHover
 }
 $StatisticsTimesAvailable = @(1,5,10,15,30,45,60)
@@ -4389,11 +4734,11 @@ $Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalCombobox)
 #-------------------------------------------
 $OptionStatisticsUpdateIntervalLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "Statistics Update Interval"
-    Location = @{ X = $OptionStatisticsUpdateIntervalCombobox.Size.Width + 10
-                  Y = $OptionStatisticsUpdateIntervalCombobox.Location.Y + 3 }
-    Size     = @{ Width  = 200
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $OptionStatisticsUpdateIntervalCombobox.Size.Width + $($FormScale * 10)
+                  Y = $OptionStatisticsUpdateIntervalCombobox.Location.Y + $($FormScale + 3) }
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalLabel)
 
@@ -4402,12 +4747,12 @@ $Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalLabel)
 # Option - Search Computers for Previously Collected Data Groupbox
 #------------------------------------------------------------------
 $OptionSearchComputersForPreviouslyCollectedDataProcessesCheckBox = New-Object System.Windows.Forms.Groupbox -Property @{
-    Text     = "Search Computers for Previously Collected Data"
-    Location = @{ X = 3
-                  Y = $OptionStatisticsUpdateIntervalCombobox.Location.Y + $OptionStatisticsUpdateIntervalCombobox.Size.Height + 5 }
-    Size     = @{ Width  = 352
-                  Height = 97 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Text     = "Search Endpoints for Previously Collected Data"
+    Location = @{ X = $FormScale * 3
+                  Y = $OptionStatisticsUpdateIntervalCombobox.Location.Y + $OptionStatisticsUpdateIntervalCombobox.Size.Height + $($FormScale + 5) }
+    Size     = @{ Width  = $FormScale * 352
+                  Height = $FormScale * 100 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section2OptionsTab.Controls.Add($OptionSearchComputersForPreviouslyCollectedDataProcessesCheckBox)
 
@@ -4418,11 +4763,11 @@ $Section2OptionsTab.Controls.Add($OptionSearchComputersForPreviouslyCollectedDat
     . "$Dependencies\Code\System.Windows.Forms\ComboBox\CollectedDataDirectorySearchLimitComboBox.ps1"
     $CollectedDataDirectorySearchLimitComboBox = New-Object System.Windows.Forms.Combobox -Property @{
         Text     = 50
-        Location = @{ X = 10
-                      Y = 15 }
-        Size     = @{ Width  = 50
-                      Height = 22 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                      Y = $FormScale * 15 }
+        Size     = @{ Width  = $FormScale * 50
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Add_MouseHover = $CollectedDataDirectorySearchLimitComboBoxAdd_MouseHover
     }
     $NumberOfDirectoriesToSearchBack = @(25,50,100,150,200,250,500,750,1000)
@@ -4434,11 +4779,11 @@ $Section2OptionsTab.Controls.Add($OptionSearchComputersForPreviouslyCollectedDat
     #------------------------------------------------------
     $CollectedDataDirectorySearchLimitLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Number of Past Directories to Search"
-        Location = @{ X = $CollectedDataDirectorySearchLimitCombobox.Size.Width + 10
-                      Y = $CollectedDataDirectorySearchLimitCombobox.Location.Y + 3 }
-        Size     = @{ Width  = 200
-                      Height = 22 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $CollectedDataDirectorySearchLimitCombobox.Size.Width + $($FormScale * 10)
+                      Y = $CollectedDataDirectorySearchLimitCombobox.Location.Y + $($FormScale + 3) }
+        Size     = @{ Width  = $FormScale * 200
+                      Height = $FormScale * 22 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
 
     
@@ -4447,13 +4792,13 @@ $Section2OptionsTab.Controls.Add($OptionSearchComputersForPreviouslyCollectedDat
     #------------------------------------
     $OptionSearchProcessesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text     = "Processes"
-        Location = @{ X = 10
-                      Y = $CollectedDataDirectorySearchLimitCombobox.Location.Y + $CollectedDataDirectorySearchLimitCombobox.Size.Height + 0 }
-        Size     = @{ Width  = 200
-                      Height = 20 }
+        Location = @{ X = $FormScale * 10
+                      Y = $CollectedDataDirectorySearchLimitLabel.Location.Y + $CollectedDataDirectorySearchLimitLabel.Size.Height }
+        Size     = @{ Width  = $FormScale * 200
+                      Height = $FormScale * 20 }
         Enabled  = $true
         Checked  = $False
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
 
     
@@ -4462,13 +4807,13 @@ $Section2OptionsTab.Controls.Add($OptionSearchComputersForPreviouslyCollectedDat
     #-----------------------------------
     $OptionSearchServicesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text     = "Services"
-        Location = @{ X = 10
-                      Y = $OptionSearchProcessesCheckBox.Location.Y + $OptionSearchProcessesCheckBox.Size.Height + 0 }
-        Size     = @{ Width  = 200
-                      Height = 20 }
+        Location = @{ X = $FormScale * 10
+                      Y = $OptionSearchProcessesCheckBox.Location.Y + $OptionSearchProcessesCheckBox.Size.Height }
+        Size     = @{ Width  = $FormScale * 200
+                      Height = $FormScale * 20 }
         Enabled  = $true
         Checked  = $False
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
 
     
@@ -4477,13 +4822,13 @@ $Section2OptionsTab.Controls.Add($OptionSearchComputersForPreviouslyCollectedDat
     #--------------------------------------------------
     $OptionSearchNetworkTCPConnectionsCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text     = "Network TCP Connections"
-        Location = @{ X = 10
-                      Y = $OptionSearchServicesCheckBox.Location.Y + $OptionSearchServicesCheckBox.Size.Height - 1 }
-        Size     = @{ Width  = 200
-                      Height = 20 }
+        Location = @{ X = $FormScale * 10
+                      Y = $OptionSearchServicesCheckBox.Location.Y + $OptionSearchServicesCheckBox.Size.Height - $($FormScale + 1) }
+        Size     = @{ Width  = $FormScale * 200
+                      Height = $FormScale * 20 }
         Enabled  = $true
         Checked  = $False
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
 $OptionSearchComputersForPreviouslyCollectedDataProcessesCheckBox.Controls.AddRange(@($OptionSearchProcessesCheckBox,$OptionSearchServicesCheckBox,$OptionSearchNetworkTCPConnectionsCheckBox,$CollectedDataDirectorySearchLimitCombobox,$CollectedDataDirectorySearchLimitLabel))
 
@@ -4494,13 +4839,13 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesCheckBox.Controls.AddRa
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\OptionGUITopWindowCheckBox.ps1"
 $OptionGUITopWindowCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text     = "GUI always on top"
-    Location = @{ X = 3
-                  Y = $OptionSearchComputersForPreviouslyCollectedDataProcessesCheckBox.Location.Y + $OptionSearchComputersForPreviouslyCollectedDataProcessesCheckBox.Size.Height + 2 }
-    Size     = @{ Width  = 300
-                  Height = $Column3BoxHeight }
+    Location = @{ X = $FormScale * 3
+                  Y = $OptionSearchComputersForPreviouslyCollectedDataProcessesCheckBox.Location.Y + $OptionSearchComputersForPreviouslyCollectedDataProcessesCheckBox.Size.Height + $($FormScale + 2) }
+    Size     = @{ Width  = $FormScale * 300
+                  Height = $FormScale * $Column3BoxHeight }
     Enabled  = $true
     Checked  = $false
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = $OptionGUITopWindowCheckBoxAdd_Click
 }
 $Section2OptionsTab.Controls.Add( $OptionGUITopWindowCheckBox )
@@ -4512,13 +4857,13 @@ $Section2OptionsTab.Controls.Add( $OptionGUITopWindowCheckBox )
 . "$Dependencies\Code\System.Windows.Forms\Checkbox\OptionsAutoSaveChartsAsImages.ps1"
 $OptionsAutoSaveChartsAsImages = New-Object System.Windows.Forms.Checkbox -Property @{
     Text     = "Autosave Charts As Images"
-    Location = @{ X = 3
-                  Y = $OptionGUITopWindowCheckBox.Location.Y + $OptionGUITopWindowCheckBox.Size.Height + 0 }
-    Size     = @{ Width  = 300
-                  Height = $Column3BoxHeight }
+    Location = @{ X = $FormScale * 3
+                  Y = $OptionGUITopWindowCheckBox.Location.Y + $OptionGUITopWindowCheckBox.Size.Height }
+    Size     = @{ Width  = $FormScale * 300
+                  Height = $FormScale * $Column3BoxHeight }
     Enabled  = $true
     Checked  = $false
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click      = $OptionsAutoSaveChartsAsImagesAdd_Click
     Add_MouseHover = $OptionsAutoSaveChartsAsImagesAdd_MouseHover
 }
@@ -4530,13 +4875,13 @@ $Section2OptionsTab.Controls.Add( $OptionsAutoSaveChartsAsImages )
 #-----------------------
 $OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text     = "Show ToolTip"
-    Location = @{ X = 3
-                  Y = $OptionsAutoSaveChartsAsImages.Location.Y + $OptionsAutoSaveChartsAsImages.Size.Height + 0 }
-    Size     = @{ Width  = 200 
-                  Height = $Column3BoxHeight }
+    Location = @{ X = $FormScale * 3
+                  Y = $OptionsAutoSaveChartsAsImages.Location.Y + $OptionsAutoSaveChartsAsImages.Size.Height }
+    Size     = @{ Width  = $FormScale * 200 
+                  Height = $FormScale * $Column3BoxHeight }
     Enabled  = $true
     Checked  = $true
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 if ($DisableToolTip) {$OptionShowToolTipCheckBox.Checked = $False}
 $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
@@ -4547,13 +4892,13 @@ $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
 #--------------------------------------
 $OptionTextToSpeachCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text     = "Audible Completion Message"
-    Location = @{ X = 3
-                  Y = $OptionShowToolTipCheckBox.Location.Y + $OptionShowToolTipCheckBox.Size.Height + 0 }
-    Size     = @{ Width  = 200
-                  Height = $Column3BoxHeight }
+    Location = @{ X = $FormScale * 3
+                  Y = $OptionShowToolTipCheckBox.Location.Y + $OptionShowToolTipCheckBox.Size.Height }
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * $Column3BoxHeight }
     Enabled  = $true
     Checked  = $false
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 # Cmdlet Parameter Option
 if ($AudibleCompletionMessage) {$OptionTextToSpeachCheckBox.Checked = $True}
@@ -4573,7 +4918,7 @@ $Section2OptionsTab.Controls.Add($OptionTextToSpeachCheckBox)
 $Section2StatisticsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Statistics"
     Name                    = "Statistics"
-    Font                    = New-Object System.Drawing.Font("$Font",10,0,0,0)
+    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainCenterTabControl.Controls.Add($Section2StatisticsTab)
@@ -4590,10 +4935,10 @@ $StatisticsResults = Get-PoShEasyWinStatistics
 . "$Dependencies\Code\System.Windows.Forms\Button\StatisticsRefreshButton.ps1"
 $StatisticsRefreshButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Refresh"
-    Location = @{ X = 2
-                  Y = 5 }
-    Size     = @{ Width  = 100
-                  Height = 22 }
+    Location = @{ X = $FormScale * 2
+                  Y = $FormScale * 5 }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
     Add_Click = $StatisticsRefreshButtonAdd_Click
 }
 $Section2StatisticsTab.Controls.Add($StatisticsRefreshButton)
@@ -4606,10 +4951,10 @@ CommonButtonSettings -Button $StatisticsRefreshButton
 . "$Dependencies\Code\System.Windows.Forms\Button\StatisticsViewLogButton.ps1"
 $StatisticsViewLogButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "View Log"
-    Location = @{ X = 258
-                  Y = 5 }
-    Size     = @{ Width  = 100
-                  Height = 22 }
+    Location = @{ X = $FormScale * 258
+                  Y = $FormScale * 5 }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
     Add_Click      = $StatisticsViewLogButtonAdd_Click
     Add_MouseHover = $StatisticsViewLogButtonAdd_MouseHover
 }
@@ -4622,11 +4967,11 @@ CommonButtonSettings -Button $StatisticsViewLogButton
 #----------------------
 $StatisticsNumberOfCSVs = New-Object System.Windows.Forms.Textbox -Property @{
     Text       = $StatisticsResults
-    Location = @{ X = 3
-                  Y = 32 }
-    Size     = @{ Width  = 354
-                  Height = 215 }
-    Font       = New-Object System.Drawing.Font("Courier new",11,0,0,0)
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * 32 }
+    Size     = @{ Width  = $FormScale * 354
+                  Height = $FormScale * 215 }
+    Font       = New-Object System.Drawing.Font("Courier new",$($FormScale * 11),0,0,0)
     Multiline  = $true
     Enabled    = $true
 }
@@ -4639,10 +4984,6 @@ $Section2StatisticsTab.Controls.Add($StatisticsNumberOfCSVs)
 #============================================================================================================================================================
 
 $Column4RightPosition     = 845
-$Column4DownPosition      = 11
-$Column4BoxWidth          = 220
-$Column4BoxHeight         = 22
-$Column4DownPositionShift = 25
 
 # Initial load of CSV data
 $script:ComputerTreeViewData = $null
@@ -4685,13 +5026,13 @@ $TagListFileContents = Get-Content -Path $TagAutoListFile
 . "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
 $ComputerTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Name     = "Search TextBox"
-    Location = @{ X = $Column4RightPosition
-                  Y = 25 }
-    Size     = @{ Width  = 172
-                  Height = 25 }
+    Location = @{ X = $FormScale * $Column4RightPosition
+                  Y = $FormScale * 25 }
+    Size     = @{ Width  = $FormScale * 168
+                  Height = $FormScale * 25 }
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
-    Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown 
     Add_MouseHover     = $ComputerTreeNodeSearchComboBoxAdd_MouseHover
 }
@@ -4705,10 +5046,10 @@ $PoShEasyWin.Controls.Add($ComputerTreeNodeSearchComboBox)
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
 $ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Search"
-    Location = @{ X = $Column4RightPosition + 176
-                  Y = 24 }
-    Size     = @{ Width  = 55
-                  Height = 22 }
+    Location = @{ X = $ComputerTreeNodeSearchComboBox.Location.X + $ComputerTreeNodeSearchComboBox.Size.Width + $($FormScale * 5 )
+                  Y = $ComputerTreeNodeSearchComboBox.Location.Y }
+    Size     = @{ Width  = $FormScale * 55
+                  Height = $FormScale * 22 }
     Add_Click      = $ComputerTreeNodeSearchButtonAdd_Click
     Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
 }
@@ -4721,219 +5062,16 @@ CommonButtonSettings -Button $ComputerTreeNodeSearchButton
 Remove-EmptyCategory
 
 
-$ComputerListContextMenuStrip = New-Object System.Windows.Forms.ContextMenuStrip -Property @{
-    ShowCheckMargin = $false
-    ShowImageMargin = $false
-    ShowItemToolTips = $True
-    Width    = 100
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    ForeColor = 'Black'
-}
-        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-            Text      = "Select an Endpoint"
-            Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
-            ForeColor = 'Blue'
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
-        $ComputerListContextMenuStrip.Items.Add('-')
-
-        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-            Text      = "Left-Click an Endpoint Node,`r`nthen Right-Click for more Options"
-            ForeColor = 'DarkRed'
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
-
-        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListCollapseToolStripButton.ps1"
-        $ComputerListCollapseToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Collapse"
-            Add_CLick = $ComputerListCollapseToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListCollapseToolStripButton)
-
-        . "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1"
-        . "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListAddEndpointToolStripButton.ps1"
-        $ComputerListAddEndpointToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Add Endpoint"
-            Add_CLick = $ComputerListAddEndpointToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListAddEndpointToolStripButton)
-
-        $ComputerListContextMenuStrip.Items.Add('-')
-
-        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-            Text      = 'Checked Endpoints'
-            Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
-            ForeColor = 'Blue'
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
-        $ComputerListContextMenuStrip.Items.Add('-')
-
-        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
-        $ComputerListDeselectAllToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Uncheck All"
-            Add_CLick = $ComputerListDeselectAllToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListDeselectAllToolStripButton)
-
-        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
-        $ComputerListMassTagToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Tag All"
-            Add_CLick = $ComputerListTagAllCheckedToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListMassTagToolStripButton)
-
-        . "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNodeSelected.ps1"
-        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
-        $ComputerListMoveToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Move All"
-            Add_CLick = $ComputerListMoveAllCheckedToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListMoveToolStripButton)
-       
-        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
-        $ComputerListDeleteToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Delete All"
-            Add_CLick = $ComputerListDeleteAllCheckedToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListDeleteToolStripButton)
-
-        # The following are used within Conduct-TreeNodeAction via the ContextMenuStips
-        # They're placed here to be loaded once, rather than multiple times 
-        . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
+# Code for the Context Menu
+# This context menu is the one activeated when you click within the computer treeview area, but not when clicking on a computer ndoe itself
+. "$Dependencies\Code\\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
 
 
+# This context menu is the one activeated when you click on the computer node itself within the computer treeview
+# It is also activated within the conduct-nodeaction script
+. "$Dependencies\Code\\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
+Display-ContextMenuForComputerTreeNode
 
-
-
-
-
-
-
-
-
-function Display-ContextMenu {
-    Create-ComputerNodeCheckBoxArray
-
-    $ComputerListContextMenuStrip.Items.Remove($ComputerListRenameToolStripButton)
-    $ComputerListContextMenuStrip = New-Object System.Windows.Forms.ContextMenuStrip -Property @{
-        ShowCheckMargin = $false
-        ShowImageMargin = $false
-        ShowItemToolTips = $True
-        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
-        ForeColor = 'Black'
-    }
-
-    #$ComputerListContextMenuStrip.Items.Add("$($Entry.Text)")
-    $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "$($Entry.Text)"
-        Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
-        ForeColor = 'Blue'
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
-      
-    #$comboBoxMenuItem = New-Object System.Windows.Forms.ToolStripComboBox
-    #$comboBoxMenuItem.Items.Add('Option 1')
-    #$comboBoxMenuItem.Items.Add('Option 2')
-    #$ComputerListContextMenuStrip.Items.Add($comboBoxMenuItem)
-
-    $ComputerListContextMenuStrip.Items.Add('-')
-
-    $script:ExpandCollapseStatus = "Collapse"
-    $ComputerListCollapseToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Collapse"
-        Add_CLick = $ComputerListCollapseToolStripButtonAdd_Click
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListCollapseToolStripButton)
-
-    $ComputerListTagSelectedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Tag"
-        Add_CLick = $ComputerListTagSelectedToolStripButtonAdd_Click
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListTagSelectedToolStripButton)
-
-    $ComputerListAddEndpointToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Add Endpoint"
-        Add_CLick = $ComputerListAddEndpointToolStripButtonAdd_Click
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListAddEndpointToolStripButton)
-
-    $ComputerListRenameToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Rename"
-        Add_CLick = $ComputerListRenameToolStripButtonAdd_Click
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripButton)
-    
-    $ComputerListMoveToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Move"
-        Add_CLick = $ComputerListMoveSelectedToolStripButtonAdd_Click
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListMoveToolStripButton)
-
-    $ComputerListDeleteSelectedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        #Text      = "Delete:  $($script:EntrySelected.text)"
-        Text      = "Delete"
-        Add_CLick = $ComputerListDeleteSelectedToolStripButtonAdd_Click
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListDeleteSelectedToolStripButton)
-
-    
-
-    if ($script:ComputerTreeViewSelected.count -gt 0) {
-        $ComputerListContextMenuStrip.Items.Add('-')
-        #$ComputerListContextMenuStrip.Items.Add('Checked Endpoints')
-        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-            Text      = 'Checked Endpoints'
-            Font      = New-Object System.Drawing.Font("$Font",11,1,2,1)
-            ForeColor = 'Blue'
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
-        $ComputerListContextMenuStrip.Items.Add('-')
-    
-        $ComputerListDeselectAllToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Uncheck All"
-            Add_CLick = $ComputerListDeselectAllToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListDeselectAllToolStripButton)
-
-        $ComputerListTagAllCheckedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Tag All"
-            Add_CLick = $ComputerListTagAllCheckedToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListTagAllCheckedToolStripButton)
-
-        $ComputerListMoveToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Move All"
-            Add_CLick = $ComputerListMoveAllCheckedToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListMoveToolStripButton)
-
-        $ComputerListDeleteAllCheckedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Delete All"
-            Add_CLick = $ComputerListDeleteAllCheckedToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListDeleteAllCheckedToolStripButton)
-    }
-
-    $Entry.ContextMenuStrip = $ComputerListContextMenuStrip
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Display-ContextMenu
 
 #-----------------------------
 # ComputerList Treeview Nodes
@@ -4941,10 +5079,11 @@ Display-ContextMenu
 # Ref Guide: https://info.sapien.com/index.php/guis/gui-controls/spotlight-on-the-contextmenustrip-control
 . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
 $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-    size              = @{ Width = 230
-                           Height = 308 }
-    Location          = @{ X = $Column4RightPosition ; Y = $Column4DownPosition + 39 }
-    Font              = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    size              = @{ Width  = $FormScale * 230
+                           Height = $FormScale * 308 }
+    Location          = @{ X = $ComputerTreeNodeSearchComboBox.Location.X
+                           Y = $ComputerTreeNodeSearchButton.Location.Y + $ComputerTreeNodeSearchButton.Size.Height + $($FormScale * 5) }
+    Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     CheckBoxes        = $True
     #LabelEdit         = $True  #Not implementing yet...
     ShowLines         = $True
@@ -4984,11 +5123,11 @@ $script:ComputerTreeView.ExpandAll()
 #-----------------------------------
 $ComputerTreeNodeViewByLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "View by:"
-    Location = @{ X = $Column4RightPosition
-                  Y = 7 }
-    Size     = @{ Width  = 75
-                  Height = 25 }
-    Font     = New-Object System.Drawing.Font("$Font",11,1,2,1)
+    Location = @{ X = $FormScale * $Column4RightPosition
+                  Y = $FormScale * 7 }
+    Size     = @{ Width  = $FormScale * 75
+                  Height = $FormScale * 25 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
 }
 $PoShEasyWin.Controls.Add($ComputerTreeNodeViewByLabel)
 
@@ -4996,11 +5135,11 @@ $PoShEasyWin.Controls.Add($ComputerTreeNodeViewByLabel)
 $script:ComputerTreeNodeOSHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
     Text     = "OS"
     Location = @{ X = $ComputerTreeNodeViewByLabel.Location.X + $ComputerTreeNodeViewByLabel.Size.Width
-                  Y = $ComputerTreeNodeViewByLabel.Location.Y - 5 }
-    Size     = @{ Height = 25
-                  Width  = 50 }
+                  Y = $ComputerTreeNodeViewByLabel.Location.Y - $($FormScale * 5) }
+    Size     = @{ Height = $FormScale * 25
+                  Width  = $FormScale * 50 }
     Checked  = $True
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click      = $script:ComputerTreeNodeOSHostnameRadioButtonAdd_Click
     Add_MouseHover = $script:ComputerTreeNodeOSHostnameRadioButtonAdd_MouseHover
 }
@@ -5011,10 +5150,10 @@ $ComputerTreeNodeOUHostnameRadioButton  = New-Object System.Windows.Forms.RadioB
     Text     = "OU / CN"
     Location = @{ X = $script:ComputerTreeNodeOSHostnameRadioButton.Location.X + $script:ComputerTreeNodeOSHostnameRadioButton.Size.Width + 5
                   Y = $script:ComputerTreeNodeOSHostnameRadioButton.Location.Y }
-    Size     = @{ Height = 25
-                  Width  = 75 }
+    Size     = @{ Height = $FormScale * 25
+                  Width  = $FormScale * 75 }
     Checked  = $false
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click      = $ComputerTreeNodeOUHostnameRadioButtonAdd_Click 
     Add_MouseHover = $ComputerTreeNodeOUHostnameRadioButtonAdd_MouseHover
 }
@@ -5034,12 +5173,12 @@ $PoShEasyWin.Controls.Add($ComputerTreeNodeOUHostnameRadioButton)
 
 $MainRightTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name         = "Main Tab Window for Computer List"
-    Location     = @{ X = 1082 
-                      Y = 10 }
-    Size         = @{ Height = 349
-                      Width  = 140 }
+    Location     = @{ X = $FormScale * 1082 
+                      Y = $FormScale * 10 }
+    Size         = @{ Height = $FormScale * 349
+                      Width  = $FormScale * 140 }
     ShowToolTips = $True
-    Font         = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $PoShEasyWin.Controls.Add($MainRightTabControl)
 
@@ -5068,80 +5207,15 @@ $Column5BoxHeight         = 22
 
 $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Action"
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Height = $Column5BoxWidth
-                  Width  = $Column5BoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $Column5RightPosition
+                  Y = $FormScale * $Column5DownPosition }
+    Size     = @{ Height = $FormScale * $Column5BoxWidth
+                  Width  = $FormScale * $Column5BoxHeight }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainRightTabControl.Controls.Add($Section3ActionTab)
 
-
-# This function is the base code for testing various connections with remote computers
-. "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
-
-
-#-----------------------------
-# Computer List - Ping Button
-#-----------------------------
-
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPingButton.ps1"
-$ComputerListPingButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Ping"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Height = $Column5BoxHeight 
-                   Width  = $Column5BoxWidth }
-    Add_Click = $ComputerListPingButtonAdd_Click 
-    Add_MouseHover = $ComputerListPingButtonAdd_MouseHover
-}
-$Section3ActionTab.Controls.Add($ComputerListPingButton) 
-CommonButtonSettings -Button $ComputerListPingButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
-
-#------------------------------------------
-# Computer List - WinRM Check (Test-WSMan)
-#------------------------------------------
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListWinRMCheckButton.ps1"
-$ComputerListWinRMCheckButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "WinRM Check"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
-    Add_Click = $ComputerListWinRMCheckButtonAdd_Click
-    Add_MouseHover = $ComputerListWinRMCheckButtonAdd_MouseHover
-}
-$Section3ActionTab.Controls.Add($ComputerListWinRMCheckButton) 
-CommonButtonSettings -Button $ComputerListWinRMCheckButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
-
-#--------------------------------------
-# Computer List - RPC Check (Port 135)
-#--------------------------------------
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListRPCCheckButton.ps1"
-$ComputerListRPCCheckButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "RPC Check"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
-    Add_Click = $ComputerListRPCCheckButtonAdd_Click
-    Add_MouseHover = $ComputerListRPCCheckButtonAdd_MouseHover
-}
-$Section3ActionTab.Controls.Add($ComputerListRPCCheckButton) 
-CommonButtonSettings -Button $ComputerListRPCCheckButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
-<#
-
-# WORK IN PROGRESS, NOT READY FOR PRIME TIME, STILL WORKING OUT THE KINKS
 
 #------------------------------------------
 # Memory Capture - Button (Rekall WinPmem)
@@ -5154,64 +5228,24 @@ $Column5DownPosition += $Column5DownPositionShift
 #----------------------------------------
 # Rekall WinPmem - Memory Capture Button
 #----------------------------------------
+. "$Dependencies\Code\System.Windows.Forms\Button\RekallWinPmemMemoryCaptureButton.ps1"
 $RekallWinPmemMemoryCaptureButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Memory Capture"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight  }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight  }
+    Add_MouseHover = $RekallWinPmemMemoryCaptureButtonAdd_MouseHover
+    Add_Click      = $RekallWinPmemMemoryCaptureButtonAdd_Click
 }
 CommonButtonSettings -Button $RekallWinPmemMemoryCaptureButton
 
-$RekallWinPmemMemoryCaptureButton.Add_MouseHover({
-    Show-ToolTip -Title "Memory Capture" -Icon "Info" -Message @"
-+  Uses Rekall WinPmep to retrieve memory for analysis. 
-+  The memory.raw file collected can be used with Volatility or windbg. 
-+  It supports all windows versions from WinXP SP2 to Windows 10.
-+  It supports processor types: i386 and amd64.
-+  Uses RPC/DCOM `n`n
-"@ })
-$RekallWinPmemMemoryCaptureButton.add_click({ 
-    # This brings specific tabs to the forefront/front view
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-    
-    # Ensures only one endpoint is selected
-    # This array stores checkboxes that are check; a minimum of at least one checkbox will be needed later in the script
-    $script:ComputerTreeViewSelected = @()
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
-    foreach ($root in $AllHostsNode) { 
-        if ($root.Checked) {
-            foreach ($Category in $root.Nodes) { foreach ($Entry in $Category.nodes) { $script:ComputerTreeViewSelected += $Entry.Text } }
-        }
-        foreach ($Category in $root.Nodes) {
-            if ($Category.Checked) {
-                foreach ($Entry in $Category.nodes) { $script:ComputerTreeViewSelected += $Entry.Text }
-            }
-            foreach ($Entry in $Category.nodes) {
-                if ($Entry.Checked) {
-                    $script:ComputerTreeViewSelected += $Entry.Text
-                }
-            }
-        }
-    }
-    $ResultsListBox.Items.Clear()
-    if ($script:ComputerTreeViewSelected.count -eq 1) {
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Add("Rekall WinPMem:  $($script:ComputerTreeViewSelected)")
-        $ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Add("Launching Memory Collection Window")
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Launched Memory Collection Window"
-        Launch-RekallWinPmemForm
-    }
-    elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Rekall WinPmem' }
-    elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Rekall WinPmem' }
-})
+
 
 # Test if the External Programs directory is present; if it's there load the tab
-if (Test-Path "$ExternalPrograms\WinPmem.exe") { $Section3ActionTab.Controls.Add($RekallWinPmemMemoryCaptureButton) }
-#>
+if (Test-Path "$ExternalPrograms\WinPmem\WinPmem.exe") { $Section3ActionTab.Controls.Add($RekallWinPmemMemoryCaptureButton) }
 
-#$Column5DownPosition += $Column5DownPositionShift
+$Column5DownPosition += $Column5DownPositionShift
 
 
 #---------------------------------
@@ -5220,10 +5254,10 @@ if (Test-Path "$ExternalPrograms\WinPmem.exe") { $Section3ActionTab.Controls.Add
 . "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
 $EventViewerButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = 'Event Viewer'
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Height = $Column5BoxHeight
-                   Width  = $Column5BoxWidth }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition }
+    Size      = @{ Height = $FormScale * $Column5BoxHeight
+                   Width  = $FormScale * $Column5BoxWidth }
     Add_Click = $EventViewerButtonAdd_Click
     Add_MouseHover = $EventViewerButtonAdd_MouseHover
 }
@@ -5239,10 +5273,10 @@ $Column5DownPosition += $Column5DownPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListRDPButton.ps1"
 $ComputerListRDPButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = 'Remote Desktop'
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight }
     Add_Click = $ComputerListRDPButtonAdd_Click
     Add_MouseHover = $ComputerListRDPButtonAdd_MouseHover
 }
@@ -5258,10 +5292,10 @@ $Column5DownPosition += $Column5DownPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionButton.ps1"
 $ComputerListPSSessionButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "PS Session"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight }
     Add_Click = $ComputerListPSSessionButtonAdd_Click
     Add_MouseHover = $ComputerListPSSessionButtonAdd_MouseHover
 }
@@ -5277,10 +5311,10 @@ $Column5DownPosition += $Column5DownPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPsExecButton.ps1"
 $ComputerListPsExecButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = 'PsExec'
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight }
     Add_Click = $ComputerListPsExecButtonAdd_Click
     Add_MouseHover = $ComputerListPsExecButtonAdd_MouseHover
 }
@@ -5309,10 +5343,10 @@ $Column5DownPosition += $Column5DownPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\ProvideCredentialsButton.ps1"
 $ProvideCredentialsButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Manage Credentials"
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight }
+    Location = @{ X = $FormScale * $Column5RightPosition
+                  Y = $FormScale * $Column5DownPosition }
+    Size     = @{ Width  = $FormScale * $Column5BoxWidth
+                  Height = $FormScale * $Column5BoxHeight }
     Add_Click = $ProvideCredentialsButtonAdd_Click
     Add_MouseHover = $ProvideCredentialsButtonAdd_MouseHover
 }
@@ -5328,12 +5362,12 @@ $Column5DownPosition += $Column5DownPositionShift - 2
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\ComputerListProvideCredentialsCheckBox.ps1"
 $ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Specify Credentials"
-    Location = @{ X = $Column5RightPosition + 1
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = $Column5BoxHeight - 5 }
+    Location = @{ X = $FormScale * $Column5RightPosition + 1
+                  Y = $FormScale * $Column5DownPosition }
+    Size     = @{ Width  = $FormScale * $Column5BoxWidth
+                  Height = $FormScale * $Column5BoxHeight - 5 }
     Checked  = $false
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click      = $ComputerListProvideCredentialsCheckBoxAdd_Click
     Add_MouseHover = $ComputerListProvideCredentialsCheckBoxAdd_MouseHover
 }
@@ -5347,11 +5381,11 @@ $Column5DownPosition += $Column5DownPositionShift
 #--------------------------------------------------------
 . "$Dependencies\Code\System.Windows.Forms\ComboBox\CommandTreeViewQueryMethodSelectionComboBox.ps1"
 $CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $Column5RightPosition
+                  Y = $FormScale * $Column5DownPosition }
+    Size     = @{ Width  = $FormScale * $Column5BoxWidth
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor = 'Black'
     DropDownStyle = 'DropDownList'
     Add_SelectedIndexChanged = $CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged
@@ -5374,10 +5408,10 @@ $Column5DownPosition += $Column5DownPositionShift + 2
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListExecuteButton.ps1"
 $ComputerListExecuteButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Execute Script"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition  }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = ($Column5BoxHeight * 2) - 10 }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition  }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * ($Column5BoxHeight * 2) - 10 }
     Enabled   = $true
     Add_MouseHover = $ComputerListExecuteButtonAdd_MouseHover
 }
@@ -5399,12 +5433,12 @@ CommonButtonSettings -Button $ComputerListExecuteButton
 
 $Section3ManageListTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text      = "Manage List"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight }
     UseVisualStyleBackColor = $True
-    Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $MainRightTabControl.Controls.Add($Section3ManageListTab)
 
@@ -5421,10 +5455,10 @@ $Column5DownPosition = $Column5DownPositionStart
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeImportFromActiveDirectoryButton.ps1"
 $ComputerTreeNodeImportFromActiveDirectoryButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Import from AD"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight }
     Add_Click      = $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_Click
     Add_MouseHover = $ComputerTreeNodeImportFromActiveDirectoryButtonAdd_MouseHover
 }
@@ -5440,10 +5474,10 @@ $Column5DownPosition += $Column5DownPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeImportCsvButton.ps1"
 $ComputerTreeNodeImportCsvButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Import from .CSV"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight }
     Add_Click      = $ComputerTreeNodeImportCsvButtonAdd_Click
     Add_MouseHover = $ComputerTreeNodeImportCsvButtonAdd_MouseHover
 }
@@ -5459,10 +5493,10 @@ $Column5DownPosition += $Column5DownPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeImportTxtButton.ps1"
 $ComputerTreeNodeImportTxtButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Import from .TXT"
-    Location  = @{ X = $Column5RightPosition
-                   Y = $Column5DownPosition }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
+    Location  = @{ X = $FormScale * $Column5RightPosition
+                   Y = $FormScale * $Column5DownPosition }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight }
     Add_Click      = $ComputerTreeNodeImportTxtButtonAdd_Click
     Add_MouseHover = $ComputerTreeNodeImportTxtButtonAdd_MouseHover
 }
@@ -5478,11 +5512,11 @@ $Column5DownPosition += $Column5DownPositionShift
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSaveButton.ps1"
 $ComputerTreeNodeSaveButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "TreeView`r`nSaved"
-    Location = @{ X = $Column5RightPosition
-                  Y = $Column5DownPosition }
-    Size     = @{ Width  = $Column5BoxWidth
-                  Height = ($Column5BoxHeight * 2) - 10 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * $Column5RightPosition
+                  Y = $FormScale * $Column5DownPosition }
+    Size     = @{ Width  = $FormScale * $Column5BoxWidth
+                  Height = $FormScale * ($Column5BoxHeight * 2) - 10 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click      = $ComputerTreeNodeSaveButtonAdd_Click
     Add_MouseHover = $ComputerTreeNodeSaveButtonAdd_MouseHover
 }
@@ -5491,15 +5525,15 @@ CommonButtonSettings -Button $ComputerTreeNodeSaveButton
 
 
 #----------------
-# Status LIstBox
+# Status ListBox
 #----------------
 $StatusLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "Status:"
-    Location = @{ X = 470
-                  Y = 288 }
-    Size     = @{ Width  = 60
-                  Height = 20 }
-    Font      = New-Object System.Drawing.Font("$Font",12,1,2,1)
+    Location = @{ X = $FormScale * 470
+                  Y = $FormScale * 288 }
+    Size     = @{ Width  = $FormScale * 60
+                  Height = $FormScale * 20 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
 $PoShEasyWin.Controls.Add($StatusLabel)  
@@ -5508,9 +5542,9 @@ $StatusListBox = New-Object System.Windows.Forms.ListBox -Property @{
     Name     = "StatusListBox"
     Location = @{ X = $StatusLabel.Location.X + $StatusLabel.Size.Width
                   Y = $StatusLabel.Location.Y }
-    Size     = @{ Width  = 310
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 310
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     FormattingEnabled = $True
 }
 $StatusListBox.Items.Add("Welcome to PoSh-EasyWin!") | Out-Null
@@ -5526,7 +5560,7 @@ $ProgressBarEndpointsLabel = New-Object System.Windows.Forms.Label -Property @{
                   Y = $StatusLabel.Location.Y + $StatusLabel.Size.Height }
     Size     = @{ Width  = $StatusLabel.Size.Width
                   Height = $StatusLabel.Size.Height }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $PoShEasyWin.Controls.Add($ProgressBarEndpointsLabel)  
 
@@ -5534,7 +5568,7 @@ $script:ProgressBarEndpointsProgressBar = New-Object System.Windows.Forms.Progre
     Location = @{ X = $ProgressBarEndpointsLabel.Location.X + $ProgressBarEndpointsLabel.Size.Width
                   Y = $ProgressBarEndpointsLabel.Location.Y }
     Size     = @{ Width  = $StatusListBox.Size.Width - 1
-                  Height = 15 }
+                  Height = $FormScale * 15 }
     Forecolor = 'LightBlue'
     BackColor = 'white'
     Style     = "Continuous" #"Marque" 
@@ -5552,15 +5586,15 @@ $ProgressBarQueriesLabel = New-Object System.Windows.Forms.Label -Property @{
                   Y = $ProgressBarEndpointsLabel.Location.Y + $ProgressBarEndpointsLabel.Size.Height }
     Size     = @{ Width  = $ProgressBarEndpointsLabel.Size.Width
                   Height = $ProgressBarEndpointsLabel.Size.Height }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)  
 
 $script:ProgressBarQueriesProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
     Location = @{ X = $ProgressBarQueriesLabel.Location.X + $ProgressBarQueriesLabel.Size.Width
                   Y = $ProgressBarQueriesLabel.Location.Y }
-    Size     = @{ Width  = $script:ProgressBarEndpointsProgressBar.Size.Width
-                  Height = $script:ProgressBarEndpointsProgressBar.Size.Height }
+    Size     = @{ Width  = $StatusListBox.Size.Width - 1
+                  Height = $FormScale * 15 }
     Forecolor = 'LightGreen'
     BackColor = 'white'
     Style     = "Continuous"
@@ -5582,12 +5616,12 @@ $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
 
 $MainBottomTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Main Tab Window"
-    Location = @{ X = 470
+    Location = @{ X = $FormScale * 470
                   Y = $ProgressBarQueriesLabel.Location.Y + $ProgressBarQueriesLabel.Size.Height - 2 }
-    Size     = @{ Width  = 752
-                  Height = 250 }
+    Size     = @{ Width  = $FormScale * 752
+                  Height = $FormScale * 250 }
     ShowToolTips  = $True
-    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $PoShEasyWin.Controls.Add($MainBottomTabControl)
 
@@ -5606,17 +5640,17 @@ $PoShEasyWin.Controls.Add($MainBottomTabControl)
 $Section3AboutTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "About"
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $MainBottomTabControl.Controls.Add($Section3AboutTab)
 
 
 $PoShEasyWinLogoPictureBox = New-Object Windows.Forms.PictureBox -Property @{
     Text     = "PoSh-EasyWin Image"
-    Location = @{ X = 3
-                  Y = 10 }
-    Size     = @{ Width  = 355
-                  Height = 35 }
+    Location = @{ X = $FormScale * 3
+                  Y = $FormScale * 10 }
+    Size     = @{ Width  = $FormScale * 355
+                  Height = $FormScale * 35 }
     Image = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
     SizeMode = 'StretchImage'
 }
@@ -5625,11 +5659,11 @@ $Section3AboutTab.Controls.Add($PoShEasyWinLogoPictureBox)
 . "$Dependencies\Code\System.Windows.Forms\Button\PoShEasyWinLicenseAndAboutButton.ps1"
 $PoShEasyWinLicenseAndAboutButton = New-Object Windows.Forms.Button -Property @{
     Text     = "GNU General Public License v3"
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    Location = @{ X = 540
-                  Y = 22 }
-    Size     = @{ Width  = 200
-                  Height = 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Location = @{ X = $FormScale * 540
+                  Y = $FormScale * 22 }
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * 22 }
     Add_Click      = $PoShEasyWinLicenseAndAboutButtonAdd_Click
     Add_MouseHover = $PoShEasyWinLicenseAndAboutButtonAdd_MouseHover
 }
@@ -5639,11 +5673,11 @@ CommonButtonSettings -Button $PoShEasyWinLicenseAndAboutButton
 
 $Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Text     = $(Get-Content "$Dependencies\About PoSh-EasyWin.txt" -raw)
-    Font     = New-Object System.Drawing.Font("Courier New",11,0,0,0)
-    Location = @{ X = 0
-                  Y = $PoShEasyWinLogoPictureBox.Location.Y + $PoShEasyWinLogoPictureBox.Size.Height + 2}
-    Size     = @{ Width  = 742
-                  Height = 175 }
+    Font     = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
+    Location = @{ X = $FormScale * 0
+                  Y = $FormScale * $PoShEasyWinLogoPictureBox.Location.Y + $PoShEasyWinLogoPictureBox.Size.Height + 2}
+    Size     = @{ Width  = $FormScale * 742
+                  Height = $FormScale * 175 }
     MultiLine  = $True
     ScrollBars = "Vertical"
     WordWrap   = $true
@@ -5669,7 +5703,7 @@ $Section3ResultsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Results"
     Name                    = "Results Tab"
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $MainBottomTabControl.Controls.Add($Section3ResultsTab)
 
@@ -5680,10 +5714,10 @@ $MainBottomTabControl.Controls.Add($Section3ResultsTab)
 . "$Dependencies\Code\System.Windows.Forms\Button\ResultsTabOpNotesAddButton.ps1" 
 $ResultsTabOpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Add Selected To OpNotes"
-    Location  = @{ X = 578
-                   Y = 198 }
-    Size      = @{ Width  = 150
-                   Height = 25 }
+    Location  = @{ X = $FormScale * 578
+                   Y = $FormScale * 198 }
+    Size      = @{ Width  = $FormScale * 150
+                   Height = $FormScale * 25 }
     Add_Click = $ResultsTabOpNotesAddButtonAdd_Click
     Add_MouseHover = $ResultsTabOpNotesAddButtonAdd_MouseHover
 }
@@ -5696,15 +5730,15 @@ CommonButtonSettings -Button $ResultsTabOpNotesAddButton
 #-----------------
 $ResultsListBox = New-Object System.Windows.Forms.ListBox -Property @{
     Name     = "ResultsListBox"
-    Location = @{ X = -1
-                  Y = -1 }
-    Size     = @{ Width  = 752 - 3
-                  Height = 250 - 15 }
+    Location = @{ X = $FormScale * -1
+                  Y = $FormScale * -1 }
+    Size     = @{ Width  = $FormScale * 752 - 3
+                  Height = $FormScale * 250 - 15 }
     FormattingEnabled   = $True
     SelectionMode       = 'MultiExtended'
     ScrollAlwaysVisible = $True
     AutoSize            = $False
-    Font                = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+    Font                = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
 }
 $Section3ResultsTab.Controls.Add($ResultsListBox)
 
@@ -5721,10 +5755,10 @@ $Section3ResultsTab.Controls.Add($ResultsListBox)
 #=======================================================================================================================================================================
 
 $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text                    = "Host Data"
-    Name                    = "Host Data Tab"
+    Text = "Host Data"
+    Name = "Host Data Tab"
+    Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",11,0,0,0)
 }
 $MainBottomTabControl.Controls.Add($Section3HostDataTab)
 
@@ -5735,10 +5769,10 @@ $MainBottomTabControl.Controls.Add($Section3HostDataTab)
 . "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataNameTextBox.ps1" 
 $Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
-                  Y = 3 }
-    Size     = @{ Width  = 250
-                  Height = 25 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $FormScale * 3 }
+    Size     = @{ Width  = $FormScale * 250
+                  Height = $FormScale * 25 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
     Add_MouseHover = $Section3HostDataNameTextBoxAdd_MouseHover
 }
@@ -5751,10 +5785,10 @@ $Section3HostDataTab.Controls.Add($Section3HostDataNameTextBox)
 . "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOSTextBox.ps1" 
 $Section3HostDataOSTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
-                  Y = $Section3HostDataNameTextBox.Location.Y + $Section3HostDataNameTextBox.Size.Height + 4 }
-    Size     = @{ Width  = 250
-                  Height = 25 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $Section3HostDataNameTextBox.Location.Y + $Section3HostDataNameTextBox.Size.Height + $($FormScale * 4) }
+    Size     = @{ Width  = $FormScale * 250
+                  Height = $FormScale * 25 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
     Add_MouseHover = $Section3HostDataOSTextBoxAdd_MouseHover
 }
@@ -5767,10 +5801,10 @@ $Section3HostDataTab.Controls.Add($Section3HostDataOSTextBox)
 . "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOUTextBox.ps1" 
 $Section3HostDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
-                  Y = $Section3HostDataOSTextBox.Location.Y + $Section3HostDataOSTextBox.Size.Height + 4 }
-    Size     = @{ Width  = 250
-                  Height = 25 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $Section3HostDataOSTextBox.Location.Y + $Section3HostDataOSTextBox.Size.Height + $($FormScale * 4) }
+    Size     = @{ Width  = $FormScale * 250
+                  Height = $FormScale * 25 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
     Add_MouseHover = $Section3HostDataOUTextBoxAdd_MouseHover
 }
@@ -5783,10 +5817,10 @@ $Section3HostDataTab.Controls.Add($Section3HostDataOUTextBox)
 . "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataIPTextBox.ps1" 
 $Section3HostDataIPTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
-                  Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + 4 }
-    Size     = @{ Width  = 120
-                  Height = 25 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + $($FormScale * 4) }
+    Size     = @{ Width  = $FormScale * 120
+                  Height = $FormScale * 25 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $false
     Add_MouseHover = $Section3HostDataIPTextBoxAdd_MouseHover
 }
@@ -5798,77 +5832,15 @@ $Section3HostDataTab.Controls.Add($Section3HostDataIPTextBox)
 #----------------------------------
 . "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataMACTextBox.ps1" 
 $Section3HostDataMACTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3HostDataIPTextBox.Size.Width + 10
-                    Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + 4 }
-    Size     = @{ Width  = 120
-                    Height = 25 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3HostDataIPTextBox.Size.Width + $($FormScale * 10)
+                  Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + $($FormScale * 4) }
+    Size     = @{ Width  = $FormScale * 120
+                  Height = $FormScale * 25 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $false
     Add_MouseHover = $Section3HostDataMACTextBoxAdd_MouseHover
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataMACTextBox)
-
-
-#--------------------------------------
-# Host Data Notes - Add OpNotes Button
-#--------------------------------------
-. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataNotesAddOpNotesButton.ps1" 
-$Section3HostDataNotesAddOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Add Host Data To OpNotes"
-    Location = @{ X = 570
-                  Y = 197 }
-    Size     = @{ Width  = 150
-                  Height = 25 }
-    Add_Click = $Section3HostDataNotesAddOpNotesButtonAdd_Click
-    Add_MouseHover = $Section3HostDataNotesAddOpNotesButtonAdd_MouseHover
-}
-$Section3HostDataTab.Controls.Add($Section3HostDataNotesAddOpNotesButton) 
-CommonButtonSettings -Button $Section3HostDataNotesAddOpNotesButton
-
-# Mass Tag one or multiple hosts in the computer treeview
-. "$Dependencies\Code\Tree View\Computer\Save-ComputerTreeNodeHostData.ps1" 
-
-# Checks if the Host Data has been modified and determines the text color: Green/Red
-. "$Dependencies\Code\Main Body\Check-HostDataIfModified.ps1" 
-
-
-#-------------------------
-# Host Data - TextBox
-#-------------------------
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataNotesTextBox.ps1"
-$Section3HostDataNotesTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = 0
-                  Y = $Section3HostDataIPTextBox.Location.Y + $Section3HostDataIPTextBox.Size.Height + 3 }
-    Size     = @{ Width  = 739
-                  Height = 126 }
-    Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
-    Multiline  = $True
-    ScrollBars = 'Vertical'
-    WordWrap   = $True
-    ReadOnly   = $false
-    Add_MouseHover = $Section3HostDataNotesTextBoxAdd_MouseHover
-    Add_MouseEnter = { Check-HostDataIfModified }
-    Add_MouseLeave = { Check-HostDataIfModified }
-}
-$Section3HostDataTab.Controls.Add($Section3HostDataNotesTextBox)
-
-
-#-------------------------
-# Host Data - Save Button
-#-------------------------
-$script:Section3HostDataNotesSaveCheck = ""
-. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataSaveButton.ps1"
-$Section3HostDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Data Saved"
-    Location = @{ X = 640
-                  Y = 73 }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Add_Click = $Section3HostDataSaveButtonAdd_Click
-    Add_MouseHover = $Section3HostDataSaveButtonAdd_MouseHover
-}
-$Section3HostDataTab.Controls.Add($Section3HostDataSaveButton)
-CommonButtonSettings -Button $Section3HostDataSaveButton
 
 
 #============================================================================================================================================================
@@ -5880,11 +5852,13 @@ CommonButtonSettings -Button $Section3HostDataSaveButton
     #--------------------------------
     . "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataSelectionComboBox.ps1"
     $Section3HostDataSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Location           = New-Object System.Drawing.Point(260,3)
-        Size               = New-Object System.Drawing.Size(200,25)
-        Text               = "Host Data - Selection"
-        Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
-        ForeColor          = "Black"
+        Text      = "Host Data - Selection"
+        Location  = @{ X = $FormScale * 260
+                       Y = $FormScale * 3 }
+        Size      = @{ Width  = $FormScale * 200
+                       Height = $FormScale * 25 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = "Black"
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
         DataSource         = $HostDataList1
@@ -5898,11 +5872,13 @@ CommonButtonSettings -Button $Section3HostDataSaveButton
     #--------------------------------------------
     . "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataSelectionDateTimeComboBox.ps1"
     $Section3HostDataSelectionDateTimeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Location           = New-Object System.Drawing.Point(260,($Section3HostDataSelectionComboBox.Size.Height + $Section3HostDataSelectionComboBox.Location.Y + 3))
-        Size               = New-Object System.Drawing.Size(200,25)
-        Text               = "Host Data - Date & Time"
-        Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
-        ForeColor          = "Black"
+        Text      = "Host Data - Date & Time"
+        Location  = @{ X = $FormScale * 260
+                       Y = $Section3HostDataSelectionComboBox.Size.Height + $Section3HostDataSelectionComboBox.Location.Y + $($FormScale * 3)}
+        Size      = @{ Width  = $FormScale * 200
+                       Height = $FormScale * 25 }
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        ForeColor = "Black"
         AutoCompleteSource = "ListItems" 
         AutoCompleteMode   = "SuggestAppend" 
         Add_MouseHover     = $Section3HostDataSelectionDateTimeComboBoxAdd_MouseHover
@@ -5915,8 +5891,10 @@ CommonButtonSettings -Button $Section3HostDataSaveButton
     . "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataGetDataButton.ps1"
     $Section3HostDataGetDataButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Get Data"
-        Location = New-Object System.Drawing.Point(($Section3HostDataSelectionDateTimeComboBox.Location.X + $Section3HostDataSelectionDateTimeComboBox.Size.Width + 5),($Section3HostDataSelectionDateTimeComboBox.Location.Y - 1))
-        Size     = New-Object System.Drawing.Size(75,23)
+        Location = @{ X = $Section3HostDataSelectionDateTimeComboBox.Location.X + $Section3HostDataSelectionDateTimeComboBox.Size.Width + 5
+                      Y =  $Section3HostDataSelectionDateTimeComboBox.Location.Y - $($FormScale * 1) }
+        Size     = @{ Width  = $FormScale * 75
+                      Height = $FormScale * 22 }
         Add_Click = $Section3HostDataGetDataButtonAdd_Click
         Add_MouseHover = $Section3HostDataGetDataButtonAdd_MouseHover
     }
@@ -5931,11 +5909,13 @@ CommonButtonSettings -Button $Section3HostDataSaveButton
 $Section3HostDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Name               = "Tags"
     Text               = "Tags"
-    Location           = New-Object System.Drawing.Point(260,($Section3HostDataGetDataButton.Size.Height + $Section3HostDataGetDataButton.Location.Y + 25))
-    Size               = New-Object System.Drawing.Size(200,25)
+    Location = @{ X = $FormScale * 260
+                  Y = $Section3HostDataMACTextBox.Location.Y }
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * 25 }
     AutoCompleteSource = "ListItems" 
     AutoCompleteMode   = "SuggestAppend"
-    Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseHover     = $Section3HostDataTagsComboBoxAdd_MouseHover
 }
 ForEach ($Item in $TagListFileContents) { $Section3HostDataTagsComboBox.Items.Add($Item) }
@@ -5948,15 +5928,78 @@ $Section3HostDataTab.Controls.Add($Section3HostDataTagsComboBox)
 . "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataTagsAddButton.ps1" 
 $Section3HostDataTagsAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Add"
-    Location = @{ X = $Section3HostDataTagsComboBox.Size.Width + $Section3HostDataTagsComboBox.Location.X + 5
-                  Y = $Section3HostDataTagsComboBox.Location.Y - 1 }
-    Size     = @{ Width  = 75
-                  Height = 23 }
+    Location = @{ X = $Section3HostDataTagsComboBox.Size.Width + $Section3HostDataTagsComboBox.Location.X + $($FormScale * 5)
+                  Y = $Section3HostDataTagsComboBox.Location.Y - $($FormScale * 1) }
+    Size     = @{ Width  = $FormScale * 75
+                  Height = $FormScale * 22 }
     Add_Click = $Section3HostDataTagsAddButtonAdd_Click
     Add_MouseHover = $Section3HostDataTagsAddButtonAdd_MouseHover
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataTagsAddButton)
 CommonButtonSettings -Button $Section3HostDataTagsAddButton
+
+
+#-------------------------
+# Host Data - RichTextBox
+#-------------------------
+. "$Dependencies\Code\System.Windows.Forms\RichTextBox\Section3HostDataNotesRichTextBox.ps1"
+$Section3HostDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+    Location = @{ X = 0
+                  Y = $Section3HostDataMACTextBox.Location.Y + $Section3HostDataMACTextBox.Size.Height + $($FormScale * 6) }
+    Size     = @{ Width  = $FormScale * 634
+                  Height = $FormScale * 135 }
+    Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Multiline  = $True
+    ScrollBars = 'Vertical'
+    WordWrap   = $True
+    ReadOnly   = $false
+    Add_MouseHover = $Section3HostDataNotesRichTextBoxAdd_MouseHover
+    Add_MouseEnter = { Check-HostDataIfModified }
+    Add_MouseLeave = { Check-HostDataIfModified }
+}
+$Section3HostDataTab.Controls.Add($Section3HostDataNotesRichTextBox)
+
+
+#-------------------------
+# Host Data - Save Button
+#-------------------------
+$script:Section3HostDataNotesSaveCheck = ""
+. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataSaveButton.ps1"
+$Section3HostDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = "Data Saved"
+    Location = @{ X = $Section3HostDataNotesRichTextBox.Location.X + $Section3HostDataNotesRichTextBox.Size.Width + $($FormScale + 5)
+                  Y = $Section3HostDataNotesRichTextBox.Location.Y }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Add_Click = $Section3HostDataSaveButtonAdd_Click
+    Add_MouseHover = $Section3HostDataSaveButtonAdd_MouseHover
+}
+$Section3HostDataTab.Controls.Add($Section3HostDataSaveButton)
+CommonButtonSettings -Button $Section3HostDataSaveButton
+
+
+#--------------------------------------
+# Host Data Notes - Add OpNotes Button
+#--------------------------------------
+. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataNotesAddOpNotesButton.ps1" 
+$Section3HostDataNotesAddOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = "Add To OpNotes"
+    Location = @{ X = $Section3HostDataSaveButton.Location.X
+                  Y = $Section3HostDataSaveButton.Location.Y + $Section3HostDataSaveButton.Size.Height + $($FormScale + 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Add_Click = $Section3HostDataNotesAddOpNotesButtonAdd_Click
+    Add_MouseHover = $Section3HostDataNotesAddOpNotesButtonAdd_MouseHover
+}
+$Section3HostDataTab.Controls.Add($Section3HostDataNotesAddOpNotesButton) 
+CommonButtonSettings -Button $Section3HostDataNotesAddOpNotesButton
+
+# Mass Tag one or multiple hosts in the computer treeview
+. "$Dependencies\Code\Tree View\Computer\Save-ComputerTreeNodeHostData.ps1" 
+
+# Checks if the Host Data has been modified and determines the text color: Green/Red
+. "$Dependencies\Code\Main Body\Check-HostDataIfModified.ps1" 
+
 
 
 #=======================================================================================================================================================================
@@ -5973,7 +6016,7 @@ CommonButtonSettings -Button $Section3HostDataTagsAddButton
 $Section3QueryExplorationTabPage = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Query Exploration"
     Name = "Query Exploration"
-    Font = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainBottomTabControl.Controls.Add($Section3QueryExplorationTabPage)
@@ -5984,21 +6027,21 @@ $MainBottomTabControl.Controls.Add($Section3QueryExplorationTabPage)
 #--------------------------
 $Section3QueryExplorationNameLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "Query Name:"
-    Location = @{ X = 0
-                  Y = 6 }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $FormScale * 0
+                  Y = $FormScale * 6 }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationNameLabel.Location.X + $Section3QueryExplorationNameLabel.Size.Width + 5
-                  Y = 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationNameLabel.Location.X + $Section3QueryExplorationNameLabel.Size.Width + $($FormScale * 5)
+                  Y = $FormScale * 3 }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationNameTextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationNameTextBox.size = @{ Width = 195 } }    
+    Add_MouseEnter = { $Section3QueryExplorationNameTextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationNameTextBox.size = @{ Width  = $FormScale * 195 } }    
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationNameLabel,$Section3QueryExplorationNameTextBox))
 
@@ -6010,19 +6053,19 @@ $Section3QueryExplorationWinRMPoShLabel = New-Object System.Windows.Forms.Label 
     Text     = "WinRM PoSh:"
     Location = @{ X = 0
                   Y = $Section3QueryExplorationNameLabel.location.Y + $Section3QueryExplorationNameLabel.Size.Height }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationWinRMPoShTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationWinRMPoShLabel.Location.X + $Section3QueryExplorationWinRMPoShLabel.Size.Width + 5
-                  Y = $Section3QueryExplorationWinRMPoShLabel.Location.Y - 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationWinRMPoShLabel.Location.X + $Section3QueryExplorationWinRMPoShLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationWinRMPoShLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRMPoShTextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRMPoShTextBox.size = @{ Width = 195 } }
+    Add_MouseEnter = { $Section3QueryExplorationWinRMPoShTextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationWinRMPoShTextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationWinRMPoShLabel,$Section3QueryExplorationWinRMPoShTextBox))
 
@@ -6034,19 +6077,19 @@ $Section3QueryExplorationWinRMWMILabel = New-Object System.Windows.Forms.Label -
     Text     = "WinRM WMI:"
     Location = @{ X = 0
                   Y = $Section3QueryExplorationWinRMPoShLabel.location.Y + $Section3QueryExplorationWinRMPoShLabel.Size.Height }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationWinRMWMITextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationWinRMWMILabel.Location.X + $Section3QueryExplorationWinRMWMILabel.Size.Width + 5
-                  Y = $Section3QueryExplorationWinRMWMILabel.Location.Y - 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationWinRMWMILabel.Location.X + $Section3QueryExplorationWinRMWMILabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationWinRMWMILabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRMWMITextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRMWMITextBox.size = @{ Width = 195 } }    
+    Add_MouseEnter = { $Section3QueryExplorationWinRMWMITextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationWinRMWMITextBox.size = @{ Width  = $FormScale * 195 } }    
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationWinRMWMILabel,$Section3QueryExplorationWinRMWMITextBox))
         
@@ -6058,19 +6101,19 @@ $Section3QueryExplorationWinRMCmdLabel = New-Object System.Windows.Forms.Label -
     Text     = "WinRM Cmd:"
     Location = @{ X = 0
                   Y = $Section3QueryExplorationWinRMWMILabel.location.Y + $Section3QueryExplorationWinRMWMILabel.Size.Height }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationWinRMCmdTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationWinRMCmdLabel.Location.X + $Section3QueryExplorationWinRMCmdLabel.Size.Width + 5
-                  Y = $Section3QueryExplorationWinRMCmdLabel.Location.Y - 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationWinRMCmdLabel.Location.X + $Section3QueryExplorationWinRMCmdLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationWinRMCmdLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRMCmdTextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRMCmdTextBox.size = @{ Width = 195 } }
+    Add_MouseEnter = { $Section3QueryExplorationWinRMCmdTextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationWinRMCmdTextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationWinRMCmdLabel,$Section3QueryExplorationWinRMCmdTextBox))
 
@@ -6082,19 +6125,19 @@ $Section3QueryExplorationRPCPoShLabel = New-Object System.Windows.Forms.Label -P
     Text     = "RPC/DCOM PoSh:"
     Location = @{ X = 0
                   Y = $Section3QueryExplorationWinRMCmdLabel.location.Y + $Section3QueryExplorationWinRMCmdLabel.Size.Height }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationRPCPoShTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationRPCPoShLabel.Location.X + $Section3QueryExplorationRPCPoShLabel.Size.Width + 5
-                  Y = $Section3QueryExplorationRPCPoShLabel.Location.Y - 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationRPCPoShLabel.Location.X + $Section3QueryExplorationRPCPoShLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationRPCPoShLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationRPCPoShTextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationRPCPoShTextBox.size = @{ Width = 195 } }
+    Add_MouseEnter = { $Section3QueryExplorationRPCPoShTextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationRPCPoShTextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationRPCPoShLabel,$Section3QueryExplorationRPCPoShTextBox))
 
@@ -6106,19 +6149,19 @@ $Section3QueryExplorationRPCWMILabel = New-Object System.Windows.Forms.Label -Pr
     Text     = "RPC/DCOM WMI:"
     Location = @{ X = 0
                   Y = $Section3QueryExplorationRPCPoShLabel.location.Y + $Section3QueryExplorationRPCPoShLabel.Size.Height }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationRPCWMITextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationRPCWMILabel.Location.X + $Section3QueryExplorationRPCWMILabel.Size.Width + 5
-                  Y = $Section3QueryExplorationRPCWMILabel.Location.Y - 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationRPCWMILabel.Location.X + $Section3QueryExplorationRPCWMILabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationRPCWMILabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationRPCWMITextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationRPCWMITextBox.size = @{ Width = 195 } }
+    Add_MouseEnter = { $Section3QueryExplorationRPCWMITextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationRPCWMITextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationRPCWMILabel,$Section3QueryExplorationRPCWMITextBox))
 
@@ -6130,19 +6173,19 @@ $Section3QueryExplorationPropertiesPoshLabel = New-Object System.Windows.Forms.L
     Text     = "Properties PoSh:"
     Location = @{ X = 0
                   Y = $Section3QueryExplorationRPCWMILabel.location.Y + $Section3QueryExplorationRPCWMILabel.Size.Height }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationPropertiesPoshTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationPropertiesPoshLabel.Location.X + $Section3QueryExplorationPropertiesPoshLabel.Size.Width + 5
-                  Y = $Section3QueryExplorationPropertiesPoshLabel.Location.Y - 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationPropertiesPoshLabel.Location.X + $Section3QueryExplorationPropertiesPoshLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationPropertiesPoshLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationPropertiesPoshTextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationPropertiesPoshTextBox.size = @{ Width = 195 } }
+    Add_MouseEnter = { $Section3QueryExplorationPropertiesPoshTextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationPropertiesPoshTextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationPropertiesPoshLabel,$Section3QueryExplorationPropertiesPoshTextBox))
 
@@ -6154,19 +6197,19 @@ $Section3QueryExplorationPropertiesWMILabel = New-Object System.Windows.Forms.La
     Text     = "Properties WMI:"
     Location = @{ X = 0
                   Y = $Section3QueryExplorationPropertiesPoshLabel.location.Y + $Section3QueryExplorationPropertiesPoshLabel.Size.Height }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationPropertiesWMITextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationPropertiesWMILabel.Location.X + $Section3QueryExplorationPropertiesWMILabel.Size.Width + 5
-                  Y = $Section3QueryExplorationPropertiesWMILabel.Location.Y - 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationPropertiesWMILabel.Location.X + $Section3QueryExplorationPropertiesWMILabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationPropertiesWMILabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationPropertiesWMITextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationPropertiesWMITextBox.size = @{ Width = 195 } }
+    Add_MouseEnter = { $Section3QueryExplorationPropertiesWMITextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationPropertiesWMITextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationPropertiesWMILabel,$Section3QueryExplorationPropertiesWMITextBox))
 
@@ -6178,19 +6221,19 @@ $Section3QueryExplorationWinRSWmicLabel = New-Object System.Windows.Forms.Label 
     Text     = "WinRS WMIC:"
     Location = @{ X = 0
                   Y = $Section3QueryExplorationPropertiesWMILabel.location.Y + $Section3QueryExplorationPropertiesWMILabel.Size.Height }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationWinRSWmicTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationWinRSWmicLabel.Location.X + $Section3QueryExplorationWinRSWmicLabel.Size.Width + 5
-                  Y = $Section3QueryExplorationWinRSWmicLabel.Location.Y - 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationWinRSWmicLabel.Location.X + $Section3QueryExplorationWinRSWmicLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationWinRSWmicLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRSWmicTextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRSWmicTextBox.size = @{ Width = 195 } }
+    Add_MouseEnter = { $Section3QueryExplorationWinRSWmicTextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationWinRSWmicTextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationWinRSWmicLabel,$Section3QueryExplorationWinRSWmicTextBox))
 
@@ -6202,19 +6245,19 @@ $Section3QueryExplorationWinRSCmdLabel = New-Object System.Windows.Forms.Label -
     Text     = "WinRS Cmd:"
     Location = @{ X = 0
                   Y = $Section3QueryExplorationWinRSWmicLabel.location.Y + $Section3QueryExplorationWinRSWmicLabel.Size.Height }
-    Size     = @{ Width  = 100
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationWinRSCmdTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationWinRSCmdLabel.Location.X + $Section3QueryExplorationWinRSCmdLabel.Size.Width + 5
-                  Y = $Section3QueryExplorationWinRSCmdLabel.Location.Y - 3 }
-    Size     = @{ Width  = 195
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationWinRSCmdLabel.Location.X + $Section3QueryExplorationWinRSCmdLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationWinRSCmdLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRSCmdTextBox.size = @{ Width = 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRSCmdTextBox.size = @{ Width = 195 } }
+    Add_MouseEnter = { $Section3QueryExplorationWinRSCmdTextBox.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $Section3QueryExplorationWinRSCmdTextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationWinRSCmdLabel,$Section3QueryExplorationWinRSCmdTextBox))
 
@@ -6223,11 +6266,11 @@ $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationWi
 # Query Exploration - Description
 #---------------------------------
 $Section3QueryExplorationDescriptionRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-    Location   = @{ X = $Section3QueryExplorationNameTextBox.Location.X + $Section3QueryExplorationNameTextBox.Size.Width + 10 
+    Location   = @{ X = $Section3QueryExplorationNameTextBox.Location.X + $Section3QueryExplorationNameTextBox.Size.Width + $($FormScale * 10) 
                     Y = $Section3QueryExplorationNameTextBox.Location.Y }
-    Size       = @{ Width  = 428
-                    Height = 196 }
-    Font       = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Size       = @{ Width  = $FormScale * 428
+                    Height = $FormScale * 196 }
+    Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Multiline  = $True
     ScrollBars = 'Vertical'
     WordWrap   = $True
@@ -6243,17 +6286,17 @@ $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationDescripti
 $Section3QueryExplorationTagWordsLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "Tags"
     Location = @{ X = $Section3QueryExplorationDescriptionRichTextbox.Location.X
-                  Y = $Section3QueryExplorationDescriptionRichTextbox.location.Y + $Section3QueryExplorationDescriptionRichTextbox.Size.Height + 5 }
-    Size     = @{ Width  = 35
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                  Y = $Section3QueryExplorationDescriptionRichTextbox.location.Y + $Section3QueryExplorationDescriptionRichTextbox.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 35
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationTagWordsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationTagWordsLabel.Location.X + $Section3QueryExplorationTagWordsLabel.Size.Width + 5
-                  Y = $Section3QueryExplorationTagWordsLabel.Location.Y - 3 }
-    Size     = @{ Width  = 200
-                  Height = 22 }
-    Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+    Location = @{ X = $Section3QueryExplorationTagWordsLabel.Location.X + $Section3QueryExplorationTagWordsLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationTagWordsLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationTagWordsLabel,$Section3QueryExplorationTagWordsTextBox))
@@ -6265,11 +6308,11 @@ $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationTa
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\Section3QueryExplorationEditCheckBox.ps1"
 $Section3QueryExplorationEditCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text      = "Edit"
-    Location  = @{ X = $Section3QueryExplorationDescriptionRichTextbox.Location.X + 255
-                   Y = $Section3QueryExplorationDescriptionRichTextbox.Location.Y + $Section3QueryExplorationDescriptionRichTextbox.Size.Height + 3 }
-    Size      = @{ Height = 25
-                   Width  = 50 }
-    Font      = New-Object System.Drawing.Font("$Font",11,0,2,1)
+    Location  = @{ X = $Section3QueryExplorationDescriptionRichTextbox.Location.X + $($FormScale * 255)
+                   Y = $Section3QueryExplorationDescriptionRichTextbox.Location.Y + $Section3QueryExplorationDescriptionRichTextbox.Size.Height + $($FormScale * 3) }
+    Size      = @{ Height = $FormScale * 25
+                   Width  = $FormScale * 50 }
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,2,1)
     Checked   = $false
     Add_Click = $Section3QueryExplorationEditCheckBoxAdd_Click
 }
@@ -6282,10 +6325,10 @@ $Section3QueryExplorationEditCheckBox = New-Object System.Windows.Forms.Checkbox
 . "$Dependencies\Code\System.Windows.Forms\Button\Section3QueryExplorationSaveButton.ps1"
 $Section3QueryExplorationSaveButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = 'Locked'
-    Location  = @{ X = $Section3QueryExplorationEditCheckBox.Location.X + 50
+    Location  = @{ X = $Section3QueryExplorationEditCheckBox.Location.X + $($FormScale * 50)
                    Y = $Section3QueryExplorationEditCheckBox.Location.Y }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight }
     Add_Click = $Section3QueryExplorationSaveButtonAdd_Click
 }
 CommonButtonSettings -Button $Section3QueryExplorationSaveButton
@@ -6298,10 +6341,10 @@ CommonButtonSettings -Button $Section3QueryExplorationSaveButton
 . "$Dependencies\Code\System.Windows.Forms\Button\Section3QueryExplorationViewScriptButton.ps1"
 $Section3QueryExplorationViewScriptButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = 'View Script'
-    Location  = @{ X = $Section3QueryExplorationEditCheckBox.Location.X + 50
+    Location  = @{ X = $Section3QueryExplorationEditCheckBox.Location.X + $($FormScale * 50)
                    Y = $Section3QueryExplorationEditCheckBox.Location.Y }
-    Size      = @{ Width  = $Column5BoxWidth
-                   Height = $Column5BoxHeight }
+    Size      = @{ Width  = $FormScale * $Column5BoxWidth
+                   Height = $FormScale * $Column5BoxHeight }
     Add_Click = $Section3QueryExplorationViewScriptButtonAdd_Click
 }
 CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton
@@ -6357,6 +6400,9 @@ Update-QueryHistory
 # Provides $script:SectionQueryCount variable data
 . "$Dependencies\Code\Execution\Count-SectionQueries.ps1"
 
+# Generate list of endpoints to query
+. "$Dependencies\Code\Main Body\Generate-ComputerListToQuery.ps1"
+
 #============================================================================================================================================================
 #   ____               _         _       _____                          _    _               
 #  / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
@@ -6378,11 +6424,11 @@ $ExecuteScriptHandler = {
     }
     # Clears previous Target Host values
     if ( $ComputerSearch ) { continue }
-    else { $ComputerList = @() }
+    else { $script:ComputerList = @() }
 
     # Generate list of endpoints to query
     if ( $ComputerSearch ){ continue }
-    else { . "$Dependencies\Code\Main Body\Generate-ComputerListToQuery.ps1" }
+    else { Generate-ComputerListToQuery }
 
     Start-Sleep -Seconds 1
 
@@ -6391,7 +6437,7 @@ $ExecuteScriptHandler = {
     if ($SaveDirectory) { $script:CollectedDataTimeStampDirectory = $SaveDirectory }
 
     
-    $script:IndividualHostResults    = "$script:CollectedDataTimeStampDirectory\Individual Host Results"
+    $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Individual Host Results"
     if (-Not $CommandSearch) { 
         Sort-CommandTreeNode
 
@@ -6403,7 +6449,7 @@ $ExecuteScriptHandler = {
     $CommandCountTotalBothQueryAndSection = $script:CommandsCheckedBoxesSelected.count + $script:SectionQueryCount
 
     # Checks if any computers were selected
-    if ($ComputerList.Count -eq 0 -and $script:SingleHostIPCheckBox.Checked -eq $false) {
+    if ($script:ComputerList.Count -eq 0 -and $script:SingleHostIPCheckBox.Checked -eq $false) {
         # This brings specific tabs to the forefront/front view
         $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
@@ -6470,8 +6516,8 @@ $ExecuteScriptHandler = {
         #$MainCenterTabControl.SelectedTab = $MainCenterMainTab
         $MainCenterTabControl.SelectedTab = $Section2StatisticsTab
             if ($MainCenterTabControl.SelectedTab -match 'Statistics') {
-                $MainCenterTabControl.Width  = 370
-                $MainCenterTabControl.Height = 278
+                $MainCenterTabControl.Width  = $FormScale * 370
+                $MainCenterTabControl.Height = $FormScale * 278
             }
         $MainRightTabControl.SelectedTab  = $Section3ActionTab
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
@@ -6484,7 +6530,7 @@ $ExecuteScriptHandler = {
         $ResultsListBox.Items.Insert(0,"")
 
         # Counts Target Computers
-        $CountComputerListCheckedBoxesSelected = $ComputerList.Count
+        $CountComputerListCheckedBoxesSelected = $script:ComputerList.Count
 
         # The number of command queries completed
         $CompletedCommandQueries = 0
@@ -6492,7 +6538,7 @@ $ExecuteScriptHandler = {
         # Counts the Total Queries
         $CountCommandQueries = 0
 
-        ########################Compile-SelectedCommandTreeNode
+        ### Compile-SelectedCommandTreeNode
 
         # Verifies that the command is only present once. Prevents running the multiple copies of the same comand, line from using the Query History comamnds
         $CommandsCheckedBoxesSelectedTemp  = @()
@@ -6506,21 +6552,22 @@ $ExecuteScriptHandler = {
         }
 
         # Adds section checkboxes to the command count
-        if ($RegistrySearchCheckbox.checked)                         { $CountCommandQueries++ }
-        if ($FileSearchDirectoryListingCheckbox.Checked)             { $CountCommandQueries++ }
-        if ($FileSearchFileSearchCheckbox.Checked)                   { $CountCommandQueries++ }
-        if ($FileSearchAlternateDataStreamCheckbox.Checked)          { $CountCommandQueries++ } 
-        if ($SysinternalsSysmonCheckbox.Checked)                     { $CountCommandQueries++ }
-        if ($SysinternalsAutorunsCheckbox.Checked)                   { $CountCommandQueries++ }
-        if ($SysinternalsProcessMonitorCheckbox.Checked)             { $CountCommandQueries++ }        
-        if ($EventLogsEventIDsManualEntryCheckbox.Checked)           { $CountCommandQueries++ }
-        if ($EventLogsEventIDsToMonitorCheckbox.Checked)             { $CountCommandQueries++ }
-        if ($NetworkEndpointPacketCaptureCheckBox.Checked)           { $CountCommandQueries++ }
-        if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { $CountCommandQueries++ }
-        if ($NetworkConnectionSearchRemotePortCheckbox.checked)      { $CountCommandQueries++ }
-        if ($NetworkConnectionSearchLocalPortCheckbox.checked)       { $CountCommandQueries++ }        
-        if ($NetworkConnectionSearchProcessCheckbox.checked)         { $CountCommandQueries++ }
-        if ($NetworkConnectionSearchDNSCacheCheckbox.checked)        { $CountCommandQueries++ }
+        if ($RegistrySearchCheckbox.checked)                            { $CountCommandQueries++ }
+        if ($FileSearchDirectoryListingCheckbox.Checked)                { $CountCommandQueries++ }
+        if ($FileSearchFileSearchCheckbox.Checked)                      { $CountCommandQueries++ }
+        if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $CountCommandQueries++ } 
+        if ($SysinternalsSysmonCheckbox.Checked)                        { $CountCommandQueries++ }
+        if ($SysinternalsAutorunsCheckbox.Checked)                      { $CountCommandQueries++ }
+        if ($SysinternalsProcessMonitorCheckbox.Checked)                { $CountCommandQueries++ }
+        if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $CountCommandQueries++ }
+        if ($EventLogsEventIDsManualEntryCheckbox.Checked)              { $CountCommandQueries++ }
+        if ($EventLogsEventIDsToMonitorCheckbox.Checked)                { $CountCommandQueries++ }
+        if ($NetworkEndpointPacketCaptureCheckBox.Checked)              { $CountCommandQueries++ }
+        if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked)    { $CountCommandQueries++ }
+        if ($NetworkConnectionSearchRemotePortCheckbox.checked)         { $CountCommandQueries++ }
+        if ($NetworkConnectionSearchLocalPortCheckbox.checked)          { $CountCommandQueries++ }        
+        if ($NetworkConnectionSearchProcessCheckbox.checked)            { $CountCommandQueries++ }
+        if ($NetworkConnectionSearchDNSCacheCheckbox.checked)           { $CountCommandQueries++ }
         if ($EventLogsQuickPickSelectionCheckbox.Checked) { foreach ($Query in $script:EventLogQueries) { if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) { $CountCommandQueries++ } } }
         $script:CommandsCheckedBoxesSelected          = $CommandsCheckedBoxesSelectedDedup
         $script:ProgressBarQueriesProgressBar.Maximum = $CountCommandQueries
@@ -6557,7 +6604,32 @@ $ExecuteScriptHandler = {
         # These instances/jobs are one threaded when querying the same command type; eg: all process queries are multi-threaded, once their all complete it moves on to the service query
         function Conduct-IndividualExecution {
             $ExecutionStartTime = Get-Date 
+            Generate-ComputerListToQuery
 
+            Create-ComputerNodeCheckBoxArray
+#            Conduct-NodeAction -TreeView $this.Nodes -Endpoints
+            if ($script:RpcCommandCount -gt 0 ) {
+                if (Verify-Action -Title "RPC/DCOM Check" -Question "Conduct a RPC/DCOM Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+                    Check-Connection -CheckType "RPC/DCOM Check" -ComputerTreeViewSelected $script:ComputerTreeViewSelected -MessageTrue "RPC Port 135 is Open" -MessageFalse "RPC Port 135 is Closed"
+                    Generate-ComputerListToQuery
+                }
+                else {
+                    [system.media.systemsounds]::Exclamation.play()
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("Skipping RPC/DCOM Check of Endpoints")
+                }
+            }
+            if ($script:SmbCommandCount -gt 0 ) {
+                if (Verify-Action -Title "SMB Check" -Question "Conduct a SMB check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+                    Check-Connection -CheckType "SMB Check" -ComputerTreeViewSelected $script:ComputerTreeViewSelected -MessageTrue "SMB Port 445 is Open" -MessageFalse "SMB Port 445 is Closed"
+                    Generate-ComputerListToQuery
+                }
+                else {
+                    [system.media.systemsounds]::Exclamation.play()
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("Skipping SMB Check of Endpoints")
+                }
+            }
             $PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
             $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
             $PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)
@@ -6634,6 +6706,11 @@ $ExecuteScriptHandler = {
             # Process Monitor and its supporting files are removed afterwards
             if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Procmon.ps1" }        
             
+            # User Specified Files and Custom Script
+            # Pushes user Specified Files and Custom Script to the endpoints
+            # The script has to manage all the particulars with the executable; execution, results retrieval, cleanup, etc.
+            if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-ExecutableAndScript.ps1" }
+
             Completed-QueryExecution
         }
 
@@ -6642,16 +6719,16 @@ $ExecuteScriptHandler = {
         if ($NoGui -and $script:RpcCommandCount -gt 0 -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
             Conduct-IndividualExecution
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $script:RpcCommandCount -gt 0 -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
+        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and ( $script:RpcCommandCount -gt 0 -or $script:SmbCommandCount -gt 0) -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
             Conduct-IndividualExecution
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $script:RpcCommandCount -eq 0 ) {
+        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $script:RpcCommandCount -eq 0 -and $script:SmbCommandCount -eq 0 ) {
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add('No RPC Commands Selected')
             $MessageBox = [System.Windows.Forms.MessageBox]::Show("Only WinRM based commands were select.`nDo you want to change to 'Session Based' querying instead?`n`nThis would be faster and not as noisy on the network.","Optimize Performance",'YesNoCancel','Info')
             Switch ( $MessageBox ) {
                 'Yes' {
-                    $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 2 #'Session Based'
+                    $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 3 #'Session Based'
                 }
                 'No' {
                     Conduct-IndividualExecution
@@ -6678,6 +6755,7 @@ $ExecuteScriptHandler = {
 
         elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Compiled Script' -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
             $ExecutionStartTime = Get-Date 
+            Generate-ComputerListToQuery 
             
             # Compiles the individual commands into an object hashtable '$script:QueryCommands'
             . "$Dependencies\Code\Execution\Compiled Script\Compile-QueryCommands.ps1"
@@ -6704,25 +6782,25 @@ $ExecuteScriptHandler = {
                 # Command Review and Edit Form
                 #------------------------------
                 $CommandReviewEditForm = New-Object System.Windows.Forms.Form -Property @{
-                    width         = 1025
-                    height        = 525
+                    width         = $FormScale * 1025
+                    height        = $FormScale * 525
                     StartPosition = "CenterScreen"
                     Text          = ”Collection Script - Review, Edit, and Verify”
                     Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
                     ControlBox    = $true
-                    Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 }
                     #-------------------------------
                     # Command Reveiw and Edit Label
                     #-------------------------------
                     $CommandReviewEditLabel = New-Object System.Windows.Forms.Label -Property @{
                         Text      = "Edit The Script Block:"
-                        Location  = @{ X = 5
-                                       Y = 8 }
-                        Size      = @{ Height = 25
-                                       Width  = 160 }
+                        Location  = @{ X = $FormScale * 5
+                                       Y = $FormScale * 8 }
+                        Size      = @{ Height = $FormScale * 25
+                                       Width  = $FormScale * 160 }
                         ForeColor = "Blue"
-                        Font      = New-Object System.Drawing.Font("$Font",14,0,0,0)
+                        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 14),0,0,0)
                     }
                     $CommandReviewEditForm.Controls.Add($CommandReviewEditLabel)
 
@@ -6731,12 +6809,12 @@ $ExecuteScriptHandler = {
                     #--------------------------------------------
                     $CommandReviewEditEnabledRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
                         Text      = "Yes"
-                        Location  = @{ X = $CommandReviewEditLabel.Location.X + $CommandReviewEditLabel.Size.Width + 20
-                                       Y = 5 }
-                        Size      = @{ Height = 25
-                                       Width  = 50 }
+                        Location  = @{ X = $FormScale * $CommandReviewEditLabel.Location.X + $CommandReviewEditLabel.Size.Width + 20
+                                       Y = $FormScale * 5 }
+                        Size      = @{ Height = $FormScale * 25
+                                       Width  = $FormScale * 50 }
                         Checked   = $false
-                        Font      = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     }
                     $CommandReviewEditEnabledRadioButton.Add_Click({ 
                         $script:CommandReviewEditRichTextbox.BackColor = 'White' 
@@ -6754,12 +6832,12 @@ $ExecuteScriptHandler = {
                     #---------------------------------------------
                     $CommandReviewEditDisabledRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
                         Text     = "No"
-                        Location = @{ X = $CommandReviewEditEnabledRadioButton.Location.X + $CommandReviewEditEnabledRadioButton.Size.Width + 10
-                                      Y = 5 }
-                        Size     = @{ Height = 25
-                                      Width  = 50 }
+                        Location = @{ X = $FormScale * $CommandReviewEditEnabledRadioButton.Location.X + $CommandReviewEditEnabledRadioButton.Size.Width + 10
+                                      Y = $FormScale * 5 }
+                        Size     = @{ Height = $FormScale * 25
+                                      Width  = $FormScale * 50 }
                         Checked  = $true
-                        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+                        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     }
                     $CommandReviewEditDisabledRadioButton.Add_Click({ 
                         $script:CommandReviewEditRichTextbox.BackColor = 'LightGray' 
@@ -6777,10 +6855,10 @@ $ExecuteScriptHandler = {
                     #-------------------------------------------
                     $CommandReviewReloadNormalRawButton = New-Object System.Windows.Forms.Button -Property @{
                         Text      = "Reload Script (Raw)"
-                        Location  = @{ X = $CommandReviewEditDisabledRadioButton.Location.X + $CommandReviewEditDisabledRadioButton.Size.Width + 25 
-                                    Y = 7 }
-                        Size      = @{ Height = 22
-                                    Width  = 175 }
+                        Location  = @{ X = $FormScale * $CommandReviewEditDisabledRadioButton.Location.X + $CommandReviewEditDisabledRadioButton.Size.Width + 25 
+                                    Y = $FormScale * 7 }
+                        Size      = @{ Height = $FormScale * 22
+                                    Width  = $FormScale * 175 }
                     }
                     CommonButtonSettings -Button $CommandReviewReloadNormalRawButton
                     $CommandReviewReloadNormalRawButton.Add_MouseHover({
@@ -6806,10 +6884,10 @@ $ExecuteScriptHandler = {
                     # Command Review Script Block ByteCount Textbox
                     #-----------------------------------------------
                     $CommandReviewScriptBlockByteCountTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                        Location  = @{ X = $CommandReviewReloadNormalRawButton.Location.X + $CommandReviewReloadNormalRawButton.Size.Width + 25 
-                                       Y = 7 }
-                        Size      = @{ Height = 22
-                                       Width  = 100 }
+                        Location  = @{ X = $FormScale * $CommandReviewReloadNormalRawButton.Location.X + $CommandReviewReloadNormalRawButton.Size.Width + 25 
+                                       Y = $FormScale * 7 }
+                        Size      = @{ Height = $FormScale * 22
+                                       Width  = $FormScale * 100 }
                     }
                     $CommandReviewEditForm.Controls.Add($CommandReviewScriptBlockByteCountTextbox)
 
@@ -6819,11 +6897,11 @@ $ExecuteScriptHandler = {
                     #-----------------------------------------
                     $CommandReviewEditVerifyCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
                         Text      = 'Verify'
-                        Font      = New-Object System.Drawing.Font("$Font",14,0,0,0)
-                        Location  = @{ X = 790
-                                    Y = 6 }
-                        Size      = @{ Height = 26
-                                    Width  = 75 }
+                        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 14),0,0,0)
+                        Location  = @{ X = $FormScale * 790
+                                    Y = $FormScale * 6 }
+                        Size      = @{ Height = $FormScale * 26
+                                    Width  = $FormScale * 75 }
                         Checked   = $false
                     }
                     $CommandReviewEditVerifyCheckbox.Add_Click({
@@ -6845,10 +6923,10 @@ $ExecuteScriptHandler = {
                     #----------------------------------------
                     $CommandReviewEditExecuteButton = New-Object System.Windows.Forms.Button -Property @{
                         Text      = "Cancel"
-                        Location  = @{ X = 879
-                                    Y = 5 }
-                        Size      = @{ Height = 25
-                                    Width  = 100 }
+                        Location  = @{ X = $FormScale * 879
+                                    Y = $FormScale * 5 }
+                        Size      = @{ Height = $FormScale * 25
+                                    Width  = $FormScale * 100 }
                     }
                     CommonButtonSettings -Button $CommandReviewEditExecuteButton
                     $CommandReviewEditExecuteButton.Add_Click({ 
@@ -6875,11 +6953,11 @@ $ExecuteScriptHandler = {
                     # Command Review and Edit Textbox
                     #---------------------------------
                     $script:CommandReviewEditRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-                        Location = @{ X = 5
-                                      Y = 35 }
-                        Size     = @{ Height = 422
-                                      Width  = 974 }
-                        Font       = New-Object System.Drawing.Font("Courier New",11,0,0,0)
+                        Location = @{ X = $FormScale * 5
+                                      Y = $FormScale * 35 }
+                        Size     = @{ Height = $FormScale * 422
+                                      Width  = $FormScale * 974 }
+                        Font       = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
                         Multiline  = $True
                         ScrollBars = 'Vertical'
                         WordWrap   = $True
@@ -6973,7 +7051,7 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
                 . "$Dependencies\Code\Execution\Compiled Script\Execute-CompiledScriptIfVerified.ps1"
             }
         }
-
+        
         #=======================================================================================================================================================================
         #   ____                   _                   ____                         _     _____                          _    _               
         #  / ___|   ___  ___  ___ (_)  ___   _ __     | __ )   __ _  ___   ___   __| |   | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
@@ -6986,11 +7064,12 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
 
         elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based' -and $script:RpcCommandCount -eq 0 -and $CommandCountTotalBothQueryAndSection -gt 0 ) {
             $ExecutionStartTime = Get-Date 
+            Generate-ComputerListToQuery 
 
             $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Attempting to Establish Sessions to $($ComputerList.Count) Endpoints")
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Attempting to Establish Sessions to $($ComputerList.Count) Endpoints"
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[!] $($ComputerList -join ', ')"
+            $StatusListBox.Items.Add("Attempting to Establish Sessions to $($script:ComputerList.Count) Endpoints")
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Attempting to Establish Sessions to $($script:ComputerList.Count) Endpoints"
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[!] $($script:ComputerList -join ', ')"
 
             $PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
             $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
@@ -7004,25 +7083,25 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
 
             if ($ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
-                $PSSession = New-PSSession -ComputerName $ComputerList -Credential $script:Credential | Sort-Object ComputerName
+                $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential | Sort-Object ComputerName
             }
             else {
-                $PSSession = New-PSSession -ComputerName $ComputerList | Sort-Object ComputerName
+                $PSSession = New-PSSession -ComputerName $script:ComputerList | Sort-Object ComputerName
             }
 
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Session Based Collection Started to $($PSSession.count) Endpoints"
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Session Based Collection Started to $(($PSSession | Where-Object {$_.state -match 'open'}).count) Endpoints"
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $(($PSSession | Where-Object {$_.state -match 'open'}).ComputerName -join ', ')"
 
             # Unchecks hosts that do not have a session established
             . "$Dependencies\Code\Execution\Session Based\Uncheck-ComputerTreeNodesWithoutSessions.ps1"
 
             if ($PSSession.count -eq 1) { 
-                $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Session Created to $($PSSession.count) Endpoint")
+                $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Session Created to $(($PSSession | Where-Object {$_.state -match 'open'}).count) Endpoint")
             }
             elseif ($PSSession.count -gt 1) { 
-                $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Sessions Created to $($PSSession.count) Endpoints")
+                $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Sessions Created to $(($PSSession | Where-Object {$_.state -match 'open'}).count) Endpoints")
             }
-            else {                
+            else {
                 $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  No Sessions Created")
                 [system.media.systemsounds]::Exclamation.play()
             }
@@ -7103,6 +7182,11 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
                 # Process Monitor and its supporting files are removed afterwards
                 if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionPush-ProcMon.ps1" }
 
+                # User Specified Files and Custom Script
+                # Pushes user Specified Files and Custom Script to the endpoints
+                # The script has to manage all the particulars with the executable; execution, results retrieval, cleanup, etc.
+                if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionPush-ExecutableAndScript.ps1" }
+
                 ######################################
                 # End of Session Based Querying
                 ######################################
@@ -7121,11 +7205,11 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
     }
 
     $MainCenterTabControl.SelectedTab = $MainCenterMainTab
-        if ($MainCenterTabControl.SelectedTab -match 'Main') {
-            $MainCenterTabControl.Width  = 370
-            $MainCenterTabControl.Height = 278
-        }
-        $PoShEasyWin.Refresh()
+    if ($MainCenterTabControl.SelectedTab -match 'Main') {
+        $MainCenterTabControl.Width  = $FormScale * 370
+        $MainCenterTabControl.Height = $FormScale * 278
+    }
+    $PoShEasyWin.Refresh()
 }
 
 # Selects the computers to query using command line parameters and arguments

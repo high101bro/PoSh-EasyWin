@@ -124,13 +124,13 @@ else {
                         $ProcmonDuration,
                         $ProcmonName
                     )
-                    Start-Process -Filepath "$RemoteTargetDirectory\$ProcmonExecutable" -ArgumentList @("/AcceptEula /BackingFile $RemoteTargetDirectory\$ProcmonName /RunTime $ProcmonDuration /Quiet")
-                    #Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList @("$RemoteTargetDirectory\$ProcmonExecutable /AcceptEula /BackingFile $RemoteTargetDirectory\Procmon /RunTime $ProcmonDuration /Quiet")
+                    Start-Process -Filepath "$RemoteTargetDirectory\$ProcmonExecutable" -ArgumentList @("/AcceptEULA /BackingFile $RemoteTargetDirectory\$ProcmonName /RunTime $ProcmonDuration /Quiet")
+                    #Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList @("$RemoteTargetDirectory\$ProcmonExecutable /AcceptEULA /BackingFile $RemoteTargetDirectory\Procmon /RunTime $ProcmonDuration /Quiet")
                 } -ArgumentList @($RemoteTargetDirectory,$ProcmonExecutable,$ProcmonDuration,$ProcmonName) -Session $Session
 
                 $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
-                #Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList @(`"$RemoteTargetDirectory\$ProcmonExecutable /AcceptEula -a $RemoteTargetDirectory\Procmon.pml`")"
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message  "Start-Process -Filepath '$RemoteTargetDirectory\$ProcmonExecutable' -ArgumentList @('/AcceptEula /BackingFile $RemoteTargetDirectory\$ProcmonName /RunTime $ProcmonDuration /Quiet')"
+                #Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Invoke-WmiMethod -Class Win32_Process -Name Create -ArgumentList @(`"$RemoteTargetDirectory\$ProcmonExecutable /AcceptEULA -a $RemoteTargetDirectory\Procmon.pml`")"
+                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message  "Start-Process -Filepath '$RemoteTargetDirectory\$ProcmonExecutable' -ArgumentList @('/AcceptEULA /BackingFile $RemoteTargetDirectory\$ProcmonName /RunTime $ProcmonDuration /Quiet')"
                 $script:ProgressBarEndpointsProgressBar.Value += 1
                 $PoShEasyWin.Refresh()
             }

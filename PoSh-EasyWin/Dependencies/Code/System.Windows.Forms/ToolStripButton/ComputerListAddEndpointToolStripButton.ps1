@@ -8,9 +8,10 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
     #----------------------------------
     $ComputerTreeNodePopup = New-Object system.Windows.Forms.Form -Property @{
         Text          = "Add Hostname/IP"
-        Size          = New-Object System.Drawing.Size(335,177)
+        Size          = @{ Width  = $FormScale * 335
+                           Height = $FormScale * 177 }
         StartPosition = "CenterScreen"
-        Font          = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
     }
     #-----------------------------------------------------
@@ -18,11 +19,11 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
     #-----------------------------------------------------
     $ComputerTreeNodePopupAddTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text     = "Enter a hostname/IP"
-        Location = @{ X = 10
-                      Y = 10 }
-        Size     = @{ Width  = 300
-                      Height = 25 }
-        Font     = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Location = @{ X = $FormScale * 10
+                      Y = $FormScale * 10 }
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
+        Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $ComputerTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
     $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddTextBox)
@@ -32,13 +33,13 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
     #-----------------------------------------
     $ComputerTreeNodePopupOSComboBox  = New-Object System.Windows.Forms.ComboBox -Property @{
         Text = "Select an Operating System (or type in a new one)"
-        Location = @{ X = 10
-                      Y = $ComputerTreeNodePopupAddTextBox.Location.Y + $ComputerTreeNodePopupAddTextBox.Size.Height + 10 }
-        Size     = @{ Width  = 300
-                      Height = 25 }
+        Location = @{ X = $FormScale * 10
+                      Y = $ComputerTreeNodePopupAddTextBox.Location.Y + $ComputerTreeNodePopupAddTextBox.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-        Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $ComputerTreeNodeOSCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty OperatingSystem -Unique
 
@@ -53,13 +54,13 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
     #-----------------------------------------
     $ComputerTreeNodePopupOUComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text  = "Select an Organizational Unit / Canonical Name (or type a new one)"
-        Location = @{ X = 10
-                      Y = $ComputerTreeNodePopupOSComboBox.Location.Y + $ComputerTreeNodePopupOSComboBox.Size.Height + 10 }
-        Size     = @{ Width  = 300
-                      Height = 25 }
+        Location = @{ X = $FormScale * 10
+                      Y = $ComputerTreeNodePopupOSComboBox.Location.Y + $ComputerTreeNodePopupOSComboBox.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-        Font               = New-Object System.Drawing.Font("$Font",11,0,0,0)
+        Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $ComputerTreeNodeOUCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty CanonicalName -Unique
     # Dynamically creates the OU Category combobox list used for OU Selection
@@ -85,10 +86,10 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
     #---------------------------------------------
     $ComputerTreeNodePopupAddHostButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Add Host"
-        Location = @{ X = 210
-                      Y = $ComputerTreeNodePopupOUComboBox.Location.Y + $ComputerTreeNodePopupOUComboBox.Size.Height + 10 }
-        Size     = @{ Width  = 100
-                      Height = 25 }
+        Location = @{ X = $FormScale * 210
+                      Y = $ComputerTreeNodePopupOUComboBox.Location.Y + $ComputerTreeNodePopupOUComboBox.Size.Height + $($FormScale * 10) }
+        Size     = @{ Width  = $FormScale * 100
+                      Height = $FormScale * 25 }
     }
     CommonButtonSettings -Button $ComputerTreeNodePopupAddHostButton
     $ComputerTreeNodePopupAddHostButton.Add_Click({ AddHost-ComputerTreeNode })

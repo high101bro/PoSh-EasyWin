@@ -4,5 +4,6 @@ $RegistryKeyNameCheckBoxAdd_Click = {
     $RegistryValueNameCheckbox.checked = $false
     $RegistryValueDataCheckbox.checked = $false
 
+    $script:RegistrySelected = 'RegistryKeyNameCheckBox'
     Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
 }
