@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.4.5
+    Version        : v.5.0
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -29,7 +29,7 @@
                      etl2pcapng.exe, WinPmem.exe
                      wKillcx is a small command-line utility to close any TCP connection under Windows XP/Vista/Seven as well as Windows Server 2003/2008. The source code (assembly language) is included with the binary.
 
-    Updated        : 07 JUN 2020
+    Updated        : 08 SEP 2020
     Created        : 21 AUG 2018
 
     Author         : Daniel Komnick (high101bro)

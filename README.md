@@ -4,7 +4,7 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v.4.5                                                          |
+|  Version       |  v.5.0                                                          |
 |  Author        |  Daniel Komnick (high101bro)                                    |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
@@ -13,7 +13,7 @@
 |  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe              |
 |                |  etl2pcapng.exe, WinPmem.exe                                    |
 |                |                                                                 |
-|  Updated       |  07 JUN 2020                                                    |
+|  Updated       |  08 SEP 2020                                                    |
 |  Created       |  21 AUG 2018                                                    |
 
 ***
@@ -23,10 +23,11 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 
 ### The goals of PoSh-EasyWin are to provide:
 1. a user interface that is easy to use and intuitive.
-2. an efficient method to obtain various data from remote endpoints.
-3. visiblity into many common commands for endpoints and active directory servers.
-4. the ability to effortlessly connect to an endpoint via a Remote Desktop, PSSession, PSExec, or explore Event Logs. 
-5. a method to analyze data/results from numerous systems natively without external 3rd party applications.
+2. easily view collected data locally via charts, spreadsheats, and by terminal.
+3. an efficient method to obtain various data from remote endpoints over various protocols.
+4. visiblity into many common commands for endpoints and active directory servers.
+5. the ability to effortlessly connect to an endpoint via a Remote Desktop, PSSession, PSExec, or explore Event Logs. 
+6. a method to analyze data/results from numerous systems natively without external 3rd party applications.
 
 ***
 ***
