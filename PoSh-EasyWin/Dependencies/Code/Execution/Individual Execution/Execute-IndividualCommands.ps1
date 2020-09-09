@@ -5,7 +5,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
  
     $CollectionName = $Command.ExportFileName
-    $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Individual Host Results"
+    $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
     New-Item -ItemType Directory -Path "$script:IndividualHostResults\$CollectionName" -Force
 
     # if the SaveDirectory parameter is provided, it will be used to identify where to save the results to
@@ -26,15 +26,10 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             if (!$script:Credential) { Create-NewCredentials }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
 
-            if (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Get-WmiObject")) {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential | Select-Object -Property $($Command.Properties)"
-                $OutputFileFileType = "csv"
-            }
-            elseif (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Invoke-WmiMethod")) {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential"
-                $OutputFileFileType = "txt"
-            }
-            elseif ($Command.Type -eq "(WinRM) Script") {
+
+
+
+            if ($Command.Type -eq "(WinRM) Script") {
                 $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential"
                 $OutputFileFileType = "csv"
             }
@@ -46,11 +41,31 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                 $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "csv"
             }
+            #elseif ($Command.Type -eq "(WinRM) CMD") {
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential"
+            #    $OutputFileFileType = "txt"
+            #}
+
+
+
+            #elseif ($Command.Type -eq "(RPC) PoSh") {
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
+            #    $OutputFileFileType = "csv"
+            #}
+            elseif (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Get-WmiObject")) {
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential | Select-Object -Property $($Command.Properties)"
+                $OutputFileFileType = "csv"
+            }
+            #elseif (($Command.Type -eq "(RPC) CMD") -and ($Command.Command -match "Invoke-WmiMethod")) {
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential"
+            #    $OutputFileFileType = "txt"
+            #}
+            
 
 
 
             elseif ($Command.Type -eq "(SMB) PoSh") {
-                $CommandString = "$($Command.Command)"
+                $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
 
                 $Username = $script:Credential.UserName
@@ -58,7 +73,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                 $UseCredential = "-u '$Username' -p '$Password'"
             }
             elseif ($Command.Type -eq "(SMB) WMI") {
-                $CommandString = "$($Command.Command)"
+                $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
 
                 $Username = $script:Credential.UserName
@@ -72,26 +87,11 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                 $Username = $script:Credential.UserName
                 $Password = $script:Credential.GetNetworkCredential().Password
                 $UseCredential = "-u '$Username' -p '$Password'"
-            }
-
-
-
-            elseif ($Command.Type -eq "(RPC) PoSh") {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
-                $OutputFileFileType = "csv"
             }
         }
         # No credentials provided
         else {
-            if (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Get-WmiObject")) {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
-                $OutputFileFileType = "csv"
-            }
-            elseif (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Invoke-WmiMethod")) {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
-                $OutputFileFileType = "txt"
-            }
-            elseif ($Command.Type -eq "(WinRM) Script") {
+            if ($Command.Type -eq "(WinRM) Script") {
                 $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
                 $OutputFileFileType = "csv"
             }
@@ -103,16 +103,35 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                 $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "csv"
             }
+            #elseif ($Command.Type -eq "(WinRM) CMD") {
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
+            #    $OutputFileFileType = "txt"
+            #}
+
+
+
+            #elseif ($Command.Type -eq "(RPC) PoSh") {
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
+            #    $OutputFileFileType = "csv"
+            #}
+            elseif (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Get-WmiObject")) {
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
+                $OutputFileFileType = "csv"
+            }
+            #elseif (($Command.Type -eq "(RPC) CMD") -and ($Command.Command -match "Invoke-WmiMethod")) {
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
+            #    $OutputFileFileType = "txt"
+            #}
 
 
 
 
             elseif ($Command.Type -eq "(SMB) PoSh") {
-                $CommandString = "$($Command.Command)"
+                $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
             }
             elseif ($Command.Type -eq "(SMB) WMI") {
-                $CommandString = "$($Command.Command)"
+                $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
             }
             elseif ($Command.Type -eq "(SMB) CMD") {
@@ -121,11 +140,6 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             }
 
 
-
-            elseif ($Command.Type -eq "(RPC) PoSh") {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
-                $OutputFileFileType = "csv"
-            }
         }
         $CommandName = $Command.Name
         $CommandType = $Command.Type
@@ -148,11 +162,34 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
 
                     Invoke-Expression -Command $CommandString ##| Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
-                } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential) | Out-Null
+                } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
             }
             elseif ( $OutputFileFileType -eq "txt" ) {
                 $OutputFilePath = "$CollectionSavedDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).txt"
                 Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
+
+
+                #if ($CommandType -eq "(WinRM) CMD") {
+                #    $JobsStarted    = $true
+                #    $CompileResults = $true
+                #    Start-Job -Name "PoSh-EasyWin: $((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)" -ScriptBlock {
+                #        param($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
+                #        # Available priority values: Low, BelowNormal, Normal, AboveNormal, High, RealTime
+                #        [System.Threading.Thread]::CurrentThread.Priority = 'High'
+                #        ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
+                #
+                #        # This is to catch Invoke-WmiMethod commands because these commands will drop files on the target that we want to retrieve then remove
+                #        Invoke-Expression -Command $CommandString
+                #        Start-Sleep -Seconds 1
+                #        Move-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
+                #            #Copy-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
+                #            #Remove-Item "\\$TargetComputer\c$\results.txt"
+                #    } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
+                #}
+
+
+
+
 
                 if (($CommandType -eq "(RPC) WMI") -and ($CommandString -match "Invoke-WmiMethod") ) {
                     $JobsStarted    = $true
@@ -169,7 +206,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         Move-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
                             #Copy-Item   "\\$TargetComputer\c$\results.txt" "$OutputFilePath"
                             #Remove-Item "\\$TargetComputer\c$\results.txt"
-                    } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential) | Out-Null
+                    } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
                 }
 
 
@@ -245,7 +282,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             
                         # Runs all other commands an saves them locally as a .txt file
                         Invoke-Expression -Command $CommandString | Out-File $OutputFilePath -Force
-                    } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential) | Out-Null
+                    } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
                 }
             }
 
@@ -279,17 +316,15 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $BuildChartButton.BackColor = 'LightGreen'
 
 
-            
-
     if ($CompileResults -eq $true) {
-        Compile-CsvFiles -LocationOfCSVsToCompile   "$($script:IndividualHostResults)\$CollectionName\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.csv" `
-                         -LocationToSaveCompiledCSV "$script:CollectedDataTimeStampDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+        Compile-CsvFiles -LocationOfCSVsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.csv" `
+                         -LocationToSaveCompiledCSV "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
 
-        Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:IndividualHostResults)\$CollectionName\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.xml" `
-                         -LocationToSaveCompiledXml "$script:CollectedDataTimeStampDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).xml"
+        Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.xml" `
+                         -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).xml"
 
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$CollectionSavedDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
     }
 
     # Removes any files have are empty

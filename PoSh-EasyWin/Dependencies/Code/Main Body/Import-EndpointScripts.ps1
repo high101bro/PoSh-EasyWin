@@ -1,5 +1,5 @@
 Function Import-EndpointScripts {
-    Foreach ($script in (Get-ChildItem -Path "$QueryCommandsAndScripts\Scripts - Endpoint" | Where-Object {$_.Extension -eq '.ps1'})) {
+    Foreach ($script in (Get-ChildItem -Path "$QueryCommandsAndScripts\Scripts-Host" | Where-Object {$_.Extension -eq '.ps1'})) {
         #if ($script -match 'processes' -or $script -match 'services') {
         #    $CollectionName = $script.basename
         #    $script:AllEndpointCommands += [PSCustomObject]@{ 

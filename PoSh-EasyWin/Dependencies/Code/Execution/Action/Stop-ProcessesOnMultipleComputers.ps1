@@ -21,7 +21,7 @@ function Stop-ProcessesOnMultipleComputers {
         | Out-GridView -Title 'Select Processes To Stop' -PassThru -OutVariable ProcessesToStop
     }
     elseif ($CollectNewProcessData) {
-        Generate-ComputerListToQuery
+        Generate-ComputerList
         
         if ($script:ComputerList.count -eq 0){
             [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect process data from. Alternatively, you can select a CSV file from a previous process collection.','Error: No Endpoints Selected')
@@ -51,8 +51,8 @@ function Stop-ProcessesOnMultipleComputers {
     $Computers = $ProcessesToStop | Select-Object -ExpandProperty PSComputerName -Unique | Sort-Object
 
     $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Domain Wide Process Stopper")
-    $ResultsListBox.Items.Clear()
+    $StatusListBox.Items.Add("Multi-Endpoint Process Stopper")
+    #Removed For Testing#$ResultsListBox.Items.Clear()
 
     foreach ($Computer in $Computers) {    
         $Session = $null
@@ -72,10 +72,9 @@ function Stop-ProcessesOnMultipleComputers {
             if ($Session) {
                 foreach ($Process in $ProcessesToStop){
                     if ($Process.PSComputerName -eq $Computer){
-                        $ProcessId   = $Process.id
                         $ProcessName = $Process.Name
-                        #Write-Host "  - Stopping:  $Process" -ForegroundColor Green
-                        $ResultsListBox.Items.Insert(1,"  - Stopping Process:  [Name]$($Process.Name)  [PID]$($Process.Id)")
+                        $ProcessId   = $Process.id
+                        $ResultsListBox.Items.Insert(1,"  - Stopping Process:  [Computer]$Computer  [Process]$($ProcessName)  [PID]$($ProcessId)")
                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { param(`$ProcessName,`$ProcessID); Stop-Process -Name $ProcessName | Where-Object {`$_.Id -eq $ProcessID}} -ArgumentList @(`$ProcessName,`$ProcessID) -Session `$Session"
                         Invoke-Command -ScriptBlock { param($ProcessName,$ProcessID); Stop-Process -Name $ProcessName -Force | Where-Object {$_.Id -eq $ProcessID}} -ArgumentList @($ProcessName,$ProcessID) -Session $Session
                     }

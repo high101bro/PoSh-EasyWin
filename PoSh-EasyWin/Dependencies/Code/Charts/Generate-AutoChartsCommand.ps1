@@ -18,7 +18,7 @@ function Generate-AutoChartsCommand {
     $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
 
     # Location of Uncompiled Results
-    $script:IndividualHostResults           = "$script:CollectedDataTimeStampDirectory\Individual Host Results"
+    $script:IndividualHostResults           = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
 
     # Removes a tab if it already exists... Since the same variable is used when spawning multi-series tabs whenever multiple tabs are created, the previous ones break and are unable to close 
     $AutoChartsTabControl.Controls.Remove($script:AutoChartsIndividualTabPage)            
@@ -27,7 +27,7 @@ function Generate-AutoChartsCommand {
         # If a filepath is provided it will select only that file and those 'younger' than it (derived by filename not file age)
         
         # This is the directory name of the file selected 
-        $FilePathDirSelected = $( (($script:AutoChartDataSourceProcessesFileName | Split-Path).split('\'))[-1] )
+        $FilePathDirSelected = $( (($script:AutoChartDataSourceCsvProcessesFileName | Split-Path).split('\'))[-1] )
 
         $inc = 0
         foreach ($dir in (gci -Path $CollectedDataDirectory)) {
@@ -875,7 +875,7 @@ script:Update-MultiSeriesChart
             Size        = @{ Width  = $FormScale * 285
                              Height = $FormScale * 22 }                
             Orientation   = "Horizontal"
-            TickFrequency = 1
+            TickFrequency = 1 
             TickStyle     = "TopLeft"
             Minimum       = 0
             Value         = 0 
@@ -1017,7 +1017,7 @@ script:Update-MultiSeriesChart
             Text   = "Investigate Difference"
             Size   = @{ Width  = $FormScale * 330
                         Height = $FormScale * 360 }
-            Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+            Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
             StartPosition = "CenterScreen"
             ControlBox = $true
         }

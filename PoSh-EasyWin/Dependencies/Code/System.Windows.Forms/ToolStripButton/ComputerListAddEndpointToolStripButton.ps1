@@ -12,7 +12,7 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
                            Height = $FormScale * 177 }
         StartPosition = "CenterScreen"
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     }
     #-----------------------------------------------------
     # ComputerList TreeView Popup Add Hostname/IP TextBox

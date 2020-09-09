@@ -11,7 +11,7 @@ $EnumerationPortScanPortQuickPickComboBoxItemsAddRange =@(
 )
 
 $EnumerationPortScanPortQuickPickComboBoxAdd_Click = {
-    $ResultsListBox.Items.Clear()
+    #Removed For Testing#$ResultsListBox.Items.Clear()
     if ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "N/A") { $ResultsListBox.Items.Add("") }        
     elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "Nmap Top 100 Ports") { $ResultsListBox.Items.Add("Will conduct a connect scan the top 100 ports as reported by nmap on each target.") }
     elseif ($EnumerationPortScanPortQuickPickComboBox.SelectedItem -match "Nmap Top 1000 Ports") { $ResultsListBox.Items.Add("Will conduct a connect scan the top 1000 ports as reported by nmap on each target.") }        

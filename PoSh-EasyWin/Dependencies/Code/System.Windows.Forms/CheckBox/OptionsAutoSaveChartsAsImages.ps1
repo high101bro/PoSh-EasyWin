@@ -1,4 +1,6 @@
 $OptionsAutoSaveChartsAsImagesAdd_Click = { 
+    $This.Text | Set-Content "$PoShHome\Settings\Auto Save Charts As Images.txt" -Force
+    
     if (-not $(Test-Path -Path $AutosavedChartsDirectory)) {
         New-Item -Type Directory -Path $AutosavedChartsDirectory -Force
     } 

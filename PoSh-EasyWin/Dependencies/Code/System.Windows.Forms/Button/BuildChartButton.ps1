@@ -154,7 +154,7 @@ $BuildChartButtonAdd_Click = {
             $AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
                 [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
             $ViewChartForm               = New-Object Windows.Forms.Form
-            $ViewChartForm.Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+            $ViewChartForm.Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
             $ViewChartForm.Width         = $FormScale * 740
             $ViewChartForm.Height        = $FormScale * 490
             $ViewChartForm.StartPosition = "CenterScreen"
@@ -236,7 +236,7 @@ $BuildChartButtonAdd_Click = {
             $ViewChartSelectionForm.height = $FormScale * 287 
             $ViewChartSelectionForm.StartPosition = "CenterScreen"
             $ViewChartSelectionForm.Text   = ”View Chart - Select Fields ”
-            $ViewChartSelectionForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+            $ViewChartSelectionForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
             $ViewChartSelectionForm.ControlBox = $true
             #$ViewChartSelectionForm.Add_Shown({$ViewChartSelectionForm.Activate()})
 

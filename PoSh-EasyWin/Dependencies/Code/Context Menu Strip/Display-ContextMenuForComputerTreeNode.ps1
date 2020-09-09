@@ -11,12 +11,12 @@ function Display-ContextMenuForComputerTreeNode {
     }
 
     #$ComputerListContextMenuStrip.Items.Add("$($Entry.Text)")
-    $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $script:ComputerListEndpointNameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
         Text      = "$($Entry.Text)"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
     }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+    $ComputerListContextMenuStrip.Items.Add($script:ComputerListEndpointNameToolStripLabel)
       
     #$comboBoxMenuItem = New-Object System.Windows.Forms.ToolStripComboBox
     #$comboBoxMenuItem.Items.Add('Option 1')
@@ -24,6 +24,28 @@ function Display-ContextMenuForComputerTreeNode {
     #$ComputerListContextMenuStrip.Items.Add($comboBoxMenuItem)
 
     $ComputerListContextMenuStrip.Items.Add('-')
+
+
+    $ComputerListRemoteDesktopToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text      = "Remote Desktop"
+        Add_CLick = $ComputerListRDPButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListRemoteDesktopToolStripButton)
+
+
+    $ComputerListPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text      = "PSSession"
+        Add_CLick = $ComputerListPSSessionButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionToolStripButton)
+
+
+    $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text      = "PSExec"
+        Add_CLick = $ComputerListPsExecButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
+
 
     $script:ExpandCollapseStatus = "Collapse"
     $ComputerListCollapseToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
@@ -123,24 +145,31 @@ function Display-ContextMenuForComputerTreeNode {
 
 
         $ComputerListPingToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "   - Ping"
+            Text      = "   - ICMP Ping"
             Add_CLick = $ComputerListPingToolStripButtonAdd_Click
         }
         $ComputerListContextMenuStrip.Items.Add($ComputerListPingToolStripButton)
-        
+                
+
+        $ComputerListRPCCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "   - RPC Port Check"
+            Add_CLick = $ComputerListRPCCheckToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListRPCCheckToolStripButton)
+
+
+        $ComputerListSMBCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "   - SMB Port Check"
+            Add_CLick = $ComputerListSMBCheckToolStripButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListSMBCheckToolStripButton)
+
 
         $ComputerListWinRMCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "   - WinRM Check"
             Add_CLick = $ComputerListWinRMCheckToolStripButtonAdd_Click
         }
         $ComputerListContextMenuStrip.Items.Add($ComputerListWinRMCheckToolStripButton)        
-        
-
-        $ComputerListRPCCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "   - RPC/DCOM Check"
-            Add_CLick = $ComputerListRPCCheckToolStripButtonAdd_Click
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListRPCCheckToolStripButton)
 
     $Entry.ContextMenuStrip = $ComputerListContextMenuStrip
 }

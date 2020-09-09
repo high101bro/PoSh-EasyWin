@@ -9,7 +9,7 @@ $EventViewerButtonAdd_Click = {
 
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Show Event Viewer:  $($script:ComputerTreeViewSelected)")
-                $ResultsListBox.Items.Clear()
+                #Removed For Testing#$ResultsListBox.Items.Clear()
 
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }

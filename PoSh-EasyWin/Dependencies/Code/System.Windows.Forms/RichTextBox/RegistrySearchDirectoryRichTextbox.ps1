@@ -17,3 +17,4 @@ $RegistrySearchDirectoryRichTextboxAdd_MouseHover = {
 +  Example: HKLM:\SYSTEM\CurrentControlSet\Services\
 "@ 
 }
+ 

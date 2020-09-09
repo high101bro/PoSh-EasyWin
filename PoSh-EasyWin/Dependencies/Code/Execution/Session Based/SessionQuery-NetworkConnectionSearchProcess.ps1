@@ -2,7 +2,7 @@ $CollectionCommandStartTime = Get-Date
 $CollectionName = "Network Connection - Search Process"
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
@@ -14,18 +14,16 @@ $NetworkConnectionSearchProcess = $NetworkConnectionSearchProcessRichTextbox.Lin
 $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Network Connection - Remote Process Name"
 
 #Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} -argumentlist $null,$null,$NetworkConnectionSearchProcess -Session $PSSession | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force                
-Invoke-Command -ScriptBlock {
-    param($QueryNetworkConnection,$NetworkConnectionSearchProcess)
-    Invoke-Expression -Command $QueryNetworkConnection
-    Query-NetworkConnection -ProcessName $NetworkConnectionSearchProcess
-} -argumentlist $QueryNetworkConnection,$NetworkConnectionSearchProcess -Session $PSSession `
+Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
+-ArgumentList @($null,$null,$null,$NetworkConnectionSearchProcess) `
+-Session $PSSession `
 | Set-Variable SessionData
 $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
 $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
 Remove-Variable -Name SessionData -Force
 
-$ResultsListBox.Items.RemoveAt(1)
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$ResultsListBox.Items.RemoveAt(0)
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarQueriesProgressBar.Value += 1

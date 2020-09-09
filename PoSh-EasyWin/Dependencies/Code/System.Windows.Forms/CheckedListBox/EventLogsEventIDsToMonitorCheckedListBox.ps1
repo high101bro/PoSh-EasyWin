@@ -12,6 +12,7 @@ $EventLogsEventIDsToMonitorCheckedListBoxAdd_Click = {
         )
     # Adds the data from PSObject
     $ResultsListBox.Items.Clear()
+    
     foreach ($item in $Display) {
         $ResultsListBox.Items.Add($item)
     }

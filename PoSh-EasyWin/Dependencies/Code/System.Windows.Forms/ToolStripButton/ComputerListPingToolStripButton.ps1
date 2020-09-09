@@ -6,7 +6,7 @@ $ComputerListPingToolStripButtonAdd_Click = {
     }
     else {
         if (Verify-Action -Title "Verification: Ping Test" -Question "Conduct a Ping test to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
-            Check-Connection -CheckType "Ping" -ComputerTreeViewSelected $script:ComputerTreeViewSelected -MessageTrue "Able to Ping" -MessageFalse "Unable to Ping" 
+            Check-Connection -CheckType "Ping" -MessageTrue "Able to Ping" -MessageFalse "Unable to Ping" 
         }
         else {
             [system.media.systemsounds]::Exclamation.play()

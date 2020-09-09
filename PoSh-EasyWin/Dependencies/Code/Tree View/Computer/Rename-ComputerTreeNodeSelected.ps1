@@ -44,7 +44,7 @@ function Rename-ComputerTreeNodeSelected {
         Save-HostData
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Rename Selection:  $($ComputerTreeNodeToRename.Count) Hosts")
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Add("The computer has been renamed to $($script:ComputerTreeNodeRenamePopupTextBox.Text)")
     }
     $ComputerTreeNodeRenamePopup.close()

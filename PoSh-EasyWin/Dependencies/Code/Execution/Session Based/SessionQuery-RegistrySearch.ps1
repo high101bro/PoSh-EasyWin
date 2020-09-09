@@ -1,132 +1,78 @@
+if     ($RegistryKeyNameCheckbox.checked)   { $CollectionName = "Registry Search - Key Name" }
+elseif ($RegistryValueNameCheckbox.checked) { $CollectionName = "Registry Search - Value Name" }
+elseif ($RegistryValueDataCheckbox.checked) { $CollectionName = "Registry Search - Value Data" }
+
+
 $CollectionCommandStartTime = Get-Date
-$CollectionName = "Registry Search"
 $StatusListBox.Items.Clear()
-$StatusListBox.Items.Add("Executing: $CollectionName")
-$PoShEasyWin.Refresh()
+$StatusListBox.Items.Add("Query: $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+ 
 
 $script:ProgressBarEndpointsProgressBar.Value   = 0
 
-$RegistrySearchDirectoryList = ($script:RegistrySearchDirectoryRichTextbox.Text).split("`r`n")
-$RegistryKeyNameSearchList   = ($script:RegistryKeyNameSearchRichTextbox.Text).split("`r`n")
-$RegistryValueNameSearchList = ($script:RegistryValueNameSearchRichTextbox.Text).split("`r`n")
-$RegistryValueDataSearchList = ($script:RegistryValueDataSearchRichTextbox.Text).split("`r`n")
+$OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName"
+
 
 $RegistrySearchDirectory = @()
-foreach ($Directory in $RegistrySearchDirectoryList ){ $RegistrySearchDirectory += $Directory | Where {$_ -ne ''} }
+foreach ($Directory in $($script:RegistrySearchDirectoryRichTextbox.Text).split("`r`n")){ $RegistrySearchDirectory += $Directory.trim() | Where {$_ -ne ''} }
 
 $SearchRegistryKeyName = @()
-foreach ($KeyName in $RegistryKeyNameSearchList ){ $SearchRegistryKeyName += $KeyName | Where {$_ -ne ''} }
+foreach ($KeyName in $($script:RegistryKeyNameSearchRichTextbox.Text).split("`r`n")){ $SearchRegistryKeyName += $KeyName.trim() | Where {$_ -ne ''} }
 
 $SearchRegistryValueName = @()
-foreach ($ValueName in $RegistryValueNameSearchList ){ $SearchRegistryValueName += $ValueName | Where {$_ -ne ''} }
+foreach ($ValueName in $($script:RegistryValueNameSearchRichTextbox.Text).split("`r`n")){ $SearchRegistryValueName += $ValueName.trim() | Where {$_ -ne ''} }
 
 $SearchRegistryValueData = @()
-foreach ($ValueData in $RegistryValueDataSearchList ){ $SearchRegistryValueData += $ValueData | Where {$_ -ne ''} }
-
-$CollectionCommandStartTime = Get-Date
-
+foreach ($ValueData in $($script:RegistryValueDataSearchRichTextbox.Text).split("`r`n")){ $SearchRegistryValueData += $ValueData.trim() | Where {$_ -ne ''} }
 
 
 if ($RegistryKeyNameCheckbox.checked)   { 
-    $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName - Key Name")
-    $PoShEasyWin.Refresh()
-
-    $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Registry Search - Key Name"                   
+    $CountCommandQueries++
     if ($RegistrySearchRecursiveCheckbox.checked) {
-        Invoke-Command -ScriptBlock {
-            param($SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryKeyName)
-            Invoke-Expression $SearchRegistryFunctionString
-            Search-Registry -Path $RegistrySearchDirectory -Recurse -SearchRegex $SearchRegistryKeyName -KeyName -ErrorAction SilentlyContinue
-        } -ArgumentList $SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryKeyName -Session $PSSession `
-        | Set-Variable SessionData
-        $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
-        $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
-        Remove-Variable -Name SessionData -Force
+        $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryKeyName,$true,$false,$false)
     }
     else {
-        Invoke-Command -ScriptBlock {
-            param($SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryKeyName)
-            Invoke-Expression $SearchRegistryFunctionString
-            Search-Registry -Path $RegistrySearchDirectory -SearchRegex $SearchRegistryKeyName -KeyName -ErrorAction SilentlyContinue
-        } -ArgumentList $SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryKeyName -Session $PSSession `
-        | Set-Variable SessionData
-        $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
-        $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
-        Remove-Variable -Name SessionData -Force
+        $SearchRegistryCommand = @($RegistrySearchDirectory,$false,$SearchRegistryKeyName,$true,$false,$false)
     }
-    $ResultsListBox.Items.RemoveAt(1)
-    $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName - Key Name")
-    $PoShEasyWin.Refresh()
 }
-
-
-
 if ($RegistryValueNameCheckbox.checked) { 
-    $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName - Value Name")
-    $PoShEasyWin.Refresh()
-
-    $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Registry Search - Value Name"
+    $CountCommandQueries++
     if ($RegistrySearchRecursiveCheckbox.checked) {
-        Invoke-Command -ScriptBlock {
-            param($SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryValueName)
-            Invoke-Expression $SearchRegistryFunctionString
-            Search-Registry -Path $RegistrySearchDirectory -Recurse -SearchRegex $SearchRegistryValueName -ValueName -ErrorAction SilentlyContinue
-        } -ArgumentList $SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryValueName -Session $PSSession `
-        | Set-Variable SessionData
-        $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
-        $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
-        Remove-Variable -Name SessionData -Force
+        $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryValueName,$false,$true,$false)
     }
     else {
-        Invoke-Command -ScriptBlock {
-            param($SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryValueName)
-            Invoke-Expression $SearchRegistryFunctionString
-            Search-Registry -Path $RegistrySearchDirectory -SearchRegex $SearchRegistryValueName -ValueName -ErrorAction SilentlyContinue
-        } -ArgumentList $SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryValueName -Session $PSSession `
-        | Set-Variable SessionData
-        $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
-        $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
-        Remove-Variable -Name SessionData -Force
+        $SearchRegistryCommand = @($RegistrySearchDirectory,$false,$SearchRegistryValueName,$false,$true,$false)
     }
-    $ResultsListBox.Items.RemoveAt(1)
-    $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName - Value Name")
-    $PoShEasyWin.Refresh()    
 }
-
-
-
 if ($RegistryValueDataCheckbox.checked) { 
-    $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName - Value Data")
-    $PoShEasyWin.Refresh()
-
-    $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Registry Search - Value Data"
-    if ($RegistrySearchRecursiveCheckbox.checked) {       
-        Invoke-Command -ScriptBlock {
-            param($SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryValueData)
-            Invoke-Expression $SearchRegistryFunctionString
-            Search-Registry -Path $RegistrySearchDirectory -Recurse -SearchRegex $SearchRegistryValueData -ValueData -ErrorAction SilentlyContinue
-        } -ArgumentList $SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryValueData -Session $PSSession `
-        | Set-Variable SessionData
-        $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
-        $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
-        Remove-Variable -Name SessionData -Force
+    $CountCommandQueries++
+    if ($RegistrySearchRecursiveCheckbox.checked) {
+        $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryValueData,$false,$false,$true)
     }
     else {
-        Invoke-Command -ScriptBlock {
-            param($SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryValueData)
-            Invoke-Expression $SearchRegistryFunctionString
-            Search-Registry -Path $RegistrySearchDirectory -SearchRegex $SearchRegistryValueData -ValueData -ErrorAction SilentlyContinue
-        } -ArgumentList $SearchRegistryFunctionString,$RegistrySearchDirectory,$SearchRegistryValueData -Session $PSSession `
-        | Set-Variable SessionData
-        $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
-        $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
-        Remove-Variable -Name SessionData -Force
+        $SearchRegistryCommand = @($RegistrySearchDirectory,$false,$SearchRegistryValueData,$false,$false,$true)
     }
-    $ResultsListBox.Items.RemoveAt(1)
-    $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName - Value Data")
-    $PoShEasyWin.Refresh()    
 }
 
+
+Invoke-Command -ScriptBlock $QueryRegistryFunction `
+-ArgumentList $SearchRegistryCommand `
+-Session $PSSession `
+| Set-Variable SessionData
+
+
+Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$QueryRegistryFunction -ArgumentList `$SearchRegistryCommand -Session `$PSSession"
+###$ResultsListBox.Items.Add("$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+
+
+$SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
+$SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
+
+
+$ResultsListBox.Items.RemoveAt(0)
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$PoShEasyWin.Refresh() 
 
 $script:ProgressBarQueriesProgressBar.Value   += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count

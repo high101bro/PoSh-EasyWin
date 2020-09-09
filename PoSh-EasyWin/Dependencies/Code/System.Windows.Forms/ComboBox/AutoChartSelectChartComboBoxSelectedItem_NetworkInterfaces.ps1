@@ -14,7 +14,7 @@ $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Pro
     AutoScroll    = $True
 }
 $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTab01)
- 
+  
 # Searches though the all Collection Data Directories to find files that match
 $script:ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
 
@@ -24,40 +24,40 @@ $script:AutoChartsProgressBar.Maximum = 1
 $script:AutoChartsProgressBar.Value   = 0
 $script:AutoChartsProgressBar.Update()
 
-$script:AutoChart01CSVFileMatch = @()
+$script:AutoChart01NetworkInterfacesCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
-    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Network Settings') { $script:AutoChart01CSVFileMatch += $CSVFile } }
+    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Network Settings') { $script:AutoChart01NetworkInterfacesCSVFileMatch += $CSVFile } }
 } 
-$script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01CSVFileMatch | Select-Object -Last 1
-$script:AutoChartDataSource = $null
-$script:AutoChartDataSource = Import-Csv $script:AutoChartCSVFileMostRecentCollection
+$script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01NetworkInterfacesCSVFileMatch | Select-Object -Last 1
+$script:AutoChartDataSourceCsv = $null
+$script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartCSVFileMostRecentCollection
 
 $script:AutoChartsProgressBar.Value = 1
 $script:AutoChartsProgressBar.Update()
 
 
 function Close-AllOptions {
-    $script:AutoChart01OptionsButton.Text = 'Options v'
-    $script:AutoChart01.Controls.Remove($script:AutoChart01ManipulationPanel)
-    $script:AutoChart02OptionsButton.Text = 'Options v'
-    $script:AutoChart02.Controls.Remove($script:AutoChart02ManipulationPanel)
-    $script:AutoChart03OptionsButton.Text = 'Options v'
-    $script:AutoChart03.Controls.Remove($script:AutoChart03ManipulationPanel)
-    $script:AutoChart04OptionsButton.Text = 'Options v'
-    $script:AutoChart04.Controls.Remove($script:AutoChart04ManipulationPanel)
-    $script:AutoChart05OptionsButton.Text = 'Options v'
-    $script:AutoChart05.Controls.Remove($script:AutoChart05ManipulationPanel)
-    $script:AutoChart06OptionsButton.Text = 'Options v'
-    $script:AutoChart06.Controls.Remove($script:AutoChart06ManipulationPanel)
-    $script:AutoChart07OptionsButton.Text = 'Options v'
-    $script:AutoChart07.Controls.Remove($script:AutoChart07ManipulationPanel)
-    $script:AutoChart08OptionsButton.Text = 'Options v'
-    $script:AutoChart08.Controls.Remove($script:AutoChart08ManipulationPanel)
-    $script:AutoChart09OptionsButton.Text = 'Options v'
-    $script:AutoChart09.Controls.Remove($script:AutoChart09ManipulationPanel)
-    $script:AutoChart10OptionsButton.Text = 'Options v'
-    $script:AutoChart10.Controls.Remove($script:AutoChart10ManipulationPanel)
+    $script:AutoChart01NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart01NetworkInterfaces.Controls.Remove($script:AutoChart01NetworkInterfacesManipulationPanel)
+    $script:AutoChart02NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart02NetworkInterfaces.Controls.Remove($script:AutoChart02NetworkInterfacesManipulationPanel)
+    $script:AutoChart03NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart03NetworkInterfaces.Controls.Remove($script:AutoChart03NetworkInterfacesManipulationPanel)
+    $script:AutoChart04NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart04NetworkInterfaces.Controls.Remove($script:AutoChart04NetworkInterfacesManipulationPanel)
+    $script:AutoChart05NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart05NetworkInterfaces.Controls.Remove($script:AutoChart05NetworkInterfacesManipulationPanel)
+    $script:AutoChart06NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart06NetworkInterfaces.Controls.Remove($script:AutoChart06NetworkInterfacesManipulationPanel)
+    $script:AutoChart07NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart07NetworkInterfaces.Controls.Remove($script:AutoChart07NetworkInterfacesManipulationPanel)
+    $script:AutoChart08NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart08NetworkInterfaces.Controls.Remove($script:AutoChart08NetworkInterfacesManipulationPanel)
+    $script:AutoChart09NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart09NetworkInterfaces.Controls.Remove($script:AutoChart09NetworkInterfacesManipulationPanel)
+    $script:AutoChart10NetworkInterfacesOptionsButton.Text = 'Options v'
+    $script:AutoChart10NetworkInterfaces.Controls.Remove($script:AutoChart10NetworkInterfacesManipulationPanel)
 }
 
 ### Main Label at the top
@@ -71,48 +71,195 @@ $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property 
     TextAlign = 'MiddleCenter' 
 }
 
-### Import select file to view information
-$AutoChartSelectFileButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = 'Select File To Analyze'
-    Location = @{ X = $FormScale * 5
-                  Y = $FormScale * 5 }
-    Size   = @{ Width  = $FormScale * 200
-                Height = $FormScale * 25 }
-}
-CommonButtonSettings -Button $AutoChartSelectFileButton
+
+
+
+
+
+
+
+
+
 $script:AutoChartOpenResultsOpenFileDialogfilename = $null
-$AutoChartSelectFileButton.Add_Click({
-    [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
-    $AutoChartOpenResultsOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog
-    $AutoChartOpenResultsOpenFileDialog.Title            = "Open XML Data"
-    $AutoChartOpenResultsOpenFileDialog.InitialDirectorY = $FormScale * "$(if (Test-Path $($CollectionSavedDirectoryTextBox.Text)) {$($CollectionSavedDirectoryTextBox.Text)} else {$CollectedDataDirectory})"
-    $AutoChartOpenResultsOpenFileDialog.filter           = "Results (*.txt;*.csv;*.xlsx;*.xls)|*.txt;*.csv;*.xls;*.xlsx|Text (*.txt)|*.txt|CSV (*.csv)|*.csv|Excel (*.xlsx)|*.xlsx|Excel (*.xls)|*.xls|All files (*.*)|*.*"
-    $AutoChartOpenResultsOpenFileDialog.ShowDialog() | Out-Null
-    $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
-    $script:AutoChartOpenResultsOpenFileDialogfilename = $AutoChartOpenResultsOpenFileDialog.filename
-    $script:AutoChartDataSource = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
 
-    # This variable is used elsewhere
-    $script:AutoChartDataSourceFileName = $AutoChartOpenResultsOpenFileDialog.filename
-
-    Generate-AutoChart01
-    Generate-AutoChart02
-    Generate-AutoChart03
-    Generate-AutoChart04
-    Generate-AutoChart05
-    Generate-AutoChart06
-    Generate-AutoChart07
-    Generate-AutoChart08
-    Generate-AutoChart09
-    Generate-AutoChart10
-})
-$AutoChartSelectFileButton.Add_MouseHover = {
-    Show-ToolTip -Title "View Results" -Icon "Info" -Message @"
-+  Select a file to view Network Interface Info.
-"@ 
+$AutoChartsUpdateChartsOptionsPanel = New-Object System.Windows.Forms.Panel -Property @{
+    text   = 0
+    Left   = $FormScale * 5
+    Top    = 0
+    Autosize = $true
 }
+            $AutoChartPullNewDataFromChartsRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text   = "Update From Existing Charts' Endpoints"
+                Left   = $FormScale * 5
+                Top    = 0
+                Width  = $FormScale * 225
+                Height = $FormScale * 15
+                Checked = $true
+            }
+            $AutoChartsUpdateChartsOptionsPanel.Controls.Add($AutoChartPullNewDataFromChartsRadioButton)
 
-$script:AutoChartsIndividualTab01.Controls.AddRange(@($AutoChartSelectFileButton,$script:AutoChartsMainLabel01))
+
+            $AutoChartPullNewDataCheckBoxedRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text    = 'Update From CheckBoxed Endpoints'
+                Left    = $FormScale * 5
+                Top     = $AutoChartPullNewDataFromChartsRadioButton.Top + $AutoChartPullNewDataFromChartsRadioButton.Height
+                Width   = $FormScale * 225
+                Height  = $FormScale * 15
+            }
+            $AutoChartsUpdateChartsOptionsPanel.Controls.Add($AutoChartPullNewDataCheckBoxedRadioButton)
+
+
+            $AutoChartSelectFileRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text   = 'Update From An Existing Selected File'
+                Left   = $FormScale * 5
+                Top    = $AutoChartPullNewDataCheckBoxedRadioButton.Top + $AutoChartPullNewDataCheckBoxedRadioButton.Height
+                Width  = $FormScale * 225
+                Height = $FormScale * 15
+            }
+            $AutoChartsUpdateChartsOptionsPanel.Controls.Add($AutoChartSelectFileRadioButton)
+
+$script:AutoChartsIndividualTab01.Controls.Add($AutoChartsUpdateChartsOptionsPanel)
+
+
+$AutoChartsUpdateChartsProtocolPanel = New-Object System.Windows.Forms.Panel -Property @{
+    text   = 0
+    Left   = $AutoChartsUpdateChartsOptionsPanel.Left + $AutoChartsUpdateChartsOptionsPanel.Width
+    Top    = $AutoChartsUpdateChartsOptionsPanel.Top
+    Width  = $FormScale * 65
+    Height = $AutoChartsUpdateChartsOptionsPanel.Height
+}
+            $AutoChartProtocolWinRMRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text   = "WinRM"
+                Left   = 0
+                Top    = 0
+                Width  = $FormScale * 65
+                Height = $FormScale * 15
+                Checked = $true
+                Add_Click = {
+                    $AutoChartPullNewDataEnrichedCheckBox.enabled = $true
+                }
+
+            }
+            $AutoChartsUpdateChartsProtocolPanel.Controls.Add($AutoChartProtocolWinRMRadioButton)
+
+
+            $AutoChartProtocolRPCRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text    = 'RPC'
+                Left    = $AutoChartProtocolWinRMRadioButton.Left
+                Top     = $AutoChartProtocolWinRMRadioButton.Top + $AutoChartProtocolWinRMRadioButton.Height
+                Width   = $FormScale * 65
+                Height  = $FormScale * 15
+                Add_Click = {
+                    $AutoChartPullNewDataEnrichedCheckBox.checked = $false
+                    $AutoChartPullNewDataEnrichedCheckBox.enabled = $false
+                }
+            }
+            $AutoChartsUpdateChartsProtocolPanel.Controls.Add($AutoChartProtocolRPCRadioButton)
+
+
+            $AutoChartProtocolSMBRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text   = 'SMB'
+                Left   = $AutoChartProtocolWinRMRadioButton.Left
+                Top    = $AutoChartProtocolRPCRadioButton.Top + $AutoChartProtocolRPCRadioButton.Height
+                Width  = $FormScale * 65
+                Height = $FormScale * 15
+                Add_Click = {
+                    $AutoChartPullNewDataEnrichedCheckBox.checked = $false
+                    $AutoChartPullNewDataEnrichedCheckBox.enabled = $false
+                }
+            }
+            $AutoChartsUpdateChartsProtocolPanel.Controls.Add($AutoChartProtocolSMBRadioButton)
+$script:AutoChartsIndividualTab01.Controls.Add($AutoChartsUpdateChartsProtocolPanel)
+
+
+
+
+$AutoChartPullNewDataButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = 'Update Charts'
+    Left   = $AutoChartsUpdateChartsProtocolPanel.Left + $AutoChartsUpdateChartsProtocolPanel.Width
+    Top    = $FormScale * 5
+    Width  = $FormScale * 100
+    Height = $FormScale * 22
+}
+ $script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataButton)
+CommonButtonSettings -Button $AutoChartPullNewDataButton
+$AutoChartPullNewDataButton.Add_Click({
+
+    #====================
+    # First Radio Button
+    #====================
+    if ($AutoChartPullNewDataFromChartsRadioButton.checked){
+        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+
+        if ($ChartComputerList.count -eq 0) {
+            [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-ACME')
+        }
+        else {
+            $ScriptBlockProgressBarInput = { Update-AutoChartsNetworkInterfaces -ComputerNameList $ChartComputerList }
+            Launch-ProgressBarForm -FormTitle 'Progress Bar' -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
+        }
+    }
+
+    #=====================
+    # Second Radio Button
+    #=====================
+    if ($AutoChartPullNewDataCheckBoxedRadioButton.checked) {
+        Generate-ComputerList
+
+        if ($script:ComputerList.count -eq 0) {
+            [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints','PoSh-EasyWin')
+        }
+        else {
+            $ScriptBlockProgressBarInput = { Update-AutoChartsNetworkInterfaces -ComputerNameList $script:ComputerList }
+            Launch-ProgressBarForm -FormTitle 'Progress Bar' -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
+        }
+    }
+
+    #====================
+    # Thrid Radio Button
+    #====================
+    if ($AutoChartSelectFileRadioButton.checked) {
+        [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+        $AutoChartOpenResultsOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog
+        $AutoChartOpenResultsOpenFileDialog.Title            = "Open XML Data"
+        $AutoChartOpenResultsOpenFileDialog.InitialDirectory = "$(if (Test-Path $($CollectionSavedDirectoryTextBox.Text)) {$($CollectionSavedDirectoryTextBox.Text)} else {$CollectedDataDirectory})"
+        $AutoChartOpenResultsOpenFileDialog.filter           = "Results (*.txt;*.csv;*.xlsx;*.xls)|*.txt;*.csv;*.xls;*.xlsx|Text (*.txt)|*.txt|CSV (*.csv)|*.csv|Excel (*.xlsx)|*.xlsx|Excel (*.xls)|*.xls|All files (*.*)|*.*"
+        $AutoChartOpenResultsOpenFileDialog.ShowDialog() | Out-Null
+        $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
+        $script:AutoChartOpenResultsOpenFileDialogfilename = $AutoChartOpenResultsOpenFileDialog.filename
+        $script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
+    
+        $script:AutoChartDataSourceCsvFileName = $AutoChartOpenResultsOpenFileDialog.filename
+    }
+
+    Generate-AutoChart01NetworkInterfaces
+    Generate-AutoChart02NetworkInterfaces
+    Generate-AutoChart03NetworkInterfaces
+    Generate-AutoChart04NetworkInterfaces
+    Generate-AutoChart05NetworkInterfaces
+    Generate-AutoChart06NetworkInterfaces
+    Generate-AutoChart07NetworkInterfaces
+    Generate-AutoChart08NetworkInterfaces
+    Generate-AutoChart09NetworkInterfaces
+    Generate-AutoChart10NetworkInterfaces
+})
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChartsMainLabel01)
+
+
+$AutoChartPullNewDataEnrichedCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text    = 'Enriched (Slower)'
+    Left    = $AutoChartPullNewDataButton.Left
+    Top     = $AutoChartPullNewDataButton.Top + $AutoChartPullNewDataButton.Height
+    Width   = $FormScale * 125
+    Height  = $FormScale * 22
+    Checked = $true
+}
+$script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataEnrichedCheckBox)
+
+
+
+
+
 
 function AutoChartOpenDataInShell {
     if ($script:AutoChartOpenResultsOpenFileDialogfilename) { $ViewImportResults = $script:AutoChartOpenResultsOpenFileDialogfilename -replace '.csv','.xml' }
@@ -145,11 +292,11 @@ function AutoChartOpenDataInShell {
 
 
 ##############################################################################################
-# AutoChart01
+# AutoChart01NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart01 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+$script:AutoChart01NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
     Location = @{ X = $FormScale * 5
                   Y = $FormScale * 50 }
     Size     = @{ Width  = $FormScale * 560
@@ -159,117 +306,117 @@ $script:AutoChart01 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','20', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart01.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart01NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart01Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart01NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
 }
-$script:AutoChart01.Titles.Add($script:AutoChart01Title)
+$script:AutoChart01NetworkInterfaces.Titles.Add($script:AutoChart01NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart01Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart01Area.Name        = 'Chart Area'
-$script:AutoChart01Area.AxisX.Title = 'Hosts'
-$script:AutoChart01Area.AxisX.Interval          = 1
-$script:AutoChart01Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart01Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart01Area.Area3DStyle.Inclination = 75
-$script:AutoChart01.ChartAreas.Add($script:AutoChart01Area)
+$script:AutoChart01NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart01NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart01NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart01NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart01NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart01NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart01NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart01NetworkInterfaces.ChartAreas.Add($script:AutoChart01NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart01.Series.Add("Interface Alias")
-$script:AutoChart01.Series["Interface Alias"].Enabled           = $True
-$script:AutoChart01.Series["Interface Alias"].BorderWidth       = 1
-$script:AutoChart01.Series["Interface Alias"].IsVisibleInLegend = $false
-$script:AutoChart01.Series["Interface Alias"].Chartarea         = 'Chart Area'
-$script:AutoChart01.Series["Interface Alias"].Legend            = 'Legend'
-$script:AutoChart01.Series["Interface Alias"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart01.Series["Interface Alias"]['PieLineColor']   = 'Black'
-$script:AutoChart01.Series["Interface Alias"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart01.Series["Interface Alias"].ChartType         = 'Column'
-$script:AutoChart01.Series["Interface Alias"].Color             = 'Red'
+$script:AutoChart01NetworkInterfaces.Series.Add("Interface Alias")
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Enabled           = $True
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].BorderWidth       = 1
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].IsVisibleInLegend = $false
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Chartarea         = 'Chart Area'
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Legend            = 'Legend'
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"]['PieLineColor']   = 'Black'
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].ChartType         = 'Column'
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Color             = 'Red'
 
-        function Generate-AutoChart01 {
-            $script:AutoChart01CsvFileHosts      = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart01UniqueDataFields  = $script:AutoChartDataSource | Select-Object -Property 'InterfaceAlias' | Sort-Object -Property 'InterfaceAlias' -Unique
+        function Generate-AutoChart01NetworkInterfaces {
+            $script:AutoChart01NetworkInterfacesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart01NetworkInterfacesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'InterfaceAlias' | Sort-Object -Property 'InterfaceAlias' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart01UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart01NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart01.Series["Interface Alias"].Points.Clear()
+            $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.Clear()
 
-            if ($script:AutoChart01UniqueDataFields.count -gt 0){
-                $script:AutoChart01Title.ForeColor = 'Black'
-                $script:AutoChart01Title.Text = "Interface Alias"
+            if ($script:AutoChart01NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart01NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart01NetworkInterfacesTitle.Text = "Interface Alias"
 
                 # If the Second field/Y Axis equals PSComputername, it counts it
-                $script:AutoChart01OverallDataResults = @()
+                $script:AutoChart01NetworkInterfacesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart01UniqueDataFields) {
+                foreach ($DataField in $script:AutoChart01NetworkInterfacesUniqueDataFields) {
                     $Count        = 0
-                    $script:AutoChart01CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSource ) {
+                    $script:AutoChart01NetworkInterfacesCsvComputers = @()
+                    foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.InterfaceAlias) -eq $DataField.InterfaceAlias) {
                             $Count += 1
-                            if ( $script:AutoChart01CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01CsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart01NetworkInterfacesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01NetworkInterfacesCsvComputers += $($Line.PSComputerName) }
                         }
                     }
-                    $script:AutoChart01UniqueCount = $script:AutoChart01CsvComputers.Count
-                    $script:AutoChart01DataResults = New-Object PSObject -Property @{
+                    $script:AutoChart01NetworkInterfacesUniqueCount = $script:AutoChart01NetworkInterfacesCsvComputers.Count
+                    $script:AutoChart01NetworkInterfacesDataResults = New-Object PSObject -Property @{
                         DataField   = $DataField
                         TotalCount  = $Count
-                        UniqueCount = $script:AutoChart01UniqueCount
-                        Computers   = $script:AutoChart01CsvComputers 
+                        UniqueCount = $script:AutoChart01NetworkInterfacesUniqueCount
+                        Computers   = $script:AutoChart01NetworkInterfacesCsvComputers 
                     }           
-                    $script:AutoChart01OverallDataResults += $script:AutoChart01DataResults
+                    $script:AutoChart01NetworkInterfacesOverallDataResults += $script:AutoChart01NetworkInterfacesDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount) }
-                $script:AutoChart01TrimOffLastTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))
-                $script:AutoChart01TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))
+                $script:AutoChart01NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount) }
+                $script:AutoChart01NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart01NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart01Title.ForeColor = 'Red'
-                $script:AutoChart01Title.Text = "Interface Alias`n
+                $script:AutoChart01NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart01NetworkInterfacesTitle.Text = "Interface Alias`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart01
+        Generate-AutoChart01NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart01OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart01.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart01.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart01NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart01NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01OptionsButton
-$script:AutoChart01OptionsButton.Add_Click({  
-    if ($script:AutoChart01OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart01OptionsButton.Text = 'Options ^'
-        $script:AutoChart01.Controls.Add($script:AutoChart01ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart01NetworkInterfacesOptionsButton
+$script:AutoChart01NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart01NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart01NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart01NetworkInterfaces.Controls.Add($script:AutoChart01NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart01OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart01OptionsButton.Text = 'Options v'
-        $script:AutoChart01.Controls.Remove($script:AutoChart01ManipulationPanel)
+    elseif ($script:AutoChart01NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart01NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart01NetworkInterfaces.Controls.Remove($script:AutoChart01NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart01OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart01)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart01NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart01NetworkInterfaces)
 
 
-$script:AutoChart01ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart01NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart01.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart01.Size.Width
+                     Y = $script:AutoChart01NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart01NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -278,7 +425,7 @@ $script:AutoChart01ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart01TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart01NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -288,7 +435,7 @@ $script:AutoChart01TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart01TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -299,22 +446,22 @@ $script:AutoChart01TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart01TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))                
-    $script:AutoChart01TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart01TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart01TrimOffFirstTrackBarValue = $script:AutoChart01TrimOffFirstTrackBar.Value
-        $script:AutoChart01TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart01TrimOffFirstTrackBar.Value)"
-        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
-        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
+    $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart01NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.Clear()
+        $script:AutoChart01NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     })
-    $script:AutoChart01TrimOffFirstGroupBox.Controls.Add($script:AutoChart01TrimOffFirstTrackBar)
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01TrimOffFirstGroupBox)
+    $script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart01NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart01TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart01NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart01TrimOffFirstGroupBox.Location.X + $script:AutoChart01TrimOffFirstGroupBox.Size.Width + $($FormScale * 8)
-                     Y = $script:AutoChart01TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 8)
+                     Y = $script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                      Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -322,7 +469,7 @@ $script:AutoChart01TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart01TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart01NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -332,151 +479,151 @@ $script:AutoChart01TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart01TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart01TrimOffLastTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))
-    $script:AutoChart01TrimOffLastTrackBar.Value         = $($script:AutoChart01OverallDataResults.count)
-    $script:AutoChart01TrimOffLastTrackBarValue   = 0
-    $script:AutoChart01TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart01TrimOffLastTrackBarValue = $($script:AutoChart01OverallDataResults.count) - $script:AutoChart01TrimOffLastTrackBar.Value
-        $script:AutoChart01TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart01OverallDataResults.count) - $script:AutoChart01TrimOffLastTrackBar.Value)"
-        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
-        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
+    $script:AutoChart01NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart01NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart01NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart01NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart01NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart01NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart01NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart01NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart01NetworkInterfacesOverallDataResults.count) - $script:AutoChart01NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart01NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart01NetworkInterfacesOverallDataResults.count) - $script:AutoChart01NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.Clear()
+        $script:AutoChart01NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     })
-$script:AutoChart01TrimOffLastGroupBox.Controls.Add($script:AutoChart01TrimOffLastTrackBar)
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01TrimOffLastGroupBox)
+$script:AutoChart01NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart01NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart01NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart01ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart01NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart01TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart01TrimOffFirstGroupBox.Location.Y + $script:AutoChart01TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart01NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart01ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart01.Series["Interface Alias"].ChartType = $script:AutoChart01ChartTypeComboBox.SelectedItem
-#    $script:AutoChart01.Series["Interface Alias"].Points.Clear()
-#    $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
+$script:AutoChart01NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].ChartType = $script:AutoChart01NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.Clear()
+#    $script:AutoChart01NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
 })
-$script:AutoChart01ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart01ChartTypesAvailable) { $script:AutoChart01ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01ChartTypeComboBox)
+$script:AutoChart01NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart01NetworkInterfacesChartTypesAvailable) { $script:AutoChart01NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart01NetworkInterfacesChartTypeComboBox)
 
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart013DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart01ChartTypeComboBox.Location.X + $script:AutoChart01ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart01ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart01NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart01NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart01NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart013DToggleButton
-$script:AutoChart013DInclination = 0
-$script:AutoChart013DToggleButton.Add_Click({
+CommonButtonSettings -Button $script:AutoChart01NetworkInterfaces3DToggleButton
+$script:AutoChart01NetworkInterfaces3DInclination = 0
+$script:AutoChart01NetworkInterfaces3DToggleButton.Add_Click({
     
-    $script:AutoChart013DInclination += 10
-    if ( $script:AutoChart013DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart01Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
-        $script:AutoChart013DToggleButton.Text  = "3D On ($script:AutoChart013DInclination)"
-#        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
-#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
+    $script:AutoChart01NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart01NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart01NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart01NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart01NetworkInterfaces3DInclination
+        $script:AutoChart01NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart01NetworkInterfaces3DInclination)"
+#        $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.Clear()
+#        $script:AutoChart01NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     }
-    elseif ( $script:AutoChart013DInclination -le 90 ) {
-        $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
-        $script:AutoChart013DToggleButton.Text  = "3D On ($script:AutoChart013DInclination)" 
-#        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
-#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
+    elseif ( $script:AutoChart01NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart01NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart01NetworkInterfaces3DInclination
+        $script:AutoChart01NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart01NetworkInterfaces3DInclination)" 
+#        $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.Clear()
+#        $script:AutoChart01NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     }
     else { 
-        $script:AutoChart013DToggleButton.Text  = "3D Off" 
-        $script:AutoChart013DInclination = 0
-        $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
-        $script:AutoChart01Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart01.Series["Interface Alias"].Points.Clear()
-#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
+        $script:AutoChart01NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart01NetworkInterfaces3DInclination = 0
+        $script:AutoChart01NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart01NetworkInterfaces3DInclination
+        $script:AutoChart01NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.Clear()
+#        $script:AutoChart01NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     }
 })
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart013DToggleButton)
+$script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart01NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart01ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart01NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart013DToggleButton.Location.X + $script:AutoChart013DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart013DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart01NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart01NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart01NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart01ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart01ColorsAvailable) { $script:AutoChart01ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart01ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart01.Series["Interface Alias"].Color = $script:AutoChart01ChangeColorComboBox.SelectedItem
+$script:AutoChart01NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart01NetworkInterfacesColorsAvailable) { $script:AutoChart01NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart01NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Color = $script:AutoChart01NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01ChangeColorComboBox)
+$script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart01NetworkInterfacesChangeColorComboBox)
 
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart01 {    
+function script:InvestigateDifference-AutoChart01NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart01ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'InterfaceAlias' -eq $($script:AutoChart01InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart01InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart01ImportCsvPosResults) { $script:AutoChart01InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart01NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'InterfaceAlias' -eq $($script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart01NetworkInterfacesImportCsvPosResults) { $script:AutoChart01NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart01ImportCsvNegResults = @()
+    $script:AutoChart01NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart01ImportCsvAll) { if ($Endpoint -notin $script:AutoChart01ImportCsvPosResults) { $script:AutoChart01ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart01NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart01NetworkInterfacesImportCsvPosResults) { $script:AutoChart01NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart01InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart01ImportCsvNegResults) { $script:AutoChart01InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart01NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart01NetworkInterfacesImportCsvNegResults) { $script:AutoChart01NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart01InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart01ImportCsvPosResults.count))"
-    $script:AutoChart01InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart01ImportCsvNegResults.count))"
+    $script:AutoChart01NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart01NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart01NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart01NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart01CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart01TrimOffLastGroupBox.Location.X + $script:AutoChart01TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart01TrimOffLastGroupBox.Location.Y + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart01NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart01NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart01NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart01CheckDiffButton
-$script:AutoChart01CheckDiffButton.Add_Click({
-    $script:AutoChart01InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'InterfaceAlias' -ExpandProperty 'InterfaceAlias' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart01NetworkInterfacesCheckDiffButton
+$script:AutoChart01NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart01NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'InterfaceAlias' -ExpandProperty 'InterfaceAlias' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart01InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart01NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart01InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart01NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -484,43 +631,43 @@ $script:AutoChart01CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart01InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart01InvestDiffDropDownLabel.Location.y + $script:AutoChart01InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart01NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart01NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart01InvestDiffDropDownArray) { $script:AutoChart01InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart01InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01 }})
-    $script:AutoChart01InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart01 })
+    ForEach ($Item in $script:AutoChart01NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01NetworkInterfaces }})
+    $script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart01NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart01InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart01NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart01InvestDiffDropDownComboBox.Location.y + $script:AutoChart01InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart01InvestDiffExecuteButton
-    $script:AutoChart01InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01 }})
-    $script:AutoChart01InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart01 })
+    CommonButtonSettings -Button $script:AutoChart01NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart01NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01NetworkInterfaces }})
+    $script:AutoChart01NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart01NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart01InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart01NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart01InvestDiffExecuteButton.Location.y + $script:AutoChart01InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart01NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart01NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart01InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart01NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart01InvestDiffPosResultsLabel.Location.y + $script:AutoChart01InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart01NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart01NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -532,17 +679,17 @@ $script:AutoChart01CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart01InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart01NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart01InvestDiffPosResultsLabel.Location.x + $script:AutoChart01InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart01InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart01NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart01NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart01NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart01InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart01InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart01InvestDiffNegResultsLabel.Location.y + $script:AutoChart01InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart01NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart01NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart01NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart01NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -552,88 +699,88 @@ $script:AutoChart01CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart01InvestDiffForm.Controls.AddRange(@($script:AutoChart01InvestDiffDropDownLabel,$script:AutoChart01InvestDiffDropDownComboBox,$script:AutoChart01InvestDiffExecuteButton,$script:AutoChart01InvestDiffPosResultsLabel,$script:AutoChart01InvestDiffPosResultsTextBox,$script:AutoChart01InvestDiffNegResultsLabel,$script:AutoChart01InvestDiffNegResultsTextBox))
-    $script:AutoChart01InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart01InvestDiffForm.ShowDialog()
+    $script:AutoChart01NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart01NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart01NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart01NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart01NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart01NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart01NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart01NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart01NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart01CheckDiffButton.Add_MouseHover({
+$script:AutoChart01NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01CheckDiffButton)
+$script:AutoChart01NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart01NetworkInterfacesCheckDiffButton)
 
 
-$AutoChart01ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart01NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart01CheckDiffButton.Location.X + $script:AutoChart01CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart01CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart01NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart01NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart01NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "Interface Alias" -PropertyX "InterfaceAlias" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Interface Alias" -PropertyX "InterfaceAlias" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart01ExpandChartButton
-$script:AutoChart01ManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
+CommonButtonSettings -Button $AutoChart01NetworkInterfacesExpandChartButton
+$script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($AutoChart01NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart01OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart01CheckDiffButton.Location.X
-                   Y = $script:AutoChart01CheckDiffButton.Location.Y + $script:AutoChart01CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart01NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart01NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart01NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01OpenInShell
-$script:AutoChart01OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01OpenInShell)
+CommonButtonSettings -Button $script:AutoChart01NetworkInterfacesOpenInShell
+$script:AutoChart01NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart01NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart01NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart01ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart01OpenInShell.Location.X + $script:AutoChart01OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart01OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart01NetworkInterfacesOpenInShell.Location.X + $script:AutoChart01NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart01NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01ViewResults
-$script:AutoChart01ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01ViewResults)
+CommonButtonSettings -Button $script:AutoChart01NetworkInterfacesViewResults
+$script:AutoChart01NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart01NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart01NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart01SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart01OpenInShell.Location.X
-                  Y = $script:AutoChart01OpenInShell.Location.Y + $script:AutoChart01OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart01NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart01NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart01NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01SaveButton
+CommonButtonSettings -Button $script:AutoChart01NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart01SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart01 -Title $script:AutoChart01Title
+$script:AutoChart01NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart01NetworkInterfaces -Title $script:AutoChart01NetworkInterfacesTitle
 })
-$script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01SaveButton)
+$script:AutoChart01NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart01NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart01NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart01SaveButton.Location.X 
-                        Y = $script:AutoChart01SaveButton.Location.Y + $script:AutoChart01SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart01NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart01NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart01NetworkInterfacesSaveButton.Location.Y + $script:AutoChart01NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart01CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart01NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01NoticeTextbox)
+$script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart01NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart01.Series["Interface Alias"].Points.Clear()
-$script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
+$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.Clear()
+$script:AutoChart01NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
 
 
 
@@ -658,13 +805,13 @@ $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Sele
 
 
 ##############################################################################################
-# AutoChart02
+# AutoChart02NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart02 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart01.Location.X + $script:AutoChart01.Size.Width + 20
-                  Y = $script:AutoChart01.Location.Y }
+$script:AutoChart02NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart01NetworkInterfaces.Location.X + $script:AutoChart01NetworkInterfaces.Size.Width + 20
+                  Y = $script:AutoChart01NetworkInterfaces.Location.Y }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -672,132 +819,132 @@ $script:AutoChart02 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart02.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart02NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart02Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart02NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
 }
-$script:AutoChart02.Titles.Add($script:AutoChart02Title)
+$script:AutoChart02NetworkInterfaces.Titles.Add($script:AutoChart02NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart02Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart02Area.Name        = 'Chart Area'
-$script:AutoChart02Area.AxisX.Title = 'Hosts'
-$script:AutoChart02Area.AxisX.Interval          = 1
-$script:AutoChart02Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart02Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart02Area.Area3DStyle.Inclination = 75
-$script:AutoChart02.ChartAreas.Add($script:AutoChart02Area)
+$script:AutoChart02NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart02NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart02NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart02NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart02NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart02NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart02NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart02NetworkInterfaces.ChartAreas.Add($script:AutoChart02NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart02.Series.Add("Interfaces with IPs Per Host")  
-$script:AutoChart02.Series["Interfaces with IPs Per Host"].Enabled           = $True
-$script:AutoChart02.Series["Interfaces with IPs Per Host"].BorderWidth       = 1
-$script:AutoChart02.Series["Interfaces with IPs Per Host"].IsVisibleInLegend = $false
-$script:AutoChart02.Series["Interfaces with IPs Per Host"].Chartarea         = 'Chart Area'
-$script:AutoChart02.Series["Interfaces with IPs Per Host"].Legend            = 'Legend'
-$script:AutoChart02.Series["Interfaces with IPs Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart02.Series["Interfaces with IPs Per Host"]['PieLineColor']   = 'Black'
-$script:AutoChart02.Series["Interfaces with IPs Per Host"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart02.Series["Interfaces with IPs Per Host"].ChartType         = 'DoughNut'
-$script:AutoChart02.Series["Interfaces with IPs Per Host"].Color             = 'Blue'
+$script:AutoChart02NetworkInterfaces.Series.Add("Interfaces with IPs Per Host")  
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Enabled           = $True
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].BorderWidth       = 1
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].IsVisibleInLegend = $false
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Legend            = 'Legend'
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].ChartType         = 'DoughNut'
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Color             = 'Blue'
 
-        function Generate-AutoChart02 {
-            $script:AutoChart02CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
-            $script:AutoChart02UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
+        function Generate-AutoChart02NetworkInterfaces {
+            $script:AutoChart02NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart02NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart02UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart02NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            if ($script:AutoChart02UniqueDataFields.count -gt 0){
-                $script:AutoChart02Title.ForeColor = 'Black'
-                $script:AutoChart02Title.Text = "Interfaces with IPs Per Host"
+            if ($script:AutoChart02NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart02NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart02NetworkInterfacesTitle.Text = "Interfaces with IPs Per Host"
 
-                $AutoChart02CurrentComputer  = ''
-                $AutoChart02CheckIfFirstLine = $false
-                $AutoChart02ResultsCount     = 0
-                $AutoChart02Computer         = @()
-                $AutoChart02YResults         = @()
-                $script:AutoChart02OverallDataResults = @()
+                $AutoChart02NetworkInterfacesCurrentComputer  = ''
+                $AutoChart02NetworkInterfacesCheckIfFirstLine = $false
+                $AutoChart02NetworkInterfacesResultsCount     = 0
+                $AutoChart02NetworkInterfacesComputer         = @()
+                $AutoChart02NetworkInterfacesYResults         = @()
+                $script:AutoChart02NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSource | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
-                    if ( $AutoChart02CheckIfFirstLine -eq $true ) { 
-                        if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
-                            if ( $AutoChart02YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart02YResults += $Line.IPAddress ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart02NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart02NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart02NetworkInterfacesCheckIfFirstLine = $true }
+                    if ( $AutoChart02NetworkInterfacesCheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart02NetworkInterfacesCurrentComputer ) {
+                            if ( $AutoChart02NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart02NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart02NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart02NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart02NetworkInterfacesComputer = $Line.PSComputerName }
                             }       
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) { 
-                            $AutoChart02CurrentComputer = $Line.PSComputerName
-                            $AutoChart02YDataResults    = New-Object PSObject -Property @{ 
-                                ResultsCount = $AutoChart02ResultsCount
-                                Computer     = $AutoChart02Computer 
+                        elseif ( $Line.PSComputerName -ne $AutoChart02NetworkInterfacesCurrentComputer ) { 
+                            $AutoChart02NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                            $AutoChart02NetworkInterfacesYDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart02NetworkInterfacesResultsCount
+                                Computer     = $AutoChart02NetworkInterfacesComputer 
                             }
-                            $script:AutoChart02OverallDataResults += $AutoChart02YDataResults
-                            $AutoChart02YResults     = @()
-                            $AutoChart02ResultsCount = 0
-                            $AutoChart02Computer     = @()
-                            if ( $AutoChart02YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart02YResults += $Line.IPAddress ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                            $script:AutoChart02NetworkInterfacesOverallDataResults += $AutoChart02NetworkInterfacesYDataResults
+                            $AutoChart02NetworkInterfacesYResults     = @()
+                            $AutoChart02NetworkInterfacesResultsCount = 0
+                            $AutoChart02NetworkInterfacesComputer     = @()
+                            if ( $AutoChart02NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart02NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart02NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart02NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart02NetworkInterfacesComputer = $Line.PSComputerName }
                             }
                         }
                     }
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }    
-                $script:AutoChart02OverallDataResults += $AutoChart02YDataResults
-                $script:AutoChart02OverallDataResults | ForEach-Object { $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+                $AutoChart02NetworkInterfacesYDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02NetworkInterfacesResultsCount ; Computer = $AutoChart02NetworkInterfacesComputer }    
+                $script:AutoChart02NetworkInterfacesOverallDataResults += $AutoChart02NetworkInterfacesYDataResults
+                $script:AutoChart02NetworkInterfacesOverallDataResults | ForEach-Object { $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
-                $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
-                $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+                $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.Clear()
+                $script:AutoChart02NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
-                $script:AutoChart02TrimOffLastTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))
-                $script:AutoChart02TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))
+                $script:AutoChart02NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart02NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
-                $script:AutoChart02Title.ForeColor = 'Red'
-                $script:AutoChart02Title.Text = "Interfaces with IPs Per Host`n
+                $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.Clear()
+                $script:AutoChart02NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart02NetworkInterfacesTitle.Text = "Interfaces with IPs Per Host`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart02
+        Generate-AutoChart02NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart02OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart02.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart02.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart02NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart02NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02OptionsButton
-$script:AutoChart02OptionsButton.Add_Click({  
-    if ($script:AutoChart02OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart02OptionsButton.Text = 'Options ^'
-        $script:AutoChart02.Controls.Add($script:AutoChart02ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart02NetworkInterfacesOptionsButton
+$script:AutoChart02NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart02NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart02NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart02NetworkInterfaces.Controls.Add($script:AutoChart02NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart02OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart02OptionsButton.Text = 'Options v'
-        $script:AutoChart02.Controls.Remove($script:AutoChart02ManipulationPanel)
+    elseif ($script:AutoChart02NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart02NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart02NetworkInterfaces.Controls.Remove($script:AutoChart02NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart02OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart02)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart02NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart02NetworkInterfaces)
 
-$script:AutoChart02ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart02NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart02.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart02.Size.Width
+                     Y = $script:AutoChart02NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart02NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -806,7 +953,7 @@ $script:AutoChart02ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart02TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart02NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -816,7 +963,7 @@ $script:AutoChart02TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart02TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -827,22 +974,22 @@ $script:AutoChart02TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart02TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))                
-    $script:AutoChart02TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart02TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart02TrimOffFirstTrackBarValue = $script:AutoChart02TrimOffFirstTrackBar.Value
-        $script:AutoChart02TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart02TrimOffFirstTrackBar.Value)"
-        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
-        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+    $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart02NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.Clear()
+        $script:AutoChart02NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
-    $script:AutoChart02TrimOffFirstGroupBox.Controls.Add($script:AutoChart02TrimOffFirstTrackBar)
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffFirstGroupBox)
+    $script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart02NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart02TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart02NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart02TrimOffFirstGroupBox.Location.X + $script:AutoChart02TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                        Y = $script:AutoChart02TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                        Y = $script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                         Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -850,7 +997,7 @@ $script:AutoChart02TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart02TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart02NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -860,149 +1007,149 @@ $script:AutoChart02TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart02TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart02TrimOffLastTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))
-    $script:AutoChart02TrimOffLastTrackBar.Value         = $($script:AutoChart02OverallDataResults.count)
-    $script:AutoChart02TrimOffLastTrackBarValue   = 0
-    $script:AutoChart02TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart02TrimOffLastTrackBarValue = $($script:AutoChart02OverallDataResults.count) - $script:AutoChart02TrimOffLastTrackBar.Value
-        $script:AutoChart02TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart02OverallDataResults.count) - $script:AutoChart02TrimOffLastTrackBar.Value)"
-        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
-        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    $script:AutoChart02NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart02NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart02NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart02NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart02NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart02NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart02NetworkInterfacesOverallDataResults.count) - $script:AutoChart02NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart02NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart02NetworkInterfacesOverallDataResults.count) - $script:AutoChart02NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.Clear()
+        $script:AutoChart02NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
-$script:AutoChart02TrimOffLastGroupBox.Controls.Add($script:AutoChart02TrimOffLastTrackBar)
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffLastGroupBox)
+$script:AutoChart02NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart02NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart02NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart02ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart02NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart02TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart02TrimOffFirstGroupBox.Location.Y + $script:AutoChart02TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart02NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart02ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart02.Series["Interfaces with IPs Per Host"].ChartType = $script:AutoChart02ChartTypeComboBox.SelectedItem
-#    $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
-#    $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart02NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].ChartType = $script:AutoChart02NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.Clear()
+#    $script:AutoChart02NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
-$script:AutoChart02ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart02ChartTypesAvailable) { $script:AutoChart02ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02ChartTypeComboBox)
+$script:AutoChart02NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart02NetworkInterfacesChartTypesAvailable) { $script:AutoChart02NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart02NetworkInterfacesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart023DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart02ChartTypeComboBox.Location.X + $script:AutoChart02ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart02ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart02NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart02NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart02NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart023DToggleButton
-$script:AutoChart023DInclination = 0
-$script:AutoChart023DToggleButton.Add_Click({
-    $script:AutoChart023DInclination += 10
-    if ( $script:AutoChart023DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart02Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
-        $script:AutoChart023DToggleButton.Text  = "3D On ($script:AutoChart023DInclination)"
-#        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
-#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+CommonButtonSettings -Button $script:AutoChart02NetworkInterfaces3DToggleButton
+$script:AutoChart02NetworkInterfaces3DInclination = 0
+$script:AutoChart02NetworkInterfaces3DToggleButton.Add_Click({
+    $script:AutoChart02NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart02NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart02NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart02NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart02NetworkInterfaces3DInclination
+        $script:AutoChart02NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart02NetworkInterfaces3DInclination)"
+#        $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.Clear()
+#        $script:AutoChart02NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
     }
-    elseif ( $script:AutoChart023DInclination -le 90 ) {
-        $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
-        $script:AutoChart023DToggleButton.Text  = "3D On ($script:AutoChart023DInclination)" 
-#        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
-#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    elseif ( $script:AutoChart02NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart02NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart02NetworkInterfaces3DInclination
+        $script:AutoChart02NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart02NetworkInterfaces3DInclination)" 
+#        $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.Clear()
+#        $script:AutoChart02NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
-        $script:AutoChart023DToggleButton.Text  = "3D Off" 
-        $script:AutoChart023DInclination = 0
-        $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
-        $script:AutoChart02Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
-#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+        $script:AutoChart02NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart02NetworkInterfaces3DInclination = 0
+        $script:AutoChart02NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart02NetworkInterfaces3DInclination
+        $script:AutoChart02NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.Clear()
+#        $script:AutoChart02NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart023DToggleButton)
+$script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart02NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart02ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart02NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart023DToggleButton.Location.X + $script:AutoChart023DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart023DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart02NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart02NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart02NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart02ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart02ColorsAvailable) { $script:AutoChart02ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart02ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart02.Series["Interfaces with IPs Per Host"].Color = $script:AutoChart02ChangeColorComboBox.SelectedItem
+$script:AutoChart02NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart02NetworkInterfacesColorsAvailable) { $script:AutoChart02NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart02NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Color = $script:AutoChart02NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02ChangeColorComboBox)
+$script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart02NetworkInterfacesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart02 {    
+function script:InvestigateDifference-AutoChart02NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart02ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart02InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart02InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart02ImportCsvPosResults) { $script:AutoChart02InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart02NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart02NetworkInterfacesImportCsvPosResults) { $script:AutoChart02NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart02ImportCsvNegResults = @()
+    $script:AutoChart02NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart02ImportCsvAll) { if ($Endpoint -notin $script:AutoChart02ImportCsvPosResults) { $script:AutoChart02ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart02NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart02NetworkInterfacesImportCsvPosResults) { $script:AutoChart02NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart02InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart02ImportCsvNegResults) { $script:AutoChart02InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart02NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart02NetworkInterfacesImportCsvNegResults) { $script:AutoChart02NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart02InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart02ImportCsvPosResults.count))"
-    $script:AutoChart02InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart02ImportCsvNegResults.count))"
+    $script:AutoChart02NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart02NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart02NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart02NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart02CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart02TrimOffLastGroupBox.Location.X + $script:AutoChart02TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart02TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart02NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart02NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart02NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart02CheckDiffButton
-$script:AutoChart02CheckDiffButton.Add_Click({
-    $script:AutoChart02InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart02NetworkInterfacesCheckDiffButton
+$script:AutoChart02NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart02NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart02InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart02NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart02InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart02NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -1010,43 +1157,43 @@ $script:AutoChart02CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart02InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart02InvestDiffDropDownLabel.Location.y + $script:AutoChart02InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart02NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart02NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart02InvestDiffDropDownArray) { $script:AutoChart02InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart02InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02 }})
-    $script:AutoChart02InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart02 })
+    ForEach ($Item in $script:AutoChart02NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02NetworkInterfaces }})
+    $script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart02NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart02InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart02NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart02InvestDiffDropDownComboBox.Location.y + $script:AutoChart02InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart02InvestDiffExecuteButton
-    $script:AutoChart02InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02 }})
-    $script:AutoChart02InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart02 })
+    CommonButtonSettings -Button $script:AutoChart02NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart02NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02NetworkInterfaces }})
+    $script:AutoChart02NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart02NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart02InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart02NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart02InvestDiffExecuteButton.Location.y + $script:AutoChart02InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart02NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart02NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart02InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart02NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart02InvestDiffPosResultsLabel.Location.y + $script:AutoChart02InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart02NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart02NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1058,17 +1205,17 @@ $script:AutoChart02CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart02InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart02NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart02InvestDiffPosResultsLabel.Location.x + $script:AutoChart02InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart02InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart02NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart02NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart02NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart02InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart02InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart02InvestDiffNegResultsLabel.Location.y + $script:AutoChart02InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart02NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart02NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart02NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart02NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1078,88 +1225,88 @@ $script:AutoChart02CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart02InvestDiffForm.Controls.AddRange(@($script:AutoChart02InvestDiffDropDownLabel,$script:AutoChart02InvestDiffDropDownComboBox,$script:AutoChart02InvestDiffExecuteButton,$script:AutoChart02InvestDiffPosResultsLabel,$script:AutoChart02InvestDiffPosResultsTextBox,$script:AutoChart02InvestDiffNegResultsLabel,$script:AutoChart02InvestDiffNegResultsTextBox))
-    $script:AutoChart02InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart02InvestDiffForm.ShowDialog()
+    $script:AutoChart02NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart02NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart02NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart02NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart02NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart02NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart02NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart02NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart02NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart02CheckDiffButton.Add_MouseHover({
+$script:AutoChart02NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02CheckDiffButton)
+$script:AutoChart02NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart02NetworkInterfacesCheckDiffButton)
 
 
-$AutoChart02ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart02NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart02CheckDiffButton.Location.X + $script:AutoChart02CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart02CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart02NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart02NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart02NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "Interfaces with IPs Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Interfaces with IPs Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
-CommonButtonSettings -Button $AutoChart02ExpandChartButton
-$script:AutoChart02ManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
+CommonButtonSettings -Button $AutoChart02NetworkInterfacesExpandChartButton
+$script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($AutoChart02NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart02OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart02CheckDiffButton.Location.X
-                   Y = $script:AutoChart02CheckDiffButton.Location.Y + $script:AutoChart02CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart02NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart02NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart02NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02OpenInShell
-$script:AutoChart02OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02OpenInShell)
+CommonButtonSettings -Button $script:AutoChart02NetworkInterfacesOpenInShell
+$script:AutoChart02NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart02NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart02NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart02ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart02OpenInShell.Location.X + $script:AutoChart02OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart02OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart02NetworkInterfacesOpenInShell.Location.X + $script:AutoChart02NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart02NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02ViewResults
-$script:AutoChart02ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02ViewResults)
+CommonButtonSettings -Button $script:AutoChart02NetworkInterfacesViewResults
+$script:AutoChart02NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart02NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart02NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart02SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart02OpenInShell.Location.X
-                  Y = $script:AutoChart02OpenInShell.Location.Y + $script:AutoChart02OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart02NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart02NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart02NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02SaveButton
+CommonButtonSettings -Button $script:AutoChart02NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart02SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart02 -Title $script:AutoChart02Title
+$script:AutoChart02NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart02NetworkInterfaces -Title $script:AutoChart02NetworkInterfacesTitle
 })
-$script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02SaveButton)
+$script:AutoChart02NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart02NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart02NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart02SaveButton.Location.X 
-                        Y = $script:AutoChart02SaveButton.Location.Y + $script:AutoChart02SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart02NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart02NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart02NetworkInterfacesSaveButton.Location.Y + $script:AutoChart02NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart02CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart02NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02NoticeTextbox)
+$script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart02NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.Clear()
-$script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.Clear()
+$script:AutoChart02NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
 
@@ -1186,13 +1333,13 @@ $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Sel
 
 
 ##############################################################################################
-# AutoChart03
+# AutoChart03NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart03 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart01.Location.X
-                  Y = $script:AutoChart01.Location.Y + $script:AutoChart01.Size.Height + 20 }
+$script:AutoChart03NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart01NetworkInterfaces.Location.X
+                  Y = $script:AutoChart01NetworkInterfaces.Location.Y + $script:AutoChart01NetworkInterfaces.Size.Height + 20 }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -1200,132 +1347,132 @@ $script:AutoChart03 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart03.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart03NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart03Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart03NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
 }
-$script:AutoChart03.Titles.Add($script:AutoChart03Title)
+$script:AutoChart03NetworkInterfaces.Titles.Add($script:AutoChart03NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart03Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart03Area.Name        = 'Chart Area'
-$script:AutoChart03Area.AxisX.Title = 'Hosts'
-$script:AutoChart03Area.AxisX.Interval          = 1
-$script:AutoChart03Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart03Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart03Area.Area3DStyle.Inclination = 75
-$script:AutoChart03.ChartAreas.Add($script:AutoChart03Area)
+$script:AutoChart03NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart03NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart03NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart03NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart03NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart03NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart03NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart03NetworkInterfaces.ChartAreas.Add($script:AutoChart03NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart03.Series.Add("IPv4 Interfaces Per Host")  
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Enabled           = $True
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"].BorderWidth       = 1
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"].IsVisibleInLegend = $false
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Chartarea         = 'Chart Area'
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Legend            = 'Legend'
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"]['PieLineColor']   = 'Black'
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"].ChartType         = 'Column'
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Color             = 'Green'
+$script:AutoChart03NetworkInterfaces.Series.Add("IPv4 Interfaces Per Host")  
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Enabled           = $True
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].BorderWidth       = 1
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].IsVisibleInLegend = $false
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Legend            = 'Legend'
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].ChartType         = 'Column'
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Color             = 'Green'
 
-        function Generate-AutoChart03 {
-            $script:AutoChart03CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
-            $script:AutoChart03UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
+        function Generate-AutoChart03NetworkInterfaces {
+            $script:AutoChart03NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart03NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Green'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart03UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart03NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            if ($script:AutoChart03UniqueDataFields.count -gt 0){
-                $script:AutoChart03Title.ForeColor = 'Black'
-                $script:AutoChart03Title.Text = "IPv4 Interfaces Per Host"
+            if ($script:AutoChart03NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart03NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart03NetworkInterfacesTitle.Text = "IPv4 Interfaces Per Host"
 
-                $AutoChart03CurrentComputer  = ''
-                $AutoChart03CheckIfFirstLine = $false
-                $AutoChart03ResultsCount     = 0
-                $AutoChart03Computer         = @()
-                $AutoChart03YResults         = @()
-                $script:AutoChart03OverallDataResults = @()
+                $AutoChart03NetworkInterfacesCurrentComputer  = ''
+                $AutoChart03NetworkInterfacesCheckIfFirstLine = $false
+                $AutoChart03NetworkInterfacesResultsCount     = 0
+                $AutoChart03NetworkInterfacesComputer         = @()
+                $AutoChart03NetworkInterfacesYResults         = @()
+                $script:AutoChart03NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.AddressFamily -eq 'IPv4'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart03CheckIfFirstLine -eq $false ) { $AutoChart03CurrentComputer  = $Line.PSComputerName ; $AutoChart03CheckIfFirstLine = $true }
-                    if ( $AutoChart03CheckIfFirstLine -eq $true ) { 
-                        if ( $Line.PSComputerName -eq $AutoChart03CurrentComputer ) {
-                            if ( $AutoChart03YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart03YResults += $Line.IPAddress ; $AutoChart03ResultsCount += 1 }
-                                if ( $AutoChart03Computer -notcontains $Line.PSComputerName ) { $AutoChart03Computer = $Line.PSComputerName }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv4'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart03NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart03NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart03NetworkInterfacesCheckIfFirstLine = $true }
+                    if ( $AutoChart03NetworkInterfacesCheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart03NetworkInterfacesCurrentComputer ) {
+                            if ( $AutoChart03NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart03NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart03NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart03NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart03NetworkInterfacesComputer = $Line.PSComputerName }
                             }       
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart03CurrentComputer ) { 
-                            $AutoChart03CurrentComputer = $Line.PSComputerName
-                            $AutoChart03YDataResults    = New-Object PSObject -Property @{ 
-                                ResultsCount = $AutoChart03ResultsCount
-                                Computer     = $AutoChart03Computer 
+                        elseif ( $Line.PSComputerName -ne $AutoChart03NetworkInterfacesCurrentComputer ) { 
+                            $AutoChart03NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                            $AutoChart03NetworkInterfacesYDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart03NetworkInterfacesResultsCount
+                                Computer     = $AutoChart03NetworkInterfacesComputer 
                             }
-                            $script:AutoChart03OverallDataResults += $AutoChart03YDataResults
-                            $AutoChart03YResults     = @()
-                            $AutoChart03ResultsCount = 0
-                            $AutoChart03Computer     = @()
-                            if ( $AutoChart03YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart03YResults += $Line.IPAddress ; $AutoChart03ResultsCount += 1 }
-                                if ( $AutoChart03Computer -notcontains $Line.PSComputerName ) { $AutoChart03Computer = $Line.PSComputerName }
+                            $script:AutoChart03NetworkInterfacesOverallDataResults += $AutoChart03NetworkInterfacesYDataResults
+                            $AutoChart03NetworkInterfacesYResults     = @()
+                            $AutoChart03NetworkInterfacesResultsCount = 0
+                            $AutoChart03NetworkInterfacesComputer     = @()
+                            if ( $AutoChart03NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart03NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart03NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart03NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart03NetworkInterfacesComputer = $Line.PSComputerName }
                             }
                         }
                     }
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart03YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart03ResultsCount ; Computer = $AutoChart03Computer }    
-                $script:AutoChart03OverallDataResults += $AutoChart03YDataResults
-                $script:AutoChart03OverallDataResults | ForEach-Object { $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+                $AutoChart03NetworkInterfacesYDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart03NetworkInterfacesResultsCount ; Computer = $AutoChart03NetworkInterfacesComputer }    
+                $script:AutoChart03NetworkInterfacesOverallDataResults += $AutoChart03NetworkInterfacesYDataResults
+                $script:AutoChart03NetworkInterfacesOverallDataResults | ForEach-Object { $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
-                $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
-                $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+                $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.Clear()
+                $script:AutoChart03NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
-                $script:AutoChart03TrimOffLastTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
-                $script:AutoChart03TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
+                $script:AutoChart03NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart03NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
-                $script:AutoChart03Title.ForeColor = 'Red'
-                $script:AutoChart03Title.Text = "IPv4 Interfaces Per Host`n
+                $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.Clear()
+                $script:AutoChart03NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart03NetworkInterfacesTitle.Text = "IPv4 Interfaces Per Host`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart03
+        Generate-AutoChart03NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart03OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart03.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart03.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart03NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart03NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart03OptionsButton
-$script:AutoChart03OptionsButton.Add_Click({  
-    if ($script:AutoChart03OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart03OptionsButton.Text = 'Options ^'
-        $script:AutoChart03.Controls.Add($script:AutoChart03ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart03NetworkInterfacesOptionsButton
+$script:AutoChart03NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart03NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart03NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart03NetworkInterfaces.Controls.Add($script:AutoChart03NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart03OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart03OptionsButton.Text = 'Options v'
-        $script:AutoChart03.Controls.Remove($script:AutoChart03ManipulationPanel)
+    elseif ($script:AutoChart03NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart03NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart03NetworkInterfaces.Controls.Remove($script:AutoChart03NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03NetworkInterfaces)
 
-$script:AutoChart03ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart03NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart03.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart03.Size.Width
+                     Y = $script:AutoChart03NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart03NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -1334,7 +1481,7 @@ $script:AutoChart03ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart03TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart03NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -1344,7 +1491,7 @@ $script:AutoChart03TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart03TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -1355,22 +1502,22 @@ $script:AutoChart03TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart03TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))                
-    $script:AutoChart03TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart03TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart03TrimOffFirstTrackBarValue = $script:AutoChart03TrimOffFirstTrackBar.Value
-        $script:AutoChart03TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart03TrimOffFirstTrackBar.Value)"
-        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
-        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+    $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart03NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.Clear()
+        $script:AutoChart03NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
-    $script:AutoChart03TrimOffFirstGroupBox.Controls.Add($script:AutoChart03TrimOffFirstTrackBar)
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffFirstGroupBox)
+    $script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart03NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart03TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart03NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + $script:AutoChart03TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                        Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                        Y = $script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                         Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -1378,7 +1525,7 @@ $script:AutoChart03TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart03TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart03NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -1388,149 +1535,149 @@ $script:AutoChart03TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart03TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart03TrimOffLastTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
-    $script:AutoChart03TrimOffLastTrackBar.Value         = $($script:AutoChart03OverallDataResults.count)
-    $script:AutoChart03TrimOffLastTrackBarValue   = 0
-    $script:AutoChart03TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart03TrimOffLastTrackBarValue = $($script:AutoChart03OverallDataResults.count) - $script:AutoChart03TrimOffLastTrackBar.Value
-        $script:AutoChart03TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart03OverallDataResults.count) - $script:AutoChart03TrimOffLastTrackBar.Value)"
-        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
-        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    $script:AutoChart03NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart03NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart03NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart03NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart03NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart03NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart03NetworkInterfacesOverallDataResults.count) - $script:AutoChart03NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart03NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart03NetworkInterfacesOverallDataResults.count) - $script:AutoChart03NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.Clear()
+        $script:AutoChart03NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
-$script:AutoChart03TrimOffLastGroupBox.Controls.Add($script:AutoChart03TrimOffLastTrackBar)
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffLastGroupBox)
+$script:AutoChart03NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart03NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart03NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart03ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart03NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y + $script:AutoChart03TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart03NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart03ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart03.Series["IPv4 Interfaces Per Host"].ChartType = $script:AutoChart03ChartTypeComboBox.SelectedItem
-#    $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
-#    $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart03NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].ChartType = $script:AutoChart03NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.Clear()
+#    $script:AutoChart03NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
-$script:AutoChart03ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart03ChartTypesAvailable) { $script:AutoChart03ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03ChartTypeComboBox)
+$script:AutoChart03NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart03NetworkInterfacesChartTypesAvailable) { $script:AutoChart03NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart03NetworkInterfacesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart033DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart03ChartTypeComboBox.Location.X + $script:AutoChart03ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart03ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart03NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart03NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart03NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart033DToggleButton
-$script:AutoChart033DInclination = 0
-$script:AutoChart033DToggleButton.Add_Click({
-    $script:AutoChart033DInclination += 10
-    if ( $script:AutoChart033DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart03Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
-        $script:AutoChart033DToggleButton.Text  = "3D On ($script:AutoChart033DInclination)"
-#        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
-#        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+CommonButtonSettings -Button $script:AutoChart03NetworkInterfaces3DToggleButton
+$script:AutoChart03NetworkInterfaces3DInclination = 0
+$script:AutoChart03NetworkInterfaces3DToggleButton.Add_Click({
+    $script:AutoChart03NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart03NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart03NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart03NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart03NetworkInterfaces3DInclination
+        $script:AutoChart03NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart03NetworkInterfaces3DInclination)"
+#        $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart03NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
     }
-    elseif ( $script:AutoChart033DInclination -le 90 ) {
-        $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
-        $script:AutoChart033DToggleButton.Text  = "3D On ($script:AutoChart033DInclination)" 
-#        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
-#        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    elseif ( $script:AutoChart03NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart03NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart03NetworkInterfaces3DInclination
+        $script:AutoChart03NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart03NetworkInterfaces3DInclination)" 
+#        $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart03NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
-        $script:AutoChart033DToggleButton.Text  = "3D Off" 
-        $script:AutoChart033DInclination = 0
-        $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
-        $script:AutoChart03Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
-#        $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+        $script:AutoChart03NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart03NetworkInterfaces3DInclination = 0
+        $script:AutoChart03NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart03NetworkInterfaces3DInclination
+        $script:AutoChart03NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart03NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart033DToggleButton)
+$script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart03NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart03ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart03NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart033DToggleButton.Location.X + $script:AutoChart033DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart033DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart03NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart03NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart03NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart03ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart03ColorsAvailable) { $script:AutoChart03ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart03ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart03.Series["IPv4 Interfaces Per Host"].Color = $script:AutoChart03ChangeColorComboBox.SelectedItem
+$script:AutoChart03NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart03NetworkInterfacesColorsAvailable) { $script:AutoChart03NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart03NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Color = $script:AutoChart03NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03ChangeColorComboBox)
+$script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart03NetworkInterfacesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart03 {    
+function script:InvestigateDifference-AutoChart03NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart03ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart03InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart03InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart03ImportCsvPosResults) { $script:AutoChart03InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart03NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart03NetworkInterfacesImportCsvPosResults) { $script:AutoChart03NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart03ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart03ImportCsvNegResults = @()
+    $script:AutoChart03NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart03ImportCsvAll) { if ($Endpoint -notin $script:AutoChart03ImportCsvPosResults) { $script:AutoChart03ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart03NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart03NetworkInterfacesImportCsvPosResults) { $script:AutoChart03NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart03InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart03ImportCsvNegResults) { $script:AutoChart03InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart03NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart03NetworkInterfacesImportCsvNegResults) { $script:AutoChart03NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart03InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart03ImportCsvPosResults.count))"
-    $script:AutoChart03InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart03ImportCsvNegResults.count))"
+    $script:AutoChart03NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart03NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart03NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart03NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart03CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart03TrimOffLastGroupBox.Location.X + $script:AutoChart03TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart03TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart03NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart03NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart03NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart03CheckDiffButton
-$script:AutoChart03CheckDiffButton.Add_Click({
-    $script:AutoChart03InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart03NetworkInterfacesCheckDiffButton
+$script:AutoChart03NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart03NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart03InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart03NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart03InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart03NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -1538,43 +1685,43 @@ $script:AutoChart03CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart03InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart03InvestDiffDropDownLabel.Location.y + $script:AutoChart03InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart03NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart03NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart03InvestDiffDropDownArray) { $script:AutoChart03InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart03InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03 }})
-    $script:AutoChart03InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart03 })
+    ForEach ($Item in $script:AutoChart03NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03NetworkInterfaces }})
+    $script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart03NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart03InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart03NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart03InvestDiffDropDownComboBox.Location.y + $script:AutoChart03InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart03InvestDiffExecuteButton
-    $script:AutoChart03InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03 }})
-    $script:AutoChart03InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart03 })
+    CommonButtonSettings -Button $script:AutoChart03NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart03NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03NetworkInterfaces }})
+    $script:AutoChart03NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart03NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart03InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart03NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart03InvestDiffExecuteButton.Location.y + $script:AutoChart03InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart03NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart03NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart03InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart03NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart03InvestDiffPosResultsLabel.Location.y + $script:AutoChart03InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart03NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart03NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1586,17 +1733,17 @@ $script:AutoChart03CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart03InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart03NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart03InvestDiffPosResultsLabel.Location.x + $script:AutoChart03InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart03InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart03NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart03NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart03NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart03InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart03InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart03InvestDiffNegResultsLabel.Location.y + $script:AutoChart03InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart03NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart03NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart03NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart03NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1606,88 +1753,88 @@ $script:AutoChart03CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart03InvestDiffForm.Controls.AddRange(@($script:AutoChart03InvestDiffDropDownLabel,$script:AutoChart03InvestDiffDropDownComboBox,$script:AutoChart03InvestDiffExecuteButton,$script:AutoChart03InvestDiffPosResultsLabel,$script:AutoChart03InvestDiffPosResultsTextBox,$script:AutoChart03InvestDiffNegResultsLabel,$script:AutoChart03InvestDiffNegResultsTextBox))
-    $script:AutoChart03InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart03InvestDiffForm.ShowDialog()
+    $script:AutoChart03NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart03NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart03NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart03NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart03NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart03NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart03NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart03NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart03NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart03CheckDiffButton.Add_MouseHover({
+$script:AutoChart03NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03CheckDiffButton)
+$script:AutoChart03NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart03NetworkInterfacesCheckDiffButton)
 
 
-$AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart03NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart03CheckDiffButton.Location.X + $script:AutoChart03CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart03CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart03NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart03NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart03NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPv4 Interfaces Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPv4 Interfaces Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
-CommonButtonSettings -Button $AutoChart03ExpandChartButton
-$script:AutoChart03ManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
+CommonButtonSettings -Button $AutoChart03NetworkInterfacesExpandChartButton
+$script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($AutoChart03NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart03OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart03CheckDiffButton.Location.X
-                   Y = $script:AutoChart03CheckDiffButton.Location.Y + $script:AutoChart03CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart03NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart03NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart03NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03OpenInShell
-$script:AutoChart03OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03OpenInShell)
+CommonButtonSettings -Button $script:AutoChart03NetworkInterfacesOpenInShell
+$script:AutoChart03NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart03NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart03NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart03ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart03OpenInShell.Location.X + $script:AutoChart03OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart03OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart03NetworkInterfacesOpenInShell.Location.X + $script:AutoChart03NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart03NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03ViewResults
-$script:AutoChart03ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03ViewResults)
+CommonButtonSettings -Button $script:AutoChart03NetworkInterfacesViewResults
+$script:AutoChart03NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart03NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart03NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart03SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart03OpenInShell.Location.X
-                  Y = $script:AutoChart03OpenInShell.Location.Y + $script:AutoChart03OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart03NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart03NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart03NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03SaveButton
+CommonButtonSettings -Button $script:AutoChart03NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart03SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart03 -Title $script:AutoChart03Title
+$script:AutoChart03NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart03NetworkInterfaces -Title $script:AutoChart03NetworkInterfacesTitle
 })
-$script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03SaveButton)
+$script:AutoChart03NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart03NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart03NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart03SaveButton.Location.X 
-                        Y = $script:AutoChart03SaveButton.Location.Y + $script:AutoChart03SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart03NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart03NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart03NetworkInterfacesSaveButton.Location.Y + $script:AutoChart03NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart03CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart03NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03NoticeTextbox)
+$script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart03NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.Clear()
-$script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.Clear()
+$script:AutoChart03NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart03NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
 
@@ -1717,13 +1864,13 @@ $script:AutoChart03OverallDataResults | Sort-Object -Property ResultsCount | Sel
 
 
 ##############################################################################################
-# AutoChart04
+# AutoChart04NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart04 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart02.Location.X
-                  Y = $script:AutoChart02.Location.Y + $script:AutoChart02.Size.Height + 20 }
+$script:AutoChart04NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart02NetworkInterfaces.Location.X
+                  Y = $script:AutoChart02NetworkInterfaces.Location.Y + $script:AutoChart02NetworkInterfaces.Size.Height + 20 }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -1731,132 +1878,132 @@ $script:AutoChart04 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart04.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart04NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart04Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart04NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
 }
-$script:AutoChart04.Titles.Add($script:AutoChart04Title)
+$script:AutoChart04NetworkInterfaces.Titles.Add($script:AutoChart04NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart04Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart04Area.Name        = 'Chart Area'
-$script:AutoChart04Area.AxisX.Title = 'Hosts'
-$script:AutoChart04Area.AxisX.Interval          = 1
-$script:AutoChart04Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart04Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart04Area.Area3DStyle.Inclination = 75
-$script:AutoChart04.ChartAreas.Add($script:AutoChart04Area)
+$script:AutoChart04NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart04NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart04NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart04NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart04NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart04NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart04NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart04NetworkInterfaces.ChartAreas.Add($script:AutoChart04NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart04.Series.Add("IPv6 Interfaces Per Host")  
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Enabled           = $True
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"].BorderWidth       = 1
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"].IsVisibleInLegend = $false
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Chartarea         = 'Chart Area'
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Legend            = 'Legend'
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"]['PieLineColor']   = 'Black'
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"].ChartType         = 'Column'
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Color             = 'orange'
+$script:AutoChart04NetworkInterfaces.Series.Add("IPv6 Interfaces Per Host")  
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Enabled           = $True
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].BorderWidth       = 1
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].IsVisibleInLegend = $false
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Legend            = 'Legend'
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].ChartType         = 'Column'
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Color             = 'orange'
 
-        function Generate-AutoChart04 {
-            $script:AutoChart04CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
-            $script:AutoChart04UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
+        function Generate-AutoChart04NetworkInterfaces {
+            $script:AutoChart04NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart04NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'orange'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart04UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart04NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            if ($script:AutoChart04UniqueDataFields.count -gt 0){
-                $script:AutoChart04Title.ForeColor = 'Black'
-                $script:AutoChart04Title.Text = "IPv6 Interfaces Per Host"
+            if ($script:AutoChart04NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart04NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart04NetworkInterfacesTitle.Text = "IPv6 Interfaces Per Host"
 
-                $AutoChart04CurrentComputer  = ''
-                $AutoChart04CheckIfFirstLine = $false
-                $AutoChart04ResultsCount     = 0
-                $AutoChart04Computer         = @()
-                $AutoChart04YResults         = @()
-                $script:AutoChart04OverallDataResults = @()
+                $AutoChart04NetworkInterfacesCurrentComputer  = ''
+                $AutoChart04NetworkInterfacesCheckIfFirstLine = $false
+                $AutoChart04NetworkInterfacesResultsCount     = 0
+                $AutoChart04NetworkInterfacesComputer         = @()
+                $AutoChart04NetworkInterfacesYResults         = @()
+                $script:AutoChart04NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.AddressFamily -eq 'IPv6'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart04CheckIfFirstLine -eq $false ) { $AutoChart04CurrentComputer  = $Line.PSComputerName ; $AutoChart04CheckIfFirstLine = $true }
-                    if ( $AutoChart04CheckIfFirstLine -eq $true ) { 
-                        if ( $Line.PSComputerName -eq $AutoChart04CurrentComputer ) {
-                            if ( $AutoChart04YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart04YResults += $Line.IPAddress ; $AutoChart04ResultsCount += 1 }
-                                if ( $AutoChart04Computer -notcontains $Line.PSComputerName ) { $AutoChart04Computer = $Line.PSComputerName }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv6'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart04NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart04NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart04NetworkInterfacesCheckIfFirstLine = $true }
+                    if ( $AutoChart04NetworkInterfacesCheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart04NetworkInterfacesCurrentComputer ) {
+                            if ( $AutoChart04NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart04NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart04NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart04NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart04NetworkInterfacesComputer = $Line.PSComputerName }
                             }       
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart04CurrentComputer ) { 
-                            $AutoChart04CurrentComputer = $Line.PSComputerName
-                            $AutoChart04YDataResults    = New-Object PSObject -Property @{ 
-                                ResultsCount = $AutoChart04ResultsCount
-                                Computer     = $AutoChart04Computer 
+                        elseif ( $Line.PSComputerName -ne $AutoChart04NetworkInterfacesCurrentComputer ) { 
+                            $AutoChart04NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                            $AutoChart04NetworkInterfacesYDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart04NetworkInterfacesResultsCount
+                                Computer     = $AutoChart04NetworkInterfacesComputer 
                             }
-                            $script:AutoChart04OverallDataResults += $AutoChart04YDataResults
-                            $AutoChart04YResults     = @()
-                            $AutoChart04ResultsCount = 0
-                            $AutoChart04Computer     = @()
-                            if ( $AutoChart04YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart04YResults += $Line.IPAddress ; $AutoChart04ResultsCount += 1 }
-                                if ( $AutoChart04Computer -notcontains $Line.PSComputerName ) { $AutoChart04Computer = $Line.PSComputerName }
+                            $script:AutoChart04NetworkInterfacesOverallDataResults += $AutoChart04NetworkInterfacesYDataResults
+                            $AutoChart04NetworkInterfacesYResults     = @()
+                            $AutoChart04NetworkInterfacesResultsCount = 0
+                            $AutoChart04NetworkInterfacesComputer     = @()
+                            if ( $AutoChart04NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart04NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart04NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart04NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart04NetworkInterfacesComputer = $Line.PSComputerName }
                             }
                         }
                     }
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart04YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart04ResultsCount ; Computer = $AutoChart04Computer }    
-                $script:AutoChart04OverallDataResults += $AutoChart04YDataResults
-                $script:AutoChart04OverallDataResults | ForEach-Object { $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+                $AutoChart04NetworkInterfacesYDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart04NetworkInterfacesResultsCount ; Computer = $AutoChart04NetworkInterfacesComputer }    
+                $script:AutoChart04NetworkInterfacesOverallDataResults += $AutoChart04NetworkInterfacesYDataResults
+                $script:AutoChart04NetworkInterfacesOverallDataResults | ForEach-Object { $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
-                $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
-                $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+                $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.Clear()
+                $script:AutoChart04NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
-                $script:AutoChart04TrimOffLastTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
-                $script:AutoChart04TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
+                $script:AutoChart04NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart04NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
-                $script:AutoChart04Title.ForeColor = 'Red'
-                $script:AutoChart04Title.Text = "IPv6 Interfaces Per Host`n
+                $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.Clear()
+                $script:AutoChart04NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart04NetworkInterfacesTitle.Text = "IPv6 Interfaces Per Host`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart04
+        Generate-AutoChart04NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart04OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart04.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart04.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart04NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart04NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart04OptionsButton
-$script:AutoChart04OptionsButton.Add_Click({  
-    if ($script:AutoChart04OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart04OptionsButton.Text = 'Options ^'
-        $script:AutoChart04.Controls.Add($script:AutoChart04ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart04NetworkInterfacesOptionsButton
+$script:AutoChart04NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart04NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart04NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart04NetworkInterfaces.Controls.Add($script:AutoChart04NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart04OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart04OptionsButton.Text = 'Options v'
-        $script:AutoChart04.Controls.Remove($script:AutoChart04ManipulationPanel)
+    elseif ($script:AutoChart04NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart04NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart04NetworkInterfaces.Controls.Remove($script:AutoChart04NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04NetworkInterfaces)
 
-$script:AutoChart04ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart04NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart04.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart04.Size.Width
+                     Y = $script:AutoChart04NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart04NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -1865,7 +2012,7 @@ $script:AutoChart04ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart04TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart04NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -1875,7 +2022,7 @@ $script:AutoChart04TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart04TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -1886,22 +2033,22 @@ $script:AutoChart04TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart04TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))                
-    $script:AutoChart04TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart04TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart04TrimOffFirstTrackBarValue = $script:AutoChart04TrimOffFirstTrackBar.Value
-        $script:AutoChart04TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart04TrimOffFirstTrackBar.Value)"
-        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
-        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+    $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart04NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.Clear()
+        $script:AutoChart04NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
-    $script:AutoChart04TrimOffFirstGroupBox.Controls.Add($script:AutoChart04TrimOffFirstTrackBar)
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffFirstGroupBox)
+    $script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart04NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart04TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart04NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + $script:AutoChart04TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                        Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                        Y = $script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                         Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -1909,7 +2056,7 @@ $script:AutoChart04TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart04TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart04NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -1919,149 +2066,149 @@ $script:AutoChart04TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart04TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart04TrimOffLastTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
-    $script:AutoChart04TrimOffLastTrackBar.Value         = $($script:AutoChart04OverallDataResults.count)
-    $script:AutoChart04TrimOffLastTrackBarValue   = 0
-    $script:AutoChart04TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart04TrimOffLastTrackBarValue = $($script:AutoChart04OverallDataResults.count) - $script:AutoChart04TrimOffLastTrackBar.Value
-        $script:AutoChart04TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart04OverallDataResults.count) - $script:AutoChart04TrimOffLastTrackBar.Value)"
-        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
-        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    $script:AutoChart04NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart04NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart04NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart04NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart04NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart04NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart04NetworkInterfacesOverallDataResults.count) - $script:AutoChart04NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart04NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart04NetworkInterfacesOverallDataResults.count) - $script:AutoChart04NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.Clear()
+        $script:AutoChart04NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
-$script:AutoChart04TrimOffLastGroupBox.Controls.Add($script:AutoChart04TrimOffLastTrackBar)
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffLastGroupBox)
+$script:AutoChart04NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart04NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart04NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart04ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart04NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y + $script:AutoChart04TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart04NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart04ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart04.Series["IPv6 Interfaces Per Host"].ChartType = $script:AutoChart04ChartTypeComboBox.SelectedItem
-#    $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
-#    $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart04NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].ChartType = $script:AutoChart04NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.Clear()
+#    $script:AutoChart04NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
-$script:AutoChart04ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart04ChartTypesAvailable) { $script:AutoChart04ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04ChartTypeComboBox)
+$script:AutoChart04NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart04NetworkInterfacesChartTypesAvailable) { $script:AutoChart04NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart04NetworkInterfacesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart043DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart04ChartTypeComboBox.Location.X + $script:AutoChart04ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart04ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart04NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart04NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart04NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart043DToggleButton
-$script:AutoChart043DInclination = 0
-$script:AutoChart043DToggleButton.Add_Click({
-    $script:AutoChart043DInclination += 10
-    if ( $script:AutoChart043DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart04Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
-        $script:AutoChart043DToggleButton.Text  = "3D On ($script:AutoChart043DInclination)"
-#        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
-#        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+CommonButtonSettings -Button $script:AutoChart04NetworkInterfaces3DToggleButton
+$script:AutoChart04NetworkInterfaces3DInclination = 0
+$script:AutoChart04NetworkInterfaces3DToggleButton.Add_Click({
+    $script:AutoChart04NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart04NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart04NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart04NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart04NetworkInterfaces3DInclination
+        $script:AutoChart04NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart04NetworkInterfaces3DInclination)"
+#        $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart04NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
     }
-    elseif ( $script:AutoChart043DInclination -le 90 ) {
-        $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
-        $script:AutoChart043DToggleButton.Text  = "3D On ($script:AutoChart043DInclination)" 
-#        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
-#        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    elseif ( $script:AutoChart04NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart04NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart04NetworkInterfaces3DInclination
+        $script:AutoChart04NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart04NetworkInterfaces3DInclination)" 
+#        $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart04NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
-        $script:AutoChart043DToggleButton.Text  = "3D Off" 
-        $script:AutoChart043DInclination = 0
-        $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
-        $script:AutoChart04Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
-#        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+        $script:AutoChart04NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart04NetworkInterfaces3DInclination = 0
+        $script:AutoChart04NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart04NetworkInterfaces3DInclination
+        $script:AutoChart04NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.Clear()
+#        $script:AutoChart04NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart043DToggleButton)
+$script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart04NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart04ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart04NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart043DToggleButton.Location.X + $script:AutoChart043DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart043DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart04NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart04NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart04NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart04ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart04ColorsAvailable) { $script:AutoChart04ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart04ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart04.Series["IPv6 Interfaces Per Host"].Color = $script:AutoChart04ChangeColorComboBox.SelectedItem
+$script:AutoChart04NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart04NetworkInterfacesColorsAvailable) { $script:AutoChart04NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart04NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Color = $script:AutoChart04NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04ChangeColorComboBox)
+$script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart04NetworkInterfacesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart04 {    
+function script:InvestigateDifference-AutoChart04NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart04ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart04InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart04InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart04ImportCsvPosResults) { $script:AutoChart04InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart04NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart04NetworkInterfacesImportCsvPosResults) { $script:AutoChart04NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart04ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart04ImportCsvNegResults = @()
+    $script:AutoChart04NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart04ImportCsvAll) { if ($Endpoint -notin $script:AutoChart04ImportCsvPosResults) { $script:AutoChart04ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart04NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart04NetworkInterfacesImportCsvPosResults) { $script:AutoChart04NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart04InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart04ImportCsvNegResults) { $script:AutoChart04InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart04NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart04NetworkInterfacesImportCsvNegResults) { $script:AutoChart04NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart04InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart04ImportCsvPosResults.count))"
-    $script:AutoChart04InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart04ImportCsvNegResults.count))"
+    $script:AutoChart04NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart04NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart04NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart04NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart04CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart04TrimOffLastGroupBox.Location.X + $script:AutoChart04TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart04TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart04NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart04NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart04NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart04CheckDiffButton
-$script:AutoChart04CheckDiffButton.Add_Click({
-    $script:AutoChart04InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart04NetworkInterfacesCheckDiffButton
+$script:AutoChart04NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart04NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart04InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart04NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart04InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart04NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -2069,43 +2216,43 @@ $script:AutoChart04CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart04InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart04InvestDiffDropDownLabel.Location.y + $script:AutoChart04InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart04NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart04NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart04InvestDiffDropDownArray) { $script:AutoChart04InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart04InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
-    $script:AutoChart04InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart04 })
+    ForEach ($Item in $script:AutoChart04NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04NetworkInterfaces }})
+    $script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart04NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart04InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart04NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart04InvestDiffDropDownComboBox.Location.y + $script:AutoChart04InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart04InvestDiffExecuteButton
-    $script:AutoChart04InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
-    $script:AutoChart04InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04 })
+    CommonButtonSettings -Button $script:AutoChart04NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart04NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04NetworkInterfaces }})
+    $script:AutoChart04NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart04InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart04NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart04InvestDiffExecuteButton.Location.y + $script:AutoChart04InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart04NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart04NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart04InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart04NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart04InvestDiffPosResultsLabel.Location.y + $script:AutoChart04InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart04NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart04NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -2117,17 +2264,17 @@ $script:AutoChart04CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart04InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart04NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart04InvestDiffPosResultsLabel.Location.x + $script:AutoChart04InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart04InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart04NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart04NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart04NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart04InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart04InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart04InvestDiffNegResultsLabel.Location.y + $script:AutoChart04InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart04NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart04NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart04NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart04NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -2137,88 +2284,88 @@ $script:AutoChart04CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart04InvestDiffForm.Controls.AddRange(@($script:AutoChart04InvestDiffDropDownLabel,$script:AutoChart04InvestDiffDropDownComboBox,$script:AutoChart04InvestDiffExecuteButton,$script:AutoChart04InvestDiffPosResultsLabel,$script:AutoChart04InvestDiffPosResultsTextBox,$script:AutoChart04InvestDiffNegResultsLabel,$script:AutoChart04InvestDiffNegResultsTextBox))
-    $script:AutoChart04InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart04InvestDiffForm.ShowDialog()
+    $script:AutoChart04NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart04NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart04NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart04NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart04NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart04NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart04NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart04NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart04NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart04CheckDiffButton.Add_MouseHover({
+$script:AutoChart04NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04CheckDiffButton)
+$script:AutoChart04NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart04NetworkInterfacesCheckDiffButton)
 
 
-$AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart04NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart04CheckDiffButton.Location.X + $script:AutoChart04CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart04CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart04NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart04NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart04NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPv6 Interfaces Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPv6 Interfaces Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
-CommonButtonSettings -Button $AutoChart04ExpandChartButton
-$script:AutoChart04ManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)
+CommonButtonSettings -Button $AutoChart04NetworkInterfacesExpandChartButton
+$script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($AutoChart04NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart04OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart04CheckDiffButton.Location.X
-                   Y = $script:AutoChart04CheckDiffButton.Location.Y + $script:AutoChart04CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart04NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart04NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart04NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04OpenInShell
-$script:AutoChart04OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04OpenInShell)
+CommonButtonSettings -Button $script:AutoChart04NetworkInterfacesOpenInShell
+$script:AutoChart04NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart04NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart04NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart04ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart04OpenInShell.Location.X + $script:AutoChart04OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart04OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart04NetworkInterfacesOpenInShell.Location.X + $script:AutoChart04NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart04NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04ViewResults
-$script:AutoChart04ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04ViewResults)
+CommonButtonSettings -Button $script:AutoChart04NetworkInterfacesViewResults
+$script:AutoChart04NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart04NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart04NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart04SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart04OpenInShell.Location.X
-                  Y = $script:AutoChart04OpenInShell.Location.Y + $script:AutoChart04OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart04NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart04NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart04NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04SaveButton
+CommonButtonSettings -Button $script:AutoChart04NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart04SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart04 -Title $script:AutoChart04Title
+$script:AutoChart04NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart04NetworkInterfaces -Title $script:AutoChart04NetworkInterfacesTitle
 })
-$script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04SaveButton)
+$script:AutoChart04NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart04NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart04NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart04SaveButton.Location.X 
-                        Y = $script:AutoChart04SaveButton.Location.Y + $script:AutoChart04SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart04NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart04NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart04NetworkInterfacesSaveButton.Location.Y + $script:AutoChart04NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart04CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart04NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04NoticeTextbox)
+$script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart04NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.Clear()
-$script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.Clear()
+$script:AutoChart04NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
 
@@ -2247,13 +2394,13 @@ $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Sel
 
 
 ##############################################################################################
-# AutoChart05
+# AutoChart05NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart05 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart03.Location.X
-                  Y = $script:AutoChart03.Location.Y + $script:AutoChart03.Size.Height + 20 }
+$script:AutoChart05NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart03NetworkInterfaces.Location.X
+                  Y = $script:AutoChart03NetworkInterfaces.Location.Y + $script:AutoChart03NetworkInterfaces.Size.Height + 20 }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -2261,132 +2408,132 @@ $script:AutoChart05 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart05.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart05NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart05Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart05NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
 }
-$script:AutoChart05.Titles.Add($script:AutoChart05Title)
+$script:AutoChart05NetworkInterfaces.Titles.Add($script:AutoChart05NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart05Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart05Area.Name        = 'Chart Area'
-$script:AutoChart05Area.AxisX.Title = 'Hosts'
-$script:AutoChart05Area.AxisX.Interval          = 1
-$script:AutoChart05Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart05Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart05Area.Area3DStyle.Inclination = 75
-$script:AutoChart05.ChartAreas.Add($script:AutoChart05Area)
+$script:AutoChart05NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart05NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart05NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart05NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart05NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart05NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart05NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart05NetworkInterfaces.ChartAreas.Add($script:AutoChart05NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart05.Series.Add("IPs (Manual) Per Host")  
-$script:AutoChart05.Series["IPs (Manual) Per Host"].Enabled           = $True
-$script:AutoChart05.Series["IPs (Manual) Per Host"].BorderWidth       = 1
-$script:AutoChart05.Series["IPs (Manual) Per Host"].IsVisibleInLegend = $false
-$script:AutoChart05.Series["IPs (Manual) Per Host"].Chartarea         = 'Chart Area'
-$script:AutoChart05.Series["IPs (Manual) Per Host"].Legend            = 'Legend'
-$script:AutoChart05.Series["IPs (Manual) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart05.Series["IPs (Manual) Per Host"]['PieLineColor']   = 'Black'
-$script:AutoChart05.Series["IPs (Manual) Per Host"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart05.Series["IPs (Manual) Per Host"].ChartType         = 'Column'
-$script:AutoChart05.Series["IPs (Manual) Per Host"].Color             = 'Brown'
+$script:AutoChart05NetworkInterfaces.Series.Add("IPs (Manual) Per Host")  
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Enabled           = $True
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].BorderWidth       = 1
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].IsVisibleInLegend = $false
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Legend            = 'Legend'
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].ChartType         = 'Column'
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Color             = 'Brown'
 
-        function Generate-AutoChart05 {
-            $script:AutoChart05CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
-            $script:AutoChart05UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
+        function Generate-AutoChart05NetworkInterfaces {
+            $script:AutoChart05NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart05NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Brown'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart05UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart05NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            if ($script:AutoChart05UniqueDataFields.count -gt 0){
-                $script:AutoChart05Title.ForeColor = 'Black'
-                $script:AutoChart05Title.Text = "IPs (Manual) Per Host"
+            if ($script:AutoChart05NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart05NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart05NetworkInterfacesTitle.Text = "IPs (Manual) Per Host"
 
-                $AutoChart05CurrentComputer  = ''
-                $AutoChart05CheckIfFirstLine = $false
-                $AutoChart05ResultsCount     = 0
-                $AutoChart05Computer         = @()
-                $AutoChart05YResults         = @()
-                $script:AutoChart05OverallDataResults = @()
+                $AutoChart05NetworkInterfacesCurrentComputer  = ''
+                $AutoChart05NetworkInterfacesCheckIfFirstLine = $false
+                $AutoChart05NetworkInterfacesResultsCount     = 0
+                $AutoChart05NetworkInterfacesComputer         = @()
+                $AutoChart05NetworkInterfacesYResults         = @()
+                $script:AutoChart05NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.PrefixOrigin -eq 'Manual'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart05CheckIfFirstLine -eq $false ) { $AutoChart05CurrentComputer  = $Line.PSComputerName ; $AutoChart05CheckIfFirstLine = $true }
-                    if ( $AutoChart05CheckIfFirstLine -eq $true ) { 
-                        if ( $Line.PSComputerName -eq $AutoChart05CurrentComputer ) {
-                            if ( $AutoChart05YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart05YResults += $Line.IPAddress ; $AutoChart05ResultsCount += 1 }
-                                if ( $AutoChart05Computer -notcontains $Line.PSComputerName ) { $AutoChart05Computer = $Line.PSComputerName }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'Manual'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart05NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart05NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart05NetworkInterfacesCheckIfFirstLine = $true }
+                    if ( $AutoChart05NetworkInterfacesCheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart05NetworkInterfacesCurrentComputer ) {
+                            if ( $AutoChart05NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart05NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart05NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart05NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart05NetworkInterfacesComputer = $Line.PSComputerName }
                             }       
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart05CurrentComputer ) { 
-                            $AutoChart05CurrentComputer = $Line.PSComputerName
-                            $AutoChart05YDataResults    = New-Object PSObject -Property @{ 
-                                ResultsCount = $AutoChart05ResultsCount
-                                Computer     = $AutoChart05Computer 
+                        elseif ( $Line.PSComputerName -ne $AutoChart05NetworkInterfacesCurrentComputer ) { 
+                            $AutoChart05NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                            $AutoChart05NetworkInterfacesYDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart05NetworkInterfacesResultsCount
+                                Computer     = $AutoChart05NetworkInterfacesComputer 
                             }
-                            $script:AutoChart05OverallDataResults += $AutoChart05YDataResults
-                            $AutoChart05YResults     = @()
-                            $AutoChart05ResultsCount = 0
-                            $AutoChart05Computer     = @()
-                            if ( $AutoChart05YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart05YResults += $Line.IPAddress ; $AutoChart05ResultsCount += 1 }
-                                if ( $AutoChart05Computer -notcontains $Line.PSComputerName ) { $AutoChart05Computer = $Line.PSComputerName }
+                            $script:AutoChart05NetworkInterfacesOverallDataResults += $AutoChart05NetworkInterfacesYDataResults
+                            $AutoChart05NetworkInterfacesYResults     = @()
+                            $AutoChart05NetworkInterfacesResultsCount = 0
+                            $AutoChart05NetworkInterfacesComputer     = @()
+                            if ( $AutoChart05NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart05NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart05NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart05NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart05NetworkInterfacesComputer = $Line.PSComputerName }
                             }
                         }
                     }
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart05YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart05ResultsCount ; Computer = $AutoChart05Computer }    
-                $script:AutoChart05OverallDataResults += $AutoChart05YDataResults
-                $script:AutoChart05OverallDataResults | ForEach-Object { $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+                $AutoChart05NetworkInterfacesYDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart05NetworkInterfacesResultsCount ; Computer = $AutoChart05NetworkInterfacesComputer }    
+                $script:AutoChart05NetworkInterfacesOverallDataResults += $AutoChart05NetworkInterfacesYDataResults
+                $script:AutoChart05NetworkInterfacesOverallDataResults | ForEach-Object { $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
-                $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
-                $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+                $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.Clear()
+                $script:AutoChart05NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
-                $script:AutoChart05TrimOffLastTrackBar.SetRange(0, $($script:AutoChart05OverallDataResults.count))
-                $script:AutoChart05TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05OverallDataResults.count))
+                $script:AutoChart05NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart05NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
-                $script:AutoChart05Title.ForeColor = 'Red'
-                $script:AutoChart05Title.Text = "IPs (Manual) Per Host`n
+                $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.Clear()
+                $script:AutoChart05NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart05NetworkInterfacesTitle.Text = "IPs (Manual) Per Host`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart05
+        Generate-AutoChart05NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart05OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart05NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart05.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart05.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart05NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart05NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart05OptionsButton
-$script:AutoChart05OptionsButton.Add_Click({  
-    if ($script:AutoChart05OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart05OptionsButton.Text = 'Options ^'
-        $script:AutoChart05.Controls.Add($script:AutoChart05ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart05NetworkInterfacesOptionsButton
+$script:AutoChart05NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart05NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart05NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart05NetworkInterfaces.Controls.Add($script:AutoChart05NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart05OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart05OptionsButton.Text = 'Options v'
-        $script:AutoChart05.Controls.Remove($script:AutoChart05ManipulationPanel)
+    elseif ($script:AutoChart05NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart05NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart05NetworkInterfaces.Controls.Remove($script:AutoChart05NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart05OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart05)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart05NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart05NetworkInterfaces)
 
-$script:AutoChart05ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart05NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart05.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart05.Size.Width
+                     Y = $script:AutoChart05NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart05NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -2395,7 +2542,7 @@ $script:AutoChart05ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart05TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart05NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -2405,7 +2552,7 @@ $script:AutoChart05TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart05TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -2416,22 +2563,22 @@ $script:AutoChart05TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart05TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05OverallDataResults.count))                
-    $script:AutoChart05TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart05TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart05TrimOffFirstTrackBarValue = $script:AutoChart05TrimOffFirstTrackBar.Value
-        $script:AutoChart05TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart05TrimOffFirstTrackBar.Value)"
-        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
-        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+    $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart05NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.Clear()
+        $script:AutoChart05NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
-    $script:AutoChart05TrimOffFirstGroupBox.Controls.Add($script:AutoChart05TrimOffFirstTrackBar)
-$script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05TrimOffFirstGroupBox)
+    $script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart05NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart05TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart05NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart05TrimOffFirstGroupBox.Location.X + $script:AutoChart05TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                        Y = $script:AutoChart05TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                        Y = $script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                         Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -2439,7 +2586,7 @@ $script:AutoChart05TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart05TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart05NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -2449,149 +2596,149 @@ $script:AutoChart05TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart05TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart05TrimOffLastTrackBar.SetRange(0, $($script:AutoChart05OverallDataResults.count))
-    $script:AutoChart05TrimOffLastTrackBar.Value         = $($script:AutoChart05OverallDataResults.count)
-    $script:AutoChart05TrimOffLastTrackBarValue   = 0
-    $script:AutoChart05TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart05TrimOffLastTrackBarValue = $($script:AutoChart05OverallDataResults.count) - $script:AutoChart05TrimOffLastTrackBar.Value
-        $script:AutoChart05TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart05OverallDataResults.count) - $script:AutoChart05TrimOffLastTrackBar.Value)"
-        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
-        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    $script:AutoChart05NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart05NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart05NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart05NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart05NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart05NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart05NetworkInterfacesOverallDataResults.count) - $script:AutoChart05NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart05NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart05NetworkInterfacesOverallDataResults.count) - $script:AutoChart05NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.Clear()
+        $script:AutoChart05NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
-$script:AutoChart05TrimOffLastGroupBox.Controls.Add($script:AutoChart05TrimOffLastTrackBar)
-$script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05TrimOffLastGroupBox)
+$script:AutoChart05NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart05NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart05NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart05ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart05NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart05TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart05TrimOffFirstGroupBox.Location.Y + $script:AutoChart05TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart05NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart05ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart05.Series["IPs (Manual) Per Host"].ChartType = $script:AutoChart05ChartTypeComboBox.SelectedItem
-#    $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
-#    $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart05NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].ChartType = $script:AutoChart05NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.Clear()
+#    $script:AutoChart05NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
-$script:AutoChart05ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart05ChartTypesAvailable) { $script:AutoChart05ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05ChartTypeComboBox)
+$script:AutoChart05NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart05NetworkInterfacesChartTypesAvailable) { $script:AutoChart05NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart05NetworkInterfacesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart053DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart05NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart05ChartTypeComboBox.Location.X + $script:AutoChart05ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart05ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart05NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart05NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart05NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart053DToggleButton
-$script:AutoChart053DInclination = 0
-$script:AutoChart053DToggleButton.Add_Click({
-    $script:AutoChart053DInclination += 10
-    if ( $script:AutoChart053DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart05Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart05Area.Area3DStyle.Inclination = $script:AutoChart053DInclination
-        $script:AutoChart053DToggleButton.Text  = "3D On ($script:AutoChart053DInclination)"
-#        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
-#        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+CommonButtonSettings -Button $script:AutoChart05NetworkInterfaces3DToggleButton
+$script:AutoChart05NetworkInterfaces3DInclination = 0
+$script:AutoChart05NetworkInterfaces3DToggleButton.Add_Click({
+    $script:AutoChart05NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart05NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart05NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart05NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart05NetworkInterfaces3DInclination
+        $script:AutoChart05NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart05NetworkInterfaces3DInclination)"
+#        $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.Clear()
+#        $script:AutoChart05NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
     }
-    elseif ( $script:AutoChart053DInclination -le 90 ) {
-        $script:AutoChart05Area.Area3DStyle.Inclination = $script:AutoChart053DInclination
-        $script:AutoChart053DToggleButton.Text  = "3D On ($script:AutoChart053DInclination)" 
-#        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
-#        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    elseif ( $script:AutoChart05NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart05NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart05NetworkInterfaces3DInclination
+        $script:AutoChart05NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart05NetworkInterfaces3DInclination)" 
+#        $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.Clear()
+#        $script:AutoChart05NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
-        $script:AutoChart053DToggleButton.Text  = "3D Off" 
-        $script:AutoChart053DInclination = 0
-        $script:AutoChart05Area.Area3DStyle.Inclination = $script:AutoChart053DInclination
-        $script:AutoChart05Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
-#        $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+        $script:AutoChart05NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart05NetworkInterfaces3DInclination = 0
+        $script:AutoChart05NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart05NetworkInterfaces3DInclination
+        $script:AutoChart05NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.Clear()
+#        $script:AutoChart05NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
-$script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart053DToggleButton)
+$script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart05NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart05ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart05NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart053DToggleButton.Location.X + $script:AutoChart053DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart053DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart05NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart05NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart05NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart05ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart05ColorsAvailable) { $script:AutoChart05ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart05ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart05.Series["IPs (Manual) Per Host"].Color = $script:AutoChart05ChangeColorComboBox.SelectedItem
+$script:AutoChart05NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart05NetworkInterfacesColorsAvailable) { $script:AutoChart05NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart05NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Color = $script:AutoChart05NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05ChangeColorComboBox)
+$script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart05NetworkInterfacesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart05 {    
+function script:InvestigateDifference-AutoChart05NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart05ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart05InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart05InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart05ImportCsvPosResults) { $script:AutoChart05InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart05NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart05NetworkInterfacesImportCsvPosResults) { $script:AutoChart05NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart05ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart05ImportCsvNegResults = @()
+    $script:AutoChart05NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart05ImportCsvAll) { if ($Endpoint -notin $script:AutoChart05ImportCsvPosResults) { $script:AutoChart05ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart05NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart05NetworkInterfacesImportCsvPosResults) { $script:AutoChart05NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart05InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart05ImportCsvNegResults) { $script:AutoChart05InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart05NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart05NetworkInterfacesImportCsvNegResults) { $script:AutoChart05NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart05InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart05ImportCsvPosResults.count))"
-    $script:AutoChart05InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart05ImportCsvNegResults.count))"
+    $script:AutoChart05NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart05NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart05NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart05NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart05CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart05NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart05TrimOffLastGroupBox.Location.X + $script:AutoChart05TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart05TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart05NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart05NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart05NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart05CheckDiffButton
-$script:AutoChart05CheckDiffButton.Add_Click({
-    $script:AutoChart05InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart05NetworkInterfacesCheckDiffButton
+$script:AutoChart05NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart05NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart05InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart05NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart05InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart05NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -2599,43 +2746,43 @@ $script:AutoChart05CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart05InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart05InvestDiffDropDownLabel.Location.y + $script:AutoChart05InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart05NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart05NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart05InvestDiffDropDownArray) { $script:AutoChart05InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart05InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart05 }})
-    $script:AutoChart05InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart05 })
+    ForEach ($Item in $script:AutoChart05NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart05NetworkInterfaces }})
+    $script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart05NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart05InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart05NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart05InvestDiffDropDownComboBox.Location.y + $script:AutoChart05InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart05InvestDiffExecuteButton
-    $script:AutoChart05InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart05 }})
-    $script:AutoChart05InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart05 })
+    CommonButtonSettings -Button $script:AutoChart05NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart05NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart05NetworkInterfaces }})
+    $script:AutoChart05NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart05NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart05InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart05NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart05InvestDiffExecuteButton.Location.y + $script:AutoChart05InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart05NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart05NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart05InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart05NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart05InvestDiffPosResultsLabel.Location.y + $script:AutoChart05InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart05NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart05NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -2647,17 +2794,17 @@ $script:AutoChart05CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart05InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart05NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart05InvestDiffPosResultsLabel.Location.x + $script:AutoChart05InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart05InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart05NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart05NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart05NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart05InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart05InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart05InvestDiffNegResultsLabel.Location.y + $script:AutoChart05InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart05NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart05NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart05NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart05NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -2667,88 +2814,88 @@ $script:AutoChart05CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart05InvestDiffForm.Controls.AddRange(@($script:AutoChart05InvestDiffDropDownLabel,$script:AutoChart05InvestDiffDropDownComboBox,$script:AutoChart05InvestDiffExecuteButton,$script:AutoChart05InvestDiffPosResultsLabel,$script:AutoChart05InvestDiffPosResultsTextBox,$script:AutoChart05InvestDiffNegResultsLabel,$script:AutoChart05InvestDiffNegResultsTextBox))
-    $script:AutoChart05InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart05InvestDiffForm.ShowDialog()
+    $script:AutoChart05NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart05NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart05NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart05NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart05NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart05NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart05NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart05NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart05NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart05CheckDiffButton.Add_MouseHover({
+$script:AutoChart05NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart05ManipulationPanel.controls.Add($script:AutoChart05CheckDiffButton)
+$script:AutoChart05NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart05NetworkInterfacesCheckDiffButton)
 
 
-$AutoChart05ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart05NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart05CheckDiffButton.Location.X + $script:AutoChart05CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart05CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart05NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart05NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart05NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPs (Manual) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (Manual) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
-CommonButtonSettings -Button $AutoChart05ExpandChartButton
-$script:AutoChart05ManipulationPanel.Controls.Add($AutoChart05ExpandChartButton)
+CommonButtonSettings -Button $AutoChart05NetworkInterfacesExpandChartButton
+$script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($AutoChart05NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart05OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart05NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart05CheckDiffButton.Location.X
-                   Y = $script:AutoChart05CheckDiffButton.Location.Y + $script:AutoChart05CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart05NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart05NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart05NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05OpenInShell
-$script:AutoChart05OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart05ManipulationPanel.controls.Add($script:AutoChart05OpenInShell)
+CommonButtonSettings -Button $script:AutoChart05NetworkInterfacesOpenInShell
+$script:AutoChart05NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart05NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart05NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart05ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart05NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart05OpenInShell.Location.X + $script:AutoChart05OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart05OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart05NetworkInterfacesOpenInShell.Location.X + $script:AutoChart05NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart05NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05ViewResults
-$script:AutoChart05ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart05ManipulationPanel.controls.Add($script:AutoChart05ViewResults)
+CommonButtonSettings -Button $script:AutoChart05NetworkInterfacesViewResults
+$script:AutoChart05NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart05NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart05NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart05SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart05NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart05OpenInShell.Location.X
-                  Y = $script:AutoChart05OpenInShell.Location.Y + $script:AutoChart05OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart05NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart05NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart05NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart05SaveButton
+CommonButtonSettings -Button $script:AutoChart05NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart05SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart05 -Title $script:AutoChart05Title
+$script:AutoChart05NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart05NetworkInterfaces -Title $script:AutoChart05NetworkInterfacesTitle
 })
-$script:AutoChart05ManipulationPanel.controls.Add($script:AutoChart05SaveButton)
+$script:AutoChart05NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart05NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart05NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart05SaveButton.Location.X 
-                        Y = $script:AutoChart05SaveButton.Location.Y + $script:AutoChart05SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart05NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart05NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart05NetworkInterfacesSaveButton.Location.Y + $script:AutoChart05NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart05CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart05NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05NoticeTextbox)
+$script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart05NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.Clear()
-$script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.Clear()
+$script:AutoChart05NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
 
@@ -2775,13 +2922,13 @@ $script:AutoChart05OverallDataResults | Sort-Object -Property ResultsCount | Sel
 
 
 ##############################################################################################
-# AutoChart06
+# AutoChart06NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart06 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart04.Location.X
-                  Y = $script:AutoChart04.Location.Y + $script:AutoChart04.Size.Height + 20 }
+$script:AutoChart06NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart04NetworkInterfaces.Location.X
+                  Y = $script:AutoChart04NetworkInterfaces.Location.Y + $script:AutoChart04NetworkInterfaces.Size.Height + 20 }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -2789,132 +2936,132 @@ $script:AutoChart06 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart06.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart06NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart06Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart06NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
 }
-$script:AutoChart06.Titles.Add($script:AutoChart06Title)
+$script:AutoChart06NetworkInterfaces.Titles.Add($script:AutoChart06NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart06Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart06Area.Name        = 'Chart Area'
-$script:AutoChart06Area.AxisX.Title = 'Hosts'
-$script:AutoChart06Area.AxisX.Interval          = 1
-$script:AutoChart06Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart06Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart06Area.Area3DStyle.Inclination = 75
-$script:AutoChart06.ChartAreas.Add($script:AutoChart06Area)
+$script:AutoChart06NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart06NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart06NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart06NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart06NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart06NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart06NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart06NetworkInterfaces.ChartAreas.Add($script:AutoChart06NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart06.Series.Add("IPs (DHCP) Per Host")  
-$script:AutoChart06.Series["IPs (DHCP) Per Host"].Enabled           = $True
-$script:AutoChart06.Series["IPs (DHCP) Per Host"].BorderWidth       = 1
-$script:AutoChart06.Series["IPs (DHCP) Per Host"].IsVisibleInLegend = $false
-$script:AutoChart06.Series["IPs (DHCP) Per Host"].Chartarea         = 'Chart Area'
-$script:AutoChart06.Series["IPs (DHCP) Per Host"].Legend            = 'Legend'
-$script:AutoChart06.Series["IPs (DHCP) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart06.Series["IPs (DHCP) Per Host"]['PieLineColor']   = 'Black'
-$script:AutoChart06.Series["IPs (DHCP) Per Host"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart06.Series["IPs (DHCP) Per Host"].ChartType         = 'Column'
-$script:AutoChart06.Series["IPs (DHCP) Per Host"].Color             = 'Gray'
+$script:AutoChart06NetworkInterfaces.Series.Add("IPs (DHCP) Per Host")  
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Enabled           = $True
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].BorderWidth       = 1
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].IsVisibleInLegend = $false
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Legend            = 'Legend'
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].ChartType         = 'Column'
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Color             = 'Gray'
 
-        function Generate-AutoChart06 {
-            $script:AutoChart06CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
-            $script:AutoChart06UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
+        function Generate-AutoChart06NetworkInterfaces {
+            $script:AutoChart06NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart06NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Gray'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart06UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart06NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            if ($script:AutoChart06UniqueDataFields.count -gt 0){
-                $script:AutoChart06Title.ForeColor = 'Black'
-                $script:AutoChart06Title.Text = "IPs (DHCP) Per Host"
+            if ($script:AutoChart06NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart06NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart06NetworkInterfacesTitle.Text = "IPs (DHCP) Per Host"
 
-                $AutoChart06CurrentComputer  = ''
-                $AutoChart06CheckIfFirstLine = $false
-                $AutoChart06ResultsCount     = 0
-                $AutoChart06Computer         = @()
-                $AutoChart06YResults         = @()
-                $script:AutoChart06OverallDataResults = @()
+                $AutoChart06NetworkInterfacesCurrentComputer  = ''
+                $AutoChart06NetworkInterfacesCheckIfFirstLine = $false
+                $AutoChart06NetworkInterfacesResultsCount     = 0
+                $AutoChart06NetworkInterfacesComputer         = @()
+                $AutoChart06NetworkInterfacesYResults         = @()
+                $script:AutoChart06NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.PrefixOrigin -eq 'DHCP'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart06CheckIfFirstLine -eq $false ) { $AutoChart06CurrentComputer  = $Line.PSComputerName ; $AutoChart06CheckIfFirstLine = $true }
-                    if ( $AutoChart06CheckIfFirstLine -eq $true ) { 
-                        if ( $Line.PSComputerName -eq $AutoChart06CurrentComputer ) {
-                            if ( $AutoChart06YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart06YResults += $Line.IPAddress ; $AutoChart06ResultsCount += 1 }
-                                if ( $AutoChart06Computer -notcontains $Line.PSComputerName ) { $AutoChart06Computer = $Line.PSComputerName }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'DHCP'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart06NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart06NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart06NetworkInterfacesCheckIfFirstLine = $true }
+                    if ( $AutoChart06NetworkInterfacesCheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart06NetworkInterfacesCurrentComputer ) {
+                            if ( $AutoChart06NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart06NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart06NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart06NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart06NetworkInterfacesComputer = $Line.PSComputerName }
                             }       
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart06CurrentComputer ) { 
-                            $AutoChart06CurrentComputer = $Line.PSComputerName
-                            $AutoChart06YDataResults    = New-Object PSObject -Property @{ 
-                                ResultsCount = $AutoChart06ResultsCount
-                                Computer     = $AutoChart06Computer 
+                        elseif ( $Line.PSComputerName -ne $AutoChart06NetworkInterfacesCurrentComputer ) { 
+                            $AutoChart06NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                            $AutoChart06NetworkInterfacesYDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart06NetworkInterfacesResultsCount
+                                Computer     = $AutoChart06NetworkInterfacesComputer 
                             }
-                            $script:AutoChart06OverallDataResults += $AutoChart06YDataResults
-                            $AutoChart06YResults     = @()
-                            $AutoChart06ResultsCount = 0
-                            $AutoChart06Computer     = @()
-                            if ( $AutoChart06YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart06YResults += $Line.IPAddress ; $AutoChart06ResultsCount += 1 }
-                                if ( $AutoChart06Computer -notcontains $Line.PSComputerName ) { $AutoChart06Computer = $Line.PSComputerName }
+                            $script:AutoChart06NetworkInterfacesOverallDataResults += $AutoChart06NetworkInterfacesYDataResults
+                            $AutoChart06NetworkInterfacesYResults     = @()
+                            $AutoChart06NetworkInterfacesResultsCount = 0
+                            $AutoChart06NetworkInterfacesComputer     = @()
+                            if ( $AutoChart06NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart06NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart06NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart06NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart06NetworkInterfacesComputer = $Line.PSComputerName }
                             }
                         }
                     }
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart06YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart06ResultsCount ; Computer = $AutoChart06Computer }    
-                $script:AutoChart06OverallDataResults += $AutoChart06YDataResults
-                $script:AutoChart06OverallDataResults | ForEach-Object { $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+                $AutoChart06NetworkInterfacesYDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart06NetworkInterfacesResultsCount ; Computer = $AutoChart06NetworkInterfacesComputer }    
+                $script:AutoChart06NetworkInterfacesOverallDataResults += $AutoChart06NetworkInterfacesYDataResults
+                $script:AutoChart06NetworkInterfacesOverallDataResults | ForEach-Object { $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
-                $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
-                $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+                $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.Clear()
+                $script:AutoChart06NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
-                $script:AutoChart06TrimOffLastTrackBar.SetRange(0, $($script:AutoChart06OverallDataResults.count))
-                $script:AutoChart06TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06OverallDataResults.count))
+                $script:AutoChart06NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart06NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
-                $script:AutoChart06Title.ForeColor = 'Red'
-                $script:AutoChart06Title.Text = "IPs (DHCP) Per Host`n
+                $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.Clear()
+                $script:AutoChart06NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart06NetworkInterfacesTitle.Text = "IPs (DHCP) Per Host`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart06
+        Generate-AutoChart06NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart06OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart06NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart06.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart06.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart06NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart06NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart06OptionsButton
-$script:AutoChart06OptionsButton.Add_Click({  
-    if ($script:AutoChart06OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart06OptionsButton.Text = 'Options ^'
-        $script:AutoChart06.Controls.Add($script:AutoChart06ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart06NetworkInterfacesOptionsButton
+$script:AutoChart06NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart06NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart06NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart06NetworkInterfaces.Controls.Add($script:AutoChart06NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart06OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart06OptionsButton.Text = 'Options v'
-        $script:AutoChart06.Controls.Remove($script:AutoChart06ManipulationPanel)
+    elseif ($script:AutoChart06NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart06NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart06NetworkInterfaces.Controls.Remove($script:AutoChart06NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart06OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart06)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart06NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart06NetworkInterfaces)
 
-$script:AutoChart06ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart06NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart06.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart06.Size.Width
+                     Y = $script:AutoChart06NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart06NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -2923,7 +3070,7 @@ $script:AutoChart06ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart06TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart06NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -2933,7 +3080,7 @@ $script:AutoChart06TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart06TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -2944,22 +3091,22 @@ $script:AutoChart06TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart06TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06OverallDataResults.count))                
-    $script:AutoChart06TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart06TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart06TrimOffFirstTrackBarValue = $script:AutoChart06TrimOffFirstTrackBar.Value
-        $script:AutoChart06TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart06TrimOffFirstTrackBar.Value)"
-        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
-        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+    $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart06NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.Clear()
+        $script:AutoChart06NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
-    $script:AutoChart06TrimOffFirstGroupBox.Controls.Add($script:AutoChart06TrimOffFirstTrackBar)
-$script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06TrimOffFirstGroupBox)
+    $script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart06NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart06TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart06NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart06TrimOffFirstGroupBox.Location.X + $script:AutoChart06TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                        Y = $script:AutoChart06TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                        Y = $script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                         Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -2967,7 +3114,7 @@ $script:AutoChart06TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart06TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart06NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -2977,149 +3124,149 @@ $script:AutoChart06TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart06TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart06TrimOffLastTrackBar.SetRange(0, $($script:AutoChart06OverallDataResults.count))
-    $script:AutoChart06TrimOffLastTrackBar.Value         = $($script:AutoChart06OverallDataResults.count)
-    $script:AutoChart06TrimOffLastTrackBarValue   = 0
-    $script:AutoChart06TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart06TrimOffLastTrackBarValue = $($script:AutoChart06OverallDataResults.count) - $script:AutoChart06TrimOffLastTrackBar.Value
-        $script:AutoChart06TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart06OverallDataResults.count) - $script:AutoChart06TrimOffLastTrackBar.Value)"
-        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
-        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    $script:AutoChart06NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart06NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart06NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart06NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart06NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart06NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart06NetworkInterfacesOverallDataResults.count) - $script:AutoChart06NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart06NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart06NetworkInterfacesOverallDataResults.count) - $script:AutoChart06NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.Clear()
+        $script:AutoChart06NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
-$script:AutoChart06TrimOffLastGroupBox.Controls.Add($script:AutoChart06TrimOffLastTrackBar)
-$script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06TrimOffLastGroupBox)
+$script:AutoChart06NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart06NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart06NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart06ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart06NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart06TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart06TrimOffFirstGroupBox.Location.Y + $script:AutoChart06TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart06NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart06ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart06.Series["IPs (DHCP) Per Host"].ChartType = $script:AutoChart06ChartTypeComboBox.SelectedItem
-#    $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
-#    $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart06NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].ChartType = $script:AutoChart06NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.Clear()
+#    $script:AutoChart06NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
-$script:AutoChart06ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart06ChartTypesAvailable) { $script:AutoChart06ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06ChartTypeComboBox)
+$script:AutoChart06NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart06NetworkInterfacesChartTypesAvailable) { $script:AutoChart06NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart06NetworkInterfacesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart063DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart06NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart06ChartTypeComboBox.Location.X + $script:AutoChart06ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart06ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart06NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart06NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart06NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart063DToggleButton
-$script:AutoChart063DInclination = 0
-$script:AutoChart063DToggleButton.Add_Click({
-    $script:AutoChart063DInclination += 10
-    if ( $script:AutoChart063DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart06Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart06Area.Area3DStyle.Inclination = $script:AutoChart063DInclination
-        $script:AutoChart063DToggleButton.Text  = "3D On ($script:AutoChart063DInclination)"
-#        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
-#        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+CommonButtonSettings -Button $script:AutoChart06NetworkInterfaces3DToggleButton
+$script:AutoChart06NetworkInterfaces3DInclination = 0
+$script:AutoChart06NetworkInterfaces3DToggleButton.Add_Click({
+    $script:AutoChart06NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart06NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart06NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart06NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart06NetworkInterfaces3DInclination
+        $script:AutoChart06NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart06NetworkInterfaces3DInclination)"
+#        $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.Clear()
+#        $script:AutoChart06NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
     }
-    elseif ( $script:AutoChart063DInclination -le 90 ) {
-        $script:AutoChart06Area.Area3DStyle.Inclination = $script:AutoChart063DInclination
-        $script:AutoChart063DToggleButton.Text  = "3D On ($script:AutoChart063DInclination)" 
-#        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
-#        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    elseif ( $script:AutoChart06NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart06NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart06NetworkInterfaces3DInclination
+        $script:AutoChart06NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart06NetworkInterfaces3DInclination)" 
+#        $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.Clear()
+#        $script:AutoChart06NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
-        $script:AutoChart063DToggleButton.Text  = "3D Off" 
-        $script:AutoChart063DInclination = 0
-        $script:AutoChart06Area.Area3DStyle.Inclination = $script:AutoChart063DInclination
-        $script:AutoChart06Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
-#        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+        $script:AutoChart06NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart06NetworkInterfaces3DInclination = 0
+        $script:AutoChart06NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart06NetworkInterfaces3DInclination
+        $script:AutoChart06NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.Clear()
+#        $script:AutoChart06NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
-$script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart063DToggleButton)
+$script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart06NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart06ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart06NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart063DToggleButton.Location.X + $script:AutoChart063DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart063DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart06NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart06NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart06NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart06ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart06ColorsAvailable) { $script:AutoChart06ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart06ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart06.Series["IPs (DHCP) Per Host"].Color = $script:AutoChart06ChangeColorComboBox.SelectedItem
+$script:AutoChart06NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart06NetworkInterfacesColorsAvailable) { $script:AutoChart06NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart06NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Color = $script:AutoChart06NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06ChangeColorComboBox)
+$script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart06NetworkInterfacesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart06 {    
+function script:InvestigateDifference-AutoChart06NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart06ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart06InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart06InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart06ImportCsvPosResults) { $script:AutoChart06InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart06NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart06NetworkInterfacesImportCsvPosResults) { $script:AutoChart06NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart06ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart06ImportCsvNegResults = @()
+    $script:AutoChart06NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart06ImportCsvAll) { if ($Endpoint -notin $script:AutoChart06ImportCsvPosResults) { $script:AutoChart06ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart06NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart06NetworkInterfacesImportCsvPosResults) { $script:AutoChart06NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart06InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart06ImportCsvNegResults) { $script:AutoChart06InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart06NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart06NetworkInterfacesImportCsvNegResults) { $script:AutoChart06NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart06InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart06ImportCsvPosResults.count))"
-    $script:AutoChart06InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart06ImportCsvNegResults.count))"
+    $script:AutoChart06NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart06NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart06NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart06NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart06CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart06NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart06TrimOffLastGroupBox.Location.X + $script:AutoChart06TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart06TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart06NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart06NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart06NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart06CheckDiffButton
-$script:AutoChart06CheckDiffButton.Add_Click({
-    $script:AutoChart06InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart06NetworkInterfacesCheckDiffButton
+$script:AutoChart06NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart06NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart06InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart06NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart06InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart06NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -3127,43 +3274,43 @@ $script:AutoChart06CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart06InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart06InvestDiffDropDownLabel.Location.y + $script:AutoChart06InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart06NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart06NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart06InvestDiffDropDownArray) { $script:AutoChart06InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart06InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart06 }})
-    $script:AutoChart06InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart06 })
+    ForEach ($Item in $script:AutoChart06NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart06NetworkInterfaces }})
+    $script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart06NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart06InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart06NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart06InvestDiffDropDownComboBox.Location.y + $script:AutoChart06InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart06InvestDiffExecuteButton
-    $script:AutoChart06InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart06 }})
-    $script:AutoChart06InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart06 })
+    CommonButtonSettings -Button $script:AutoChart06NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart06NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart06NetworkInterfaces }})
+    $script:AutoChart06NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart06NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart06InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart06NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart06InvestDiffExecuteButton.Location.y + $script:AutoChart06InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart06NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart06NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart06InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart06NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart06InvestDiffPosResultsLabel.Location.y + $script:AutoChart06InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart06NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart06NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -3175,17 +3322,17 @@ $script:AutoChart06CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart06InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart06NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart06InvestDiffPosResultsLabel.Location.x + $script:AutoChart06InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart06InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart06NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart06NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart06NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart06InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart06InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart06InvestDiffNegResultsLabel.Location.y + $script:AutoChart06InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart06NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart06NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart06NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart06NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -3195,88 +3342,88 @@ $script:AutoChart06CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart06InvestDiffForm.Controls.AddRange(@($script:AutoChart06InvestDiffDropDownLabel,$script:AutoChart06InvestDiffDropDownComboBox,$script:AutoChart06InvestDiffExecuteButton,$script:AutoChart06InvestDiffPosResultsLabel,$script:AutoChart06InvestDiffPosResultsTextBox,$script:AutoChart06InvestDiffNegResultsLabel,$script:AutoChart06InvestDiffNegResultsTextBox))
-    $script:AutoChart06InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart06InvestDiffForm.ShowDialog()
+    $script:AutoChart06NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart06NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart06NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart06NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart06NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart06NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart06NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart06NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart06NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart06CheckDiffButton.Add_MouseHover({
+$script:AutoChart06NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart06ManipulationPanel.controls.Add($script:AutoChart06CheckDiffButton)
+$script:AutoChart06NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart06NetworkInterfacesCheckDiffButton)
 
 
-$AutoChart06ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart06NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart06CheckDiffButton.Location.X + $script:AutoChart06CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart06CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart06NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart06NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart06NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPs (DHCP) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (DHCP) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
-CommonButtonSettings -Button $AutoChart06ExpandChartButton
-$script:AutoChart06ManipulationPanel.Controls.Add($AutoChart06ExpandChartButton)
+CommonButtonSettings -Button $AutoChart06NetworkInterfacesExpandChartButton
+$script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($AutoChart06NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart06OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart06NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart06CheckDiffButton.Location.X
-                   Y = $script:AutoChart06CheckDiffButton.Location.Y + $script:AutoChart06CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart06NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart06NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart06NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06OpenInShell
-$script:AutoChart06OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart06ManipulationPanel.controls.Add($script:AutoChart06OpenInShell)
+CommonButtonSettings -Button $script:AutoChart06NetworkInterfacesOpenInShell
+$script:AutoChart06NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart06NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart06NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart06ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart06NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart06OpenInShell.Location.X + $script:AutoChart06OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart06OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart06NetworkInterfacesOpenInShell.Location.X + $script:AutoChart06NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart06NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06ViewResults
-$script:AutoChart06ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart06ManipulationPanel.controls.Add($script:AutoChart06ViewResults)
+CommonButtonSettings -Button $script:AutoChart06NetworkInterfacesViewResults
+$script:AutoChart06NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart06NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart06NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart06SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart06NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart06OpenInShell.Location.X
-                  Y = $script:AutoChart06OpenInShell.Location.Y + $script:AutoChart06OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart06NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart06NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart06NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart06SaveButton
+CommonButtonSettings -Button $script:AutoChart06NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart06SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart06 -Title $script:AutoChart06Title
+$script:AutoChart06NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart06NetworkInterfaces -Title $script:AutoChart06NetworkInterfacesTitle
 })
-$script:AutoChart06ManipulationPanel.controls.Add($script:AutoChart06SaveButton)
+$script:AutoChart06NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart06NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart06NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart06SaveButton.Location.X 
-                        Y = $script:AutoChart06SaveButton.Location.Y + $script:AutoChart06SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart06NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart06NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart06NetworkInterfacesSaveButton.Location.Y + $script:AutoChart06NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart06CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart06NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06NoticeTextbox)
+$script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart06NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.Clear()
-$script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.Clear()
+$script:AutoChart06NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
 
@@ -3299,13 +3446,13 @@ $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Sel
 
 
 ##############################################################################################
-# AutoChart07
+# AutoChart07NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart07 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart05.Location.X
-                  Y = $script:AutoChart05.Location.Y + $script:AutoChart05.Size.Height + 20 }
+$script:AutoChart07NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart05NetworkInterfaces.Location.X
+                  Y = $script:AutoChart05NetworkInterfaces.Location.Y + $script:AutoChart05NetworkInterfaces.Size.Height + 20 }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -3313,132 +3460,132 @@ $script:AutoChart07 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart07.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart07NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart07Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart07NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
 }
-$script:AutoChart07.Titles.Add($script:AutoChart07Title)
+$script:AutoChart07NetworkInterfaces.Titles.Add($script:AutoChart07NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart07Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart07Area.Name        = 'Chart Area'
-$script:AutoChart07Area.AxisX.Title = 'Hosts'
-$script:AutoChart07Area.AxisX.Interval          = 1
-$script:AutoChart07Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart07Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart07Area.Area3DStyle.Inclination = 75
-$script:AutoChart07.ChartAreas.Add($script:AutoChart07Area)
+$script:AutoChart07NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart07NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart07NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart07NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart07NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart07NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart07NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart07NetworkInterfaces.ChartAreas.Add($script:AutoChart07NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart07.Series.Add("IPs (Well Known) Per Host")  
-$script:AutoChart07.Series["IPs (Well Known) Per Host"].Enabled           = $True
-$script:AutoChart07.Series["IPs (Well Known) Per Host"].BorderWidth       = 1
-$script:AutoChart07.Series["IPs (Well Known) Per Host"].IsVisibleInLegend = $false
-$script:AutoChart07.Series["IPs (Well Known) Per Host"].Chartarea         = 'Chart Area'
-$script:AutoChart07.Series["IPs (Well Known) Per Host"].Legend            = 'Legend'
-$script:AutoChart07.Series["IPs (Well Known) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart07.Series["IPs (Well Known) Per Host"]['PieLineColor']   = 'Black'
-$script:AutoChart07.Series["IPs (Well Known) Per Host"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart07.Series["IPs (Well Known) Per Host"].ChartType         = 'Column'
-$script:AutoChart07.Series["IPs (Well Known) Per Host"].Color             = 'SlateBLue'
+$script:AutoChart07NetworkInterfaces.Series.Add("IPs (Well Known) Per Host")  
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Enabled           = $True
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].BorderWidth       = 1
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].IsVisibleInLegend = $false
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Legend            = 'Legend'
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].ChartType         = 'Column'
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Color             = 'SlateBLue'
 
-        function Generate-AutoChart07 {
-            $script:AutoChart07CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
-            $script:AutoChart07UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
+        function Generate-AutoChart07NetworkInterfaces {
+            $script:AutoChart07NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart07NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'SlateBLue'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart07UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart07NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            if ($script:AutoChart07UniqueDataFields.count -gt 0){
-                $script:AutoChart07Title.ForeColor = 'Black'
-                $script:AutoChart07Title.Text = "IPs (Well Known) Per Host"
+            if ($script:AutoChart07NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart07NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart07NetworkInterfacesTitle.Text = "IPs (Well Known) Per Host"
 
-                $AutoChart07CurrentComputer  = ''
-                $AutoChart07CheckIfFirstLine = $false
-                $AutoChart07ResultsCount     = 0
-                $AutoChart07Computer         = @()
-                $AutoChart07YResults         = @()
-                $script:AutoChart07OverallDataResults = @()
+                $AutoChart07NetworkInterfacesCurrentComputer  = ''
+                $AutoChart07NetworkInterfacesCheckIfFirstLine = $false
+                $AutoChart07NetworkInterfacesResultsCount     = 0
+                $AutoChart07NetworkInterfacesComputer         = @()
+                $AutoChart07NetworkInterfacesYResults         = @()
+                $script:AutoChart07NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.PrefixOrigin -eq 'WellKnown'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart07CheckIfFirstLine -eq $false ) { $AutoChart07CurrentComputer  = $Line.PSComputerName ; $AutoChart07CheckIfFirstLine = $true }
-                    if ( $AutoChart07CheckIfFirstLine -eq $true ) { 
-                        if ( $Line.PSComputerName -eq $AutoChart07CurrentComputer ) {
-                            if ( $AutoChart07YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart07YResults += $Line.IPAddress ; $AutoChart07ResultsCount += 1 }
-                                if ( $AutoChart07Computer -notcontains $Line.PSComputerName ) { $AutoChart07Computer = $Line.PSComputerName }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'WellKnown'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart07NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart07NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart07NetworkInterfacesCheckIfFirstLine = $true }
+                    if ( $AutoChart07NetworkInterfacesCheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart07NetworkInterfacesCurrentComputer ) {
+                            if ( $AutoChart07NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart07NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart07NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart07NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart07NetworkInterfacesComputer = $Line.PSComputerName }
                             }       
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart07CurrentComputer ) { 
-                            $AutoChart07CurrentComputer = $Line.PSComputerName
-                            $AutoChart07YDataResults    = New-Object PSObject -Property @{ 
-                                ResultsCount = $AutoChart07ResultsCount
-                                Computer     = $AutoChart07Computer 
+                        elseif ( $Line.PSComputerName -ne $AutoChart07NetworkInterfacesCurrentComputer ) { 
+                            $AutoChart07NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                            $AutoChart07NetworkInterfacesYDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart07NetworkInterfacesResultsCount
+                                Computer     = $AutoChart07NetworkInterfacesComputer 
                             }
-                            $script:AutoChart07OverallDataResults += $AutoChart07YDataResults
-                            $AutoChart07YResults     = @()
-                            $AutoChart07ResultsCount = 0
-                            $AutoChart07Computer     = @()
-                            if ( $AutoChart07YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart07YResults += $Line.IPAddress ; $AutoChart07ResultsCount += 1 }
-                                if ( $AutoChart07Computer -notcontains $Line.PSComputerName ) { $AutoChart07Computer = $Line.PSComputerName }
+                            $script:AutoChart07NetworkInterfacesOverallDataResults += $AutoChart07NetworkInterfacesYDataResults
+                            $AutoChart07NetworkInterfacesYResults     = @()
+                            $AutoChart07NetworkInterfacesResultsCount = 0
+                            $AutoChart07NetworkInterfacesComputer     = @()
+                            if ( $AutoChart07NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart07NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart07NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart07NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart07NetworkInterfacesComputer = $Line.PSComputerName }
                             }
                         }
                     }
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart07YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart07ResultsCount ; Computer = $AutoChart07Computer }    
-                $script:AutoChart07OverallDataResults += $AutoChart07YDataResults
-                $script:AutoChart07OverallDataResults | ForEach-Object { $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+                $AutoChart07NetworkInterfacesYDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart07NetworkInterfacesResultsCount ; Computer = $AutoChart07NetworkInterfacesComputer }    
+                $script:AutoChart07NetworkInterfacesOverallDataResults += $AutoChart07NetworkInterfacesYDataResults
+                $script:AutoChart07NetworkInterfacesOverallDataResults | ForEach-Object { $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
-                $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
-                $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+                $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.Clear()
+                $script:AutoChart07NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
-                $script:AutoChart07TrimOffLastTrackBar.SetRange(0, $($script:AutoChart07OverallDataResults.count))
-                $script:AutoChart07TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart07OverallDataResults.count))
+                $script:AutoChart07NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart07NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart07NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
-                $script:AutoChart07Title.ForeColor = 'Red'
-                $script:AutoChart07Title.Text = "IPs (Well Known) Per Host`n
+                $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.Clear()
+                $script:AutoChart07NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart07NetworkInterfacesTitle.Text = "IPs (Well Known) Per Host`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart07
+        Generate-AutoChart07NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart07OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart07NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart07.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart07.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart07NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart07NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart07OptionsButton
-$script:AutoChart07OptionsButton.Add_Click({  
-    if ($script:AutoChart07OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart07OptionsButton.Text = 'Options ^'
-        $script:AutoChart07.Controls.Add($script:AutoChart07ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart07NetworkInterfacesOptionsButton
+$script:AutoChart07NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart07NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart07NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart07NetworkInterfaces.Controls.Add($script:AutoChart07NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart07OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart07OptionsButton.Text = 'Options v'
-        $script:AutoChart07.Controls.Remove($script:AutoChart07ManipulationPanel)
+    elseif ($script:AutoChart07NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart07NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart07NetworkInterfaces.Controls.Remove($script:AutoChart07NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart07OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart07)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart07NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart07NetworkInterfaces)
 
-$script:AutoChart07ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart07NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart07.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart07.Size.Width
+                     Y = $script:AutoChart07NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart07NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -3447,7 +3594,7 @@ $script:AutoChart07ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart07TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart07NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -3457,7 +3604,7 @@ $script:AutoChart07TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart07TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -3468,22 +3615,22 @@ $script:AutoChart07TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart07TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart07OverallDataResults.count))                
-    $script:AutoChart07TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart07TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart07TrimOffFirstTrackBarValue = $script:AutoChart07TrimOffFirstTrackBar.Value
-        $script:AutoChart07TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart07TrimOffFirstTrackBar.Value)"
-        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
-        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+    $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart07NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart07NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.Clear()
+        $script:AutoChart07NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
-    $script:AutoChart07TrimOffFirstGroupBox.Controls.Add($script:AutoChart07TrimOffFirstTrackBar)
-$script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07TrimOffFirstGroupBox)
+    $script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart07NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart07TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart07NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart07TrimOffFirstGroupBox.Location.X + $script:AutoChart07TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                        Y = $script:AutoChart07TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                        Y = $script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                         Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -3491,7 +3638,7 @@ $script:AutoChart07TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart07TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart07NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -3501,149 +3648,149 @@ $script:AutoChart07TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart07TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart07TrimOffLastTrackBar.SetRange(0, $($script:AutoChart07OverallDataResults.count))
-    $script:AutoChart07TrimOffLastTrackBar.Value         = $($script:AutoChart07OverallDataResults.count)
-    $script:AutoChart07TrimOffLastTrackBarValue   = 0
-    $script:AutoChart07TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart07TrimOffLastTrackBarValue = $($script:AutoChart07OverallDataResults.count) - $script:AutoChart07TrimOffLastTrackBar.Value
-        $script:AutoChart07TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart07OverallDataResults.count) - $script:AutoChart07TrimOffLastTrackBar.Value)"
-        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
-        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    $script:AutoChart07NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart07NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart07NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart07NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart07NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart07NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart07NetworkInterfacesOverallDataResults.count) - $script:AutoChart07NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart07NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart07NetworkInterfacesOverallDataResults.count) - $script:AutoChart07NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.Clear()
+        $script:AutoChart07NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
-$script:AutoChart07TrimOffLastGroupBox.Controls.Add($script:AutoChart07TrimOffLastTrackBar)
-$script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07TrimOffLastGroupBox)
+$script:AutoChart07NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart07NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart07NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart07ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart07NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart07TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart07TrimOffFirstGroupBox.Location.Y + $script:AutoChart07TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart07NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart07ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart07.Series["IPs (Well Known) Per Host"].ChartType = $script:AutoChart07ChartTypeComboBox.SelectedItem
-#    $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
-#    $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart07NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].ChartType = $script:AutoChart07NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.Clear()
+#    $script:AutoChart07NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
-$script:AutoChart07ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart07ChartTypesAvailable) { $script:AutoChart07ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07ChartTypeComboBox)
+$script:AutoChart07NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart07NetworkInterfacesChartTypesAvailable) { $script:AutoChart07NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart07NetworkInterfacesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart073DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart07NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart07ChartTypeComboBox.Location.X + $script:AutoChart07ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart07ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart07NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart07NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart07NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart073DToggleButton
-$script:AutoChart073DInclination = 0
-$script:AutoChart073DToggleButton.Add_Click({
-    $script:AutoChart073DInclination += 10
-    if ( $script:AutoChart073DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart07Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart07Area.Area3DStyle.Inclination = $script:AutoChart073DInclination
-        $script:AutoChart073DToggleButton.Text  = "3D On ($script:AutoChart073DInclination)"
-#        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
-#        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+CommonButtonSettings -Button $script:AutoChart07NetworkInterfaces3DToggleButton
+$script:AutoChart07NetworkInterfaces3DInclination = 0
+$script:AutoChart07NetworkInterfaces3DToggleButton.Add_Click({
+    $script:AutoChart07NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart07NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart07NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart07NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart07NetworkInterfaces3DInclination
+        $script:AutoChart07NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart07NetworkInterfaces3DInclination)"
+#        $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.Clear()
+#        $script:AutoChart07NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
     }
-    elseif ( $script:AutoChart073DInclination -le 90 ) {
-        $script:AutoChart07Area.Area3DStyle.Inclination = $script:AutoChart073DInclination
-        $script:AutoChart073DToggleButton.Text  = "3D On ($script:AutoChart073DInclination)" 
-#        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
-#        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    elseif ( $script:AutoChart07NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart07NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart07NetworkInterfaces3DInclination
+        $script:AutoChart07NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart07NetworkInterfaces3DInclination)" 
+#        $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.Clear()
+#        $script:AutoChart07NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
-        $script:AutoChart073DToggleButton.Text  = "3D Off" 
-        $script:AutoChart073DInclination = 0
-        $script:AutoChart07Area.Area3DStyle.Inclination = $script:AutoChart073DInclination
-        $script:AutoChart07Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
-#        $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+        $script:AutoChart07NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart07NetworkInterfaces3DInclination = 0
+        $script:AutoChart07NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart07NetworkInterfaces3DInclination
+        $script:AutoChart07NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.Clear()
+#        $script:AutoChart07NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
-$script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart073DToggleButton)
+$script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart07NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart07ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart07NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart073DToggleButton.Location.X + $script:AutoChart073DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart073DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart07NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart07NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart07NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart07ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart07ColorsAvailable) { $script:AutoChart07ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart07ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart07.Series["IPs (Well Known) Per Host"].Color = $script:AutoChart07ChangeColorComboBox.SelectedItem
+$script:AutoChart07NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart07NetworkInterfacesColorsAvailable) { $script:AutoChart07NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart07NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Color = $script:AutoChart07NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07ChangeColorComboBox)
+$script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart07NetworkInterfacesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart07 {    
+function script:InvestigateDifference-AutoChart07NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart07ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart07InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart07InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart07ImportCsvPosResults) { $script:AutoChart07InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart07NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart07NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart07NetworkInterfacesImportCsvPosResults) { $script:AutoChart07NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart07ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart07NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart07ImportCsvNegResults = @()
+    $script:AutoChart07NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart07ImportCsvAll) { if ($Endpoint -notin $script:AutoChart07ImportCsvPosResults) { $script:AutoChart07ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart07NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart07NetworkInterfacesImportCsvPosResults) { $script:AutoChart07NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart07InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart07ImportCsvNegResults) { $script:AutoChart07InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart07NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart07NetworkInterfacesImportCsvNegResults) { $script:AutoChart07NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart07InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart07ImportCsvPosResults.count))"
-    $script:AutoChart07InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart07ImportCsvNegResults.count))"
+    $script:AutoChart07NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart07NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart07NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart07NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart07CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart07NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart07TrimOffLastGroupBox.Location.X + $script:AutoChart07TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart07TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart07NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart07NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart07NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart07CheckDiffButton
-$script:AutoChart07CheckDiffButton.Add_Click({
-    $script:AutoChart07InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart07NetworkInterfacesCheckDiffButton
+$script:AutoChart07NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart07NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart07InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart07NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart07InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart07NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -3651,43 +3798,43 @@ $script:AutoChart07CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart07InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart07InvestDiffDropDownLabel.Location.y + $script:AutoChart07InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart07NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart07NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart07InvestDiffDropDownArray) { $script:AutoChart07InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart07InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart07 }})
-    $script:AutoChart07InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart07 })
+    ForEach ($Item in $script:AutoChart07NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart07NetworkInterfaces }})
+    $script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart07NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart07InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart07NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart07InvestDiffDropDownComboBox.Location.y + $script:AutoChart07InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart07InvestDiffExecuteButton
-    $script:AutoChart07InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart07 }})
-    $script:AutoChart07InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart07 })
+    CommonButtonSettings -Button $script:AutoChart07NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart07NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart07NetworkInterfaces }})
+    $script:AutoChart07NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart07NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart07InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart07NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart07InvestDiffExecuteButton.Location.y + $script:AutoChart07InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart07NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart07NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart07InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart07NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart07InvestDiffPosResultsLabel.Location.y + $script:AutoChart07InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart07NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart07NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -3699,17 +3846,17 @@ $script:AutoChart07CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart07InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart07NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart07InvestDiffPosResultsLabel.Location.x + $script:AutoChart07InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart07InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart07NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart07NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart07NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart07InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart07InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart07InvestDiffNegResultsLabel.Location.y + $script:AutoChart07InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart07NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart07NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart07NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart07NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -3719,88 +3866,88 @@ $script:AutoChart07CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart07InvestDiffForm.Controls.AddRange(@($script:AutoChart07InvestDiffDropDownLabel,$script:AutoChart07InvestDiffDropDownComboBox,$script:AutoChart07InvestDiffExecuteButton,$script:AutoChart07InvestDiffPosResultsLabel,$script:AutoChart07InvestDiffPosResultsTextBox,$script:AutoChart07InvestDiffNegResultsLabel,$script:AutoChart07InvestDiffNegResultsTextBox))
-    $script:AutoChart07InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart07InvestDiffForm.ShowDialog()
+    $script:AutoChart07NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart07NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart07NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart07NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart07NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart07NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart07NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart07NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart07NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart07CheckDiffButton.Add_MouseHover({
+$script:AutoChart07NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart07ManipulationPanel.controls.Add($script:AutoChart07CheckDiffButton)
+$script:AutoChart07NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart07NetworkInterfacesCheckDiffButton)
 
 
-$AutoChart07ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart07NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart07CheckDiffButton.Location.X + $script:AutoChart07CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart07CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart07NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart07NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart07NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPs (Well Known) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (Well Known) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
-CommonButtonSettings -Button $AutoChart07ExpandChartButton
-$script:AutoChart07ManipulationPanel.Controls.Add($AutoChart07ExpandChartButton)
+CommonButtonSettings -Button $AutoChart07NetworkInterfacesExpandChartButton
+$script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($AutoChart07NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart07OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart07NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart07CheckDiffButton.Location.X
-                   Y = $script:AutoChart07CheckDiffButton.Location.Y + $script:AutoChart07CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart07NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart07NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart07NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart07OpenInShell
-$script:AutoChart07OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart07ManipulationPanel.controls.Add($script:AutoChart07OpenInShell)
+CommonButtonSettings -Button $script:AutoChart07NetworkInterfacesOpenInShell
+$script:AutoChart07NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart07NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart07NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart07ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart07NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart07OpenInShell.Location.X + $script:AutoChart07OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart07OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart07NetworkInterfacesOpenInShell.Location.X + $script:AutoChart07NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart07NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart07ViewResults
-$script:AutoChart07ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart07ManipulationPanel.controls.Add($script:AutoChart07ViewResults)
+CommonButtonSettings -Button $script:AutoChart07NetworkInterfacesViewResults
+$script:AutoChart07NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart07NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart07NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart07SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart07NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart07OpenInShell.Location.X
-                  Y = $script:AutoChart07OpenInShell.Location.Y + $script:AutoChart07OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart07NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart07NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart07NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart07SaveButton
+CommonButtonSettings -Button $script:AutoChart07NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart07SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart07 -Title $script:AutoChart07Title
+$script:AutoChart07NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart07NetworkInterfaces -Title $script:AutoChart07NetworkInterfacesTitle
 })
-$script:AutoChart07ManipulationPanel.controls.Add($script:AutoChart07SaveButton)
+$script:AutoChart07NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart07NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart07NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart07SaveButton.Location.X 
-                        Y = $script:AutoChart07SaveButton.Location.Y + $script:AutoChart07SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart07NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart07NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart07NetworkInterfacesSaveButton.Location.Y + $script:AutoChart07NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart07CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart07NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07NoticeTextbox)
+$script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart07NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.Clear()
-$script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.Clear()
+$script:AutoChart07NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart07NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
 
@@ -3828,13 +3975,13 @@ $script:AutoChart07OverallDataResults | Sort-Object -Property ResultsCount | Sel
 
 
 ##############################################################################################
-# AutoChart08
+# AutoChart08NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart08 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart06.Location.X
-                  Y = $script:AutoChart06.Location.Y + $script:AutoChart06.Size.Height + 20 }
+$script:AutoChart08NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart06NetworkInterfaces.Location.X
+                  Y = $script:AutoChart06NetworkInterfaces.Location.Y + $script:AutoChart06NetworkInterfaces.Size.Height + 20 }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -3842,132 +3989,132 @@ $script:AutoChart08 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart08.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart08NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart08Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart08NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
 }
-$script:AutoChart08.Titles.Add($script:AutoChart08Title)
+$script:AutoChart08NetworkInterfaces.Titles.Add($script:AutoChart08NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart08Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart08Area.Name        = 'Chart Area'
-$script:AutoChart08Area.AxisX.Title = 'Hosts'
-$script:AutoChart08Area.AxisX.Interval          = 1
-$script:AutoChart08Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart08Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart08Area.Area3DStyle.Inclination = 75
-$script:AutoChart08.ChartAreas.Add($script:AutoChart08Area)
+$script:AutoChart08NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart08NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart08NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart08NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart08NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart08NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart08NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart08NetworkInterfaces.ChartAreas.Add($script:AutoChart08NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart08.Series.Add("IPs (Router Advertisement) Per Host")  
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Enabled           = $True
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].BorderWidth       = 1
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].IsVisibleInLegend = $false
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Chartarea         = 'Chart Area'
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Legend            = 'Legend'
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"]['PieLineColor']   = 'Black'
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].ChartType         = 'Column'
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Color             = 'Purple'
+$script:AutoChart08NetworkInterfaces.Series.Add("IPs (Router Advertisement) Per Host")  
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Enabled           = $True
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].BorderWidth       = 1
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].IsVisibleInLegend = $false
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Legend            = 'Legend'
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].ChartType         = 'Column'
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Color             = 'Purple'
 
-        function Generate-AutoChart08 {
-            $script:AutoChart08CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
-            $script:AutoChart08UniqueDataFields = ($script:AutoChartDataSource).IPAddress | Sort-Object -Property 'IPAddress'
+        function Generate-AutoChart08NetworkInterfaces {
+            $script:AutoChart08NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart08NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Purple'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart08UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart08NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            if ($script:AutoChart08UniqueDataFields.count -gt 0){
-                $script:AutoChart08Title.ForeColor = 'Black'
-                $script:AutoChart08Title.Text = "IPs (Router Advertisement) Per Host"
+            if ($script:AutoChart08NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart08NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart08NetworkInterfacesTitle.Text = "IPs (Router Advertisement) Per Host"
 
-                $AutoChart08CurrentComputer  = ''
-                $AutoChart08CheckIfFirstLine = $false
-                $AutoChart08ResultsCount     = 0
-                $AutoChart08Computer         = @()
-                $AutoChart08YResults         = @()
-                $script:AutoChart08OverallDataResults = @()
+                $AutoChart08NetworkInterfacesCurrentComputer  = ''
+                $AutoChart08NetworkInterfacesCheckIfFirstLine = $false
+                $AutoChart08NetworkInterfacesResultsCount     = 0
+                $AutoChart08NetworkInterfacesComputer         = @()
+                $AutoChart08NetworkInterfacesYResults         = @()
+                $script:AutoChart08NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSource | Where-Object {$_.PrefixOrigin -eq 'RouterAdvertisement'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart08CheckIfFirstLine -eq $false ) { $AutoChart08CurrentComputer  = $Line.PSComputerName ; $AutoChart08CheckIfFirstLine = $true }
-                    if ( $AutoChart08CheckIfFirstLine -eq $true ) { 
-                        if ( $Line.PSComputerName -eq $AutoChart08CurrentComputer ) {
-                            if ( $AutoChart08YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart08YResults += $Line.IPAddress ; $AutoChart08ResultsCount += 1 }
-                                if ( $AutoChart08Computer -notcontains $Line.PSComputerName ) { $AutoChart08Computer = $Line.PSComputerName }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'RouterAdvertisement'} | Sort-Object PSComputerName) ) {
+                    if ( $AutoChart08NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart08NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart08NetworkInterfacesCheckIfFirstLine = $true }
+                    if ( $AutoChart08NetworkInterfacesCheckIfFirstLine -eq $true ) { 
+                        if ( $Line.PSComputerName -eq $AutoChart08NetworkInterfacesCurrentComputer ) {
+                            if ( $AutoChart08NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart08NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart08NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart08NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart08NetworkInterfacesComputer = $Line.PSComputerName }
                             }       
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart08CurrentComputer ) { 
-                            $AutoChart08CurrentComputer = $Line.PSComputerName
-                            $AutoChart08YDataResults    = New-Object PSObject -Property @{ 
-                                ResultsCount = $AutoChart08ResultsCount
-                                Computer     = $AutoChart08Computer 
+                        elseif ( $Line.PSComputerName -ne $AutoChart08NetworkInterfacesCurrentComputer ) { 
+                            $AutoChart08NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                            $AutoChart08NetworkInterfacesYDataResults    = New-Object PSObject -Property @{ 
+                                ResultsCount = $AutoChart08NetworkInterfacesResultsCount
+                                Computer     = $AutoChart08NetworkInterfacesComputer 
                             }
-                            $script:AutoChart08OverallDataResults += $AutoChart08YDataResults
-                            $AutoChart08YResults     = @()
-                            $AutoChart08ResultsCount = 0
-                            $AutoChart08Computer     = @()
-                            if ( $AutoChart08YResults -notcontains $Line.IPAddress ) {
-                                if ( $Line.IPAddress -ne "" ) { $AutoChart08YResults += $Line.IPAddress ; $AutoChart08ResultsCount += 1 }
-                                if ( $AutoChart08Computer -notcontains $Line.PSComputerName ) { $AutoChart08Computer = $Line.PSComputerName }
+                            $script:AutoChart08NetworkInterfacesOverallDataResults += $AutoChart08NetworkInterfacesYDataResults
+                            $AutoChart08NetworkInterfacesYResults     = @()
+                            $AutoChart08NetworkInterfacesResultsCount = 0
+                            $AutoChart08NetworkInterfacesComputer     = @()
+                            if ( $AutoChart08NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
+                                if ( $Line.IPAddress -ne "" ) { $AutoChart08NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart08NetworkInterfacesResultsCount += 1 }
+                                if ( $AutoChart08NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart08NetworkInterfacesComputer = $Line.PSComputerName }
                             }
                         }
                     }
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart08YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart08ResultsCount ; Computer = $AutoChart08Computer }    
-                $script:AutoChart08OverallDataResults += $AutoChart08YDataResults
-                $script:AutoChart08OverallDataResults | ForEach-Object { $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+                $AutoChart08NetworkInterfacesYDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart08NetworkInterfacesResultsCount ; Computer = $AutoChart08NetworkInterfacesComputer }    
+                $script:AutoChart08NetworkInterfacesOverallDataResults += $AutoChart08NetworkInterfacesYDataResults
+                $script:AutoChart08NetworkInterfacesOverallDataResults | ForEach-Object { $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
-                $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
-                $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+                $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+                $script:AutoChart08NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
-                $script:AutoChart08TrimOffLastTrackBar.SetRange(0, $($script:AutoChart08OverallDataResults.count))
-                $script:AutoChart08TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart08OverallDataResults.count))
+                $script:AutoChart08NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart08NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart08NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
-                $script:AutoChart08Title.ForeColor = 'Red'
-                $script:AutoChart08Title.Text = "IPs (Router Advertisement) Per Host`n
+                $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+                $script:AutoChart08NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart08NetworkInterfacesTitle.Text = "IPs (Router Advertisement) Per Host`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart08
+        Generate-AutoChart08NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart08OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart08NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart08.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart08.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart08NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart08NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart08OptionsButton
-$script:AutoChart08OptionsButton.Add_Click({  
-    if ($script:AutoChart08OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart08OptionsButton.Text = 'Options ^'
-        $script:AutoChart08.Controls.Add($script:AutoChart08ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart08NetworkInterfacesOptionsButton
+$script:AutoChart08NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart08NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart08NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart08NetworkInterfaces.Controls.Add($script:AutoChart08NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart08OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart08OptionsButton.Text = 'Options v'
-        $script:AutoChart08.Controls.Remove($script:AutoChart08ManipulationPanel)
+    elseif ($script:AutoChart08NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart08NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart08NetworkInterfaces.Controls.Remove($script:AutoChart08NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart08OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart08)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart08NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart08NetworkInterfaces)
 
-$script:AutoChart08ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart08NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart08.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart08.Size.Width
+                     Y = $script:AutoChart08NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart08NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -3976,7 +4123,7 @@ $script:AutoChart08ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart08TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart08NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -3986,7 +4133,7 @@ $script:AutoChart08TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart08TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -3997,22 +4144,22 @@ $script:AutoChart08TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart08TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart08OverallDataResults.count))                
-    $script:AutoChart08TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart08TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart08TrimOffFirstTrackBarValue = $script:AutoChart08TrimOffFirstTrackBar.Value
-        $script:AutoChart08TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart08TrimOffFirstTrackBar.Value)"
-        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
-        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+    $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart08NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart08NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+        $script:AutoChart08NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
-    $script:AutoChart08TrimOffFirstGroupBox.Controls.Add($script:AutoChart08TrimOffFirstTrackBar)
-$script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08TrimOffFirstGroupBox)
+    $script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart08NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart08TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart08NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart08TrimOffFirstGroupBox.Location.X + $script:AutoChart08TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                        Y = $script:AutoChart08TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                        Y = $script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                         Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -4020,7 +4167,7 @@ $script:AutoChart08TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart08TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart08NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -4030,149 +4177,149 @@ $script:AutoChart08TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart08TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart08TrimOffLastTrackBar.SetRange(0, $($script:AutoChart08OverallDataResults.count))
-    $script:AutoChart08TrimOffLastTrackBar.Value         = $($script:AutoChart08OverallDataResults.count)
-    $script:AutoChart08TrimOffLastTrackBarValue   = 0
-    $script:AutoChart08TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart08TrimOffLastTrackBarValue = $($script:AutoChart08OverallDataResults.count) - $script:AutoChart08TrimOffLastTrackBar.Value
-        $script:AutoChart08TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart08OverallDataResults.count) - $script:AutoChart08TrimOffLastTrackBar.Value)"
-        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
-        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    $script:AutoChart08NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart08NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart08NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart08NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart08NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart08NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart08NetworkInterfacesOverallDataResults.count) - $script:AutoChart08NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart08NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart08NetworkInterfacesOverallDataResults.count) - $script:AutoChart08NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+        $script:AutoChart08NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
-$script:AutoChart08TrimOffLastGroupBox.Controls.Add($script:AutoChart08TrimOffLastTrackBar)
-$script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08TrimOffLastGroupBox)
+$script:AutoChart08NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart08NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart08NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart08ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart08NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart08TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart08TrimOffFirstGroupBox.Location.Y + $script:AutoChart08TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart08NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart08ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].ChartType = $script:AutoChart08ChartTypeComboBox.SelectedItem
-#    $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
-#    $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart08NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].ChartType = $script:AutoChart08NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+#    $script:AutoChart08NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
-$script:AutoChart08ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart08ChartTypesAvailable) { $script:AutoChart08ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08ChartTypeComboBox)
+$script:AutoChart08NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart08NetworkInterfacesChartTypesAvailable) { $script:AutoChart08NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart08NetworkInterfacesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart083DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart08NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart08ChartTypeComboBox.Location.X + $script:AutoChart08ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart08ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart08NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart08NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart08NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart083DToggleButton
-$script:AutoChart083DInclination = 0
-$script:AutoChart083DToggleButton.Add_Click({
-    $script:AutoChart083DInclination += 10
-    if ( $script:AutoChart083DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart08Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart08Area.Area3DStyle.Inclination = $script:AutoChart083DInclination
-        $script:AutoChart083DToggleButton.Text  = "3D On ($script:AutoChart083DInclination)"
-#        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
-#        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+CommonButtonSettings -Button $script:AutoChart08NetworkInterfaces3DToggleButton
+$script:AutoChart08NetworkInterfaces3DInclination = 0
+$script:AutoChart08NetworkInterfaces3DToggleButton.Add_Click({
+    $script:AutoChart08NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart08NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart08NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart08NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart08NetworkInterfaces3DInclination
+        $script:AutoChart08NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart08NetworkInterfaces3DInclination)"
+#        $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+#        $script:AutoChart08NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
     }
-    elseif ( $script:AutoChart083DInclination -le 90 ) {
-        $script:AutoChart08Area.Area3DStyle.Inclination = $script:AutoChart083DInclination
-        $script:AutoChart083DToggleButton.Text  = "3D On ($script:AutoChart083DInclination)" 
-#        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
-#        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    elseif ( $script:AutoChart08NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart08NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart08NetworkInterfaces3DInclination
+        $script:AutoChart08NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart08NetworkInterfaces3DInclination)" 
+#        $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+#        $script:AutoChart08NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
-        $script:AutoChart083DToggleButton.Text  = "3D Off" 
-        $script:AutoChart083DInclination = 0
-        $script:AutoChart08Area.Area3DStyle.Inclination = $script:AutoChart083DInclination
-        $script:AutoChart08Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
-#        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+        $script:AutoChart08NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart08NetworkInterfaces3DInclination = 0
+        $script:AutoChart08NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart08NetworkInterfaces3DInclination
+        $script:AutoChart08NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+#        $script:AutoChart08NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
-$script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart083DToggleButton)
+$script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart08NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart08ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart08NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart083DToggleButton.Location.X + $script:AutoChart083DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart083DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart08NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart08NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart08NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart08ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart08ColorsAvailable) { $script:AutoChart08ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart08ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Color = $script:AutoChart08ChangeColorComboBox.SelectedItem
+$script:AutoChart08NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart08NetworkInterfacesColorsAvailable) { $script:AutoChart08NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart08NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Color = $script:AutoChart08NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08ChangeColorComboBox)
+$script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart08NetworkInterfacesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart08 {    
+function script:InvestigateDifference-AutoChart08NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart08ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart08InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart08InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart08ImportCsvPosResults) { $script:AutoChart08InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart08NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart08NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart08NetworkInterfacesImportCsvPosResults) { $script:AutoChart08NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart08ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart08NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart08ImportCsvNegResults = @()
+    $script:AutoChart08NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart08ImportCsvAll) { if ($Endpoint -notin $script:AutoChart08ImportCsvPosResults) { $script:AutoChart08ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart08NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart08NetworkInterfacesImportCsvPosResults) { $script:AutoChart08NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart08InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart08ImportCsvNegResults) { $script:AutoChart08InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart08NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart08NetworkInterfacesImportCsvNegResults) { $script:AutoChart08NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart08InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart08ImportCsvPosResults.count))"
-    $script:AutoChart08InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart08ImportCsvNegResults.count))"
+    $script:AutoChart08NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart08NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart08NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart08NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart08CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart08NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart08TrimOffLastGroupBox.Location.X + $script:AutoChart08TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart08TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart08NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart08NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart08NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart08CheckDiffButton
-$script:AutoChart08CheckDiffButton.Add_Click({
-    $script:AutoChart08InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart08NetworkInterfacesCheckDiffButton
+$script:AutoChart08NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart08NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart08InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart08NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart08InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart08NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -4180,43 +4327,43 @@ $script:AutoChart08CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart08InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart08InvestDiffDropDownLabel.Location.y + $script:AutoChart08InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart08NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart08NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart08InvestDiffDropDownArray) { $script:AutoChart08InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart08InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart08 }})
-    $script:AutoChart08InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart08 })
+    ForEach ($Item in $script:AutoChart08NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart08NetworkInterfaces }})
+    $script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart08NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart08InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart08NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart08InvestDiffDropDownComboBox.Location.y + $script:AutoChart08InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart08InvestDiffExecuteButton
-    $script:AutoChart08InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart08 }})
-    $script:AutoChart08InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart08 })
+    CommonButtonSettings -Button $script:AutoChart08NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart08NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart08NetworkInterfaces }})
+    $script:AutoChart08NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart08NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart08InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart08NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart08InvestDiffExecuteButton.Location.y + $script:AutoChart08InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart08NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart08NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart08InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart08NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart08InvestDiffPosResultsLabel.Location.y + $script:AutoChart08InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart08NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart08NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -4228,17 +4375,17 @@ $script:AutoChart08CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart08InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart08NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart08InvestDiffPosResultsLabel.Location.x + $script:AutoChart08InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart08InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart08NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart08NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart08NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart08InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart08InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart08InvestDiffNegResultsLabel.Location.y + $script:AutoChart08InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart08NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart08NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart08NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart08NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -4248,88 +4395,88 @@ $script:AutoChart08CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart08InvestDiffForm.Controls.AddRange(@($script:AutoChart08InvestDiffDropDownLabel,$script:AutoChart08InvestDiffDropDownComboBox,$script:AutoChart08InvestDiffExecuteButton,$script:AutoChart08InvestDiffPosResultsLabel,$script:AutoChart08InvestDiffPosResultsTextBox,$script:AutoChart08InvestDiffNegResultsLabel,$script:AutoChart08InvestDiffNegResultsTextBox))
-    $script:AutoChart08InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart08InvestDiffForm.ShowDialog()
+    $script:AutoChart08NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart08NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart08NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart08NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart08NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart08NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart08NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart08NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart08NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart08CheckDiffButton.Add_MouseHover({
+$script:AutoChart08NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart08ManipulationPanel.controls.Add($script:AutoChart08CheckDiffButton)
+$script:AutoChart08NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart08NetworkInterfacesCheckDiffButton)
 
 
-$AutoChart08ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart08NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart08CheckDiffButton.Location.X + $script:AutoChart08CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart08CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart08NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart08NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart08NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "IPs (Router Advertisement) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (Router Advertisement) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
 }
-CommonButtonSettings -Button $AutoChart08ExpandChartButton
-$script:AutoChart08ManipulationPanel.Controls.Add($AutoChart08ExpandChartButton)
+CommonButtonSettings -Button $AutoChart08NetworkInterfacesExpandChartButton
+$script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($AutoChart08NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart08OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart08NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart08CheckDiffButton.Location.X
-                   Y = $script:AutoChart08CheckDiffButton.Location.Y + $script:AutoChart08CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart08NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart08NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart08NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart08OpenInShell
-$script:AutoChart08OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart08ManipulationPanel.controls.Add($script:AutoChart08OpenInShell)
+CommonButtonSettings -Button $script:AutoChart08NetworkInterfacesOpenInShell
+$script:AutoChart08NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart08NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart08NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart08ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart08NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart08OpenInShell.Location.X + $script:AutoChart08OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart08OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart08NetworkInterfacesOpenInShell.Location.X + $script:AutoChart08NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart08NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart08ViewResults
-$script:AutoChart08ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart08ManipulationPanel.controls.Add($script:AutoChart08ViewResults)
+CommonButtonSettings -Button $script:AutoChart08NetworkInterfacesViewResults
+$script:AutoChart08NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart08NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart08NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart08SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart08NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart08OpenInShell.Location.X
-                  Y = $script:AutoChart08OpenInShell.Location.Y + $script:AutoChart08OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart08NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart08NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart08NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart08SaveButton
+CommonButtonSettings -Button $script:AutoChart08NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart08SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart08 -Title $script:AutoChart08Title
+$script:AutoChart08NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart08NetworkInterfaces -Title $script:AutoChart08NetworkInterfacesTitle
 })
-$script:AutoChart08ManipulationPanel.controls.Add($script:AutoChart08SaveButton)
+$script:AutoChart08NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart08NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart08NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart08SaveButton.Location.X 
-                        Y = $script:AutoChart08SaveButton.Location.Y + $script:AutoChart08SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart08NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart08NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart08NetworkInterfacesSaveButton.Location.Y + $script:AutoChart08NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart08CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart08NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08NoticeTextbox)
+$script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart08NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
-$script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.Clear()
+$script:AutoChart08NetworkInterfacesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
 
@@ -4358,13 +4505,13 @@ $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Sel
 
 
 ##############################################################################################
-# AutoChart09
+# AutoChart09NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart09 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart07.Location.X
-                  Y = $script:AutoChart07.Location.Y + $script:AutoChart07.Size.Height + 20 }
+$script:AutoChart09NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart07NetworkInterfaces.Location.X
+                  Y = $script:AutoChart07NetworkInterfaces.Location.Y + $script:AutoChart07NetworkInterfaces.Size.Height + 20 }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -4372,117 +4519,117 @@ $script:AutoChart09 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart09.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart09NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart09Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart09NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
 }
-$script:AutoChart09.Titles.Add($script:AutoChart09Title)
+$script:AutoChart09NetworkInterfaces.Titles.Add($script:AutoChart09NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart09Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart09Area.Name        = 'Chart Area'
-$script:AutoChart09Area.AxisX.Title = 'Hosts'
-$script:AutoChart09Area.AxisX.Interval          = 1
-$script:AutoChart09Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart09Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart09Area.Area3DStyle.Inclination = 75
-$script:AutoChart09.ChartAreas.Add($script:AutoChart09Area)
+$script:AutoChart09NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart09NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart09NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart09NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart09NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart09NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart09NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart09NetworkInterfaces.ChartAreas.Add($script:AutoChart09NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart09.Series.Add("Address State")  
-$script:AutoChart09.Series["Address State"].Enabled           = $True
-$script:AutoChart09.Series["Address State"].BorderWidth       = 1
-$script:AutoChart09.Series["Address State"].IsVisibleInLegend = $false
-$script:AutoChart09.Series["Address State"].Chartarea         = 'Chart Area'
-$script:AutoChart09.Series["Address State"].Legend            = 'Legend'
-$script:AutoChart09.Series["Address State"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart09.Series["Address State"]['PieLineColor']   = 'Black'
-$script:AutoChart09.Series["Address State"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart09.Series["Address State"].ChartType         = 'Column'
-$script:AutoChart09.Series["Address State"].Color             = 'Yellow'
+$script:AutoChart09NetworkInterfaces.Series.Add("Address State")  
+$script:AutoChart09NetworkInterfaces.Series["Address State"].Enabled           = $True
+$script:AutoChart09NetworkInterfaces.Series["Address State"].BorderWidth       = 1
+$script:AutoChart09NetworkInterfaces.Series["Address State"].IsVisibleInLegend = $false
+$script:AutoChart09NetworkInterfaces.Series["Address State"].Chartarea         = 'Chart Area'
+$script:AutoChart09NetworkInterfaces.Series["Address State"].Legend            = 'Legend'
+$script:AutoChart09NetworkInterfaces.Series["Address State"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart09NetworkInterfaces.Series["Address State"]['PieLineColor']   = 'Black'
+$script:AutoChart09NetworkInterfaces.Series["Address State"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart09NetworkInterfaces.Series["Address State"].ChartType         = 'Column'
+$script:AutoChart09NetworkInterfaces.Series["Address State"].Color             = 'Yellow'
 
-        function Generate-AutoChart09 {
-            $script:AutoChart09CsvFileHosts      = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart09UniqueDataFields  = $script:AutoChartDataSource | Select-Object -Property 'AddressState' | Sort-Object -Property 'AddressState' -Unique
+        function Generate-AutoChart09NetworkInterfaces {
+            $script:AutoChart09NetworkInterfacesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart09NetworkInterfacesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'AddressState' | Sort-Object -Property 'AddressState' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Yellow'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart09UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart09NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart09.Series["Address State"].Points.Clear()
+            $script:AutoChart09NetworkInterfaces.Series["Address State"].Points.Clear()
 
-            if ($script:AutoChart09UniqueDataFields.count -gt 0){
-                $script:AutoChart09Title.ForeColor = 'Black'
-                $script:AutoChart09Title.Text = "Address State"
+            if ($script:AutoChart09NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart09NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart09NetworkInterfacesTitle.Text = "Address State"
 
                 # If the Second field/Y Axis equals PSComputername, it counts it
-                $script:AutoChart09OverallDataResults = @()
+                $script:AutoChart09NetworkInterfacesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart09UniqueDataFields) {
+                foreach ($DataField in $script:AutoChart09NetworkInterfacesUniqueDataFields) {
                     $Count        = 0
-                    $script:AutoChart09CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSource ) {
+                    $script:AutoChart09NetworkInterfacesCsvComputers = @()
+                    foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.AddressState) -eq $DataField.AddressState) {
                             $Count += 1
-                            if ( $script:AutoChart09CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart09CsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart09NetworkInterfacesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart09NetworkInterfacesCsvComputers += $($Line.PSComputerName) }                        
                         }
                     }
-                    $script:AutoChart09UniqueCount = $script:AutoChart09CsvComputers.Count
-                    $script:AutoChart09DataResults = New-Object PSObject -Property @{
+                    $script:AutoChart09NetworkInterfacesUniqueCount = $script:AutoChart09NetworkInterfacesCsvComputers.Count
+                    $script:AutoChart09NetworkInterfacesDataResults = New-Object PSObject -Property @{
                         DataField   = $DataField
                         TotalCount  = $Count
-                        UniqueCount = $script:AutoChart09UniqueCount
-                        Computers   = $script:AutoChart09CsvComputers 
+                        UniqueCount = $script:AutoChart09NetworkInterfacesUniqueCount
+                        Computers   = $script:AutoChart09NetworkInterfacesCsvComputers 
                     }
-                    $script:AutoChart09OverallDataResults += $script:AutoChart09DataResults
+                    $script:AutoChart09NetworkInterfacesOverallDataResults += $script:AutoChart09NetworkInterfacesDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount) }
+                $script:AutoChart09NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart09NetworkInterfaces.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount) }
 
-                $script:AutoChart09TrimOffLastTrackBar.SetRange(0, $($script:AutoChart09OverallDataResults.count))
-                $script:AutoChart09TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart09OverallDataResults.count))
+                $script:AutoChart09NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart09NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart09NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart09Title.ForeColor = 'Red'
-                $script:AutoChart09Title.Text = "Address State`n
+                $script:AutoChart09NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart09NetworkInterfacesTitle.Text = "Address State`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart09
+        Generate-AutoChart09NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart09OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart09NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart09.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart09.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart09NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart09NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart09OptionsButton
-$script:AutoChart09OptionsButton.Add_Click({  
-    if ($script:AutoChart09OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart09OptionsButton.Text = 'Options ^'
-        $script:AutoChart09.Controls.Add($script:AutoChart09ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart09NetworkInterfacesOptionsButton
+$script:AutoChart09NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart09NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart09NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart09NetworkInterfaces.Controls.Add($script:AutoChart09NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart09OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart09OptionsButton.Text = 'Options v'
-        $script:AutoChart09.Controls.Remove($script:AutoChart09ManipulationPanel)
+    elseif ($script:AutoChart09NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart09NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart09NetworkInterfaces.Controls.Remove($script:AutoChart09NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart09OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart09)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart09NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart09NetworkInterfaces)
 
-$script:AutoChart09ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart09NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart09.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart09.Size.Width
+                     Y = $script:AutoChart09NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart09NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -4491,7 +4638,7 @@ $script:AutoChart09ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart09TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart09NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -4501,7 +4648,7 @@ $script:AutoChart09TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart09TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -4512,22 +4659,22 @@ $script:AutoChart09TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart09TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart09OverallDataResults.count))                
-    $script:AutoChart09TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart09TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart09TrimOffFirstTrackBarValue = $script:AutoChart09TrimOffFirstTrackBar.Value
-        $script:AutoChart09TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart09TrimOffFirstTrackBar.Value)"
-        $script:AutoChart09.Series["Address State"].Points.Clear()
-        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}    
+    $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart09NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart09NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart09NetworkInterfaces.Series["Address State"].Points.Clear()
+        $script:AutoChart09NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09NetworkInterfaces.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}    
     })
-    $script:AutoChart09TrimOffFirstGroupBox.Controls.Add($script:AutoChart09TrimOffFirstTrackBar)
-$script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09TrimOffFirstGroupBox)
+    $script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart09NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart09TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart09NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart09TrimOffFirstGroupBox.Location.X + $script:AutoChart09TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                     Y = $script:AutoChart09TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                     Y = $script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                      Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -4535,7 +4682,7 @@ $script:AutoChart09TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart09TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart09NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -4545,149 +4692,149 @@ $script:AutoChart09TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart09TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart09TrimOffLastTrackBar.SetRange(0, $($script:AutoChart09OverallDataResults.count))
-    $script:AutoChart09TrimOffLastTrackBar.Value         = $($script:AutoChart09OverallDataResults.count)
-    $script:AutoChart09TrimOffLastTrackBarValue   = 0
-    $script:AutoChart09TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart09TrimOffLastTrackBarValue = $($script:AutoChart09OverallDataResults.count) - $script:AutoChart09TrimOffLastTrackBar.Value
-        $script:AutoChart09TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart09OverallDataResults.count) - $script:AutoChart09TrimOffLastTrackBar.Value)"
-        $script:AutoChart09.Series["Address State"].Points.Clear()
-        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
+    $script:AutoChart09NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart09NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart09NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart09NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart09NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart09NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart09NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart09NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart09NetworkInterfacesOverallDataResults.count) - $script:AutoChart09NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart09NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart09NetworkInterfacesOverallDataResults.count) - $script:AutoChart09NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart09NetworkInterfaces.Series["Address State"].Points.Clear()
+        $script:AutoChart09NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09NetworkInterfaces.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
     })
-$script:AutoChart09TrimOffLastGroupBox.Controls.Add($script:AutoChart09TrimOffLastTrackBar)
-$script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09TrimOffLastGroupBox)
+$script:AutoChart09NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart09NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart09NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart09ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart09NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart09TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart09TrimOffFirstGroupBox.Location.Y + $script:AutoChart09TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart09NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart09ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart09.Series["Address State"].ChartType = $script:AutoChart09ChartTypeComboBox.SelectedItem
-#    $script:AutoChart09.Series["Address State"].Points.Clear()
-#    $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
+$script:AutoChart09NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart09NetworkInterfaces.Series["Address State"].ChartType = $script:AutoChart09NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart09NetworkInterfaces.Series["Address State"].Points.Clear()
+#    $script:AutoChart09NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09NetworkInterfaces.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
 })
-$script:AutoChart09ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart09ChartTypesAvailable) { $script:AutoChart09ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09ChartTypeComboBox)
+$script:AutoChart09NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart09NetworkInterfacesChartTypesAvailable) { $script:AutoChart09NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart09NetworkInterfacesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart093DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart09NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart09ChartTypeComboBox.Location.X + $script:AutoChart09ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart09ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart09NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart09NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart09NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart093DToggleButton
-$script:AutoChart093DInclination = 0
-$script:AutoChart093DToggleButton.Add_Click({
-    $script:AutoChart093DInclination += 10
-    if ( $script:AutoChart093DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart09Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart09Area.Area3DStyle.Inclination = $script:AutoChart093DInclination
-        $script:AutoChart093DToggleButton.Text  = "3D On ($script:AutoChart093DInclination)"
-#        $script:AutoChart09.Series["Address State"].Points.Clear()
-#        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
+CommonButtonSettings -Button $script:AutoChart09NetworkInterfaces3DToggleButton
+$script:AutoChart09NetworkInterfaces3DInclination = 0
+$script:AutoChart09NetworkInterfaces3DToggleButton.Add_Click({
+    $script:AutoChart09NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart09NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart09NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart09NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart09NetworkInterfaces3DInclination
+        $script:AutoChart09NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart09NetworkInterfaces3DInclination)"
+#        $script:AutoChart09NetworkInterfaces.Series["Address State"].Points.Clear()
+#        $script:AutoChart09NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09NetworkInterfaces.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
     }
-    elseif ( $script:AutoChart093DInclination -le 90 ) {
-        $script:AutoChart09Area.Area3DStyle.Inclination = $script:AutoChart093DInclination
-        $script:AutoChart093DToggleButton.Text  = "3D On ($script:AutoChart093DInclination)" 
-#        $script:AutoChart09.Series["Address State"].Points.Clear()
-#        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
+    elseif ( $script:AutoChart09NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart09NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart09NetworkInterfaces3DInclination
+        $script:AutoChart09NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart09NetworkInterfaces3DInclination)" 
+#        $script:AutoChart09NetworkInterfaces.Series["Address State"].Points.Clear()
+#        $script:AutoChart09NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09NetworkInterfaces.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
     }
     else { 
-        $script:AutoChart093DToggleButton.Text  = "3D Off" 
-        $script:AutoChart093DInclination = 0
-        $script:AutoChart09Area.Area3DStyle.Inclination = $script:AutoChart093DInclination
-        $script:AutoChart09Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart09.Series["Address State"].Points.Clear()
-#        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
+        $script:AutoChart09NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart09NetworkInterfaces3DInclination = 0
+        $script:AutoChart09NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart09NetworkInterfaces3DInclination
+        $script:AutoChart09NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart09NetworkInterfaces.Series["Address State"].Points.Clear()
+#        $script:AutoChart09NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09NetworkInterfaces.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}
     }
 })
-$script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart093DToggleButton)
+$script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart09NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart09ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart09NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart093DToggleButton.Location.X + $script:AutoChart093DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart093DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart09NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart09NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart09NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart09ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart09ColorsAvailable) { $script:AutoChart09ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart09ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart09.Series["Address State"].Color = $script:AutoChart09ChangeColorComboBox.SelectedItem
+$script:AutoChart09NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart09NetworkInterfacesColorsAvailable) { $script:AutoChart09NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart09NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart09NetworkInterfaces.Series["Address State"].Color = $script:AutoChart09NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09ChangeColorComboBox)
+$script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart09NetworkInterfacesChangeColorComboBox)
 
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart09 {    
+function script:InvestigateDifference-AutoChart09NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart09ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'AddressState' -eq $($script:AutoChart09InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart09InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart09ImportCsvPosResults) { $script:AutoChart09InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart09NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'AddressState' -eq $($script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart09NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart09NetworkInterfacesImportCsvPosResults) { $script:AutoChart09NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart09ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart09NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart09ImportCsvNegResults = @()
+    $script:AutoChart09NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart09ImportCsvAll) { if ($Endpoint -notin $script:AutoChart09ImportCsvPosResults) { $script:AutoChart09ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart09NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart09NetworkInterfacesImportCsvPosResults) { $script:AutoChart09NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart09InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart09ImportCsvNegResults) { $script:AutoChart09InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart09NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart09NetworkInterfacesImportCsvNegResults) { $script:AutoChart09NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart09InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart09ImportCsvPosResults.count))"
-    $script:AutoChart09InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart09ImportCsvNegResults.count))"
+    $script:AutoChart09NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart09NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart09NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart09NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart09CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart09NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart09TrimOffLastGroupBox.Location.X + $script:AutoChart09TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart09TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart09NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart09NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart09NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart09CheckDiffButton
-$script:AutoChart09CheckDiffButton.Add_Click({
-    $script:AutoChart09InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'AddressState' -ExpandProperty 'AddressState' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart09NetworkInterfacesCheckDiffButton
+$script:AutoChart09NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart09NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'AddressState' -ExpandProperty 'AddressState' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart09InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart09NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart09InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart09NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -4695,43 +4842,43 @@ $script:AutoChart09CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart09InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart09InvestDiffDropDownLabel.Location.y + $script:AutoChart09InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart09NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart09NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart09InvestDiffDropDownArray) { $script:AutoChart09InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart09InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart09 }})
-    $script:AutoChart09InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart09 })
+    ForEach ($Item in $script:AutoChart09NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart09NetworkInterfaces }})
+    $script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart09NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart09InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart09NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart09InvestDiffDropDownComboBox.Location.y + $script:AutoChart09InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart09InvestDiffExecuteButton
-    $script:AutoChart09InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart09 }})
-    $script:AutoChart09InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart09 })
+    CommonButtonSettings -Button $script:AutoChart09NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart09NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart09NetworkInterfaces }})
+    $script:AutoChart09NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart09NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart09InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart09NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart09InvestDiffExecuteButton.Location.y + $script:AutoChart09InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart09NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart09NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart09InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart09NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart09InvestDiffPosResultsLabel.Location.y + $script:AutoChart09InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart09NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart09NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -4743,17 +4890,17 @@ $script:AutoChart09CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart09InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart09NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart09InvestDiffPosResultsLabel.Location.x + $script:AutoChart09InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart09InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart09NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart09NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart09NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart09InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart09InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart09InvestDiffNegResultsLabel.Location.y + $script:AutoChart09InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart09NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart09NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart09NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart09NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -4763,88 +4910,88 @@ $script:AutoChart09CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart09InvestDiffForm.Controls.AddRange(@($script:AutoChart09InvestDiffDropDownLabel,$script:AutoChart09InvestDiffDropDownComboBox,$script:AutoChart09InvestDiffExecuteButton,$script:AutoChart09InvestDiffPosResultsLabel,$script:AutoChart09InvestDiffPosResultsTextBox,$script:AutoChart09InvestDiffNegResultsLabel,$script:AutoChart09InvestDiffNegResultsTextBox))
-    $script:AutoChart09InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart09InvestDiffForm.ShowDialog()
+    $script:AutoChart09NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart09NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart09NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart09NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart09NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart09NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart09NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart09NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart09NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart09CheckDiffButton.Add_MouseHover({
+$script:AutoChart09NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart09ManipulationPanel.controls.Add($script:AutoChart09CheckDiffButton)
+$script:AutoChart09NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart09NetworkInterfacesCheckDiffButton)
     
 
-$AutoChart09ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart09NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart09CheckDiffButton.Location.X + $script:AutoChart09CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart09CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart09NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart09NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart09NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "Address States" -PropertyX "AddressState" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Address States" -PropertyX "AddressState" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart09ExpandChartButton
-$script:AutoChart09ManipulationPanel.Controls.Add($AutoChart09ExpandChartButton)
+CommonButtonSettings -Button $AutoChart09NetworkInterfacesExpandChartButton
+$script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($AutoChart09NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart09OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart09NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart09CheckDiffButton.Location.X
-                   Y = $script:AutoChart09CheckDiffButton.Location.Y + $script:AutoChart09CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart09NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart09NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart09NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart09OpenInShell
-$script:AutoChart09OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart09ManipulationPanel.controls.Add($script:AutoChart09OpenInShell)
+CommonButtonSettings -Button $script:AutoChart09NetworkInterfacesOpenInShell
+$script:AutoChart09NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart09NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart09NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart09ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart09NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart09OpenInShell.Location.X + $script:AutoChart09OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart09OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart09NetworkInterfacesOpenInShell.Location.X + $script:AutoChart09NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart09NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart09ViewResults
-$script:AutoChart09ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart09ManipulationPanel.controls.Add($script:AutoChart09ViewResults)
+CommonButtonSettings -Button $script:AutoChart09NetworkInterfacesViewResults
+$script:AutoChart09NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart09NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart09NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart09SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart09NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart09OpenInShell.Location.X
-                  Y = $script:AutoChart09OpenInShell.Location.Y + $script:AutoChart09OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart09NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart09NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart09NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart09SaveButton
+CommonButtonSettings -Button $script:AutoChart09NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart09SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart09 -Title $script:AutoChart09Title
+$script:AutoChart09NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart09NetworkInterfaces -Title $script:AutoChart09NetworkInterfacesTitle
 })
-$script:AutoChart09ManipulationPanel.controls.Add($script:AutoChart09SaveButton)
+$script:AutoChart09NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart09NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart09NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart09SaveButton.Location.X 
-                        Y = $script:AutoChart09SaveButton.Location.Y + $script:AutoChart09SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart09NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart09NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart09NetworkInterfacesSaveButton.Location.Y + $script:AutoChart09NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart09CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart09NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09NoticeTextbox)
+$script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart09NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart09.Series["Address State"].Points.Clear()
-$script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}    
+$script:AutoChart09NetworkInterfaces.Series["Address State"].Points.Clear()
+$script:AutoChart09NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09NetworkInterfaces.Series["Address State"].Points.AddXY($_.DataField.AddressState,$_.UniqueCount)}    
 
 
 
@@ -4868,13 +5015,13 @@ $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Sele
 
 
 ##############################################################################################
-# AutoChart10
+# AutoChart10NetworkInterfaces
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart10 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart08.Location.X
-                  Y = $script:AutoChart08.Location.Y + $script:AutoChart08.Size.Height + 20 }
+$script:AutoChart10NetworkInterfaces = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart08NetworkInterfaces.Location.X
+                  Y = $script:AutoChart08NetworkInterfaces.Location.Y + $script:AutoChart08NetworkInterfaces.Size.Height + 20 }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -4882,117 +5029,117 @@ $script:AutoChart10 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart10.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart10NetworkInterfaces.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart10Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart10NetworkInterfacesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
 }
-$script:AutoChart10.Titles.Add($script:AutoChart10Title)
+$script:AutoChart10NetworkInterfaces.Titles.Add($script:AutoChart10NetworkInterfacesTitle)
 
 ### Create Charts Area
-$script:AutoChart10Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart10Area.Name        = 'Chart Area'
-$script:AutoChart10Area.AxisX.Title = 'Hosts'
-$script:AutoChart10Area.AxisX.Interval          = 1
-$script:AutoChart10Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart10Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart10Area.Area3DStyle.Inclination = 75
-$script:AutoChart10.ChartAreas.Add($script:AutoChart10Area)
+$script:AutoChart10NetworkInterfacesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart10NetworkInterfacesArea.Name        = 'Chart Area'
+$script:AutoChart10NetworkInterfacesArea.AxisX.Title = 'Hosts'
+$script:AutoChart10NetworkInterfacesArea.AxisX.Interval          = 1
+$script:AutoChart10NetworkInterfacesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart10NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart10NetworkInterfacesArea.Area3DStyle.Inclination = 75
+$script:AutoChart10NetworkInterfaces.ChartAreas.Add($script:AutoChart10NetworkInterfacesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart10.Series.Add("Address Family")  
-$script:AutoChart10.Series["Address Family"].Enabled           = $True
-$script:AutoChart10.Series["Address Family"].BorderWidth       = 1
-$script:AutoChart10.Series["Address Family"].IsVisibleInLegend = $false
-$script:AutoChart10.Series["Address Family"].Chartarea         = 'Chart Area'
-$script:AutoChart10.Series["Address Family"].Legend            = 'Legend'
-$script:AutoChart10.Series["Address Family"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart10.Series["Address Family"]['PieLineColor']   = 'Black'
-$script:AutoChart10.Series["Address Family"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart10.Series["Address Family"].ChartType         = 'Column'
-$script:AutoChart10.Series["Address Family"].Color             = 'Red'
+$script:AutoChart10NetworkInterfaces.Series.Add("Address Family")  
+$script:AutoChart10NetworkInterfaces.Series["Address Family"].Enabled           = $True
+$script:AutoChart10NetworkInterfaces.Series["Address Family"].BorderWidth       = 1
+$script:AutoChart10NetworkInterfaces.Series["Address Family"].IsVisibleInLegend = $false
+$script:AutoChart10NetworkInterfaces.Series["Address Family"].Chartarea         = 'Chart Area'
+$script:AutoChart10NetworkInterfaces.Series["Address Family"].Legend            = 'Legend'
+$script:AutoChart10NetworkInterfaces.Series["Address Family"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart10NetworkInterfaces.Series["Address Family"]['PieLineColor']   = 'Black'
+$script:AutoChart10NetworkInterfaces.Series["Address Family"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart10NetworkInterfaces.Series["Address Family"].ChartType         = 'Column'
+$script:AutoChart10NetworkInterfaces.Series["Address Family"].Color             = 'Red'
 
-        function Generate-AutoChart10 {
-            $script:AutoChart10CsvFileHosts      = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart10UniqueDataFields  = $script:AutoChartDataSource | Select-Object -Property 'AddressFamily' | Sort-Object -Property 'AddressFamily' -Unique
+        function Generate-AutoChart10NetworkInterfaces {
+            $script:AutoChart10NetworkInterfacesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart10NetworkInterfacesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'AddressFamily' | Sort-Object -Property 'AddressFamily' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart10UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart10NetworkInterfacesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart10.Series["Address Family"].Points.Clear()
+            $script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.Clear()
 
-            if ($script:AutoChart10UniqueDataFields.count -gt 0){
-                $script:AutoChart10Title.ForeColor = 'Black'
-                $script:AutoChart10Title.Text = "Address Family"
+            if ($script:AutoChart10NetworkInterfacesUniqueDataFields.count -gt 0){
+                $script:AutoChart10NetworkInterfacesTitle.ForeColor = 'Black'
+                $script:AutoChart10NetworkInterfacesTitle.Text = "Address Family"
 
                 # If the Second field/Y Axis equals PSComputername, it counts it
-                $script:AutoChart10OverallDataResults = @()
+                $script:AutoChart10NetworkInterfacesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart10UniqueDataFields) {
+                foreach ($DataField in $script:AutoChart10NetworkInterfacesUniqueDataFields) {
                     $Count = 0
-                    $script:AutoChart10CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSource ) {
+                    $script:AutoChart10NetworkInterfacesCsvComputers = @()
+                    foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.AddressFamily) -eq $DataField.AddressFamily) {
                             $Count += 1
-                            if ( $script:AutoChart10CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart10CsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart10NetworkInterfacesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart10NetworkInterfacesCsvComputers += $($Line.PSComputerName) }                        
                         }
                     }
-                    $script:AutoChart10UniqueCount = $script:AutoChart10CsvComputers.Count
-                    $script:AutoChart10DataResults = New-Object PSObject -Property @{
+                    $script:AutoChart10NetworkInterfacesUniqueCount = $script:AutoChart10NetworkInterfacesCsvComputers.Count
+                    $script:AutoChart10NetworkInterfacesDataResults = New-Object PSObject -Property @{
                         DataField   = $DataField
                         TotalCount  = $Count
-                        UniqueCount = $script:AutoChart10UniqueCount
-                        Computers   = $script:AutoChart10CsvComputers 
+                        UniqueCount = $script:AutoChart10NetworkInterfacesUniqueCount
+                        Computers   = $script:AutoChart10NetworkInterfacesCsvComputers 
                     }
-                    $script:AutoChart10OverallDataResults += $script:AutoChart10DataResults
+                    $script:AutoChart10NetworkInterfacesOverallDataResults += $script:AutoChart10NetworkInterfacesDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount) }
+                $script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount) }
 
-                $script:AutoChart10TrimOffLastTrackBar.SetRange(0, $($script:AutoChart10OverallDataResults.count))
-                $script:AutoChart10TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart10OverallDataResults.count))
+                $script:AutoChart10NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart10NetworkInterfacesOverallDataResults.count))
+                $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart10NetworkInterfacesOverallDataResults.count))
             }
             else {
-                $script:AutoChart10Title.ForeColor = 'Red'
-                $script:AutoChart10Title.Text = "Address Family`n
+                $script:AutoChart10NetworkInterfacesTitle.ForeColor = 'Red'
+                $script:AutoChart10NetworkInterfacesTitle.Text = "Address Family`n
 [ No Data Available ]`n"                
             }
         }
-        Generate-AutoChart10
+        Generate-AutoChart10NetworkInterfaces
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart10OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart10NetworkInterfacesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart10.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart10.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart10NetworkInterfaces.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart10NetworkInterfaces.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart10OptionsButton
-$script:AutoChart10OptionsButton.Add_Click({  
-    if ($script:AutoChart10OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart10OptionsButton.Text = 'Options ^'
-        $script:AutoChart10.Controls.Add($script:AutoChart10ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart10NetworkInterfacesOptionsButton
+$script:AutoChart10NetworkInterfacesOptionsButton.Add_Click({  
+    if ($script:AutoChart10NetworkInterfacesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart10NetworkInterfacesOptionsButton.Text = 'Options ^'
+        $script:AutoChart10NetworkInterfaces.Controls.Add($script:AutoChart10NetworkInterfacesManipulationPanel)
     }
-    elseif ($script:AutoChart10OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart10OptionsButton.Text = 'Options v'
-        $script:AutoChart10.Controls.Remove($script:AutoChart10ManipulationPanel)
+    elseif ($script:AutoChart10NetworkInterfacesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart10NetworkInterfacesOptionsButton.Text = 'Options v'
+        $script:AutoChart10NetworkInterfaces.Controls.Remove($script:AutoChart10NetworkInterfacesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart10OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart10)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart10NetworkInterfacesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart10NetworkInterfaces)
 
-$script:AutoChart10ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart10NetworkInterfacesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart10.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart10.Size.Width
+                     Y = $script:AutoChart10NetworkInterfaces.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart10NetworkInterfaces.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -5001,7 +5148,7 @@ $script:AutoChart10ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart10TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart10NetworkInterfacesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -5011,7 +5158,7 @@ $script:AutoChart10TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart10TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -5022,22 +5169,22 @@ $script:AutoChart10TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart10TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart10OverallDataResults.count))                
-    $script:AutoChart10TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart10TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart10TrimOffFirstTrackBarValue = $script:AutoChart10TrimOffFirstTrackBar.Value
-        $script:AutoChart10TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart10TrimOffFirstTrackBar.Value)"
-        $script:AutoChart10.Series["Address Family"].Points.Clear()
-        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}    
+    $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart10NetworkInterfacesOverallDataResults.count))                
+    $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue = $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBar.Value
+        $script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart10NetworkInterfacesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.Clear()
+        $script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}    
     })
-    $script:AutoChart10TrimOffFirstGroupBox.Controls.Add($script:AutoChart10TrimOffFirstTrackBar)
-$script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10TrimOffFirstGroupBox)
+    $script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox.Controls.Add($script:AutoChart10NetworkInterfacesTrimOffFirstTrackBar)
+$script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart10TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart10NetworkInterfacesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart10TrimOffFirstGroupBox.Location.X + $script:AutoChart10TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                     Y = $script:AutoChart10TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox.Location.X + $script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                     Y = $script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                      Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -5045,7 +5192,7 @@ $script:AutoChart10TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart10TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart10NetworkInterfacesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -5055,149 +5202,149 @@ $script:AutoChart10TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart10TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart10TrimOffLastTrackBar.SetRange(0, $($script:AutoChart10OverallDataResults.count))
-    $script:AutoChart10TrimOffLastTrackBar.Value         = $($script:AutoChart10OverallDataResults.count)
-    $script:AutoChart10TrimOffLastTrackBarValue   = 0
-    $script:AutoChart10TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart10TrimOffLastTrackBarValue = $($script:AutoChart10OverallDataResults.count) - $script:AutoChart10TrimOffLastTrackBar.Value
-        $script:AutoChart10TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart10OverallDataResults.count) - $script:AutoChart10TrimOffLastTrackBar.Value)"
-        $script:AutoChart10.Series["Address Family"].Points.Clear()
-        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
+    $script:AutoChart10NetworkInterfacesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart10NetworkInterfacesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart10NetworkInterfacesOverallDataResults.count))
+    $script:AutoChart10NetworkInterfacesTrimOffLastTrackBar.Value         = $($script:AutoChart10NetworkInterfacesOverallDataResults.count)
+    $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart10NetworkInterfacesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue = $($script:AutoChart10NetworkInterfacesOverallDataResults.count) - $script:AutoChart10NetworkInterfacesTrimOffLastTrackBar.Value
+        $script:AutoChart10NetworkInterfacesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart10NetworkInterfacesOverallDataResults.count) - $script:AutoChart10NetworkInterfacesTrimOffLastTrackBar.Value)"
+        $script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.Clear()
+        $script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
     })
-$script:AutoChart10TrimOffLastGroupBox.Controls.Add($script:AutoChart10TrimOffLastTrackBar)
-$script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10TrimOffLastGroupBox)
+$script:AutoChart10NetworkInterfacesTrimOffLastGroupBox.Controls.Add($script:AutoChart10NetworkInterfacesTrimOffLastTrackBar)
+$script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart10NetworkInterfacesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart10ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart10NetworkInterfacesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart10TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart10TrimOffFirstGroupBox.Location.Y + $script:AutoChart10TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox.Location.Y + $script:AutoChart10NetworkInterfacesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart10ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart10.Series["Address Family"].ChartType = $script:AutoChart10ChartTypeComboBox.SelectedItem
-#    $script:AutoChart10.Series["Address Family"].Points.Clear()
-#    $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
+$script:AutoChart10NetworkInterfacesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart10NetworkInterfaces.Series["Address Family"].ChartType = $script:AutoChart10NetworkInterfacesChartTypeComboBox.SelectedItem
+#    $script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.Clear()
+#    $script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
 })
-$script:AutoChart10ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart10ChartTypesAvailable) { $script:AutoChart10ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10ChartTypeComboBox)
+$script:AutoChart10NetworkInterfacesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart10NetworkInterfacesChartTypesAvailable) { $script:AutoChart10NetworkInterfacesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart10NetworkInterfacesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart103DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart10NetworkInterfaces3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart10ChartTypeComboBox.Location.X + $script:AutoChart10ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart10ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart10NetworkInterfacesChartTypeComboBox.Location.X + $script:AutoChart10NetworkInterfacesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart10NetworkInterfacesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart103DToggleButton
-$script:AutoChart103DInclination = 0
-$script:AutoChart103DToggleButton.Add_Click({
-    $script:AutoChart103DInclination += 10
-    if ( $script:AutoChart103DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart10Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart10Area.Area3DStyle.Inclination = $script:AutoChart103DInclination
-        $script:AutoChart103DToggleButton.Text  = "3D On ($script:AutoChart103DInclination)"
-#        $script:AutoChart10.Series["Address Family"].Points.Clear()
-#        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
+CommonButtonSettings -Button $script:AutoChart10NetworkInterfaces3DToggleButton
+$script:AutoChart10NetworkInterfaces3DInclination = 0
+$script:AutoChart10NetworkInterfaces3DToggleButton.Add_Click({
+    $script:AutoChart10NetworkInterfaces3DInclination += 10
+    if ( $script:AutoChart10NetworkInterfaces3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart10NetworkInterfacesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart10NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart10NetworkInterfaces3DInclination
+        $script:AutoChart10NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart10NetworkInterfaces3DInclination)"
+#        $script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.Clear()
+#        $script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
     }
-    elseif ( $script:AutoChart103DInclination -le 90 ) {
-        $script:AutoChart10Area.Area3DStyle.Inclination = $script:AutoChart103DInclination
-        $script:AutoChart103DToggleButton.Text  = "3D On ($script:AutoChart103DInclination)" 
-#        $script:AutoChart10.Series["Address Family"].Points.Clear()
-#        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
+    elseif ( $script:AutoChart10NetworkInterfaces3DInclination -le 90 ) {
+        $script:AutoChart10NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart10NetworkInterfaces3DInclination
+        $script:AutoChart10NetworkInterfaces3DToggleButton.Text  = "3D On ($script:AutoChart10NetworkInterfaces3DInclination)" 
+#        $script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.Clear()
+#        $script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
     }
     else { 
-        $script:AutoChart103DToggleButton.Text  = "3D Off" 
-        $script:AutoChart103DInclination = 0
-        $script:AutoChart10Area.Area3DStyle.Inclination = $script:AutoChart103DInclination
-        $script:AutoChart10Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart10.Series["Address Family"].Points.Clear()
-#        $script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
+        $script:AutoChart10NetworkInterfaces3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart10NetworkInterfaces3DInclination = 0
+        $script:AutoChart10NetworkInterfacesArea.Area3DStyle.Inclination = $script:AutoChart10NetworkInterfaces3DInclination
+        $script:AutoChart10NetworkInterfacesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.Clear()
+#        $script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}
     }
 })
-$script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart103DToggleButton)
+$script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart10NetworkInterfaces3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart10ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart10NetworkInterfacesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart103DToggleButton.Location.X + $script:AutoChart103DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart103DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart10NetworkInterfaces3DToggleButton.Location.X + $script:AutoChart10NetworkInterfaces3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart10NetworkInterfaces3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart10ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart10ColorsAvailable) { $script:AutoChart10ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart10ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart10.Series["Address Family"].Color = $script:AutoChart10ChangeColorComboBox.SelectedItem
+$script:AutoChart10NetworkInterfacesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart10NetworkInterfacesColorsAvailable) { $script:AutoChart10NetworkInterfacesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart10NetworkInterfacesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart10NetworkInterfaces.Series["Address Family"].Color = $script:AutoChart10NetworkInterfacesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10ChangeColorComboBox)
+$script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart10NetworkInterfacesChangeColorComboBox)
 
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart10 {    
+function script:InvestigateDifference-AutoChart10NetworkInterfaces {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart10ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'AddressFamily' -eq $($script:AutoChart10InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart10InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart10ImportCsvPosResults) { $script:AutoChart10InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart10NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'AddressFamily' -eq $($script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart10NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart10NetworkInterfacesImportCsvPosResults) { $script:AutoChart10NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart10ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart10NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart10ImportCsvNegResults = @()
+    $script:AutoChart10NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart10ImportCsvAll) { if ($Endpoint -notin $script:AutoChart10ImportCsvPosResults) { $script:AutoChart10ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart10NetworkInterfacesImportCsvAll) { if ($Endpoint -notin $script:AutoChart10NetworkInterfacesImportCsvPosResults) { $script:AutoChart10NetworkInterfacesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart10InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart10ImportCsvNegResults) { $script:AutoChart10InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart10NetworkInterfacesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart10NetworkInterfacesImportCsvNegResults) { $script:AutoChart10NetworkInterfacesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart10InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart10ImportCsvPosResults.count))"
-    $script:AutoChart10InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart10ImportCsvNegResults.count))"
+    $script:AutoChart10NetworkInterfacesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart10NetworkInterfacesImportCsvPosResults.count))"
+    $script:AutoChart10NetworkInterfacesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart10NetworkInterfacesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart10CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart10NetworkInterfacesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart10TrimOffLastGroupBox.Location.X + $script:AutoChart10TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart10TrimOffLastGroupBox.Location.Y + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart10NetworkInterfacesTrimOffLastGroupBox.Location.X + $script:AutoChart10NetworkInterfacesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart10NetworkInterfacesTrimOffLastGroupBox.Location.Y + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart10CheckDiffButton
-$script:AutoChart10CheckDiffButton.Add_Click({
-    $script:AutoChart10InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'AddressFamily' -ExpandProperty 'AddressFamily' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart10NetworkInterfacesCheckDiffButton
+$script:AutoChart10NetworkInterfacesCheckDiffButton.Add_Click({
+    $script:AutoChart10NetworkInterfacesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'AddressFamily' -ExpandProperty 'AddressFamily' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart10InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart10NetworkInterfacesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart10InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart10NetworkInterfacesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -5205,43 +5352,43 @@ $script:AutoChart10CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart10InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart10InvestDiffDropDownLabel.Location.y + $script:AutoChart10InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart10NetworkInterfacesInvestDiffDropDownLabel.Location.y + $script:AutoChart10NetworkInterfacesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart10InvestDiffDropDownArray) { $script:AutoChart10InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart10InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart10 }})
-    $script:AutoChart10InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart10 })
+    ForEach ($Item in $script:AutoChart10NetworkInterfacesInvestDiffDropDownArray) { $script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart10NetworkInterfaces }})
+    $script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart10NetworkInterfaces })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart10InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart10NetworkInterfacesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart10InvestDiffDropDownComboBox.Location.y + $script:AutoChart10InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox.Location.y + $script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart10InvestDiffExecuteButton
-    $script:AutoChart10InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart10 }})
-    $script:AutoChart10InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart10 })
+    CommonButtonSettings -Button $script:AutoChart10NetworkInterfacesInvestDiffExecuteButton
+    $script:AutoChart10NetworkInterfacesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart10NetworkInterfaces }})
+    $script:AutoChart10NetworkInterfacesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart10NetworkInterfaces })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart10InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart10NetworkInterfacesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart10InvestDiffExecuteButton.Location.y + $script:AutoChart10InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart10NetworkInterfacesInvestDiffExecuteButton.Location.y + $script:AutoChart10NetworkInterfacesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart10InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart10NetworkInterfacesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart10InvestDiffPosResultsLabel.Location.y + $script:AutoChart10InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart10NetworkInterfacesInvestDiffPosResultsLabel.Location.y + $script:AutoChart10NetworkInterfacesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -5253,17 +5400,17 @@ $script:AutoChart10CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart10InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart10NetworkInterfacesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart10InvestDiffPosResultsLabel.Location.x + $script:AutoChart10InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart10InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart10NetworkInterfacesInvestDiffPosResultsLabel.Location.x + $script:AutoChart10NetworkInterfacesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart10NetworkInterfacesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart10InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart10InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart10InvestDiffNegResultsLabel.Location.y + $script:AutoChart10InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart10NetworkInterfacesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart10NetworkInterfacesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart10NetworkInterfacesInvestDiffNegResultsLabel.Location.y + $script:AutoChart10NetworkInterfacesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -5273,88 +5420,88 @@ $script:AutoChart10CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart10InvestDiffForm.Controls.AddRange(@($script:AutoChart10InvestDiffDropDownLabel,$script:AutoChart10InvestDiffDropDownComboBox,$script:AutoChart10InvestDiffExecuteButton,$script:AutoChart10InvestDiffPosResultsLabel,$script:AutoChart10InvestDiffPosResultsTextBox,$script:AutoChart10InvestDiffNegResultsLabel,$script:AutoChart10InvestDiffNegResultsTextBox))
-    $script:AutoChart10InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart10InvestDiffForm.ShowDialog()
+    $script:AutoChart10NetworkInterfacesInvestDiffForm.Controls.AddRange(@($script:AutoChart10NetworkInterfacesInvestDiffDropDownLabel,$script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox,$script:AutoChart10NetworkInterfacesInvestDiffExecuteButton,$script:AutoChart10NetworkInterfacesInvestDiffPosResultsLabel,$script:AutoChart10NetworkInterfacesInvestDiffPosResultsTextBox,$script:AutoChart10NetworkInterfacesInvestDiffNegResultsLabel,$script:AutoChart10NetworkInterfacesInvestDiffNegResultsTextBox))
+    $script:AutoChart10NetworkInterfacesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart10NetworkInterfacesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart10CheckDiffButton.Add_MouseHover({
+$script:AutoChart10NetworkInterfacesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart10ManipulationPanel.controls.Add($script:AutoChart10CheckDiffButton)
+$script:AutoChart10NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart10NetworkInterfacesCheckDiffButton)
     
 
-$AutoChart10ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
+$AutoChart10NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart10CheckDiffButton.Location.X + $script:AutoChart10CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart10CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart10NetworkInterfacesCheckDiffButton.Location.X + $script:AutoChart10NetworkInterfacesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart10NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Network Settings" -QueryTabName "Address Family" -PropertyX "AddressFamily" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Address Family" -PropertyX "AddressFamily" -PropertyY "PSComputerName" }
 }
-CommonButtonSettings -Button $AutoChart10ExpandChartButton
-$script:AutoChart10ManipulationPanel.Controls.Add($AutoChart10ExpandChartButton)
+CommonButtonSettings -Button $AutoChart10NetworkInterfacesExpandChartButton
+$script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($AutoChart10NetworkInterfacesExpandChartButton)
 
 
-$script:AutoChart10OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart10NetworkInterfacesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart10CheckDiffButton.Location.X
-                   Y = $script:AutoChart10CheckDiffButton.Location.Y + $script:AutoChart10CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart10NetworkInterfacesCheckDiffButton.Location.X
+                   Y = $script:AutoChart10NetworkInterfacesCheckDiffButton.Location.Y + $script:AutoChart10NetworkInterfacesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart10OpenInShell
-$script:AutoChart10OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart10ManipulationPanel.controls.Add($script:AutoChart10OpenInShell)
+CommonButtonSettings -Button $script:AutoChart10NetworkInterfacesOpenInShell
+$script:AutoChart10NetworkInterfacesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart10NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart10NetworkInterfacesOpenInShell)
 
 
-$script:AutoChart10ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart10NetworkInterfacesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart10OpenInShell.Location.X + $script:AutoChart10OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart10OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart10NetworkInterfacesOpenInShell.Location.X + $script:AutoChart10NetworkInterfacesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart10NetworkInterfacesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart10ViewResults
-$script:AutoChart10ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart10ManipulationPanel.controls.Add($script:AutoChart10ViewResults)
+CommonButtonSettings -Button $script:AutoChart10NetworkInterfacesViewResults
+$script:AutoChart10NetworkInterfacesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart10NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart10NetworkInterfacesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart10SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart10NetworkInterfacesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart10OpenInShell.Location.X
-                  Y = $script:AutoChart10OpenInShell.Location.Y + $script:AutoChart10OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart10NetworkInterfacesOpenInShell.Location.X
+                  Y = $script:AutoChart10NetworkInterfacesOpenInShell.Location.Y + $script:AutoChart10NetworkInterfacesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart10SaveButton
+CommonButtonSettings -Button $script:AutoChart10NetworkInterfacesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart10SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart10 -Title $script:AutoChart10Title
+$script:AutoChart10NetworkInterfacesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart10NetworkInterfaces -Title $script:AutoChart10NetworkInterfacesTitle
 })
-$script:AutoChart10ManipulationPanel.controls.Add($script:AutoChart10SaveButton)
+$script:AutoChart10NetworkInterfacesManipulationPanel.controls.Add($script:AutoChart10NetworkInterfacesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart10NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart10SaveButton.Location.X 
-                        Y = $script:AutoChart10SaveButton.Location.Y + $script:AutoChart10SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart10NetworkInterfacesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart10NetworkInterfacesSaveButton.Location.X 
+                        Y = $script:AutoChart10NetworkInterfacesSaveButton.Location.Y + $script:AutoChart10NetworkInterfacesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart10CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart10NetworkInterfacesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10NoticeTextbox)
+$script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($script:AutoChart10NetworkInterfacesNoticeTextbox)
 
-$script:AutoChart10.Series["Address Family"].Points.Clear()
-$script:AutoChart10OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}    
+$script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.Clear()
+$script:AutoChart10NetworkInterfacesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10NetworkInterfacesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10NetworkInterfacesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10NetworkInterfaces.Series["Address Family"].Points.AddXY($_.DataField.AddressFamily,$_.UniqueCount)}    
 
 
 

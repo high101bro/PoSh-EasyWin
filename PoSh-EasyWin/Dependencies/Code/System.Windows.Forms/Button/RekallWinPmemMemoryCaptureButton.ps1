@@ -1,6 +1,6 @@
 $RekallWinPmemMemoryCaptureButtonAdd_MouseHover = {
     Show-ToolTip -Title "Memory Capture" -Icon "Info" -Message @"
-+  Uses Rekall WinPmep to retrieve memory for analysis. 
++  Uses Rekall WinPmem to retrieve memory for analysis. 
 +  The memory.raw file collected can be used with Volatility or windbg. 
 +  It supports all windows versions from WinXP SP2 to Windows 10.
 +  It supports processor types: i386 and amd64.
@@ -32,11 +32,11 @@ $RekallWinPmemMemoryCaptureButtonAdd_Click = {
             }
         }
     }
-    $ResultsListBox.Items.Clear()
+    #Removed For Testing#$ResultsListBox.Items.Clear()
     if ($script:ComputerTreeViewSelected.count -eq 1) {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Rekall WinPMem:  $($script:ComputerTreeViewSelected)")
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Add("Launching Memory Collection Window")
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Launched Memory Collection Window"
         Launch-RekallWinPmemForm

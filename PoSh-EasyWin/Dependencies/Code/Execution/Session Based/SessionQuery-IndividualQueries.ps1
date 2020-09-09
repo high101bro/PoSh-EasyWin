@@ -1,3 +1,8 @@
+<#
+    .Description
+    This iterates though the commands selected and determines how to exactly execute them 
+    based off their labeled protocol and command type.
+#>
 Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $script:ProgressBarEndpointsProgressBar.Value = 0
     $ProgressBarEndpointsCommandLine = 0
@@ -6,18 +11,10 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $CollectionName = $Command.Name
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Executing: $CollectionName")
-    $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
     $PoShEasyWin.Refresh()
 
-    if (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Get-WmiObject")) {
-        $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
-        $OutputFileFileType = "csv"
-    }
-    elseif (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Invoke-WmiMethod")) {
-        $CommandString = "$($Command.Command)"
-        $OutputFileFileType = "txt"
-    }
-    elseif ($Command.Type -eq "(WinRM) Script") {
+    if ($Command.Type -eq "(WinRM) Script") {
         $CommandString = "$($Command.Command)"
         $OutputFileFileType = "csv"
     }
@@ -29,16 +26,34 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
         $OutputFileFileType = "csv"
     }
+    #elseif ($Command.Type -eq "(WinRM) CMD") {
+    #    $CommandString = "$($Command.Command)"
+    #    $OutputFileFileType = "txt"
+    #}
+
+
+    #elseif ($Command.Type -eq "(RPC) PoSh") {
+    #    $CommandString = "$($Command.Command) | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
+    #    $OutputFileFileType = "csv"
+    #}
+    elseif (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Get-WmiObject")) {
+        $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
+        $OutputFileFileType = "csv"
+    }
+    #elseif ($Command.Type -eq "(RPC) CMD") {
+    #    $CommandString = "$($Command.Command)"
+    #    $OutputFileFileType = "txt"
+    #}
 
 
 
 
     elseif ($Command.Type -eq "(SMB) PoSh") {
-        $CommandString = "$($Command.Command)"
+        $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
         $OutputFileFileType = "txt"
     }
     elseif ($Command.Type -eq "(SMB) WMI") {
-        $CommandString = "$($Command.Command)"
+        $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
         $OutputFileFileType = "txt"
     }
     elseif ($Command.Type -eq "(SMB) CMD") {
@@ -46,13 +61,6 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $OutputFileFileType = "txt"
     }
 
-
-
-
-    elseif ($Command.Type -eq "(RPC) PoSh") {
-        $CommandString = "$($Command.Command) | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
-        $OutputFileFileType = "csv"
-    }
     
     $CommandName = $Command.Name
     $CommandType = $Command.Type
@@ -66,7 +74,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
         #The following string replacements edits the command to be compatible with session based queries witj -filepath
         $CommandString = $CommandString.replace('Invoke-Command -FilePath ','').replace("'","").replace('"','')
-        Invoke-Command -FilePath $CommandString -Session $PSSession | Select-Object -Property PSComputerName, * -ExcludeProperty "__*" `
+        Invoke-Command -FilePath $CommandString -Session $PSSession | Select-Object -Property PSComputerName, * -ExcludeProperty "__*",RunspaceID `
         | Set-Variable SessionData
         $SessionData | Export-Csv -Path "$OutputFilePath.csv" -NoTypeInformation -Force
         $SessionData | Export-Clixml -Path "$OutputFilePath.xml"
@@ -90,21 +98,20 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
         Remove-Variable -Name SessionData -Force
     }
-    $ResultsListBox.Items.RemoveAt(1)
-    $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+
+
+    $ResultsListBox.Items.RemoveAt(0)
+    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
     $PoShEasyWin.Refresh()
 
+
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[+] Invoke-Command -ScriptBlock { param($CommandString); Invoke-Expression -Command $CommandString } -argumentlist $CommandString -Session `$PSSession"
+
 
     $script:ProgressBarQueriesProgressBar.Value   += 1
     $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
     $PoShEasyWin.Refresh()
     Start-Sleep -match 500
-
-    if ($NoGUI){
-        $ProgressBarQueriesCommandLine   += 1
-        Write-Progress -Id 1 -Activity Updating -Status "Query: $CollectionName" -PercentComplete ($ProgressBarQueriesCommandLine / $ProgressBarQueriesCommandLineMaximum * 100) -CurrentOperation "Please be patient as queries are being executed..."
-    }
 }
 
 $AutoCreateDashboardChartButton.BackColor = 'LightGreen'

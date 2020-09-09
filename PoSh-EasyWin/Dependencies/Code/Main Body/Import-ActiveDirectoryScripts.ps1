@@ -1,5 +1,5 @@
 Function Import-ActiveDirectoryScripts {
-    Foreach ($script in (Get-ChildItem -Path "$QueryCommandsAndScripts\Scripts - Active Directory" | Where-Object {$_.Extension -eq '.ps1'})) {
+    Foreach ($script in (Get-ChildItem -Path "$QueryCommandsAndScripts\Scripts-AD" | Where-Object {$_.Extension -eq '.ps1'})) {
         $CollectionName = $script.basename
         $script:AllActiveDirectoryCommands += [PSCustomObject]@{ 
             Name                 = $CollectionName

@@ -2,7 +2,7 @@ $CollectionCommandStartTime = Get-Date
 $CollectionName = "Directory Listing Query"
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
@@ -21,7 +21,7 @@ Invoke-Command -ScriptBlock {
             # Older operating systems don't support the -depth parameter, needed to create a function to do so for backwards compatability
             #Get-ChildItem -Path $DirectoryPath -Depth $MaximumDepth
             
-            Get-ChildItemDepth -Path $DirectoryPath -Depth $MaximumDepth
+            Get-ChildItemDepth -Path $DirectoryPath -Depth $MaximumDepth -Force -ErrorAction SilentlyContinue  
         }
         else {
             Get-ChildItem -Path $DirectoryPath -Force -ErrorAction SilentlyContinue
@@ -35,8 +35,8 @@ $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -For
 $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
 Remove-Variable -Name SessionData -Force
 
-$ResultsListBox.Items.RemoveAt(1)
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$ResultsListBox.Items.RemoveAt(0)
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarQueriesProgressBar.Value   += 1

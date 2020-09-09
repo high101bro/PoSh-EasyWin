@@ -15,7 +15,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         Size      = @{ Width  = $FormScale * 327
                        Height = $FormScale * 155 }
         StartPosition = "CenterScreen"
-        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         #ControlBox    = $true
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
@@ -56,9 +56,12 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
     })
     $AutoChartsAvailable = @(
-        "Active Directory Users",
+        ###"Dashboard Quick View",
         "Active Directory Computers",
-        "Dashboard Quick View",
+        "Active Directory Groups",
+        "Active Directory User Accounts",
+        "Login Activity",
+        "Network Connections",
         "Network Interfaces",
         "Processes",
         "Security Patches",
@@ -119,7 +122,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             Size     = @{ Width  = $PoShEasyWin.Size.Width    #1241
                           Height = $PoShEasyWin.Size.Height } #638    
             StartPosition = "CenterScreen"
-            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+            Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
             Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         
@@ -145,18 +148,33 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
         # Dashboard with multiple charts
-        if ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Users") { 
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryUserAccounts.ps1"
+        if ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Quick View") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Hunt.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Computers") { 
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryComputerAccounts.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryComputers.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Quick View") { 
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Hunt.ps1"
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Groups") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryGroups.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory User Accounts") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryUserAccounts.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Login Activity") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_LoginActivity.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Network Connections") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_NetworkConnections.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }

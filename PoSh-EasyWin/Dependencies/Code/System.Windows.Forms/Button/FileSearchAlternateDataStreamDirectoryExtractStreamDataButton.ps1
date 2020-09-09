@@ -40,7 +40,7 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
 
         $StatusListBox.Items.clear()
         $StatusListBox.Items.Add("Extracting Alternate Data Stream from Files")
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Add("Extracting Alternate Data Stream from Files:")
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Retrieved the following files from:"
 

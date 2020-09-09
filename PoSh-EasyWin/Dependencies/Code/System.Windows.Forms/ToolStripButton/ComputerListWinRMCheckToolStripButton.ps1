@@ -6,7 +6,7 @@ $ComputerListWinRMCheckToolStripButtonAdd_Click = {
     }
     else {
         if (Verify-Action -Title "Verification: WinRM Check" -Question "Conduct a WinRM Check to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
-            Check-Connection -CheckType "WinRM Check" -ComputerTreeViewSelected $script:ComputerTreeViewSelected -MessageTrue "Able to Verify WinRM" -MessageFalse "Unable to Verify WinRM" 
+            Check-Connection -CheckType "WinRM Check" -MessageTrue "Able to Verify WinRM" -MessageFalse "Unable to Verify WinRM" 
         }
         else {
             [system.media.systemsounds]::Exclamation.play()

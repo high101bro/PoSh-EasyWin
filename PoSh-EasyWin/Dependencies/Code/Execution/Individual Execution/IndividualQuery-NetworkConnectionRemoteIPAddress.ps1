@@ -29,25 +29,24 @@ foreach ($TargetComputer in $script:ComputerList) {
     #$NetworkConnectionSearchRemoteIPAddress = @()
     #foreach ($IP in $($NetworkConnectionSearchRemoteIPAddressRichTextbox.Text).split("`r`n")){ $NetworkConnectionSearchRemoteIPAddress += $IP }
 
-$QueryJob = @"
-    Start-Job -Name "PoSh-EasyWin: `$(`$CollectionName) -- `$(`$TargetComputer)" -ScriptBlock {
-        param(`$TargetComputer, `$NetworkConnectionSearchRemoteIPAddress, `$script:IndividualHostResults, `$CollectionName $QueryCredentialParam)
-        [System.Threading.Thread]::CurrentThread.Priority = 'High'
-        ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
+     
+    if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if (!$script:Credential) { Create-NewCredentials }             
 
-        `$ConnectionFound = Invoke-Command -ComputerName `$TargetComputer $QueryCredential -ScriptBlock {
-            param(`$NetworkConnectionSearchRemoteIPAddress, `$TargetComputer)
-
-            $QueryNetworkConnection
-            Query-NetworkConnection -IP `$NetworkConnectionSearchRemoteIPAddress
-
-        } -ArgumentList @(`$NetworkConnectionSearchRemoteIPAddress, `$TargetComputer)
-                
-        `$ConnectionFound | Select-Object -Property @{Name='PSComputerName';Expression={`$(`$TargetComputer)}}, *
-        
-    } -ArgumentList @(`$TargetComputer, `$NetworkConnectionSearchRemoteIPAddress, `$CollectionName $QueryCredentialParam)
-"@
-Invoke-Expression -Command $QueryJob
+        Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
+        -ArgumentList @($NetworkConnectionSearchRemoteIPAddress,$null,$null,$null) `
+        -ComputerName $TargetComputer `
+        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+        -Credential $script:Credential `
+        | Select-Object PSComputerName, *
+    }
+    else {
+        Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
+        -ArgumentList @($NetworkConnectionSearchRemoteIPAddress,$null,$null,$null) `
+        -ComputerName $TargetComputer `
+        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+        | Select-Object PSComputerName, *
+    }
 }
 
 Monitor-Jobs -CollectionName $CollectionName
@@ -57,10 +56,10 @@ $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -En
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
 
-Compile-CsvFiles -LocationOfCSVsToCompile   "$($script:IndividualHostResults)\$($CollectionName)\$($CollectionName)*.csv" `
+Compile-CsvFiles -LocationOfCSVsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)\$($CollectionName)*.csv" `
                  -LocationToSaveCompiledCSV "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).csv"
 
-Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:IndividualHostResults)\$($CollectionName)\$($CollectionName)*.xml" `
+Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)\$($CollectionName)*.xml" `
                  -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).xml"
   
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"

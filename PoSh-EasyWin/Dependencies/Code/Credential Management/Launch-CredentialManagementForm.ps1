@@ -1,9 +1,11 @@
+function Launch-CredentialManagementForm {
+
 $CredentialManagementForm = New-Object system.Windows.Forms.Form -Property @{
     Text          = "Credential Management"
     StartPosition = "CenterScreen"
     Size          = @{ Width  = $FormScale * 510
                        Height = $FormScale * 588 }
-    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor     = 'Black'
 }
@@ -334,7 +336,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
 
-
+ 
     #------------------------------------------------
     # Credential Management Password Rolling Account 
     #------------------------------------------------
@@ -739,3 +741,5 @@ $CredentialManagementGenerateNewPasswordButton.enabled = $true
 
 
 $CredentialManagementForm.ShowDialog()
+
+}

@@ -1,5 +1,7 @@
 function Select-SysinternalsSysmonXmlConfig {
-    [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+    Add-Type -AssemblyName System.Windows.Forms
+        #[System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+    
     $SysinternalsSysmonOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
         Title = "Select Sysmon Configuration XML File"
         Filter = "XML Files (*.xml)| *.xml|All files (*.*)|*.*"

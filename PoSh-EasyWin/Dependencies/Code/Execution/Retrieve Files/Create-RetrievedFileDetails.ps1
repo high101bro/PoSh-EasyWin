@@ -19,7 +19,7 @@ function Create-RetrievedFileDetails {
         "Filename Extracted From                        : " + "$($ADS.FileName)" | Add-Content $RetrievedFileSavePath
         "Zone ID                                        : " + "$($ADS.ZoneID)" | Add-Content $RetrievedFileSavePath
         "Stream Value Length                            : " + "$($ADS.Length)" | Add-Content $RetrievedFileSavePath
-        "Stream Data (Sample of first 100 characters)   : " + "$($ADS.StreamDataSample)" | Add-Content $RetrievedFileSavePath
+        "Stream Data (Sample of first 1000 characters)  : " + "$($ADS.StreamDataSample)" | Add-Content $RetrievedFileSavePath
         "Stream Data                                    : " + "Reference the zipped file: '$($ADS.Stream)'" | Add-Content $RetrievedFileSavePath
         "" | Add-Content $RetrievedFileSavePath
     }    

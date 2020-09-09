@@ -10,17 +10,22 @@ function Create-ComputerNodeCheckBoxArray {
                 } 
             }
         }
-        foreach ($Category in $root.Nodes) { 
-            if ($Category.Checked) {
-                foreach ($Entry in $Category.nodes) { $script:ComputerTreeViewSelected += $Entry.Text }       
-            }
-            foreach ($Entry in $Category.nodes) {
-                if ($Entry.Checked) {
-                    $script:ComputerTreeViewSelected += $Entry.Text
+        else {
+            foreach ($Category in $root.Nodes) { 
+                if ($Category.Checked) {
+                    foreach ($Entry in $Category.nodes) { $script:ComputerTreeViewSelected += $Entry.Text }       
                 }
-            }       
-        }         
+                else {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Checked) {
+                            $script:ComputerTreeViewSelected += $Entry.Text
+                        }
+                    }       
+                }
+            }         
+        }
     }
     $script:ComputerTreeViewSelected = $script:ComputerTreeViewSelected | Select-Object -Unique
     #return $script:ComputerTreeViewSelected
 }
+

@@ -1,9 +1,9 @@
 $CollectionCommandStartTime = Get-Date
-$CollectionName = "Event ID Manual Entry"
+$CollectionName = "Event Logs - Event ID Manual Entry"
 
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
@@ -48,7 +48,7 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
     Invoke-Expression $EventLogQueryBuild
 }
 
-$OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Event Logs - $CollectionName"
+$OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName"
 
 $EventLogsEventIDsManualEntryTextboxText = $EventLogsEventIDsManualEntryTextbox.Lines
 $EventLogsMaximumCollectionTextBoxText   = $EventLogsMaximumCollectionTextBox.Lines
@@ -58,16 +58,21 @@ $EventLogsStartTimePickerValue           = $EventLogsStartTimePicker.Value
 $EventLogsStopTimePickerValue            = $EventLogsStopTimePicker.Value
 
 #Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} -ArgumentList $EventLogsEventIDsManualEntryTextboxText, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked, $EventLogsStopTimePickerChecked, $EventLogsStartTimePickerValue, $EventLogsStopTimePickerValue -Session $PSSession | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
-Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} -ArgumentList $EventLogsEventIDsManualEntryTextboxText, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked, $EventLogsStopTimePickerChecked, $EventLogsStartTimePickerValue, $EventLogsStopTimePickerValue -Session $PSSession `
+Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} `
+-ArgumentList $EventLogsEventIDsManualEntryTextboxText, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked, $EventLogsStopTimePickerChecked, $EventLogsStartTimePickerValue, $EventLogsStopTimePickerValue `
+-Session $PSSession `
 | Set-Variable SessionData
+
+
 $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
 $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
 Remove-Variable -Name SessionData -Force
 
 
-$ResultsListBox.Items.RemoveAt(1)
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$ResultsListBox.Items.RemoveAt(0)
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()
+
 
 $script:ProgressBarQueriesProgressBar.Value += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count

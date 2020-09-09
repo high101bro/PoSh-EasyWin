@@ -1,8 +1,17 @@
 $ComputerListRDPButtonAdd_Click = {
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     Create-ComputerNodeCheckBoxArray
-    if ($script:ComputerTreeViewSelected.count -eq 1) {
-        if (Verify-Action -Title "Verification: Remote Desktop" -Question "Open a Remote Desktop session to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+    Generate-ComputerList
+
+    if ($script:ComputerTreeViewSelected.count -eq 1 -or $script:ComputerListEndpointNameToolStripLabel.text -in $script:ComputerList) {
+        if ($script:ComputerListEndpointNameToolStripLabel.text -in $script:ComputerList) {
+            $VerifyRDP = Verify-Action -Title "Verification: Remote Desktop" -Question "Open a Remote Desktop session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
+        }
+        else {
+            $VerifyRDP = Verify-Action -Title "Verification: Remote Desktop" -Question "Open a Remote Desktop session to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')
+        }
+        if ($VerifyRDP) {
             # This brings specific tabs to the forefront/front view
             $MainBottomTabControl.SelectedTab = $Section3ResultsTab
             if ($ComputerListProvideCredentialsCheckBox.Checked) { 
@@ -60,7 +69,7 @@ $ComputerListRDPButtonAdd_Click = {
             }
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Remote Desktop:  $($script:ComputerTreeViewSelected)")
-            $ResultsListBox.Items.Clear()
+            #Removed For Testing#$ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("mstsc /v:$($script:ComputerTreeViewSelected):3389 /NoConsentPrompt")
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Remote Desktop (RDP): $($script:ComputerTreeViewSelected)"
         }

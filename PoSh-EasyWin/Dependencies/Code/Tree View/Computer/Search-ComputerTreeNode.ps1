@@ -102,7 +102,7 @@ function Search-ComputerTreeNode {
                 $script:CSVFileMatch = @()
 
                 foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
-                    $CSVFiles = $(Get-ChildItem -Path $CollectionDir -Filter "*.csv" -Recurse).FullName | Where {$_ -match  "Collected Data" -and $_ -notmatch "Individual Host Results"}
+                    $CSVFiles = $(Get-ChildItem -Path $CollectionDir -Filter "*.csv" -Recurse).FullName | Where {$_ -match  "Collected Data" -and $_ -notmatch "Results By Endpoints"}
                     foreach ($CSVFile in $CSVFiles) { 
                         if ($OptionSearchProcessesCheckBox.Checked) {
                             # Searches for the CSV file that matches the data selected

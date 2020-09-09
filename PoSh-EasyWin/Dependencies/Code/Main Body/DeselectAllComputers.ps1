@@ -17,6 +17,6 @@ function Deselect-AllComputers {
             }
         }
     }
-    Conduct-NodeAction -TreeView $script:ComputerTreeView.Nodes -Endpoints
+    Conduct-NodeAction -TreeView $script:ComputerTreeView.Nodes -ComputerList
 }
  

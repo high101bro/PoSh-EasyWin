@@ -6,7 +6,7 @@ function Show-TagForm {
                       Height = $FormScale * 115 }
         StartPosition = "CenterScreen"
         Font = New-Object System.Drawing.Font('Courier New',$($FormScale * 11),0,0,0)
-        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     }
     #$ComputerListMassTagForm | select *
     $ComputerListMassTagNewTagNameLabel = New-Object System.Windows.Forms.Label -Property @{

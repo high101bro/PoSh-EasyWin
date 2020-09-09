@@ -14,7 +14,7 @@ function Conduct-PortScan {
     $IPsToScan += $SpecificIPsToScan -split "," -replace " ",""
     if ( $FirstIP -ne "" -and $LastIP -ne "" ) {
         if ( ($FirstIP -lt [int]0 -or $FirstIP -gt [int]255) -or ($LastIP -lt [int]0 -or $LastIP -gt [int]255) ) {
-            $ResultsListBox.Items.Clear()
+            #Removed For Testing#$ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("Error! The First and Last IP Fields must be an interger between 0 and 255")
             return
         }
@@ -22,7 +22,7 @@ function Conduct-PortScan {
         foreach ( $IP in $IPRange ) { $IPsToScan += "$Network.$IP" }
     }
     elseif (( $FirstIP -ne "" -and $LastIP -eq "" ) -or ( $FirstIP -eq "" -and $LastIP -ne "" )) {        
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Add("Error! You can't have one empty IP range field.")
         return
     }    
@@ -37,7 +37,7 @@ function Conduct-PortScan {
     $PortsToScan += $FirstPort..$LastPort
 
     function Generate-PortsStatusMessage {
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Add("Please wait as the port range is being generated...")
         Start-Sleep -Seconds 1
     }
@@ -99,13 +99,13 @@ function Conduct-PortScan {
     $PortsToScan = $PortsToScan | Sort-Object -Unique | Where-Object {$_ -ne ""}
 
     if ($($PortsToScan).count -eq 0) {
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Insert(0,"No ports have been entered or selected to scan!")
         return
     }
     $IPsToScan = $IPsToScan | Sort-Object -Unique | ? {$_ -ne ""}
     if ($($IPsToScan).count -eq 0) {
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Insert(0,"Input Error or no IP addresses have been entered to scan!")
         return
     }
@@ -114,7 +114,7 @@ function Conduct-PortScan {
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$TimeStamp  ==================== Port Scan Initiliaztion ===================="
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$TimeStamp  Ports To Be Scanned:  $PortsToScan"
     $EnumerationComputerListBox.Items.Clear()
-    $ResultsListBox.Items.Clear()
+    #Removed For Testing#$ResultsListBox.Items.Clear()
     $ResultsListBox.Items.Insert(0,"$TimeStamp  ==================== Port Scan Initiliaztion ====================")
     $ResultsListBox.Items.Insert(0,"$TimeStamp  Ports To Be Scanned:  $PortsToScan")
     $StatusListBox.Items.Clear()

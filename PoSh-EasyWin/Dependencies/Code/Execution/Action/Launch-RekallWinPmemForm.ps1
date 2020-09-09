@@ -89,7 +89,7 @@ function Launch-RekallWinPmemForm {
         Height   = $FormScale * 475
         StartPosition = "CenterScreen"
         ControlBox    = $true
-        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     }
     #-----------------------------
     # Rekall WinPmem - Main Label

@@ -13,7 +13,7 @@ function Show-MoveForm {
         Text          = "Move"
         Size          = New-Object System.Drawing.Size(330,107)
         StartPosition = "CenterScreen"
-        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     }
     $ComputerTreeNodePopup.Text = $FormTitleEndpoints
     
@@ -129,7 +129,7 @@ $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
 
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Moved $($script:ComputerTreeNodeToMove.Count) Endpoints")
-            $ResultsListBox.Items.Clear()
+            #Removed For Testing#$ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("The following hostnames/IPs have been moved to $($ComputerTreeNodePopupMoveComboBox.SelectedItem):")
         }
         else { ComputerNodeSelectedLessThanOne -Message 'Move Selection' }

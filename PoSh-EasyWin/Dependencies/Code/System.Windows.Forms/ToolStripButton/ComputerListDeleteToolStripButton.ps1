@@ -99,7 +99,7 @@ $ComputerListDeleteAllCheckedToolStripButtonAdd_Click = {
 
                     $StatusListBox.Items.Clear()
                     $StatusListBox.Items.Add("Deleted:  $($script:ComputerTreeViewSelected.Count) Selected Items")
-                    $ResultsListBox.Items.Clear()
+                    #Removed For Testing#$ResultsListBox.Items.Clear()
                     $ResultsListBox.Items.Add("The following hosts have been deleted:  ")
                     $ComputerListDeletedArray = @()
                     foreach ($Node in $script:ComputerTreeViewSelected) { 

@@ -1,13 +1,13 @@
 $CollectionCommandStartTime = Get-Date
-$CollectionName = "Event IDs To Monitor"
+$CollectionName = "Event Logs - Event IDs To Monitor"
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
-$OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Event Logs - $CollectionName"
+$OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName"
 
 $EventLogsEventIDsToMonitorCheckListBoxCheckedItems = $EventLogsEventIDsToMonitorCheckListBox.CheckedItems
 $EventLogsMaximumCollectionTextBoxText = $EventLogsMaximumCollectionTextBox.Text
@@ -16,9 +16,6 @@ $EventLogsStopTimePickerChecked        = $EventLogsStopTimePicker.Checked
 $EventLogsStartTimePickerValue         = $EventLogsStartTimePicker.Value
 $EventLogsStopTimePickerValue          = $EventLogsStopTimePicker.Value
 
-$ResultsListBox.Items.RemoveAt(1)
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
-$PoShEasyWin.Refresh()
 
 Invoke-Command -ScriptBlock {
     param($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
@@ -65,6 +62,11 @@ Invoke-Command -ScriptBlock {
 $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
 $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
 Remove-Variable -Name SessionData -Force
+
+
+$ResultsListBox.Items.RemoveAt(0)
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$PoShEasyWin.Refresh()
 
 
 $script:ProgressBarQueriesProgressBar.Value += 1

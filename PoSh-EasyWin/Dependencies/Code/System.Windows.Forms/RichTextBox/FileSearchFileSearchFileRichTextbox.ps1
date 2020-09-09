@@ -14,6 +14,7 @@ $FileSearchFileSearchFileRichTextboxAdd_MouseHover = {
     Show-ToolTip -Title "File Search (WinRM)" -Icon "Info" -Message @"
 +  Enter FileNames
 +  One Per Line
++  Support Regular Expressions (RegEx)
 +  Filenames don't have to include file extension
 +  This search will also find the keyword within the filename
 "@ 

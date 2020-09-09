@@ -9,7 +9,7 @@ function Open-XmlResultsInShell {
 
     $Command = @"
     Start-Process  'PowerShell' -ArgumentList '-NoExit',
-    '-ExecutionPolicy Restricted',            
+    '-ExecutionPolicy Restricted',
         { Write-Host ' '; },
 
         { Write-Host -f Yellow 'Generate Property Statistics? For larger files this may take some time: ' -NoNewLine;},

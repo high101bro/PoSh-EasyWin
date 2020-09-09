@@ -2,7 +2,7 @@ $CollectionCommandStartTime = Get-Date
 $CollectionName = "Network Connection - Search DNS Cache"
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
@@ -13,23 +13,16 @@ $NetworkConnectionSearchDNSCache = $NetworkConnectionSearchDNSCacheRichTextbox.L
 
 $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Network Connection - DNS Cache"
 
-Invoke-Command -ScriptBlock {
-    param($NetworkConnectionSearchDNSCache)
-    $DNSQueryCache = Get-DnsClientCache
-    $DNSQueryFoundList = @()
-    foreach ($DNSQuery in $NetworkConnectionSearchDNSCache) {
-        $DNSQueryFoundList += $DNSQueryCache | Where-Object {($_.name -match $DNSQuery) -or ($_.entry -match $DNSQuery) -or ($_.data -match $DNSQuery) }
-    }
-    $DNSQueryFoundList | Select-Object -Property PSComputerName, Entry, Name, Data, Type, Status, Section, TTL, DataLength
-
-} -argumentlist @($NetworkConnectionSearchDNSCache,$null) -Session $PSSession `
+Invoke-Command -ScriptBlock ${function:Get-DNSCache} `
+-Argumentlist @($NetworkConnectionSearchDNSCache,$null) `
+-Session $PSSession `
 | Set-Variable SessionData
 $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
 $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
 Remove-Variable -Name SessionData -Force
 
-$ResultsListBox.Items.RemoveAt(1)
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$ResultsListBox.Items.RemoveAt(0)
+$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarQueriesProgressBar.Value += 1

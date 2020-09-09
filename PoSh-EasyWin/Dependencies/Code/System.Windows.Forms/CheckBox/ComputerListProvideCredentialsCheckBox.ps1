@@ -9,6 +9,7 @@ $ComputerListProvideCredentialsCheckBoxAdd_Click = {
     elseif ($ComputerListProvideCredentialsCheckBox.Checked -and -not (Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Credentials:  There are no credentials stored")
+        Launch-CredentialManagementForm
     }
     else {
         $StatusListBox.Items.Clear()
@@ -16,7 +17,7 @@ $ComputerListProvideCredentialsCheckBoxAdd_Click = {
     }
 
     # Test View of Credentials
-    #$ResultsListBox.Items.Clear()
+    ##Removed For Testing#$ResultsListBox.Items.Clear()
     #$ResultsListBox.Items.Add("Username: $($script:Credential.UserName)")
     #$ResultsListBox.Items.Add("Password: $($script:Credential.GetNetworkCredential().Password)")    
 }

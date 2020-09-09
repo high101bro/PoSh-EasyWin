@@ -21,7 +21,7 @@ function Stop-ServicesOnMultipleComputers {
         | Out-GridView -Title 'Select Services To Stop' -PassThru -OutVariable ServicesToStop
     }
     elseif ($CollectNewServiceData) {
-        Generate-ComputerListToQuery
+        Generate-ComputerList
         
         if ($script:ComputerList.count -eq 0){
             [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect Service data from. Alternatively, you can select a CSV file from a previous Service collection.','Error: No Endpoints Selected')
@@ -51,8 +51,8 @@ function Stop-ServicesOnMultipleComputers {
     $Computers = $ServicesToStop | Select-Object -ExpandProperty PSComputerName -Unique | Sort-Object
 
     $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Domain Wide Service Stopper")
-    $ResultsListBox.Items.Clear()
+    $StatusListBox.Items.Add("Multi-Endpoint Service Stopper")
+    #Removed For Testing#$ResultsListBox.Items.Clear()
 
     foreach ($Computer in $Computers) {    
         $Session = $null
@@ -74,7 +74,7 @@ function Stop-ServicesOnMultipleComputers {
                     if ($Service.PSComputerName -eq $Computer){
                         $ServiceName = $Service.Name
                         #Write-Host "  - Stopping:  $Service" -ForegroundColor Green
-                        $ResultsListBox.Items.Insert(1,"  - Stopping Service:  [Name]$($Service.Name)  [Display Name]$($Service.DisplayName)")
+                        $ResultsListBox.Items.Insert(1,"  - Stopping Service:  [Computer]$Computer  [Service]$($Service.Name)  [Display Name]$($Service.DisplayName)")
                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { param(`$ServiceName,`$ServiceID); Stop-Service -Name $ServiceName -Force | Where-Object {`$_.Id -eq $ServiceID}} -ArgumentList @(`$ServiceName,`$ServiceID) -Session `$Session"
                         Invoke-Command -ScriptBlock { param($ServiceName); Stop-Service -Name $ServiceName } -ArgumentList $ServiceName -Session $Session
                     }

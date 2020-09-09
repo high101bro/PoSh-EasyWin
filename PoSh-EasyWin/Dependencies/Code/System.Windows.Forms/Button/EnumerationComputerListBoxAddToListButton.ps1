@@ -3,7 +3,7 @@ $EnumerationComputerListBoxAddToListButtonAdd_Click = {
 
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Enumeration:  Added $($EnumerationComputerListBox.SelectedItems.Count) IPs")
-    $ResultsListBox.Items.Clear()
+    #Removed For Testing#$ResultsListBox.Items.Clear()
     foreach ($Selected in $EnumerationComputerListBox.SelectedItems) {      
         if ($script:ComputerTreeViewData.Name -contains $Selected) {
             Message-HostAlreadyExists -Message "Port Scan Import:  Warning" -Computer $Selected

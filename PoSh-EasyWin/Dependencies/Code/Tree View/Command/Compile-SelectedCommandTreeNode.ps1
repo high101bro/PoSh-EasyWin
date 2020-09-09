@@ -1,9 +1,15 @@
 function Compile-SelectedCommandTreeNode {
+    <#
+        .Description
+        This function compiles the selected treeview comamnds, placing the proper command 
+        type and protocol into a variable list to be executed.
+    #>
+
     # Commands in the treenode that are selected
     $script:CommandsCheckedBoxesSelected = @()
     
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:CommandsTreeView.Nodes
-    $ResultsListBox.Items.Clear()
+    #Removed For Testing#$ResultsListBox.Items.Clear()
 
     # Compiles all the commands treenodes into one object
     $script:AllCommands  = $script:AllEndpointCommands
@@ -43,15 +49,51 @@ function Compile-SelectedCommandTreeNode {
                             Type           = "(WinRM) WMI"
                         }
                     }
-                    elseif ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'CMD') {
+                    #elseif ($Entry.Checked -and $Entry -match '(WinRM)' -and $Entry -match 'CMD') {
+                    #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                    #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                    #        Name           = $Entry.Text
+                    #        Command        = $Command.Command_WinRM_CMD
+                    #        ExportFileName = $Command.ExportFileName
+                    #        Type           = "(WinRM) CMD"
+                    #    }
+                    #}
+
+
+
+
+
+                    #elseif ($Entry.Checked -and $Entry -match '(RPC)' -and $Entry -match 'PoSh') {
+                    #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                    #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                    #        Name           = $Entry.Text
+                    #        Command        = $Command.Command_RPC_PoSh
+                    #        Properties     = $Command.Properties_PoSh
+                    #        ExportFileName = $Command.ExportFileName
+                    #        Type           = "(RPC) PoSh"
+                    #    }
+                    #}
+                    elseif ($Entry.Checked -and $Entry -match '(RPC)' -and  $Entry -match 'WMI' -and $Entry -notmatch '(WinRM)') {
                         $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                         $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
                             Name           = $Entry.Text
-                            Command        = $Command.Command_WinRM_WMI
+                            Command        = $Command.Command_RPC_WMI
+                            Properties     = $Command.Properties_WMI
                             ExportFileName = $Command.ExportFileName
-                            Type           = "(WinRM) WMI"
+                            Type           = "(RPC) WMI"
                         }
                     }
+                    #elseif ($Entry.Checked -and $Entry -match '(RPC)' -and  $Entry -match 'CMD' -and $Entry -notmatch '(WinRM)') {
+                    #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                    #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                    #        Name           = $Entry.Text
+                    #        Command        = $Command.Command_RPC_CMD
+                    #        ExportFileName = $Command.ExportFileName
+                    #        Type           = "(RPC) CMD"
+                    #    }
+                    #}
+                    
+                    
 
 
 
@@ -80,38 +122,6 @@ function Compile-SelectedCommandTreeNode {
                             Command        = $Command.Command_SMB_CMD
                             ExportFileName = $Command.ExportFileName
                             Type           = "(SMB) CMD"
-                        }
-                    }
-
-
-
-                    elseif ($Entry.Checked -and $Entry -match '(RPC)' -and $Entry -match 'PoSh') {
-                        $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                        $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                            Name           = $Entry.Text
-                            Command        = $Command.Command_RPC_PoSh
-                            Properties     = $Command.Properties_PoSh
-                            ExportFileName = $Command.ExportFileName
-                            Type           = "(RPC) PoSh"
-                        }
-                    }
-                    elseif ($Entry.Checked -and $Entry -match '(RPC)' -and  $Entry -match 'WMI' -and $Entry -notmatch '(WinRS)' -and $Entry -notmatch '(WinRM)') {
-                        $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                        $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                            Name           = $Entry.Text
-                            Command        = $Command.Command_RPC_WMI
-                            Properties     = $Command.Properties_WMI
-                            ExportFileName = $Command.ExportFileName
-                            Type           = "(RPC) WMI"
-                        }
-                    }
-                    elseif ($Entry.Checked -and $Entry -match '(RPC)' -and  $Entry -match 'CMD' -and $Entry -notmatch '(WinRS)' -and $Entry -notmatch '(WinRM)') {
-                        $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                        $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                            Name           = $Entry.Text
-                            Command        = $Command.Command_RPC_CMD
-                            ExportFileName = $Command.ExportFileName
-                            Type           = "(RPC) CMD"
                         }
                     }
                 }
@@ -148,30 +158,30 @@ function Compile-SelectedCommandTreeNode {
                             Type           = "(WinRM) WMI"
                         }
                     }
-                    elseif ($Entry -match '(WinRM)' -and $Entry -match 'CMD' -and $Entry.Checked) {
-                        $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                        $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                            Name           = $Entry.Text
-                            Command        = $Command.Command_WinRM_WMI
-                            ExportFileName = $Command.ExportFileName
-                            Type           = "(WinRM) CMD"
-                        }
-                    }
+                    #elseif ($Entry -match '(WinRM)' -and $Entry -match 'CMD' -and $Entry.Checked) {
+                    #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                    #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                    #        Name           = $Entry.Text
+                    #        Command        = $Command.Command_WinRM_CMD
+                    #        ExportFileName = $Command.ExportFileName
+                    #        Type           = "(WinRM) CMD"
+                    #    }
+                    #}
 
 
 
 
-                    if ($Entry -match '(RPC)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
-                        $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                        $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                            Name           = $Entry.Text
-                            Command        = $Command.Command_RPC_PoSh
-                            Properties     = $Command.Properties_PoSh
-                            ExportFileName = $Command.ExportFileName
-                            Type           = '(RPC) PoSh'
-                        }
-                    }
-                    elseif (($Entry -match '(RPC)') -and  $Entry -match 'WMI' -and ($Entry -notmatch '(WinRS)') -and ($Entry -notmatch '(WinRM)') -and $Entry.Checked) {                        
+                    #if ($Entry -match '(RPC)' -and $Entry -match 'PoSh' -and $Entry.Checked) {
+                    #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                    #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                    #        Name           = $Entry.Text
+                    #        Command        = $Command.Command_RPC_PoSh
+                    #        Properties     = $Command.Properties_PoSh
+                    #        ExportFileName = $Command.ExportFileName
+                    #        Type           = '(RPC) PoSh'
+                    #    }
+                    #}
+                    elseif (($Entry -match '(RPC)') -and  $Entry -match 'WMI' -and ($Entry -notmatch '(WinRM)') -and $Entry.Checked) {                        
                         $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
                         $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
                             Name           = $Entry.Text
@@ -181,15 +191,15 @@ function Compile-SelectedCommandTreeNode {
                             Type           = "(RPC) WMI"
                         }
                     }
-                    elseif (($Entry -match '(RPC)') -and  $Entry -match 'CMD' -and ($Entry -notmatch '(WinRS)') -and ($Entry -notmatch '(WinRM)') -and $Entry.Checked) {                        
-                        $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
-                        $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
-                            Name           = $Entry.Text
-                            Command        = $Command.Command_RPC_CMD
-                            ExportFileName = $Command.ExportFileName
-                            Type           = "(RPC) CMD"
-                        }
-                    }
+                    #elseif (($Entry -match '(RPC)') -and  $Entry -match 'CMD' -and ($Entry -notmatch '(WinRM)') -and $Entry.Checked) {                        
+                    #    $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                    #    $script:CommandsCheckedBoxesSelected += New-Object psobject @{ 
+                    #        Name           = $Entry.Text
+                    #        Command        = $Command.Command_RPC_CMD
+                    #        ExportFileName = $Command.ExportFileName
+                    #        Type           = "(RPC) CMD"
+                    #    }
+                    #}
 
 
 

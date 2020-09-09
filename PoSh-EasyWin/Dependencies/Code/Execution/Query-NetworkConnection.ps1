@@ -1,9 +1,3 @@
-<#
-This function is created within a string variable as it is used with an an agrument for Start-Job
-It is initialized below with an Invoke-Expression
-20200413: Re-wrote script for backwards compatability with older OS that don't support the Get-NetTCPConnection paramter of owningprocess and creation time
-#>
-$QueryNetworkConnection = @'
 function Query-NetworkConnection {
     param(
         [string[]]$IP          = $null,
@@ -11,7 +5,6 @@ function Query-NetworkConnection {
         [string[]]$LocalPort   = $null,
         [string[]]$ProcessName = $null
     )
-
 
     if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {                
         $Processes           = Get-WmiObject -Class Win32_Process
@@ -106,6 +99,4 @@ function Query-NetworkConnection {
     return $ConnectionsFound 
 
 }
-'@
-# No need to call this into memory, as it's when a query is conducted
-#Invoke-Expression -Command $QueryNetworkConnection
+

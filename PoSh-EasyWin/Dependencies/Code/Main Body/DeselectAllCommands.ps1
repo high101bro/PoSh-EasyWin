@@ -18,11 +18,16 @@ function Deselect-AllCommands {
             }
         }
     }
+
+    $CustomQueryScriptBlockCheckBox.checked                    = $false
     $RegistrySearchCheckbox.checked                            = $false
     $RegistrySearchRecursiveCheckbox.checked                   = $false
     $RegistryKeyNameCheckbox.checked                           = $false
     $RegistryValueNameCheckbox.checked                         = $false
     $RegistryValueDataCheckbox.checked                         = $false
+    $AccountsCurrentlyLoggedInConsoleCheckbox.checked          = $false
+    $AccountsCurrentlyLoggedInPSSessionCheckbox.checked        = $false
+    $AccountActivityCheckbox.checked                           = $false
     $EventLogsEventIDsManualEntryCheckbox.checked              = $false
     $EventLogsQuickPickSelectionCheckbox.checked               = $false
     $EventLogsEventIDsToMonitorCheckbox.checked                = $false
@@ -40,6 +45,6 @@ function Deselect-AllCommands {
     $SysinternalsProcessMonitorCheckbox.checked                = $false
     $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false
     
-    #Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands    
+    Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands    
 }
  

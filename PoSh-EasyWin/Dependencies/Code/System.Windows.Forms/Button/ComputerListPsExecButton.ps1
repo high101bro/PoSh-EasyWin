@@ -1,14 +1,23 @@
 $ComputerListPsExecButtonAdd_Click = {
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     Create-ComputerNodeCheckBoxArray
-    if ($script:ComputerTreeViewSelected.count -eq 1) {        
-        if (Verify-Action -Title "Verification: PSExec" -Question "Enter a PSEexec session to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+    Generate-ComputerList
+
+    if ($script:ComputerTreeViewSelected.count -eq 1 -or $script:ComputerListEndpointNameToolStripLabel.text -in $script:ComputerList) {        
+        if ($script:ComputerListEndpointNameToolStripLabel.text -in $script:ComputerList) {
+            $VerifyRDP = Verify-Action -Title "Verification: PSExec" -Question "Enter a PSEexec session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
+        }
+        else {
+            $VerifyRDP = Verify-Action -Title "Verification: PSExec" -Question "Enter a PSEexec session to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')
+        }
+        if ($VerifyRDP) {
             # This brings specific tabs to the forefront/front view
             $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-    
+     
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("PsExec:  $($script:ComputerTreeViewSelected)")
-            $ResultsListBox.Items.Clear()
+            #Removed For Testing#$ResultsListBox.Items.Clear()
             if ($ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"

@@ -17,12 +17,12 @@ function AddHost-ComputerTreeNode {
 
         if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
             Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOSComboBox.Text -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"
-            $ResultsListBox.Items.Clear()
+            #Removed For Testing#$ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("$($ComputerTreeNodePopupAddTextBox.Text) has been added to $($ComputerTreeNodePopupOSComboBox.Text)")
         }
         elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
             Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOUComboBox.SelectedItem -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"            
-            $ResultsListBox.Items.Clear()
+            #Removed For Testing#$ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("$($ComputerTreeNodePopupAddTextBox.Text) has been added to $($ComputerTreeNodePopupOUComboBox.Text)")
         }       
         $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 

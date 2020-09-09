@@ -14,5 +14,7 @@ $FileSearchFileSearchDirectoryRichTextboxAdd_MouseHover = {
     Show-ToolTip -Title "File Search (WinRM)" -Icon "Info" -Message @"
 +  Enter Directories
 +  One Per Line
++  You can include wild cards in directory paths:
+     Ex:  c:\users\*\appdata\local\temp\*
 "@ 
 }

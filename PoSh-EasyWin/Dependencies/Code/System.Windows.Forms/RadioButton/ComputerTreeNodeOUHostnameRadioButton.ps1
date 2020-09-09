@@ -24,6 +24,7 @@ $ComputerTreeNodeOUHostnameRadioButtonAdd_Click = {
 
     Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
     KeepChecked-ComputerTreeNode
+    Conduct-NodeAction
 }
 
 $ComputerTreeNodeOUHostnameRadioButtonAdd_MouseHover = {

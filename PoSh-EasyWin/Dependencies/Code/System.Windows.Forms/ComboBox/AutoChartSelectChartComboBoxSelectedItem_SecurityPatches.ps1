@@ -11,7 +11,7 @@ $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Pro
     #Anchor = $AnchorAll
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    AutoScroll    = $True
+    AutoScroll    = $True 
 }
 $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTab01)
  
@@ -24,40 +24,28 @@ $script:AutoChartsProgressBar.Maximum = 1
 $script:AutoChartsProgressBar.Value   = 0
 $script:AutoChartsProgressBar.Update()
 
-$script:AutoChart01CSVFileMatch = @()
+$script:AutoChart01SecurityPatchesCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
-    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Security Patches') { $script:AutoChart01CSVFileMatch += $CSVFile } }
+    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Security Patches') { $script:AutoChart01SecurityPatchesCSVFileMatch += $CSVFile } }
 } 
-$script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01CSVFileMatch | Select-Object -Last 1
-$script:AutoChartDataSource = $null
-$script:AutoChartDataSource = Import-Csv $script:AutoChartCSVFileMostRecentCollection
+$script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01SecurityPatchesCSVFileMatch | Select-Object -Last 1
+$script:AutoChartDataSourceCsv = $null
+$script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartCSVFileMostRecentCollection
 
 $script:AutoChartsProgressBar.Value = 1
 $script:AutoChartsProgressBar.Update()
 
 
 function Close-AllOptions {
-    $script:AutoChart01OptionsButton.Text = 'Options v'
-    $script:AutoChart01.Controls.Remove($script:AutoChart01ManipulationPanel)
-    $script:AutoChart02OptionsButton.Text = 'Options v'
-    $script:AutoChart02.Controls.Remove($script:AutoChart02ManipulationPanel)
-    $script:AutoChart03OptionsButton.Text = 'Options v'
-    $script:AutoChart03.Controls.Remove($script:AutoChart03ManipulationPanel)
-    $script:AutoChart04OptionsButton.Text = 'Options v'
-    $script:AutoChart04.Controls.Remove($script:AutoChart04ManipulationPanel)
-    $script:AutoChart05OptionsButton.Text = 'Options v'
-    $script:AutoChart05.Controls.Remove($script:AutoChart05ManipulationPanel)
-    $script:AutoChart06OptionsButton.Text = 'Options v'
-    $script:AutoChart06.Controls.Remove($script:AutoChart06ManipulationPanel)
-    $script:AutoChart07OptionsButton.Text = 'Options v'
-    $script:AutoChart07.Controls.Remove($script:AutoChart07ManipulationPanel)
-    $script:AutoChart08OptionsButton.Text = 'Options v'
-    $script:AutoChart08.Controls.Remove($script:AutoChart08ManipulationPanel)
-    $script:AutoChart09OptionsButton.Text = 'Options v'
-    $script:AutoChart09.Controls.Remove($script:AutoChart09ManipulationPanel)
-    $script:AutoChart10OptionsButton.Text = 'Options v'
-    $script:AutoChart10.Controls.Remove($script:AutoChart10ManipulationPanel)
+    $script:AutoChart01SecurityPatchesOptionsButton.Text = 'Options v'
+    $script:AutoChart01SecurityPatches.Controls.Remove($script:AutoChart01SecurityPatchesManipulationPanel)
+    $script:AutoChart02SecurityPatchesOptionsButton.Text = 'Options v'
+    $script:AutoChart02SecurityPatches.Controls.Remove($script:AutoChart02SecurityPatchesManipulationPanel)
+    $script:AutoChart03SecurityPatchesOptionsButton.Text = 'Options v'
+    $script:AutoChart03SecurityPatches.Controls.Remove($script:AutoChart03SecurityPatchesManipulationPanel)
+    $script:AutoChart04SecurityPatchesOptionsButton.Text = 'Options v'
+    $script:AutoChart04SecurityPatches.Controls.Remove($script:AutoChart04SecurityPatchesManipulationPanel)
 }
 
 ### Main Label at the top
@@ -71,48 +59,190 @@ $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property 
     TextAlign = 'MiddleCenter' 
 }
 
-### Import select file to view information
-$AutoChartSelectFileButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = 'Select File To Analyze'
-    Location = @{ X = $FormScale * 5
-                  Y = $FormScale * 5 }
-    Size   = @{ Width  = $FormScale * 200
-                Height = $FormScale * 25 }
-}
-CommonButtonSettings -Button $AutoChartSelectFileButton
-$script:AutoChartOpenResultsOpenFileDialogfilename = $null
-$AutoChartSelectFileButton.Add_Click({
-    [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
-    $AutoChartOpenResultsOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog
-    $AutoChartOpenResultsOpenFileDialog.Title            = "Open XML Data"
-    $AutoChartOpenResultsOpenFileDialog.InitialDirectorY = $FormScale * "$(if (Test-Path $($CollectionSavedDirectoryTextBox.Text)) {$($CollectionSavedDirectoryTextBox.Text)} else {$CollectedDataDirectory})"
-    $AutoChartOpenResultsOpenFileDialog.filter           = "Results (*.txt;*.csv;*.xlsx;*.xls)|*.txt;*.csv;*.xls;*.xlsx|Text (*.txt)|*.txt|CSV (*.csv)|*.csv|Excel (*.xlsx)|*.xlsx|Excel (*.xls)|*.xls|All files (*.*)|*.*"
-    $AutoChartOpenResultsOpenFileDialog.ShowDialog() | Out-Null
-    $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
-    $script:AutoChartOpenResultsOpenFileDialogfilename = $AutoChartOpenResultsOpenFileDialog.filename
-    $script:AutoChartDataSource = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
 
-    # This variable is used elsewhere
-    $script:AutoChartDataSourceFileName = $AutoChartOpenResultsOpenFileDialog.filename
+
+
+
+
+
+
+
+
+$script:AutoChartOpenResultsOpenFileDialogfilename = $null
+
+$AutoChartsUpdateChartsOptionsPanel = New-Object System.Windows.Forms.Panel -Property @{
+    text   = 0
+    Left   = $FormScale * 5
+    Top    = 0
+    Autosize = $true
+}
+            $AutoChartPullNewDataFromChartsRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text   = "Update From Existing Charts' Endpoints"
+                Left   = $FormScale * 5
+                Top    = 0
+                Width  = $FormScale * 225
+                Height = $FormScale * 15
+                Checked = $true
+            }
+            $AutoChartsUpdateChartsOptionsPanel.Controls.Add($AutoChartPullNewDataFromChartsRadioButton)
+
+
+            $AutoChartPullNewDataCheckBoxedRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text    = 'Update From CheckBoxed Endpoints'
+                Left    = $FormScale * 5
+                Top     = $AutoChartPullNewDataFromChartsRadioButton.Top + $AutoChartPullNewDataFromChartsRadioButton.Height
+                Width   = $FormScale * 225
+                Height  = $FormScale * 15
+            }
+            $AutoChartsUpdateChartsOptionsPanel.Controls.Add($AutoChartPullNewDataCheckBoxedRadioButton)
+
+
+            $AutoChartSelectFileRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text   = 'Update From An Existing Selected File'
+                Left   = $FormScale * 5
+                Top    = $AutoChartPullNewDataCheckBoxedRadioButton.Top + $AutoChartPullNewDataCheckBoxedRadioButton.Height
+                Width  = $FormScale * 225
+                Height = $FormScale * 15
+            }
+            $AutoChartsUpdateChartsOptionsPanel.Controls.Add($AutoChartSelectFileRadioButton)
+
+$script:AutoChartsIndividualTab01.Controls.Add($AutoChartsUpdateChartsOptionsPanel)
+
+
+$AutoChartsUpdateChartsProtocolPanel = New-Object System.Windows.Forms.Panel -Property @{
+    text   = 0
+    Left   = $AutoChartsUpdateChartsOptionsPanel.Left + $AutoChartsUpdateChartsOptionsPanel.Width
+    Top    = $AutoChartsUpdateChartsOptionsPanel.Top
+    Width  = $FormScale * 65
+    Height = $AutoChartsUpdateChartsOptionsPanel.Height
+}
+            $AutoChartProtocolWinRMRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text   = "WinRM"
+                Left   = 0
+                Top    = 0
+                Width  = $FormScale * 65
+                Height = $FormScale * 15
+                Checked = $true
+                Add_Click = {
+                    $AutoChartPullNewDataEnrichedCheckBox.enabled = $true
+                }
+
+            }
+            $AutoChartsUpdateChartsProtocolPanel.Controls.Add($AutoChartProtocolWinRMRadioButton)
+
+
+            $AutoChartProtocolRPCRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text    = 'RPC'
+                Left    = $AutoChartProtocolWinRMRadioButton.Left
+                Top     = $AutoChartProtocolWinRMRadioButton.Top + $AutoChartProtocolWinRMRadioButton.Height
+                Width   = $FormScale * 65
+                Height  = $FormScale * 15
+                Add_Click = {
+                    $AutoChartPullNewDataEnrichedCheckBox.checked = $false
+                    $AutoChartPullNewDataEnrichedCheckBox.enabled = $false
+                }
+            }
+            $AutoChartsUpdateChartsProtocolPanel.Controls.Add($AutoChartProtocolRPCRadioButton)
+
+
+            $AutoChartProtocolSMBRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text   = 'SMB'
+                Left   = $AutoChartProtocolWinRMRadioButton.Left
+                Top    = $AutoChartProtocolRPCRadioButton.Top + $AutoChartProtocolRPCRadioButton.Height
+                Width  = $FormScale * 65
+                Height = $FormScale * 15
+                Add_Click = {
+                    $AutoChartPullNewDataEnrichedCheckBox.checked = $false
+                    $AutoChartPullNewDataEnrichedCheckBox.enabled = $false
+                }
+            }
+            $AutoChartsUpdateChartsProtocolPanel.Controls.Add($AutoChartProtocolSMBRadioButton)
+$script:AutoChartsIndividualTab01.Controls.Add($AutoChartsUpdateChartsProtocolPanel)
+
+
+
+
+$AutoChartPullNewDataButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = 'Update Charts'
+    Left   = $AutoChartsUpdateChartsProtocolPanel.Left + $AutoChartsUpdateChartsProtocolPanel.Width
+    Top    = $FormScale * 5
+    Width  = $FormScale * 100
+    Height = $FormScale * 22
+}
+ $script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataButton)
+CommonButtonSettings -Button $AutoChartPullNewDataButton
+$AutoChartPullNewDataButton.Add_Click({
+
+    #====================
+    # First Radio Button
+    #====================
+    if ($AutoChartPullNewDataFromChartsRadioButton.checked){
+        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+
+        if ($ChartComputerList.count -eq 0) {
+            [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-ACME')
+        }
+        else {
+            $ScriptBlockProgressBarInput = { Update-AutoChartsSecurityPatches -ComputerNameList $ChartComputerList }
+            Launch-ProgressBarForm -FormTitle 'Progress Bar' -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
+        }
+    }
+
+    #=====================
+    # Second Radio Button
+    #=====================
+    if ($AutoChartPullNewDataCheckBoxedRadioButton.checked) {
+        Generate-ComputerList
+
+        if ($script:ComputerList.count -eq 0) {
+            [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints','PoSh-EasyWin')
+        }
+        else {
+            $ScriptBlockProgressBarInput = { Update-AutoChartsSecurityPatches -ComputerNameList $script:ComputerList }
+            Launch-ProgressBarForm -FormTitle 'Progress Bar' -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
+        }
+    }
+
+    #====================
+    # Thrid Radio Button
+    #====================
+    if ($AutoChartSelectFileRadioButton.checked) {
+        [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+        $AutoChartOpenResultsOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog
+        $AutoChartOpenResultsOpenFileDialog.Title            = "Open XML Data"
+        $AutoChartOpenResultsOpenFileDialog.InitialDirectory = "$(if (Test-Path $($CollectionSavedDirectoryTextBox.Text)) {$($CollectionSavedDirectoryTextBox.Text)} else {$CollectedDataDirectory})"
+        $AutoChartOpenResultsOpenFileDialog.filter           = "Results (*.txt;*.csv;*.xlsx;*.xls)|*.txt;*.csv;*.xls;*.xlsx|Text (*.txt)|*.txt|CSV (*.csv)|*.csv|Excel (*.xlsx)|*.xlsx|Excel (*.xls)|*.xls|All files (*.*)|*.*"
+        $AutoChartOpenResultsOpenFileDialog.ShowDialog() | Out-Null
+        $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
+        $script:AutoChartOpenResultsOpenFileDialogfilename = $AutoChartOpenResultsOpenFileDialog.filename
+        $script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
+    
+        $script:AutoChartDataSourceCsvFileName = $AutoChartOpenResultsOpenFileDialog.filename
+    }
 
     Generate-AutoChart01
     Generate-AutoChart02
     Generate-AutoChart03
     Generate-AutoChart04
-    Generate-AutoChart05
-    Generate-AutoChart06
-    Generate-AutoChart07
-    Generate-AutoChart08
-    Generate-AutoChart09
-    Generate-AutoChart10
 })
-$AutoChartSelectFileButton.Add_MouseHover = {
-    Show-ToolTip -Title "View Results" -Icon "Info" -Message @"
-+  Select a file to view Security Patches data.
-"@ 
-}
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChartsMainLabel01)
 
-$script:AutoChartsIndividualTab01.Controls.AddRange(@($AutoChartSelectFileButton,$script:AutoChartsMainLabel01))
+<#
+$AutoChartPullNewDataEnrichedCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text    = 'Enriched (Slower)'
+    Left    = $AutoChartPullNewDataButton.Left
+    Top     = $AutoChartPullNewDataButton.Top + $AutoChartPullNewDataButton.Height
+    Width   = $FormScale * 125
+    Height  = $FormScale * 22
+    Checked = $true
+}
+$script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataEnrichedCheckBox)
+#>
+
+
+
+
+
 
 function AutoChartOpenDataInShell {
     if ($script:AutoChartOpenResultsOpenFileDialogfilename) { $ViewImportResults = $script:AutoChartOpenResultsOpenFileDialogfilename -replace '.csv','.xml' }
@@ -149,7 +279,7 @@ function AutoChartOpenDataInShell {
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart01 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+$script:AutoChart01SecurityPatches = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
     Location = @{ X = $FormScale * 5
                   Y = $FormScale * 50 }
     Size     = @{ Width  = $FormScale * 560
@@ -159,117 +289,117 @@ $script:AutoChart01 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','20', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart01.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart01SecurityPatches.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart01Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart01SecurityPatchesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
 }
-$script:AutoChart01.Titles.Add($script:AutoChart01Title)
+$script:AutoChart01SecurityPatches.Titles.Add($script:AutoChart01SecurityPatchesTitle)
 
 ### Create Charts Area
-$script:AutoChart01Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart01Area.Name        = 'Chart Area'
-$script:AutoChart01Area.AxisX.Title = 'Hosts'
-$script:AutoChart01Area.AxisX.Interval          = 1
-$script:AutoChart01Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart01Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart01Area.Area3DStyle.Inclination = 75
-$script:AutoChart01.ChartAreas.Add($script:AutoChart01Area)
+$script:AutoChart01SecurityPatchesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart01SecurityPatchesArea.Name        = 'Chart Area'
+$script:AutoChart01SecurityPatchesArea.AxisX.Title = 'Hosts'
+$script:AutoChart01SecurityPatchesArea.AxisX.Interval          = 1
+$script:AutoChart01SecurityPatchesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart01SecurityPatchesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart01SecurityPatchesArea.Area3DStyle.Inclination = 75
+$script:AutoChart01SecurityPatches.ChartAreas.Add($script:AutoChart01SecurityPatchesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart01.Series.Add("Security Patches")
-$script:AutoChart01.Series["Security Patches"].Enabled           = $True
-$script:AutoChart01.Series["Security Patches"].BorderWidth       = 1
-$script:AutoChart01.Series["Security Patches"].IsVisibleInLegend = $false
-$script:AutoChart01.Series["Security Patches"].Chartarea         = 'Chart Area'
-$script:AutoChart01.Series["Security Patches"].Legend            = 'Legend'
-$script:AutoChart01.Series["Security Patches"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart01.Series["Security Patches"]['PieLineColor']   = 'Black'
-$script:AutoChart01.Series["Security Patches"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart01.Series["Security Patches"].ChartType         = 'Column'
-$script:AutoChart01.Series["Security Patches"].Color             = 'Red'
+$script:AutoChart01SecurityPatches.Series.Add("Security Patches")
+$script:AutoChart01SecurityPatches.Series["Security Patches"].Enabled           = $True
+$script:AutoChart01SecurityPatches.Series["Security Patches"].BorderWidth       = 1
+$script:AutoChart01SecurityPatches.Series["Security Patches"].IsVisibleInLegend = $false
+$script:AutoChart01SecurityPatches.Series["Security Patches"].Chartarea         = 'Chart Area'
+$script:AutoChart01SecurityPatches.Series["Security Patches"].Legend            = 'Legend'
+$script:AutoChart01SecurityPatches.Series["Security Patches"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart01SecurityPatches.Series["Security Patches"]['PieLineColor']   = 'Black'
+$script:AutoChart01SecurityPatches.Series["Security Patches"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart01SecurityPatches.Series["Security Patches"].ChartType         = 'Column'
+$script:AutoChart01SecurityPatches.Series["Security Patches"].Color             = 'Red'
 
         function Generate-AutoChart01 {
-            $script:AutoChart01CsvFileHosts      = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart01UniqueDataFields  = $script:AutoChartDataSource | Select-Object -Property 'HotFixID' | Sort-Object -Property 'HotFixID' -Unique
+            $script:AutoChart01SecurityPatchesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart01SecurityPatchesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'HotFixID' | Sort-Object -Property 'HotFixID' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart01UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart01SecurityPatchesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart01.Series["Security Patches"].Points.Clear()
+            $script:AutoChart01SecurityPatches.Series["Security Patches"].Points.Clear()
 
-            if ($script:AutoChart01UniqueDataFields.count -gt 0){
-                $script:AutoChart01Title.ForeColor = 'Black'
-                $script:AutoChart01Title.Text = "Security Patches"
+            if ($script:AutoChart01SecurityPatchesUniqueDataFields.count -gt 0){
+                $script:AutoChart01SecurityPatchesTitle.ForeColor = 'Black'
+                $script:AutoChart01SecurityPatchesTitle.Text = "Security Patches"
 
                 # If the Second field/Y Axis equals PSComputername, it counts it
-                $script:AutoChart01OverallDataResults = @()
+                $script:AutoChart01SecurityPatchesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart01UniqueDataFields) {
+                foreach ($DataField in $script:AutoChart01SecurityPatchesUniqueDataFields) {
                     $Count        = 0
-                    $script:AutoChart01CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSource ) {
+                    $script:AutoChart01SecurityPatchesCsvComputers = @()
+                    foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.HotFixID) -eq $DataField.HotFixID) {
                             $Count += 1
-                            if ( $script:AutoChart01CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01CsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart01SecurityPatchesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01SecurityPatchesCsvComputers += $($Line.PSComputerName) }
                         }
                     }
-                    $script:AutoChart01UniqueCount = $script:AutoChart01CsvComputers.Count
-                    $script:AutoChart01DataResults = New-Object PSObject -Property @{
+                    $script:AutoChart01SecurityPatchesUniqueCount = $script:AutoChart01SecurityPatchesCsvComputers.Count
+                    $script:AutoChart01SecurityPatchesDataResults = New-Object PSObject -Property @{
                         DataField   = $DataField
                         TotalCount  = $Count
-                        UniqueCount = $script:AutoChart01UniqueCount
-                        Computers   = $script:AutoChart01CsvComputers 
+                        UniqueCount = $script:AutoChart01SecurityPatchesUniqueCount
+                        Computers   = $script:AutoChart01SecurityPatchesCsvComputers 
                     }
-                    $script:AutoChart01OverallDataResults += $script:AutoChart01DataResults
+                    $script:AutoChart01SecurityPatchesOverallDataResults += $script:AutoChart01SecurityPatchesDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart01.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount) }
-                $script:AutoChart01TrimOffLastTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))
-                $script:AutoChart01TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))
+                $script:AutoChart01SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart01SecurityPatches.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount) }
+                $script:AutoChart01SecurityPatchesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart01SecurityPatchesOverallDataResults.count))
+                $script:AutoChart01SecurityPatchesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01SecurityPatchesOverallDataResults.count))
             }
             else {
-                $script:AutoChart01Title.ForeColor = 'Red'
-                $script:AutoChart01Title.Text = "Security Patches`n
+                $script:AutoChart01SecurityPatchesTitle.ForeColor = 'Red'
+                $script:AutoChart01SecurityPatchesTitle.Text = "Security Patches`n
 [ No Data Available ]`n"                
             }
         }
         Generate-AutoChart01
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart01OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01SecurityPatchesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart01.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart01.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart01SecurityPatches.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart01SecurityPatches.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart01OptionsButton
-$script:AutoChart01OptionsButton.Add_Click({  
-    if ($script:AutoChart01OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart01OptionsButton.Text = 'Options ^'
-        $script:AutoChart01.Controls.Add($script:AutoChart01ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart01SecurityPatchesOptionsButton
+$script:AutoChart01SecurityPatchesOptionsButton.Add_Click({  
+    if ($script:AutoChart01SecurityPatchesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart01SecurityPatchesOptionsButton.Text = 'Options ^'
+        $script:AutoChart01SecurityPatches.Controls.Add($script:AutoChart01SecurityPatchesManipulationPanel)
     }
-    elseif ($script:AutoChart01OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart01OptionsButton.Text = 'Options v'
-        $script:AutoChart01.Controls.Remove($script:AutoChart01ManipulationPanel)
+    elseif ($script:AutoChart01SecurityPatchesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart01SecurityPatchesOptionsButton.Text = 'Options v'
+        $script:AutoChart01SecurityPatches.Controls.Remove($script:AutoChart01SecurityPatchesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart01OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart01)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart01SecurityPatchesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart01SecurityPatches)
 
 
-$script:AutoChart01ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart01SecurityPatchesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart01.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart01.Size.Width
+                     Y = $script:AutoChart01SecurityPatches.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart01SecurityPatches.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -278,7 +408,7 @@ $script:AutoChart01ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart01TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart01SecurityPatchesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -288,7 +418,7 @@ $script:AutoChart01TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart01TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart01SecurityPatchesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -299,22 +429,22 @@ $script:AutoChart01TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart01TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))                
-    $script:AutoChart01TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart01TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart01TrimOffFirstTrackBarValue = $script:AutoChart01TrimOffFirstTrackBar.Value
-        $script:AutoChart01TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart01TrimOffFirstTrackBar.Value)"
-        $script:AutoChart01.Series["Security Patches"].Points.Clear()
-        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
+    $script:AutoChart01SecurityPatchesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01SecurityPatchesOverallDataResults.count))                
+    $script:AutoChart01SecurityPatchesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart01SecurityPatchesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart01SecurityPatchesTrimOffFirstTrackBarValue = $script:AutoChart01SecurityPatchesTrimOffFirstTrackBar.Value
+        $script:AutoChart01SecurityPatchesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart01SecurityPatchesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart01SecurityPatches.Series["Security Patches"].Points.Clear()
+        $script:AutoChart01SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01SecurityPatches.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
     })
-    $script:AutoChart01TrimOffFirstGroupBox.Controls.Add($script:AutoChart01TrimOffFirstTrackBar)
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01TrimOffFirstGroupBox)
+    $script:AutoChart01SecurityPatchesTrimOffFirstGroupBox.Controls.Add($script:AutoChart01SecurityPatchesTrimOffFirstTrackBar)
+$script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart01SecurityPatchesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart01TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart01SecurityPatchesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart01TrimOffFirstGroupBox.Location.X + $script:AutoChart01TrimOffFirstGroupBox.Size.Width + $($FormScale * 8)
-                     Y = $script:AutoChart01TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart01SecurityPatchesTrimOffFirstGroupBox.Location.X + $script:AutoChart01SecurityPatchesTrimOffFirstGroupBox.Size.Width + $($FormScale * 8)
+                     Y = $script:AutoChart01SecurityPatchesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                      Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -322,7 +452,7 @@ $script:AutoChart01TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart01TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart01SecurityPatchesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -332,96 +462,96 @@ $script:AutoChart01TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart01TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart01TrimOffLastTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))
-    $script:AutoChart01TrimOffLastTrackBar.Value         = $($script:AutoChart01OverallDataResults.count)
-    $script:AutoChart01TrimOffLastTrackBarValue   = 0
-    $script:AutoChart01TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart01TrimOffLastTrackBarValue = $($script:AutoChart01OverallDataResults.count) - $script:AutoChart01TrimOffLastTrackBar.Value
-        $script:AutoChart01TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart01OverallDataResults.count) - $script:AutoChart01TrimOffLastTrackBar.Value)"
-        $script:AutoChart01.Series["Security Patches"].Points.Clear()
-        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
+    $script:AutoChart01SecurityPatchesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart01SecurityPatchesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart01SecurityPatchesOverallDataResults.count))
+    $script:AutoChart01SecurityPatchesTrimOffLastTrackBar.Value         = $($script:AutoChart01SecurityPatchesOverallDataResults.count)
+    $script:AutoChart01SecurityPatchesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart01SecurityPatchesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart01SecurityPatchesTrimOffLastTrackBarValue = $($script:AutoChart01SecurityPatchesOverallDataResults.count) - $script:AutoChart01SecurityPatchesTrimOffLastTrackBar.Value
+        $script:AutoChart01SecurityPatchesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart01SecurityPatchesOverallDataResults.count) - $script:AutoChart01SecurityPatchesTrimOffLastTrackBar.Value)"
+        $script:AutoChart01SecurityPatches.Series["Security Patches"].Points.Clear()
+        $script:AutoChart01SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01SecurityPatches.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
     })
-$script:AutoChart01TrimOffLastGroupBox.Controls.Add($script:AutoChart01TrimOffLastTrackBar)
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01TrimOffLastGroupBox)
+$script:AutoChart01SecurityPatchesTrimOffLastGroupBox.Controls.Add($script:AutoChart01SecurityPatchesTrimOffLastTrackBar)
+$script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart01SecurityPatchesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart01ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart01SecurityPatchesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart01TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart01TrimOffFirstGroupBox.Location.Y + $script:AutoChart01TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart01SecurityPatchesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart01SecurityPatchesTrimOffFirstGroupBox.Location.Y + $script:AutoChart01SecurityPatchesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart01ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart01.Series["Security Patches"].ChartType = $script:AutoChart01ChartTypeComboBox.SelectedItem
-#    $script:AutoChart01.Series["Security Patches"].Points.Clear()
-#    $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
+$script:AutoChart01SecurityPatchesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart01SecurityPatches.Series["Security Patches"].ChartType = $script:AutoChart01SecurityPatchesChartTypeComboBox.SelectedItem
+#    $script:AutoChart01SecurityPatches.Series["Security Patches"].Points.Clear()
+#    $script:AutoChart01SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01SecurityPatches.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
 })
-$script:AutoChart01ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart01ChartTypesAvailable) { $script:AutoChart01ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01ChartTypeComboBox)
+$script:AutoChart01SecurityPatchesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart01SecurityPatchesChartTypesAvailable) { $script:AutoChart01SecurityPatchesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart01SecurityPatchesChartTypeComboBox)
 
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart013DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01SecurityPatches3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart01ChartTypeComboBox.Location.X + $script:AutoChart01ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart01ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart01SecurityPatchesChartTypeComboBox.Location.X + $script:AutoChart01SecurityPatchesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart01SecurityPatchesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart013DToggleButton
-$script:AutoChart013DInclination = 0
-$script:AutoChart013DToggleButton.Add_Click({
+CommonButtonSettings -Button $script:AutoChart01SecurityPatches3DToggleButton
+$script:AutoChart01SecurityPatches3DInclination = 0
+$script:AutoChart01SecurityPatches3DToggleButton.Add_Click({
     
-    $script:AutoChart013DInclination += 10
-    if ( $script:AutoChart013DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart01Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
-        $script:AutoChart013DToggleButton.Text  = "3D On ($script:AutoChart013DInclination)"
-#        $script:AutoChart01.Series["Security Patches"].Points.Clear()
-#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
+    $script:AutoChart01SecurityPatches3DInclination += 10
+    if ( $script:AutoChart01SecurityPatches3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart01SecurityPatchesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart01SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart01SecurityPatches3DInclination
+        $script:AutoChart01SecurityPatches3DToggleButton.Text  = "3D On ($script:AutoChart01SecurityPatches3DInclination)"
+#        $script:AutoChart01SecurityPatches.Series["Security Patches"].Points.Clear()
+#        $script:AutoChart01SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01SecurityPatches.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
     }
-    elseif ( $script:AutoChart013DInclination -le 90 ) {
-        $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
-        $script:AutoChart013DToggleButton.Text  = "3D On ($script:AutoChart013DInclination)" 
-#        $script:AutoChart01.Series["Security Patches"].Points.Clear()
-#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
+    elseif ( $script:AutoChart01SecurityPatches3DInclination -le 90 ) {
+        $script:AutoChart01SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart01SecurityPatches3DInclination
+        $script:AutoChart01SecurityPatches3DToggleButton.Text  = "3D On ($script:AutoChart01SecurityPatches3DInclination)" 
+#        $script:AutoChart01SecurityPatches.Series["Security Patches"].Points.Clear()
+#        $script:AutoChart01SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01SecurityPatches.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
     }
     else { 
-        $script:AutoChart013DToggleButton.Text  = "3D Off" 
-        $script:AutoChart013DInclination = 0
-        $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
-        $script:AutoChart01Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart01.Series["Security Patches"].Points.Clear()
-#        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
+        $script:AutoChart01SecurityPatches3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart01SecurityPatches3DInclination = 0
+        $script:AutoChart01SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart01SecurityPatches3DInclination
+        $script:AutoChart01SecurityPatchesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart01SecurityPatches.Series["Security Patches"].Points.Clear()
+#        $script:AutoChart01SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01SecurityPatches.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
     }
 })
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart013DToggleButton)
+$script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart01SecurityPatches3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart01ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart01SecurityPatchesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart013DToggleButton.Location.X + $script:AutoChart013DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart013DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart01SecurityPatches3DToggleButton.Location.X + $script:AutoChart01SecurityPatches3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart01SecurityPatches3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart01ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart01ColorsAvailable) { $script:AutoChart01ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart01ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart01.Series["Security Patches"].Color = $script:AutoChart01ChangeColorComboBox.SelectedItem
+$script:AutoChart01SecurityPatchesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart01SecurityPatchesColorsAvailable) { $script:AutoChart01SecurityPatchesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart01SecurityPatchesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart01SecurityPatches.Series["Security Patches"].Color = $script:AutoChart01SecurityPatchesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01ChangeColorComboBox)
+$script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart01SecurityPatchesChangeColorComboBox)
 
 
 #=====================================
@@ -429,54 +559,54 @@ $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01ChangeColor
 #=====================================
 function script:InvestigateDifference-AutoChart01 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart01ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'HotFixID' -eq $($script:AutoChart01InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart01InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart01ImportCsvPosResults) { $script:AutoChart01InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart01SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'HotFixID' -eq $($script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01SecurityPatchesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart01SecurityPatchesImportCsvPosResults) { $script:AutoChart01SecurityPatchesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart01ImportCsvNegResults = @()
+    $script:AutoChart01SecurityPatchesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart01ImportCsvAll) { if ($Endpoint -notin $script:AutoChart01ImportCsvPosResults) { $script:AutoChart01ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart01SecurityPatchesImportCsvAll) { if ($Endpoint -notin $script:AutoChart01SecurityPatchesImportCsvPosResults) { $script:AutoChart01SecurityPatchesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart01InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart01ImportCsvNegResults) { $script:AutoChart01InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart01SecurityPatchesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart01SecurityPatchesImportCsvNegResults) { $script:AutoChart01SecurityPatchesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart01InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart01ImportCsvPosResults.count))"
-    $script:AutoChart01InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart01ImportCsvNegResults.count))"
+    $script:AutoChart01SecurityPatchesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart01SecurityPatchesImportCsvPosResults.count))"
+    $script:AutoChart01SecurityPatchesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart01SecurityPatchesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart01CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01SecurityPatchesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart01TrimOffLastGroupBox.Location.X + $script:AutoChart01TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart01TrimOffLastGroupBox.Location.Y + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart01SecurityPatchesTrimOffLastGroupBox.Location.X + $script:AutoChart01SecurityPatchesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart01SecurityPatchesTrimOffLastGroupBox.Location.Y + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart01CheckDiffButton
-$script:AutoChart01CheckDiffButton.Add_Click({
-    $script:AutoChart01InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'HotFixID' -ExpandProperty 'HotFixID' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart01SecurityPatchesCheckDiffButton
+$script:AutoChart01SecurityPatchesCheckDiffButton.Add_Click({
+    $script:AutoChart01SecurityPatchesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'HotFixID' -ExpandProperty 'HotFixID' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart01InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart01SecurityPatchesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart01InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart01SecurityPatchesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -484,43 +614,43 @@ $script:AutoChart01CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart01InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart01SecurityPatchesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart01InvestDiffDropDownLabel.Location.y + $script:AutoChart01InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart01SecurityPatchesInvestDiffDropDownLabel.Location.y + $script:AutoChart01SecurityPatchesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart01InvestDiffDropDownArray) { $script:AutoChart01InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart01InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01 }})
-    $script:AutoChart01InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart01 })
+    ForEach ($Item in $script:AutoChart01SecurityPatchesInvestDiffDropDownArray) { $script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01 }})
+    $script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart01 })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart01InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart01SecurityPatchesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart01InvestDiffDropDownComboBox.Location.y + $script:AutoChart01InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox.Location.y + $script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart01InvestDiffExecuteButton
-    $script:AutoChart01InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01 }})
-    $script:AutoChart01InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart01 })
+    CommonButtonSettings -Button $script:AutoChart01SecurityPatchesInvestDiffExecuteButton
+    $script:AutoChart01SecurityPatchesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart01 }})
+    $script:AutoChart01SecurityPatchesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart01 })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart01InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart01SecurityPatchesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart01InvestDiffExecuteButton.Location.y + $script:AutoChart01InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart01SecurityPatchesInvestDiffExecuteButton.Location.y + $script:AutoChart01SecurityPatchesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart01InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart01SecurityPatchesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart01InvestDiffPosResultsLabel.Location.y + $script:AutoChart01InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart01SecurityPatchesInvestDiffPosResultsLabel.Location.y + $script:AutoChart01SecurityPatchesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -532,17 +662,17 @@ $script:AutoChart01CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart01InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart01SecurityPatchesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart01InvestDiffPosResultsLabel.Location.x + $script:AutoChart01InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart01InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart01SecurityPatchesInvestDiffPosResultsLabel.Location.x + $script:AutoChart01SecurityPatchesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart01SecurityPatchesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart01InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart01InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart01InvestDiffNegResultsLabel.Location.y + $script:AutoChart01InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart01SecurityPatchesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart01SecurityPatchesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart01SecurityPatchesInvestDiffNegResultsLabel.Location.y + $script:AutoChart01SecurityPatchesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -552,88 +682,88 @@ $script:AutoChart01CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart01InvestDiffForm.Controls.AddRange(@($script:AutoChart01InvestDiffDropDownLabel,$script:AutoChart01InvestDiffDropDownComboBox,$script:AutoChart01InvestDiffExecuteButton,$script:AutoChart01InvestDiffPosResultsLabel,$script:AutoChart01InvestDiffPosResultsTextBox,$script:AutoChart01InvestDiffNegResultsLabel,$script:AutoChart01InvestDiffNegResultsTextBox))
-    $script:AutoChart01InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart01InvestDiffForm.ShowDialog()
+    $script:AutoChart01SecurityPatchesInvestDiffForm.Controls.AddRange(@($script:AutoChart01SecurityPatchesInvestDiffDropDownLabel,$script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox,$script:AutoChart01SecurityPatchesInvestDiffExecuteButton,$script:AutoChart01SecurityPatchesInvestDiffPosResultsLabel,$script:AutoChart01SecurityPatchesInvestDiffPosResultsTextBox,$script:AutoChart01SecurityPatchesInvestDiffNegResultsLabel,$script:AutoChart01SecurityPatchesInvestDiffNegResultsTextBox))
+    $script:AutoChart01SecurityPatchesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart01SecurityPatchesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart01CheckDiffButton.Add_MouseHover({
+$script:AutoChart01SecurityPatchesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01CheckDiffButton)
+$script:AutoChart01SecurityPatchesManipulationPanel.controls.Add($script:AutoChart01SecurityPatchesCheckDiffButton)
 
 
 $AutoChart01ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart01CheckDiffButton.Location.X + $script:AutoChart01CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart01CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart01SecurityPatchesCheckDiffButton.Location.X + $script:AutoChart01SecurityPatchesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart01SecurityPatchesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Security Patches" -QueryTabName "Security Patches" -PropertyX "HotFixID" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Security Patches" -PropertyX "HotFixID" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01ExpandChartButton
-$script:AutoChart01ManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
+$script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
 
 
-$script:AutoChart01OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01SecurityPatchesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart01CheckDiffButton.Location.X
-                   Y = $script:AutoChart01CheckDiffButton.Location.Y + $script:AutoChart01CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart01SecurityPatchesCheckDiffButton.Location.X
+                   Y = $script:AutoChart01SecurityPatchesCheckDiffButton.Location.Y + $script:AutoChart01SecurityPatchesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01OpenInShell
-$script:AutoChart01OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01OpenInShell)
+CommonButtonSettings -Button $script:AutoChart01SecurityPatchesOpenInShell
+$script:AutoChart01SecurityPatchesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart01SecurityPatchesManipulationPanel.controls.Add($script:AutoChart01SecurityPatchesOpenInShell)
 
 
-$script:AutoChart01ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01SecurityPatchesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart01OpenInShell.Location.X + $script:AutoChart01OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart01OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart01SecurityPatchesOpenInShell.Location.X + $script:AutoChart01SecurityPatchesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart01SecurityPatchesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01ViewResults
-$script:AutoChart01ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01ViewResults)
+CommonButtonSettings -Button $script:AutoChart01SecurityPatchesViewResults
+$script:AutoChart01SecurityPatchesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart01SecurityPatchesManipulationPanel.controls.Add($script:AutoChart01SecurityPatchesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart01SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart01SecurityPatchesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart01OpenInShell.Location.X
-                  Y = $script:AutoChart01OpenInShell.Location.Y + $script:AutoChart01OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart01SecurityPatchesOpenInShell.Location.X
+                  Y = $script:AutoChart01SecurityPatchesOpenInShell.Location.Y + $script:AutoChart01SecurityPatchesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart01SaveButton
+CommonButtonSettings -Button $script:AutoChart01SecurityPatchesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart01SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart01 -Title $script:AutoChart01Title
+$script:AutoChart01SecurityPatchesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart01SecurityPatches -Title $script:AutoChart01SecurityPatchesTitle
 })
-$script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01SaveButton)
+$script:AutoChart01SecurityPatchesManipulationPanel.controls.Add($script:AutoChart01SecurityPatchesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart01NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart01SaveButton.Location.X 
-                        Y = $script:AutoChart01SaveButton.Location.Y + $script:AutoChart01SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart01SecurityPatchesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart01SecurityPatchesSaveButton.Location.X 
+                        Y = $script:AutoChart01SecurityPatchesSaveButton.Location.Y + $script:AutoChart01SecurityPatchesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart01CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart01SecurityPatchesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01NoticeTextbox)
+$script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart01SecurityPatchesNoticeTextbox)
 
-$script:AutoChart01.Series["Security Patches"].Points.Clear()
-$script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
+$script:AutoChart01SecurityPatches.Series["Security Patches"].Points.Clear()
+$script:AutoChart01SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01SecurityPatches.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
 
 
 
@@ -662,9 +792,9 @@ $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Sele
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart02 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart01.Location.X + $script:AutoChart01.Size.Width + $($FormScale * 20)
-                  Y = $script:AutoChart01.Location.Y }
+$script:AutoChart02SecurityPatches = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart01SecurityPatches.Location.X + $script:AutoChart01SecurityPatches.Size.Width + $($FormScale * 20)
+                  Y = $script:AutoChart01SecurityPatches.Location.Y }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -672,60 +802,60 @@ $script:AutoChart02 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart02.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart02SecurityPatches.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart02Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart02SecurityPatchesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
 }
-$script:AutoChart02.Titles.Add($script:AutoChart02Title)
+$script:AutoChart02SecurityPatches.Titles.Add($script:AutoChart02SecurityPatchesTitle)
 
 ### Create Charts Area
-$script:AutoChart02Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart02Area.Name        = 'Chart Area'
-$script:AutoChart02Area.AxisX.Title = 'Hosts'
-$script:AutoChart02Area.AxisX.Interval          = 1
-$script:AutoChart02Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart02Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart02Area.Area3DStyle.Inclination = 75
-$script:AutoChart02.ChartAreas.Add($script:AutoChart02Area)
+$script:AutoChart02SecurityPatchesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart02SecurityPatchesArea.Name        = 'Chart Area'
+$script:AutoChart02SecurityPatchesArea.AxisX.Title = 'Hosts'
+$script:AutoChart02SecurityPatchesArea.AxisX.Interval          = 1
+$script:AutoChart02SecurityPatchesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart02SecurityPatchesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart02SecurityPatchesArea.Area3DStyle.Inclination = 75
+$script:AutoChart02SecurityPatches.ChartAreas.Add($script:AutoChart02SecurityPatchesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart02.Series.Add("Security Patches Per Host")  
-$script:AutoChart02.Series["Security Patches Per Host"].Enabled           = $True
-$script:AutoChart02.Series["Security Patches Per Host"].BorderWidth       = 1
-$script:AutoChart02.Series["Security Patches Per Host"].IsVisibleInLegend = $false
-$script:AutoChart02.Series["Security Patches Per Host"].Chartarea         = 'Chart Area'
-$script:AutoChart02.Series["Security Patches Per Host"].Legend            = 'Legend'
-$script:AutoChart02.Series["Security Patches Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart02.Series["Security Patches Per Host"]['PieLineColor']   = 'Black'
-$script:AutoChart02.Series["Security Patches Per Host"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart02.Series["Security Patches Per Host"].ChartType         = 'DoughNut'
-$script:AutoChart02.Series["Security Patches Per Host"].Color             = 'Blue'
+$script:AutoChart02SecurityPatches.Series.Add("Security Patches Per Host")  
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Enabled           = $True
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].BorderWidth       = 1
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].IsVisibleInLegend = $false
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Chartarea         = 'Chart Area'
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Legend            = 'Legend'
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"]['PieLineColor']   = 'Black'
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].ChartType         = 'DoughNut'
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Color             = 'Blue'
         
         function Generate-AutoChart02 {
-            $script:AutoChart02CsvFileHosts     = ($script:AutoChartDataSource).PSComputerName | Sort-Object -Unique
-            $script:AutoChart02UniqueDataFields = ($script:AutoChartDataSource).HotFixID | Sort-Object -Property 'HotFixID'
+            $script:AutoChart02SecurityPatchesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart02SecurityPatchesUniqueDataFields = ($script:AutoChartDataSourceCsv).HotFixID | Sort-Object -Property 'HotFixID'
 
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart02UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart02SecurityPatchesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            if ($script:AutoChart02UniqueDataFields.count -gt 0){
-                $script:AutoChart02Title.ForeColor = 'Black'
-                $script:AutoChart02Title.Text = "Security Patches Per Host"
+            if ($script:AutoChart02SecurityPatchesUniqueDataFields.count -gt 0){
+                $script:AutoChart02SecurityPatchesTitle.ForeColor = 'Black'
+                $script:AutoChart02SecurityPatchesTitle.Text = "Security Patches Per Host"
 
                 $AutoChart02CurrentComputer  = ''
                 $AutoChart02CheckIfFirstLine = $false
                 $AutoChart02ResultsCount     = 0
                 $AutoChart02Computer         = @()
                 $AutoChart02YResults         = @()
-                $script:AutoChart02OverallDataResults = @()
+                $script:AutoChart02SecurityPatchesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSource | Sort-Object PSComputerName) ) {
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
                     if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
                     if ( $AutoChart02CheckIfFirstLine -eq $true ) { 
                         if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
@@ -740,7 +870,7 @@ $script:AutoChart02.Series["Security Patches Per Host"].Color             = 'Blu
                                 ResultsCount = $AutoChart02ResultsCount
                                 Computer     = $AutoChart02Computer 
                             }
-                            $script:AutoChart02OverallDataResults += $AutoChart02YDataResults
+                            $script:AutoChart02SecurityPatchesOverallDataResults += $AutoChart02YDataResults
                             $AutoChart02YResults     = @()
                             $AutoChart02ResultsCount = 0
                             $AutoChart02Computer     = @()
@@ -754,50 +884,50 @@ $script:AutoChart02.Series["Security Patches Per Host"].Color             = 'Blu
                     $script:AutoChartsProgressBar.Update()
                 }
                 $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }    
-                $script:AutoChart02OverallDataResults += $AutoChart02YDataResults
-                $script:AutoChart02OverallDataResults | ForEach-Object { $script:AutoChart02.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
+                $script:AutoChart02SecurityPatchesOverallDataResults += $AutoChart02YDataResults
+                $script:AutoChart02SecurityPatchesOverallDataResults | ForEach-Object { $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
-                $script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
-                $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+                $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.Clear()
+                $script:AutoChart02SecurityPatchesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
-                $script:AutoChart02TrimOffLastTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))
-                $script:AutoChart02TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))
+                $script:AutoChart02SecurityPatchesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart02SecurityPatchesOverallDataResults.count))
+                $script:AutoChart02SecurityPatchesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02SecurityPatchesOverallDataResults.count))
             }
             else {
-                $script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
-                $script:AutoChart02Title.ForeColor = 'Red'
-                $script:AutoChart02Title.Text = "Security Patches Per Host`n
+                $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.Clear()
+                $script:AutoChart02SecurityPatchesTitle.ForeColor = 'Red'
+                $script:AutoChart02SecurityPatchesTitle.Text = "Security Patches Per Host`n
 [ No Data Available ]`n"                
             }
         }
         Generate-AutoChart02
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart02OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02SecurityPatchesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart02.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart02.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart02SecurityPatches.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart02SecurityPatches.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart02OptionsButton
-$script:AutoChart02OptionsButton.Add_Click({  
-    if ($script:AutoChart02OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart02OptionsButton.Text = 'Options ^'
-        $script:AutoChart02.Controls.Add($script:AutoChart02ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart02SecurityPatchesOptionsButton
+$script:AutoChart02SecurityPatchesOptionsButton.Add_Click({  
+    if ($script:AutoChart02SecurityPatchesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart02SecurityPatchesOptionsButton.Text = 'Options ^'
+        $script:AutoChart02SecurityPatches.Controls.Add($script:AutoChart02SecurityPatchesManipulationPanel)
     }
-    elseif ($script:AutoChart02OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart02OptionsButton.Text = 'Options v'
-        $script:AutoChart02.Controls.Remove($script:AutoChart02ManipulationPanel)
+    elseif ($script:AutoChart02SecurityPatchesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart02SecurityPatchesOptionsButton.Text = 'Options v'
+        $script:AutoChart02SecurityPatches.Controls.Remove($script:AutoChart02SecurityPatchesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart02OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart02)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart02SecurityPatchesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart02SecurityPatches)
 
-$script:AutoChart02ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart02SecurityPatchesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart02.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart02.Size.Width
+                     Y = $script:AutoChart02SecurityPatches.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart02SecurityPatches.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -806,7 +936,7 @@ $script:AutoChart02ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart02TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart02SecurityPatchesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -816,7 +946,7 @@ $script:AutoChart02TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart02TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart02SecurityPatchesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -827,22 +957,22 @@ $script:AutoChart02TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart02TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))                
-    $script:AutoChart02TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart02TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart02TrimOffFirstTrackBarValue = $script:AutoChart02TrimOffFirstTrackBar.Value
-        $script:AutoChart02TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart02TrimOffFirstTrackBar.Value)"
-        $script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
-        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+    $script:AutoChart02SecurityPatchesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02SecurityPatchesOverallDataResults.count))                
+    $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart02SecurityPatchesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue = $script:AutoChart02SecurityPatchesTrimOffFirstTrackBar.Value
+        $script:AutoChart02SecurityPatchesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart02SecurityPatchesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.Clear()
+        $script:AutoChart02SecurityPatchesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
     })
-    $script:AutoChart02TrimOffFirstGroupBox.Controls.Add($script:AutoChart02TrimOffFirstTrackBar)
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffFirstGroupBox)
+    $script:AutoChart02SecurityPatchesTrimOffFirstGroupBox.Controls.Add($script:AutoChart02SecurityPatchesTrimOffFirstTrackBar)
+$script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart02SecurityPatchesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart02TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart02SecurityPatchesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart02TrimOffFirstGroupBox.Location.X + $script:AutoChart02TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                        Y = $script:AutoChart02TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart02SecurityPatchesTrimOffFirstGroupBox.Location.X + $script:AutoChart02SecurityPatchesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                        Y = $script:AutoChart02SecurityPatchesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                         Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -850,7 +980,7 @@ $script:AutoChart02TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart02TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart02SecurityPatchesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -860,149 +990,149 @@ $script:AutoChart02TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart02TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart02TrimOffLastTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))
-    $script:AutoChart02TrimOffLastTrackBar.Value         = $($script:AutoChart02OverallDataResults.count)
-    $script:AutoChart02TrimOffLastTrackBarValue   = 0
-    $script:AutoChart02TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart02TrimOffLastTrackBarValue = $($script:AutoChart02OverallDataResults.count) - $script:AutoChart02TrimOffLastTrackBar.Value
-        $script:AutoChart02TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart02OverallDataResults.count) - $script:AutoChart02TrimOffLastTrackBar.Value)"
-        $script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
-        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    $script:AutoChart02SecurityPatchesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart02SecurityPatchesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart02SecurityPatchesOverallDataResults.count))
+    $script:AutoChart02SecurityPatchesTrimOffLastTrackBar.Value         = $($script:AutoChart02SecurityPatchesOverallDataResults.count)
+    $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart02SecurityPatchesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue = $($script:AutoChart02SecurityPatchesOverallDataResults.count) - $script:AutoChart02SecurityPatchesTrimOffLastTrackBar.Value
+        $script:AutoChart02SecurityPatchesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart02SecurityPatchesOverallDataResults.count) - $script:AutoChart02SecurityPatchesTrimOffLastTrackBar.Value)"
+        $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.Clear()
+        $script:AutoChart02SecurityPatchesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
-$script:AutoChart02TrimOffLastGroupBox.Controls.Add($script:AutoChart02TrimOffLastTrackBar)
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffLastGroupBox)
+$script:AutoChart02SecurityPatchesTrimOffLastGroupBox.Controls.Add($script:AutoChart02SecurityPatchesTrimOffLastTrackBar)
+$script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart02SecurityPatchesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart02ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart02SecurityPatchesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart02TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart02TrimOffFirstGroupBox.Location.Y + $script:AutoChart02TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart02SecurityPatchesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart02SecurityPatchesTrimOffFirstGroupBox.Location.Y + $script:AutoChart02SecurityPatchesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart02ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart02.Series["Security Patches Per Host"].ChartType = $script:AutoChart02ChartTypeComboBox.SelectedItem
-#    $script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
-#    $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart02SecurityPatchesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].ChartType = $script:AutoChart02SecurityPatchesChartTypeComboBox.SelectedItem
+#    $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.Clear()
+#    $script:AutoChart02SecurityPatchesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 })
-$script:AutoChart02ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart02ChartTypesAvailable) { $script:AutoChart02ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02ChartTypeComboBox)
+$script:AutoChart02SecurityPatchesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart02SecurityPatchesChartTypesAvailable) { $script:AutoChart02SecurityPatchesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart02SecurityPatchesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart023DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02SecurityPatches3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart02ChartTypeComboBox.Location.X + $script:AutoChart02ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart02ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart02SecurityPatchesChartTypeComboBox.Location.X + $script:AutoChart02SecurityPatchesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart02SecurityPatchesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart023DToggleButton
-$script:AutoChart023DInclination = 0
-$script:AutoChart023DToggleButton.Add_Click({
-    $script:AutoChart023DInclination += 10
-    if ( $script:AutoChart023DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart02Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
-        $script:AutoChart023DToggleButton.Text  = "3D On ($script:AutoChart023DInclination)"
-#        $script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
-#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+CommonButtonSettings -Button $script:AutoChart02SecurityPatches3DToggleButton
+$script:AutoChart02SecurityPatches3DInclination = 0
+$script:AutoChart02SecurityPatches3DToggleButton.Add_Click({
+    $script:AutoChart02SecurityPatches3DInclination += 10
+    if ( $script:AutoChart02SecurityPatches3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart02SecurityPatchesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart02SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart02SecurityPatches3DInclination
+        $script:AutoChart02SecurityPatches3DToggleButton.Text  = "3D On ($script:AutoChart02SecurityPatches3DInclination)"
+#        $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.Clear()
+#        $script:AutoChart02SecurityPatchesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
     }
-    elseif ( $script:AutoChart023DInclination -le 90 ) {
-        $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
-        $script:AutoChart023DToggleButton.Text  = "3D On ($script:AutoChart023DInclination)" 
-#        $script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
-#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    elseif ( $script:AutoChart02SecurityPatches3DInclination -le 90 ) {
+        $script:AutoChart02SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart02SecurityPatches3DInclination
+        $script:AutoChart02SecurityPatches3DToggleButton.Text  = "3D On ($script:AutoChart02SecurityPatches3DInclination)" 
+#        $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.Clear()
+#        $script:AutoChart02SecurityPatchesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
     else { 
-        $script:AutoChart023DToggleButton.Text  = "3D Off" 
-        $script:AutoChart023DInclination = 0
-        $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
-        $script:AutoChart02Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
-#        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+        $script:AutoChart02SecurityPatches3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart02SecurityPatches3DInclination = 0
+        $script:AutoChart02SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart02SecurityPatches3DInclination
+        $script:AutoChart02SecurityPatchesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.Clear()
+#        $script:AutoChart02SecurityPatchesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
 })
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart023DToggleButton)
+$script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart02SecurityPatches3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart02ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart02SecurityPatchesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart023DToggleButton.Location.X + $script:AutoChart023DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart023DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart02SecurityPatches3DToggleButton.Location.X + $script:AutoChart02SecurityPatches3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart02SecurityPatches3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart02ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart02ColorsAvailable) { $script:AutoChart02ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart02ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart02.Series["Security Patches Per Host"].Color = $script:AutoChart02ChangeColorComboBox.SelectedItem
+$script:AutoChart02SecurityPatchesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart02SecurityPatchesColorsAvailable) { $script:AutoChart02SecurityPatchesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart02SecurityPatchesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Color = $script:AutoChart02SecurityPatchesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02ChangeColorComboBox)
+$script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart02SecurityPatchesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
 function script:InvestigateDifference-AutoChart02 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart02ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'Name' -eq $($script:AutoChart02InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart02InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart02ImportCsvPosResults) { $script:AutoChart02InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart02SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02SecurityPatchesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart02SecurityPatchesImportCsvPosResults) { $script:AutoChart02SecurityPatchesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart02ImportCsvNegResults = @()
+    $script:AutoChart02SecurityPatchesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart02ImportCsvAll) { if ($Endpoint -notin $script:AutoChart02ImportCsvPosResults) { $script:AutoChart02ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart02SecurityPatchesImportCsvAll) { if ($Endpoint -notin $script:AutoChart02SecurityPatchesImportCsvPosResults) { $script:AutoChart02SecurityPatchesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart02InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart02ImportCsvNegResults) { $script:AutoChart02InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart02SecurityPatchesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart02SecurityPatchesImportCsvNegResults) { $script:AutoChart02SecurityPatchesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart02InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart02ImportCsvPosResults.count))"
-    $script:AutoChart02InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart02ImportCsvNegResults.count))"
+    $script:AutoChart02SecurityPatchesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart02SecurityPatchesImportCsvPosResults.count))"
+    $script:AutoChart02SecurityPatchesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart02SecurityPatchesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart02CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02SecurityPatchesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart02TrimOffLastGroupBox.Location.X + $script:AutoChart02TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart02TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart02SecurityPatchesTrimOffLastGroupBox.Location.X + $script:AutoChart02SecurityPatchesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart02SecurityPatchesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart02CheckDiffButton
-$script:AutoChart02CheckDiffButton.Add_Click({
-    $script:AutoChart02InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart02SecurityPatchesCheckDiffButton
+$script:AutoChart02SecurityPatchesCheckDiffButton.Add_Click({
+    $script:AutoChart02SecurityPatchesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart02InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart02SecurityPatchesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart02InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart02SecurityPatchesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -1010,43 +1140,43 @@ $script:AutoChart02CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart02InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart02SecurityPatchesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart02InvestDiffDropDownLabel.Location.y + $script:AutoChart02InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart02SecurityPatchesInvestDiffDropDownLabel.Location.y + $script:AutoChart02SecurityPatchesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart02InvestDiffDropDownArray) { $script:AutoChart02InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart02InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02 }})
-    $script:AutoChart02InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart02 })
+    ForEach ($Item in $script:AutoChart02SecurityPatchesInvestDiffDropDownArray) { $script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02 }})
+    $script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart02 })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart02InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart02SecurityPatchesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart02InvestDiffDropDownComboBox.Location.y + $script:AutoChart02InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox.Location.y + $script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart02InvestDiffExecuteButton
-    $script:AutoChart02InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02 }})
-    $script:AutoChart02InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart02 })
+    CommonButtonSettings -Button $script:AutoChart02SecurityPatchesInvestDiffExecuteButton
+    $script:AutoChart02SecurityPatchesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart02 }})
+    $script:AutoChart02SecurityPatchesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart02 })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart02InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart02SecurityPatchesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart02InvestDiffExecuteButton.Location.y + $script:AutoChart02InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart02SecurityPatchesInvestDiffExecuteButton.Location.y + $script:AutoChart02SecurityPatchesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart02InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart02SecurityPatchesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart02InvestDiffPosResultsLabel.Location.y + $script:AutoChart02InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart02SecurityPatchesInvestDiffPosResultsLabel.Location.y + $script:AutoChart02SecurityPatchesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1058,17 +1188,17 @@ $script:AutoChart02CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart02InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart02SecurityPatchesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart02InvestDiffPosResultsLabel.Location.x + $script:AutoChart02InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart02InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart02SecurityPatchesInvestDiffPosResultsLabel.Location.x + $script:AutoChart02SecurityPatchesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart02SecurityPatchesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart02InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart02InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart02InvestDiffNegResultsLabel.Location.y + $script:AutoChart02InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart02SecurityPatchesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart02SecurityPatchesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart02SecurityPatchesInvestDiffNegResultsLabel.Location.y + $script:AutoChart02SecurityPatchesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1078,88 +1208,88 @@ $script:AutoChart02CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart02InvestDiffForm.Controls.AddRange(@($script:AutoChart02InvestDiffDropDownLabel,$script:AutoChart02InvestDiffDropDownComboBox,$script:AutoChart02InvestDiffExecuteButton,$script:AutoChart02InvestDiffPosResultsLabel,$script:AutoChart02InvestDiffPosResultsTextBox,$script:AutoChart02InvestDiffNegResultsLabel,$script:AutoChart02InvestDiffNegResultsTextBox))
-    $script:AutoChart02InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart02InvestDiffForm.ShowDialog()
+    $script:AutoChart02SecurityPatchesInvestDiffForm.Controls.AddRange(@($script:AutoChart02SecurityPatchesInvestDiffDropDownLabel,$script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox,$script:AutoChart02SecurityPatchesInvestDiffExecuteButton,$script:AutoChart02SecurityPatchesInvestDiffPosResultsLabel,$script:AutoChart02SecurityPatchesInvestDiffPosResultsTextBox,$script:AutoChart02SecurityPatchesInvestDiffNegResultsLabel,$script:AutoChart02SecurityPatchesInvestDiffNegResultsTextBox))
+    $script:AutoChart02SecurityPatchesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart02SecurityPatchesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart02CheckDiffButton.Add_MouseHover({
+$script:AutoChart02SecurityPatchesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02CheckDiffButton)
+$script:AutoChart02SecurityPatchesManipulationPanel.controls.Add($script:AutoChart02SecurityPatchesCheckDiffButton)
 
 
 $AutoChart02ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart02CheckDiffButton.Location.X + $script:AutoChart02CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart02CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart02SecurityPatchesCheckDiffButton.Location.X + $script:AutoChart02SecurityPatchesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart02SecurityPatchesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Security Patches" -QueryTabName "Security Patches Per Host" -PropertyX "PSComputerName" -PropertyY "HotFixID" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Security Patches Per Host" -PropertyX "PSComputerName" -PropertyY "HotFixID" }
 }
 CommonButtonSettings -Button $AutoChart02ExpandChartButton
-$script:AutoChart02ManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
+$script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
 
 
-$script:AutoChart02OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02SecurityPatchesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart02CheckDiffButton.Location.X
-                   Y = $script:AutoChart02CheckDiffButton.Location.Y + $script:AutoChart02CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart02SecurityPatchesCheckDiffButton.Location.X
+                   Y = $script:AutoChart02SecurityPatchesCheckDiffButton.Location.Y + $script:AutoChart02SecurityPatchesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02OpenInShell
-$script:AutoChart02OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02OpenInShell)
+CommonButtonSettings -Button $script:AutoChart02SecurityPatchesOpenInShell
+$script:AutoChart02SecurityPatchesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart02SecurityPatchesManipulationPanel.controls.Add($script:AutoChart02SecurityPatchesOpenInShell)
 
 
-$script:AutoChart02ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02SecurityPatchesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart02OpenInShell.Location.X + $script:AutoChart02OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart02OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart02SecurityPatchesOpenInShell.Location.X + $script:AutoChart02SecurityPatchesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart02SecurityPatchesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02ViewResults
-$script:AutoChart02ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02ViewResults)
+CommonButtonSettings -Button $script:AutoChart02SecurityPatchesViewResults
+$script:AutoChart02SecurityPatchesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart02SecurityPatchesManipulationPanel.controls.Add($script:AutoChart02SecurityPatchesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart02SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart02SecurityPatchesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart02OpenInShell.Location.X
-                  Y = $script:AutoChart02OpenInShell.Location.Y + $script:AutoChart02OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart02SecurityPatchesOpenInShell.Location.X
+                  Y = $script:AutoChart02SecurityPatchesOpenInShell.Location.Y + $script:AutoChart02SecurityPatchesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart02SaveButton
+CommonButtonSettings -Button $script:AutoChart02SecurityPatchesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart02SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart02 -Title $script:AutoChart02Title
+$script:AutoChart02SecurityPatchesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart02SecurityPatches -Title $script:AutoChart02SecurityPatchesTitle
 })
-$script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02SaveButton)
+$script:AutoChart02SecurityPatchesManipulationPanel.controls.Add($script:AutoChart02SecurityPatchesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart02NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart02SaveButton.Location.X 
-                        Y = $script:AutoChart02SaveButton.Location.Y + $script:AutoChart02SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart02SecurityPatchesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart02SecurityPatchesSaveButton.Location.X 
+                        Y = $script:AutoChart02SecurityPatchesSaveButton.Location.Y + $script:AutoChart02SecurityPatchesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart02CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart02SecurityPatchesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02NoticeTextbox)
+$script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart02SecurityPatchesNoticeTextbox)
 
-$script:AutoChart02.Series["Security Patches Per Host"].Points.Clear()
-$script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.Clear()
+$script:AutoChart02SecurityPatchesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
 
 
@@ -1185,9 +1315,9 @@ $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Sel
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart03 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart01.Location.X
-                  Y = $script:AutoChart01.Location.Y + $script:AutoChart01.Size.Height + $($FormScale * 20) }
+$script:AutoChart03SecurityPatches = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart01SecurityPatches.Location.X
+                  Y = $script:AutoChart01SecurityPatches.Location.Y + $script:AutoChart01SecurityPatches.Size.Height + $($FormScale * 20) }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -1195,117 +1325,117 @@ $script:AutoChart03 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart03.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart03SecurityPatches.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart03Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart03SecurityPatchesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
 }
-$script:AutoChart03.Titles.Add($script:AutoChart03Title)
+$script:AutoChart03SecurityPatches.Titles.Add($script:AutoChart03SecurityPatchesTitle)
 
 ### Create Charts Area
-$script:AutoChart03Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart03Area.Name        = 'Chart Area'
-$script:AutoChart03Area.AxisX.Title = 'Hosts'
-$script:AutoChart03Area.AxisX.Interval          = 1
-$script:AutoChart03Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart03Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart03Area.Area3DStyle.Inclination = 75
-$script:AutoChart03.ChartAreas.Add($script:AutoChart03Area)
+$script:AutoChart03SecurityPatchesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart03SecurityPatchesArea.Name        = 'Chart Area'
+$script:AutoChart03SecurityPatchesArea.AxisX.Title = 'Hosts'
+$script:AutoChart03SecurityPatchesArea.AxisX.Interval          = 1
+$script:AutoChart03SecurityPatchesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart03SecurityPatchesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart03SecurityPatchesArea.Area3DStyle.Inclination = 75
+$script:AutoChart03SecurityPatches.ChartAreas.Add($script:AutoChart03SecurityPatchesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart03.Series.Add("Service Pack In Effect")  
-$script:AutoChart03.Series["Service Pack In Effect"].Enabled           = $True
-$script:AutoChart03.Series["Service Pack In Effect"].BorderWidth       = 1
-$script:AutoChart03.Series["Service Pack In Effect"].IsVisibleInLegend = $false
-$script:AutoChart03.Series["Service Pack In Effect"].Chartarea         = 'Chart Area'
-$script:AutoChart03.Series["Service Pack In Effect"].Legend            = 'Legend'
-$script:AutoChart03.Series["Service Pack In Effect"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart03.Series["Service Pack In Effect"]['PieLineColor']   = 'Black'
-$script:AutoChart03.Series["Service Pack In Effect"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart03.Series["Service Pack In Effect"].ChartType         = 'Column'
-$script:AutoChart03.Series["Service Pack In Effect"].Color             = 'Green'
+$script:AutoChart03SecurityPatches.Series.Add("Service Pack In Effect")  
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Enabled           = $True
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].BorderWidth       = 1
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].IsVisibleInLegend = $false
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Chartarea         = 'Chart Area'
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Legend            = 'Legend'
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"]['PieLineColor']   = 'Black'
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].ChartType         = 'Column'
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Color             = 'Green'
 
         function Generate-AutoChart03 {
-            $script:AutoChart03CsvFileHosts      = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart03UniqueDataFields  = $script:AutoChartDataSource | Select-Object -Property 'ServicePackInEffect' | Sort-Object -Property 'ServicePackInEffect' -Unique
+            $script:AutoChart03SecurityPatchesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart03SecurityPatchesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'ServicePackInEffect' | Sort-Object -Property 'ServicePackInEffect' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Green'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart03UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart03SecurityPatchesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart03.Series["Service Pack In Effect"].Points.Clear()
+            $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.Clear()
 
-            if ($script:AutoChart03UniqueDataFields.count -gt 0){
-                $script:AutoChart03Title.ForeColor = 'Black'
-                $script:AutoChart03Title.Text = "Service Pack In Effect"
+            if ($script:AutoChart03SecurityPatchesUniqueDataFields.count -gt 0){
+                $script:AutoChart03SecurityPatchesTitle.ForeColor = 'Black'
+                $script:AutoChart03SecurityPatchesTitle.Text = "Service Pack In Effect"
                 
                 # If the Second field/Y Axis equals PSComputername, it counts it
-                $script:AutoChart03OverallDataResults = @()
+                $script:AutoChart03SecurityPatchesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart03UniqueDataFields) {
+                foreach ($DataField in $script:AutoChart03SecurityPatchesUniqueDataFields) {
                     $Count        = 0
-                    $script:AutoChart03CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSource ) {
+                    $script:AutoChart03SecurityPatchesCsvComputers = @()
+                    foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.ServicePackInEffect -eq $DataField.ServicePackInEffect) {
                             $Count += 1
-                            if ( $script:AutoChart03CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03CsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart03SecurityPatchesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03SecurityPatchesCsvComputers += $($Line.PSComputerName) }                        
                         }
                     }
-                    $script:AutoChart03UniqueCount = $script:AutoChart03CsvComputers.Count
-                    $script:AutoChart03DataResults = New-Object PSObject -Property @{
+                    $script:AutoChart03SecurityPatchesUniqueCount = $script:AutoChart03SecurityPatchesCsvComputers.Count
+                    $script:AutoChart03SecurityPatchesDataResults = New-Object PSObject -Property @{
                         DataField   = $DataField
                         TotalCount  = $Count
-                        UniqueCount = $script:AutoChart03UniqueCount
-                        Computers   = $script:AutoChart03CsvComputers 
+                        UniqueCount = $script:AutoChart03SecurityPatchesUniqueCount
+                        Computers   = $script:AutoChart03SecurityPatchesCsvComputers 
                     }
-                    $script:AutoChart03OverallDataResults += $script:AutoChart03DataResults
+                    $script:AutoChart03SecurityPatchesOverallDataResults += $script:AutoChart03SecurityPatchesDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart03.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount) }
+                $script:AutoChart03SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount) }
 
-                $script:AutoChart03TrimOffLastTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
-                $script:AutoChart03TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
+                $script:AutoChart03SecurityPatchesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart03SecurityPatchesOverallDataResults.count))
+                $script:AutoChart03SecurityPatchesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03SecurityPatchesOverallDataResults.count))
             }
             else {
-                $script:AutoChart03Title.ForeColor = 'Red'
-                $script:AutoChart03Title.Text = "Service Pack In Effect`n
+                $script:AutoChart03SecurityPatchesTitle.ForeColor = 'Red'
+                $script:AutoChart03SecurityPatchesTitle.Text = "Service Pack In Effect`n
 [ No Data Available ]`n"                
             }
         }
         Generate-AutoChart03
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart03OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03SecurityPatchesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart03.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart03.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart03SecurityPatches.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart03SecurityPatches.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart03OptionsButton
-$script:AutoChart03OptionsButton.Add_Click({  
-    if ($script:AutoChart03OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart03OptionsButton.Text = 'Options ^'
-        $script:AutoChart03.Controls.Add($script:AutoChart03ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart03SecurityPatchesOptionsButton
+$script:AutoChart03SecurityPatchesOptionsButton.Add_Click({  
+    if ($script:AutoChart03SecurityPatchesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart03SecurityPatchesOptionsButton.Text = 'Options ^'
+        $script:AutoChart03SecurityPatches.Controls.Add($script:AutoChart03SecurityPatchesManipulationPanel)
     }
-    elseif ($script:AutoChart03OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart03OptionsButton.Text = 'Options v'
-        $script:AutoChart03.Controls.Remove($script:AutoChart03ManipulationPanel)
+    elseif ($script:AutoChart03SecurityPatchesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart03SecurityPatchesOptionsButton.Text = 'Options v'
+        $script:AutoChart03SecurityPatches.Controls.Remove($script:AutoChart03SecurityPatchesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03SecurityPatchesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03SecurityPatches)
 
-$script:AutoChart03ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart03SecurityPatchesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart03.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart03.Size.Width
+                     Y = $script:AutoChart03SecurityPatches.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart03SecurityPatches.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -1314,7 +1444,7 @@ $script:AutoChart03ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart03TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart03SecurityPatchesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -1324,7 +1454,7 @@ $script:AutoChart03TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart03TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart03SecurityPatchesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -1335,22 +1465,22 @@ $script:AutoChart03TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart03TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))                
-    $script:AutoChart03TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart03TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart03TrimOffFirstTrackBarValue = $script:AutoChart03TrimOffFirstTrackBar.Value
-        $script:AutoChart03TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart03TrimOffFirstTrackBar.Value)"
-        $script:AutoChart03.Series["Service Pack In Effect"].Points.Clear()
-        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}    
+    $script:AutoChart03SecurityPatchesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03SecurityPatchesOverallDataResults.count))                
+    $script:AutoChart03SecurityPatchesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart03SecurityPatchesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart03SecurityPatchesTrimOffFirstTrackBarValue = $script:AutoChart03SecurityPatchesTrimOffFirstTrackBar.Value
+        $script:AutoChart03SecurityPatchesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart03SecurityPatchesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.Clear()
+        $script:AutoChart03SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}    
     })
-    $script:AutoChart03TrimOffFirstGroupBox.Controls.Add($script:AutoChart03TrimOffFirstTrackBar)
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffFirstGroupBox)
+    $script:AutoChart03SecurityPatchesTrimOffFirstGroupBox.Controls.Add($script:AutoChart03SecurityPatchesTrimOffFirstTrackBar)
+$script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart03SecurityPatchesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart03TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart03SecurityPatchesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + $script:AutoChart03TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                     Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart03SecurityPatchesTrimOffFirstGroupBox.Location.X + $script:AutoChart03SecurityPatchesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                     Y = $script:AutoChart03SecurityPatchesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                      Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -1358,7 +1488,7 @@ $script:AutoChart03TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart03TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart03SecurityPatchesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -1368,148 +1498,148 @@ $script:AutoChart03TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart03TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart03TrimOffLastTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
-    $script:AutoChart03TrimOffLastTrackBar.Value         = $($script:AutoChart03OverallDataResults.count)
-    $script:AutoChart03TrimOffLastTrackBarValue   = 0
-    $script:AutoChart03TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart03TrimOffLastTrackBarValue = $($script:AutoChart03OverallDataResults.count) - $script:AutoChart03TrimOffLastTrackBar.Value
-        $script:AutoChart03TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart03OverallDataResults.count) - $script:AutoChart03TrimOffLastTrackBar.Value)"
-        $script:AutoChart03.Series["Service Pack In Effect"].Points.Clear()
-        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
+    $script:AutoChart03SecurityPatchesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart03SecurityPatchesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart03SecurityPatchesOverallDataResults.count))
+    $script:AutoChart03SecurityPatchesTrimOffLastTrackBar.Value         = $($script:AutoChart03SecurityPatchesOverallDataResults.count)
+    $script:AutoChart03SecurityPatchesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart03SecurityPatchesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart03SecurityPatchesTrimOffLastTrackBarValue = $($script:AutoChart03SecurityPatchesOverallDataResults.count) - $script:AutoChart03SecurityPatchesTrimOffLastTrackBar.Value
+        $script:AutoChart03SecurityPatchesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart03SecurityPatchesOverallDataResults.count) - $script:AutoChart03SecurityPatchesTrimOffLastTrackBar.Value)"
+        $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.Clear()
+        $script:AutoChart03SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
     })
-$script:AutoChart03TrimOffLastGroupBox.Controls.Add($script:AutoChart03TrimOffLastTrackBar)
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffLastGroupBox)
+$script:AutoChart03SecurityPatchesTrimOffLastGroupBox.Controls.Add($script:AutoChart03SecurityPatchesTrimOffLastTrackBar)
+$script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart03SecurityPatchesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart03ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart03SecurityPatchesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y + $script:AutoChart03TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart03SecurityPatchesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart03SecurityPatchesTrimOffFirstGroupBox.Location.Y + $script:AutoChart03SecurityPatchesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart03ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart03.Series["Service Pack In Effect"].ChartType = $script:AutoChart03ChartTypeComboBox.SelectedItem
-#    $script:AutoChart03.Series["Service Pack In Effect"].Points.Clear()
-#    $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
+$script:AutoChart03SecurityPatchesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].ChartType = $script:AutoChart03SecurityPatchesChartTypeComboBox.SelectedItem
+#    $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.Clear()
+#    $script:AutoChart03SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
 })
-$script:AutoChart03ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart03ChartTypesAvailable) { $script:AutoChart03ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03ChartTypeComboBox)
+$script:AutoChart03SecurityPatchesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart03SecurityPatchesChartTypesAvailable) { $script:AutoChart03SecurityPatchesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart03SecurityPatchesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart033DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03SecurityPatches3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart03ChartTypeComboBox.Location.X + $script:AutoChart03ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart03ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart03SecurityPatchesChartTypeComboBox.Location.X + $script:AutoChart03SecurityPatchesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart03SecurityPatchesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart033DToggleButton
-$script:AutoChart033DInclination = 0
-$script:AutoChart033DToggleButton.Add_Click({
-    $script:AutoChart033DInclination += 10
-    if ( $script:AutoChart033DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart03Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
-        $script:AutoChart033DToggleButton.Text  = "3D On ($script:AutoChart033DInclination)"
-#        $script:AutoChart03.Series["Service Pack In Effect"].Points.Clear()
-#        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
+CommonButtonSettings -Button $script:AutoChart03SecurityPatches3DToggleButton
+$script:AutoChart03SecurityPatches3DInclination = 0
+$script:AutoChart03SecurityPatches3DToggleButton.Add_Click({
+    $script:AutoChart03SecurityPatches3DInclination += 10
+    if ( $script:AutoChart03SecurityPatches3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart03SecurityPatchesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart03SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart03SecurityPatches3DInclination
+        $script:AutoChart03SecurityPatches3DToggleButton.Text  = "3D On ($script:AutoChart03SecurityPatches3DInclination)"
+#        $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.Clear()
+#        $script:AutoChart03SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
     }
-    elseif ( $script:AutoChart033DInclination -le 90 ) {
-        $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
-        $script:AutoChart033DToggleButton.Text  = "3D On ($script:AutoChart033DInclination)" 
-#        $script:AutoChart03.Series["Service Pack In Effect"].Points.Clear()
-#        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
+    elseif ( $script:AutoChart03SecurityPatches3DInclination -le 90 ) {
+        $script:AutoChart03SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart03SecurityPatches3DInclination
+        $script:AutoChart03SecurityPatches3DToggleButton.Text  = "3D On ($script:AutoChart03SecurityPatches3DInclination)" 
+#        $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.Clear()
+#        $script:AutoChart03SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
     }
     else { 
-        $script:AutoChart033DToggleButton.Text  = "3D Off" 
-        $script:AutoChart033DInclination = 0
-        $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
-        $script:AutoChart03Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart03.Series["Service Pack In Effect"].Points.Clear()
-#        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
+        $script:AutoChart03SecurityPatches3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart03SecurityPatches3DInclination = 0
+        $script:AutoChart03SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart03SecurityPatches3DInclination
+        $script:AutoChart03SecurityPatchesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.Clear()
+#        $script:AutoChart03SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}
     }
 })
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart033DToggleButton)
+$script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart03SecurityPatches3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart03ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart03SecurityPatchesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart033DToggleButton.Location.X + $script:AutoChart033DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart033DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart03SecurityPatches3DToggleButton.Location.X + $script:AutoChart03SecurityPatches3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart03SecurityPatches3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart03ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart03ColorsAvailable) { $script:AutoChart03ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart03ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart03.Series["Service Pack In Effect"].Color = $script:AutoChart03ChangeColorComboBox.SelectedItem
+$script:AutoChart03SecurityPatchesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart03SecurityPatchesColorsAvailable) { $script:AutoChart03SecurityPatchesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart03SecurityPatchesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Color = $script:AutoChart03SecurityPatchesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03ChangeColorComboBox)
+$script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart03SecurityPatchesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
 function script:InvestigateDifference-AutoChart03 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart03ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'ServicePackInEffect' -eq $($script:AutoChart03InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart03InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart03ImportCsvPosResults) { $script:AutoChart03InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart03SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ServicePackInEffect' -eq $($script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03SecurityPatchesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart03SecurityPatchesImportCsvPosResults) { $script:AutoChart03SecurityPatchesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart03ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart03ImportCsvNegResults = @()
+    $script:AutoChart03SecurityPatchesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart03ImportCsvAll) { if ($Endpoint -notin $script:AutoChart03ImportCsvPosResults) { $script:AutoChart03ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart03SecurityPatchesImportCsvAll) { if ($Endpoint -notin $script:AutoChart03SecurityPatchesImportCsvPosResults) { $script:AutoChart03SecurityPatchesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart03InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart03ImportCsvNegResults) { $script:AutoChart03InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart03SecurityPatchesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart03SecurityPatchesImportCsvNegResults) { $script:AutoChart03SecurityPatchesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart03InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart03ImportCsvPosResults.count))"
-    $script:AutoChart03InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart03ImportCsvNegResults.count))"
+    $script:AutoChart03SecurityPatchesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart03SecurityPatchesImportCsvPosResults.count))"
+    $script:AutoChart03SecurityPatchesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart03SecurityPatchesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart03CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03SecurityPatchesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart03TrimOffLastGroupBox.Location.X + $script:AutoChart03TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart03TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart03SecurityPatchesTrimOffLastGroupBox.Location.X + $script:AutoChart03SecurityPatchesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart03SecurityPatchesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart03CheckDiffButton
-$script:AutoChart03CheckDiffButton.Add_Click({
-    $script:AutoChart03InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'ServicePackInEffect' -ExpandProperty 'ServicePackInEffect' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart03SecurityPatchesCheckDiffButton
+$script:AutoChart03SecurityPatchesCheckDiffButton.Add_Click({
+    $script:AutoChart03SecurityPatchesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'ServicePackInEffect' -ExpandProperty 'ServicePackInEffect' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart03InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart03SecurityPatchesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart03InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart03SecurityPatchesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -1517,43 +1647,43 @@ $script:AutoChart03CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart03InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart03SecurityPatchesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart03InvestDiffDropDownLabel.Location.y + $script:AutoChart03InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart03SecurityPatchesInvestDiffDropDownLabel.Location.y + $script:AutoChart03SecurityPatchesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart03InvestDiffDropDownArray) { $script:AutoChart03InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart03InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03 }})
-    $script:AutoChart03InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart03 })
+    ForEach ($Item in $script:AutoChart03SecurityPatchesInvestDiffDropDownArray) { $script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03 }})
+    $script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart03 })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart03InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart03SecurityPatchesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart03InvestDiffDropDownComboBox.Location.y + $script:AutoChart03InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox.Location.y + $script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart03InvestDiffExecuteButton
-    $script:AutoChart03InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03 }})
-    $script:AutoChart03InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart03 })
+    CommonButtonSettings -Button $script:AutoChart03SecurityPatchesInvestDiffExecuteButton
+    $script:AutoChart03SecurityPatchesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart03 }})
+    $script:AutoChart03SecurityPatchesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart03 })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart03InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart03SecurityPatchesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart03InvestDiffExecuteButton.Location.y + $script:AutoChart03InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart03SecurityPatchesInvestDiffExecuteButton.Location.y + $script:AutoChart03SecurityPatchesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart03InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart03SecurityPatchesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart03InvestDiffPosResultsLabel.Location.y + $script:AutoChart03InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart03SecurityPatchesInvestDiffPosResultsLabel.Location.y + $script:AutoChart03SecurityPatchesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1565,17 +1695,17 @@ $script:AutoChart03CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart03InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart03SecurityPatchesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart03InvestDiffPosResultsLabel.Location.x + $script:AutoChart03InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart03InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart03SecurityPatchesInvestDiffPosResultsLabel.Location.x + $script:AutoChart03SecurityPatchesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart03SecurityPatchesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart03InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart03InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart03InvestDiffNegResultsLabel.Location.y + $script:AutoChart03InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart03SecurityPatchesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart03SecurityPatchesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart03SecurityPatchesInvestDiffNegResultsLabel.Location.y + $script:AutoChart03SecurityPatchesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1585,88 +1715,88 @@ $script:AutoChart03CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart03InvestDiffForm.Controls.AddRange(@($script:AutoChart03InvestDiffDropDownLabel,$script:AutoChart03InvestDiffDropDownComboBox,$script:AutoChart03InvestDiffExecuteButton,$script:AutoChart03InvestDiffPosResultsLabel,$script:AutoChart03InvestDiffPosResultsTextBox,$script:AutoChart03InvestDiffNegResultsLabel,$script:AutoChart03InvestDiffNegResultsTextBox))
-    $script:AutoChart03InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart03InvestDiffForm.ShowDialog()
+    $script:AutoChart03SecurityPatchesInvestDiffForm.Controls.AddRange(@($script:AutoChart03SecurityPatchesInvestDiffDropDownLabel,$script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox,$script:AutoChart03SecurityPatchesInvestDiffExecuteButton,$script:AutoChart03SecurityPatchesInvestDiffPosResultsLabel,$script:AutoChart03SecurityPatchesInvestDiffPosResultsTextBox,$script:AutoChart03SecurityPatchesInvestDiffNegResultsLabel,$script:AutoChart03SecurityPatchesInvestDiffNegResultsTextBox))
+    $script:AutoChart03SecurityPatchesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart03SecurityPatchesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart03CheckDiffButton.Add_MouseHover({
+$script:AutoChart03SecurityPatchesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03CheckDiffButton)
+$script:AutoChart03SecurityPatchesManipulationPanel.controls.Add($script:AutoChart03SecurityPatchesCheckDiffButton)
     
 
 $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart03CheckDiffButton.Location.X + $script:AutoChart03CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart03CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart03SecurityPatchesCheckDiffButton.Location.X + $script:AutoChart03SecurityPatchesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart03SecurityPatchesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Security Patches" -QueryTabName "Service Pack In Effect" -PropertyX "ServicePackInEffect" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Service Pack In Effect" -PropertyX "ServicePackInEffect" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart03ExpandChartButton
-$script:AutoChart03ManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
+$script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
 
 
-$script:AutoChart03OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03SecurityPatchesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart03CheckDiffButton.Location.X
-                   Y = $script:AutoChart03CheckDiffButton.Location.Y + $script:AutoChart03CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart03SecurityPatchesCheckDiffButton.Location.X
+                   Y = $script:AutoChart03SecurityPatchesCheckDiffButton.Location.Y + $script:AutoChart03SecurityPatchesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03OpenInShell
-$script:AutoChart03OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03OpenInShell)
+CommonButtonSettings -Button $script:AutoChart03SecurityPatchesOpenInShell
+$script:AutoChart03SecurityPatchesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart03SecurityPatchesManipulationPanel.controls.Add($script:AutoChart03SecurityPatchesOpenInShell)
 
 
-$script:AutoChart03ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03SecurityPatchesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart03OpenInShell.Location.X + $script:AutoChart03OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart03OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart03SecurityPatchesOpenInShell.Location.X + $script:AutoChart03SecurityPatchesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart03SecurityPatchesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03ViewResults
-$script:AutoChart03ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03ViewResults)
+CommonButtonSettings -Button $script:AutoChart03SecurityPatchesViewResults
+$script:AutoChart03SecurityPatchesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart03SecurityPatchesManipulationPanel.controls.Add($script:AutoChart03SecurityPatchesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart03SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart03SecurityPatchesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart03OpenInShell.Location.X
-                  Y = $script:AutoChart03OpenInShell.Location.Y + $script:AutoChart03OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart03SecurityPatchesOpenInShell.Location.X
+                  Y = $script:AutoChart03SecurityPatchesOpenInShell.Location.Y + $script:AutoChart03SecurityPatchesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart03SaveButton
+CommonButtonSettings -Button $script:AutoChart03SecurityPatchesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart03SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart03 -Title $script:AutoChart03Title
+$script:AutoChart03SecurityPatchesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart03SecurityPatches -Title $script:AutoChart03SecurityPatchesTitle
 })
-$script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03SaveButton)
+$script:AutoChart03SecurityPatchesManipulationPanel.controls.Add($script:AutoChart03SecurityPatchesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart03NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart03SaveButton.Location.X 
-                        Y = $script:AutoChart03SaveButton.Location.Y + $script:AutoChart03SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart03SecurityPatchesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart03SecurityPatchesSaveButton.Location.X 
+                        Y = $script:AutoChart03SecurityPatchesSaveButton.Location.Y + $script:AutoChart03SecurityPatchesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart03CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart03SecurityPatchesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03NoticeTextbox)
+$script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart03SecurityPatchesNoticeTextbox)
 
-$script:AutoChart03.Series["Service Pack In Effect"].Points.Clear()
-$script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}    
+$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.Clear()
+$script:AutoChart03SecurityPatchesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Points.AddXY($_.DataField.ServicePackInEffect,$_.UniqueCount)}    
 
 
 
@@ -1693,9 +1823,9 @@ $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Sele
 ##############################################################################################
 
 ### Auto Create Charts Object
-$script:AutoChart04 = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
-    Location = @{ X = $script:AutoChart02.Location.X
-                  Y = $script:AutoChart02.Location.Y + $script:AutoChart02.Size.Height + $($FormScale * 20) }
+$script:AutoChart04SecurityPatches = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
+    Location = @{ X = $script:AutoChart02SecurityPatches.Location.X
+                  Y = $script:AutoChart02SecurityPatches.Location.Y + $script:AutoChart02SecurityPatches.Size.Height + $($FormScale * 20) }
     Size     = @{ Width  = $FormScale * 560
                   Height = $FormScale * 375 }
     BackColor       = [System.Drawing.Color]::White
@@ -1703,117 +1833,117 @@ $script:AutoChart04 = New-object System.Windows.Forms.DataVisualization.Charting
     Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     BorderDashStyle = 'Solid'
 }
-$script:AutoChart04.Add_MouseHover({ Close-AllOptions })
+$script:AutoChart04SecurityPatches.Add_MouseHover({ Close-AllOptions })
 
 ### Auto Create Charts Title 
-$script:AutoChart04Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
+$script:AutoChart04SecurityPatchesTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
 }
-$script:AutoChart04.Titles.Add($script:AutoChart04Title)
+$script:AutoChart04SecurityPatches.Titles.Add($script:AutoChart04SecurityPatchesTitle)
 
 ### Create Charts Area
-$script:AutoChart04Area             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
-$script:AutoChart04Area.Name        = 'Chart Area'
-$script:AutoChart04Area.AxisX.Title = 'Hosts'
-$script:AutoChart04Area.AxisX.Interval          = 1
-$script:AutoChart04Area.AxisY.IntervalAutoMode  = $true
-$script:AutoChart04Area.Area3DStyle.Enable3D    = $false
-$script:AutoChart04Area.Area3DStyle.Inclination = 75
-$script:AutoChart04.ChartAreas.Add($script:AutoChart04Area)
+$script:AutoChart04SecurityPatchesArea             = New-Object System.Windows.Forms.DataVisualization.Charting.ChartArea
+$script:AutoChart04SecurityPatchesArea.Name        = 'Chart Area'
+$script:AutoChart04SecurityPatchesArea.AxisX.Title = 'Hosts'
+$script:AutoChart04SecurityPatchesArea.AxisX.Interval          = 1
+$script:AutoChart04SecurityPatchesArea.AxisY.IntervalAutoMode  = $true
+$script:AutoChart04SecurityPatchesArea.Area3DStyle.Enable3D    = $false
+$script:AutoChart04SecurityPatchesArea.Area3DStyle.Inclination = 75
+$script:AutoChart04SecurityPatches.ChartAreas.Add($script:AutoChart04SecurityPatchesArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart04.Series.Add("Install Date")  
-$script:AutoChart04.Series["Install Date"].Enabled           = $True
-$script:AutoChart04.Series["Install Date"].BorderWidth       = 1
-$script:AutoChart04.Series["Install Date"].IsVisibleInLegend = $false
-$script:AutoChart04.Series["Install Date"].Chartarea         = 'Chart Area'
-$script:AutoChart04.Series["Install Date"].Legend            = 'Legend'
-$script:AutoChart04.Series["Install Date"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
-$script:AutoChart04.Series["Install Date"]['PieLineColor']   = 'Black'
-$script:AutoChart04.Series["Install Date"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart04.Series["Install Date"].ChartType         = 'Column'
-$script:AutoChart04.Series["Install Date"].Color             = 'Orange'
+$script:AutoChart04SecurityPatches.Series.Add("Install Date")  
+$script:AutoChart04SecurityPatches.Series["Install Date"].Enabled           = $True
+$script:AutoChart04SecurityPatches.Series["Install Date"].BorderWidth       = 1
+$script:AutoChart04SecurityPatches.Series["Install Date"].IsVisibleInLegend = $false
+$script:AutoChart04SecurityPatches.Series["Install Date"].Chartarea         = 'Chart Area'
+$script:AutoChart04SecurityPatches.Series["Install Date"].Legend            = 'Legend'
+$script:AutoChart04SecurityPatches.Series["Install Date"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
+$script:AutoChart04SecurityPatches.Series["Install Date"]['PieLineColor']   = 'Black'
+$script:AutoChart04SecurityPatches.Series["Install Date"]['PieLabelStyle']  = 'Outside'
+$script:AutoChart04SecurityPatches.Series["Install Date"].ChartType         = 'Bar'
+$script:AutoChart04SecurityPatches.Series["Install Date"].Color             = 'Orange'
 
         function Generate-AutoChart04 {
-            $script:AutoChart04CsvFileHosts      = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-            $script:AutoChart04UniqueDataFields  = $script:AutoChartDataSource | Select-Object -Property 'InstalledOn' | Sort-Object -Property 'InstalledOn' -Unique
+            $script:AutoChart04SecurityPatchesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart04SecurityPatchesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'InstalledOn' | Sort-Object -Property 'InstalledOn' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Orange'
             $script:AutoChartsProgressBar.Minimum = 0
-            $script:AutoChartsProgressBar.Maximum = $script:AutoChart04UniqueDataFields.count
+            $script:AutoChartsProgressBar.Maximum = $script:AutoChart04SecurityPatchesUniqueDataFields.count
             $script:AutoChartsProgressBar.Value   = 0
             $script:AutoChartsProgressBar.Update()
 
-            $script:AutoChart04.Series["Install Date"].Points.Clear()
+            $script:AutoChart04SecurityPatches.Series["Install Date"].Points.Clear()
 
-            if ($script:AutoChart04UniqueDataFields.count -gt 0){
-                $script:AutoChart04Title.ForeColor = 'Black'
-                $script:AutoChart04Title.Text = "Install Date"
+            if ($script:AutoChart04SecurityPatchesUniqueDataFields.count -gt 0){
+                $script:AutoChart04SecurityPatchesTitle.ForeColor = 'Black'
+                $script:AutoChart04SecurityPatchesTitle.Text = "Install Date"
 
                 # If the Second field/Y Axis equals PSComputername, it counts it
-                $script:AutoChart04OverallDataResults = @()
+                $script:AutoChart04SecurityPatchesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                foreach ($DataField in $script:AutoChart04UniqueDataFields) {
+                foreach ($DataField in $script:AutoChart04SecurityPatchesUniqueDataFields) {
                     $Count        = 0
-                    $script:AutoChart04CsvComputers = @()
-                    foreach ( $Line in $script:AutoChartDataSource ) {
+                    $script:AutoChart04SecurityPatchesCsvComputers = @()
+                    foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.InstalledOn) -eq $DataField.InstalledOn) {
                             $Count += 1
-                            if ( $script:AutoChart04CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04CsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart04SecurityPatchesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04SecurityPatchesCsvComputers += $($Line.PSComputerName) }                        
                         }
                     }
-                    $script:AutoChart04UniqueCount = $script:AutoChart04CsvComputers.Count
-                    $script:AutoChart04DataResults = New-Object PSObject -Property @{
+                    $script:AutoChart04SecurityPatchesUniqueCount = $script:AutoChart04SecurityPatchesCsvComputers.Count
+                    $script:AutoChart04SecurityPatchesDataResults = New-Object PSObject -Property @{
                         DataField   = $DataField
                         TotalCount  = $Count
-                        UniqueCount = $script:AutoChart04UniqueCount
-                        Computers   = $script:AutoChart04CsvComputers 
+                        UniqueCount = $script:AutoChart04SecurityPatchesUniqueCount
+                        Computers   = $script:AutoChart04SecurityPatchesCsvComputers 
                     }
-                    $script:AutoChart04OverallDataResults += $script:AutoChart04DataResults
+                    $script:AutoChart04SecurityPatchesOverallDataResults += $script:AutoChart04SecurityPatchesDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart04.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount) }
+                $script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataField.InstalledOn -as [datetime] } | ForEach-Object { $script:AutoChart04SecurityPatches.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount) }
 
-                $script:AutoChart04TrimOffLastTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
-                $script:AutoChart04TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
+                $script:AutoChart04SecurityPatchesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart04SecurityPatchesOverallDataResults.count))
+                $script:AutoChart04SecurityPatchesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04SecurityPatchesOverallDataResults.count))
             }
             else {
-                $script:AutoChart04Title.ForeColor = 'Red'
-                $script:AutoChart04Title.Text = "Install Date`n
+                $script:AutoChart04SecurityPatchesTitle.ForeColor = 'Red'
+                $script:AutoChart04SecurityPatchesTitle.Text = "Install Date`n
 [ No Data Available ]`n"                
             }
         }
         Generate-AutoChart04
 
 ### Auto Chart Panel that contains all the options to manage open/close feature 
-$script:AutoChart04OptionsButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04SecurityPatchesOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
-    Location  = @{ X = $script:AutoChart04.Location.X + $($FormScale * 5)
-                   Y = $script:AutoChart04.Location.Y + $($FormScale * 350) }
+    Location  = @{ X = $script:AutoChart04SecurityPatches.Location.X + $($FormScale * 5)
+                   Y = $script:AutoChart04SecurityPatches.Location.Y + $($FormScale * 350) }
     Size      = @{ Width  = $FormScale * 75
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart04OptionsButton
-$script:AutoChart04OptionsButton.Add_Click({  
-    if ($script:AutoChart04OptionsButton.Text -eq 'Options v') {
-        $script:AutoChart04OptionsButton.Text = 'Options ^'
-        $script:AutoChart04.Controls.Add($script:AutoChart04ManipulationPanel)
+CommonButtonSettings -Button $script:AutoChart04SecurityPatchesOptionsButton
+$script:AutoChart04SecurityPatchesOptionsButton.Add_Click({  
+    if ($script:AutoChart04SecurityPatchesOptionsButton.Text -eq 'Options v') {
+        $script:AutoChart04SecurityPatchesOptionsButton.Text = 'Options ^'
+        $script:AutoChart04SecurityPatches.Controls.Add($script:AutoChart04SecurityPatchesManipulationPanel)
     }
-    elseif ($script:AutoChart04OptionsButton.Text -eq 'Options ^') {
-        $script:AutoChart04OptionsButton.Text = 'Options v'
-        $script:AutoChart04.Controls.Remove($script:AutoChart04ManipulationPanel)
+    elseif ($script:AutoChart04SecurityPatchesOptionsButton.Text -eq 'Options ^') {
+        $script:AutoChart04SecurityPatchesOptionsButton.Text = 'Options v'
+        $script:AutoChart04SecurityPatches.Controls.Remove($script:AutoChart04SecurityPatchesManipulationPanel)
     }
 })
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04OptionsButton)
-$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04SecurityPatchesOptionsButton)
+$script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04SecurityPatches)
 
-$script:AutoChart04ManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
+$script:AutoChart04SecurityPatchesManipulationPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location    = @{ X = 0
-                     Y = $script:AutoChart04.Size.Height - $($FormScale * 121) }
-    Size        = @{ Width  = $script:AutoChart04.Size.Width
+                     Y = $script:AutoChart04SecurityPatches.Size.Height - $($FormScale * 121) }
+    Size        = @{ Width  = $script:AutoChart04SecurityPatches.Size.Width
                      Height = $FormScale * 121 }
     Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
@@ -1822,7 +1952,7 @@ $script:AutoChart04ManipulationPanel = New-Object System.Windows.Forms.Panel -Pr
 }
 
 ### AutoCharts - Trim Off First GroupBox
-$script:AutoChart04TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart04SecurityPatchesTrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off First: 0"
     Location    = @{ X = $FormScale * 5
                      Y = $FormScale * 5 }
@@ -1832,7 +1962,7 @@ $script:AutoChart04TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off First TrackBar
-    $script:AutoChart04TrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart04SecurityPatchesTrimOffFirstTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
@@ -1843,22 +1973,22 @@ $script:AutoChart04TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Minimum       = 0
         Value         = 0 
     }
-    $script:AutoChart04TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))                
-    $script:AutoChart04TrimOffFirstTrackBarValue   = 0
-    $script:AutoChart04TrimOffFirstTrackBar.add_ValueChanged({
-        $script:AutoChart04TrimOffFirstTrackBarValue = $script:AutoChart04TrimOffFirstTrackBar.Value
-        $script:AutoChart04TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart04TrimOffFirstTrackBar.Value)"
-        $script:AutoChart04.Series["Install Date"].Points.Clear()
-        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}    
+    $script:AutoChart04SecurityPatchesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04SecurityPatchesOverallDataResults.count))                
+    $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue   = 0
+    $script:AutoChart04SecurityPatchesTrimOffFirstTrackBar.add_ValueChanged({
+        $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue = $script:AutoChart04SecurityPatchesTrimOffFirstTrackBar.Value
+        $script:AutoChart04SecurityPatchesTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart04SecurityPatchesTrimOffFirstTrackBar.Value)"
+        $script:AutoChart04SecurityPatches.Series["Install Date"].Points.Clear()
+        $script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataField.InstalledOn -as [datetime] } | Select-Object -skip $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SecurityPatches.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}    
     })
-    $script:AutoChart04TrimOffFirstGroupBox.Controls.Add($script:AutoChart04TrimOffFirstTrackBar)
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffFirstGroupBox)
+    $script:AutoChart04SecurityPatchesTrimOffFirstGroupBox.Controls.Add($script:AutoChart04SecurityPatchesTrimOffFirstTrackBar)
+$script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart04SecurityPatchesTrimOffFirstGroupBox)
 
 ### Auto Charts - Trim Off Last GroupBox
-$script:AutoChart04TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
+$script:AutoChart04SecurityPatchesTrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBox -Property @{
     Text        = "Trim Off Last: 0"
-    Location    = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + $script:AutoChart04TrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
-                     Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y }
+    Location    = @{ X = $script:AutoChart04SecurityPatchesTrimOffFirstGroupBox.Location.X + $script:AutoChart04SecurityPatchesTrimOffFirstGroupBox.Size.Width + $($FormScale * 5)
+                     Y = $script:AutoChart04SecurityPatchesTrimOffFirstGroupBox.Location.Y }
     Size        = @{ Width  = $FormScale * 165
                      Height = $FormScale * 85 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -1866,7 +1996,7 @@ $script:AutoChart04TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
     ForeColor   = 'Black'
 }
     ### AutoCharts - Trim Off Last TrackBar
-    $script:AutoChart04TrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
+    $script:AutoChart04SecurityPatchesTrimOffLastTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
@@ -1876,148 +2006,148 @@ $script:AutoChart04TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         TickStyle     = "TopLeft"
         Minimum       = 0
     }
-    $script:AutoChart04TrimOffLastTrackBar.RightToLeft   = $true
-    $script:AutoChart04TrimOffLastTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
-    $script:AutoChart04TrimOffLastTrackBar.Value         = $($script:AutoChart04OverallDataResults.count)
-    $script:AutoChart04TrimOffLastTrackBarValue   = 0
-    $script:AutoChart04TrimOffLastTrackBar.add_ValueChanged({
-        $script:AutoChart04TrimOffLastTrackBarValue = $($script:AutoChart04OverallDataResults.count) - $script:AutoChart04TrimOffLastTrackBar.Value
-        $script:AutoChart04TrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart04OverallDataResults.count) - $script:AutoChart04TrimOffLastTrackBar.Value)"
-        $script:AutoChart04.Series["Install Date"].Points.Clear()
-        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
+    $script:AutoChart04SecurityPatchesTrimOffLastTrackBar.RightToLeft   = $true
+    $script:AutoChart04SecurityPatchesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart04SecurityPatchesOverallDataResults.count))
+    $script:AutoChart04SecurityPatchesTrimOffLastTrackBar.Value         = $($script:AutoChart04SecurityPatchesOverallDataResults.count)
+    $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue   = 0
+    $script:AutoChart04SecurityPatchesTrimOffLastTrackBar.add_ValueChanged({
+        $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue = $($script:AutoChart04SecurityPatchesOverallDataResults.count) - $script:AutoChart04SecurityPatchesTrimOffLastTrackBar.Value
+        $script:AutoChart04SecurityPatchesTrimOffLastGroupBox.Text = "Trim Off Last: $($($script:AutoChart04SecurityPatchesOverallDataResults.count) - $script:AutoChart04SecurityPatchesTrimOffLastTrackBar.Value)"
+        $script:AutoChart04SecurityPatches.Series["Install Date"].Points.Clear()
+        $script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataField.InstalledOn -as [datetime] } | Select-Object -skip $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SecurityPatches.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
     })
-$script:AutoChart04TrimOffLastGroupBox.Controls.Add($script:AutoChart04TrimOffLastTrackBar)
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffLastGroupBox)
+$script:AutoChart04SecurityPatchesTrimOffLastGroupBox.Controls.Add($script:AutoChart04SecurityPatchesTrimOffLastTrackBar)
+$script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart04SecurityPatchesTrimOffLastGroupBox)
 
 #======================================
 # Auto Create Charts Select Chart Type
 #======================================
-$script:AutoChart04ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
-    Location  = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
-                    Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y + $script:AutoChart04TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
+$script:AutoChart04SecurityPatchesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    Text      = 'Bar' 
+    Location  = @{ X = $script:AutoChart04SecurityPatchesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
+                    Y = $script:AutoChart04SecurityPatchesTrimOffFirstGroupBox.Location.Y + $script:AutoChart04SecurityPatchesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
                     Height = $FormScale * 20 }     
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart04ChartTypeComboBox.add_SelectedIndexChanged({
-    $script:AutoChart04.Series["Install Date"].ChartType = $script:AutoChart04ChartTypeComboBox.SelectedItem
-#    $script:AutoChart04.Series["Install Date"].Points.Clear()
-#    $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
+$script:AutoChart04SecurityPatchesChartTypeComboBox.add_SelectedIndexChanged({
+    $script:AutoChart04SecurityPatches.Series["Install Date"].ChartType = $script:AutoChart04SecurityPatchesChartTypeComboBox.SelectedItem
+#    $script:AutoChart04SecurityPatches.Series["Install Date"].Points.Clear()
+#    $script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataField.InstalledOn -as [datetime] } | Select-Object -skip $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SecurityPatches.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
 })
-$script:AutoChart04ChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
-ForEach ($Item in $script:AutoChart04ChartTypesAvailable) { $script:AutoChart04ChartTypeComboBox.Items.Add($Item) }
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04ChartTypeComboBox)
+$script:AutoChart04SecurityPatchesChartTypesAvailable = @('Column','Pie','Line','Bar','Doughnut','Area','BoxPlot','Bubble','CandleStick','ErrorBar','Fastline','FastPoint','Funnel','Kagi','Point','PointAndFigure','Polar','Pyramid','Radar','Range','Rangebar','RangeColumn','Renko','Spline','SplineArea','SplineRange','StackedArea','StackedBar','StackedColumn','StepLine','Stock','ThreeLineBreak')
+ForEach ($Item in $script:AutoChart04SecurityPatchesChartTypesAvailable) { $script:AutoChart04SecurityPatchesChartTypeComboBox.Items.Add($Item) }
+$script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart04SecurityPatchesChartTypeComboBox)
 
 ### Auto Charts Toggle 3D on/off and inclination angle
-$script:AutoChart043DToggleButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04SecurityPatches3DToggleButton = New-Object Windows.Forms.Button -Property @{
     Text      = "3D Off"
-    Location  = @{ X = $script:AutoChart04ChartTypeComboBox.Location.X + $script:AutoChart04ChartTypeComboBox.Size.Width + $($FormScale * 8)
-                   Y = $script:AutoChart04ChartTypeComboBox.Location.Y }
+    Location  = @{ X = $script:AutoChart04SecurityPatchesChartTypeComboBox.Location.X + $script:AutoChart04SecurityPatchesChartTypeComboBox.Size.Width + $($FormScale * 8)
+                   Y = $script:AutoChart04SecurityPatchesChartTypeComboBox.Location.Y }
     Size      = @{ Width  = $FormScale * 65
                    Height = $FormScale * 20 }
 }
-CommonButtonSettings -Button $script:AutoChart043DToggleButton
-$script:AutoChart043DInclination = 0
-$script:AutoChart043DToggleButton.Add_Click({
-    $script:AutoChart043DInclination += 10
-    if ( $script:AutoChart043DToggleButton.Text -eq "3D Off" ) { 
-        $script:AutoChart04Area.Area3DStyle.Enable3D    = $true
-        $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
-        $script:AutoChart043DToggleButton.Text  = "3D On ($script:AutoChart043DInclination)"
-#        $script:AutoChart04.Series["Install Date"].Points.Clear()
-#        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
+CommonButtonSettings -Button $script:AutoChart04SecurityPatches3DToggleButton
+$script:AutoChart04SecurityPatches3DInclination = 0
+$script:AutoChart04SecurityPatches3DToggleButton.Add_Click({
+    $script:AutoChart04SecurityPatches3DInclination += 10
+    if ( $script:AutoChart04SecurityPatches3DToggleButton.Text -eq "3D Off" ) { 
+        $script:AutoChart04SecurityPatchesArea.Area3DStyle.Enable3D    = $true
+        $script:AutoChart04SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart04SecurityPatches3DInclination
+        $script:AutoChart04SecurityPatches3DToggleButton.Text  = "3D On ($script:AutoChart04SecurityPatches3DInclination)"
+#        $script:AutoChart04SecurityPatches.Series["Install Date"].Points.Clear()
+#        $script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataField.InstalledOn -as [datetime] } | Select-Object -skip $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SecurityPatches.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
     }
-    elseif ( $script:AutoChart043DInclination -le 90 ) {
-        $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
-        $script:AutoChart043DToggleButton.Text  = "3D On ($script:AutoChart043DInclination)" 
-#        $script:AutoChart04.Series["Install Date"].Points.Clear()
-#        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
+    elseif ( $script:AutoChart04SecurityPatches3DInclination -le 90 ) {
+        $script:AutoChart04SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart04SecurityPatches3DInclination
+        $script:AutoChart04SecurityPatches3DToggleButton.Text  = "3D On ($script:AutoChart04SecurityPatches3DInclination)" 
+#        $script:AutoChart04SecurityPatches.Series["Install Date"].Points.Clear()
+#        $script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataField.InstalledOn -as [datetime] } | Select-Object -skip $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SecurityPatches.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
     }
     else { 
-        $script:AutoChart043DToggleButton.Text  = "3D Off" 
-        $script:AutoChart043DInclination = 0
-        $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
-        $script:AutoChart04Area.Area3DStyle.Enable3D    = $false
-#        $script:AutoChart04.Series["Install Date"].Points.Clear()
-#        $script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
+        $script:AutoChart04SecurityPatches3DToggleButton.Text  = "3D Off" 
+        $script:AutoChart04SecurityPatches3DInclination = 0
+        $script:AutoChart04SecurityPatchesArea.Area3DStyle.Inclination = $script:AutoChart04SecurityPatches3DInclination
+        $script:AutoChart04SecurityPatchesArea.Area3DStyle.Enable3D    = $false
+#        $script:AutoChart04SecurityPatches.Series["Install Date"].Points.Clear()
+#        $script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataField.InstalledOn -as [datetime] } | Select-Object -skip $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SecurityPatches.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}
     }
 })
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart043DToggleButton)
+$script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart04SecurityPatches3DToggleButton)
 
 ### Change the color of the chart
-$script:AutoChart04ChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:AutoChart04SecurityPatchesChangeColorComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
     Text      = "Change Color"
-    Location  = @{ X = $script:AutoChart043DToggleButton.Location.X + $script:AutoChart043DToggleButton.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart043DToggleButton.Location.Y }
+    Location  = @{ X = $script:AutoChart04SecurityPatches3DToggleButton.Location.X + $script:AutoChart04SecurityPatches3DToggleButton.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart04SecurityPatches3DToggleButton.Location.Y }
     Size      = @{ Width  = $FormScale * 95
                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
 }
-$script:AutoChart04ColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
-ForEach ($Item in $script:AutoChart04ColorsAvailable) { $script:AutoChart04ChangeColorComboBox.Items.Add($Item) }
-$script:AutoChart04ChangeColorComboBox.add_SelectedIndexChanged({
-    $script:AutoChart04.Series["Install Date"].Color = $script:AutoChart04ChangeColorComboBox.SelectedItem
+$script:AutoChart04SecurityPatchesColorsAvailable = @('Gray','Black','Brown','Red','Orange','Yellow','Green','Blue','Purple')
+ForEach ($Item in $script:AutoChart04SecurityPatchesColorsAvailable) { $script:AutoChart04SecurityPatchesChangeColorComboBox.Items.Add($Item) }
+$script:AutoChart04SecurityPatchesChangeColorComboBox.add_SelectedIndexChanged({
+    $script:AutoChart04SecurityPatches.Series["Install Date"].Color = $script:AutoChart04SecurityPatchesChangeColorComboBox.SelectedItem
 })
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04ChangeColorComboBox)
+$script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart04SecurityPatchesChangeColorComboBox)
 
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
 function script:InvestigateDifference-AutoChart04 {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart04ImportCsvPosResults = $script:AutoChartDataSource | Where-Object 'InstalledOn' -eq $($script:AutoChart04InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    $script:AutoChart04InvestDiffPosResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart04ImportCsvPosResults) { $script:AutoChart04InvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart04SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'InstalledOn' -eq $($script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04SecurityPatchesInvestDiffPosResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart04SecurityPatchesImportCsvPosResults) { $script:AutoChart04SecurityPatchesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart04ImportCsvAll = $script:AutoChartDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
     
-    $script:AutoChart04ImportCsvNegResults = @()
+    $script:AutoChart04SecurityPatchesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
-    foreach ($Endpoint in $script:AutoChart04ImportCsvAll) { if ($Endpoint -notin $script:AutoChart04ImportCsvPosResults) { $script:AutoChart04ImportCsvNegResults += $Endpoint } }
+    foreach ($Endpoint in $script:AutoChart04SecurityPatchesImportCsvAll) { if ($Endpoint -notin $script:AutoChart04SecurityPatchesImportCsvPosResults) { $script:AutoChart04SecurityPatchesImportCsvNegResults += $Endpoint } }
 
     # Populates the listbox with Negative Endpoint Results
-    $script:AutoChart04InvestDiffNegResultsTextBox.Text = ''
-    ForEach ($Endpoint in $script:AutoChart04ImportCsvNegResults) { $script:AutoChart04InvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
+    $script:AutoChart04SecurityPatchesInvestDiffNegResultsTextBox.Text = ''
+    ForEach ($Endpoint in $script:AutoChart04SecurityPatchesImportCsvNegResults) { $script:AutoChart04SecurityPatchesInvestDiffNegResultsTextBox.Text += "$Endpoint`r`n" }
 
     # Updates the label to include the count
-    $script:AutoChart04InvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart04ImportCsvPosResults.count))"
-    $script:AutoChart04InvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart04ImportCsvNegResults.count))"
+    $script:AutoChart04SecurityPatchesInvestDiffPosResultsLabel.Text = "Positive Match ($($script:AutoChart04SecurityPatchesImportCsvPosResults.count))"
+    $script:AutoChart04SecurityPatchesInvestDiffNegResultsLabel.Text = "Negative Match ($($script:AutoChart04SecurityPatchesImportCsvNegResults.count))"
 }
 
 #==============================
 # Auto Chart Buttons
 #==============================
 ### Auto Create Charts Check Diff Button
-$script:AutoChart04CheckDiffButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04SecurityPatchesCheckDiffButton = New-Object Windows.Forms.Button -Property @{
     Text      = 'Investigate'
-    Location  = @{ X = $script:AutoChart04TrimOffLastGroupBox.Location.X + $script:AutoChart04TrimOffLastGroupBox.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart04TrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
+    Location  = @{ X = $script:AutoChart04SecurityPatchesTrimOffLastGroupBox.Location.X + $script:AutoChart04SecurityPatchesTrimOffLastGroupBox.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart04SecurityPatchesTrimOffLastGroupBox.Location.Y + $($FormScale * 5)  }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
     Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
 }
-CommonButtonSettings -Button $script:AutoChart04CheckDiffButton
-$script:AutoChart04CheckDiffButton.Add_Click({
-    $script:AutoChart04InvestDiffDropDownArraY = $script:AutoChartDataSource | Select-Object -Property 'InstalledOn' -ExpandProperty 'InstalledOn' | Sort-Object -Unique
+CommonButtonSettings -Button $script:AutoChart04SecurityPatchesCheckDiffButton
+$script:AutoChart04SecurityPatchesCheckDiffButton.Add_Click({
+    $script:AutoChart04SecurityPatchesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'InstalledOn' -ExpandProperty 'InstalledOn' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
-    $script:AutoChart04InvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:AutoChart04SecurityPatchesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = 'Investigate Difference'
         Size   = @{ Width  = $FormScale * 330
                     Height = $FormScale * 360 }
-        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
+        Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
-    $script:AutoChart04InvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart04SecurityPatchesInvestDiffDropDownLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Investigate the difference between computers."
         Location = @{ X = $FormScale * 10
                         Y = $FormScale * 10 }
@@ -2025,43 +2155,43 @@ $script:AutoChart04CheckDiffButton.Add_Click({
                         Height = $FormScale * 45 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart04InvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
+    $script:AutoChart04SecurityPatchesInvestDiffDropDownComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart04InvestDiffDropDownLabel.Location.y + $script:AutoChart04InvestDiffDropDownLabel.Size.Height }
+                        Y = $script:AutoChart04SecurityPatchesInvestDiffDropDownLabel.Location.y + $script:AutoChart04SecurityPatchesInvestDiffDropDownLabel.Size.Height }
         Width    = $FormScale * 290
         Height   = $FormScale * 30
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
     }
-    ForEach ($Item in $script:AutoChart04InvestDiffDropDownArray) { $script:AutoChart04InvestDiffDropDownComboBox.Items.Add($Item) }
-    $script:AutoChart04InvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
-    $script:AutoChart04InvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart04 })
+    ForEach ($Item in $script:AutoChart04SecurityPatchesInvestDiffDropDownArray) { $script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox.Items.Add($Item) }
+    $script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
+    $script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox.Add_Click({ script:InvestigateDifference-AutoChart04 })
 
     ### Investigate Difference Execute Button
-    $script:AutoChart04InvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+    $script:AutoChart04SecurityPatchesInvestDiffExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
-                        Y = $script:AutoChart04InvestDiffDropDownComboBox.Location.y + $script:AutoChart04InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
+                        Y = $script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox.Location.y + $script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
         Width    = $FormScale * 100 
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart04InvestDiffExecuteButton 
-    $script:AutoChart04InvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
-    $script:AutoChart04InvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04 })
+    CommonButtonSettings -Button $script:AutoChart04SecurityPatchesInvestDiffExecuteButton 
+    $script:AutoChart04SecurityPatchesInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
+    $script:AutoChart04SecurityPatchesInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04 })
 
     ### Investigate Difference Positive Results Label & TextBox
-    $script:AutoChart04InvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart04SecurityPatchesInvestDiffPosResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Positive Match (+)"
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart04InvestDiffExecuteButton.Location.y + $script:AutoChart04InvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
+                        Y = $script:AutoChart04SecurityPatchesInvestDiffExecuteButton.Location.y + $script:AutoChart04SecurityPatchesInvestDiffExecuteButton.Size.Height + $($FormScale * 10) }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }        
-    $script:AutoChart04InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+    $script:AutoChart04SecurityPatchesInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
-                        Y = $script:AutoChart04InvestDiffPosResultsLabel.Location.y + $script:AutoChart04InvestDiffPosResultsLabel.Size.Height }
+                        Y = $script:AutoChart04SecurityPatchesInvestDiffPosResultsLabel.Location.y + $script:AutoChart04SecurityPatchesInvestDiffPosResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -2073,17 +2203,17 @@ $script:AutoChart04CheckDiffButton.Add_Click({
     }            
 
     ### Investigate Difference Negative Results Label & TextBox
-    $script:AutoChart04InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
+    $script:AutoChart04SecurityPatchesInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
         Text       = "Negative Match (-)"
-        Location   = @{ X = $script:AutoChart04InvestDiffPosResultsLabel.Location.x + $script:AutoChart04InvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
-                        Y = $script:AutoChart04InvestDiffPosResultsLabel.Location.y }
+        Location   = @{ X = $script:AutoChart04SecurityPatchesInvestDiffPosResultsLabel.Location.x + $script:AutoChart04SecurityPatchesInvestDiffPosResultsLabel.Size.Width + $($FormScale * 10)
+                        Y = $script:AutoChart04SecurityPatchesInvestDiffPosResultsLabel.Location.y }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $script:AutoChart04InvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
-        Location   = @{ X = $script:AutoChart04InvestDiffNegResultsLabel.Location.x
-                        Y = $script:AutoChart04InvestDiffNegResultsLabel.Location.y + $script:AutoChart04InvestDiffNegResultsLabel.Size.Height }
+    $script:AutoChart04SecurityPatchesInvestDiffNegResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
+        Location   = @{ X = $script:AutoChart04SecurityPatchesInvestDiffNegResultsLabel.Location.x
+                        Y = $script:AutoChart04SecurityPatchesInvestDiffNegResultsLabel.Location.y + $script:AutoChart04SecurityPatchesInvestDiffNegResultsLabel.Size.Height }
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 178 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -2093,88 +2223,88 @@ $script:AutoChart04CheckDiffButton.Add_Click({
         Multiline  = $true
         ScrollBars = "Vertical"
     }
-    $script:AutoChart04InvestDiffForm.Controls.AddRange(@($script:AutoChart04InvestDiffDropDownLabel,$script:AutoChart04InvestDiffDropDownComboBox,$script:AutoChart04InvestDiffExecuteButton,$script:AutoChart04InvestDiffPosResultsLabel,$script:AutoChart04InvestDiffPosResultsTextBox,$script:AutoChart04InvestDiffNegResultsLabel,$script:AutoChart04InvestDiffNegResultsTextBox))
-    $script:AutoChart04InvestDiffForm.add_Load($OnLoadForm_StateCorrection)
-    $script:AutoChart04InvestDiffForm.ShowDialog()
+    $script:AutoChart04SecurityPatchesInvestDiffForm.Controls.AddRange(@($script:AutoChart04SecurityPatchesInvestDiffDropDownLabel,$script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox,$script:AutoChart04SecurityPatchesInvestDiffExecuteButton,$script:AutoChart04SecurityPatchesInvestDiffPosResultsLabel,$script:AutoChart04SecurityPatchesInvestDiffPosResultsTextBox,$script:AutoChart04SecurityPatchesInvestDiffNegResultsLabel,$script:AutoChart04SecurityPatchesInvestDiffNegResultsTextBox))
+    $script:AutoChart04SecurityPatchesInvestDiffForm.add_Load($OnLoadForm_StateCorrection)
+    $script:AutoChart04SecurityPatchesInvestDiffForm.ShowDialog()
 })
-$script:AutoChart04CheckDiffButton.Add_MouseHover({
+$script:AutoChart04SecurityPatchesCheckDiffButton.Add_MouseHover({
 Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
-$script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04CheckDiffButton)
+$script:AutoChart04SecurityPatchesManipulationPanel.controls.Add($script:AutoChart04SecurityPatchesCheckDiffButton)
     
 
 $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
-    Location = @{ X = $script:AutoChart04CheckDiffButton.Location.X + $script:AutoChart04CheckDiffButton.Size.Width + $($FormScale * 5)
-                  Y = $script:AutoChart04CheckDiffButton.Location.Y }
+    Location = @{ X = $script:AutoChart04SecurityPatchesCheckDiffButton.Location.X + $script:AutoChart04SecurityPatchesCheckDiffButton.Size.Width + $($FormScale * 5)
+                  Y = $script:AutoChart04SecurityPatchesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceFileName -QueryName "Security Patches" -QueryTabName "Install Date" -PropertyX "InstalledOn" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Install Date" -PropertyX "InstalledOn" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart04ExpandChartButton
-$script:AutoChart04ManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)
+$script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)
 
 
-$script:AutoChart04OpenInShell = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04SecurityPatchesOpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart04CheckDiffButton.Location.X
-                   Y = $script:AutoChart04CheckDiffButton.Location.Y + $script:AutoChart04CheckDiffButton.Size.Height + $($FormScale * 5) }
+    Location  = @{ X = $script:AutoChart04SecurityPatchesCheckDiffButton.Location.X
+                   Y = $script:AutoChart04SecurityPatchesCheckDiffButton.Location.Y + $script:AutoChart04SecurityPatchesCheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04OpenInShell
-$script:AutoChart04OpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
-$script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04OpenInShell)
+CommonButtonSettings -Button $script:AutoChart04SecurityPatchesOpenInShell
+$script:AutoChart04SecurityPatchesOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart04SecurityPatchesManipulationPanel.controls.Add($script:AutoChart04SecurityPatchesOpenInShell)
 
 
-$script:AutoChart04ViewResults = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04SecurityPatchesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
-    Location  = @{ X = $script:AutoChart04OpenInShell.Location.X + $script:AutoChart04OpenInShell.Size.Width + $($FormScale * 5)
-                   Y = $script:AutoChart04OpenInShell.Location.Y }
+    Location  = @{ X = $script:AutoChart04SecurityPatchesOpenInShell.Location.X + $script:AutoChart04SecurityPatchesOpenInShell.Size.Width + $($FormScale * 5)
+                   Y = $script:AutoChart04SecurityPatchesOpenInShell.Location.Y }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04ViewResults
-$script:AutoChart04ViewResults.Add_Click({ $script:AutoChartDataSource | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
-$script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04ViewResults)
+CommonButtonSettings -Button $script:AutoChart04SecurityPatchesViewResults
+$script:AutoChart04SecurityPatchesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart04SecurityPatchesManipulationPanel.controls.Add($script:AutoChart04SecurityPatchesViewResults)
 
 
 ### Save the chart to file
-$script:AutoChart04SaveButton = New-Object Windows.Forms.Button -Property @{
+$script:AutoChart04SecurityPatchesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart04OpenInShell.Location.X
-                  Y = $script:AutoChart04OpenInShell.Location.Y + $script:AutoChart04OpenInShell.Size.Height + $($FormScale * 5) }
+    Location = @{ X = $script:AutoChart04SecurityPatchesOpenInShell.Location.X
+                  Y = $script:AutoChart04SecurityPatchesOpenInShell.Location.Y + $script:AutoChart04SecurityPatchesOpenInShell.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 205
                   Height = $FormScale * 23 }
 }
-CommonButtonSettings -Button $script:AutoChart04SaveButton
+CommonButtonSettings -Button $script:AutoChart04SecurityPatchesSaveButton
 [enum]::GetNames('System.Windows.Forms.DataVisualization.Charting.ChartImageFormat')
-$script:AutoChart04SaveButton.Add_Click({
-    Save-ChartImage -Chart $script:AutoChart04 -Title $script:AutoChart04Title
+$script:AutoChart04SecurityPatchesSaveButton.Add_Click({
+    Save-ChartImage -Chart $script:AutoChart04SecurityPatches -Title $script:AutoChart04SecurityPatchesTitle
 })
-$script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04SaveButton)
+$script:AutoChart04SecurityPatchesManipulationPanel.controls.Add($script:AutoChart04SecurityPatchesSaveButton)
 
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart04NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart04SaveButton.Location.X 
-                        Y = $script:AutoChart04SaveButton.Location.Y + $script:AutoChart04SaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart04SecurityPatchesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart04SecurityPatchesSaveButton.Location.X 
+                        Y = $script:AutoChart04SecurityPatchesSaveButton.Location.Y + $script:AutoChart04SecurityPatchesSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     Font        = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     ForeColor   = 'Black'
-    Text        = "Endpoints:  $($script:AutoChart04CsvFileHosts.Count)"
+    Text        = "Endpoints:  $($script:AutoChart04SecurityPatchesCsvFileHosts.Count)"
     Multiline   = $false
     Enabled     = $false
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
-$script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04NoticeTextbox)
+$script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($script:AutoChart04SecurityPatchesNoticeTextbox)
 
-$script:AutoChart04.Series["Install Date"].Points.Clear()
-$script:AutoChart04OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}    
+$script:AutoChart04SecurityPatches.Series["Install Date"].Points.Clear()
+$script:AutoChart04SecurityPatchesOverallDataResults | Sort-Object { $_.DataField.InstalledOn -as [datetime] } | Select-Object -skip $script:AutoChart04SecurityPatchesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SecurityPatchesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SecurityPatches.Series["Install Date"].Points.AddXY($_.DataField.InstalledOn,$_.UniqueCount)}    
 
 
 

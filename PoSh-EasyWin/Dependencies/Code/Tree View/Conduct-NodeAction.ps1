@@ -1,26 +1,29 @@
 function Conduct-NodeAction {
-    param( 
+    param(
         $TreeView,
         [switch]$Commands,
-        [switch]$Endpoints
+        [switch]$ComputerList
     )
     if ($Commands)     { $script:TreeeViewCommandsCount = 0 }
-    if ($Endpoints) { $script:TreeeViewComputerListCount = 0 }
+    if ($ComputerList) { $script:TreeeViewComputerListCount = 0 }
 
     $EntryQueryHistoryChecked = 0
-    #$EnsureViisible = $null
 
     # Resets the SMB and RPC command count each time
     if ($Commands) {
-        $script:RpcCommandCount = 0
-        $script:SmbCommandCount = 0
+        $script:RpcCommandCount   = 0
+        $script:SmbCommandCount   = 0
+        $script:WinRMCommandCount = 0
     }
     
     # This will return data on hosts selected/highlight, but not necessarily checked
     [System.Windows.Forms.TreeNodeCollection]$AllNodes = $TreeView
     foreach ($root in $AllNodes) { 
         $EntryNodeCheckedCountforRoot = 0
-        #if ($root.Text -match 'Search Results') { $EnsureViisible = $root }
+
+        #if ($Commands)     { if ($root.Text -match 'Search Results') { $EnsureViisible = $root } }
+        #if ($ComputerList) { if ($root.Text -match 'All Endpoints')  { $EnsureViisible = $root } }
+        
         if ($root.Checked) { 
             $Root.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
             $Root.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
@@ -32,7 +35,7 @@ function Conduct-NodeAction {
                 $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
                 foreach ($Entry in $Category.nodes) {
                     if ($Commands)     { $script:TreeeViewCommandsCount += 1 }
-                    if ($Endpoints) { $script:TreeeViewComputerListCount += 1 }
+                    if ($ComputerList) { $script:TreeeViewComputerListCount += 1 }
                     $Entry.Checked   = $True
                     $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                     $Entry.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,224)
@@ -60,6 +63,9 @@ function Conduct-NodeAction {
 
             if ($Category.Checked) {
             #    $Category.Expand()
+                if ($Category.Text -match '[\[(]WinRM[)\]]' ) {
+                    $script:WinRMCommandCount += 10
+                }
                 if ($Category.Text -match '[\[(]rpc[)\]]' ) {
                     $script:RpcCommandCount += 1
                     if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
@@ -70,7 +76,7 @@ function Conduct-NodeAction {
                         [system.media.systemsounds]::Exclamation.play()
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                        $ResultsListBox.Items.Clear()
+                        #Removed For Testing#$ResultsListBox.Items.Clear()
                         $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                         $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
                         $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
@@ -88,7 +94,7 @@ function Conduct-NodeAction {
                         [system.media.systemsounds]::Exclamation.play()
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                        $ResultsListBox.Items.Clear()
+                        #Removed For Testing#$ResultsListBox.Items.Clear()
                         $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                         $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
                         $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
@@ -102,7 +108,11 @@ function Conduct-NodeAction {
 
                 foreach ($Entry in $Category.nodes) {
                     if ($Commands)     { $script:TreeeViewCommandsCount += 1 }
-                    if ($Endpoints) { $script:TreeeViewComputerListCount += 1 }
+                    if ($ComputerList) { $script:TreeeViewComputerListCount += 1 }
+
+                    if ($Entry.Text -match '[\[(]WinRM[)\]]' ) {
+                        $script:WinRMCommandCount += 1
+                    }    
                     if ($Entry.Text -match '[\[(]rpc[)\]]') {
                         $script:RpcCommandCount += 1
                         if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
@@ -113,7 +123,7 @@ function Conduct-NodeAction {
                             [system.media.systemsounds]::Exclamation.play()
                             $StatusListBox.Items.Clear()
                             $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                            $ResultsListBox.Items.Clear()
+                            #Removed For Testing#$ResultsListBox.Items.Clear()
                             $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                             $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
                             $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
@@ -131,7 +141,7 @@ function Conduct-NodeAction {
                             [system.media.systemsounds]::Exclamation.play()
                             $StatusListBox.Items.Clear()
                             $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                            $ResultsListBox.Items.Clear()
+                            #Removed For Testing#$ResultsListBox.Items.Clear()
                             $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                             $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
                             $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
@@ -156,6 +166,9 @@ function Conduct-NodeAction {
                         # Currently used to support cmdkey /delete:$script:EntryChecked to clear out credentials when using Remote Desktop
                         $script:EntryChecked = $entry.text
 
+                        if ($Entry.Text -match '[\[(]WinRM[)\]]' ) {
+                            $script:WinRMCommandCount += 1
+                        }        
                         if ($Entry.Text -match '[\[(]rpc[)\]]') {
                             $script:RpcCommandCount += 1
                             if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
@@ -166,7 +179,7 @@ function Conduct-NodeAction {
                                 [system.media.systemsounds]::Exclamation.play()
                                 $StatusListBox.Items.Clear()
                                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                                $ResultsListBox.Items.Clear()
+                                #Removed For Testing#$ResultsListBox.Items.Clear()
                                 $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                                 $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
                                 $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
@@ -184,7 +197,7 @@ function Conduct-NodeAction {
                                 [system.media.systemsounds]::Exclamation.play()
                                 $StatusListBox.Items.Clear()
                                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                                $ResultsListBox.Items.Clear()
+                                #Removed For Testing#$ResultsListBox.Items.Clear()
                                 $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                                 $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
                                 $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
@@ -193,7 +206,7 @@ function Conduct-NodeAction {
         
 
                         if ($Commands) { $script:TreeeViewCommandsCount += 1 }
-                        if ($Endpoints) { $script:TreeeViewComputerListCount += 1 }
+                        if ($ComputerList) { $script:TreeeViewComputerListCount += 1 }
                         $EntryNodeCheckedCountforCategory += 1
                         $EntryNodeCheckedCountforRoot     += 1
                         $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
@@ -219,7 +232,7 @@ function Conduct-NodeAction {
                 $script:HostQueryTreeViewSelected = ""
                 #$StatusListBox.Items.clear()
                 #$StatusListBox.Items.Add("Category:  $($Category.Text)")
-                #$ResultsListBox.Items.Clear()
+                ##Removed For Testing#$ResultsListBox.Items.Clear()
                 #$ResultsListBox.Items.Add("- Checkbox This Node to Execute All Commands Within")
 
                 $Section3QueryExplorationName.Text             = "N/A"
@@ -320,7 +333,7 @@ function Conduct-NodeAction {
                     foreach ($Entry in $Category.nodes) {                     
                         if ($entry.checked) {
                             if ($Commands)     { $script:TreeeViewCommandsCount += 1 }
-                            if ($Endpoints) { $script:TreeeViewComputerListCount += 1 }
+                            if ($ComputerList) { $script:TreeeViewComputerListCount += 1 }
                             $EntryNodeCheckedCountforCategory += 1
                             $EntryNodeCheckedCountforRoot     += 1
                             $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
@@ -359,7 +372,11 @@ function Conduct-NodeAction {
  
     # Note: If adding new checkboxes to other areas, make sure also add it to the script handler
     if ($Commands) {
+        if ($CustomQueryScriptBlockCheckBox.checked)                    { $script:TreeeViewCommandsCount++ }
         if ($RegistrySearchCheckbox.checked)                            { $script:TreeeViewCommandsCount++ }
+        if ($AccountsCurrentlyLoggedInConsoleCheckbox.checked)          { $script:TreeeViewCommandsCount++ }
+        if ($AccountsCurrentlyLoggedInPSSessionCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
+        if ($AccountActivityCheckbox.checked)                           { $script:TreeeViewCommandsCount++ }
         if ($EventLogsEventIDsManualEntryCheckbox.Checked)              { $script:TreeeViewCommandsCount++ }
         if ($EventLogsEventIDsToMonitorCheckbox.Checked)                { $script:TreeeViewCommandsCount++ }
         if ($EventLogsQuickPickSelectionCheckbox.Checked)               { $script:TreeeViewCommandsCount++ }
@@ -377,7 +394,8 @@ function Conduct-NodeAction {
         if ($SysinternalsProcessMonitorCheckbox.Checked)                { $script:TreeeViewCommandsCount++ }
         if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $script:TreeeViewCommandsCount++ }
     }
-    
+
+
     # Updates the color of the button if there is at least one query and endpoint selected
     if ($script:TreeeViewCommandsCount -gt 0 -and $script:TreeeViewComputerListCount -gt 0) { 
         $ComputerListExecuteButton.Enabled   = $true
@@ -385,8 +403,12 @@ function Conduct-NodeAction {
         $ComputerListExecuteButton.backcolor = 'lightgreen' 
     }
     else { 
-        $ComputerListExecuteButton.Enabled   = $true 
+        $ComputerListExecuteButton.Enabled   = $false 
         CommonButtonSettings -Button $ComputerListExecuteButton
     }
     $StatisticsRefreshButton.PerformClick()
+
+    # Code Testing
+    # [system.windows.forms.messagebox]::show("$script:TreeeViewCommandsCount -- $script:TreeeViewComputerListCount")
+
 }

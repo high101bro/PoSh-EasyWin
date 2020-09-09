@@ -16,12 +16,12 @@ if ($ExeScriptScriptOnlyCheckbox.checked -eq $false) {
     if ($ExeScriptSelectDirRadioButton.checked){
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[+] Copying the directory '$($ExeScriptSelectExecutableTextBox.Text)' and its contents to:"
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copying the directory '$($ExeScriptSelectExecutableTextBox.Text)' and its contents to:")
-        $PoShEasyWin.Refresh()
+        $PoShEasyWin.Refresh()        
     }
     elseif ($ExeScriptSelectFileRadioButton.checked){
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[+] Copying the file '$($ExeScriptSelectExecutableTextBox.Text)' to:"
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copying the file '$($ExeScriptSelectExecutableTextBox.Text)' to:")
-        $PoShEasyWin.Refresh()
+        $PoShEasyWin.Refresh()        
     }
 
     foreach ($Session in $PSSession) {

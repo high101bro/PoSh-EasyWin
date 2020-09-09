@@ -3,7 +3,7 @@
 $GetChildItemDepth = @'
     Function Get-ChildItemDepth {
         Param(
-            [String]$Path       = $PWD,
+            [String[]]$Path     = $PWD,
             [String]$Filter     = "*",
             [Byte]$Depth        = 255,
             [Byte]$CurrentDepth = 0

@@ -36,7 +36,7 @@ $CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged = {
                 $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
                 $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
-                $ResultsListBox.Items.Clear()
+                #Removed For Testing#$ResultsListBox.Items.Clear()
                 if ($RpcCommandNodesRemoved.count -gt 0) {
                     $ResultsListBox.Items.Add("The following RPC queries have been unchecked:")
                     foreach ($Entry in $RpcCommandNodesRemoved) {

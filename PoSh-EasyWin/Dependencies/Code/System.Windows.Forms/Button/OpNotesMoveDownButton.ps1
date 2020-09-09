@@ -12,7 +12,7 @@ $OpNotesMoveDownButtonAdd_Click = {
                 $OpNotesListBox.EndUpdate()
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Error: OpNotes")
-                $ResultsListBox.Items.Clear()
+                #Removed For Testing#$ResultsListBox.Items.Clear()
                 $ResultsListBox.Items.Add('Error: You can only move contiguous lines up or down.')
                 [system.media.systemsounds]::Exclamation.play()
                 #[console]::beep(500,100)
@@ -36,7 +36,7 @@ $OpNotesMoveDownButtonAdd_Click = {
         $OpNotesListBox.EndUpdate()
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Success: OpNotes Action")
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Add("Moved OpNote lines down.")
         $ResultsListBox.Items.Add('Opnotes have been saved.')
         Save-OpNotes

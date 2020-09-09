@@ -16,6 +16,12 @@ function Compile-CsvFiles {
         }
     }
     $CompiledCSVs | Select-Object -Property * -Unique | Export-Csv $LocationToSaveCompiledCSV -NoTypeInformation -Force
+    
+    if ($OptionKeepResultsByEndpointsFilesCheckBox.checked -eq $false) {
+        if (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\*\*.csv") {
+            Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\*" -Recurse -Force
+        }
+    }
 }
 
 # Below is a deprecated technique, the above is much faster with larger files

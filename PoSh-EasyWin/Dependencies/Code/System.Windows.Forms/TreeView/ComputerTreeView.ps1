@@ -21,7 +21,7 @@ $ComputerTreeViewAdd_MouseLeave = {
 
 
 $ComputerTreeViewAdd_Click = {
-    Conduct-NodeAction -TreeView $this.Nodes -Endpoints
+    Conduct-NodeAction -TreeView $this.Nodes -ComputerList
 
     # When the node is checked, it updates various items
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $this.Nodes
@@ -90,7 +90,7 @@ $ComputerTreeViewAdd_Click = {
 }
 
 $ComputerTreeViewAdd_AfterSelect = {
-    Conduct-NodeAction -TreeView $this.Nodes -Endpoints 
+    Conduct-NodeAction -TreeView $this.Nodes -ComputerList 
 
     # This will return data on hosts selected/highlight, but not necessarily checked
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $this.Nodes
@@ -99,8 +99,8 @@ $ComputerTreeViewAdd_AfterSelect = {
             $script:ComputerTreeViewSelected = ""
             $StatusListBox.Items.clear()
             $StatusListBox.Items.Add("Category:  $($root.Text)")
-            $ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
+            #Removed For Testing#$ResultsListBox.Items.Clear()
+            #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
 
             $Section3HostDataNameTextBox.Text  = "N/A"
             $Section3HostDataOSTextBox.Text    = "N/A"
@@ -117,8 +117,8 @@ $ComputerTreeViewAdd_AfterSelect = {
                 $script:ComputerTreeViewSelected = ""
                 $StatusListBox.Items.clear()
                 $StatusListBox.Items.Add("Category:  $($Category.Text)")
-                $ResultsListBox.Items.Clear()
-                $ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
+                #Removed For Testing#$ResultsListBox.Items.Clear()
+                #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
 
                 # The follwing fields are filled out with N/A when host nodes are not selected
                 $Section3HostDataNameTextBox.Text  = "N/A"

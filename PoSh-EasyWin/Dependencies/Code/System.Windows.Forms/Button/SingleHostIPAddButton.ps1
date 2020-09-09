@@ -12,7 +12,7 @@ $SingleHostIPAddButtonAdd_Click = {
             # Adds the hostname/ip entered into the collection list box
             Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $NewNodeValue -Entry $script:SingleHostIPTextBox.Text -ToolTip 'No Data Avialable'
 
-            $ResultsListBox.Items.Clear()
+            #Removed For Testing#$ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("$($script:SingleHostIPTextBox.Text) has been added to $($NewNodeValue)")
 
             $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 

@@ -41,7 +41,7 @@ $RetrieveFilesButtonAdd_Click = {
 
         $StatusListBox.Items.clear()
         $StatusListBox.Items.Add("Retrieving Files")
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Add("Retrieving the following files from:")
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Retrieved the following files from:"
 

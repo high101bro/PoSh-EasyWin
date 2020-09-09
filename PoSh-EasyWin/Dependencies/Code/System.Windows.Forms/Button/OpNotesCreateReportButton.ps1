@@ -12,7 +12,7 @@ $OpNotesCreateReportButtonAdd_Click = {
         Write-Output $($OpNotesListBox.SelectedItems) | Out-File "$($OpNotesSaveLocation.Filename)"
     }
     else {
-        $ResultsListBox.Items.Clear()
+        #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Add('You must select at least one line to add to a report!')
     }
 }

@@ -9,10 +9,10 @@ $ExternalProgramsRPCRadioButtonAdd_Click = {
 
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
-                $ResultsListBox.Items.Clear()
+                #Removed For Testing#$ResultsListBox.Items.Clear()
                 $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                 $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0
                 $EventLogRPCRadioButton.checked         = $true
                 $ExternalProgramsRPCRadioButton.checked = $true
             } 

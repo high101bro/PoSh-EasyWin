@@ -8,8 +8,8 @@ CurrentWindowsEventID,LegacyWindowsEventID,PotentialCriticality,EventSummary
 4897,801,High,Role separation enabled:
 4964,NA,High,Special groups have been assigned to a new logon.
 5124,NA,High,A security setting was updated on the OCSP Responder Service
-NA,550,Medium to High,Possible denial-of-service (DoS) attack
-1102,517,Medium to High,The audit log was cleared
+NA,550,High,Possible denial-of-service (DoS) attack
+1102,517,High,The audit log was cleared
 4621,NA,Medium,Administrator recovered system from CrashOnAuditFail. Users who are not administrators will now be allowed to log on. Some auditable activity might not have been recorded.
 4675,NA,Medium,SIDs were filtered.
 4692,NA,Medium,Backup of data protection master key was attempted.
@@ -96,8 +96,17 @@ NA,619,Medium,Quality of Service Policy changed
 4615,519,Low,Invalid use of LPC port.
 4616,520,Low,The system time was changed.
 4622,NA,Low,A security package has been loaded by the Local Security Authority.
-4624,"528,540",Low,An account was successfully logged on.
-4625,"529-537,539",Low,An account failed to log on.
+4624,528540,Low,An account was successfully logged on.
+4625,529,Low,An account failed to log on.
+4625,530,Low,An account failed to log on.
+4625,531,Low,An account failed to log on.
+4625,532,Low,An account failed to log on.
+4625,533,Low,An account failed to log on.
+4625,534,Low,An account failed to log on.
+4625,535,Low,An account failed to log on.
+4625,536,Low,An account failed to log on.
+4625,537,Low,An account failed to log on.
+4625,539,Low,An account failed to log on.
 4634,538,Low,An account was logged off.
 4646,NA,Low,IKE DoS-prevention mode started.
 4647,551,Low,User initiated logoff.
@@ -190,14 +199,19 @@ NA,625,Low,User Account Type Changed
 4761,665,Low,A member was added to a security-disabled universal group.
 4762,666,Low,A member was removed from a security-disabled universal group.
 4767,671,Low,A user account was unlocked.
-4768,"672,676",Low,A Kerberos authentication ticket (TGT) was requested.
+4768,672,Low,A Kerberos authentication ticket (TGT) was requested.
+4768,673,Low,A Kerberos authentication ticket (TGT) was requested.
+4768,674,Low,A Kerberos authentication ticket (TGT) was requested.
+4768,675,Low,A Kerberos authentication ticket (TGT) was requested.
+4768,676,Low,A Kerberos authentication ticket (TGT) was requested.
 4769,673,Low,A Kerberos service ticket was requested.
 4770,674,Low,A Kerberos service ticket was renewed.
 4771,675,Low,Kerberos pre-authentication failed.
 4772,672,Low,A Kerberos authentication ticket request failed.
 4774,678,Low,An account was mapped for logon.
 4775,679,Low,An account could not be mapped for logon.
-4776,"680,681",Low,The domain controller attempted to validate the credentials for an account.
+4776,680,Low,The domain controller attempted to validate the credentials for an account.
+4776,681,Low,The domain controller attempted to validate the credentials for an account.
 4777,NA,Low,The domain controller failed to validate the credentials for an account.
 4778,682,Low,A session was reconnected to a Window Station.
 4779,683,Low,A session was disconnected from a Window Station.

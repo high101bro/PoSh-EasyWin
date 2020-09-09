@@ -6,7 +6,7 @@ function KeepChecked-CommandTreeNode {
     [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes 
 
     if ($script:CommandsCheckedBoxesSelected.count -gt 0) {
-#        $ResultsListBox.Items.Clear()
+#        #Removed For Testing#$ResultsListBox.Items.Clear()
 #        $ResultsListBox.Items.Add("Categories that were checked will not remained checked.")
 #        $ResultsListBox.Items.Add("")
 #        $ResultsListBox.Items.Add("The following Commands are still selected:")

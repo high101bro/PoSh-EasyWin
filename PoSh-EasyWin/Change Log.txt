@@ -1,6 +1,175 @@
 ==================================================
-v4.6 - .................
+v5.0 - 9 September 2020
 ==================================================
+
+TO DO LIST: 
+	SMB WMI compile results
+	Add import hash list
+	Add import registry location IOCs
+	Commented out Compile results... need to finish removing old code
+	Account logon activity (both)... fix resultslistbox entries... when ran they disaply artifact data
+	Add support for RPC native commands with Invoke-wmimethod and copy results...
+	Vet scripts to ensure they're logging correctly
+	tweek endpoint tagging
+	Update logging from flat text to create custom Event Logs
+	update checklist to include easy resetting, persistence, and better overall appearance
+	Update other charts to include changing chart view and it's associated button
+
+Added Network Connections Dashboard
+	- added feature to sort by value name and unique count
+
+Fixed issue with .xml data not compiling multiple .xml's into one... paths were missing a '\'
+
+Added option for Individual Execution to not delete Results by Endpoint .csv and .xml files they're compiled
+
+Added SMB port check to computer treeview context menu
+
+Optimize coding to better recommned individual exeuction and session based modes
+
+Added option to keep or delete .etl and .cab files associated with Packet captures
+
+Added query builder beneather the command treeview
+	- by default it only shows get commands
+	- currently strips out the -computername paratmer for get commands, you should use the computer treeview to select endpoints
+	- the auto cmdlet detection verifies cmdlet name and passes it along to show-command to fill out parameters correctly
+	- able to override just the get feature to include all Cmdlets
+		- good use case is: test-connection -computername computer1
+		- this allows you to test if the computer itself can ping or access another computer
+
+Fixed bug/broken code within the function Monitor-Jobs
+	- Issue 1: Improper check to see if job time was exceeded based of desired timeout
+	- Issue 2: If for some reason there were zero jobs, it would run forever -- added check to break loop
+	- Issue 3: Status updates were not showing in the $ResultsListBox
+
+Added more PowerShell Charts!
+	- Active Directory groupboxes
+	- Login Activity for PSSessions
+
+Disabled the Maximize Window button for the PoSh-EasyWin GUI
+
+Added auto save and load of selected options
+	- Options are saved under the Settings directory
+	- The are saved immedately and loaded automatically
+
+Added Desktop Shortcut creation
+	- Double click shortbut prompts for credential elevation
+	- Includes PoSh-EasyWin Icon for image
+
+Added variable for Initial Script Load
+	- $InitialScriptLoadTime
+	- Script Launch Time - This in placed within both the title of the Main PoSh-EasyWin form and the title of the System Tray Notification
+	- Useful if multiple instances of PoSh-EasyWin are launched and you want to use the Abort/Reload or Exit Tool buttons on the corrent instance
+
+
+Added three more options to the context menues when you click on a computer treenode
+	- Context Menu Buttons for selected endpoint
+		- Remote Desktop
+		- PSSession
+		- PSExec
+	- What this does for you is remove the need to uncheck all hosts if you want to quickly connect to a single host
+
+Addeded System Tray Icon
+	- Immediately superceeded the Helper Form external to the Main GUI -- may implement a version of it later
+	- Launches immediately after accepting the EULA
+	- Added PoSh-EasyWin Icon
+	- Recommend changing settings for uses so that it is always displayed
+	- Purpose to reload and close PoSh-EasyWin if it hangs
+		- Can close/reload in the middle of any PoSh-EasyWin task without opening the taskmager... hell yeah
+	- It's small with three buttons	
+		- Abort / Reload
+		- Exit Tool
+	- The managing of closes is being worked with PIDs
+		- The PIDs for the main form and the helper are stored in variables
+		- As such, they both close each other when one or the other closes
+
+Replaced "$Dependencies\Images\favicon.ico" thoughout script with variable $EasyWinIco
+
+Had issule with Variable re-use where the queried data from one dashboard would 'bleed' into another if there was no data present, which would present chart data when it shouldn't
+	- Ended up renaming the variables in each Dashboard to be unique to that dashboard
+
+Managed Credentials form / Specify Credentials Checkbox
+	- Added code to detect and auto load the last saved credentials used. yeah buddy!
+	- Upon initial load, or whenever there are no credentials, when you checkbox the 'Specify Credentials' checkbox it will launch the managed credentials form
+
+Finally add a loading window for the main form!
+	- No more wondering if it's loading or not!!!
+	- Added .hide() to have the Progressbar form hide after it loads the main UI
+
+Added the ability to update charts easily
+	- Able to select from three options to load from
+		- Pull new data from endpoints using the computers from the current charts displayed
+		- Pull new data from check boxed endpoints
+		- Pull archived data from previous collections
+	- Added ability to select protocol, and wrote commands for each	
+		- WinRM (default)
+		- RPC
+		-SMB
+	- Added 'Enriched' checkbox to use scripts to pull additional data
+		- only available for WinRM options
+		- tends to be slower to collect data because... duh, it's a script and it tends to do way more on the endpoints like hashing files
+	- New collected data is also saved locally
+		- CSV files
+		- XML files
+	- So far completed....
+		- Proceesses
+
+need to finish accounts code for indiviual execution!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Overhauled a lot of the scripts to better coding (lol... I keep learning better methods), increased compatiblity, and reduced size
+ 
+Added the ability to search by filehash on endpoints, within the file search tab
+	- Supports the following hash algorithms 'Filename','MD5','SHA1','SHA256','SHA384','SHA512','RIPEMD160'
+
+Optimized the file search feature
+	- results are now sorted and uniqued to elimiate redundace comparing/searching and file hashing
+
+Created a new high level tab called 'Interactions'
+	- Moved two tabs to the Interactions tab
+		- Executables
+		- Actions
+
+Excluded RunspaceID property from results collected in Session Based Mode
+
+BUG!!!!!!!!!!!!!!!!!!!!! scanning and enumeration, unable to scan two hosts my their hostnames---only one at a time, and it's the last one
+
+Updated the Get-NetworkConnectionsTCPEnriched
+	- standardized parameters for both Get-NetTCPCOnnection and netstat.exe
+
+Added new Action to the Action Tab
+	- Logout accounts from multiple endpoints
+
+Renamed the 'Managed List' tab to 'Import Data'
+	- Added 'Import Account Data' within the 'Import Data' Tab <===================================add more
+
+Added a reference button for the following
+	- 'Select Location' Button under Registry Tab - opens 'Reference Registry Locations.csv' file with out-GridView
+	- 'Referece' Button under Accounts Tab - opens 'Reference Accunt Information.csv' file with out-GridView
+
+Removed 'Process Info' Directory and all its .txt files from the Dependencies dir and created a 'Reference Process Information.csv' in it's place
+	- Removed all it's code to that dynamically created tabs...and data
+
+Renamed some code .ps1 files for standarization
+
+Fixed some bugs with the 'Execute Script' Button not turning green when eligible to execute commands
+	- Ended up being a bug I introduced when changinng some variable names to make the script easier to understand
+	- Also implemented that the 'Execute Script' button is disabled when not eligble to execute quieries and whatnot
+
+Rewrote the code for the GUI that prompts the user if the GUI is being launched without elevated privileges
+	- Changed it from VisualBasic code to proper .NET Winform
+	- Every launch now opens in a new hidden powershell terminal
+		- Removes the parent-child relationshiop with the inital terminal
+		- Hides the objects that are loaded to increase speed and eliminate eye sore
+
+Added a form scaling GUI that allows the user to specify the GUI size visually
+	- remove the parameter -FormScale
+	- Addded code to check for and crate a Settings folder to house settings files
+	- The form scale GUI is launched upon load it's file is not located within the Settings folder
+	- If the Settings file exists and has a decimal value between 1 and 3, the form scale GUI is not launch automatically
+	- You can manually launch the form scaling GUI, a button is located within the options tab
+		- After manually settings, the PoSh-EasyWin GUI will relaunch	
+
+Added Form Scale Button under the Options Tab
+	- Launches the Form Scale GUI to resize PoSh-EasyWin
 
 Added ability to send User Specified Executables and Custom Script to endpoints
 	- Able to select a specific file or a whole directory to copy to the endpoint(s)
@@ -37,7 +206,6 @@ Added two Select All Buttons in the event log section to select all their respec
 Fixed a Registry checkbox issue, made it so that when the search checkbox was selected at the top that it remembered which of the three below were previous selected
 
 Added parameter for Scaling the GUI
-	- the parameter is -FormScale
 	- the default value is 1
 	- a value of 2 to 3 is ideal for HD and 4k monitors
 	- able to put in decimal values, ex: 2.25
@@ -53,8 +221,8 @@ Optimized Individual Execution
 Added an Actions Tab
 	- This section is designed to conduct limited actions on endpoints across the network/domain
 	- Added the ability to stop multiple processes from multiple endpoints. You must first run a get process to conduct this against first.
-	- Added 'Domain Wide Process Stopper'
-	- Added 'Domain Wide Service Stopper'
+	- Added 'Multi-Endpoint Process Stopper'
+	- Added 'Multi-Endpoint Service Stopper'
 	
 Compressed Get-BrowswerDateFromRegistry with 7Zip to avoid Windows Defender triggering on it as malware
 	- Reviewed script and tested it within Virus Total... only Microsoft triggers it as a trojan, but it's not
@@ -93,7 +261,7 @@ Modified a couple of commands within the 'Commands - Active Directory.csv'
 	- Added specific queries for AD User and Computers specific to creating charts based of their various property dates
 
 Added two new Dashboard charts
-	- Active Directory Users
+	- Active Directory User Accounts
 	- Active Directory Computers
 
 Added mouseenter,mouseleave, and mousehover to two textboxes within the Import from AD button:
@@ -160,7 +328,7 @@ Fixed Bugs
 v4.3 - 1 June 2020
 ==================================================
 
-Added Endpoint Network Packet Capture pcapng
+Added Endpoint Packet Capture pcapng
 	- Uses netsh trace command
 	- Able to specify duration
 	- Able to specify the max file size
