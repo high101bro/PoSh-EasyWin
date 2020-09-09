@@ -7,7 +7,7 @@ $SystemTrayNotifyIcon = {
             
     $PoShEasyWinSystemTrayNotifyIcon = New-Object System.Windows.Forms.NotifyIcon -Property @{
         Text        = 'PoSh-EasyWin  ' + '[' + $InitialScriptLoadTime + ']'
-        Icon        = 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin--BETA-Build\PoSh-EasyWin\Dependencies\Images\favicon.ico'
+        Icon        = $EasyWinIcon
         Visible     = $true
         ContextMenu = New-Object System.Windows.Forms.ContextMenu
         BalloonTipTitle = 'PoSh-EasyWin'

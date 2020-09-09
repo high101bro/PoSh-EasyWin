@@ -3,6 +3,8 @@ v5.0 - 9 September 2020
 ==================================================
 
 TO DO LIST: 
+	Verify / TS EventLog Viewer and rdp
+	hash recurse fix aahhhhh!!!!!!!!!!!!!!!
 	SMB WMI compile results
 	Add import hash list
 	Add import registry location IOCs
@@ -14,6 +16,8 @@ TO DO LIST:
 	Update logging from flat text to create custom Event Logs
 	update checklist to include easy resetting, persistence, and better overall appearance
 	Update other charts to include changing chart view and it's associated button
+	Add * support for directory in file search/hash search
+	Add comment that directory listing support c:/*/*/dir -- asterisks
 
 Added Network Connections Dashboard
 	- added feature to sort by value name and unique count
