@@ -3,8 +3,12 @@ $ComputerListRDPButtonAdd_Click = {
     Create-ComputerNodeCheckBoxArray
     Generate-ComputerList
 
-    if ($script:ComputerTreeViewSelected.count -eq 1 -or $script:ComputerListEndpointNameToolStripLabel.text -in $script:ComputerList) {
+    if ($script:ComputerTreeViewSelected.count -ge 1 -or $script:ComputerListEndpointNameToolStripLabel.text -in $script:ComputerList) {
         if ($script:ComputerListEndpointNameToolStripLabel.text -in $script:ComputerList) {
+            $VerifyRDP = Verify-Action -Title "Verification: Remote Desktop" -Question "Open a Remote Desktop session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
+        }
+        elseif ($script:ComputerTreeViewSelected.count -eq 1) {
             $VerifyRDP = Verify-Action -Title "Verification: Remote Desktop" -Question "Open a Remote Desktop session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
             $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
         }
@@ -28,10 +32,10 @@ $ComputerListRDPButtonAdd_Click = {
                     cmdkey /delete:"$script:ComputerTreeViewSelected"
                     cmdkey /delete /ras               
 
-
-                    cmdkey /generic:"$script:ComputerTreeViewSelected" /user:"$Username" /pass:"$Password"
-                    mstsc /v:$($script:ComputerTreeViewSelected):3389 /NoConsentPrompt
-
+                    #cmdkey /generic:"$script:ComputerTreeViewSelected" /user:"$Username" /pass:"$Password"
+                    cmdkey /generic:$script:ComputerTreeViewSelected /user:"$Username" /pass:"$Password"
+                    mstsc /v:$($script:ComputerTreeViewSelected):3389 /admin /noConsentPrompt /f
+    
                     # There seems to be a delay between the credential passing before credentials can be removed locally from cmdkey and them still being needed
                     Start-Sleep -Seconds 5
                     cmdkey /delete /ras               
@@ -46,6 +50,7 @@ $ComputerListRDPButtonAdd_Click = {
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                     $Username = $script:Credential.UserName
                     $Password = $script:Credential.GetNetworkCredential().Password
+
                     # The cmdkey utility helps you manage username and passwords; it allows you to create, delete, and display credentials for the current user
                         # cmdkey /list                <-- lists all credentials
                         # cmdkey /list:targetname     <-- lists the credentials for a speicific target
@@ -53,8 +58,8 @@ $ComputerListRDPButtonAdd_Click = {
                         # cmdkey /generic:targetname  <-- creates a generic credential
                         # cmdkey /delete:targetname   <-- deletes target credential
                     #cmdkey /generic:TERMSRV/$script:ComputerTreeViewSelected /user:$Username /pass:$Password
-                    cmdkey /add:$script:ComputerTreeViewSelected /user:$Username /pass:$Password
-                    mstsc /v:$($script:ComputerTreeViewSelected):3389 /NoConsentPrompt
+                    cmdkey /generic:$script:ComputerTreeViewSelected /user:"$Username" /pass:"$Password"
+                    mstsc /v:$($script:ComputerTreeViewSelected):3389 /admin /noConsentPrompt /f
                     #Start-Sleep -Seconds 1
                     #cmdkey /delete:$script:ComputerTreeViewSelected 
                     
@@ -62,10 +67,21 @@ $ComputerListRDPButtonAdd_Click = {
                 }
             }
             else {
+                $Username = $null
+                $Password = $null
+
+                $Username = $script:credential.UserName
+                $Password = $script:credential.GetNetworkCredential().Password
+
                 cmdkey /delete:"$script:ComputerTreeViewSelected"
                 cmdkey /delete /ras               
 
-                mstsc /v:$($script:ComputerTreeViewSelected):3389 /NoConsentPrompt
+                cmdkey /generic:$script:ComputerTreeViewSelected /user:"$Username" /pass:"$Password"
+                mstsc /v:$($script:ComputerTreeViewSelected):3389 /admin /noConsentPrompt /f
+
+                Start-Sleep -Seconds 5
+                cmdkey /delete /ras               
+                cmdkey /delete:"$script:ComputerTreeViewSelected"
             }
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Remote Desktop:  $($script:ComputerTreeViewSelected)")
@@ -78,6 +94,10 @@ $ComputerListRDPButtonAdd_Click = {
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Remote Desktop:  Cancelled")
         }
+    }
+    elseif ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyRDP = Verify-Action -Title "Verification: Remote Desktop" -Question "Open a Remote Desktop session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
     }
     elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Remote Desktop' }
     elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Remote Desktop' }
