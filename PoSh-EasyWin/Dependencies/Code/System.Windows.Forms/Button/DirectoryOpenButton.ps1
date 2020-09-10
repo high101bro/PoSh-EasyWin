@@ -1,5 +1,13 @@
 $DirectoryOpenButtonAdd_Click = {
-    $OpenDirectory = "$(if (Test-Path $($script:CollectionSavedDirectoryTextBox.Text)) {$($script:CollectionSavedDirectoryTextBox.Text)} else {$CollectedDataDirectory})"
+    if (Test-Path $($script:CollectionSavedDirectoryTextBox.Text)) {
+        $OpenDirectory = $script:CollectionSavedDirectoryTextBox.Text
+    } 
+    elseif (Test-Path $CollectedDataDirectory) {
+        $OpenDirectory = $CollectedDataDirectory
+    }
+    else {
+        $OpenDirectory = $PoShHome
+    }
     Invoke-Item -Path $OpenDirectory 
 }
 

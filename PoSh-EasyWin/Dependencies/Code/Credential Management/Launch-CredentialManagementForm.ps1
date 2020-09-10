@@ -407,7 +407,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     # Credential Management Domain Controller Server Name 
     #-----------------------------------------------------
     $CredentialManagementActiveDirectoryLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text     = "Enter the domain controller name that is used for credential management." 
+        Text     = "Enter the domain controller hostname that is used for credential management." 
         Location = @{ X = $FormScale * 5
                       Y = $script:CredentialManagementPasswordRollingAccountTextBox.Location.Y + $script:CredentialManagementPasswordRollingAccountTextBox.Size.Height + $($FormScale * 10) }
         Size     = @{ Width  = $FormScale * 465

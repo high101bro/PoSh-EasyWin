@@ -80,7 +80,7 @@ function Logout-AccountsOnMultipleComputers {
 
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Multi-Endpoint Account Logout")
-    #Removed For Testing#$ResultsListBox.Items.Clear()
+    $ResultsListBox.Items.Clear()
 
     foreach ($Computer in $Computers) {    
         $Session = $null
@@ -118,6 +118,9 @@ function Logout-AccountsOnMultipleComputers {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Unable to Connect:  $Computer"
         }
     }
+    # To alert the user that it's finished
+    [system.media.systemsounds]::Exclamation.play()
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
 }
 
 

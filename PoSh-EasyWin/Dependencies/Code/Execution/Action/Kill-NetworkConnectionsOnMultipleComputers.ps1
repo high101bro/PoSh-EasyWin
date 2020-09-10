@@ -5,7 +5,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
     )
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
-    #Removed For Testing#$ResultsListBox.Items.Clear()
+    $ResultsListBox.Items.Clear()
 
     if ($SelectNetworkConnectionsCsvFile) {
         [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
@@ -183,6 +183,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
     }
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
 }
 
 

@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.5.0
+    Version        : v.5.0.1
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -29,7 +29,7 @@
                      etl2pcapng.exe, WinPmem.exe
                      wKillcx is a small command-line utility to close any TCP connection under Windows XP/Vista/Seven as well as Windows Server 2003/2008. The source code (assembly language) is included with the binary.
 
-    Updated        : 08 SEP 2020
+    Updated        : 10 SEP 2020
     Created        : 21 AUG 2018
 
     Author         : Daniel Komnick (high101bro)
@@ -469,9 +469,10 @@ $ResolutionCheckForm.topmost = $false
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
 
+$PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 #[System.Windows.Forms.Application]::EnableVisualStyles()
 $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
-    Text          = "PoSh-EasyWin   ($([System.Security.Principal.WindowsIdentity]::GetCurrent().Name))  [$InitialScriptLoadTime]"
+    Text          = "PoSh-EasyWin   ($PoShEasyWinAccountLaunch)  [$InitialScriptLoadTime]"
     StartPosition = "CenterScreen"
     Width  = $FormScale * 1260 #1241
     Height = $FormScale * 660  #638
@@ -5269,7 +5270,7 @@ $OptionKeepResultsByEndpointsFilesCheckBox = New-Object System.Windows.Forms.Che
     Size     = @{ Width  = $FormScale * 300
                   Height = $FormScale * $Column3BoxHeight }
     Enabled  = $true
-    Checked  = $false
+    Checked  = $true
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt" -Force }
 }
@@ -5660,6 +5661,7 @@ $ComputerListRDPButton = New-Object System.Windows.Forms.Button -Property @{
     Height = $FormScale * $Column5BoxHeight
     Add_Click = $ComputerListRDPButtonAdd_Click
     Add_MouseHover = $ComputerListRDPButtonAdd_MouseHover
+    Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
 }
 $Section3ActionTab.Controls.Add($ComputerListRDPButton) 
 CommonButtonSettings -Button $ComputerListRDPButton
@@ -5676,6 +5678,7 @@ $ComputerListPSSessionButton = New-Object System.Windows.Forms.Button -Property 
     Height = $FormScale * $Column5BoxHeight
     Add_Click      = $ComputerListPSSessionButtonAdd_Click
     Add_MouseHover = $ComputerListPSSessionButtonAdd_MouseHover
+    Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
 }
 $Section3ActionTab.Controls.Add($ComputerListPSSessionButton) 
 CommonButtonSettings -Button $ComputerListPSSessionButton
@@ -5692,6 +5695,7 @@ $ComputerListPsExecButton = New-Object System.Windows.Forms.Button -Property @{
     Height = $FormScale * $Column5BoxHeight 
     Add_Click = $ComputerListPsExecButtonAdd_Click
     Add_MouseHover = $ComputerListPsExecButtonAdd_MouseHover
+    Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
 }
 CommonButtonSettings -Button $ComputerListPsExecButton
 
@@ -6758,6 +6762,13 @@ Update-QueryHistory
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
 
+# Maintains the value of the most recent queried computers and the protocol query counts
+# Used to ask if you want to conduct rpc,smb,winrm checks again if the currnet computerlist doens't match the history
+$script:ComputerListHistory      = @()
+$script:RpcCommandCountHistory   = $false
+$script:SmbCommandCountHistory   = $false
+$script:WinRmCommandCountHistory = $false
+
 $ExecuteScriptHandler = {
     [System.Windows.Forms.Application]::UseWaitCursor = $true
 
@@ -6766,6 +6777,9 @@ $ExecuteScriptHandler = {
     $script:ProgressBarQueriesProgressBar.Value       = 0
     $script:ProgressBarEndpointsProgressBar.BackColor = 'White'
     $script:ProgressBarQueriesProgressBar.BackColor   = 'White'
+
+    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
 
     # Clears previous and generates new computerlist
     $script:ComputerList = @() 
@@ -6883,6 +6897,8 @@ $ExecuteScriptHandler = {
         $script:CommandsCheckedBoxesSelected          = $CommandsCheckedBoxesSelectedDedup
         $script:ProgressBarQueriesProgressBar.Maximum = $CountCommandQueries
 
+        #[int]$script:RpcCommandCount + [int]$script:SmbCommandCount + [int]$script:WinRMCommandCount 
+        $QueryCount = $script:SectionQueryCount + $script:CommandsCheckedBoxesSelected.count
 
         # Adds executed commands to query history commands variable
         $script:QueryHistoryCommands += $script:CommandsCheckedBoxesSelected
@@ -6919,38 +6935,29 @@ $ExecuteScriptHandler = {
         function Conduct-IndividualExecution {
             $ExecutionStartTime = Get-Date 
             Create-ComputerNodeCheckBoxArray
-#            Conduct-NodeAction -TreeView $this.Nodes -ComputerList
-            if ($script:RpcCommandCount -gt 0 ) {
-                if (Verify-Action -Title "RPC Port Check" -Question "Conduct a RPC Port Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
-                    Check-Connection -CheckType "RPC Port Check" -MessageTrue "RPC Port 135 is Open" -MessageFalse "RPC Port 135 is Closed"
-                    Generate-ComputerList
+
+            if ((Compare-Object -ReferenceObject $script:ComputerList -DifferenceObject $script:ComputerListHistory) -or `
+                   !(([bool]($script:RpcCommandCount   -gt 0) -eq [bool]$script:RpcCommandCountHistory) -and `
+                     ([bool]($script:SmbCommandCount   -gt 0) -eq [bool]$script:SmbCommandCountHistory) -and `
+                     ([bool]($script:WinRmCommandCount -gt 0) -eq [bool]$script:WinRmCommandCountHistory))
+            ) { 
+                if ($script:RpcCommandCount -gt 0 ) {
+                    if (Verify-Action -Title "RPC Port Check" -Question "Connecting Account:  $Username`n`nConduct a RPC Port Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+                        Check-Connection -CheckType "RPC Port Check" -MessageTrue "RPC Port 135 is Open" -MessageFalse "RPC Port 135 is Closed"
+                        Generate-ComputerList
+                    }
                 }
-                else {
-                    [system.media.systemsounds]::Exclamation.play()
-                    $StatusListBox.Items.Clear()
-                    $StatusListBox.Items.Add("Skipping RPC Port Check of Endpoints")
+                if ($script:SmbCommandCount -gt 0 ) {
+                    if (Verify-Action -Title "SMB Port Check" -Question "Connecting Account:  $Username`n`nConduct a SMB Port Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+                        Check-Connection -CheckType "SMB Port Check" -MessageTrue "SMB Port 445 is Open" -MessageFalse "SMB Port 445 is Closed"
+                        Generate-ComputerList
+                    }
                 }
-            }
-            if ($script:SmbCommandCount -gt 0 ) {
-                if (Verify-Action -Title "SMB Port Check" -Question "Conduct an SMB Port Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
-                    Check-Connection -CheckType "SMB Port Check" -MessageTrue "SMB Port 445 is Open" -MessageFalse "SMB Port 445 is Closed"
-                    Generate-ComputerList
-                }
-                else {
-                    [system.media.systemsounds]::Exclamation.play()
-                    $StatusListBox.Items.Clear()
-                    $StatusListBox.Items.Add("Skipping SMB Port Check of Endpoints")
-                }
-            }
-            if ($script:WinRMCommandCount -gt 0 ) {
-                if (Verify-Action -Title "WinRM Check" -Question "Conduct a WinRM Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
-                    Check-Connection -CheckType "SMB Port Check" -MessageTrue "WinRM is Available" -MessageFalse "WinRM is Unavailable"
-                    Generate-ComputerList
-                }
-                else {
-                    [system.media.systemsounds]::Exclamation.play()
-                    $StatusListBox.Items.Clear()
-                    $StatusListBox.Items.Add("Skipping WinRM Check of Endpoints")
+                if ($script:WinRMCommandCount -gt 0 ) {
+                    if (Verify-Action -Title "WinRM Check" -Question "Connecting Account:  $Username`n`nConduct a WinRM Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+                        Check-Connection -CheckType "SMB Port Check" -MessageTrue "WinRM is Available" -MessageFalse "WinRM is Unavailable"
+                        Generate-ComputerList
+                    }
                 }
             }
             $PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
@@ -7051,8 +7058,7 @@ $ExecuteScriptHandler = {
 
         if ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked -or $AccountsRPCRadioButton.checked) { $script:RpcCommandCount += 1 }
 
-
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $script:RpcCommandCount -eq 0 -and $script:SmbCommandCount -eq 0 ) {
+        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and ($script:RpcCommandCount -eq 0 -or $script:SmbCommandCount -eq 0) ) {
 
             if ($script:WinRMCommandCount -gt 1) {
                 $MessageBox = [System.Windows.Forms.MessageBox]::Show("Multiple WinRM based commands were selected.
@@ -7387,6 +7393,7 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
         elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based' -and $script:RpcCommandCount -eq 0 -and $script:SmbCommandCount -eq 0 ) {
             $ExecutionStartTime = Get-Date 
             Generate-ComputerList 
+            Compile-QueryCommands
 
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Attempting to Establish Sessions to $($script:ComputerList.Count) Endpoints")
@@ -7401,19 +7408,21 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
             $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
             New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
 
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                if (!$script:Credential) { Create-NewCredentials }
-                $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential | Sort-Object ComputerName
-            }
-            else {
-                $PSSession = New-PSSession -ComputerName $script:ComputerList | Sort-Object ComputerName
-            }
+            if (Verify-Action -Title "Session Query Verification" -Question "Connecting Account:  $Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:" -Computer $($script:ComputerList -join ', ')) {
+                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                    if (!$script:Credential) { Create-NewCredentials }
+                    $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential | Sort-Object ComputerName
+                }
+                else {
+                    $PSSession = New-PSSession -ComputerName $script:ComputerList | Sort-Object ComputerName
+                }
 
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Session Based Collection Started to $(($PSSession | Where-Object {$_.state -match 'open'}).count) Endpoints"
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $(($PSSession | Where-Object {$_.state -match 'open'}).ComputerName -join ', ')"
+                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Session Based Collection Started to $(($PSSession | Where-Object {$_.state -match 'open'}).count) Endpoints"
+                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $(($PSSession | Where-Object {$_.state -match 'open'}).ComputerName -join ', ')"
 
-            # Unchecks hosts that do not have a session established
-            . "$Dependencies\Code\Execution\Session Based\Uncheck-ComputerTreeNodesWithoutSessions.ps1"
+                # Unchecks hosts that do not have a session established
+                . "$Dependencies\Code\Execution\Session Based\Uncheck-ComputerTreeNodesWithoutSessions.ps1"
+            }
 
             if ($PSSession.count -eq 1) { 
                 $ResultsListBox.Items.Insert(1,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Session Created to $(($PSSession | Where-Object {$_.state -match 'open'}).count) Endpoint")

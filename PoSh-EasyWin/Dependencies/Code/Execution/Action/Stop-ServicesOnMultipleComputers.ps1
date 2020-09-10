@@ -52,7 +52,7 @@ function Stop-ServicesOnMultipleComputers {
 
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Multi-Endpoint Service Stopper")
-    #Removed For Testing#$ResultsListBox.Items.Clear()
+    $ResultsListBox.Items.Clear()
 
     foreach ($Computer in $Computers) {    
         $Session = $null
@@ -89,6 +89,9 @@ function Stop-ServicesOnMultipleComputers {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Unable to Connect:  $Computer"
         }
     }
+    # To alert the user that it's finished
+    [system.media.systemsounds]::Exclamation.play()
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
 }
 
 

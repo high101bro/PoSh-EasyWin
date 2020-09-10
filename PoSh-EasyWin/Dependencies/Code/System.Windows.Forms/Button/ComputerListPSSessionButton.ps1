@@ -3,46 +3,46 @@ $ComputerListPSSessionButtonAdd_Click = {
     Create-ComputerNodeCheckBoxArray
     Generate-ComputerList
 
-    if ($script:ComputerTreeViewSelected.count -eq 1 -or $script:ComputerListEndpointNameToolStripLabel.text -in $script:ComputerList) {        
-        if ($script:ComputerListEndpointNameToolStripLabel.text -in $script:ComputerList) {
-            $VerifyRDP = Verify-Action -Title "Verification: PowerShell Session" -Question "Enter a PowerShell Session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
-            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
-        }
-        else {
-            $VerifyRDP = Verify-Action -Title "Verification: PowerShell Session" -Question "Enter a PowerShell Session to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')
-        }
-        if ($VerifyRDP) {
-            # This brings specific tabs to the forefront/front view
-            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
- 
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Enter-PSSession:  $($script:ComputerTreeViewSelected)")
-            #Removed For Testing#$ResultsListBox.Items.Clear()
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                if (-not $script:Credential) { Create-NewCredentials }
-                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
-                $Username = $script:Credential.UserName
-                $Password = $script:Credential.GetNetworkCredential().Password
-                $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential")                        
-                start-process powershell -ArgumentList "-noexit Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object pscredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))"
-            }
-    
-            else {
-                $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected")
-                Start-Process PowerShell -ArgumentList "-noexit Enter-PSSession -ComputerName $script:ComputerTreeViewSelected" 
-            }
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Enter-PSSession -ComputerName $($script:ComputerTreeViewSelected)"
+    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
 
-            if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
-        }
-        else {
-            [system.media.systemsounds]::Exclamation.play()
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("PowerShell Session:  Cancelled")
-        }
+    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyAction = Verify-Action -Title "Verification: PowerShell Session" -Question "Connecting Account:  $Username`n`nEnter a PowerShell Session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
     }
-    elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Enter-PSSession' }
-    elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Enter-PSSession' }
+    elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+        [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select PSSession.','PowerShell Session')
+    }
+
+    if ($VerifyAction) {
+        # This brings specific tabs to the forefront/front view
+        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Enter-PSSession:  $($script:ComputerTreeViewSelected)")
+        #Removed For Testing#$ResultsListBox.Items.Clear()
+        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if (-not $script:Credential) { Create-NewCredentials }
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+            $Username = $script:Credential.UserName
+            $Password = $script:Credential.GetNetworkCredential().Password
+            $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential")                        
+            start-process powershell -ArgumentList "-noexit Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object pscredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))"
+        }
+
+        else {
+            $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected")
+            Start-Process PowerShell -ArgumentList "-noexit Enter-PSSession -ComputerName $script:ComputerTreeViewSelected" 
+        }
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Enter-PSSession -ComputerName $($script:ComputerTreeViewSelected)"
+
+        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("PowerShell Session:  Cancelled")
+    }
 }
 
 $ComputerListPSSessionButtonAdd_MouseHover = {

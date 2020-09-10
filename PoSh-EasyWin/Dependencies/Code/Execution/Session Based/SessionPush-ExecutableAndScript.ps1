@@ -74,7 +74,7 @@ foreach ($Session in $PSSession) {
     }
     $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 }
-#>
+
 $ResultsListBox.Items.RemoveAt(1)
 $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()

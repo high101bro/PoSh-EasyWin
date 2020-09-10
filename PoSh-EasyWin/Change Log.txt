@@ -1,10 +1,16 @@
 ==================================================
-v5.0 - 9 September 2020
+v5.0.1 - 10 September 2020
 ==================================================
 
 TO DO LIST: 
-	Verify / TS EventLog Viewer and rdp
-	hash recurse fix aahhhhh!!!!!!!!!!!!!!!
+	Add feautues that adds a metadata tag to each endpoint node for:
+		- Preferred Protocol
+		- Available protocols used
+		- list of queried times
+		- protocols Identified
+		- services running
+		- input from enumeration scans
+	Verify previous query searches open csv for endpionts by date works
 	SMB WMI compile results
 	Add import hash list
 	Add import registry location IOCs
@@ -16,8 +22,45 @@ TO DO LIST:
 	Update logging from flat text to create custom Event Logs
 	update checklist to include easy resetting, persistence, and better overall appearance
 	Update other charts to include changing chart view and it's associated button
+	keep trying to develop a solution to launch show-eventlog not within domain...
 	Add * support for directory in file search/hash search
 	Add comment that directory listing support c:/*/*/dir -- asterisks
+
+Made it so the green boxes under the action boxes green up whenever an endpoint is checked
+	- turns back to grey when no endpoints are selected
+
+Added the credential rolling feature to all the domain wide action tasks
+	- kill processes
+	- stop services
+	- log out users
+	- kill network connections
+	- quarantine/un-quarantine endpoints
+
+Added $script:ComputerListHistory
+	- if the same computers are queried back to back, it wont prompt for testing connection
+
+Added message to View Event Log that notifies you of an alternate method, if it's not working
+	- not the best solution, but it'll the only work around for an in domain solution
+
+Fixed issue where the getchilditemrecurse function wasn't working
+	- verified both file search and registry sections
+
+When PoSh-EasyWin launches for the first time, the Open Folder button does work becuase there hasn't been a collection yet
+	- Added code to check if the dir doesn't exist, then go to the higher level collections dir
+	- If the above also fails, it'll go the the root dir for PoSh-EasyWin
+
+Bug Fix with Passing Credentials to Remote Desktop
+	- fixed a mistake when I previously was modifying the cmdkey and mstsc for fullscreen and noprompt
+
+Rewrote code that launches the following features when you left/right click computer nodes
+	- Remote Desktop
+	- PSSession
+	- PSExec
+	- * The legacy buttons currently only notify users how to find the feature
+	
+==================================================
+v5.0 - 9 September 2020
+==================================================
 
 Added Network Connections Dashboard
 	- added feature to sort by value name and unique count

@@ -400,7 +400,7 @@ function Conduct-NodeAction {
     if ($script:TreeeViewCommandsCount -gt 0 -and $script:TreeeViewComputerListCount -gt 0) { 
         $ComputerListExecuteButton.Enabled   = $true
         $ComputerListExecuteButton.forecolor = 'Black'
-        $ComputerListExecuteButton.backcolor = 'lightgreen' 
+        $ComputerListExecuteButton.backcolor = 'lightgreen'
     }
     else { 
         $ComputerListExecuteButton.Enabled   = $false 
@@ -408,6 +408,32 @@ function Conduct-NodeAction {
     }
     $StatisticsRefreshButton.PerformClick()
 
+    # Updates the color of the button if there is at least one endpoint selected
+    if ($script:TreeeViewComputerListCount -gt 0) { 
+        $ActionsTabProcessKillerButton.forecolor = 'Black'
+        $ActionsTabProcessKillerButton.backcolor = 'lightgreen'
+        
+        $ActionsTabServiceKillerButton.forecolor = 'Black'
+        $ActionsTabServiceKillerButton.backcolor = 'lightgreen'
+        
+        $ActionsTabAccountLogoutButton.forecolor = 'Black'
+        $ActionsTabAccountLogoutButton.backcolor = 'lightgreen'
+
+        $ActionsTabSelectNetworkConnectionsToKillButton.forecolor = 'Black'
+        $ActionsTabSelectNetworkConnectionsToKillButton.backcolor = 'lightgreen'
+
+        $ActionsTabQuarantineEndpointsButton.forecolor = 'Black'
+        $ActionsTabQuarantineEndpointsButton.backcolor = 'lightgreen'
+    }
+    else { 
+        CommonButtonSettings -Button $ActionsTabProcessKillerButton
+        CommonButtonSettings -Button $ActionsTabServiceKillerButton
+        CommonButtonSettings -Button $ActionsTabAccountLogoutButton
+        CommonButtonSettings -Button $ActionsTabSelectNetworkConnectionsToKillButton
+        CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
+    }
+
+    
     # Code Testing
     # [system.windows.forms.messagebox]::show("$script:TreeeViewCommandsCount -- $script:TreeeViewComputerListCount")
 

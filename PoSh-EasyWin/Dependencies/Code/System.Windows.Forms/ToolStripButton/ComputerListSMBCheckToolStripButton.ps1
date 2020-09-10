@@ -1,11 +1,14 @@
 $ComputerListSMBCheckToolStripButtonAdd_Click = {
     Create-ComputerNodeCheckBoxArray
     
+    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
+
     if ($script:ComputerTreeViewSelected.count -eq 0){
         [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','SMB Port Check')
     }
     else {
-        if (Verify-Action -Title "Verification: SMB Port Check" -Question "Conduct a SMB Port Check to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+        if (Verify-Action -Title "Verification: SMB Port Check" -Question "Connecting Account:  $Username`n`nConduct a SMB Port Check to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
             Check-Connection -CheckType "SMB Port Check" -MessageTrue "SMB Port 445 is Open" -MessageFalse "SMB Port 445 is Closed"
         }
         else {

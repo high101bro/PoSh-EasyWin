@@ -1,5 +1,6 @@
 "Name","OperatingSystem","CanonicalName","IPv4Address","MACAddress","Notes"
-"DC01","Windows Server 2012 R2 Standard","/Domain Controllers","10.10.10.101","No MAC Available","[Un-Quarantined] at 08/19/2020 23:00:08
+"DC01","Windows Server 2012 R2 Standard","/Domain Controllers","10.10.10.101","No MAC Available","[Quarantined] at 09/10/2020 15:22:59 -- Accessible from 10.10.10.100
+[Quarantined] at 09/10/2020 15:16:12 -- Accessible from 10.10.10.100
 [Quarantined] at 08/19/2020 22:59:38 -- Accessible from 10.10.10.100
 [Quarantined] at 08/18/2020 23:45:37 -- Accessible from 10.10.10.100
 No Notes Available"
@@ -11,7 +12,8 @@ No Notes Available"
 "
 "WIN81-03","Windows 8.1 Pro","/US Branch/Guest","10.10.10.105","No MAC Available","No Notes Available"
 "WIN81-04","Windows 8.1 Pro","/US Branch/Guest","10.10.10.106","No MAC Available","No Notes Available"
-"FILE","Windows Server 2012 R2 Datacenter","/Servers/Business","10.10.10.101","No MAC Available","[Quarantined] at 08/19/2020 22:59:38 -- Accessible from 10.10.10.100
+"FILE","Windows Server 2012 R2 Datacenter","/Servers/Business","10.10.10.101","No MAC Available","[Quarantined] at 09/10/2020 15:16:12 -- Accessible from 10.10.10.100
+[Quarantined] at 08/19/2020 22:59:38 -- Accessible from 10.10.10.100
 [Quarantined] at 08/18/2020 23:45:37 -- Accessible from 10.10.10.100
 No Notes Available"
 "Win81-07","Windows 8.1 Pro","/US Branch/Employee","10.10.10.109","No MAC Available","No Notes Available"

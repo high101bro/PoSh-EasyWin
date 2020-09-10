@@ -5,7 +5,7 @@ function Quarantine-EndpointsWithFirewallRules {
     )
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
-    #Removed For Testing#$ResultsListBox.Items.Clear()
+    $ResultsListBox.Items.Clear()
 
     $OutputFirewallRulesDirectory = "$PoShHome\Endpoint Firewall Rules"
     if (-not (Test-Path $OutputFirewallRulesDirectory)) { New-Item -Type Directory $OutputFirewallRulesDirectory }
@@ -274,6 +274,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
     }
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
 }
 
 
