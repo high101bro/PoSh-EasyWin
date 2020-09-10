@@ -1,9 +1,51 @@
 function Conduct-FileSearch {
     param($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)
-    if ([int]$MaximumDepth -gt 0) {
-        Invoke-Expression $GetChildItemDepth
-        Invoke-Expression $GetFileHash
-        
+    
+    #Invoke-Expression $GetChildItemDepth
+    Function Get-ChildItemDepth {
+        Param(
+            [String[]]$Path     = $PWD,
+            [String]$Filter     = "*",
+            [Byte]$Depth        = 255,
+            [Byte]$CurrentDepth = 0
+        )
+        $CurrentDepth++    
+        Get-ChildItem $Path -Force | ForEach-Object {
+            $_ | Where-Object { $_.Name -Like $Filter }
+            If ($_.PsIsContainer) {
+                If ($CurrentDepth -le $Depth) {
+                    # Callback to this function
+                    Get-ChildItemDepth -Path $_.FullName -Filter $Filter -Depth $Depth -CurrentDepth $CurrentDepth
+                }
+            }
+        }
+    }
+
+    #Invoke-Expression $GetFileHash
+    function Get-FileHash{
+        param (
+            [string]$Path,
+            [string]$Algorithm    
+        ) 
+        if     ($Algorithm -eq 'MD5')       {$HashAlgorithm = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider}
+        elseif ($Algorithm -eq 'SHA1')      {$HashAlgorithm = New-Object -TypeName System.Security.Cryptography.SHA1CryptoServiceProvider}
+        elseif ($Algorithm -eq 'SHA256')    {$HashAlgorithm = New-Object -TypeName System.Security.Cryptography.SHA256CryptoServiceProvider}
+        elseif ($Algorithm -eq 'SHA384')    {$HashAlgorithm = New-Object -TypeName System.Security.Cryptography.SHA384CryptoServiceProvider}
+        elseif ($Algorithm -eq 'SHA512')    {$HashAlgorithm = New-Object -TypeName System.Security.Cryptography.SHA512CryptoServiceProvider}
+        elseif ($Algorithm -eq 'RIPEMD160') {$HashAlgorithm = New-Object -TypeName System.Security.Cryptography.RIPEMD160Managed}
+        $Hash=[System.BitConverter]::ToString($HashAlgorithm.ComputeHash([System.IO.File]::ReadAllBytes($Path)))    
+        $Properties = @{
+            "Path"       = $Path
+            "Hash"       = $Hash.Replace("-", "")
+            "Algorithm"  = $Algorithm
+            "ScriptNote" = 'Get-FileHash Script For Backwards Compatibility'
+        }
+        $ReturnFileHash = New-Object –TypeName PSObject –Prop $Properties
+        return $ReturnFileHash
+    }
+
+
+    if ([int]$MaximumDepth -gt 0) {        
         # Older operating systems don't support the -depth parameter, this function was created for backwards compatability       
         $AllFiles = @()
         foreach ($Directory in $DirectoriesToSearch){

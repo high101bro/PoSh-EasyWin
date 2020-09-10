@@ -5,7 +5,7 @@ $EasyWinIcon = "$Dependencies\Images\favicon.ico"
 
 
 
-$ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
+$script:ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
 Text   = 'PoSh-EasyWIn - Setup and Extraction'
 Width  = $FormScale * 600
 Height = $FormScale * 400
@@ -31,17 +31,17 @@ $PoShEasyWinLogoLoadingPictureBox = New-Object Windows.Forms.PictureBox -Propert
     Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
     SizeMode = 'StretchImage'
 }
-$ProgressBarSelectionForm.Controls.Add($PoShEasyWinLogoLoadingPictureBox)
+$script:ProgressBarSelectionForm.Controls.Add($PoShEasyWinLogoLoadingPictureBox)
         
 $script:ProgressBarMainLabel = New-Object System.Windows.Forms.Label -Property @{
     Text   = 'PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs'
     Left   = $FormScale * 10
     Top    = $PoShEasyWinLogoLoadingPictureBox.Top + $PoShEasyWinLogoLoadingPictureBox.Height + ($FormScale * 5)
-    Width  = $ProgressBarSelectionForm.Width - ($FormScale * 35)
+    Width  = $script:ProgressBarSelectionForm.Width - ($FormScale * 35)
     Height = $FormScale * 25
     Font   = New-Object System.Drawing.Font("$font",$($FormScale * 11),0,0,0)
 }
-$ProgressBarSelectionForm.Controls.Add($script:ProgressBarMainLabel)
+$script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMainLabel)
         
 
 $ProgressBarFormProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
@@ -50,11 +50,11 @@ $ProgressBarFormProgressBar = New-Object System.Windows.Forms.ProgressBar -Prope
     Minimum  = 0
     Left     = $FormScale * 10
     Top      = $script:ProgressBarMainLabel.Top + $script:ProgressBarMainLabel.Height + ($FormScale * 5)
-    Width    = $ProgressBarSelectionForm.Width - ($FormScale * 35)
+    Width    = $script:ProgressBarSelectionForm.Width - ($FormScale * 35)
     Height   = $FormScale * 10
     Value    = 0
 }
-$ProgressBarSelectionForm.Controls.Add($ProgressBarFormProgressBar)
+$script:ProgressBarSelectionForm.Controls.Add($ProgressBarFormProgressBar)
 
 
 $InstallationLocationLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -67,7 +67,7 @@ $InstallationLocationLabel = New-Object System.Windows.Forms.Label -Property @{
     Padding = 5
     
 }
-$ProgressBarSelectionForm.Controls.Add($InstallationLocationLabel)
+$script:ProgressBarSelectionForm.Controls.Add($InstallationLocationLabel)
 
 
 $InstallationLocationTextbox = New-Object System.Windows.Forms.Textbox -Property @{
@@ -78,7 +78,7 @@ $InstallationLocationTextbox = New-Object System.Windows.Forms.Textbox -Property
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$font",$($FormScale * 11),0,0,0)
 }
-$ProgressBarSelectionForm.Controls.Add($InstallationLocationTextbox)
+$script:ProgressBarSelectionForm.Controls.Add($InstallationLocationTextbox)
 
 
 $ShotcutCreationLabel = New-Object System.Windows.Forms.CheckBox -Property @{
@@ -90,7 +90,7 @@ $ShotcutCreationLabel = New-Object System.Windows.Forms.CheckBox -Property @{
     Font    = New-Object System.Drawing.Font("$font",$($FormScale * 11),0,0,0)
     Checked = $true
 }
-$ProgressBarSelectionForm.Controls.Add($ShotcutCreationLabel)
+$script:ProgressBarSelectionForm.Controls.Add($ShotcutCreationLabel)
 
 
 $CreateCredentialLabel = New-Object System.Windows.Forms.CheckBox -Property @{
@@ -102,7 +102,7 @@ $CreateCredentialLabel = New-Object System.Windows.Forms.CheckBox -Property @{
     Font    = New-Object System.Drawing.Font("$font",$($FormScale * 11),0,0,0)
     Checked = $true
 }
-$ProgressBarSelectionForm.Controls.Add($CreateCredentialLabel)
+$script:ProgressBarSelectionForm.Controls.Add($CreateCredentialLabel)
 
 
 $ShowToolTipLabel = New-Object System.Windows.Forms.CheckBox -Property @{
@@ -114,7 +114,7 @@ $ShowToolTipLabel = New-Object System.Windows.Forms.CheckBox -Property @{
     Font    = New-Object System.Drawing.Font("$font",$($FormScale * 11),0,0,0)
     Checked = $true
 }
-$ProgressBarSelectionForm.Controls.Add($ShowToolTipLabel)
+$script:ProgressBarSelectionForm.Controls.Add($ShowToolTipLabel)
 
 
 $EnableVoiceCompletionLabel = New-Object System.Windows.Forms.CheckBox -Property @{
@@ -126,7 +126,7 @@ $EnableVoiceCompletionLabel = New-Object System.Windows.Forms.CheckBox -Property
     Font    = New-Object System.Drawing.Font("$font",$($FormScale * 11),0,0,0)
     Checked = $false
 }
-$ProgressBarSelectionForm.Controls.Add($EnableVoiceCompletionLabel)
+$script:ProgressBarSelectionForm.Controls.Add($EnableVoiceCompletionLabel)
 
 
 $JobTimeoutComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
@@ -139,7 +139,7 @@ $JobTimeoutComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
 }
 $JobTimesAvailable = @(15,30,45,60,120,180,240,300,600)
 ForEach ($Item in $JobTimesAvailable) { $script:JobTimeoutComboBox.Items.Add($Item) }
-$ProgressBarSelectionForm.Controls.Add($JobTimeoutComboBox)
+$script:ProgressBarSelectionForm.Controls.Add($JobTimeoutComboBox)
 
 
 $JobTimeoutLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -150,7 +150,7 @@ $JobTimeoutLabel = New-Object System.Windows.Forms.Label -Property @{
     Height  = $FormScale * 32
     Font    = New-Object System.Drawing.Font("$font",$($FormScale * 11),0,0,0)
 }
-$ProgressBarSelectionForm.Controls.Add($JobTimeoutLabel)
+$script:ProgressBarSelectionForm.Controls.Add($JobTimeoutLabel)
 
 
-$ProgressBarSelectionForm.ShowDialog()    
+$script:ProgressBarSelectionForm.ShowDialog()    

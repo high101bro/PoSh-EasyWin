@@ -1,7 +1,25 @@
 function Get-AlternateDataStream {
     param($DirectoriesToSearch,$MaximumDepth)
     if ([int]$MaximumDepth -gt 0) {
-        Invoke-Expression $GetChildItemDepth
+        #Invoke-Expression $GetChildItemDepth
+        Function Get-ChildItemDepth {
+            Param(
+                [String[]]$Path     = $PWD,
+                [String]$Filter     = "*",
+                [Byte]$Depth        = 255,
+                [Byte]$CurrentDepth = 0
+            )
+            $CurrentDepth++    
+            Get-ChildItem $Path -Force | ForEach-Object {
+                $_ | Where-Object { $_.Name -Like $Filter }
+                If ($_.PsIsContainer) {
+                    If ($CurrentDepth -le $Depth) {
+                        # Callback to this function
+                        Get-ChildItemDepth -Path $_.FullName -Filter $Filter -Depth $Depth -CurrentDepth $CurrentDepth
+                    }
+                }
+            }
+        }
         
         # Older operating systems don't support the -depth parameter, needed to create a function to do so for backwards compatability
         #Get-ChildItem -Path $DirectoryPath -Depth $MaximumDepth

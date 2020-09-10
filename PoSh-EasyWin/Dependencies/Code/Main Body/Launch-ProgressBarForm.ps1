@@ -4,7 +4,7 @@ function Launch-ProgressBarForm {
         $ScriptBlockProgressBarInput,
         [switch]$ShowImage
     )
-    $ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
+    $script:ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = $FormTitle
         Width  = $FormScale * 350
         Height = $FormScale * 170
@@ -31,7 +31,7 @@ function Launch-ProgressBarForm {
             Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
             SizeMode = 'StretchImage'
         }
-        $ProgressBarSelectionForm.Controls.Add($PoShEasyWinLogoLoadingPictureBox)
+        $script:ProgressBarSelectionForm.Controls.Add($PoShEasyWinLogoLoadingPictureBox)
         
         $script:ProgressBarMainLabel = New-Object System.Windows.Forms.Label -Property @{
             Text   = "Status:"
@@ -41,7 +41,7 @@ function Launch-ProgressBarForm {
             Height = $FormScale * 25
             Font   = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
         }
-        $ProgressBarSelectionForm.Controls.Add($script:ProgressBarMainLabel)
+        $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMainLabel)
     }
     else {
         $script:ProgressBarMainLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -52,7 +52,7 @@ function Launch-ProgressBarForm {
             Height = $FormScale * 50
             Font   = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
         }
-        $ProgressBarSelectionForm.Controls.Add($script:ProgressBarMainLabel)
+        $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMainLabel)
     }
         
 
@@ -66,7 +66,7 @@ function Launch-ProgressBarForm {
         Height = $FormScale * 10
         Value   = 0
     }
-    $ProgressBarSelectionForm.Controls.Add($script:ProgressBarFormProgressBar)
+    $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarFormProgressBar)
 
     <#
     $script:AutoChartsProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
@@ -79,7 +79,7 @@ function Launch-ProgressBarForm {
         Height = $FormScale * 10
         Value   = 0
     }
-    $ProgressBarSelectionForm.Controls.Add($script:AutoChartsProgressBar)
+    $script:ProgressBarSelectionForm.Controls.Add($script:AutoChartsProgressBar)
 #>
 
     $script:ProgressBarMessageLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -89,7 +89,7 @@ function Launch-ProgressBarForm {
         Height = $FormScale * 40
         Font   = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     }
-    $ProgressBarSelectionForm.Controls.Add($script:ProgressBarMessageLabel)
+    $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMessageLabel)
 
-    $ProgressBarSelectionForm.ShowDialog()    
+    $script:ProgressBarSelectionForm.ShowDialog()    
 }

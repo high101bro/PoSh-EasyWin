@@ -460,9 +460,14 @@ namespace Loading
 Add-Type -TypeDefinition $code -Language CSharp	
 Invoke-Expression "[Loading.Test$id]::Main()"
 
-
+#Start Progress bar form loading
 $ScriptBlockForGuiLoadAndProgressBar = {
+
+# The Launch-ProgressBarForm.ps1 is topmost upon loading to ensure it's displayed intially, but is then able to be move unpon
+$ResolutionCheckForm.topmost = $false
+
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 #[System.Windows.Forms.Application]::EnableVisualStyles()
 $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
@@ -577,6 +582,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
 #
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainLeftTabControlBoxWidth  = 460
 $MainLeftTabControlBoxHeight = 590
@@ -605,6 +611,7 @@ $PoShEasyWin.Controls.Add($MainLeftTabControl)
 #                                                                                                |___/       
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section1CollectionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Collections"
@@ -635,6 +642,7 @@ $TextBoxHeight        = 536
 #
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainLeftCollectionsTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Collections TabControl"
@@ -660,7 +668,7 @@ $Section1CollectionsTab.Controls.Add($MainLeftCollectionsTabControl)
 #                                                                              |___/       
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
-
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section1CommandsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Queries"
@@ -708,6 +716,7 @@ $script:QueryHistoryCommands = @()
 #
 #======================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $script:TreeeViewComputerListCount = 0
 $script:TreeeViewCommandsCount     = 0
@@ -798,7 +807,7 @@ $Section1CommandsTab.Controls.Add($CommandsTreeViewViewByGroupBox)
 
 $PoShEasyWinLogoPictureBox = New-Object System.Windows.Forms.PictureBox -Property @{
     #text     = "PoSh-EasyWin Image"
-    Left      = $FormScale * $CommandsTreeViewViewByGroupBox.Left + $CommandsTreeViewViewByGroupBox.Width + 15
+    Left     = $CommandsTreeViewViewByGroupBox.Left + $CommandsTreeViewViewByGroupBox.Width + ($FormScale * + 15)
     Top      = $FormScale * $CommandsTreeViewViewByGroupBox.Top
     Width    = $FormScale * 175
     Height   = $FormScale * 35
@@ -865,8 +874,8 @@ CommonButtonSettings -Button $CommandsTreeviewDeselectAllButton
 . "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeViewQueryHistoryRemovalButton.ps1"
 $CommandsTreeViewQueryHistoryRemovalButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Remove Query History"
-    Left   = $FormScale * 265
-    Top    = $FormScale * 445
+    Left   = $FormScale * 278
+    Top    = $FormScale * 430
     Width  = $FormScale * 150
     Height = $FormScale * 22
     Add_Click = $CommandsTreeViewQueryHistoryRemovalButtonAdd_Click
@@ -876,10 +885,10 @@ CommonButtonSettings -Button $CommandsTreeViewQueryHistoryRemovalButton
 
 
 $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-    Left   = $FormScale * 0 
+    Left   = 0 
     Top    = $FormScale * 70
     Width  = $FormScale * 435
-    Height = $FormScale * 405
+    Height = $FormScale * 390
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     CheckBoxes       = $True
     #LabelEdit       = $True
@@ -919,7 +928,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
     Left   = $script:CommandsTreeView.Left
     Top    = $script:CommandsTreeView.Top + $script:CommandsTreeView.Height + ($FormScale * 6)
     Width  = $script:CommandsTreeView.width
-    Height = $FormScale * 200
+    Height = $FormScale * 180
 }
             $script:CustomQueryScriptBlockTextbox = New-Object System.Windows.Forms.Textbox -Property @{
                 Text   = 'Enter A Get Cmdlet (ex: Get-Process)'
@@ -977,7 +986,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Left   = $script:CustomQueryScriptBlockTextbox.Left
                 Top    = $script:CustomQueryScriptBlockTextbox.top + $script:CustomQueryScriptBlockTextbox.height + ($FormScale * 5)
                 Width  = $FormScale * 135
-                Height = $FormScale * 15
+                Height = $FormScale * 22
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 Add_Click = { Invoke-Command $CustomQueryScriptBlock }
             }
@@ -986,7 +995,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
 
 
             $CustomQueryScriptBlockOverrideCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
-                Text   = 'Override - Allow Execution'
+                Text   = 'Override - Allow other verbs'
                 Left   = $CustomQueryScriptBlockButton.Left + $CustomQueryScriptBlockButton.width + ($FormScale * 10)
                 Top    = $script:CustomQueryScriptBlockTextbox.Top + $script:CustomQueryScriptBlockTextbox.Height + ($FormScale * 5)
                 AutoSize  = $true
@@ -1037,6 +1046,7 @@ $script:CommandsTreeView.Nodes.Add($script:TreeNodePreviouslyExecutedCommands)
 #                                                                        |_|            |___/          
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section1AccountsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Accounts"
@@ -1349,6 +1359,7 @@ $Section1AccountsTab.Controls.Add($AccountActivityTextbox)
 #                                                  |___/                                          |___/          
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section1EventLogsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Event Logs"
@@ -1793,6 +1804,7 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorCheckListBox)
 #               |___/                     |___/                                     |___/             
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 . "$Dependencies\Code\Main Body\Search-Registry.ps1"
 $Section1RegistryTab = New-Object System.Windows.Forms.TabPage -Property @{
@@ -2016,6 +2028,7 @@ $Section1RegistryTab.Controls.Add($script:RegistryValueDataSearchRichTextbox)
 #                                                                                                  |___/                  
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section1FileSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "File Search"
@@ -2302,6 +2315,7 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
 #                                                                                                                                                         |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $NetworkConnectionSearchDownPosition = -10
 
@@ -2607,6 +2621,7 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCac
 #                                                                                          |_|            |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section1InteractionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text     = "Interactions"
@@ -2633,7 +2648,6 @@ $MainLeftSection1InteractionsTabTabControl = New-Object System.Windows.Forms.Tab
 $Section1InteractionsTab.Controls.Add($MainLeftSection1InteractionsTabTabControl)
 
 
-
 #==================================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Interactions TabControl
@@ -2645,6 +2659,7 @@ $Section1InteractionsTab.Controls.Add($MainLeftSection1InteractionsTabTabControl
 #                                                       |_|                                                                                            |_|            |___/       
 #==================================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section1ActionOnEndpointTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Multi-Endpoint Actions"
@@ -3029,6 +3044,7 @@ $Section1ActionOnEndpointTab.Controls.Add($ActionsTabQuarantineEndpointGroupBox)
 #                                                                                      |_|            |___/          
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $SysinternalsRightPosition     = 3
 $SysinternalsDownPosition      = -10
@@ -3629,13 +3645,13 @@ $Section1ExecutablesTab.Controls.Add($ExeScriptProgramGroupBox)
 #                                                                                                              |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $EnumerationRightPosition     = 3
 $EnumerationDownPosition      = 0
 $EnumerationLabelWidth        = 450
 $EnumerationLabelHeight       = 25
 $EnumerationGroupGap          = 15
-
 
 $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
     Name     = "Enumeration"
@@ -4264,6 +4280,7 @@ CommonButtonSettings -Button $EnumerationComputerListBoxClearButton
 #                                                                                           |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainLeftChecklistTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Checklist"
@@ -4294,6 +4311,7 @@ $TextBoxHeight        = 536
 #
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainLeftChecklistTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name          = "Checklist TabControl"
@@ -4328,6 +4346,7 @@ $ResourceChecklistFiles = Get-ChildItem "$Dependencies\Checklists"
 #                                                                                         |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section1ProcessesTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Processes"
@@ -4358,6 +4377,7 @@ $TextBoxHeight          = 536
 #
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainLeftProcessesTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Processes TabControl"
@@ -4383,6 +4403,7 @@ $Section1ProcessesTab.Controls.Add($MainLeftProcessesTabControl)
     #          |___/                                                |___/                                                                                               |___/       
     #=================================================================================================================================================================================
     $script:ProgressBarFormProgressBar.Value += 1
+    $script:ProgressBarSelectionForm.Refresh()
 
     # Iterates through the files and dynamically creates tabs and imports data
     . "$Dependencies\Code\Main Body\Dynamically Create Process Info.ps1"
@@ -4399,6 +4420,7 @@ $Section1ProcessesTab.Controls.Add($MainLeftProcessesTabControl)
 #         |_|                                                                     |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section1OpNotesTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "OpNotes"
@@ -4619,6 +4641,7 @@ if (Test-Path -Path $OpNotesFile) {
 #                                                              |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainLeftInfoTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Info"
@@ -4647,6 +4670,7 @@ $TextBoxHeight          = 536
 #
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainLeftInfoTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Location = @{ X = $FormScale * $TabRightPosition
@@ -4677,6 +4701,7 @@ foreach ($File in $ResourceFiles) {
     #          |___/                                                |___/                                                                                               |___/       
     #=================================================================================================================================================================================
     $script:ProgressBarFormProgressBar.Value += 1
+    $script:ProgressBarSelectionForm.Refresh()
 
     $Section1AboutSubTab = New-Object System.Windows.Forms.TabPage -Property @{
         Text                    = $File.BaseName
@@ -4713,6 +4738,7 @@ foreach ($File in $ResourceFiles) {
 #
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 . "$Dependencies\Code\System.Windows.Forms\TabControl\Section2TabControl.ps1"
 $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
@@ -4741,6 +4767,7 @@ $PoShEasyWin.Controls.Add($MainCenterTabControl)
 #                                                               |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainCenterMainTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Main"
@@ -5006,6 +5033,7 @@ CommonButtonSettings -Button $OpenCsvResultsButton
 #         |_|                                                                   |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section2OptionsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Options"
@@ -5281,6 +5309,7 @@ CommonButtonSettings -Button $OptionTextToSpeachButton
 #                                                                                        |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section2StatisticsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Statistics"
@@ -5533,6 +5562,7 @@ $PoShEasyWin.Controls.Add($ComputerTreeNodeOUHostnameRadioButton)
 #
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainRightTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name         = "Main Tab Window for Computer List"
@@ -5556,6 +5586,7 @@ $PoShEasyWin.Controls.Add($MainRightTabControl)
 #                                                                       |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Column5RightPosition     = 3
 $Column5DownPosition      = 6
@@ -5771,6 +5802,7 @@ CommonButtonSettings -Button $ComputerListExecuteButton
 #                                |___/                                           |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section3ManageListTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Import Data"
@@ -5967,6 +5999,7 @@ $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
 #
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $MainBottomTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name     = "Main Tab Window"
@@ -5991,6 +6024,7 @@ $PoShEasyWin.Controls.Add($MainBottomTabControl)
 #                                                                      |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section3AboutTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "About"
@@ -6053,8 +6087,8 @@ $Section3AboutTab.Controls.Add($Section1AboutSubTabRichTextBox)
 #  |_| \_\\___||___/ \__,_||_| \__||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
 #                                                                           |___/       
 #=======================================================================================================================================================================
-
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section3ResultsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text                    = "Results"
@@ -6105,6 +6139,7 @@ $Section3ResultsTab.Controls.Add($ResultsListBox)
 #                                                                                          |___/       
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Endpoint Data"
@@ -6327,8 +6362,8 @@ CommonButtonSettings -Button $Section3HostDataNotesAddOpNotesButton
 #   \__\_\ \__,_| \___||_|    \__, |   |_____|/_/\_\| .__/ |_| \___/ |_|   \__,_| \__||_| \___/ |_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
 #                             |___/                 |_|                                                                                    |___/       
 #=======================================================================================================================================================================
-
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $Section3QueryExplorationTabPage = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Query Exploration"
@@ -6721,6 +6756,7 @@ Update-QueryHistory
 #                        |_|                                                                 
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 $ExecuteScriptHandler = {
     [System.Windows.Forms.Application]::UseWaitCursor = $true
@@ -7511,6 +7547,7 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
     [System.Windows.Forms.Application]::UseWaitCursor = $false
 }
 $script:ProgressBarFormProgressBar.Value += 1
+$script:ProgressBarSelectionForm.Refresh()
 
 # Selects the computers to query using command line parameters and arguments
 . "$Dependencies\Code\Execution\Command Line\Select-ComputersAndCommandsFromCommandLine.ps1"
@@ -7532,7 +7569,7 @@ $ComputerListExecuteButton.Add_Click($ExecuteScriptHandler)
 #Show the Form
 $script:ProgressBarFormProgressBar.Value = 40
 Start-Sleep -Seconds 1
-$ProgressBarSelectionForm.Hide()
+$script:ProgressBarSelectionForm.Hide()
 
 # Shows the GUI
 $PoShEasyWin.ShowDialog() | Out-Null 
@@ -7545,7 +7582,7 @@ Download at: https://GitHub.com/high101bro
 "
 
     $script:ProgressBarMessageLabel.text = "PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs!"
-    $ProgressBarSelectionForm.Refresh()
+    $script:ProgressBarSelectionForm.Refresh()
 
     $script:ProgressBarFormProgressBar.Value   = 0
     $script:ProgressBarFormProgressBar.Maximum = 40

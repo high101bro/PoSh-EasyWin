@@ -24,7 +24,6 @@ foreach ($TargetComputer in $script:ComputerList) {
     $FilesToSearch       = ($FileSearchFileSearchFileRichTextbox.Text).split("`r`n")
     $MaximumDepth        = $FileSearchFileSearchMaxDepthTextbox.text
 
-
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }           
 
