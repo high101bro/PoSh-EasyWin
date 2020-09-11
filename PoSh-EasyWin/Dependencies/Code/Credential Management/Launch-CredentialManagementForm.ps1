@@ -311,6 +311,8 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
         Checked  = $script:RollCredentialsState
     }
     $script:CredentialManagementPasswordRollingAccountCheckbox.Add_Click({ 
+        $This.Checked | Set-Content "$PoShHome\Settings\Role Credentials Checkbox.txt"
+
         if ($script:CredentialManagementActiveDirectoryTextBox.text -eq '' `
             -or $script:CredentialManagementPasswordRollingAccountTextBox.text -eq '' `
             -or $script:CredentialManagementPasswordDomainNameTextBox.text -eq '' `
@@ -481,7 +483,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     # Credential Management Password Domain Name
     #--------------------------------------------
     $CredentialManagementPasswordDomainNameLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text     = "Enter the Domain Name for the credential rolling account." 
+        Text     = "Enter the domain name for the credential rolling account." 
         Location = @{ X = $FormScale * 5
                       Y = $script:CredentialManagementActiveDirectoryButton.Location.Y + $script:CredentialManagementActiveDirectoryButton.Size.Height + $($FormScale * 10) }
         Size     = @{ Width  = $FormScale * 465
@@ -666,7 +668,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
                       Height = $FormScale * 25 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
-        Enabled    = $false
+        #Enabled    = $false
         BackColor = 'White'
     }
     $CredentialManagementPasswordRollingAccountGroupBox.Controls.Add($script:CredentialManagementGeneratedRollingPasswordTextBox)

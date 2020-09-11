@@ -318,9 +318,6 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
 # Website / URL for Character Art
 # http://patorjk.com/software/taag/#p=display&h=1&f=Standard&t=Script%20%20%20Execution
 
-# This variable maintains the state of Rolling Credentials
-$script:RollCredentialsState = $false
-$script:AdminCredsToRollPasswordState = $false
 
 # Keeps track of the number of RPC protocol commands selected, if the value is ever greater than one, it'll set the collection mode to 'Individual Execution'
 $script:RpcCommandCount = 0
@@ -465,6 +462,16 @@ $ScriptBlockForGuiLoadAndProgressBar = {
 
 # The Launch-ProgressBarForm.ps1 is topmost upon loading to ensure it's displayed intially, but is then able to be move unpon
 $ResolutionCheckForm.topmost = $false
+
+if (Test-Path "$PoShHome\Settings\Role Credentials Checkbox.txt") { 
+    # The follow value is used to update the $script:CredentialManagementPasswordRollingAccountCheckbox.Checked
+    # This variable also maintains the state of Rolling Credentials
+    if ((Get-Content "$PoShHome\Settings\Role Credentials Checkbox.txt") -match 'true') {$script:RollCredentialsState = $true}
+    else {$script:RollCredentialsState = $false}
+    
+}
+else {$script:RollCredentialsState = $False}
+$script:AdminCredsToRollPasswordState = $false
 
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()

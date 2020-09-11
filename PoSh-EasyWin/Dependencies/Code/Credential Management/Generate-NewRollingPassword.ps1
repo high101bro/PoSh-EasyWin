@@ -8,11 +8,13 @@ function Generate-NewRollingPassword {
     # Active Directory has a max password length of 256 characters
     # note: Previous versions had the random password set at 250 characters, but this was scalled back because during testing cmdkey doesn't seem to support anything larger
     $NumberOfCharacters = 32 #100 #150 #200 #250
+
+    #abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890`~!@#$%^&*()_+-=[]\{}|;:'",./<>?
     $GeneratedPassword  = Get-RandomCharacters -length $NumberOfCharacters -characters @"
 abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890 
 "@
-#abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890`~!@#$%^&*()_+-=[]\{}|;:'",./<>?
-$script:CredentialManagementGeneratedRollingPasswordTextBox.text = $GeneratedPassword
+
+    $script:CredentialManagementGeneratedRollingPasswordTextBox.text = $GeneratedPassword
     $SecurePassword         = ConvertTo-SecureString $GeneratedPassword -AsPlainText -Force
     $PoShEasyWinAccount     = $script:CredentialManagementPasswordRollingAccountTextBox.text
     $PoShEasyWinDomainName  = $script:CredentialManagementPasswordDomainNameTextBox.text
