@@ -1,5 +1,5 @@
 ==================================================
-v5.0.2 - 
+v5.0.2 - 14 Sep 2020
 ==================================================
 
 TO DO LIST: 
@@ -25,6 +25,9 @@ TO DO LIST:
 	keep trying to develop a solution to launch show-eventlog not within domain...
 	Add * support for directory in file search/hash search
 	Add comment that directory listing support c:/*/*/dir -- asterisks
+
+Added auto password rolling to dashboards
+	- all of them... for some reason I forgot to when I built them and added the imbedded update feature
 
 Added delay to auto password rolling
 	- delay = 3 Seconds

@@ -137,6 +137,11 @@ Elasped Time:  $($Timecount -replace '-','')"
         Monitor-Jobs -CollectionName $CollectionName
     }
 
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+        Start-Sleep -Seconds 3
+        Generate-NewRollingPassword 
+    }
+    
     Compile-CsvFiles -LocationOfCSVsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)\*.csv" `
                     -LocationToSaveCompiledCSV "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).csv"
 
