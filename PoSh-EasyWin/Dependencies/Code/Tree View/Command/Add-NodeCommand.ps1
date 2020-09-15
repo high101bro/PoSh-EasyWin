@@ -1,4 +1,4 @@
-function Add-CommandTreeNode { 
+function Add-NodeCommand { 
     param ( 
         $RootNode, 
         $Category,
@@ -18,7 +18,7 @@ function Add-CommandTreeNode {
     }
 
     If ($RootNode.Nodes.Tag -contains $Category) {
-        $HostNode = $RootNode.Nodes | Where-Object {$_.Tag -eq $Category}
+        $CommandNode = $RootNode.Nodes | Where-Object {$_.Tag -eq $Category}
     }
     Else {
         $CategoryNode = New-Object System.Windows.Forms.TreeNode -Property @{
@@ -86,7 +86,7 @@ Cons:      Not natively supported, requires PSExec.exe
         $CategoryNode.NodeFont   = New-Object System.Drawing.Font("Courier New",$($FormScale * 10),1,1,1)
         $CategoryNode.ForeColor  = [System.Drawing.Color]::FromArgb(0,0,0,0)
         $Null     = $RootNode.Nodes.Add($CategoryNode)
-        $HostNode = $RootNode.Nodes | Where-Object {$_.Tag -eq $Category}
+        $CommandNode = $RootNode.Nodes | Where-Object {$_.Tag -eq $Category}
     }
-    $Null = $HostNode.Nodes.Add($newNode)
+    $Null = $CommandNode.Nodes.Add($newNode)
 }

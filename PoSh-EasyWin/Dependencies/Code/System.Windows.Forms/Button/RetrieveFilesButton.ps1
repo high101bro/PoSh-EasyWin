@@ -184,8 +184,11 @@ $RetrieveFilesButtonAdd_Click = {
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Retrieved Files Saved To: $RetrieveFilesSaveDirectory"
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Retrieved Files From Endpoints Were Zipped To 'c:\Windows\Temp\' Then Removed"
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
-
+        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword 
+        }
+    
         if ($SelectedFilesToDownload) { Start-Sleep -Seconds 1;  Invoke-Item -Path $RetrieveFilesSaveDirectory }
         $PoShEasyWin.Refresh()
     }

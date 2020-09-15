@@ -1,5 +1,5 @@
 ==================================================
-v5.0.1 - 10 September 2020
+v5.0.2 - 
 ==================================================
 
 TO DO LIST: 
@@ -25,6 +25,35 @@ TO DO LIST:
 	keep trying to develop a solution to launch show-eventlog not within domain...
 	Add * support for directory in file search/hash search
 	Add comment that directory listing support c:/*/*/dir -- asterisks
+
+Added delay to auto password rolling
+	- delay = 3 Seconds
+
+Enumerations Tab
+	- Added checknbox to Scan from Checked Endpoints
+		- it auto enables/disables the other fields
+	- Rewrote the display code for the enumerations tab
+	- Removed Import from domain from Enumeration Tab
+		- Not needed as you can just import from AD with the Actions Tab
+
+Renamed functions for easier finding
+	- Add-CommandTreeNode  --> Add-NodeCommand
+	- Add-ComputerTreeNode --> Add-NodeComputer
+
+Change the following fonts to DarkRed in the computer treeview contextmenu
+	- Remote Desktop
+	- PSSession
+	- PSExec
+	- ICMP Ping
+	- RPC Port Check
+	- SMB Port Check
+	- WinRM Check
+
+==================================================
+v5.0.1 - 10 September 2020
+==================================================
+
+
 
 Made it so the green boxes under the action boxes green up whenever an endpoint is checked
 	- turns back to grey when no endpoints are selected

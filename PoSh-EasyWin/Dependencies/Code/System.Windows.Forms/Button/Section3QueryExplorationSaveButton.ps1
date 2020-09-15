@@ -112,7 +112,7 @@ $Section3QueryExplorationSaveButtonAdd_Click = {
         $script:CommandsTreeView.Nodes.Clear()
         Initialize-CommandTreeNodes
         View-CommandTreeNodeMethod
-        KeepChecked-CommandTreeNode
+        Update-TreeNodeCommandState
 
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
         $CommandTextBoxList = @($Section3QueryExplorationNameTextBox,$Section3QueryExplorationTagWordsTextBox,$Section3QueryExplorationWinRMPoShTextBox,$Section3QueryExplorationWinRMWMITextBox,$Section3QueryExplorationWinRMCmdTextBox,$Section3QueryExplorationRPCPoShTextBox,$Section3QueryExplorationRPCWMITextBox,$Section3QueryExplorationPropertiesPoshTextBox,$Section3QueryExplorationPropertiesWMITextBox,$Section3QueryExplorationWinRSWmicTextBox,$Section3QueryExplorationWinRSCmdTextBox,$Section3QueryExplorationDescriptionRichTextbox)

@@ -10,18 +10,23 @@ $ComputerTreeNodeOSHostnameRadioButtonAdd_Click = {
     foreach ($root in $AllHostsNode) { 
         foreach ($Category in $root.Nodes) {
             foreach ($Entry in $Category.nodes) { 
-                if ($Entry.Checked) { $script:ComputerTreeViewSelected += $Entry.Text }
+                if ($Entry.Checked) { 
+                    $script:ComputerTreeViewSelected += $Entry.Text 
+                }
             }
         }
     }
+
     $script:ComputerTreeView.Nodes.Clear()
     Initialize-ComputerTreeNodes
     Populate-ComputerTreeNodeDefaultData
     Save-HostData
     AutoSave-HostData
     
-    Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address }    
-    KeepChecked-ComputerTreeNode
+    Foreach($Computer in $script:ComputerTreeViewData) { 
+        Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
+    }    
+    Update-TreeNodeComputerState
     Conduct-NodeAction
 }
 

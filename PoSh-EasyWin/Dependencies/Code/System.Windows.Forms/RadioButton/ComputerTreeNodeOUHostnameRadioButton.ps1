@@ -22,8 +22,10 @@ $ComputerTreeNodeOUHostnameRadioButtonAdd_Click = {
     Populate-ComputerTreeNodeDefaultData
     AutoSave-HostData
 
-    Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
-    KeepChecked-ComputerTreeNode
+    Foreach($Computer in $script:ComputerTreeViewData) { 
+        Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer 
+    }
+    Update-TreeNodeComputerState
     Conduct-NodeAction
 }
 

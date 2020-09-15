@@ -26,17 +26,29 @@ $ComputerListPSSessionButtonAdd_Click = {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
             $Password = $script:Credential.GetNetworkCredential().Password
-            $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential")                        
-            start-process powershell -ArgumentList "-noexit Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object pscredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))"
+            #if ($UserName -like '*\*') {
+            #    $Name     = $UserName.split('\')[1]
+            #    $Domain   = $UserName.split('\')[0]
+            #    $UserName = "$Name@$Domain"
+            #}
+            #@($Password,$Username) | ogv
+            
+            $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential")
+            #Start-Process powershell -ArgumentList "-noexit -Command `"Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))`""
+            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))"
+            Start-Sleep -Seconds 3
         }
-
         else {
             $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected")
             Start-Process PowerShell -ArgumentList "-noexit Enter-PSSession -ComputerName $script:ComputerTreeViewSelected" 
+            Start-Sleep -Seconds 3
         }
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Enter-PSSession -ComputerName $($script:ComputerTreeViewSelected)"
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
+        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword 
+        }
     }
     else {
         [system.media.systemsounds]::Exclamation.play()

@@ -28,6 +28,7 @@ function Display-ContextMenuForComputerTreeNode {
 
     $ComputerListRemoteDesktopToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "Remote Desktop"
+        ForeColor = 'DarkRed'
         Add_CLick = $ComputerListRDPButtonAdd_Click
     }
     $ComputerListContextMenuStrip.Items.Add($ComputerListRemoteDesktopToolStripButton)
@@ -35,6 +36,7 @@ function Display-ContextMenuForComputerTreeNode {
 
     $ComputerListPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "PSSession"
+        ForeColor = 'DarkRed'
         Add_CLick = $ComputerListPSSessionButtonAdd_Click
     }
     $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionToolStripButton)
@@ -42,6 +44,7 @@ function Display-ContextMenuForComputerTreeNode {
 
     $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "PSExec"
+        ForeColor = 'DarkRed'
         Add_CLick = $ComputerListPsExecButtonAdd_Click
     }
     $ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
@@ -146,6 +149,7 @@ function Display-ContextMenuForComputerTreeNode {
 
         $ComputerListPingToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "   - ICMP Ping"
+            ForeColor = 'DarkRed'
             Add_CLick = $ComputerListPingToolStripButtonAdd_Click
         }
         $ComputerListContextMenuStrip.Items.Add($ComputerListPingToolStripButton)
@@ -153,6 +157,7 @@ function Display-ContextMenuForComputerTreeNode {
 
         $ComputerListRPCCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "   - RPC Port Check"
+            ForeColor = 'DarkRed'
             Add_CLick = $ComputerListRPCCheckToolStripButtonAdd_Click
         }
         $ComputerListContextMenuStrip.Items.Add($ComputerListRPCCheckToolStripButton)
@@ -160,6 +165,7 @@ function Display-ContextMenuForComputerTreeNode {
 
         $ComputerListSMBCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "   - SMB Port Check"
+            ForeColor = 'DarkRed'
             Add_CLick = $ComputerListSMBCheckToolStripButtonAdd_Click
         }
         $ComputerListContextMenuStrip.Items.Add($ComputerListSMBCheckToolStripButton)
@@ -167,6 +173,7 @@ function Display-ContextMenuForComputerTreeNode {
 
         $ComputerListWinRMCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "   - WinRM Check"
+            ForeColor = 'DarkRed'
             Add_CLick = $ComputerListWinRMCheckToolStripButtonAdd_Click
         }
         $ComputerListContextMenuStrip.Items.Add($ComputerListWinRMCheckToolStripButton)        

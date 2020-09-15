@@ -81,14 +81,18 @@ $ComputerListMoveSelectedToolStripButtonAdd_Click = {
         Initialize-ComputerTreeNodes
 
         if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-            Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+            Foreach($Computer in $script:ComputerTreeViewData) { 
+                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
+            }
         }
         elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
-            Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+            Foreach($Computer in $script:ComputerTreeViewData) { 
+                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
+            }
         }
         Remove-EmptyCategory
         Save-HostData
-        KeepChecked-ComputerTreeNode -NoMessage
+        Update-TreeNodeComputerState -NoMessage
 
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Moved:  $($script:EntrySelected.text)")
@@ -116,16 +120,20 @@ $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
             Initialize-ComputerTreeNodes
 
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-                Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+                Foreach($Computer in $script:ComputerTreeViewData) { 
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
+                }
             }
             elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
-                Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+                Foreach($Computer in $script:ComputerTreeViewData) { 
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
+                }
             }
             
             Remove-EmptyCategory
             AutoSave-HostData
             Save-HostData
-            KeepChecked-ComputerTreeNode -NoMessage
+            Update-TreeNodeComputerState -NoMessage
 
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Moved $($script:ComputerTreeNodeToMove.Count) Endpoints")

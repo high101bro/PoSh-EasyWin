@@ -468,7 +468,6 @@ if (Test-Path "$PoShHome\Settings\Role Credentials Checkbox.txt") {
     # This variable also maintains the state of Rolling Credentials
     if ((Get-Content "$PoShHome\Settings\Role Credentials Checkbox.txt") -match 'true') {$script:RollCredentialsState = $true}
     else {$script:RollCredentialsState = $false}
-    
 }
 else {$script:RollCredentialsState = $False}
 $script:AdminCredsToRollPasswordState = $false
@@ -740,10 +739,10 @@ $script:TreeeViewCommandsCount     = 0
 . "$Dependencies\Code\Tree View\Command\Initialize-CommandTreeNodes.ps1"
 
 # This will keep the Command TreeNodes checked when switching between Method and Command views
-. "$Dependencies\Code\Tree View\Command\KeepChecked-CommandTreeNode.ps1"
+. "$Dependencies\Code\Tree View\Command\Update-TreeNodeCommandState.ps1"
 
 # Adds a treenode to the specified root node... a command node within a category node
-. "$Dependencies\Code\Tree View\Command\Add-CommandTreeNode.ps1"
+. "$Dependencies\Code\Tree View\Command\Add-NodeCommand.ps1"
 
 $script:HostQueryTreeViewSelected = ""
 
@@ -765,7 +764,7 @@ $script:QueryHistory = Import-CliXml "$PoShHome\Query History.xml"
 function Update-QueryHistory {
     foreach ($Command in $script:QueryHistory) {
         $Command | Add-Member -MemberType NoteProperty -Name CategoryName -Value "$($Command.CategoryName)" -Force
-        Add-CommandTreeNode -RootNode $script:TreeNodePreviouslyExecutedCommands -Category "$($Command.CategoryName)" -Entry "$($Command.Name)" -ToolTip $Command.Command
+        Add-NodeCommand -RootNode $script:TreeNodePreviouslyExecutedCommands -Category "$($Command.CategoryName)" -Entry "$($Command.Name)" -ToolTip $Command.Command
     }
 }
 Update-QueryHistory
@@ -2095,15 +2094,38 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
 
 
         $FileSearchDirectoryListingLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = "Collection time is dependant on the directory's contents.`nPoSh v5+ for recursive depth, anything lower will do a full recursive listing."
+            Text   = "Collection time is dependant on the directory's contents."
             Left   = $FormScale * 3
             Top    = $FileSearchDirectoryListingCheckbox.Top + $FileSearchDirectoryListingCheckbox.Height + $($FormScale * 5)
-            Width  = $FormScale * 450
-            Height = $FormScale * 30
+            Width  = $FormScale * 330
+            Height = $FormScale * 22
             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ForeColor = "Black"
         }
         $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingLabel)
+
+
+        . "$Dependencies\Code\Main Body\Search-DirectoryTreeview.ps1"
+        $FileSearchSearchResultsButton = New-Object System.Windows.Forms.Button -Property @{
+            Text   = "Search Results"
+            Left   = $FileSearchDirectoryListingLabel.Left + $FileSearchDirectoryListingLabel.Width
+            Top    = $FileSearchDirectoryListingLabel.Top
+            Width  = $FormScale * 100
+            Height = $FormScale * 22
+            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            ForeColor = "Black"
+            Add_Click = { 
+                $FilSearchViewResultsOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
+                    Title = "Open Directory Files"
+                    Filter = "CSV (*.csv)| *.csv|XML (*.xml)| *.xml|All files (*.*)|*.*"
+                    InitialDirectory = $ExecAndScriptDir
+                }
+                $FilSearchViewResultsOpenFileDialog.ShowDialog()   
+                Search-DirectoryTreeView -Input $(Import-Csv $FilSearchViewResultsOpenFileDialog.FileName | ForEach-Object {$_.FullName.Trim("\")} )
+            }
+        }
+        $Section1FileSearchTab.Controls.Add($FileSearchSearchResultsButton)
+        CommonButtonSettings -Button $FileSearchSearchResultsButton
 
 
         . "$Dependencies\Code\System.Windows.Forms\TextBox\FileSearchDirectoryListingTextbox.ps1"
@@ -2164,11 +2186,11 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
 
 
         $FileSearchFileSearchLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = "Collection time depends on the number of files and directories, plus recursive depth.`nPoSh v5+ for recursive depth, anything lower will do a full recursive search."
+            Text   = "Collection time depends on the number of files and directories, plus recursive depth."
             Left   = $FormScale * 3
             Top    = $FileSearchFileSearchMaxDepthTextbox.Top + $FileSearchFileSearchMaxDepthTextbox.Height + $($FormScale * 2)
             Width  = $FormScale * 450
-            Height = $FormScale * 30
+            Height = $FormScale * 22
             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ForeColor = "Black"
         }
@@ -3656,98 +3678,24 @@ $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
 
 $EnumerationRightPosition     = 3
-$EnumerationDownPosition      = 0
 $EnumerationLabelWidth        = 450
 $EnumerationLabelHeight       = 25
 $EnumerationGroupGap          = 15
-
+#batman
 $Section1EnumerationTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Name     = "Enumeration"
-    Text     = "Enumeration"
-    Location = @{ X = $FormScale * $EnumerationRightPosition
-                  Y = $FormScale * $EnumerationDownPosition }
-    Size     = @{ Width  = $FormScale * $EnumerationLabelWidth
-                  Height = $FormScale * $EnumerationLabelHeight }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Name   = "Enumeration"
+    Text   = "Enumeration"
+    Left   = $FormScale * $EnumerationRightPosition
+    Top    = 0
+    Width  = $FormScale * $EnumerationLabelWidth
+    Height = $FormScale * $EnumerationLabelHeight
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
 $MainLeftTabControl.Controls.Add($Section1EnumerationTab)
 
-$EnumerationDownPosition += 13
-
-
 # Enumeration - Domain Generated Input Check
 . "$Dependencies\Code\Execution\Enumeration\InputCheck-EnumerationByDomainImport.ps1"
-
-
-$EnumerationDomainGenerateGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    text      = "Import Hosts From Domain"
-    Location  = @{ X = $FormScale * 0
-                   Y = $FormScale * $EnumerationDownPosition }
-    Size      = @{ Width  = $FormScale * 294
-                   Height = $FormScale * 100 }
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-    ForeColor = "Blue"
-}
-            $EnumerationDomainGenerateDownPosition      = 18
-            $EnumerationDomainGenerateDownPositionShift = 25
-
-
-            $EnumerationDomainGeneratedLabelNote = New-Object System.Windows.Forms.Label -Property @{
-                Text      = "This host must be domained for this feature."    
-                Location  = @{ X = $FormScale * $EnumerationRightPosition
-                            Y = $FormScale * $EnumerationDomainGenerateDownPosition + 3 }
-                Size      = @{ Width  = $FormScale * 220
-                            Height = $FormScale * 22 }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
-                ForeColor = "Black"
-            }
-            $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedLabelNote)  
-
-
-            . "$Dependencies\Code\System.Windows.Forms\Checkbox\EnumerationDomainGeneratedAutoCheckBox.ps1"
-            $EnumerationDomainGeneratedAutoCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-                Text      = "Auto Pull"
-                Location  = @{ X = $EnumerationDomainGeneratedLabelNote.Size.Width + $($FormScale * 3)
-                            Y = $FormScale * $EnumerationDomainGenerateDownPosition - 1 }
-                Size      = @{ Width  = $FormScale * 70
-                            Height = $FormScale * $EnumerationLabelHeight }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
-                ForeColor = "Black"
-                Add_Click = $EnumerationDomainGeneratedAutoCheckBoxAdd_Click
-            }
-            $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedAutoCheckBox)
-
-            $EnumerationDomainGenerateDownPosition += $EnumerationDomainGenerateDownPositionShift
-
-
-            $EnumerationDomainGeneratedTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text      = "<Domain Name>"
-                Location  = @{ X = $FormScale * $EnumerationRightPosition
-                            Y = $FormScale * $EnumerationDomainGenerateDownPosition }
-                Size      = @{ Width  = $FormScale * 286
-                            Height = $FormScale * $EnumerationLabelHeight }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
-                ForeColor = "Black"
-                Add_KeyDown = { if ($_.KeyCode -eq "Enter") { InputCheck-EnumerationByDomainImport } }
-            }
-            $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedTextBox)
-
-            $EnumerationDomainGenerateDownPosition += $EnumerationDomainGenerateDownPositionShift
-
-
-            $EnumerationDomainGeneratedListButton = New-Object System.Windows.Forms.Button -Property @{
-                Text      = "Import Hosts"
-                Location  = @{ X = $FormScale * 190
-                            Y = $FormScale * $EnumerationDomainGenerateDownPosition - 1 }
-                Size      = @{ Width  = $FormScale * 100
-                            Height = $FormScale * 22 }
-                Add_Click = { InputCheck-EnumerationByDomainImport }
-            }
-            $EnumerationDomainGenerateGroupBox.Controls.Add($EnumerationDomainGeneratedListButton) 
-            CommonButtonSettings -Button $EnumerationDomainGeneratedListButton
-$Section1EnumerationTab.Controls.Add($EnumerationDomainGenerateGroupBox)
-
 
 #============================================================================================================================================================
 # Enumeration - Port Scanning
@@ -3764,49 +3712,62 @@ if (!(Test-Path $CustomPortsToScan)) {
 
 
 $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Text      = "Create List From TCP Port Scan"
-    Location = @{ X = 0
-                  Y = $EnumerationDomainGenerateGroupBox.Location.Y + $EnumerationDomainGenerateGroupBox.Size.Height + $($FormScale * $EnumerationGroupGap) }
-    Size     = @{ Width  = $FormScale * 294
-                  Height = $FormScale * 310 }
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    Text   = "Create List From TCP Port Scan"
+    Left   = 0
+    Top    = $FormScale * 13
+    Width  = $FormScale * 294
+    Height = $FormScale * 300
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
-           $EnumerationPortScanGroupDownPosition      = 18
-           $EnumerationPortScanGroupDownPositionShift = 25
-    
+           $script:EnumerationPortScanSpecificComputerNodeCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
+                Text   = "Scan Endpoints That Are Checkboxed"
+                Left   = $FormScale * 3
+                Top    = $FormScale * 15
+                Width  = $FormScale * 287
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ForeColor     = "Black"
+                Add_Click = { 
+                    if ($this.checked){  
+                        $EnumerationPortScanSpecificIPTextbox.enabled     = $false
+                        $EnumerationPortScanIPRangeNetworkTextbox.enabled = $false
+                        $EnumerationPortScanIPRangeFirstTextbox.enabled   = $false
+                        $EnumerationPortScanIPRangeLastTextbox.enabled    = $false
+                        $EnumerationPortScanSpecificIPTextbox.text     = ""
+                        $EnumerationPortScanIPRangeNetworkTextbox.text = ""
+                        $EnumerationPortScanIPRangeFirstTextbox.text   = ""
+                        $EnumerationPortScanIPRangeLastTextbox.text    = ""
+                    }
+                    else {
+                        $EnumerationPortScanSpecificIPTextbox.enabled     = $true
+                        $EnumerationPortScanIPRangeNetworkTextbox.enabled = $true
+                        $EnumerationPortScanIPRangeFirstTextbox.enabled   = $true
+                        $EnumerationPortScanIPRangeLastTextbox.enabled    = $true
+                    }
+                }
+            }
+            $EnumerationPortScanGroupBox.Controls.Add($script:EnumerationPortScanSpecificComputerNodeCheckbox)
+
 
             $EnumerationPortScanIPNote1Label = New-Object System.Windows.Forms.Label -Property @{
-                Text       = "Enter Comma Separated IPs"
-                Location  = @{ X = $FormScale * $EnumerationRightPosition
-                            Y = $FormScale * $EnumerationPortScanGroupDownPosition + 3 }
-                Size      = @{ Width  = $FormScale * 170
-                            Height = $FormScale * 22 }
-                Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "Enter Comma Separated IPs (ex: 10.0.0.1,10.0.0.2)"
+                Left   = $script:EnumerationPortScanSpecificComputerNodeCheckbox.Left
+                Top    = $script:EnumerationPortScanSpecificComputerNodeCheckbox.Top + $script:EnumerationPortScanSpecificComputerNodeCheckbox.Height
+                Width  = $FormScale * 250
+                Height = $FormScale * 20
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor  = "Black"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPNote1Label)
 
-
-            $EnumerationPortScanIPNote2Label = New-Object System.Windows.Forms.Label -Property @{
-                Text       = "(ex: 10.0.0.1,10.0.0.2)"
-                Location  = @{ X = $EnumerationPortScanIPNote1Label.Size.Width + $($FormScale * 3)
-                            Y = $FormScale * $EnumerationPortScanGroupDownPosition + 4 }
-                Size      = @{ Width  = $FormScale * 110
-                            Height = $FormScale * 20 }
-                Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
-                ForeColor  = "Black"
-            }
-            $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPNote2Label)
-            $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
-
-            
+        
             $EnumerationPortScanSpecificIPTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text          = ""
-                Location  = @{ X = $FormScale * $EnumerationRightPosition
-                            Y = $FormScale * $EnumerationPortScanGroupDownPosition }
-                Size      = @{ Width  = $FormScale * 287
-                            Height = $FormScale * 22 }
+                Text   = ""
+                Left   = $EnumerationPortScanIPNote1Label.Left
+                Top    = $EnumerationPortScanIPNote1Label.Top + $EnumerationPortScanIPNote1Label.Height
+                Width  = $FormScale * 287
+                Height = $FormScale * 22
                 MultiLine     = $False
                 WordWrap      = $True
                 AcceptsTab    = $false
@@ -3816,41 +3777,37 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificIPTextbox)
 
-            $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
-
             
             $EnumerationPortScanIPRangeNote1Label = New-Object System.Windows.Forms.Label -Property @{
-                Text       = "Network Range:  (ex: [ 192.168.1 ]  [ 1 ]  [ 100 ])"
-                Location  = @{ X = $FormScale * $EnumerationRightPosition
-                            Y = $FormScale * $EnumerationPortScanGroupDownPosition + 3 }
-                Size      = @{ Width  = $FormScale * 250
-                            Height = $FormScale * 22 }
-                Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Text   = "Network Range:  (ex: [ 192.168.1 ]  [ 1 ]  [ 100 ])"
+                Left   = $EnumerationPortScanSpecificIPTextbox.Left
+                Top    = $EnumerationPortScanSpecificIPTextbox.Top + $EnumerationPortScanSpecificIPTextbox.Height + ($FormScale + 5)
+                Width  = $FormScale * 250
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor  = "Blue"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNote1Label)
 
 
             $EnumerationPortScanIPRangeNetworkLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text      = "Network"
-                Location  = @{ X = $EnumerationPortScanIPNote1Label.Location.X
-                            Y = $EnumerationPortScanIPRangeNote1Label.Location.Y + $EnumerationPortScanIPRangeNote1Label.Size.Height }
-                Size      = @{ Width  = $FormScale * 80
-                            Height = $FormScale * 22 }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "Network"
+                Left   = $EnumerationPortScanIPRangeNote1Label.left
+                Top    = $EnumerationPortScanIPRangeNote1Label.Top + $EnumerationPortScanIPRangeNote1Label.Height
+                Width  = $FormScale * 80
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor = "Black"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNetworkLabel)
 
-            $RightShift += $EnumerationPortScanIPRangeNetworkLabel.Size.Width
-
 
             $EnumerationPortScanIPRangeNetworkTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text          = ""
-                Location  = @{ X = $EnumerationPortScanIPRangeNetworkLabel.Location.X
-                            Y = $EnumerationPortScanIPRangeNetworkLabel.Location.Y + $EnumerationPortScanIPRangeNetworkLabel.Size.Height }
-                Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
-                            Height = $FormScale * 22 }
+                Text   = ""
+                Left   = $EnumerationPortScanIPRangeNetworkLabel.Left
+                Top    = $EnumerationPortScanIPRangeNetworkLabel.Top + $EnumerationPortScanIPRangeNetworkLabel.Height
+                Width  = $EnumerationPortScanIPRangeNetworkLabel.Width
+                Height = $FormScale * 22
                 MultiLine     = $False
                 WordWrap      = $True
                 AcceptsTab    = $false
@@ -3860,29 +3817,25 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNetworkTextbox)
 
-            $RightShift += $EnumerationPortScanIPRangeNetworkTextbox.Size.Width
-
 
             $EnumerationPortScanIPRangeFirstLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text      = "First IP"
-                Location  = @{ X = $EnumerationPortScanIPRangeNetworkLabel.Location.X + $EnumerationPortScanIPRangeNetworkLabel.Size.Width + $($FormScale * 20)
-                            Y = $EnumerationPortScanIPRangeNetworkLabel.Location.Y }
-                Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
-                            Height = $FormScale * 22 }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "First IP"
+                Left   = $EnumerationPortScanIPRangeNetworkTextbox.Left  + $EnumerationPortScanIPRangeNetworkTextbox.Width + $($FormScale * 20)
+                Top    = $EnumerationPortScanIPRangeNetworkLabel.Top
+                Width  = $EnumerationPortScanIPRangeNetworkLabel.Width
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor = "Black"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeFirstLabel)
 
-            $RightShift += $EnumerationPortScanIPRangeFirstLabel.Size.Width
-
 
             $EnumerationPortScanIPRangeFirstTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text          = ""
-                Location  = @{ X = $EnumerationPortScanIPRangeFirstLabel.Location.X
-                            Y = $EnumerationPortScanIPRangeFirstLabel.Location.Y + $EnumerationPortScanIPRangeFirstLabel.Size.Height }
-                Size      = @{ Width  = $EnumerationPortScanIPRangeFirstLabel.Size.Width
-                            Height = $FormScale * 22 }
+                Text   = ""
+                Left   = $EnumerationPortScanIPRangeFirstLabel.Left
+                Top    = $EnumerationPortScanIPRangeFirstLabel.Top + $EnumerationPortScanIPRangeFirstLabel.Height
+                Width  = $EnumerationPortScanIPRangeFirstLabel.Width
+                Height = $FormScale * 22
                 MultiLine     = $False
                 WordWrap      = $True
                 AcceptsTab    = $false
@@ -3892,29 +3845,25 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeFirstTextbox)
 
-            $RightShift += $EnumerationPortScanIPRangeFirstTextbox.Size.Width
-
             
             $EnumerationPortScanIPRangeLastLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text      = "Last IP"
-                Location  = @{ X = $EnumerationPortScanIPRangeFirstLabel.Location.X + $EnumerationPortScanIPRangeFirstLabel.Size.Width + $($FormScale * 20)
-                            Y = $EnumerationPortScanIPRangeFirstLabel.Location.Y }
-                Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
-                            Height = $FormScale * 22 }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "Last IP"
+                Left   = $EnumerationPortScanIPRangeFirstLabel.Left + $EnumerationPortScanIPRangeFirstLabel.Width + $($FormScale * 20)
+                Top    = $EnumerationPortScanIPRangeFirstLabel.Top
+                Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor = "Black"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeLastLabel)
-
-            $RightShift += $EnumerationPortScanIPRangeLastLabel.Size.Width
             
 
             $EnumerationPortScanIPRangeLastTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text          = ""
-                Location  = @{ X = $EnumerationPortScanIPRangeLastLabel.Location.X
-                            Y = $EnumerationPortScanIPRangeLastLabel.Location.Y + $EnumerationPortScanIPRangeLastLabel.Size.Height }
-                Size      = @{ Width  = $EnumerationPortScanIPRangeLastLabel.Size.Width
-                            Height = $FormScale * 20 }
+                Text   = ""
+                Left   = $EnumerationPortScanIPRangeLastLabel.Left
+                Top    = $EnumerationPortScanIPRangeLastLabel.Top + $EnumerationPortScanIPRangeLastLabel.Height
+                Width  = $EnumerationPortScanIPRangeLastLabel.Size.Width
+                Height = $FormScale * 20
                 MultiLine     = $False
                 WordWrap      = $True
                 AcceptsTab    = $false
@@ -3924,27 +3873,25 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeLastTextbox)
 
-            $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
-
 
             $EnumerationPortScanPortNote1Label = New-Object System.Windows.Forms.Label -Property @{
-                Text       = "Comma Separated Ports:  (ex: 22,80,135,445)"
-                Location  = @{ X = $FormScale * $EnumerationRightPosition
-                            Y = $EnumerationPortScanIPRangeLastTextbox.Location.Y + $EnumerationPortScanIPRangeLastTextbox.Size.Height + $($FormScale * 5) }
-                Size      = @{ Width  = $FormScale * 290
-                            Height = $FormScale * 22 }
-                Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Text   = "Comma Separated Ports:  (ex: 22,80,135,445)"
+                Left   = $EnumerationPortScanIPRangeNetworkLabel.Left
+                Top    = $EnumerationPortScanIPRangeLastTextbox.Top + $EnumerationPortScanIPRangeLastTextbox.Height + $($FormScale * 5)
+                Width  = $FormScale * 290
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor  = "Blue"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortNote1Label)
 
 
             $EnumerationPortScanSpecificPortsTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text          = ""
-                Location  = @{ X = $FormScale * $EnumerationRightPosition
-                            Y = $EnumerationPortScanPortNote1Label.Location.Y + $EnumerationPortScanPortNote1Label.Size.Height }
-                Size      = @{ Width  = $FormScale * 288
-                            Height = $FormScale * 22 }
+                Text   = ""
+                Left   = $EnumerationPortScanPortNote1Label.Left
+                Top    = $EnumerationPortScanPortNote1Label.Top + $EnumerationPortScanPortNote1Label.Height
+                Width  = $FormScale * 288
+                Height = $FormScale * 22
                 MultiLine     = $False
                 WordWrap      = $True
                 AcceptsTab    = $false
@@ -3954,17 +3901,15 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificPortsTextbox)
 
-            $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
-
 
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\EnumerationPortScanPortQuickPickComboBox.ps1"
             $EnumerationPortScanPortQuickPickComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                Text          = "Quick-Pick Port Selection"
-                Location  = @{ X = $FormScale * $EnumerationRightPosition
-                            Y = $EnumerationPortScanSpecificPortsTextbox.Location.Y + $EnumerationPortScanSpecificPortsTextbox.Size.Height + $($FormScale * 10) }
-                Size      = @{ Width  = $FormScale * 183
-                            Height = $FormScale * 20 }
-                Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "Quick-Pick Port Selection"
+                Left   = $EnumerationPortScanSpecificPortsTextbox.Left
+                Top    = $EnumerationPortScanSpecificPortsTextbox.Top + $EnumerationPortScanSpecificPortsTextbox.Height + $($FormScale * 10)
+                Width  = $FormScale * 183
+                Height = $FormScale * 20
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
                 Add_Click = $EnumerationPortScanPortQuickPickComboBoxAdd_Click
             }
@@ -3974,53 +3919,47 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
 
             . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPortScanPortsSelectionButton.ps1"
             $EnumerationPortScanPortsSelectionButton = New-Object System.Windows.Forms.Button -Property @{
-                Text      = "Select Ports"
-                Location  = @{ X = $EnumerationPortScanPortQuickPickComboBox.Size.Width + $($FormScale * 8)
-                            Y = $EnumerationPortScanPortQuickPickComboBox.Location.Y }
-                Size      = @{ Width  = $FormScale * 100
-                            Height = $FormScale * 20 }
+                Text   = "Select Ports"
+                Left   = $EnumerationPortScanPortQuickPickComboBox.Left + $EnumerationPortScanPortQuickPickComboBox.Width + $($FormScale * 4)
+                Top    = $EnumerationPortScanPortQuickPickComboBox.Top
+                Width  = $FormScale * 100
+                Height = $FormScale * 20
                 Add_Click = $EnumerationPortScanPortsSelectionButtonAdd_Click
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortsSelectionButton) 
             CommonButtonSettings -Button $EnumerationPortScanPortsSelectionButton
 
-            $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
-            $EnumerationPortScanRightShift = $EnumerationRightPosition
-
 
             $EnumerationPortScanPortRangeNetworkLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text      = "Port Range"
-                Location  = @{ X = $FormScale * $EnumerationPortScanRightShift
-                            Y = $EnumerationPortScanPortsSelectionButton.Location.Y + $EnumerationPortScanPortsSelectionButton.Size.Height + $($FormScale * 10) }
-                Size      = @{ Width  = $FormScale * 83
-                            Height = $FormScale * 22 }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "Port Range"
+                Left   = $EnumerationPortScanPortQuickPickComboBox.Left
+                Top    = $EnumerationPortScanPortsSelectionButton.Top + $EnumerationPortScanPortsSelectionButton.Height + ($FormScale + 10)
+                Width  = $FormScale * 83
+                Height = $FormScale * 20
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor = "Blue"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeNetworkLabel)
 
-            $EnumerationPortScanRightShift += $EnumerationPortScanPortRangeNetworkLabel.Size.Width
-
 
             $EnumerationPortScanPortRangeFirstLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text      = "First Port"
-                Location  = @{ X = $EnumerationPortScanIPRangeFirstLabel.Location.X
-                            Y = $EnumerationPortScanPortRangeNetworkLabel.Location.Y }
-                Size      = @{ Width  = $EnumerationPortScanIPRangeFirstLabel.Size.Width
-                            Height = $FormScale * 22 }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "First Port"
+                Left   = $EnumerationPortScanIPRangeFirstLabel.Left
+                Top    = $EnumerationPortScanPortRangeNetworkLabel.Top
+                Width  = $EnumerationPortScanIPRangeFirstLabel.Width
+                Height = $FormScale * 20
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor = "Black"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeFirstLabel)
 
-            $EnumerationPortScanRightShift += $EnumerationPortScanPortRangeFirstLabel.Size.Width
 
             $EnumerationPortScanPortRangeFirstTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text          = ""
-                Location  = @{ X = $EnumerationPortScanPortRangeFirstLabel.Location.X
-                            Y = $EnumerationPortScanPortRangeFirstLabel.Location.Y + $EnumerationPortScanPortRangeFirstLabel.Size.Height }
-                Size      = @{ Width  = $EnumerationPortScanPortRangeFirstLabel.Size.Width
-                            Height = $FormScale * 22 }
+                Text   = ""
+                Left   = $EnumerationPortScanPortRangeFirstLabel.Left
+                Top    = $EnumerationPortScanPortRangeFirstLabel.Top + $EnumerationPortScanPortRangeFirstLabel.Height
+                Width  = $EnumerationPortScanPortRangeFirstLabel.Width
+                Height = $FormScale * 22
                 MultiLine     = $False
                 WordWrap      = $True
                 AcceptsTab    = $false # Allows you to enter in tabs into the textbox
@@ -4030,29 +3969,25 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeFirstTextbox)
 
-            $EnumerationPortScanRightShift += $EnumerationPortScanPortRangeFirstTextbox.Size.Width + 4
-
             
             $EnumerationPortScanPortRangeLastLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text      = "Last Port"
-                Location  = @{ X = $EnumerationPortScanIPRangeLastLabel.Location.X
-                            Y = $EnumerationPortScanPortRangeFirstLabel.Location.Y }
-                Size      = @{ Width  = $EnumerationPortScanPortRangeFirstTextbox.Size.Width
-                            Height = $FormScale * 22 }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "Last Port"
+                Left   = $EnumerationPortScanIPRangeLastLabel.Left
+                Top    = $EnumerationPortScanPortRangeFirstLabel.Top
+                Width  = $EnumerationPortScanPortRangeFirstTextbox.Width
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor = "Black"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeLastLabel)
 
-            $EnumerationPortScanRightShift += $EnumerationPortScanPortRangeLastLabel.Size.Width
-
 
             $EnumerationPortScanPortRangeLastTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text          = ""
-                Location  = @{ X = $EnumerationPortScanPortRangeLastLabel.Location.X
-                            Y = $EnumerationPortScanPortRangeLastLabel.Location.Y + $EnumerationPortScanPortRangeLastLabel.Size.Height}
-                Size      = @{ Width  = $EnumerationPortScanPortRangeLastLabel.Size.Width
-                            Height = $FormScale * 22 }
+                Text   = ""
+                Left   = $EnumerationPortScanPortRangeLastLabel.Left
+                Top    = $EnumerationPortScanPortRangeLastLabel.Top + $EnumerationPortScanPortRangeLastLabel.Height
+                Width  = $EnumerationPortScanPortRangeLastLabel.Width
+                Height = $FormScale * 22
                 MultiLine     = $False
                 WordWrap      = $True
                 AcceptsTab    = $false # Allows you to enter in tabs into the textbox
@@ -4062,43 +3997,38 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeLastTextbox)
 
-            $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
-            $EnumerationPortScanRightShift = $EnumerationRightPosition
 
             $EnumerationPortScanTestICMPFirstCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
-                Text      = "Test ICMP`r`nFirst (ping)"
-                Location  = @{ X = $EnumerationPortScanPortRangeNetworkLabel.Location.X
-                            Y = $EnumerationPortScanPortRangeLastTextbox.Location.Y + $EnumerationPortScanPortRangeLastTextbox.Size.Height + $($FormScale * 10) }
-                Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
-                            Height = $FormScale * 22 }
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "Ping First"
+                Left   = $EnumerationPortScanPortRangeNetworkLabel.Left
+                Top    = $EnumerationPortScanPortRangeLastTextbox.Top + $EnumerationPortScanPortRangeLastTextbox.Height + ($FormScale * 5)
+                Width  = $EnumerationPortScanIPRangeNetworkLabel.Size.Width
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor = "Black"
                 Checked   = $False
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTestICMPFirstCheckBox)
 
-            $EnumerationPortScanRightShift += $EnumerationPortScanTestICMPFirstCheckBox.Size.Width + 32
-
             
             $EnumerationPortScanTimeoutLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text      = "Timeout (ms)"
-                Location  = @{ X = $EnumerationPortScanPortRangeFirstLabel.Location.X
-                            Y = $EnumerationPortScanTestICMPFirstCheckBox.Location.Y }
-                Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkTextbox.Size.Width
-                            Height = $FormScale * 22 }
+                Text   = "Timeout (ms)"
+                Left   = $EnumerationPortScanPortRangeFirstLabel.Left
+                Top    = $EnumerationPortScanTestICMPFirstCheckBox.Top
+                Width  = $EnumerationPortScanIPRangeNetworkTextbox.Width
+                Height = $FormScale * 20
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor = "Black"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTimeoutLabel)
 
-            $EnumerationPortScanRightShift += $EnumerationPortScanTimeoutLabel.Size.Width
 
             $EnumerationPortScanTimeoutTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text      = 50
-                Location  = @{ X = $EnumerationPortScanTimeoutLabel.Location.X
-                            Y = $EnumerationPortScanTimeoutLabel.Location.Y + $EnumerationPortScanTimeoutLabel.Size.Height }
-                Size      = @{ Width  = $EnumerationPortScanIPRangeNetworkTextbox.Size.Width
-                            Height = $FormScale * 22 }
+                Text   = 50
+                Left   = $EnumerationPortScanTimeoutLabel.Left
+                Top    = $EnumerationPortScanTimeoutLabel.Top + $EnumerationPortScanTimeoutLabel.Height
+                Width  = $EnumerationPortScanIPRangeNetworkTextbox.Width
+                Height = $FormScale * 22
                 MultiLine     = $False
                 WordWrap      = $True
                 AcceptsTab    = $false
@@ -4108,17 +4038,14 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTimeoutTextbox)
 
-            $EnumerationPortScanRightShift        += $EnumerationPortScanTimeoutTextbox.Size.Width
-            $EnumerationPortScanGroupDownPosition += $EnumerationPortScanGroupDownPositionShift
-
 
             . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPortScanExecutionButton.ps1"
             $EnumerationPortScanExecutionButton = New-Object System.Windows.Forms.Button -Property @{
-                Text      = "Execute Scan"
-                Location  = @{ X = $FormScale * 190
-                            Y = $EnumerationPortScanTimeoutTextbox.Location.Y }
-                Size      = @{ Width  = $FormScale * 100
-                            Height = $FormScale * 22 }
+                Text   = "Execute Scan"
+                Left   = $FormScale * 190
+                Top    = $EnumerationPortScanTimeoutTextbox.Top
+                Width  = $FormScale * 100
+                Height = $FormScale * 22
                 Add_Click = $EnumerationPortScanExecutionButtonAdd_Click
                 Add_MouseHover = {
 Show-ToolTip -Title "Execute Scan" -Icon "Info" -Message @"
@@ -4143,49 +4070,33 @@ $Section1EnumerationTab.Controls.Add($EnumerationPortScanGroupBox)
 
 # Create a group that will contain your radio buttons
 $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Text      = "Create List From Ping Sweep"
-    Location  = @{ X = 0
-                   Y = $EnumerationPortScanGroupBox.Location.Y + $EnumerationPortScanGroupBox.Size.Height + $($FormScale * $EnumerationGroupGap) }
-    Size      = @{ Width  = $FormScale * 294
-                   Height = $FormScale * 70 }
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    Text   = "Create List From Ping Sweep"
+    Left   = 0
+    Top    = $EnumerationPortScanGroupBox.Top + $EnumerationPortScanGroupBox.Height + $($FormScale * $EnumerationGroupGap)
+    Width  = $FormScale * 294
+    Height = $FormScale * 70
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
-            $EnumerationPingSweepGroupDownPosition      = 18
-            $EnumerationPingSweepGroupDownPositionShift = 25
-
-
             $EnumerationPingSweepNote1Label = New-Object System.Windows.Forms.Label -Property @{
-                Text       = "Enter Network/CIDR:"
-                Location  = @{ X = $FormScale * $EnumerationRightPosition
-                            Y = $FormScale * $EnumerationPingSweepGroupDownPosition + 3 }
-                Size      = @{ Width  = $FormScale * 105
-                            Height = $FormScale * 22 }
-                Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+                Text   = "Enter Network/CIDR: (ex: 10.0.0.0/24)"
+                Left   = $FormScale * 3
+                Top    = $FormScale * 20
+                Width  = $FormScale * 180
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor  = "Black"
             }
             $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepNote1Label)
 
-            
-            $EnumerationPingSweepNote2Label = New-Object System.Windows.Forms.Label -Property @{
-                Text       = "(ex: 10.0.0.0/24)"
-                Location  = @{ X = $EnumerationPingSweepNote1Label.Size.Width + $($FormScale * 5)
-                            Y = $EnumerationPingSweepGroupDownPosition + $($FormScale * 4) }
-                Size      = @{ Width  = $FormScale * 80
-                            Height = $FormScale * 22 }
-                Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
-                ForeColor  = "Black"
-            }
-            $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepNote2Label)
-
 
             . "$Dependencies\Code\System.Windows.Forms\TextBox\EnumerationPingSweepIPNetworkCIDRTextbox.ps1"
             $EnumerationPingSweepIPNetworkCIDRTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text          = ""
-                Location  = @{ X = $FormScale * 190
-                            Y = $FormScale * $EnumerationPingSweepGroupDownPosition }
-                Size      = @{ Width  = $FormScale * 100
-                            Height = $FormScale * $EnumerationLabelHeight }
+                Text   = ""
+                Left   = $FormScale * 190
+                Top    = $EnumerationPingSweepNote1Label.Top 
+                Width  = $FormScale * 100
+                Height = $FormScale * $EnumerationLabelHeight
                 MultiLine     = $False
                 WordWrap      = $True
                 AcceptsTab    = $false
@@ -4196,16 +4107,14 @@ $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
             }
             $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepIPNetworkCIDRTextbox)
 
-            $EnumerationPingSweepGroupDownPosition += $EnumerationPingSweepGroupDownPositionShift
-
 
             . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationPingSweepExecutionButton.ps1"
             $EnumerationPingSweepExecutionButton = New-Object System.Windows.Forms.Button -Property @{
-                Text      = "Execute Sweep"
-                Location  = @{ X = $FormScale * 190
-                            Y = $FormScale * $EnumerationPingSweepGroupDownPosition }
-                Size      = @{ Width  = $FormScale * 100
-                            Height = $FormScale * 22 }
+                Text   = "Execute Sweep"
+                Left   = $EnumerationPingSweepIPNetworkCIDRTextbox.Left
+                Top    = $EnumerationPingSweepIPNetworkCIDRTextbox.Top + $EnumerationPingSweepIPNetworkCIDRTextbox.Height + ($FormScale * 8)
+                Width  = $FormScale * 100
+                Height = $FormScale * 22
                 Add_Click = $EnumerationPingSweepExecutionButtonAdd_Click
             }
             $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepExecutionButton) 
@@ -4215,11 +4124,11 @@ $Section1EnumerationTab.Controls.Add($EnumerationPingSweepGroupBox)
 
 . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationResolveDNSNameButton.ps1"
 $EnumerationResolveDNSNameButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "DNS Resolution"
-    Location  = @{ X = $FormScale * 296
-                   Y = $FormScale * 19 }
-    Size      = @{ Width  = $FormScale * 152
-                   Height = $FormScale * 22 }
+    Text   = "DNS Resolution"
+    Left   = $EnumerationPortScanGroupBox.Left + $EnumerationPortScanGroupBox.Width + ($FormScale + 15)
+    Top    = $EnumerationPortScanGroupBox.Top + ($FormScale + 13)
+    Width  = $FormScale * 152
+    Height = $FormScale * 22
     Add_Click = $EnumerationResolveDNSNameButtonAdd_Click
 }
 $Section1EnumerationTab.Controls.Add($EnumerationResolveDNSNameButton) 
@@ -4227,11 +4136,11 @@ CommonButtonSettings -Button $EnumerationResolveDNSNameButton
 
 
 $EnumerationComputerListBox = New-Object System.Windows.Forms.ListBox -Property @{
-    Location  = @{ X = $FormScale * 297
-                   Y = $EnumerationResolveDNSNameButton.Location.Y + $EnumerationResolveDNSNameButton.Size.Height + $($FormScale * 5) }
-    Size      = @{ Width  = $FormScale * 150
-                   Height = $EnumerationResolveDNSNameButton.Size.Height + $( $FormScale * 410) }
-    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Left   = $EnumerationResolveDNSNameButton.Left
+    Top    = $EnumerationResolveDNSNameButton.Top + $EnumerationResolveDNSNameButton.Height + ($FormScale + 10)
+    Width  = $FormScale * 152
+    Height = $EnumerationResolveDNSNameButton.Size.Height + $( $FormScale * 410)
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     SelectionMode = 'MultiExtended'
 }
 $EnumerationComputerListBox.Items.Add("127.0.0.1")
@@ -4240,11 +4149,11 @@ $Section1EnumerationTab.Controls.Add($EnumerationComputerListBox)
 
 . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxAddToListButton.ps1"
 $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Add To Computer List"
-    Location  = @{ X = $EnumerationComputerListBox.Location.X - $($FormScale * 2)
-                   Y = $EnumerationComputerListBox.Location.Y + $EnumerationComputerListBox.Size.Height + $($FormScale * 4) }
-    Size      = @{ Width  = $EnumerationComputerListBox.Size.Width + $($FormScale * 2)
-                   Height = $FormScale * 22 }
+    Text   = "Add To Computer List"
+    Left   = $EnumerationResolveDNSNameButton.Left
+    Top    = $EnumerationComputerListBox.Top + $EnumerationComputerListBox.Height + ($FormScale + 5)
+    Width  = $EnumerationResolveDNSNameButton.Width
+    Height = $FormScale * 22
     Add_Click = $EnumerationComputerListBoxAddToListButtonAdd_Click
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxAddToListButton) 
@@ -4253,11 +4162,11 @@ CommonButtonSettings -Button $EnumerationComputerListBoxAddToListButton
 
 . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxSelectAllButton.ps1"
 $EnumerationComputerListBoxSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
-    Location  = @{ X = $EnumerationComputerListBoxAddToListButton.Location.X
-                   Y = $EnumerationComputerListBoxAddToListButton.Location.Y + $EnumerationComputerListBoxAddToListButton.Size.Height + $($FormScale * 4) }
-    Size      = @{ Width  = $EnumerationComputerListBoxAddToListButton.Size.Width
-                   Height = $FormScale * 22 }
-    Text     = "Select All"
+    Left   = $EnumerationComputerListBoxAddToListButton.Left
+    Top    = $EnumerationComputerListBoxAddToListButton.Top + $EnumerationComputerListBoxAddToListButton.Height + ($FormScale + 10)
+    Width  = $EnumerationResolveDNSNameButton.Width
+    Height = $FormScale * 22
+    Text   = "Select All"
     Add_Click = $EnumerationComputerListBoxSelectAllButtonAdd_Click
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxSelectAllButton) 
@@ -4266,11 +4175,11 @@ CommonButtonSettings -Button $EnumerationComputerListBoxSelectAllButton
 
 . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxClearButton.ps1"
 $EnumerationComputerListBoxClearButton = New-Object System.Windows.Forms.Button -Property @{
-    Location  = @{ X = $EnumerationComputerListBoxSelectAllButton.Location.X
-                   Y = $EnumerationComputerListBoxSelectAllButton.Location.Y + $EnumerationComputerListBoxSelectAllButton.Size.Height + $($FormScale * 4) }
-    Size      = @{ Width  = $EnumerationComputerListBoxSelectAllButton.Size.Width
-                   Height = $FormScale * 22 }
-    Text      = 'Clear List'
+    Left   = $EnumerationComputerListBoxSelectAllButton.Left
+    Top    = $EnumerationComputerListBoxSelectAllButton.Top + $EnumerationComputerListBoxSelectAllButton.Height + ($FormScale + 10)
+    Width  = $EnumerationResolveDNSNameButton.Width
+    Height = $FormScale * 22
+    Text   = 'Clear List'
     Add_Click = $EnumerationComputerListBoxClearButtonAdd_Click
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxClearButton) 
@@ -5400,10 +5309,10 @@ $script:ComputerTreeViewData = Import-Csv $ComputerTreeNodeFileSave -ErrorAction
 . "$Dependencies\Code\Tree View\Computer\Populate-ComputerTreeNodeDefaultData.ps1"
 
 # This will keep the Computer TreeNodes checked when switching between OS and OU/CN views
-. "$Dependencies\Code\Tree View\Computer\KeepChecked-ComputerTreeNode.ps1"
+. "$Dependencies\Code\Tree View\Computer\Update-TreeNodeComputerState.ps1"
 
 # Adds a treenode to the specified root node... a computer node within a category node
-. "$Dependencies\Code\Tree View\Computer\Add-ComputerTreeNode.ps1"
+. "$Dependencies\Code\Tree View\Computer\Add-NodeComputer.ps1"
 
 $script:ComputerTreeViewSelected = ""
 
@@ -5480,6 +5389,10 @@ Remove-EmptyCategory
 . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
 Display-ContextMenuForComputerTreeNode
 
+$ComputerTreeViewImageList = New-Object System.Windows.Forms.TreeView.ImageList
+$ComputerTreeViewImageList.Images.Add('C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Images\PoSh-EasyWin Image 01.png')
+$ComputerTreeViewImageList.Images.Add('C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Images\PoSh-EasyWin Image 02.png')
+$ComputerTreeViewImageList.Images.Add('C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Images\PoSh-EasyWin Image 03.png')
 
 # Ref Guide: https://info.sapien.com/index.php/guis/gui-controls/spotlight-on-the-contextmenustrip-control
 . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
@@ -5491,6 +5404,8 @@ $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     CheckBoxes        = $True
     #LabelEdit         = $True  #Not implementing yet...
+    #not working # AfterLabelEdit = {  }
+    #not working #ShowRootLines     = $false
     ShowLines         = $True
     ShowNodeToolTips  = $True
     Add_Click         = $ComputerTreeViewAdd_Click
@@ -5500,24 +5415,36 @@ $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     Add_MouseLeave    = $ComputerTreeViewAdd_MouseLeave
     #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
     ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
+    ShowPlusMinus     = $true
+    HideSelection     = $false
+    #not working #AfterSelect       = {( 1 | ogv )}
+    ImageList         = $ComputerTreeViewImageList
+    ImageIndex        = -1
 }
 $script:ComputerTreeView.Sort()
 $PoShEasyWin.Controls.Add($script:ComputerTreeView)
 
 
-# Default View
 Initialize-ComputerTreeNodes
 Populate-ComputerTreeNodeDefaultData
 
-# Yes, this save initially during load because it will save the poulated default data
+# Yes, save initially during the load because it will save any poulated default data
 Save-HostData
 
 # This will load data that is located in the saved file
 Foreach($Computer in $script:ComputerTreeViewData) {
-    Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address
+    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
 }
 $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
+
+# Controls the layout of the computer treeview
 $script:ComputerTreeView.ExpandAll()
+[System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
+foreach ($root in $AllHostsNode) { 
+    foreach ($Category in $root.Nodes) {
+        foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
+    }
+}
 
 
 $ComputerTreeNodeViewByLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -6914,7 +6841,7 @@ $ExecuteScriptHandler = {
         $QueryHistoryCategoryName = $script:CollectionSavedDirectoryTextBox.Text.Replace("$CollectedDataDirectory","").TrimStart('\')
         foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             $Command | Add-Member -MemberType NoteProperty -Name CategoryName -Value $QueryHistoryCategoryName -Force
-            Add-CommandTreeNode -RootNode $script:TreeNodePreviouslyExecutedCommands -Category $QueryHistoryCategoryName -Entry "$($Command.Name)" -ToolTip $Command.Command
+            Add-NodeCommand -RootNode $script:TreeNodePreviouslyExecutedCommands -Category $QueryHistoryCategoryName -Entry "$($Command.Name)" -ToolTip $Command.Command
         }
 
         # Saves the Query History to file, inlcudes other queries from past PoSh-EasyWin sessions

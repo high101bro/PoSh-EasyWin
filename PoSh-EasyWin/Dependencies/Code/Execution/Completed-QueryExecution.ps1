@@ -12,6 +12,7 @@ Function Completed-QueryExecution {
     $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Finished Collecting Data!")
 
     if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+        Start-Sleep -Seconds 3
         Generate-NewRollingPassword
         $ResultsListBox.Items.Insert(1,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Rolled Password For Account: $($script:CredentialManagementPasswordRollingAccountTextBox.text)")
         $TotalElapsedTimeOrder = @(2,3,4)

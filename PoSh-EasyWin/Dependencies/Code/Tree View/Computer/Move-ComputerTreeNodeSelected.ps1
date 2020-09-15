@@ -16,7 +16,7 @@ function Move-ComputerTreeNodeSelected {
                     if ($Category.Checked) { $Category.Checked = $false }
                     foreach ($Entry in $Category.nodes) { 
                         if ($Entry.text -eq $script:EntrySelected.text) {
-                            Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupMoveComboBox.SelectedItem -Entry $Entry.text #-ToolTip "No Data Available"
+                            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupMoveComboBox.SelectedItem -Entry $Entry.text #-ToolTip "No Data Available"
                             $script:ComputerTreeNodeToMove.Add($Entry.text)
                             break
                         }
@@ -69,7 +69,7 @@ function Move-ComputerTreeNodeSelected {
                     if ($Category.Checked) { $Category.Checked = $false }
                     foreach ($Entry in $Category.nodes) { 
                         if ($Entry.Checked) {
-                            Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupMoveComboBox.SelectedItem -Entry $Entry.text #-ToolTip "No Data Available"
+                            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupMoveComboBox.SelectedItem -Entry $Entry.text #-ToolTip "No Data Available"
                             $script:ComputerTreeNodeToMove.Add($Entry.text)
                         }
                     }

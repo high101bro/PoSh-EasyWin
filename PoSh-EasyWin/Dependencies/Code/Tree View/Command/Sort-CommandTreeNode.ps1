@@ -15,7 +15,7 @@ function Sort-CommandTreeNode {
         Initialize-CommandTreeNodes
         AutoSave-HostData
         View-CommandTreeNodeMethod
-        KeepChecked-CommandTreeNode
+        Update-TreeNodeCommandState
         Update-QueryHistory
     }
     elseif ($CommandsViewQueryRadioButton.checked) {
@@ -33,7 +33,7 @@ function Sort-CommandTreeNode {
         Initialize-CommandTreeNodes
         AutoSave-HostData
         View-CommandTreeNodeQuery
-        KeepChecked-CommandTreeNode
+        Update-TreeNodeCommandState
         Update-QueryHistory
     }
 

@@ -6,10 +6,6 @@ function Import-AccountsFromDomain {
 }
 
 
-
-
-
-
 $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
     Text          = 'Import account information from Active Directory'
     Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
@@ -18,7 +14,6 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
     StartPosition = "CenterScreen"
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
-
     $ImportFromADWinRMGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
         text      = "Import from Active Directory remotely using WinRM"
         left      = $FormScale * 10
@@ -121,7 +116,6 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                         $StatusListBox.Items.Add("Import from Active Directory:  Cancelled")
                     }
                 }
-
                 elseif ($ImportFromADWinRMAutoCheckBox.checked -and $script:ComputerTreeViewSelected.count -eq 1) {
                     Create-ComputerNodeCheckBoxArray
                     if (Verify-Action -Title "Verification: Active Directory Import" -Question "Make sure to select the proper server.`nImport Active Directory hosts from the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
@@ -233,7 +227,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
 
 
         $ImportFromADLocalhostImportButton = New-Object System.Windows.Forms.Button -Property @{
-            Text      = "Import Hosts"
+            Text      = "Import Accounts"
             left      = $ImportFromADLocalhostDetectedLabel.Left + $ImportFromADLocalhostDetectedLabel.Width + $($FormScale * 5)
             top       = $ImportFromADLocalhostDetectedLabel.Top - $($FormScale * 5)
             Width     = $FormScale * 100

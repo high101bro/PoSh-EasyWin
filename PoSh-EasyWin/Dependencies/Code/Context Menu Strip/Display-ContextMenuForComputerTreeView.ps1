@@ -22,7 +22,7 @@ $ComputerListContextMenuStrip.Items.Add('-')
 
 
 $ComputerListLeftClickToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-    Text      = "Left-Click an Endpoint Node,`r`nthen Right-Click for more Options"
+    Text      = "Left-Click an Endpoint Node,`nthen Right-Click for more Options"
     ForeColor = 'DarkRed'
 }
 $ComputerListContextMenuStrip.Items.Add($ComputerListLeftClickToolStripLabel)
@@ -97,6 +97,7 @@ $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
 
 $ComputerListPingToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
     Text      = "   - ICMP Ping"
+    ForeColor = 'DarkRed'
     Add_CLick = $ComputerListPingToolStripButtonAdd_Click
 }
 $ComputerListContextMenuStrip.Items.Add($ComputerListPingToolStripButton)
@@ -104,6 +105,7 @@ $ComputerListContextMenuStrip.Items.Add($ComputerListPingToolStripButton)
 
 $ComputerListRPCCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
     Text      = "   - RPC Port Check"
+    ForeColor = 'DarkRed'
     Add_CLick = $ComputerListRPCCheckToolStripButtonAdd_Click
 }
 $ComputerListContextMenuStrip.Items.Add($ComputerListRPCCheckToolStripButton)
@@ -111,6 +113,7 @@ $ComputerListContextMenuStrip.Items.Add($ComputerListRPCCheckToolStripButton)
 
 $ComputerListSMBCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
     Text      = "   - SMB Port Check"
+    ForeColor = 'DarkRed'
     Add_CLick = $ComputerListSMBCheckToolStripButtonAdd_Click
 }
 $ComputerListContextMenuStrip.Items.Add($ComputerListSMBCheckToolStripButton)
@@ -118,6 +121,7 @@ $ComputerListContextMenuStrip.Items.Add($ComputerListSMBCheckToolStripButton)
 
 $ComputerListWinRMCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
     Text      = "   - WinRM Check"
+    ForeColor = 'DarkRed'
     Add_CLick = $ComputerListWinRMCheckToolStripButtonAdd_Click
 }
 $ComputerListContextMenuStrip.Items.Add($ComputerListWinRMCheckToolStripButton)        

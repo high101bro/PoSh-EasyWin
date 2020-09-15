@@ -21,7 +21,7 @@ $CommandsTreeViewQueryHistoryRemovalButtonAdd_Click = {
                 CategoryName = $Category.Text
                 Name         = $Entry.Text
             }
-            Add-CommandTreeNode -RootNode $script:TreeNodePreviouslyExecutedCommands -Category "$($Category.text)" -Entry "$($Entry.Text)" -ToolTip $Command.Command
+            Add-NodeCommand -RootNode $script:TreeNodePreviouslyExecutedCommands -Category "$($Category.text)" -Entry "$($Entry.Text)" -ToolTip $Command.Command
         }
     }
     $script:QueryHistory = $QueryHistoryKeepSelected

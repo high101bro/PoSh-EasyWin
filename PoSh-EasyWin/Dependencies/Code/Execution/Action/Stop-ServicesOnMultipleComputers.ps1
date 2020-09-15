@@ -91,7 +91,11 @@ function Stop-ServicesOnMultipleComputers {
     }
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
+
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+        Start-Sleep -Seconds 3
+        Generate-NewRollingPassword 
+    }
 }
 
 

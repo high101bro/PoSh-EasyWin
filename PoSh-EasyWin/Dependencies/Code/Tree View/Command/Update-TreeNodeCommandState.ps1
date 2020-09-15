@@ -1,4 +1,4 @@
-function KeepChecked-CommandTreeNode {
+function Update-TreeNodeCommandState {
     $script:CommandsTreeView.Nodes.Add($script:TreeNodeEndpointCommands)
     $script:CommandsTreeView.Nodes.Add($script:TreeNodeActiveDirectoryCommands)
     $script:CommandsTreeView.Nodes.Add($script:TreeNodeCommandSearch)

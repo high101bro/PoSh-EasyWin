@@ -10,13 +10,13 @@ $EnumerationComputerListBoxAddToListButtonAdd_Click = {
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-                Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Selected -ToolTip $Computer.IPv4Address
+                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Selected -ToolTip $Computer.IPv4Address
                 $MainBottomTabControl.SelectedTab = $Section3ResultsTab
                 $ResultsListBox.Items.Add("$($Selected) has been added to the Unknown category")
             }
             elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
                 $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
-                Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip $Computer.IPv4Address
+                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip $Computer.IPv4Address
                 $ResultsListBox.Items.Add("$($Selected) has been added to /Unknown category")
             }
             $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 

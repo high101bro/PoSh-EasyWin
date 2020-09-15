@@ -19,7 +19,7 @@ $CommandsViewQueryRadioButtonAdd_Click = {
     Initialize-CommandTreeNodes
     AutoSave-HostData
     View-CommandTreeNodeQuery
-    KeepChecked-CommandTreeNode
+    Update-TreeNodeCommandState
     Update-QueryHistory
 }
 

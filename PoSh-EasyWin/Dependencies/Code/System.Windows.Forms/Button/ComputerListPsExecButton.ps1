@@ -37,7 +37,10 @@ $ComputerListPsExecButtonAdd_Click = {
         }
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PsExec: $($script:ComputerTreeViewSelected)"
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
+        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword 
+        }
     }
     else {
         [system.media.systemsounds]::Exclamation.play()

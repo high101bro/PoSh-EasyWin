@@ -16,12 +16,12 @@ function AddHost-ComputerTreeNode {
         $StatusListBox.Items.Add("Added Selection:  $($ComputerTreeNodePopupAddTextBox.Text)")
 
         if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-            Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOSComboBox.Text -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"
+            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOSComboBox.Text -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"
             #Removed For Testing#$ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("$($ComputerTreeNodePopupAddTextBox.Text) has been added to $($ComputerTreeNodePopupOSComboBox.Text)")
         }
         elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
-            Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOUComboBox.SelectedItem -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"            
+            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $ComputerTreeNodePopupOUComboBox.SelectedItem -Entry $ComputerTreeNodePopupAddTextBox.Text #-ToolTip "No Data Available"            
             #Removed For Testing#$ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("$($ComputerTreeNodePopupAddTextBox.Text) has been added to $($ComputerTreeNodePopupOUComboBox.Text)")
         }       
@@ -35,6 +35,6 @@ function AddHost-ComputerTreeNode {
         $script:ComputerTreeView.ExpandAll()
         $ComputerTreeNodePopup.close()
         Save-HostData
-        KeepChecked-ComputerTreeNode -NoMessage
+        Update-TreeNodeComputerState -NoMessage
     }
 }

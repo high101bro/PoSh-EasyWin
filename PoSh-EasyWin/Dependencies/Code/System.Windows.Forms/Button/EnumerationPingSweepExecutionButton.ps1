@@ -2,6 +2,7 @@ $EnumerationPingSweepExecutionButtonAdd_Click = {
     if (Verify-Action -Title "Verification: Ping Sweep" -Question "Conduct a Ping Sweep of the following?" -Computer $(
         $EnumerationPingSweepIPNetworkCIDRTextbox.Text
     )) {
+        $ResultsListBox.Items.Clear()
         Conduct-PingSweep 
     }
     else {

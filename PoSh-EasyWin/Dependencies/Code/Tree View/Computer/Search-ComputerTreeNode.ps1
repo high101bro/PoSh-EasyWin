@@ -23,27 +23,27 @@ function Search-ComputerTreeNode {
         foreach ($ComputerSearchText in $ComputerSearchInput) {
             Foreach($Computer in $script:ComputerTreeViewData) {
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.Notes -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Notes]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Notes]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.Name -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Name]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Name]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.OperatingSystem -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OS]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OS]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.CanonicalName -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OU/CN]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OU/CN]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.IPv4address -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData IP]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData IP]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }                
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.MACAddress -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData MAC]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData MAC]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }                
             }                
@@ -69,27 +69,27 @@ function Search-ComputerTreeNode {
         if ($ComputerSearchText -ne "" -and $SearchCheck -eq $false) {
             Foreach($Computer in $script:ComputerTreeViewData) {
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.Notes -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Notes]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Notes]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.Name -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Name]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData Name]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.OperatingSystem -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OS]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OS]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.CanonicalName -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OU/CN]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData OU/CN]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.IPv4address -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData IP]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData IP]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }                
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.MACAddress -imatch $ComputerSearchText)) {
-                    Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData MAC]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData MAC]') -Entry $Computer.Name -ToolTip $Computer.IPv4Address    
                     $SearchFound += $Computer
                 }                
             }    
@@ -111,7 +111,7 @@ function Search-ComputerTreeNode {
                                 $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty PSComputerName -Unique 
                                 if ( $SearchImportedCsvData ) {
                                     foreach ($PSComputerName in $SearchImportedCsvData) {
-                                        Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Process]') -Entry $PSComputerName #-ToolTip $Computer.IPv4Address
+                                        Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Process]') -Entry $PSComputerName #-ToolTip $Computer.IPv4Address
                                         $SearchFound += $ComputerWithResults
                                     }
                                 }
@@ -124,7 +124,7 @@ function Search-ComputerTreeNode {
                                 $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty PSComputerName -Unique 
                                 if ( $SearchImportedCsvData ) {
                                     foreach ($PSComputerName in $SearchImportedCsvData) {
-                                        Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Service]') -Entry $PSComputerName #-ToolTip $Computer.IPv4Address
+                                        Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Service]') -Entry $PSComputerName #-ToolTip $Computer.IPv4Address
                                         $SearchFound += $ComputerWithResults
                                     }
                                 }
@@ -137,7 +137,7 @@ function Search-ComputerTreeNode {
                                 $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty PSComputerName -Unique 
                                 if ( $SearchImportedCsvData ) {
                                     foreach ($PSComputerName in $SearchImportedCsvData) {
-                                        Add-ComputerTreeNode -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Network]') -Entry $PSComputerName #-ToolTip $Computer.IPv4Address
+                                        Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Network]') -Entry $PSComputerName #-ToolTip $Computer.IPv4Address
                                         $SearchFound += $ComputerWithResults
                                     }
                                 }

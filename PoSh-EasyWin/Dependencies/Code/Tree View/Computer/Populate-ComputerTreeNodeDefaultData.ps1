@@ -26,6 +26,11 @@ function Populate-ComputerTreeNodeDefaultData {
         else { 
             $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MACAddress -Value "No MAC Available" -Force }
 
+        if ($Computer.'Port Scan') { 
+            $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name 'Port Scan' -Value $Computer.'Port Scan' -Force }
+#        else { 
+#            $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name 'Port Scan' -Value "No Ports Available" -Force }
+    
         if ($Computer.Notes) { 
             $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Notes -Value $Computer.Notes -Force }
         else { 

@@ -1,6 +1,7 @@
 function Conduct-PortScan {
     param (
         $Timeout_ms,
+        [switch]$EndpointList,
         $TestWithICMPFirst,
         $SpecificIPsToScan,
         $Network,
@@ -10,25 +11,33 @@ function Conduct-PortScan {
         $FirstPort,
         $LastPort
     )
-    $IPsToScan = @()
-    $IPsToScan += $SpecificIPsToScan -split "," -replace " ",""
-    if ( $FirstIP -ne "" -and $LastIP -ne "" ) {
-        if ( ($FirstIP -lt [int]0 -or $FirstIP -gt [int]255) -or ($LastIP -lt [int]0 -or $LastIP -gt [int]255) ) {
-            #Removed For Testing#$ResultsListBox.Items.Clear()
-            $ResultsListBox.Items.Add("Error! The First and Last IP Fields must be an interger between 0 and 255")
-            return
-        }
-        $IPRange = $FirstIP..$LastIP
-        foreach ( $IP in $IPRange ) { $IPsToScan += "$Network.$IP" }
+    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
+    if ($EndpointList) {
+        $IPsToScan = $script:ComputerList
     }
-    elseif (( $FirstIP -ne "" -and $LastIP -eq "" ) -or ( $FirstIP -eq "" -and $LastIP -ne "" )) {        
-        #Removed For Testing#$ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Add("Error! You can't have one empty IP range field.")
-        return
-    }    
-    # Since sorting IPs in PowerShell easily and accurately can be a pain...
-    # The [System.Version] object is used to represent file and application versions, and we can leverage it to sort IP addresses simply. We sort on a custom calculation, converting the IP addresses to version objects. The conversion is just for sorting purposes.
-    $IPsToScan  = $IPsToScan | Sort-Object { [System.Version]$_ } -Unique | ? {$_ -ne ""}
+    else {
+        $IPsToScan = @()
+        $IPsToScan += $SpecificIPsToScan -split "," -replace " ",""
+        if ( $FirstIP -ne "" -and $LastIP -ne "" ) {
+            if ( ($FirstIP -lt [int]0 -or $FirstIP -gt [int]255) -or ($LastIP -lt [int]0 -or $LastIP -gt [int]255) ) {
+                #Removed For Testing#$ResultsListBox.Items.Clear()
+                $ResultsListBox.Items.Add("Error! The First and Last IP Fields must be an interger between 0 and 255")
+                return
+            }
+            $IPRange = $FirstIP..$LastIP
+            foreach ( $IP in $IPRange ) { $IPsToScan += "$Network.$IP" }
+        }
+        elseif (( $FirstIP -ne "" -and $LastIP -eq "" ) -or ( $FirstIP -eq "" -and $LastIP -ne "" )) {        
+            #Removed For Testing#$ResultsListBox.Items.Clear()
+            $ResultsListBox.Items.Add("Error! You can't have one empty IP range field.")
+            return
+        }    
+        # Since sorting IPs in PowerShell easily and accurately can be a pain...
+        # The [System.Version] object is used to represent file and application versions, and we can leverage it to sort IP addresses simply. We sort on a custom calculation, converting the IP addresses to version objects. The conversion is just for sorting purposes.
+        $IPsToScan  = $IPsToScan | Sort-Object { [System.Version]$_ } -Unique | ? {$_ -ne ""}
+    }
+
 
     $PortsToScan = @()
     # Adds the user entered specific ports that were comma separated
@@ -103,12 +112,14 @@ function Conduct-PortScan {
         $ResultsListBox.Items.Insert(0,"No ports have been entered or selected to scan!")
         return
     }
-    $IPsToScan = $IPsToScan | Sort-Object -Unique | ? {$_ -ne ""}
+    $IPsToScan = $IPsToScan | Sort-Object -Unique | Where-Object {$_ -ne ""}
+
     if ($($IPsToScan).count -eq 0) {
         #Removed For Testing#$ResultsListBox.Items.Clear()
         $ResultsListBox.Items.Insert(0,"Input Error or no IP addresses have been entered to scan!")
         return
     }
+
     $NetworkPortScanIPResponded = ""
     $TimeStamp  = $((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$TimeStamp  ==================== Port Scan Initiliaztion ===================="
@@ -121,10 +132,12 @@ function Conduct-PortScan {
     $StatusListBox.Items.Add("Conducting Port Scan"); Start-Sleep -Seconds 1
     
     function PortScan {
+        param($IPAddress)
         # Sets the intial progress bar values
         $script:ProgressBarQueriesProgressBar.Maximum = $PortsToScan.count
         $script:ProgressBarQueriesProgressBar.Value   = 0
 
+        $script:ScanConnectedPort = @()
         foreach ($Port in $PortsToScan) {
             $ErrorActionPreference = 'SilentlyContinue'
             $socket     = New-Object System.Net.Sockets.TcpClient
@@ -133,8 +146,9 @@ function Conduct-PortScan {
             $tryconnect | Out-Null 
             if ($socket.Connected) {
                 $ResultsListBox.Items.Insert(2,"$(Get-Date)  - [Response Time: $tryconnect ms] $IPAddress is listening on port $Port ")
-                $contime    = [math]::round($tryconnect,2)    
+                $contime    = [math]::round($tryconnect,2)
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[Response Time: $contime ms] $IPAddress is listening on port $Port"
+                $script:ScanConnectedPort  += $Port
                 $NetworkPortScanIPResponded = $IPAddress
                 $socket.Close()
                 $socket.Dispose()
@@ -145,6 +159,8 @@ function Conduct-PortScan {
             $StatusListBox.Items.Add("Scanning: $IPAddress`:$Port")            
             $script:ProgressBarQueriesProgressBar.Value += 1
         }
+        Save-ComputerTreeNodeHostData -SaveScan -Ports $script:ScanConnectedPort -Endpoints $IPAddress
+
         if ($NetworkPortScanIPResponded -ne "") { $EnumerationComputerListBox.Items.Add("$NetworkPortScanIPResponded") }
         $NetworkPortScanResultsIPList = @() # To Clear out the Variable        
     }
@@ -157,10 +173,10 @@ function Conduct-PortScan {
         if ($TestWithICMPFirst -eq $true) {
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Testing Connection (ping): $IPAddress")
-            if (Test-Connection -BufferSize 32 -Count 1 -Quiet -ComputerName $IPAddress) {
+            if (Test-Connection -Count 1 -Quiet -ComputerName $IPAddress) {
                 $ResultsListBox.Items.Insert(1,"$(Get-Date)  Port Scan IP:  $IPAddress")
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "ICMP Connection Test - $IPAddress is UP - Conducting Port Scan:)"
-                PortScan
+                PortScan -IPAddress $IPAddress
             }
             else {
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "ICMP Connection Test - $IPAddress is DOWN - No ports scanned)"
@@ -169,7 +185,7 @@ function Conduct-PortScan {
         elseif ($TestWithICMPFirst -eq $false) {
             $ResultsListBox.Items.Insert(1,"$(Get-Date)  Port Scan IP - $IPAddress")
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Port Scan IP:  $IPAddress"
-            PortScan
+            PortScan -IPAddress $IPAddress
         }
         $script:ProgressBarQueriesProgressBar.Value += 1
     }

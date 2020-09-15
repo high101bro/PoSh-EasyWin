@@ -45,7 +45,10 @@ $ComputerListRDPButtonAdd_Click = {
             cmdkey /delete /ras               
             cmdkey /delete:"$script:ComputerTreeViewSelected" 
 
-            if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { Generate-NewRollingPassword }
+            if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+                Start-Sleep -Seconds 3
+                Generate-NewRollingPassword 
+            }
         }
         else {
             #ensures no credentials are stored for use

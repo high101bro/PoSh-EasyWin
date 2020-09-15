@@ -19,10 +19,10 @@ $ImportEndpointDataFromTxtButtonAdd_Click = {
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked -and $Computer -ne "") {
-                Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer -ToolTip 'N/A'
+                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer -ToolTip 'N/A'
             }
             elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked -and $Computer -ne "") {
-                Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer -ToolTip 'N/A'
+                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer -ToolTip 'N/A'
             }
             $script:ComputerTreeViewData += [PSCustomObject]@{
                 Name            = $Computer
@@ -33,9 +33,9 @@ $ImportEndpointDataFromTxtButtonAdd_Click = {
             }
             $script:ComputerTreeView.Nodes.Clear()
             Initialize-ComputerTreeNodes
-            KeepChecked-ComputerTreeNode -NoMessage
+            Update-TreeNodeComputerState -NoMessage
             Populate-ComputerTreeNodeDefaultData
-            Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+            Foreach($Computer in $script:ComputerTreeViewData) { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
             $script:ComputerTreeView.ExpandAll()
         }
     }

@@ -51,7 +51,7 @@ abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
         } -ArgumentList @($PoShEasyWinDomainNameAndAccount,$SecurePassword)
     }
 
-    $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss'))  Rolled Password for: $PoShEasyWinDomainNameAndAccount")
+    $ResultsListBox.Items.Insert(1,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Rolled Password For Account: $($script:CredentialManagementPasswordRollingAccountTextBox.text)")
     $PoShEasyWin.Refresh()
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Generated Secure Password ($NumberOfCharacters Random Characters) and Rolled Credentials"
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message " - Invoke-Command -ComputerName $ActiveDirectoryServer -ScriptBlock { param($PoShEasyWinDomainNameAndAccount,$SecurePassword) Set-ADAccountPassword -Identity $PoShEasyWinDomainNameAndAccount -Reset -NewPassword $SecurePassword } -ArgumentList @($PoShEasyWinDomainNameAndAccount,$SecurePassword)"

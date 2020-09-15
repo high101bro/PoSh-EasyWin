@@ -22,21 +22,21 @@ $ImportEndpointDataFromCsvButtonAdd_Click = {
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-                if ($Computer.OperatingSystem -eq "") { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
-                else { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+                if ($Computer.OperatingSystem -eq "") { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+                else { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
             }
             elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
                 $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
-                if ($Computer.CanonicalName -eq "") { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
-                else { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+                if ($Computer.CanonicalName -eq "") { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+                else { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
             }
             $script:ComputerTreeViewData += $Computer
 
             $script:ComputerTreeView.Nodes.Clear()
             Initialize-ComputerTreeNodes
-            KeepChecked-ComputerTreeNode -NoMessage
+            Update-TreeNodeComputerState -NoMessage
             Populate-ComputerTreeNodeDefaultData
-            Foreach($Computer in $script:ComputerTreeViewData) { Add-ComputerTreeNode -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+            Foreach($Computer in $script:ComputerTreeViewData) { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
             $script:ComputerTreeView.ExpandAll()
         }
     }
