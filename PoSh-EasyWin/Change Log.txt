@@ -50,7 +50,7 @@ Change the following fonts to DarkRed in the computer treeview contextmenu
 	- WinRM Check
 
 ==================================================
-v5.0.1 - 10 September 2020
+v5.0.2 - 10 September 2020
 ==================================================
 
 

@@ -7,11 +7,11 @@ Rebranded because another tool had the same name, which made it hard to locate o
      Email          : high101bro@gmail.com
      Website        : https://github.com/high101bro/PoSh-EasyWin
 
-     Updated        : 10 SEP 2020
+     Updated        : 14 SEP 2020
      Created        : 21 AUG 2018
 
      File Name      : PoSh-EasyWin.ps1
-     Version        : v5.0.1
+     Version        : v5.0.2
 
      Requirements   : PowerShell v3+ for PowerShell Charts
                     : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
