@@ -15,7 +15,7 @@ $SystemTrayNotifyIcon = {
         $SystemTrayAbortReloadMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
             Text      = 'Abort / Reload'
             Add_Click = {
-                $VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
+                $script:VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
                     Text    = 'Abort / Reload'
                     Width   = 280
                     Height  = 109
@@ -36,7 +36,7 @@ $SystemTrayNotifyIcon = {
                     Left   = 10
                     Top    = 10
                 }
-                $VerifyCloseForm.Controls.Add($VerifyCloseLabel)
+                $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
                 
     
                 $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
@@ -60,10 +60,10 @@ $SystemTrayNotifyIcon = {
                             Start-Process PowerShell.exe -ArgumentList @($ThisScript, '-SkipEvelationCheck')
                         }
                         $PoShEasyWinSystemTrayNotifyIcon.Visible = $false
-                        $VerifyCloseForm.close()
+                        $script:VerifyCloseForm.close()
                     }
                 }
-                $VerifyCloseForm.Controls.Add($VerifyYesButton)
+                $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
     
     
                 $VerifyNoButton = New-Object System.Windows.Forms.Button -Property @{
@@ -74,12 +74,12 @@ $SystemTrayNotifyIcon = {
                     Top    = $VerifyYesButton.Top
                     BackColor = 'LightGray'
                     Add_Click = {
-                        $VerifyCloseForm.close()
+                        $script:VerifyCloseForm.close()
                     }
                 }
-                $VerifyCloseForm.Controls.Add($VerifyNoButton)
+                $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
     
-                $VerifyCloseForm.ShowDialog()
+                $script:VerifyCloseForm.ShowDialog()
             }
         }
         $PoShEasyWinSystemTrayNotifyIcon.contextMenu.MenuItems.Add($SystemTrayAbortReloadMenuItem)
@@ -88,7 +88,7 @@ $SystemTrayNotifyIcon = {
         $SystemTrayCloseToolMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
             Text = 'Close Tool'
             add_Click = {
-                $VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
+                $script:VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
                     Text    = $CloseTime
                     Width   = 250
                     Height  = 109
@@ -109,7 +109,7 @@ $SystemTrayNotifyIcon = {
                     Left   = 10
                     Top    = 10
                 }
-                $VerifyCloseForm.Controls.Add($VerifyCloseLabel)
+                $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
                 
     
                 $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
@@ -122,10 +122,10 @@ $SystemTrayNotifyIcon = {
                     Add_Click = {
                         Stop-Process -id $CurrentProcessId -Force
                         $PoShEasyWinSystemTrayNotifyIcon.Visible = $false
-                        $VerifyCloseForm.close()
+                        $script:VerifyCloseForm.close()
                     }
                 }
-                $VerifyCloseForm.Controls.Add($VerifyYesButton)
+                $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
     
     
                 $VerifyNoButton = New-Object System.Windows.Forms.Button -Property @{
@@ -136,13 +136,13 @@ $SystemTrayNotifyIcon = {
                     Top    = $VerifyYesButton.Top
                     BackColor = 'LightGray'
                     Add_Click = {
-                        $VerifyCloseForm.close()
+                        $script:VerifyCloseForm.close()
                     }
                 }
-                $VerifyCloseForm.Controls.Add($VerifyNoButton)
+                $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
     
 
-                $VerifyCloseForm.ShowDialog()
+                $script:VerifyCloseForm.ShowDialog()
             }
         } 
         $PoShEasyWinSystemTrayNotifyIcon.contextMenu.MenuItems.Add($SystemTrayCloseToolMenuItem)

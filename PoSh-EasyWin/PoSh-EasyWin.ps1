@@ -504,7 +504,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     }
     Add_Closing = {
         param($sender,$Selection)
-        $VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
+        $script:VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
             Text    = "Close"
             Width   = $FormScale * 250
             Height  = $FormScale * 109
@@ -521,7 +521,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
                 if     ($script:VerifyToCloseForm -eq $true) { $Selection.Cancel = $false } 
                 elseif ($script:VerifyToCloseForm -eq $false){ $Selection.Cancel = $true } 
                 else   { $Selection.Cancel = $true  }
-                $VerifyCloseForm.close()
+                $script:VerifyCloseForm.close()
             }
         }
         $VerifyCloseLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -531,7 +531,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             Left   = $FormScale * 10
             Top    = $FormScale * 10
         }
-        $VerifyCloseForm.Controls.Add($VerifyCloseLabel)
+        $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
         
 
         $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
@@ -543,11 +543,11 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             BackColor = 'LightGray'
             Add_Click = {
                 $script:VerifyToCloseForm = $True
-                Stop-Process -id $FormHelperProcessId -Force
-                $VerifyCloseForm.close()
+                Stop-Process -id $FormHelperProcessId -Force -ErrorAction SilentlyContinue
+                $script:VerifyCloseForm.close()
             }
         }
-        $VerifyCloseForm.Controls.Add($VerifyYesButton)
+        $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
         FormButtonSettings $VerifyYesButton
 
 
@@ -560,13 +560,13 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             BackColor = 'LightGray'
             Add_Click = {
                 $script:VerifyToCloseForm = $false
-                $VerifyCloseForm.close()
+                $script:VerifyCloseForm.close()
             }
         }
-        $VerifyCloseForm.Controls.Add($VerifyNoButton)
+        $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
         FormButtonSettings $VerifyNoButton
 
-        $VerifyCloseForm.ShowDialog()
+        $script:VerifyCloseForm.ShowDialog()
     }
     #backgroundimage =  [system.drawing.image]::FromFile("C:\Users\Administrator\Desktop\PoSh-EasyWin\Dependencies\Background Image 001.jpg")
 }
@@ -3716,7 +3716,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
     Left   = 0
     Top    = $FormScale * 13
     Width  = $FormScale * 294
-    Height = $FormScale * 300
+    Height = $FormScale * 350
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
@@ -4864,6 +4864,7 @@ CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
 . "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryComputers.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryGroups.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryUserAccounts.ps1"
+. "$Dependencies\Code\Charts\Update-AutoChartsApplicationCrashes.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsLoginActivity.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsNetworkConnections.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsNetworkInterfaces.ps1"

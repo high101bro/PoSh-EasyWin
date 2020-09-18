@@ -60,6 +60,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         "Active Directory Computers",
         "Active Directory Groups",
         "Active Directory User Accounts",
+        "Application Crashes",
         "Login Activity",
         "Network Connections",
         "Network Interfaces",
@@ -165,6 +166,11 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory User Accounts") { 
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryUserAccounts.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Application Crashes") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ApplicationCrashes.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }

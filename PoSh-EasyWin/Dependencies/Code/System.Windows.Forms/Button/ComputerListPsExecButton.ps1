@@ -26,7 +26,15 @@ $ComputerListPsExecButtonAdd_Click = {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
             $Password = $script:Credential.GetNetworkCredential().Password
+            
+            #if ($Username -notlike '*@*'){
+            #    $User     = $Username.split('\')[1]
+            #    $Domain   = $Username.split('\')[0]
+            #    $Username = "$($User)@$($Domain)"
+            #}
+
             $UseCredential = "-u $Username -p $Password"
+
             $ResultsListBox.Items.Add("./PsExec.exe -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected '<domain\username>' -p '<password>' cmd")
             Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected $UseCredential cmd'"
         }

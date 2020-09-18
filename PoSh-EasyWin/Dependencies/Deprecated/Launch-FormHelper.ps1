@@ -64,7 +64,7 @@ $CloseWindow = {
         Left   = 0
         Top    = $MinimizeButton.Top + $MinimizeButton.Height
         Add_Click = {
-            $VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
+            $script:VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
                 Text    = 'Abort / Reload'
                 Width   = 280
                 Height  = 109
@@ -86,11 +86,11 @@ $CloseWindow = {
                 Top    = 10
                 Add_Click = {
                     Stop-Process -id $CurrentProcessId -Force
-                    $VerifyCloseForm.close()
+                    $script:VerifyCloseForm.close()
                     $ReloadForm.close()
                 }
             }
-            $VerifyCloseForm.Controls.Add($VerifyCloseLabel)
+            $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
             
 
             $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
@@ -113,11 +113,11 @@ $CloseWindow = {
                     else {
                         Start-Process PowerShell.exe -ArgumentList @($ThisScript, '-SkipEvelationCheck')
                     }
-                    $VerifyCloseForm.close()
+                    $script:VerifyCloseForm.close()
                     $ReloadForm.close()
                 }
             }
-            $VerifyCloseForm.Controls.Add($VerifyYesButton)
+            $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
             FormButtonSettings $VerifyYesButton
 
 
@@ -129,13 +129,13 @@ $CloseWindow = {
                 Top    = $VerifyYesButton.Top
                 BackColor = 'LightGray'
                 Add_Click = {
-                    $VerifyCloseForm.close()
+                    $script:VerifyCloseForm.close()
                 }
             }
-            $VerifyCloseForm.Controls.Add($VerifyNoButton)
+            $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
             FormButtonSettings $VerifyNoButton
 
-            $VerifyCloseForm.ShowDialog()
+            $script:VerifyCloseForm.ShowDialog()
         }
     }
     $ReloadForm.Controls.Add($ReloadButton)
@@ -149,7 +149,7 @@ $CloseWindow = {
         Left   = 0
         Top    = $ReloadButton.Top + $ReloadButton.Height
         Add_Click = {
-            $VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
+            $script:VerifyCloseForm = New-Object System.Windows.Forms.Form -Property @{
                 Text    = 'Close'
                 Width   = 250
                 Height  = 109
@@ -171,11 +171,11 @@ $CloseWindow = {
                 Top    = 10
                 Add_Click = {
                     Stop-Process -id $CurrentProcessId -Force
-                    $VerifyCloseForm.close()
+                    $script:VerifyCloseForm.close()
                     $ReloadForm.close()
                 }
             }
-            $VerifyCloseForm.Controls.Add($VerifyCloseLabel)
+            $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
             
 
             $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
@@ -187,11 +187,11 @@ $CloseWindow = {
                 BackColor = 'LightGray'
                 Add_Click = {
                     Stop-Process -id $CurrentProcessId -Force
-                    $VerifyCloseForm.close()
+                    $script:VerifyCloseForm.close()
                     $ReloadForm.close()
                 }
             }
-            $VerifyCloseForm.Controls.Add($VerifyYesButton)
+            $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
             FormButtonSettings $VerifyYesButton
 
 
@@ -203,13 +203,13 @@ $CloseWindow = {
                 Top    = $VerifyYesButton.Top
                 BackColor = 'LightGray'
                 Add_Click = {
-                    $VerifyCloseForm.close()
+                    $script:VerifyCloseForm.close()
                 }
             }
-            $VerifyCloseForm.Controls.Add($VerifyNoButton)
+            $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
             FormButtonSettings $VerifyNoButton
 
-            $VerifyCloseForm.ShowDialog()
+            $script:VerifyCloseForm.ShowDialog()
         }
     }
     $ReloadForm.Controls.Add($ExitGuiButton)
