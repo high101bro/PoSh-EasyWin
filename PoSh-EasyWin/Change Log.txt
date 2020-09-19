@@ -1,5 +1,5 @@
 ==================================================
-v5.0.2 - 14 Sep 2020
+v5.0.3 - 19 Sep 2020
 ==================================================
 
 TO DO LIST: 
@@ -25,6 +25,62 @@ TO DO LIST:
 	keep trying to develop a solution to launch show-eventlog not within domain...
 	Add * support for directory in file search/hash search
 	Add comment that directory listing support c:/*/*/dir -- asterisks
+
+Brought to my attention that if you use the 'specify credentials feature"
+	- Issues urrently is observed when using sysmon and forwarding logs out to like a SIEM
+		- If using just sysmon without forwarding to siem, event id 1 will still capture it, but it'll only on your local trusted host
+		- If forwarding out to a SIEM, everyone with access to the SIEM can view them
+	- If using sysmon on the localhost launching PoSh-EasyWin:
+		- Avoid all this by launching PoSh-EasyWin with admin credentials and not using stored credentials ('specify credentials')
+		- Don't use stored credentials - see note below
+			- The stored .xml credential objects are still secured with Windows Endpoint Data Protection API and perfectly safe
+			- But when extracted to use with SMB Queries, PSSession, and PSExex, and Remote Desktop they are exposed as they become command line arguments
+	- Sysmon event id 1 captures process creation to include credentials within command line arguments for the following:
+		- SMB Queries (using PSExec)
+			- This is becuase PSExec.exe only accepts credentials as plain text arguments
+			- Alternative: launch PoSh-EasyWin with admin creds and don't use 'select credentials'
+		- Dropping into a PSExec session into an endpoint 
+			- This is becuase PSExec.exe only accepts credentials as plain text arguments
+			- Alternative: launch PoSh-EasyWin with admin creds and don't use 'select credentials'
+		- Dropping into a PSSession into an endpoint
+			- This is becuase the technique used to launch the PSSession in another terminal currently only possible with passing them via an argument
+				- This is becuase the Start-Process cmdlet's -credential parameter doesn't correctly accept credential obejcts
+				- Online research confirms this and no way around it
+			- Alternative: launch PoSh-EasyWin with admin creds and don't use 'select credentials'
+			- Alternative: don't hide the initial terminal that launches PoSh-EasyWin and allow that to host the PSSessions
+				- Pros: Credentials are not passed via plain text
+				- Cons: Limits you to only one PSSesion at a time
+					    The original terminal isn't as clean of a feature and may accidently close PoSh-EasyWin
+		- Remote Desktop to an endpoint
+			- This is because to cmdkey.exe is needed to pass credentials to mstsc.exe (MicroSoft Terminal Services Console) aka Remote Desktop
+			- cmdkey.exe is a native Windows command, and only accepts plain text
+				- when credentials are pushed into cmdkey.exe, sysmon event id 1 captures it
+			- Alternative: launch PoSh-EasyWin with admin creds and don't use 'select credentials'
+	- Stored credentials
+		- The stored .xml credential objects are still secured with Windows Endpoint Data Protection API and perfectly safe with
+		- But when extracted to use with SMB Queries, PSSession, and PSExex, and Remote Desktop they are exposed as they become command line arguments
+	- I wasn't able to observe credentials being recorded within the Security Event Log of Event Id 4688, Process Creations
+	- Used the following to verify if credentials were present in logs
+		- Installed sysmon
+			- Get-WinEvent -FilterHashtable @{logname="Microsoft-Windows-Sysmon/Operational";id=1;}| where {$_.message -match 'powershell.exe'} | Select -ExpandProperty message
+				- Analysed the output to see if credentials were present
+		- Viewed the built-in Security Log Event Id 4688
+			- Get-WinEvent -LogName Security | where {$_.Id -eq 4688}
+				- search for powershell, psexec, and mstsc
+
+Ended up pushing this update to:
+	- include the above notes in my change log
+	- updated parts of the code to obfuscate credentials when dropping into a PSSession (base64)
+	- tweeked the PSExec code 
+		- reliably lauch without alterate credentials
+			- uses the credentials of those used to launch PoSh-EasyWin
+		- to reliably pass credentials
+			-  uses the credntials if useing 'select credentials'
+
+
+==================================================
+v5.0.2 - 14 Sep 2020
+==================================================
 
 Added auto password rolling to dashboards
 	- all of them... for some reason I forgot to when I built them and added the imbedded update feature
@@ -53,7 +109,7 @@ Change the following fonts to DarkRed in the computer treeview contextmenu
 	- WinRM Check
 
 ==================================================
-v5.0.2 - 10 September 2020
+v5.0.3 - 10 September 2020
 ==================================================
 
 

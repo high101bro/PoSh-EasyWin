@@ -26,16 +26,18 @@ $ComputerListPSSessionButtonAdd_Click = {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
             $Password = $script:Credential.GetNetworkCredential().Password
+
+            $password = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Password))
             #if ($UserName -like '*\*') {
             #    $Name     = $UserName.split('\')[1]
             #    $Domain   = $UserName.split('\')[0]
             #    $UserName = "$Name@$Domain"
             #}
-            #@($Password,$Username) | ogv
             
             $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential")
-            #Start-Process powershell -ArgumentList "-noexit -Command `"Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))`""
-            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))"
+            #start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))"
+            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)))"
+
             Start-Sleep -Seconds 3
         }
         else {

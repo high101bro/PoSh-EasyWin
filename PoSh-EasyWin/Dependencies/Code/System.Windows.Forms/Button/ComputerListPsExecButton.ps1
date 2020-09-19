@@ -27,21 +27,22 @@ $ComputerListPsExecButtonAdd_Click = {
             $Username = $script:Credential.UserName
             $Password = $script:Credential.GetNetworkCredential().Password
             
-            #if ($Username -notlike '*@*'){
-            #    $User     = $Username.split('\')[1]
-            #    $Domain   = $Username.split('\')[0]
-            #    $Username = "$($User)@$($Domain)"
-            #}
-
-            $UseCredential = "-u $Username -p $Password"
+            if ($Username -like '*@*'){
+                $User     = $Username.split('@')[0]
+                $Domain   = $Username.split('@')[1]
+                $Username = "$($Domain)\$($User)"
+            }
+            $Password = "'$Password'"
 
             $ResultsListBox.Items.Add("./PsExec.exe -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected '<domain\username>' -p '<password>' cmd")
-            Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected $UseCredential cmd'"
+            #opens in black terminal# Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected -u '$Username' -p '$Password' cmd'"
+            start-process powershell "-noexit -command $PsExecPath -accepteula -nobanner \\$script:ComputerTreeViewSelected -u $Username -p $Password cmd"
         }
         else { 
             $ResultsListBox.Items.Add("./PsExec.exe -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd")
             $ResultsListBox.Items.Add("$PsExecPath -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd")
-            Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd'"
+            #opens in black terminal# Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd'"
+            start-process powershell "-noexit -command $PsExecPath -accepteula -nobanner \\$script:ComputerTreeViewSelected cmd"
         }
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PsExec: $($script:ComputerTreeViewSelected)"
 

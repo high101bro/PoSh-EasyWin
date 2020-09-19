@@ -26,6 +26,7 @@ $ComputerListRDPButtonAdd_Click = {
             $Password = $null
             $Username = $script:Credential.UserName
             $Password = $script:Credential.GetNetworkCredential().Password
+            #doesn't store in base64# $Password = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Password))
 
             # The cmdkey utility helps you manage username and passwords; it allows you to create, delete, and display credentials for the current user
                 # cmdkey /list                <-- lists all credentials
@@ -36,6 +37,8 @@ $ComputerListRDPButtonAdd_Click = {
             #cmdkey /generic:TERMSRV/$script:ComputerTreeViewSelected /user:$Username /pass:$Password
             cmdkey /delete:"$script:ComputerTreeViewSelected"
             cmdkey /delete /ras   
+
+            #doesn't store in base64# cmdkey /generic:$script:ComputerTreeViewSelected /user:"$Username" /pass:"$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(`"$Password`")))"
 
             cmdkey /generic:$script:ComputerTreeViewSelected /user:"$Username" /pass:"$Password"
             mstsc /v:$($script:ComputerTreeViewSelected):3389 /admin /noConsentPrompt /f

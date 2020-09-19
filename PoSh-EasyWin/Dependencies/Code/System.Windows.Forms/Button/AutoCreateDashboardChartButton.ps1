@@ -60,7 +60,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         "Active Directory Computers",
         "Active Directory Groups",
         "Active Directory User Accounts",
-        "Application Crashes",
+#        "Application Crashes",
         "Login Activity",
         "Network Connections",
         "Network Interfaces",

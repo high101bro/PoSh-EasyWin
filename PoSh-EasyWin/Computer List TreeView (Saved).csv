@@ -22,3 +22,5 @@
 "WIN81-06","Windows 8.1 Pro","/US Branch/Employee","No IP Available","No MAC Available","No Notes Available"
 "WIN81-05","Windows 8.1 Pro","/US Branch/Guest","10.10.10.113","No MAC Available","No Notes Available"
 "WINXP-01","Windows XP Professional","/Europe Branch/Remote Support","10.10.10.105","No MAC Available","No Notes Available"
+"zenpad","Windows 10 Enterprise Evaluation","/Domain Controllers","No IP Available","No MAC Available","
+Previous Endpoint Name: localhost"

@@ -40,7 +40,6 @@ function Update-AutoChartsApplicationCrashes {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Application Crashes - (WinRM)'
-1|ogv
                     Invoke-Command -ScriptBlock {Get-EventLog -LogName Application -InstanceId 1000 | Select-Object -First 1000 } `
                     -ComputerName $TargetComputer `
                     -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
