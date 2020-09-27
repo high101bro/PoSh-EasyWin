@@ -29,8 +29,8 @@
                      etl2pcapng.exe, WinPmem.exe
                      wKillcx is a small command-line utility to close any TCP connection under Windows XP/Vista/Seven as well as Windows Server 2003/2008. The source code (assembly language) is included with the binary.
 
-    Updated        : 19 Sep 2020
-    Created        : 21 AUG 2018
+    Updated        : 27 Sep 2020
+    Created        : 21 Aug 2018
 
     Author         : Daniel Komnick (high101bro)
     Email          : high101bro@gmail.com
