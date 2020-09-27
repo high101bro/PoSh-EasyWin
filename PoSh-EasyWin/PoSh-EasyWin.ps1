@@ -406,13 +406,6 @@ else {
 . "$Dependencies\Code\Main Body\CommonButtonSettings.ps1"
 
 
-# Launches the small form helper that to reload and kill PoSh-EasyWin
-# Options include: Top most toggle, Abort/Reload, Exit GUI
-# Intializes $FormHelperProcessId
-#. "$Dependencies\Code\Main Body\Launch-FormHelper.ps1"
-. "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"
-
-
 # Scales the PoSh-EasyWin GUI as desired by the user
 . "$Dependencies\Code\Main Body\Launch-FormScaleGUI.ps1"
 
@@ -432,7 +425,7 @@ if (-not (Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
 
 # Progress Bar Load Screen Code
 . "$Dependencies\Code\Main Body\Launch-ProgressBarForm.ps1"
-Launch-SystemTrayNotifyIcon
+
 
 #============================================================================================================================================================
 #   __  __         _            _____                       
@@ -461,8 +454,14 @@ namespace Loading
 Add-Type -TypeDefinition $code -Language CSharp	
 Invoke-Expression "[Loading.Test$id]::Main()"
 
+
 #Start Progress bar form loading
 $ScriptBlockForGuiLoadAndProgressBar = {
+
+
+# Launches the accompanying Notifications Icon helper in the  System Tray
+. "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"
+
 
 # The Launch-ProgressBarForm.ps1 is topmost upon loading to ensure it's displayed intially, but is then able to be move unpon
 $ResolutionCheckForm.topmost = $false
