@@ -184,11 +184,11 @@ while ($true) {
                 $SysmonCompletedEndpoints += $Session.ComputerName
             }
             else {
-                $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      NOT Yet Running on $($Session.ComputerName)")
+                $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Checking for $SysmonName service - NOT Yet Running on $($Session.ComputerName)")
                 Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Invoke-Command -ScriptBlock { Get-Service '$SysmonName' } -Session $Session"
                 $PoShEasyWin.Refresh()
             }
-            $script:ProgressBarEndpointsProgressBar.Value += 1            
+            $script:ProgressBarEndpointsProgressBar.Value += 1
             $PoShEasyWin.Refresh()
         }
     }

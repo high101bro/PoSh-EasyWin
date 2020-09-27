@@ -8,8 +8,8 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
     #----------------------------------
     $ComputerTreeNodePopup = New-Object system.Windows.Forms.Form -Property @{
         Text          = "Add Hostname/IP"
-        Size          = @{ Width  = $FormScale * 335
-                           Height = $FormScale * 177 }
+        Width  = $FormScale * 335
+        Height = $FormScale * 177
         StartPosition = "CenterScreen"
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
@@ -21,8 +21,8 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
         Text     = "Enter a hostname/IP"
         Location = @{ X = $FormScale * 10
                       Y = $FormScale * 10 }
-        Size     = @{ Width  = $FormScale * 300
-                      Height = $FormScale * 25 }
+        Width  = $FormScale * 300
+        Height = $FormScale * 25 
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $ComputerTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
@@ -35,8 +35,8 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
         Text = "Select an Operating System (or type in a new one)"
         Location = @{ X = $FormScale * 10
                       Y = $ComputerTreeNodePopupAddTextBox.Location.Y + $ComputerTreeNodePopupAddTextBox.Size.Height + $($FormScale * 10) }
-        Size     = @{ Width  = $FormScale * 300
-                      Height = $FormScale * 25 }
+        Width  = $FormScale * 300
+        Height = $FormScale * 25 
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
         Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -56,8 +56,8 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
         Text  = "Select an Organizational Unit / Canonical Name (or type a new one)"
         Location = @{ X = $FormScale * 10
                       Y = $ComputerTreeNodePopupOSComboBox.Location.Y + $ComputerTreeNodePopupOSComboBox.Size.Height + $($FormScale * 10) }
-        Size     = @{ Width  = $FormScale * 300
-                      Height = $FormScale * 25 }
+        Width  = $FormScale * 300
+        Height = $FormScale * 25
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
         Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -88,8 +88,8 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
         Text     = "Add Host"
         Location = @{ X = $FormScale * 210
                       Y = $ComputerTreeNodePopupOUComboBox.Location.Y + $ComputerTreeNodePopupOUComboBox.Size.Height + $($FormScale * 10) }
-        Size     = @{ Width  = $FormScale * 100
-                      Height = $FormScale * 25 }
+        Width  = $FormScale * 100
+        Height = $FormScale * 25
     }
     CommonButtonSettings -Button $ComputerTreeNodePopupAddHostButton
     $ComputerTreeNodePopupAddHostButton.Add_Click({ AddHost-ComputerTreeNode })

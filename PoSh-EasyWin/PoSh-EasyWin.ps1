@@ -346,11 +346,7 @@ if (-not (Test-Path $ShortcutDestination)) {
 # Note: Unable to . source this code from another file or use the call '&' operator to use as external cmdlet; it won't run the new terminal/GUI as Admin
 <# #Requires -RunAsAdministrator #>
 If (-NOT $SkipEvelationCheck -and -NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    $ElevateShell = [System.Windows.Forms.MessageBox]::Show(`
-        "Attention Under-Privileged User!`n   $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)`n`nThe remote commands executed to collect data require elevated credentials. Select 'Yes' to attempt to run this script with elevated privileges; select 'No' to run this script with the current user's privileges; or select 'Cancel' and re-run this script within an Administrator terminal.",`
-        "PoSh-EasyWin",`
-        'YesNoCancel',`
-        "Warning")
+    $ElevateShell = [System.Windows.Forms.MessageBox]::Show("Attention Under-Privileged User!`n   $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)`n`nThe remote commands executed to collect data require elevated credentials. Select 'Yes' to attempt to run this script with elevated privileges; select 'No' to run this script with the current user's privileges; or select 'Cancel' and re-run this script within an Administrator terminal.","PoSh-EasyWin",'YesNoCancel',"Warning")
     switch ($ElevateShell) {
     'Yes'{
         if ($ShowTerminal) { Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript }
@@ -409,14 +405,13 @@ else {
 # These are the common settings for buttons in a function
 . "$Dependencies\Code\Main Body\CommonButtonSettings.ps1"
 
+
 # Launches the small form helper that to reload and kill PoSh-EasyWin
 # Options include: Top most toggle, Abort/Reload, Exit GUI
 # Intializes $FormHelperProcessId
-. "$Dependencies\Code\Main Body\Launch-FormHelper.ps1"
+#. "$Dependencies\Code\Main Body\Launch-FormHelper.ps1"
 . "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"
 
-# Progress Bar Load Screen Code
-. "$Dependencies\Code\Main Body\Launch-ProgressBarForm.ps1"
 
 # Scales the PoSh-EasyWin GUI as desired by the user
 . "$Dependencies\Code\Main Body\Launch-FormScaleGUI.ps1"
@@ -429,7 +424,16 @@ if (-not (Test-Path "$PoShSettings\Form Scaling Modifier.txt")){
 }
 else { $FormScale = [decimal](Get-Content "$PoShSettings\Form Scaling Modifier.txt") }
 
-    
+
+# Displays essential info about the tool, best practies, etc - opens immedately during first time launch, and can be found within the readme tab
+. "$Dependencies\Code\Main Body\Launch-ReadMe.ps1"
+if (-not (Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) { Launch-ReadMe }
+
+
+# Progress Bar Load Screen Code
+. "$Dependencies\Code\Main Body\Launch-ProgressBarForm.ps1"
+Launch-SystemTrayNotifyIcon
+
 #============================================================================================================================================================
 #   __  __         _            _____                       
 #  |  \/  |  __ _ (_) _ __     |  ___|___   _ __  _ __ ___  
@@ -521,6 +525,8 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
                 if     ($script:VerifyToCloseForm -eq $true) { $Selection.Cancel = $false } 
                 elseif ($script:VerifyToCloseForm -eq $false){ $Selection.Cancel = $true } 
                 else   { $Selection.Cancel = $true  }
+                $script:VerifyCloseForm.TopMost = $false
+                $script:VerifyCloseForm.dispose()
                 $script:VerifyCloseForm.close()
             }
         }
@@ -3056,6 +3062,7 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
                     elseif ($ActionsTabApplyFirewallRulesLocalCopyToEndpointsRadioButton.checked) { 
                         Quarantine-EndpointsWithFirewallRules -ApplyFirewallRulesLocalCopyToEndpoints 
                     }
+                    [system.media.systemsounds]::Exclamation.play()
                 }
             }
             $ActionsTabQuarantineEndpointGroupBox.Controls.Add($ActionsTabQuarantineEndpointsButton)
@@ -5216,6 +5223,21 @@ $Section2OptionsTab.Controls.Add($OptionTextToSpeachButton)
 CommonButtonSettings -Button $OptionTextToSpeachButton
 
 
+$OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "View Read Me"
+    Left   = $OptionTextToSpeachButton.Left + $OptionTextToSpeachButton.Width + ($FormScale * 5)
+    Top    = $OptionTextToSpeachButton.Top
+    Width  = $FormScale * 175
+    Height = $FormScale * $Column3BoxHeight
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_Click = { 
+        Launch-ReadMe -ReadMe
+    }
+}
+$Section2OptionsTab.Controls.Add($OptionViewReadMeButton)
+CommonButtonSettings -Button $OptionViewReadMeButton
+
+
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Center TabControl
@@ -5390,6 +5412,7 @@ Remove-EmptyCategory
 . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
 Display-ContextMenuForComputerTreeNode
 
+#batman
 $ComputerTreeViewImageList = New-Object System.Windows.Forms.TreeView.ImageList
 $ComputerTreeViewImageList.Images.Add('C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Images\PoSh-EasyWin Image 01.png')
 $ComputerTreeViewImageList.Images.Add('C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Images\PoSh-EasyWin Image 02.png')
@@ -7500,6 +7523,7 @@ $script:ProgressBarSelectionForm.Refresh()
 # Note the Execution button itself is located in the Select Computer section
 $ComputerListExecuteButton.Add_Click($ExecuteScriptHandler)
 
+<# --Potential code to deprecate
 # Correct the initial state of the form to prevent the .Net maximized form issue
 #$InitialFormWindowState     = New-Object System.Windows.Forms.FormWindowState
 #$OnLoadForm_StateCorrection = { $PoShEasyWin.WindowState = $InitialFormWindowState }
@@ -7509,6 +7533,7 @@ $ComputerListExecuteButton.Add_Click($ExecuteScriptHandler)
 
 #Init the OnLoad event to correct the initial state of the form
 #$PoShEasyWin.add_Load($OnLoadForm_StateCorrection)
+#>
 
 #Show the Form
 $script:ProgressBarFormProgressBar.Value = 40
@@ -7534,6 +7559,7 @@ Download at: https://GitHub.com/high101bro
     Invoke-command $ScriptBlockForGuiLoadAndProgressBar
 }
 
-Launch-ProgressBarForm -FormTitle "PoSh-EasyWin  [$InitialScriptLoadTime]" -ShowImage -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
-
+if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
+    Launch-ProgressBarForm -FormTitle "PoSh-EasyWin  [$InitialScriptLoadTime]" -ShowImage -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
+}
 

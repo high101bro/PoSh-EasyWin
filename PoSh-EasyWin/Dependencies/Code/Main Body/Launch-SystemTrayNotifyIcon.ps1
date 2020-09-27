@@ -1,3 +1,5 @@
+function Launch-SystemTrayNotifyIcon {
+
 $CurrentProcessId = [System.Diagnostics.Process]::GetCurrentProcess().Id
 
 $SystemTrayNotifyIcon = {
@@ -171,3 +173,4 @@ $SystemTrayNotifyIcon = {
 Start-Process -FilePath powershell.exe -ArgumentList  "-WindowStyle Hidden -Command Invoke-Command {$SystemTrayNotifyIcon} -ArgumentList @($CurrentProcessId,[bool]'`$$FormAdminCheck','$EasyWinIcon','$Font',$($ThisScript.trim('&')),'$InitialScriptLoadTime')" -PassThru `
 | Select-Object -ExpandProperty Id | Set-Variable FormHelperProcessId
 
+}

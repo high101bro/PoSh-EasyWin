@@ -56,10 +56,10 @@ These endpoints will only be accessable from the following:
 
 $($ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.text)
 
-CAUTION! If you make a bad entry, you may cause the endpoints to become inaccessible over the network.",'Backup and Quarantine','YesNo','Info')
+CAUTION! If you make a bad entry, you may cause the endpoints to become inaccessible over the network.",'Backup and Quarantine','YesNo')
         }
         elseif ($ActionsTabApplyFirewallRulesLocalCopyToEndpointsRadioButton.checked){
-            $BackupAndQuarantineMessageBox = [System.Windows.MessageBox]::Show("Restore the firewall rules and Un-Quarantine the following endpoints:`n`n$($script:ComputerList -join ', ')",'Restore and Un-Quarantine','YesNo','Info')
+            $BackupAndQuarantineMessageBox = [System.Windows.MessageBox]::Show("Restore the firewall rules and Un-Quarantine the following endpoints:`n`n$($script:ComputerList -join ', ')",'Restore and Un-Quarantine','YesNo')
         }
 
         # If the messagebox was 'Yes', then...
@@ -103,7 +103,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
         
                         if (Test-Path "$OutputFirewallRulesDirectory\$Computer - Firewall Rules.wfw"){
                             [system.media.systemsounds]::Exclamation.play()
-                            $OverwriteFirewallFile = [System.Windows.MessageBox]::Show("Warning: A version of the firewall rules for $Computer already exists.`n`nDo you want to overwrite the local copy?",'Overwrite Local Copy','YesNoCancel','Warning')
+                            $OverwriteFirewallFile = [System.Windows.MessageBox]::Show("Warning: A version of the firewall rules for $Computer already exists.`n`nDo you want to overwrite the local copy?",'Overwrite Local Copy','YesNoCancel')
                             switch ($OverwriteFirewallFile) {
                                 'Yes'{
                                     Invoke-Command -ScriptBlock { netsh advfirewall export "C:\Windows\Temp\firewall-export.wfw" } -Session $Session

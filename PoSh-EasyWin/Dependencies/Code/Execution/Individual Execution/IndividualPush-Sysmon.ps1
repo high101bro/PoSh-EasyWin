@@ -122,7 +122,14 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 elseif ($ExternalProgramsWinRMRadioButton.checked) {
     New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
 
-    $PSSession = New-PSSession -ComputerName $script:ComputerList | Sort-Object ComputerName
+    if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if (!$script:Credential) { Create-NewCredentials }
+            $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
+    }
+    else {
+        $PSSession = New-PSSession -ComputerName $script:ComputerList
+    }
+
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "WinRM Collection Started to $($PSSession.count) Endpoints"
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
 
@@ -136,7 +143,7 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
         $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Sessions Created to $($PSSession.count) Endpoints")
     }
     else {
-        $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Unabled to push Sysmon because a WinRM sessions could not be established")
+        $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Unable to push Sysmon because a WinRM sessions could not be established")
         [system.media.systemsounds]::Exclamation.play()
     }
     $PoShEasyWin.Refresh()

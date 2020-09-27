@@ -45,7 +45,7 @@ Data:      Deserialized Objects
 Pros:      Single Port required
                 Can establish sessions with endpoints
                 Supports any cmdlet and native commands
-Cons       Requires WinRM service
+Cons:       Requires WinRM service
                 Many admins/networks disable this if not used
 "@
         }

@@ -1,33 +1,30 @@
 ==================================================
-v5.0.3 - 19 Sep 2020
+v5.0.3 - 27 Sep 20
 ==================================================
 
-TO DO LIST: 
-	Add feautues that adds a metadata tag to each endpoint node for:
-		- Preferred Protocol
-		- Available protocols used
-		- list of queried times
-		- protocols Identified
-		- services running
-		- input from enumeration scans
-	Verify previous query searches open csv for endpionts by date works
-	SMB WMI compile results
-	Add import hash list
-	Add import registry location IOCs
-	Commented out Compile results... need to finish removing old code
-	Account logon activity (both)... fix resultslistbox entries... when ran they disaply artifact data
-	Add support for RPC native commands with Invoke-wmimethod and copy results...
-	Vet scripts to ensure they're logging correctly
-	tweek endpoint tagging
-	Update logging from flat text to create custom Event Logs
-	update checklist to include easy resetting, persistence, and better overall appearance
-	Update other charts to include changing chart view and it's associated button
-	keep trying to develop a solution to launch show-eventlog not within domain...
-	Add * support for directory in file search/hash search
-	Add comment that directory listing support c:/*/*/dir -- asterisks
+My version control break down: v5.0.3
+	5 = Major Version
+	0 = Minor Version
+	3 = Primarily Bug Fixes
+
+Formscale - found some GUI elements that didn't have the code implementation
+	- The rename popup for the computer treeview on an single endpoint wasn't scaling
+	- The move popup for the computer treeview on an single endpoint wasn't scaling
+
+Added chime sound after quarantine / un-quaentine completion
+
+Updated the info tab with notes on WMI
+
+Applied fixed to closing of PoSh-EasyWin
+	- Added .dispose() method when closing the form
+
+Created a User Notice and acknowledgement spash page
+	- it automatically pops up during the first use of PoSh-EasyWin
+	- it can be viewed again with a button located in the Options section
+	- This was all in done in part to provide clarity to the user so they understand what's going on and because the info below
 
 Brought to my attention that if you use the 'specify credentials feature"
-	- Issues urrently is observed when using sysmon and forwarding logs out to like a SIEM
+	- Issue currently is observed when using sysmon and forwarding logs out to like a SIEM
 		- If using just sysmon without forwarding to siem, event id 1 will still capture it, but it'll only on your local trusted host
 		- If forwarding out to a SIEM, everyone with access to the SIEM can view them
 	- If using sysmon on the localhost launching PoSh-EasyWin:

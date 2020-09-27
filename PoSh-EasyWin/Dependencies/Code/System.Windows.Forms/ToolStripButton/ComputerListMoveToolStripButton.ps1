@@ -11,7 +11,7 @@ function Show-MoveForm {
     #----------------------------------
     $ComputerTreeNodePopup = New-Object system.Windows.Forms.Form -Property @{
         Text          = "Move"
-        Size          = New-Object System.Drawing.Size(330,107)
+        Size          = New-Object System.Drawing.Size(($FormScale * 330),($FormScale * 107))
         StartPosition = "CenterScreen"
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     }
@@ -22,10 +22,10 @@ function Show-MoveForm {
     #----------------------------------------------
     $ComputerTreeNodePopupMoveComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text     = "Select A Category"
-        Location = @{ X = 10
-                      Y = 10 }
-        Size     = @{ Width  = 300
-                      Height = 25 }
+        Location = @{ X = $FormScale * 10
+                      Y = $FormScale * 10 }
+        Size     = @{ Width  = $FormScale * 300
+                      Height = $FormScale * 25 }
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
         Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -48,10 +48,10 @@ function Show-MoveForm {
     #--------------------------------------------
     $ComputerTreeNodePopupExecuteButton = New-Object System.Windows.Forms.Button -Property @{
         Text     = "Execute"
-        Location = @{ X = 210
-                      Y = $ComputerTreeNodePopupMoveComboBox.Size.Height + 15 }
-        Size     = @{ Width  = 100
-                      Height = 25 }
+        Location = @{ X = $FormScale * 210
+                      Y = $ComputerTreeNodePopupMoveComboBox.Size.Height + ($FormScale * 15) }
+        Size     = @{ Width  = $FormScale * 100
+                      Height = $FormScale * 25 }
     }
     CommonButtonSettings -Button $ComputerTreeNodePopupExecuteButton
     $ComputerTreeNodePopupExecuteButton.Add_Click({ 

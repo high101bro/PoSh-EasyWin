@@ -12,7 +12,7 @@ $ComputerListRenameToolStripButtonAdd_Click = {
         #----------------------------------
         $ComputerTreeNodeRenamePopup               = New-Object system.Windows.Forms.Form
         $ComputerTreeNodeRenamePopup.Text          = "Rename $($script:EntrySelected.text)"
-        $ComputerTreeNodeRenamePopup.Size          = New-Object System.Drawing.Size(330,107)
+        $ComputerTreeNodeRenamePopup.Size          = New-Object System.Drawing.Size(($FormScale * 330),($FormScale * 107))
         $ComputerTreeNodeRenamePopup.StartPosition = "CenterScreen"
         $ComputerTreeNodeRenamePopup.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 
@@ -21,8 +21,8 @@ $ComputerListRenameToolStripButtonAdd_Click = {
         #---------------------------------------------
         $script:ComputerTreeNodeRenamePopupTextBox          = New-Object System.Windows.Forms.TextBox
         $script:ComputerTreeNodeRenamePopupTextBox.Text     = "New Hostname/IP"
-        $script:ComputerTreeNodeRenamePopupTextBox.Size     = New-Object System.Drawing.Size(300,25)
-        $script:ComputerTreeNodeRenamePopupTextBox.Location = New-Object System.Drawing.Point(10,10)
+        $script:ComputerTreeNodeRenamePopupTextBox.Size     = New-Object System.Drawing.Size(($FormScale * 300),($FormScale * 25))
+        $script:ComputerTreeNodeRenamePopupTextBox.Location = New-Object System.Drawing.Point(($FormScale * 10),($FormScale * 10))
         $script:ComputerTreeNodeRenamePopupTextBox.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 
         # Renames the computer treenode to the specified name
@@ -39,10 +39,10 @@ $ComputerListRenameToolStripButtonAdd_Click = {
         #--------------------------------------------
         $ComputerTreeNodeRenamePopupButton = New-Object System.Windows.Forms.Button -Property @{
             Text     = "Execute"
-            Location = @{ X = 210
-                          Y = $script:ComputerTreeNodeRenamePopupTextBox.Location.X + $script:ComputerTreeNodeRenamePopupTextBox.Size.Height + 5 }
-            Size     = @{ Width  = 100
-                          Height = 22 }
+            Location = @{ X = $FormScale * 210
+                          Y = $script:ComputerTreeNodeRenamePopupTextBox.Location.X + $script:ComputerTreeNodeRenamePopupTextBox.Size.Height + ($FormScale * 5) }
+            Size     = @{ Width  = $FormScale * 100
+                          Height = $FormScale * 22 }
         }
         CommonButtonSettings -Button $ComputerTreeNodeRenamePopupButton
         $ComputerTreeNodeRenamePopupButton.Add_Click({ Rename-ComputerTreeNodeSelected })
