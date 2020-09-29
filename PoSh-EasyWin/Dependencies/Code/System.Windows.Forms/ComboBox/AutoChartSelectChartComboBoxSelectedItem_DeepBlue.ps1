@@ -355,8 +355,8 @@ $script:AutoChart01DeepBlue.Series["Application Name"].Color             = 'Red'
                 $script:AutoChartsProgressBar.Value   = 0
                 $script:AutoChartsProgressBar.Update()
             
-                $script:AutoChart01DeepBlue.Series["Deep Blue"].Points.Clear()
-            
+                $script:AutoChart01DeepBlue.Series["Application Name"].Points.Clear()
+
                 if ($script:AutoChart01DeepBlueUniqueDataFields.count -gt 0){
                     $script:AutoChart01DeepBlueTitle.ForeColor = 'Black'
                     $script:AutoChart01DeepBlueTitle.Text = "Potentials Findings By Event Type"
@@ -615,7 +615,7 @@ $script:AutoChart01DeepBlueCheckDiffButton = New-Object Windows.Forms.Button -Pr
 }
 CommonButtonSettings -Button $script:AutoChart01DeepBlueCheckDiffButton
 $script:AutoChart01DeepBlueCheckDiffButton.Add_Click({
-    $script:AutoChart01DeepBlueInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+    $script:AutoChart01DeepBlueInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'Message' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart01DeepBlueInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -721,7 +721,7 @@ $AutoChart01DeepBlueExpandChartButton = New-Object System.Windows.Forms.Button -
                   Y = $script:AutoChart01DeepBlueCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Deep Blue" -QueryTabName "Application Name" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Name" -QueryTabName "Application Name" -PropertyX "Name" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01DeepBlueExpandChartButton
 $script:AutoChart01DeepBlueManipulationPanel.Controls.Add($AutoChart01DeepBlueExpandChartButton)
@@ -936,15 +936,14 @@ $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Color             = 
                 $script:AutoChart02DeepBlueOverallDataResults += $AutoChart02YDataResults
 
                 $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Points.Clear()
-                $script:AutoChart02DeepBlueOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02DeepBlueTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02DeepBlueTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
-
+                
                 $script:AutoChart02DeepBlueSortButton.text = "View: Count"
                 $script:AutoChart02DeepBlueOverallDataResultsSortAlphaNum = $script:AutoChart02DeepBlueOverallDataResults | Sort-Object @{Expression='UniqueCount';Descending=$false}, @{Expression={[string]$_.DataField};Descending=$false}
                 $script:AutoChart02DeepBlueOverallDataResultsSortCount    = $script:AutoChart02DeepBlueOverallDataResults | Sort-Object @{Expression={[string]$_.DataField};Descending=$false}, @{Expression='UniqueCount';Descending=$false}
                 $script:AutoChart02DeepBlueOverallDataResults = $script:AutoChart02DeepBlueOverallDataResultsSortAlphaNum
 
                 $script:AutoChart02DeepBlueOverallDataResults | ForEach-Object { $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount) }
-                $script:AutoChart02DeepBlueTrimOffLastTrackBar.SetRange(0, $($script:AutoChart02DeepBlueOverallDataResults.count))
+                $script:AutoChart02DeepBlueTrimOffLastTrackBar.SetRange(0, $($script:AutoChart02DeSepBlueOverallDataResults.count))
                 $script:AutoChart02DeepBlueTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02DeepBlueOverallDataResults.count))
             }
             else {
@@ -1133,7 +1132,7 @@ $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($script:AutoChart02Dee
 #=====================================
 function script:InvestigateDifference-AutoChart02DeepBlue {    
     # List of Positive Endpoints that positively match
-    $script:AutoChart02DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$($_.Message.split(':')[1].split(',')[0].trim()) -eq $($script:AutoChart02DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$_.Message -eq $($script:AutoChart02DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart02DeepBlueInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02DeepBlueImportCsvPosResults) { $script:AutoChart02DeepBlueInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
@@ -1167,7 +1166,7 @@ $script:AutoChart02DeepBlueCheckDiffButton = New-Object Windows.Forms.Button -Pr
 }
 CommonButtonSettings -Button $script:AutoChart02DeepBlueCheckDiffButton
 $script:AutoChart02DeepBlueCheckDiffButton.Add_Click({
-    $script:AutoChart02DeepBlueInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+    $script:AutoChart02DeepBlueInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Message' -ExpandProperty 'Message' | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart02DeepBlueInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -1273,7 +1272,7 @@ $AutoChart02DeepBlueExpandChartButton = New-Object System.Windows.Forms.Button -
                   Y = $script:AutoChart02DeepBlueCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Deep Blue" -QueryTabName "Findings Per Endpoint" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Name" -QueryTabName "Findings Per Endpoint" -PropertyX "Name" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart02DeepBlueExpandChartButton
 $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($AutoChart02DeepBlueExpandChartButton)

@@ -316,7 +316,7 @@ $script:AutoChart01ApplicationCrashes.Series["Application Name"].Legend         
 $script:AutoChart01ApplicationCrashes.Series["Application Name"].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
 $script:AutoChart01ApplicationCrashes.Series["Application Name"]['PieLineColor']   = 'Black'
 $script:AutoChart01ApplicationCrashes.Series["Application Name"]['PieLabelStyle']  = 'Outside'
-$script:AutoChart01ApplicationCrashes.Series["Application Name"].ChartType         = 'Column'
+$script:AutoChart01ApplicationCrashes.Series["Application Name"].ChartType         = 'Bar'
 $script:AutoChart01ApplicationCrashes.Series["Application Name"].Color             = 'Red'
 
 
@@ -335,7 +335,7 @@ $script:AutoChart01ApplicationCrashes.Series["Application Name"].Color          
             
                 if ($script:AutoChart01ApplicationCrashesUniqueDataFields.count -gt 0){
                     $script:AutoChart01ApplicationCrashesTitle.ForeColor = 'Black'
-                    $script:AutoChart01ApplicationCrashesTitle.Text = "Application Crashes"
+                    $script:AutoChart01ApplicationCrashesTitle.Text = "Unique Application Crashes"
             
                     # If the Second field/Y Axis equals PSComputername, it counts it
                     $script:AutoChart01ApplicationCrashesOverallDataResults = @()
@@ -366,13 +366,13 @@ $script:AutoChart01ApplicationCrashes.Series["Application Name"].Color          
                     $script:AutoChart01ApplicationCrashesOverallDataResultsSortCount    = $script:AutoChart01ApplicationCrashesOverallDataResults | Sort-Object @{Expression={[string]$_.DataField};Descending=$false}, @{Expression='UniqueCount';Descending=$false}
                     $script:AutoChart01ApplicationCrashesOverallDataResults = $script:AutoChart01ApplicationCrashesOverallDataResultsSortAlphaNum
     
-                    $script:AutoChart01ApplicationCrashesOverallDataResults | ForEach-Object { $script:AutoChart01ApplicationCrashes.Series["Application Name"].Points.AddXY($_.DataField.Message,$_.UniqueCount) }
+                    $script:AutoChart01ApplicationCrashesOverallDataResults | ForEach-Object { $script:AutoChart01ApplicationCrashes.Series["Application Name"].Points.AddXY($_.DataField.Name,$_.UniqueCount) }
                     $script:AutoChart01ApplicationCrashesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart01ApplicationCrashesOverallDataResults.count))
                     $script:AutoChart01ApplicationCrashesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01ApplicationCrashesOverallDataResults.count))
-                    }
+                }
                 else {
                     $script:AutoChart01ApplicationCrashesTitle.ForeColor = 'Red'
-                    $script:AutoChart01ApplicationCrashesTitle.Text = "Application Crashes`n
+                    $script:AutoChart01ApplicationCrashesTitle.Text = "Unique Application Crashes`n
             [ No Data Available ]`n"                
                 }
             }
@@ -485,7 +485,7 @@ $script:AutoChart01ApplicationCrashesManipulationPanel.Controls.Add($script:Auto
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart01ApplicationCrashesChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Bar' 
     Location  = @{ X = $script:AutoChart01ApplicationCrashesTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart01ApplicationCrashesTrimOffFirstGroupBox.Location.Y + $script:AutoChart01ApplicationCrashesTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
@@ -591,7 +591,7 @@ $script:AutoChart01ApplicationCrashesCheckDiffButton = New-Object Windows.Forms.
 }
 CommonButtonSettings -Button $script:AutoChart01ApplicationCrashesCheckDiffButton
 $script:AutoChart01ApplicationCrashesCheckDiffButton.Add_Click({
-    $script:AutoChart01ApplicationCrashesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+    $script:AutoChart01ApplicationCrashesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property @{n='Name';e={$_.Message.split(':')[1].split(',')[0].trim() } } | Select-Object -ExpandProperty Name | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart01ApplicationCrashesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{
@@ -785,8 +785,7 @@ $script:AutoChart01ApplicationCrashesNoticeTextboX = New-Object System.Windows.F
 $script:AutoChart01ApplicationCrashesManipulationPanel.Controls.Add($script:AutoChart01ApplicationCrashesNoticeTextbox)
 
 $script:AutoChart01ApplicationCrashes.Series["Application Name"].Points.Clear()
-$script:AutoChart01ApplicationCrashesOverallDataResults | Select-Object -skip $script:AutoChart01ApplicationCrashesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01ApplicationCrashesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01ApplicationCrashes.Series["Application Name"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
-
+$script:AutoChart01ApplicationCrashesOverallDataResults | ForEach-Object {$script:AutoChart01ApplicationCrashes.Series["Application Name"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
 
 
 
@@ -912,7 +911,6 @@ $script:AutoChart02ApplicationCrashes.Series["Application Crashes Per Endpoint"]
                 $script:AutoChart02ApplicationCrashesOverallDataResults += $AutoChart02YDataResults
 
                 $script:AutoChart02ApplicationCrashes.Series["Application Crashes Per Endpoint"].Points.Clear()
-                $script:AutoChart02ApplicationCrashesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02ApplicationCrashesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02ApplicationCrashesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02ApplicationCrashes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
                 $script:AutoChart02ApplicationCrashesSortButton.text = "View: Count"
                 $script:AutoChart02ApplicationCrashesOverallDataResultsSortAlphaNum = $script:AutoChart02ApplicationCrashesOverallDataResults | Sort-Object @{Expression='UniqueCount';Descending=$false}, @{Expression={[string]$_.DataField};Descending=$false}
@@ -1143,7 +1141,7 @@ $script:AutoChart02ApplicationCrashesCheckDiffButton = New-Object Windows.Forms.
 }
 CommonButtonSettings -Button $script:AutoChart02ApplicationCrashesCheckDiffButton
 $script:AutoChart02ApplicationCrashesCheckDiffButton.Add_Click({
-    $script:AutoChart02ApplicationCrashesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object -Unique
+    $script:AutoChart02ApplicationCrashesInvestDiffDropDownArraY = $script:AutoChartDataSourceCsv | Select-Object -Property @{n='Name';e={$_.Message.split(':')[1].split(',')[0].trim() } } | Select-Object -ExpandProperty Name | Sort-Object -Unique
 
     ### Investigate Difference Compare Csv Files Form
     $script:AutoChart02ApplicationCrashesInvestDiffForm = New-Object System.Windows.Forms.Form -Property @{

@@ -1,3 +1,40 @@
+TO DO LIST: 
+	Create user data directory
+	Add feautues that adds a metadata tag to each endpoint node for:
+		- Preferred Protocol
+		- Available protocols used
+		- list of queried times
+		- protocols Identified
+		- services running
+		- input from enumeration scans
+	verify multi file download
+	Verify previous query searches open csv for endpionts by date works
+	SMB WMI compile results
+	Add import hash list
+	Add import registry location IOCs
+	Commented out Compile results... need to finish removing old code
+	Account logon activity (both)... fix resultslistbox entries... when ran they disaply artifact data
+	Add support for RPC native commands with Invoke-wmimethod and copy results...
+	Vet scripts to ensure they're logging correctly
+	tweek endpoint tagging
+	Update logging from flat text to create custom Event Logs
+	update checklist to include easy resetting, persistence, and better overall appearance
+	Update other charts to include changing chart view and it's associated button
+	keep trying to develop a solution to launch show-eventlog not within domain...
+	Add * support for directory in file search/hash search
+	Add comment that directory listing support c:/*/*/dir -- asterisks
+	launch another PoSh-EasyWin gui
+	create quaentine tab
+		provide access to view firewall rules downloaded
+		provide access to quaentine firewall rules applied
+
+!!!!!!!!!!!!!!!!  IndividualPush-Sysmon when individual execution
+						if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                            if (!$script:Credential) { Create-NewCredentials }
+
+!!!!!!!!!!!!!!!! packet capture continues over and over
+
+
 ==================================================
 v5.1.3 - 28 Sep 20
 ==================================================
