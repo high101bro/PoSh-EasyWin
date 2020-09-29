@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.5.0.3
+    Version        : v.5.1.3
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -4871,6 +4871,7 @@ CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
 . "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryGroups.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryUserAccounts.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsApplicationCrashes.ps1"
+. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsLoginActivity.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsNetworkConnections.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsNetworkInterfaces.ps1"

@@ -192,7 +192,7 @@ $AutoChartPullNewDataButton.Add_Click({
         $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
 
         if ($ChartComputerList.count -eq 0) {
-            [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-ACME')
+            [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-EasyWin')
         }
         else {
             $ScriptBlockProgressBarInput = { Update-AutoChartsNetworkInterfaces -ComputerNameList $ChartComputerList }

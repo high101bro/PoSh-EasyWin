@@ -1,12 +1,12 @@
 
-function Update-AutoChartsApplicationCrashes {
+function Update-AutoChartsDeepBlue {
     param($ComputerNameList)
     $script:ProgressBarFormProgressBar.Value   = 0
     $script:ProgressBarFormProgressBar.Maximum = $script:ComputerList.count
 
     $script:ProgressBarMessageLabel.text = "Note: Collected results are also saved locally as CSV and XML files."
 
-#    $PullNewDataScriptPath = "$QueryCommandsAndScripts\Scripts-Host\Application Crashes.ps1"
+#    $PullNewDataScriptPath = "$QueryCommandsAndScripts\Scripts-Host\Threat Hunting with Deep Blue.ps1"
 
     $ExecutionStartTime = Get-Date
             
@@ -39,14 +39,15 @@ function Update-AutoChartsApplicationCrashes {
             if ($ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
-                    $CollectionName = 'Application Crashes - (WinRM)'
-                    Invoke-Command -ScriptBlock {Get-EventLog -LogName Application -InstanceId 1000 | Select-Object -First 1000 } `
+                    $CollectionName = 'Threat Hunting with Deep Blue - (WinRM)'
+                    Invoke-Command -FilePath "$Dependencies\Code\Main Body\Invoke-DeepBlue.ps1" `
                     -ComputerName $TargetComputer `
                     -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                     -Credential $script:Credential
                 }
+                <#
                 elseif ($AutoChartProtocolRPCRadioButton.checked) {
-                    $CollectionName = 'Application Crashes - (RPC)'
+                    $CollectionName = 'Threat Hunting with Deep Blue - (RPC)'
 
                     Start-Job -ScriptBlock {
                         param($TargetComputer,$script:Credential)
@@ -55,8 +56,9 @@ function Update-AutoChartsApplicationCrashes {
                     -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                     -ArgumentList @($TargetComputer,$script:Credential)
                 }
+                #>
                 elseif ($AutoChartProtocolSMBRadioButton.checked) {
-                    $CollectionName = 'Application Crashes - (SMB)'
+                    $CollectionName = 'Threat Hunting with Deep Blue - (SMB)'
 
                     New-Item -ItemType Directory "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)" -ErrorAction SilentlyContinue
                     $CurrentTime = Get-Date
@@ -75,21 +77,21 @@ Elasped Time:  $($Timecount -replace '-','')"
                     $Username = $script:Credential.UserName
                     $Password = $script:Credential.GetNetworkCredential().Password
 
-                    & $PsExecPath "\\$TargetComputer" -AcceptEULA -NoBanner -u $UserName -p $Password powershell -command 'Invoke-Command -ScriptBlock {Get-EventLog -LogName Application -InstanceId 1000 | Select-Object -First 1000 | ConvertTo-Csv -NoType' | ConvertFrom-Csv | Export-CSV "$($script:CollectionSavedDirectoryTextBox.text)\Results By Endpoints\$CollectionName\$CollectionName -- $TargetComputer.csv" -NoTypeInformation
+                    & $PsExecPath "\\$TargetComputer" -AcceptEULA -NoBanner -u $UserName -p $Password powershell -command "Invoke-Command -FilePath '$Dependencies\Code\Main Body\Invoke-DeepBlue.ps1'" | ConvertTo-Csv -NoType | ConvertFrom-Csv | Export-CSV "$($script:CollectionSavedDirectoryTextBox.text)\Results By Endpoints\$CollectionName\$CollectionName -- $TargetComputer.csv" -NoTypeInformation
                     $script:ProgressBarFormProgressBar.Value += 1
                 }
             }
             else {
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
-                    $CollectionName = 'Application Crashes - (WinRM)'
+                    $CollectionName = 'Threat Hunting with Deep Blue - (WinRM)'
 
-                    Invoke-Command -ScriptBlock {Get-EventLog -LogName Application -InstanceId 1000 | Select-Object -First 1000 } `
+                    Invoke-Command -FilePath "$Dependencies\Code\Main Body\Invoke-DeepBlue.ps1" `
                     -ComputerName $TargetComputer `
                     -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
                 }
-                
+                <#
                 elseif ($AutoChartProtocolRPCRadioButton.checked) {
-                    $CollectionName = 'Application Crashes - (RPC)'
+                    $CollectionName = 'Threat Hunting with Deep Blue - (RPC)'
 
                     Start-Job -ScriptBlock {
                         param($TargetComputer)
@@ -98,8 +100,9 @@ Elasped Time:  $($Timecount -replace '-','')"
                     -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                     -ArgumentList @($TargetComputer)
                 }
+                #>
                 elseif ($AutoChartProtocolSMBRadioButton.checked) {
-                    $CollectionName = 'Application Crashes - (SMB)'
+                    $CollectionName = 'Threat Hunting with Deep Blue - (SMB)'
 
                     New-Item -ItemType Directory "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)" -ErrorAction SilentlyContinue
                     $CurrentTime = Get-Date
@@ -115,7 +118,7 @@ Iterating Through Endpoints
 Time Updates As Endpoints Respond
 Elasped Time:  $($Timecount -replace '-','')"
                  
-                    & $PsExecPath "\\$TargetComputer" -AcceptEULA -NoBanner powershell -command "Invoke-Command -ScriptBlock {Get-EventLog -LogName Application -InstanceId 1000 | Select-Object -First 1000 | ConvertTo-Csv -NoType" | ConvertFrom-Csv | Export-CSV "$($script:CollectionSavedDirectoryTextBox.text)\$CollectionName\$CollectionName -- $TargetComputer.csv" -NoTypeInformation
+                    & $PsExecPath "\\$TargetComputer" -AcceptEULA -NoBanner powershell -command "Invoke-Command -FilePath '$Dependencies\Code\Main Body\Invoke-DeepBlue.ps1'" | ConvertTo-Csv -NoType | ConvertFrom-Csv | Export-CSV "$($script:CollectionSavedDirectoryTextBox.text)\Results By Endpoints\$CollectionName\$CollectionName -- $TargetComputer.csv" -NoTypeInformation
                     $script:ProgressBarFormProgressBar.Value += 1
                 }
             }
@@ -143,10 +146,10 @@ Elasped Time:  $($Timecount -replace '-','')"
     }
     
     Compile-CsvFiles -LocationOfCSVsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)\*.csv" `
-                     -LocationToSaveCompiledCSV "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).csv"
+                    -LocationToSaveCompiledCSV "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).csv"
 
     Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)\*.xml" `
-                     -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).xml"                
+                    -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).xml"                
 
     Start-Sleep -Seconds 1
             

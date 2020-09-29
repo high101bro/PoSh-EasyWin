@@ -1,4 +1,16 @@
 ==================================================
+v5.1.3 - 28 Sep 20
+==================================================
+
+Craeted New Dashboard based off DeepBlueCLI by SANS Threat Hunting
+	- It has two dashboards
+
+Created New Dashboard with two charts for Application Crashes - Event ID 1000
+	- See what applications crashed over multiple endpoints
+	- See which endpoints have the most application crashes
+	- The intent is that malware often crashes software... so this could be a tipper to where/what to look into
+
+==================================================
 v5.0.3 - 27 Sep 20
 ==================================================
 
@@ -6,8 +18,6 @@ My version control break down: v5.0.3
 	5 = Major Version
 	0 = Minor Version
 	3 = Primarily Bug Fixes
-
-
 
 Formscale - found some GUI elements that didn't have the code implementation
 	- The rename popup for the computer treeview on an single endpoint wasn't scaling

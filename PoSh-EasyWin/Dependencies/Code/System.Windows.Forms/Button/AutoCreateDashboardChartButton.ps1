@@ -60,7 +60,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         "Active Directory Computers",
         "Active Directory Groups",
         "Active Directory User Accounts",
-#        "Application Crashes",
+        "Application Crashes",
         "Login Activity",
         "Network Connections",
         "Network Interfaces",
@@ -69,7 +69,8 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         "Services",
         "SMB Shares",
         "Software",
-        "Startups"
+        "Startups",
+        "Threat Hunting with Deep Blue"
     )
     ForEach ($Item in $AutoChartsAvailable) { [void] $AutoChartSelectChartComboBox.Items.Add($Item) }
     $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox) 
@@ -219,7 +220,11 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue") { 
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlue.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
     }
     $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)   
     [void] $AutoChartsSelectionForm.ShowDialog()
