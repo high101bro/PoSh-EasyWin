@@ -14,6 +14,7 @@ function Show-MoveForm {
         Size          = New-Object System.Drawing.Size(($FormScale * 330),($FormScale * 107))
         StartPosition = "CenterScreen"
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Add_Closing = { $This.dispose() }
     }
     $ComputerTreeNodePopup.Text = $FormTitleEndpoints
     

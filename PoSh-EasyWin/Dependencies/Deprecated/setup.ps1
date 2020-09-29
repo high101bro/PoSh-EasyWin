@@ -6,20 +6,21 @@ $EasyWinIcon = "$Dependencies\Images\favicon.ico"
 
 
 $script:ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
-Text   = 'PoSh-EasyWIn - Setup and Extraction'
-Width  = $FormScale * 600
-Height = $FormScale * 400
-StartPosition = "CenterScreen"
-Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
-Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-AutoScroll    = $True
-#FormBorderStyle =  "fixed3d"
-#ControlBox    = $false
-MaximizeBox   = $false
-MinimizeBox   = $false
-ShowIcon      = $true
-TopMost       = $true
-Add_Shown     = {}
+    Text   = 'PoSh-EasyWIn - Setup and Extraction'
+    Width  = $FormScale * 600
+    Height = $FormScale * 400
+    StartPosition = "CenterScreen"
+    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    AutoScroll    = $True
+    #FormBorderStyle =  "fixed3d"
+    #ControlBox    = $false
+    MaximizeBox   = $false
+    MinimizeBox   = $false
+    ShowIcon      = $true
+    TopMost       = $true
+    Add_Shown     = {}
+    Add_Closing = { $This.dispose() }
 }
 
 $PoShEasyWinLogoLoadingPictureBox = New-Object Windows.Forms.PictureBox -Property @{

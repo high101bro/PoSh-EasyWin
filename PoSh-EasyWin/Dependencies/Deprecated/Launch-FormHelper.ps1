@@ -1,7 +1,7 @@
 
 $CurrentProcessId = [System.Diagnostics.Process]::GetCurrentProcess().Id
 
-<#
+
 $CloseWindow = {
     param($CurrentProcessId,$FormAdminCheck,$EasyWinIcon,$Font,$ThisScript)
     Add-Type -AssemblyName System.Windows.Forms
@@ -23,6 +23,7 @@ $CloseWindow = {
         ShowIcon        = $true
         FormBorderStyle = 'Fixed3d'
         showintaskbar   = $true
+        Add_Closing = { $This.dispose() }
     }
     function FormButtonSettings {
         param($button)
@@ -77,6 +78,7 @@ $CloseWindow = {
                 MaximizeBox     = $false
                 MinimizeBox     = $false
                 showintaskbar   = $true
+                Add_Closing = { $This.dispose() }
             }
             $VerifyCloseLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text   = 'Do you want to Abort / Reload PoSh-EasyWin?'
@@ -162,6 +164,7 @@ $CloseWindow = {
                 MaximizeBox     = $false
                 MinimizeBox     = $false
                 showintaskbar   = $true
+                Add_Closing = { $This.dispose() }
             }
             $VerifyCloseLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text   = 'Do you want to close PoSh-EasyWin?'

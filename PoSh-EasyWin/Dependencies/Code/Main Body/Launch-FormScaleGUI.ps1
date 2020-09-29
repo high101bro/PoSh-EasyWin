@@ -27,6 +27,7 @@ public class PInvoke {
         TopMost = $true
         Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
+        Add_Closing = { $This.dispose() }
     }
 
 

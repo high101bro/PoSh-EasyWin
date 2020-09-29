@@ -620,6 +620,7 @@ $script:AutoChart01NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -1146,6 +1147,7 @@ $script:AutoChart02NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -1674,6 +1676,7 @@ $script:AutoChart03NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -2205,6 +2208,7 @@ $script:AutoChart04NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -2735,6 +2739,7 @@ $script:AutoChart05NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -3263,6 +3268,7 @@ $script:AutoChart06NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -3787,6 +3793,7 @@ $script:AutoChart07NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -4316,6 +4323,7 @@ $script:AutoChart08NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -4831,6 +4839,7 @@ $script:AutoChart09NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -5341,6 +5350,7 @@ $script:AutoChart10NetworkInterfacesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox

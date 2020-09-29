@@ -603,6 +603,7 @@ $script:AutoChart01SecurityPatchesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -1129,6 +1130,7 @@ $script:AutoChart02SecurityPatchesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -1636,6 +1638,7 @@ $script:AutoChart03SecurityPatchesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -2144,6 +2147,7 @@ $script:AutoChart04SecurityPatchesCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox

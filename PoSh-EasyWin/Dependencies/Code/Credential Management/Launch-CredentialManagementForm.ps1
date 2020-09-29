@@ -8,6 +8,7 @@ $CredentialManagementForm = New-Object system.Windows.Forms.Form -Property @{
     Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor     = 'Black'
+    Add_Closing = { $This.dispose() }
 }
 
 if (-not (Test-Path -Path $script:CredentialManagementPath) ) { New-Item -Path $script:CredentialManagementPath -Type Directory }

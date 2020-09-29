@@ -28,6 +28,7 @@ $SystemTrayNotifyIcon = {
                     MaximizeBox     = $false
                     MinimizeBox     = $false
                     showintaskbar   = $true
+                    Add_Closing = { $This.dispose() }
                 }
                 $VerifyCloseLabel = New-Object System.Windows.Forms.Label -Property @{
                     Text   = 'Do you want to Abort / Reload PoSh-EasyWin?'
@@ -101,6 +102,7 @@ $SystemTrayNotifyIcon = {
                     MaximizeBox     = $false
                     MinimizeBox     = $false
                     showintaskbar   = $true
+                    Add_Closing = { $This.dispose() }
                 }
                 $VerifyCloseLabel = New-Object System.Windows.Forms.Label -Property @{
                     Text   = 'Do you want to close PoSh-EasyWin?'

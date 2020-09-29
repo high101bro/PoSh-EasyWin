@@ -609,6 +609,7 @@ $script:AutoChart01StartupsCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -1135,6 +1136,7 @@ $script:AutoChart02StartupsCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -1642,6 +1644,7 @@ $script:AutoChart03StartupsCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -2150,6 +2153,7 @@ $script:AutoChart04StartupsCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -2666,6 +2670,7 @@ $script:AutoChart05StartupsCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -3182,6 +3187,7 @@ $script:AutoChart06StartupsCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox

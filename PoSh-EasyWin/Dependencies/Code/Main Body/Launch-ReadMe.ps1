@@ -31,6 +31,7 @@ $UserNoticeAcknowledgementForm = New-Object System.Windows.Forms.Form -Property 
     Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
     #clientsize = 100
+    Add_Closing = { $This.dispose() }
 }
 if ($ReadMe) { 
     $UserNoticeAcknowledgementForm.text = "PoSh-EasyWin - Read Me"

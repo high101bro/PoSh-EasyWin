@@ -90,6 +90,7 @@ function Launch-RekallWinPmemForm {
         StartPosition = "CenterScreen"
         ControlBox    = $true
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+        Add_Closing = { $This.dispose() }
     }
     #-----------------------------
     # Rekall WinPmem - Main Label

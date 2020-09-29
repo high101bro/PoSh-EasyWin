@@ -625,6 +625,7 @@ $script:AutoChart01DeepBlueCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -1176,6 +1177,7 @@ $script:AutoChart02DeepBlueCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         StartPosition = "CenterScreen"
         ControlBoX = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox

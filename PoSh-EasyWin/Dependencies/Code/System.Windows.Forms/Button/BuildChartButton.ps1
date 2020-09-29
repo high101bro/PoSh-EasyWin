@@ -160,6 +160,7 @@ $BuildChartButtonAdd_Click = {
             $ViewChartForm.StartPosition = "CenterScreen"
             $ViewChartForm.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             $ViewChartForm.controls.Add($Chart)
+            $ViewChartForm.Add_Closing = { $This.dispose() }
             $Chart.Anchor = $AnchorAll
         #-------------------------------
         # Custom View Chart Save Button
@@ -235,9 +236,10 @@ $BuildChartButtonAdd_Click = {
             $ViewChartSelectionForm.width  = $FormScale * 327
             $ViewChartSelectionForm.height = $FormScale * 287 
             $ViewChartSelectionForm.StartPosition = "CenterScreen"
-            $ViewChartSelectionForm.Text   = ”View Chart - Select Fields ”
+            $ViewChartSelectionForm.Text   = "View Chart - Select Fields "
             $ViewChartSelectionForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
             $ViewChartSelectionForm.ControlBox = $true
+            $ViewChartSelectionForm.Add_Closing = { $This.dispose() }
             #$ViewChartSelectionForm.Add_Shown({$ViewChartSelectionForm.Activate()})
 
             #------------------------------

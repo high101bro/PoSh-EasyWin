@@ -27,7 +27,7 @@ The list of entries executed using the Start>Run command in mantained in this ke
 If a file is executed via Run command, it will leaves traces in the previous two keys OpenSaveMRU and RecentDocs.
 Deleting the subkeys in RunMRU does not remove the history list in Run command box immediately.
 Content of RunMRU Key
-By using Windows “Recent Opened Documents” Clear List feature via Control Panel>Taskbar and Start Menu, an attacker can remove the Run command history list.
+By using Windows “Recent Opened Documents" Clear List feature via Control Panel>Taskbar and Start Menu, an attacker can remove the Run command history list.
 #>
 Get-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU
 
@@ -47,8 +47,8 @@ This key contains recent search terms using Windows default search.
 There may be up to four subkeys:
     5001: Contains list of terms used for the Internet Search Assistant
     5603: Contains the list of terms used for the Windows files and folders search
-    5604: Contains list of terms used in the “word or phrase in a file” search
-    5647: Contains list of terms used in the “for computers or people” search
+    5604: Contains list of terms used in the “word or phrase in a file" search
+    5647: Contains list of terms used in the “for computers or people" search
 #>
 Get-ItemProperty -Path HKCU:\Software\Microsoft\Search Assistant\ACMru
 
@@ -58,7 +58,7 @@ Mounted drives
 The list of mounted devices, with associated persistent volume name and unique internal identifier for respective devices is contained into
 
 This key lists any volume that is mounted and assigned a drive letter, including USB storage devices and external DVD/CDROM drives.
-From the listed registry values, value’s name that starts with “DosDevices” and ends with the associated drive letter, contains information 
+From the listed registry values, value’s name that starts with “DosDevices" and ends with the associated drive letter, contains information 
 regarding that particular mounted device.
 
 #>
@@ -102,7 +102,7 @@ File extensions
 This key contains instruction to execute any .exe extension file:
 
 
-Normally, this key contains one default value with data “%1” %*, but if the value’s data is changed to something similar to somefilename.exe “%1” %* , investigator should suspect some other hidden program is invoked automatically when the actual .exe file is executed.
+Normally, this key contains one default value with data “%1" %*, but if the value’s data is changed to something similar to somefilename.exe “%1" %* , investigator should suspect some other hidden program is invoked automatically when the actual .exe file is executed.
 
 Malware normally modify this value to load itself covertly
 

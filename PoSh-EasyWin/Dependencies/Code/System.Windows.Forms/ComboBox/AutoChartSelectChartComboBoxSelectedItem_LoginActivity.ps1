@@ -615,6 +615,7 @@ $script:AutoChart01LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -1141,6 +1142,7 @@ $script:AutoChart02LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -1648,6 +1650,7 @@ $script:AutoChart03LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -2156,6 +2159,7 @@ $script:AutoChart04LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -2663,6 +2667,7 @@ $script:AutoChart05LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -3170,6 +3175,7 @@ $script:AutoChart06LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -3678,6 +3684,7 @@ $script:AutoChart07LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -4188,6 +4195,7 @@ $script:AutoChart08LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -4698,6 +4706,7 @@ $script:AutoChart09LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox
@@ -5208,6 +5217,7 @@ $script:AutoChart10LoginActivityCheckDiffButton.Add_Click({
         Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$Dependencies\Images\favicon.ico")
         StartPosition = "CenterScreen"
         ControlBox = $true
+        Add_Closing = { $This.dispose() }
     }
 
     ### Investigate Difference Drop Down Label & ComboBox

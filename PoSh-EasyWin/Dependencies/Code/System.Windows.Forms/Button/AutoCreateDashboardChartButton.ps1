@@ -20,6 +20,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
         #FormBorderStyle =  "fixed3d"
+        Add_Closing = { $This.dispose() }
     }
 
     #------------------------------
@@ -50,7 +51,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     }
-    $AutoChartSelectChartComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AutoChartsViewCharts }})
+    $AutoChartSelectChartComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { Launch-AutoChartsViewCharts }})
     $AutoChartSelectChartComboBox.Add_Click({
         if ($AutoChartSelectChartComboBox.text -eq 'Select A Chart') { $AutoChartSelectChartComboBox.ForeColor = 'Red' }
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
@@ -106,9 +107,9 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     $AutoChartsExecuteButton.Add_Click({ 
         if ($AutoChartSelectChartComboBox.text -eq 'Select A Chart') { $AutoChartSelectChartComboBox.ForeColor = 'Red' }
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
-        AutoChartsViewCharts
+        Launch-AutoChartsViewCharts
     })
-    function AutoChartsViewCharts {
+    function Launch-AutoChartsViewCharts {
         #####################################################################################################################################
         #####################################################################################################################################
         ##
@@ -126,6 +127,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             StartPosition = "CenterScreen"
             Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
             Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            Add_Closing = { $This.dispose() }
         }
         
         
@@ -225,6 +227,8 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
+        # Garbage Collection to free up memory
+        [System.GC]::Collect()
     }
     $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)   
     [void] $AutoChartsSelectionForm.ShowDialog()

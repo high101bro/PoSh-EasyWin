@@ -59,4 +59,7 @@ Function Completed-QueryExecution {
 
     #Deselect-AllComputers
     Deselect-AllCommands
+
+    # Garbage Collection to free up memory
+    [System.GC]::Collect()
 }

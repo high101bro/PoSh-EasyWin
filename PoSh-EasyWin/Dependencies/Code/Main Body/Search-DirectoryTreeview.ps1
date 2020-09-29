@@ -59,6 +59,8 @@ function Search-DirectoryTreeView {
     }
     
     $form = New-Object System.Windows.Forms.Form
+    $form.Add_Closing = { $This.dispose() }
+
     $form.Text ="Show-Directory"
     $form.Controls.AddRange(@(
         ($txt = [System.Windows.Forms.TextBox] @{

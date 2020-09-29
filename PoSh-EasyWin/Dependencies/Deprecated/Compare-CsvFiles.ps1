@@ -57,13 +57,15 @@ $CompareButton.Add_Click({
         # Compare Csv Files Form
         #------------------------
         $CompareCsvFilesForm = New-Object System.Windows.Forms.Form
-        $CompareCsvFilesForm.width  = 330
-        $CompareCsvFilesForm.height = 160
-        $CompareCsvFilesForm.Text   = ”Compare Two CSV Files”
-        $CompareCsvFilesForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\Images\favicon.ico")
+        $CompareCsvFilesForm.width         = 330
+        $CompareCsvFilesForm.height        = 160
+        $CompareCsvFilesForm.Text          = "Compare Two CSV Files"
+        $CompareCsvFilesForm.Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$ResourcesDirectory\Images\favicon.ico")
         $CompareCsvFilesForm.StartPosition = "CenterScreen"
-        $CompareCsvFilesForm.ControlBox = $true
+        $CompareCsvFilesForm.ControlBox    = $true
+        $CompareCsvFilesForm.Add_Closing   = { $This.dispose() }
         #$CompareCsvFilesForm.Add_Shown({$CompareCsvFilesForm.Activate()})
+
 
         #-----------------
         # Drop Down Label

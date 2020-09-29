@@ -18,6 +18,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         ControlBox    = $true
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoScroll    = $True
+        Add_Closing = { $This.dispose() }
     }
     #------------------------------
     # Auto Create Charts Main Label
@@ -47,7 +48,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
     }
-    $AutoChartSelectChartComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AutoChartsViewCharts }})
+    $AutoChartSelectChartComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { Launch-AutoChartsViewCharts }})
     $AutoChartSelectChartComboBox.Add_Click({
         if ($AutoChartSelectChartComboBox.text -eq 'Select A Chart') { $AutoChartSelectChartComboBox.ForeColor = 'Red' }
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
@@ -163,9 +164,9 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
     $AutoChartsExecuteButton.Add_Click({ 
         if ($AutoChartSelectChartComboBox.text -eq 'Select A Chart') { $AutoChartSelectChartComboBox.ForeColor = 'Red' }
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
-        AutoChartsViewCharts
+        Launch-AutoChartsViewCharts
     })
-    function AutoChartsViewCharts {
+    function Launch-AutoChartsViewCharts {
         #####################################################################################################################################
         #####################################################################################################################################
         ##
@@ -181,6 +182,8 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         $script:AutoChartsForm.Height        = $PoShEasyWin.Size.Height #638
         $script:AutoChartsForm.StartPosition = "CenterScreen"
         $script:AutoChartsForm.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        $script:AutoChartsForm.Add_Closing = { $This.dispose() }
+
 
         #####################################################################################################################################
         ##

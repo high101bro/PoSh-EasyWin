@@ -13,6 +13,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
     Height        = $FormScale * 265
     StartPosition = "CenterScreen"
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_Closing = { $This.dispose() }
 }
     $ImportFromADWinRMGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
         text      = "Import from Active Directory remotely using WinRM"
@@ -262,6 +263,8 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
         CommonButtonSettings -Button $ImportFromADLocalhostImportButton
     $ImportFromADFrom.Controls.Add($ImportFromADLocalhostGroupBox)
 
+    # Garbage Collection to free up memory
+    [System.GC]::Collect()
 
     $ImportFromADFrom.ShowDialog()
 }

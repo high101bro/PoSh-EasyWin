@@ -1020,6 +1020,7 @@ script:Update-MultiSeriesChart
             Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
             StartPosition = "CenterScreen"
             ControlBox = $true
+            Add_Closing = { $This.dispose() }
         }
         #---------------------------------------------------
         # Investigate Difference Drop Down Label & ComboBox

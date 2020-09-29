@@ -15,6 +15,7 @@ $ComputerListRenameToolStripButtonAdd_Click = {
         $ComputerTreeNodeRenamePopup.Size          = New-Object System.Drawing.Size(($FormScale * 330),($FormScale * 107))
         $ComputerTreeNodeRenamePopup.StartPosition = "CenterScreen"
         $ComputerTreeNodeRenamePopup.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+        $ComputerTreeNodeRenamePopup.Add_Closing   = { $This.dispose() }
 
         #---------------------------------------------
         # ComputerList TreeView Popup Execute TextBox

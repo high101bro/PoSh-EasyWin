@@ -69,6 +69,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
     Height        = $FormScale * 410
     StartPosition = "CenterScreen"
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_Closing = { $This.dispose() }
 }
 
 
@@ -454,6 +455,9 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
     $ImportFromADAutoPullGroupBox.Controls.Add($ImportFromADImportButton) 
     CommonButtonSettings -Button $ImportFromADImportButton
     $ImportFromADFrom.Controls.Add($ImportFromADAutoPullGroupBox)
+
+    # Garbage Collection to free up memory
+    [System.GC]::Collect()
 
     $ImportFromADFrom.ShowDialog()
 }

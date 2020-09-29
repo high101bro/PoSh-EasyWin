@@ -1,22 +1,22 @@
-﻿<#
+<#
     .SYNOPSIS
     PoSh-EasyWin is a primarily a domain-wide host querying tool and provides easy viewing of queried
     data via a filterable table and charts... plus much, much more.
 
     .DESCRIPTION
-    _____        ____   _             _____                  __        __ _        
-    |  _ \  ___ / ___| | |__         | ____| __ _  ___  _   _\ \      / /(_) _ __  
-    | |_) |/ _ \\___ \ | '_ \  _____ |  _|  / _` |/ __|| | | |\ \ /\ / / | || '_ \ 
+    _____        ____   _             _____                  __        __ _
+    |  _ \  ___ / ___| | |__         | ____| __ _  ___  _   _\ \      / /(_) _ __
+    | |_) |/ _ \\___ \ | '_ \  _____ |  _|  / _` |/ __|| | | |\ \ /\ / / | || '_ \
     |  __/| (_) |___) || | | ||_____|| |___| (_| |\__ \| |_| | \ V  V /  | || | | |
     |_|    \___/|____/ |_| |_|       |_____|\__,_||___/ \__, |  \_/\_/   |_||_| |_|
-                                                        |___/                      
+                                                        |___/
     ==================================================================================
     PoSh-EasyWin: PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs!
-    I know, I know-it's over the top... but who doesn't love tools with acronym names? 
+    I know, I know-it's over the top... but who doesn't love tools with acronym names?
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.5.1.3
+    Version        : v.5.1.4
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -25,11 +25,11 @@
                    : DCOM    RPC   - TCP/135 and dynamic ports, typically:
                                      TCP 49152-65535 (Windows Vista, Server 2008 and above)
                                      TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
-    Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe, 
+    Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,
                      etl2pcapng.exe, WinPmem.exe
                      wKillcx is a small command-line utility to close any TCP connection under Windows XP/Vista/Seven as well as Windows Server 2003/2008. The source code (assembly language) is included with the binary.
 
-    Updated        : 27 Sep 2020
+    Updated        : 29 Sep 2020
     Created        : 21 Aug 2018
 
     Author         : Daniel Komnick (high101bro)
@@ -37,18 +37,18 @@
     Website        : https://github.com/high101bro/PoSh-EasyWin
 
 
-    PoSh-EasyWin is the Endpoint Analysis Solution Your Windows Intranet Needs that provides a 
-    simple user interface to execute any number of commands against any number of computers within 
+    PoSh-EasyWin is the Endpoint Analysis Solution Your Windows Intranet Needs that provides a
+    simple user interface to execute any number of commands against any number of computers within
     a network, access hosts, manage data, and analyze their results.
 
     Copyright (C) 2018  Daniel S Komnick
 
     This program is free software: you can redistribute it and/or modify it under the terms of the
-    GNU General Public License as published by the Free Software Foundation, either version 3 of 
+    GNU General Public License as published by the Free Software Foundation, either version 3 of
     the License, or (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-    without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+    This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+    without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
     See the GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License along with this program.
@@ -57,7 +57,7 @@
 
     Credits:
     Learned a lot and referenced code from sources like Microsoft Technet, PowerShell Gallery, StackOverflow, and a numerous other websites.
-    That said, I didn't track all sites and individuals that deserve credit. In the unlikely event you believe you do, please notify me. 
+    That said, I didn't track all sites and individuals that deserve credit. In the unlikely event you believe you do, please notify me.
 
     .EXAMPLE
     This will run PoSh-EasyWin.ps1 and provide prompts that will tailor your collection.
@@ -67,9 +67,9 @@
     .LINK
     https://github.com/high101bro/PoSh-EasyWin
 
-    .NOTES  
+    .NOTES
     Though this may look like a program, it is still a script that has a GUI interface built
-    using the .Net Framework and WinForms. So when it's conducting queries, the GUI will be 
+    using the .Net Framework and WinForms. So when it's conducting queries, the GUI will be
     unresponsive to user interaction even though you are able to view status and timer updates.
 
     In order to run the script:
@@ -157,7 +157,7 @@ param (
                 ParameterSetName="No GUI Computer Search",
                 HelpMessage="Enter a string(s) to filter back in computer names that were filtered out.")]
             [string[]] $FilterInComputer,
-    
+
 
     [Parameter(
         Mandatory=$false,
@@ -216,8 +216,8 @@ param (
     [switch] $AudibleCompletionMessage
 
 
-<# 
-    # Removed because of inconsistent Winform scaling. The Out-GridView used to show the Copyright/EULA also had the quirk of changing the scaling of WinForms. 
+<#
+    # Removed because of inconsistent Winform scaling. The Out-GridView used to show the Copyright/EULA also had the quirk of changing the scaling of WinForms.
     # I cannot find a solution online, but the OGV EULA allowed forced the quirk to happen, allowing for some level of consistency when scaling the GUI.
     # The -AcceptEULA switch, although useful to bypass the EULA, is not currently implemented until I can find a better solution with the scaling.
     [Parameter(
@@ -240,7 +240,7 @@ Add-Type -AssemblyName System.Windows.Forms
     #[reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
 Add-Type -AssemblyName System.Drawing
     #[reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
-    
+
 
 #============================================================================================================================================================
 # Variables
@@ -264,18 +264,18 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
 
     $LogFile                      = "$PoShHome\Log File.txt"
     $IPListFile                   = "$PoShHome\iplist.txt"
-                                                    
+
     $ComputerTreeNodeFileAutoSave = "$PoShHome\Computer List TreeView (Auto-Save).csv"
     $ComputerTreeNodeFileSave     = "$PoShHome\Computer List TreeView (Saved).csv"
 
     $OpNotesFile                  = "$PoShHome\OpNotes.txt"
     $OpNotesWriteOnlyFile         = "$PoShHome\OpNotes (Write Only).txt"
-  
+
     $script:CredentialManagementPath          = "$PoShHome\Credential Management\"
 
     # Dependencies
     $Dependencies                             = "$PoShHome\Dependencies"
-        # Location of Cmds & Scripts 
+        # Location of Cmds & Scripts
         $QueryCommandsAndScripts              = "$Dependencies\Cmds & Scripts"
 
         # Location of Active Directory & Endpoint Commands
@@ -381,23 +381,23 @@ Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin Start
 
 # This prompts the user for accepting the GPLv3 License
 if ($AcceptEULA) {
-    Write-Host -ForeGroundColor Green  "You accepted the EULA."
-    Write-Host -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+    Write-Output -ForeGroundColor Green  "You accepted the EULA."
+    Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
 }
 else {
     Get-Content "$Dependencies\GPLv3 Notice.txt" | Out-GridView -Title 'PoSh-EasyWin User Agreement' -PassThru | Set-Variable -Name UserAgreement
-    if ($UserAgreement) { 
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)" 
-        Write-Host -ForeGroundColor Green  "You accepted the EULA."
-        Write-Host -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+    if ($UserAgreement) {
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
+        Write-Output -ForeGroundColor Green  "You accepted the EULA."
+        Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
         Start-Sleep -Seconds 1
     }
-    else { 
+    else {
         [system.media.systemsounds]::Exclamation.play()
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt NOT Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
-        Write-Host -ForeGroundColor Red    "You must accept the EULA to continue."
-        Write-Host -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
-        exit 
+        Write-Output -ForeGroundColor Red    "You must accept the EULA to continue."
+        Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+        exit
     }
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "===================================================================================================="
 }
@@ -428,11 +428,11 @@ if (-not (Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
 
 
 #============================================================================================================================================================
-#   __  __         _            _____                       
-#  |  \/  |  __ _ (_) _ __     |  ___|___   _ __  _ __ ___  
-#  | |\/| | / _` || || '_ \    | |_  / _ \ | '__|| '_ ` _ \ 
+#   __  __         _            _____
+#  |  \/  |  __ _ (_) _ __     |  ___|___   _ __  _ __ ___
+#  | |\/| | / _` || || '_ \    | |_  / _ \ | '__|| '_ ` _ \
 #  | |  | || (_| || || | | |   |  _|| (_) || |   | | | | | |
-#  |_|  |_| \__,_||_||_| |_|   |_|   \___/ |_|   |_| |_| |_|                                                                                                        
+#  |_|  |_| \__,_||_||_| |_|   |_|   \___/ |_|   |_| |_| |_|
 #
 #============================================================================================================================================================
 
@@ -451,7 +451,7 @@ namespace Loading
     }
 }
 "@
-Add-Type -TypeDefinition $code -Language CSharp	
+Add-Type -TypeDefinition $code -Language CSharp
 Invoke-Expression "[Loading.Test$id]::Main()"
 
 
@@ -466,7 +466,7 @@ $ScriptBlockForGuiLoadAndProgressBar = {
 # The Launch-ProgressBarForm.ps1 is topmost upon loading to ensure it's displayed intially, but is then able to be move unpon
 $ResolutionCheckForm.topmost = $false
 
-if (Test-Path "$PoShHome\Settings\Role Credentials Checkbox.txt") { 
+if (Test-Path "$PoShHome\Settings\Role Credentials Checkbox.txt") {
     # The follow value is used to update the $script:CredentialManagementPasswordRollingAccountCheckbox.Checked
     # This variable also maintains the state of Rolling Credentials
     if ((Get-Content "$PoShHome\Settings\Role Credentials Checkbox.txt") -match 'true') {$script:RollCredentialsState = $true}
@@ -521,12 +521,12 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             MaximizeBox     = $false
             MinimizeBox     = $false
             Add_Closing = {
-                if     ($script:VerifyToCloseForm -eq $true) { $Selection.Cancel = $false } 
-                elseif ($script:VerifyToCloseForm -eq $false){ $Selection.Cancel = $true } 
+                if     ($script:VerifyToCloseForm -eq $true) { $Selection.Cancel = $false }
+                elseif ($script:VerifyToCloseForm -eq $false){ $Selection.Cancel = $true }
                 else   { $Selection.Cancel = $true  }
-                $script:VerifyCloseForm.TopMost = $false
-                $script:VerifyCloseForm.dispose()
-                $script:VerifyCloseForm.close()
+                $this.TopMost = $false
+                $this.dispose()
+                $this.close()
             }
         }
         $VerifyCloseLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -537,11 +537,11 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             Top    = $FormScale * 10
         }
         $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
-        
+
 
         $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
             Text   = 'Yes'
-            Width  = $FormScale * 100 
+            Width  = $FormScale * 100
             Height = $FormScale * 22
             Left   = $FormScale * 10
             Top    = $VerifyCloseLabel.Top + $VerifyCloseLabel.Height
@@ -558,7 +558,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
 
         $VerifyNoButton = New-Object System.Windows.Forms.Button -Property @{
             Text   = 'No'
-            Width  = $FormScale * 100 
+            Width  = $FormScale * 100
             Height = $FormScale * 22
             Left   = $VerifyYesButton.Left + $VerifyYesButton.Width + ($FormScale * 10)
             Top    = $VerifyYesButton.Top
@@ -586,11 +586,11 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
 #============================================================================================================================================================
 #
 #  Parent: Main Form
-#   __  __         _            _            __  _       _____       _       ____               _                _ 
+#   __  __         _            _            __  _       _____       _       ____               _                _
 #  |  \/  |  __ _ (_) _ __     | |     ___  / _|| |_    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
 #  | |\/| | / _` || || '_ \    | |    / _ \| |_ | __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
 #  | |  | || (_| || || | | |   | |___|  __/|  _|| |_      | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
-#  |_|  |_| \__,_||_||_| |_|   |_____|\___||_|   \__|     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|                                                                                                           
+#  |_|  |_| \__,_||_||_| |_|   |_____|\___||_|   \__|     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
 #
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
@@ -615,12 +615,12 @@ $PoShEasyWin.Controls.Add($MainLeftTabControl)
 #============================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl
-#    ____        _  _              _    _                        _____       _      ____                     
-#   / ___| ___  | || |  ___   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#    ____        _  _              _    _                        _____       _      ____
+#   / ___| ___  | || |  ___   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | |    / _ \ | || | / _ \ / __|| __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |___| (_) || || ||  __/| (__ | |_ | || (_) || | | |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #   \____|\___/ |_||_| \___| \___| \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                                                |___/       
+#                                                                                                |___/
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -637,7 +637,7 @@ $TabRightPosition     = 3
 $TabhDownPosition     = 3
 $TabAreaWidth         = 446
 $TabAreaHeight        = 557
-$TextBoxRightPosition = -2 
+$TextBoxRightPosition = -2
 $TextBoxDownPosition  = -2
 $TextBoxWidth         = 442
 $TextBoxHeight        = 536
@@ -646,7 +646,7 @@ $TextBoxHeight        = 536
 #============================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Collections Tab
-#    ____        _  _              _    _                        _____       _       ____               _                _ 
+#    ____        _  _              _    _                        _____       _       ____               _                _
 #   / ___| ___  | || |  ___   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
 #  | |    / _ \ | || | / _ \ / __|| __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
 #  | |___| (_) || || ||  __/| (__ | |_ | || (_) || | | |\__ \     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
@@ -672,12 +672,12 @@ $Section1CollectionsTab.Controls.Add($MainLeftCollectionsTabControl)
 #============================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Collections TabControl
-#    ___                      _                _____       _      ____                     
-#   / _ \  _   _   ___  _ __ (_)  ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#    ___                      _                _____       _      ____
+#   / _ \  _   _   ___  _ __ (_)  ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | | | || | | | / _ \| '__|| | / _ \/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |_| || |_| ||  __/| |   | ||  __/\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #   \__\_\ \__,_| \___||_|   |_| \___||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                              |___/       
+#                                                                              |___/
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -720,11 +720,11 @@ $script:QueryHistoryCommands = @()
 
 
 #======================================================================
-#   ______             _    ___                 ______          __   
-#  /_  __/_______  ___| |  / (_)__ _      __   / ____/___  ____/ /__ 
+#   ______             _    ___                 ______          __
+#  /_  __/_______  ___| |  / (_)__ _      __   / ____/___  ____/ /__
 #   / / / ___/ _ \/ _ \ | / / / _ \ | /| / /  / /   / __ \/ __  / _ \
 #  / / / /  /  __/  __/ |/ / /  __/ |/ |/ /  / /___/ /_/ / /_/ /  __/
-# /_/ /_/   \___/\___/|___/_/\___/|__/|__/   \____/\____/\__,_/\___/ 
+# /_/ /_/   \___/\___/|___/_/\___/|__/|__/   \____/\____/\__,_/\___/
 #
 #======================================================================
 $script:ProgressBarFormProgressBar.Value += 1
@@ -739,7 +739,7 @@ $script:TreeeViewCommandsCount     = 0
 . "$Dependencies\Code\Tree View\Conduct-NodeAction.ps1"
 
 # Initializes the Commands TreeView section that various command nodes are added to
-# TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views 
+# TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
 # These include the root nodes of Search, Endpoint and Active Directory queryies by method and type, and Query History
 . "$Dependencies\Code\Tree View\Command\Initialize-CommandTreeNodes.ps1"
 
@@ -873,13 +873,13 @@ CommonButtonSettings -Button $CommandsTreeViewSearchButton
 $CommandsTreeviewDeselectAllButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Deselect All'
     Left   = $FormScale * 335
-    Top    = $FormScale * 45 
+    Top    = $FormScale * 45
     Width  = $FormScale * 100
     Height = $FormScale * 22
     Add_Click      = $CommandsTreeviewDeselectAllButtonAdd_Click
     Add_MouseHover = $CommandsTreeviewDeselectAllButtonAdd_MouseHover
 }
-$Section1CommandsTab.Controls.Add($CommandsTreeviewDeselectAllButton) 
+$Section1CommandsTab.Controls.Add($CommandsTreeviewDeselectAllButton)
 CommonButtonSettings -Button $CommandsTreeviewDeselectAllButton
 
 
@@ -897,7 +897,7 @@ CommonButtonSettings -Button $CommandsTreeViewQueryHistoryRemovalButton
 
 
 $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-    Left   = 0 
+    Left   = 0
     Top    = $FormScale * 70
     Width  = $FormScale * 435
     Height = $FormScale * 390
@@ -907,13 +907,13 @@ $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     ShowLines        = $True
     ShowNodeToolTips = $True
     Add_Click        = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
-    Add_AfterSelect  = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }    
+    Add_AfterSelect  = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
 }
 $script:CommandsTreeView.Sort()
 $Section1CommandsTab.Controls.Add($script:CommandsTreeView)
 
 
-# Scriptblock that is executed to manage the Query Build features such as the interactions between 
+# Scriptblock that is executed to manage the Query Build features such as the interactions between
 # the textbox and button, launching Show-Command, variable manipulation, and message prompts
 . "$Dependencies\Code\Main Body\CustomQueryScriptBlock.ps1"
 
@@ -925,8 +925,8 @@ $CustomQueryScriptBlockCheckBox = New-Object System.Windows.Forms.CheckBox -Prop
     Enabled   = $false
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { 
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+    Add_Click = {
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
         if ($script:CustomQueryScriptBlockTextbox.text -ne $script:CustomQueryScriptBlockSaved) {
             $CustomQueryScriptBlockCheckBox.checked = $false
             $CustomQueryScriptBlockCheckBox.enabled = $false
@@ -952,35 +952,35 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 AutoCompleteSource = "CustomSource"
                 AutoCompleteMode   = "SuggestAppend"
                 Add_KeyDown    = { if ($_.KeyCode -eq "Enter") {  Invoke-Command $CustomQueryScriptBlock } }
-                Add_MouseEnter = { 
+                Add_MouseEnter = {
                     if ($this.text -ne $script:CustomQueryScriptBlockSaved) {
                         $CustomQueryScriptBlockCheckBox.checked = $false
                         $CustomQueryScriptBlockCheckBox.enabled = $false
                     }
-                    if ($this.text -eq 'Enter A Get Cmdlet (ex: Get-Process)'){ 
+                    if ($this.text -eq 'Enter A Get Cmdlet (ex: Get-Process)'){
                         $this.text = 'Get-'
                         $CustomQueryScriptBlockCheckBox.checked = $false
                         $CustomQueryScriptBlockCheckBox.enabled = $false
-                    } 
-                    if ($this.text -eq 'Enter Any Cmdlet'){ 
+                    }
+                    if ($this.text -eq 'Enter Any Cmdlet'){
                         $this.text = ''
                         $CustomQueryScriptBlockCheckBox.checked = $false
                         $CustomQueryScriptBlockCheckBox.enabled = $false
-                    } 
+                    }
                 }
-                Add_MouseLeave = { 
+                Add_MouseLeave = {
                     if ($this.text -ne $script:CustomQueryScriptBlockSaved) {
                         $CustomQueryScriptBlockCheckBox.enabled = $false
                     }
-                    if ($CustomQueryScriptBlockOverrideCheckBox.checked) { 
-                        if ($this.text -eq ''){ 
+                    if ($CustomQueryScriptBlockOverrideCheckBox.checked) {
+                        if ($this.text -eq ''){
                             $this.text = 'Enter Any Cmdlet'
                             $CustomQueryScriptBlockCheckBox.checked = $false
                             $CustomQueryScriptBlockCheckBox.enabled = $false
-                        } 
+                        }
                     }
                     elseif (-not $CustomQueryScriptBlockOverrideCheckBox.checked) {
-                        if ($this.text -eq '' -or $this.text -eq 'Get-' -or $this.text -eq 'Get'){ 
+                        if ($this.text -eq '' -or $this.text -eq 'Get-' -or $this.text -eq 'Get'){
                             $this.text = 'Enter A Get Cmdlet (ex: Get-Process)'
                             $CustomQueryScriptBlockCheckBox.checked = $false
                             $CustomQueryScriptBlockCheckBox.enabled = $false
@@ -1050,12 +1050,12 @@ $script:CommandsTreeView.Nodes.Add($script:TreeNodePreviouslyExecutedCommands)
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Collections TabControl
-#     _                                   _            _____       _                                
-#    / \    ___  ___  ___   _   _  _ __  | |_  ___    |_   _|__ _ | |__   _ __    __ _   __ _   ___ 
+#     _                                   _            _____       _
+#    / \    ___  ___  ___   _   _  _ __  | |_  ___    |_   _|__ _ | |__   _ __    __ _   __ _   ___
 #   / _ \  / __|/ __|/ _ \ | | | || '_ \ | __|/ __|     | | / _` || '_ \ | '_ \  / _` | / _` | / _ \
 #  / ___ \| (__| (__| (_) || |_| || | | || |_ \__ \     | || (_| || |_) || |_) || (_| || (_| ||  __/
 # /_/   \_\\___|\___|\___/  \__,_||_| |_| \__||___/     |_| \__,_||_.__/ | .__/  \__,_| \__, | \___|
-#                                                                        |_|            |___/          
+#                                                                        |_|            |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -1193,7 +1193,7 @@ $AccountsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
             }
             $AccountsOptionsGroupBox.Controls.Add($AccountsStartTimePicker)
 
-            
+
             $AccountsDatetimeStopLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "DateTime Stop:"
                 Left   = $AccountsDatetimeStartLabel.Left
@@ -1221,7 +1221,7 @@ $AccountsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                 AutoSize     = $true
                 #MinDate      = (Get-Date -Month 1 -Day 1 -Year 2000).DateTime
                 #MaxDate      = (Get-Date).DateTime
-            }    
+            }
             $AccountsOptionsGroupBox.Controls.Add($AccountsStopTimePicker)
 $Section1AccountsTab.Controls.Add($AccountsOptionsGroupBox)
 
@@ -1252,7 +1252,7 @@ $AccountsCurrentlyLoggedInInfoButton = New-Object System.Windows.Forms.Button -P
         else {[System.Windows.Forms.MessageBox]::Show("The General Account Information file for reference cannot be located.",'PoSh-EasyWin Select Accounts')}
      }
 }
-$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInInfoButton) 
+$Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInInfoButton)
 CommonButtonSettings -Button $AccountsCurrentlyLoggedInInfoButton
 
 
@@ -1326,7 +1326,7 @@ $AccountActivitySelectionButton = New-Object System.Windows.Forms.Button -Proper
         }
     }
 }
-$Section1AccountsTab.Controls.Add($AccountActivitySelectionButton) 
+$Section1AccountsTab.Controls.Add($AccountActivitySelectionButton)
 CommonButtonSettings -Button $AccountActivitySelectionButton
 
 
@@ -1338,7 +1338,7 @@ $AccountActivityClearButton = New-Object System.Windows.Forms.Button -Property @
     Height = $FormScale * 20
     Add_Click = { $AccountActivityTextbox.Text = "" }
 }
-$Section1AccountsTab.Controls.Add($AccountActivityClearButton) 
+$Section1AccountsTab.Controls.Add($AccountActivityClearButton)
 CommonButtonSettings -Button $AccountActivityClearButton
 
 
@@ -1350,8 +1350,8 @@ $AccountActivityTextbox = New-Object System.Windows.Forms.TextBox -Property @{
     Height = $FormScale * 139
     MultiLine  = $True
     WordWrap   = $True
-    AcceptsTab = $false 
-    AcceptsReturn  = $false 
+    AcceptsTab = $false
+    AcceptsReturn  = $false
     ScrollBars     = "Vertical"
     Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseEnter = {if ($this.Text -eq 'Default is All Accounts'){$this.Text = ''}}
@@ -1363,12 +1363,12 @@ $Section1AccountsTab.Controls.Add($AccountActivityTextbox)
 #============================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Collections TabControl
-#   _____                     _       _                           _____       _      ____                     
-#  | ____|__   __ ___  _ __  | |_    | |     ___    __ _  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   _____                     _       _                           _____       _      ____
+#  | ____|__   __ ___  _ __  | |_    | |     ___    __ _  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  |  _|  \ \ / // _ \| '_ \ | __|   | |    / _ \  / _` |/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |___  \ V /|  __/| | | || |_    | |___| (_) || (_| |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_____|  \_/  \___||_| |_| \__|   |_____|\___/  \__, ||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                  |___/                                          |___/          
+#                                                  |___/                                          |___/
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -1492,7 +1492,7 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Height       = $FormScale * 100
                 Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Format       = [windows.forms.datetimepickerFormat]::custom
-                CustomFormat = “dddd MMM dd, yyyy hh:mm tt”
+                CustomFormat = �dddd MMM dd, yyyy hh:mm tt�
                 Enabled      = $True
                 Checked      = $True
                 ShowCheckBox = $True
@@ -1508,8 +1508,8 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
             # $TimePicker.Value
             # 20190605162740.383143-240
             # [System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePicker.Value))
-            
-            
+
+
             $EventLogsDatetimeStopLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "DateTime Stop:"
                 Left   = $EventLogsDatetimeStartLabel.Left
@@ -1529,7 +1529,7 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Height       = $FormScale * 100
                 Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Format       = [windows.forms.datetimepickerFormat]::custom
-                CustomFormat = “dddd MMM dd, yyyy hh:mm tt”
+                CustomFormat = �dddd MMM dd, yyyy hh:mm tt�
                 Enabled      = $True
                 Checked      = $True
                 ShowCheckBox = $True
@@ -1538,7 +1538,7 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 #MinDate      = (Get-Date -Month 1 -Day 1 -Year 2000).DateTime
                 #MaxDate      = (Get-Date).DateTime
                 Add_MouseHover = $EventLogsStartTimePickerAdd_MouseHover
-            }    
+            }
             $EventLogsOptionsGroupBox.Controls.AddRange(@($EventLogProtocolRadioButtonLabel,$EventLogRPCRadioButton,$EventLogWinRMRadioButton,$EventLogsDatetimeStartLabel,$EventLogsStartTimePicker,$EventLogsDatetimeStopLabel,$EventLogsStopTimePicker,$EventLogsMaximumCollectionLabel,$EventLogsMaximumCollectionTextBox))
 $Section1EventLogsTab.Controls.Add($EventLogsOptionsGroupBox)
 
@@ -1581,7 +1581,7 @@ $EventLogsEventIDsManualEntrySelectionButton = New-Object System.Windows.Forms.B
     Height = $FormScale * 20
     Add_Click = $EventLogsEventIDsManualEntrySelectionButtonAdd_Click
 }
-$Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntrySelectionButton) 
+$Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntrySelectionButton)
 CommonButtonSettings -Button $EventLogsEventIDsManualEntrySelectionButton
 
 
@@ -1593,7 +1593,7 @@ $EventLogsEventIDsManualEntryClearButton = New-Object System.Windows.Forms.Butto
     Height = $FormScale * 20
     Add_Click = { $EventLogsEventIDsManualEntryTextbox.Text = "" }
 }
-$Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryClearButton) 
+$Section1EventLogsTab.Controls.Add($EventLogsEventIDsManualEntryClearButton)
 CommonButtonSettings -Button $EventLogsEventIDsManualEntryClearButton
 
 
@@ -1605,8 +1605,8 @@ $EventLogsEventIDsManualEntryTextbox = New-Object System.Windows.Forms.TextBox -
     Height = $FormScale * 139
     MultiLine     = $True
     WordWrap      = $True
-    AcceptsTab    = $false 
-    AcceptsReturn = $false 
+    AcceptsTab    = $false
+    AcceptsReturn = $false
     ScrollBars    = "Vertical"
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
@@ -1639,7 +1639,7 @@ $EventLogsQuickPickSelectionLabel = New-Object System.Windows.Forms.Label -Prope
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor = "Black"
 }
-$Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionLabel) 
+$Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionLabel)
 
 
 . "$Dependencies\Code\System.Windows.Forms\Button\EventLogsQuickPickSelectionClearButton.ps1"
@@ -1651,7 +1651,7 @@ $EventLogsQuickPickSelectionClearButton = New-Object System.Windows.Forms.Button
     Height = $FormScale * 20
     Add_Click = $EventLogsQuickPickSelectionClearButtonAdd_Click
 }
-$Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionClearButton) 
+$Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionClearButton)
 CommonButtonSettings -Button $EventLogsQuickPickSelectionClearButton
 
 
@@ -1663,7 +1663,7 @@ $EventLogsQuickPickSelectionSelectAllButton = New-Object System.Windows.Forms.Bu
     Height = $FormScale * 20
     Add_Click = { For ($i=0;$i -lt $EventLogsQuickPickSelectionCheckedlistbox.Items.count;$i++) { $EventLogsQuickPickSelectionCheckedlistbox.SetItemChecked($i,$true) } }
 }
-$Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionSelectAllButton) 
+$Section1EventLogsTab.Controls.Add($EventLogsQuickPickSelectionSelectAllButton)
 CommonButtonSettings -Button $EventLogsQuickPickSelectionSelectAllButton
 
 
@@ -1700,8 +1700,8 @@ $EventLogNotes               = Get-Content -Path "$CommandsEventLogsDirectory\In
 $CurrentWindowsEventIdDuplicateCheck = @()
 foreach ($CSVLine in $EventLogsToMonitorMicrosoft) {
     if ($CSVLine.CurrentWindowsEventID -ne "NA") {
-        $EventLogQuery = New-Object PSObject -Property @{ EventID = $CSVLine.CurrentWindowsEventID } 
-        $EventLogQuery | Add-Member -MemberType NoteProperty -Name LegacyEventID -Value $CSVLine.LegacyWindowsEventID -Force    
+        $EventLogQuery = New-Object PSObject -Property @{ EventID = $CSVLine.CurrentWindowsEventID }
+        $EventLogQuery | Add-Member -MemberType NoteProperty -Name LegacyEventID -Value $CSVLine.LegacyWindowsEventID -Force
         $EventLogQuery | Add-Member -MemberType NoteProperty -Name Label         -Value "Windows IT Pro Center" -Force
         $EventLogQuery | Add-Member -MemberType NoteProperty -Name Severity      -Value $CSVLine.PotentialCriticality -Force
         $EventLogQuery | Add-Member -MemberType NoteProperty -Name Reference     -Value $EventLogReference -Force
@@ -1717,8 +1717,8 @@ foreach ($CSVLine in $EventLogsToMonitorMicrosoft) {
 $LegacyWindowsEventIdDuplicateCheck = @()
 foreach ($CSVLine in $EventLogsToMonitorMicrosoft) {
     if ($CSVLine.LegacyWindowsEventID -ne "NA") {
-        $EventLogQuery = New-Object PSObject -Property @{ EventID = $CSVLine.LegacyWindowsEventID } 
-        $EventLogQuery | Add-Member -MemberType NoteProperty -Name LegacyEventID -Value $CSVLine.LegacyWindowsEventID -Force    
+        $EventLogQuery = New-Object PSObject -Property @{ EventID = $CSVLine.LegacyWindowsEventID }
+        $EventLogQuery | Add-Member -MemberType NoteProperty -Name LegacyEventID -Value $CSVLine.LegacyWindowsEventID -Force
         $EventLogQuery | Add-Member -MemberType NoteProperty -Name Label         -Value "Windows IT Pro Center" -Force
         $EventLogQuery | Add-Member -MemberType NoteProperty -Name Severity      -Value $CSVLine.PotentialCriticality -Force
         $EventLogQuery | Add-Member -MemberType NoteProperty -Name Reference     -Value $EventLogReference -Force
@@ -1754,7 +1754,7 @@ $EventLogsEventIDsToMonitorClearButton = New-Object System.Windows.Forms.Button 
     Height = $FormScale * 20
     Add_Click = $EventLogsEventIDsToMonitorClearButtonAdd_Click
 }
-$Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorClearButton) 
+$Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorClearButton)
 CommonButtonSettings -Button $EventLogsEventIDsToMonitorClearButton
 
 <#
@@ -1766,7 +1766,7 @@ $EventLogsEventIDsToMonitorSelectAllButton = New-Object System.Windows.Forms.But
     Height = $FormScale * 20
     Add_Click = { For ($i=0;$i -lt $EventLogsEventIDsToMonitorCheckListBox.Items.count;$i++) { $EventLogsEventIDsToMonitorCheckListBox.SetItemChecked($i,$true) } }
 }
-$Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorSelectAllButton) 
+$Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorSelectAllButton)
 CommonButtonSettings -Button $EventLogsEventIDsToMonitorSelectAllButton
 #>
 
@@ -1797,10 +1797,10 @@ $EventLogsEventIDsToMonitorCheckListBox = New-Object -TypeName System.Windows.Fo
 }
 # Creates the list from the variable
 foreach ( $Query in $script:EventLogSeverityQueries ) {
-    $EventLogsEventIDsToMonitorCheckListBox.Items.Add("$($Query.EventID) [$($Query.Severity)] $($Query.Message)")    
+    $EventLogsEventIDsToMonitorCheckListBox.Items.Add("$($Query.EventID) [$($Query.Severity)] $($Query.Message)")
 }
-    $EventLogsEventIDsToMonitorCheckListBox.Items.Add("4624 [test] An account was successfully logged on")    
-    $EventLogsEventIDsToMonitorCheckListBox.Items.Add("4634 [test] An account was logged off") 
+    $EventLogsEventIDsToMonitorCheckListBox.Items.Add("4624 [test] An account was successfully logged on")
+    $EventLogsEventIDsToMonitorCheckListBox.Items.Add("4634 [test] An account was logged off")
 $EventLogsEventIDsToMonitorCheckListBox.Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorCheckListBox)
 
@@ -1808,12 +1808,12 @@ $Section1EventLogsTab.Controls.Add($EventLogsEventIDsToMonitorCheckListBox)
 #============================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Collections TabControl
-#   ____               _       _                    _____       _      ____                     
-#  |  _ \  ___   __ _ (_) ___ | |_  _ __  _   _    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   ____               _       _                    _____       _      ____
+#  |  _ \  ___   __ _ (_) ___ | |_  _ __  _   _    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | |_) |/ _ \ / _` || |/ __|| __|| '__|| | | |     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  |  _ <|  __/| (_| || |\__ \| |_ | |   | |_| |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_| \_\\___| \__, ||_||___/ \__||_|    \__, |     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#               |___/                     |___/                                     |___/             
+#               |___/                     |___/                                     |___/
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -1876,7 +1876,7 @@ $RegistrySearchReferenceButton = New-Object System.Windows.Forms.Button -Propert
                   Y = $RegistrySearchLabel.Location.Y }
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 22 }
-    Add_Click = { 
+    Add_Click = {
         Import-Csv "$Dependencies\Reference Registry Locations.csv" | Out-GridView -Title 'PoSh-EasyWin Registry Reference Selection' -PassThru | Set-Variable -Name RegistryReferenceSelected
         $script:RegistrySearchDirectoryRichTextbox.text = ''
         foreach ($Registry in $RegistryReferenceSelected) { $script:RegistrySearchDirectoryRichTextbox.Lines += $Registry.Location}
@@ -1898,7 +1898,7 @@ $script:RegistrySearchDirectoryRichTextbox = New-Object System.Windows.Forms.Ric
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseEnter = $RegistrySearchDirectoryRichTextboxAdd_MouseEnter
     Add_MouseLeave = $RegistrySearchDirectoryRichTextboxAdd_MouseLeave
-    Add_MouseHover = $RegistrySearchDirectoryRichTextboxAdd_MouseHover    
+    Add_MouseHover = $RegistrySearchDirectoryRichTextboxAdd_MouseHover
 }
 $Section1RegistryTab.Controls.Add($script:RegistrySearchDirectoryRichTextbox)
 
@@ -1906,7 +1906,7 @@ $Section1RegistryTab.Controls.Add($script:RegistrySearchDirectoryRichTextbox)
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\RegistryKeyNameCheckbox.ps1"
 $RegistryKeyNameCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text     = "Key Name (Supports RegEx)"
-    Location = @{ X = $script:RegistrySearchDirectoryRichTextbox.Location.X 
+    Location = @{ X = $script:RegistrySearchDirectoryRichTextbox.Location.X
                   Y = $script:RegistrySearchDirectoryRichTextbox.Location.Y + $script:RegistrySearchDirectoryRichTextbox.Size.Height + $($FormScale * 10) }
     Size     = @{ Width  = $FormScale * 300
                   Height = $FormScale * 22 }
@@ -1940,7 +1940,7 @@ $script:RegistryKeyNameSearchRichTextbox = New-Object System.Windows.Forms.RichT
     Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseEnter = $RegistryKeyNameSearchRichTextboxAdd_MouseEnter
     Add_MouseLeave = $RegistryKeyNameSearchRichTextboxAdd_MouseLeave
-    Add_MouseHover = $RegistryKeyNameSearchRichTextboxAdd_MouseHover    
+    Add_MouseHover = $RegistryKeyNameSearchRichTextboxAdd_MouseHover
 }
 $Section1RegistryTab.Controls.Add($script:RegistryKeyNameSearchRichTextbox)
 
@@ -1965,7 +1965,7 @@ $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
     Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 22 }
 }
-$SupportsRegexButton.Add_Click({ Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }) 
+$SupportsRegexButton.Add_Click({ Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView })
 $Section1RegistryTab.Controls.Add($SupportsRegexButton)
 CommonButtonSettings -Button $SupportsRegexButton
 
@@ -1982,7 +1982,7 @@ $script:RegistryValueNameSearchRichTextbox = New-Object System.Windows.Forms.Ric
     Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseEnter = $RegistryValueNameSearchRichTextboxAdd_MouseEnter
     Add_MouseLeave = $RegistryValueNameSearchRichTextboxAdd_MouseLeave
-    Add_MouseHover = $RegistryValueNameSearchRichTextboxAdd_MouseHover    
+    Add_MouseHover = $RegistryValueNameSearchRichTextboxAdd_MouseHover
 }
 $Section1RegistryTab.Controls.Add($script:RegistryValueNameSearchRichTextbox)
 
@@ -2024,7 +2024,7 @@ $script:RegistryValueDataSearchRichTextbox = New-Object System.Windows.Forms.Ric
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseEnter = $RegistryValueDataSearchRichTextboxAdd_MouseEnter
     Add_MouseLeave = $RegistryValueDataSearchRichTextboxAdd_MouseLeave
-    Add_MouseHover = $RegistryValueDataSearchRichTextboxAdd_MouseHover    
+    Add_MouseHover = $RegistryValueDataSearchRichTextboxAdd_MouseHover
 }
 $Section1RegistryTab.Controls.Add($script:RegistryValueDataSearchRichTextbox)
 
@@ -2032,12 +2032,12 @@ $Section1RegistryTab.Controls.Add($script:RegistryValueDataSearchRichTextbox)
 #============================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Collections TabControl
-#   _____  _  _           ____                           _         _____       _      ____                     
-#  |  ___|(_)| |  ___    / ___|   ___   __ _  _ __  ___ | |__     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   _____  _  _           ____                           _         _____       _      ____
+#  |  ___|(_)| |  ___    / ___|   ___   __ _  _ __  ___ | |__     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | |_   | || | / _ \   \___ \  / _ \ / _` || '__|/ __|| '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  |  _|  | || ||  __/    ___) ||  __/| (_| || |  | (__ | | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_|    |_||_| \___|   |____/  \___| \__,_||_|   \___||_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                                                  |___/                  
+#                                                                                                  |___/
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -2054,7 +2054,7 @@ $Section1FileSearchTab = New-Object System.Windows.Forms.TabPage -Property @{
 $MainLeftCollectionsTabControl.Controls.Add($Section1FileSearchTab)
 
 # Recursively goes through directories down to the specified depth
-# Used for backwards compatibility with systems that have older PowerShell versions, newer versions of PowerShell has a -Depth parameter 
+# Used for backwards compatibility with systems that have older PowerShell versions, newer versions of PowerShell has a -Depth parameter
 . "$Dependencies\Code\Main Body\Get-ChildItemDepth.ps1"
 
 # This code is used within both the Individual and Session Based execution modes
@@ -2119,13 +2119,13 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
             Height = $FormScale * 22
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             ForeColor = "Black"
-            Add_Click = { 
+            Add_Click = {
                 $FilSearchViewResultsOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
                     Title = "Open Directory Files"
                     Filter = "CSV (*.csv)| *.csv|XML (*.xml)| *.xml|All files (*.*)|*.*"
                     InitialDirectory = $ExecAndScriptDir
                 }
-                $FilSearchViewResultsOpenFileDialog.ShowDialog()   
+                $FilSearchViewResultsOpenFileDialog.ShowDialog()
                 Search-DirectoryTreeView -Input $(Import-Csv $FilSearchViewResultsOpenFileDialog.FileName | ForEach-Object {$_.FullName.Trim("\")} )
             }
         }
@@ -2147,7 +2147,7 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
             Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             Add_MouseEnter = $FileSearchDirectoryListingTextboxAdd_MouseEnter
             Add_MouseLeave = $FileSearchDirectoryListingTextboxAdd_MouseLeave
-            Add_MouseHover = $FileSearchDirectoryListingTextboxAdd_MouseHover    
+            Add_MouseHover = $FileSearchDirectoryListingTextboxAdd_MouseHover
         }
         $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingTextbox)
 
@@ -2218,7 +2218,7 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
         $FileSearchSelectFileHashComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
             Text   = "Filename"
             Left   = $FileSearchSearchByFileHashLabel.Left + $FileSearchSearchByFileHashLabel.Width
-            Top    = $FileSearchSearchByFileHashLabel.Top 
+            Top    = $FileSearchSearchByFileHashLabel.Top
             Width  = $FormScale * 100
             Height = $FormScale * 22
             Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -2248,7 +2248,7 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
         $FileSearchFileSearchFileRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Text   = "Enter FileNames; One Per Line"
             Left   = $FormScale * 3
-            Top    = $FileSearchFileSearchDirectoryRichTextbox.Top + $FileSearchFileSearchDirectoryRichTextbox.Height + $($FormScale * 5) 
+            Top    = $FileSearchFileSearchDirectoryRichTextbox.Top + $FileSearchFileSearchDirectoryRichTextbox.Height + $($FormScale * 5)
             Width  = $FormScale * 430
             Height = $FormScale * 80
             MultiLine  = $True
@@ -2256,7 +2256,7 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
             Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             Add_MouseEnter = $FileSearchFileSearchFileRichTextboxAdd_MouseEnter
             Add_MouseLeave = $FileSearchFileSearchFileRichTextboxAdd_MouseLeave
-            Add_MouseHover = $FileSearchFileSearchFileRichTextboxAdd_MouseHover    
+            Add_MouseHover = $FileSearchFileSearchFileRichTextboxAdd_MouseHover
         }
         $Section1FileSearchTab.Controls.Add($FileSearchFileSearchFileRichTextbox)
 
@@ -2335,19 +2335,19 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
             Height = $FormScale * 20
             Add_Click = $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click
         }
-        $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamDirectoryExtractStreamDataButton) 
+        $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamDirectoryExtractStreamDataButton)
         CommonButtonSettings -Button $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton
 
 
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Collections TabControl
-#   _   _        _                          _         ____                                  _    _                        _____       _      ____                     
-#  | \ | |  ___ | |_ __      __ ___   _ __ | | __    / ___| ___   _ __   _ __    ___   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   _   _        _                          _         ____                                  _    _                        _____       _      ____
+#  | \ | |  ___ | |_ __      __ ___   _ __ | | __    / ___| ___   _ __   _ __    ___   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  |  \| | / _ \| __|\ \ /\ / // _ \ | '__|| |/ /   | |    / _ \ | '_ \ | '_ \  / _ \ / __|| __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |\  ||  __/| |_  \ V  V /| (_) || |   |   <    | |___| (_) || | | || | | ||  __/| (__ | |_ | || (_) || | | |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_| \_| \___| \__|  \_/\_/  \___/ |_|   |_|\_\    \____|\___/ |_| |_||_| |_| \___| \___| \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                                                                                                         |___/       
+#                                                                                                                                                         |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -2444,7 +2444,7 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
                           Height = $FormScale * 20 }
             Add_Click = $NetworkConnectionSearchRemoteIPAddressSelectionButtonAdd_Click
         }
-        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemoteIPAddressSelectionButton) 
+        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemoteIPAddressSelectionButton)
         CommonButtonSettings -Button $NetworkConnectionSearchRemoteIPAddressSelectionButton
 
 
@@ -2452,7 +2452,7 @@ $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab
         $NetworkConnectionSearchRemoteIPAddressRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
             Lines     = "Enter Remote IPs; One Per Line"
             Location = @{ X = $NetworkConnectionSearchRemoteIPAddressSelectionButton.Location.X
-                          Y = $NetworkConnectionSearchRemoteIPAddressSelectionButton.Location.Y + $NetworkConnectionSearchRemoteIPAddressSelectionButton.Size.Height + $($FormScale * 5) }                          
+                          Y = $NetworkConnectionSearchRemoteIPAddressSelectionButton.Location.Y + $NetworkConnectionSearchRemoteIPAddressSelectionButton.Size.Height + $($FormScale * 5) }
             Size     = @{ Width  = $FormScale * 180
                           Height = $FormScale * 115 }
             Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -2489,8 +2489,8 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemote
                           Height = $FormScale * 20 }
             Add_Click = $NetworkConnectionSearchRemotePortSelectionButtonAdd_Click
         }
-        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemotePortSelectionButton) 
-        CommonButtonSettings -Button $NetworkConnectionSearchRemotePortSelectionButton         
+        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemotePortSelectionButton)
+        CommonButtonSettings -Button $NetworkConnectionSearchRemotePortSelectionButton
 
 
         . "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchRemotePortRichTextbox.ps1"
@@ -2534,7 +2534,7 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalP
                           Height = $FormScale * 20 }
             Add_Click = $NetworkConnectionSearchLocalPortSelectionButtonAdd_Click
         }
-        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalPortSelectionButton) 
+        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalPortSelectionButton)
         CommonButtonSettings -Button $NetworkConnectionSearchLocalPortSelectionButton
 
 
@@ -2648,12 +2648,12 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCac
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl
-#  ___         _                           _    _                        _____       _                                
-# |_ _| _ __  | |_  ___  _ __  __ _   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__   _ __    __ _   __ _   ___ 
+#  ___         _                           _    _                        _____       _
+# |_ _| _ __  | |_  ___  _ __  __ _   ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__   _ __    __ _   __ _   ___
 #  | | | '_ \ | __|/ _ \| '__|/ _` | / __|| __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | '_ \  / _` | / _` | / _ \
 #  | | | | | || |_|  __/| |  | (_| || (__ | |_ | || (_) || | | |\__ \     | || (_| || |_) || |_) || (_| || (_| ||  __/
 # |___||_| |_| \__|\___||_|   \__,_| \___| \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/ | .__/  \__,_| \__, | \___|
-#                                                                                          |_|            |___/       
+#                                                                                          |_|            |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -2686,12 +2686,12 @@ $Section1InteractionsTab.Controls.Add($MainLeftSection1InteractionsTabTabControl
 #==================================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Interactions TabControl
-#  __  __         _  _    _         _____             _                _         _          _          _    _                        _____       _                                
-# |  \/  | _   _ | || |_ (_)       | ____| _ __    __| | _ __    ___  (_) _ __  | |_       / \    ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__   _ __    __ _   __ _   ___ 
+#  __  __         _  _    _         _____             _                _         _          _          _    _                        _____       _
+# |  \/  | _   _ | || |_ (_)       | ____| _ __    __| | _ __    ___  (_) _ __  | |_       / \    ___ | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__   _ __    __ _   __ _   ___
 # | |\/| || | | || || __|| | _____ |  _|  | '_ \  / _` || '_ \  / _ \ | || '_ \ | __|     / _ \  / __|| __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | '_ \  / _` | / _` | / _ \
 # | |  | || |_| || || |_ | ||_____|| |___ | | | || (_| || |_) || (_) || || | | || |_     / ___ \| (__ | |_ | || (_) || | | |\__ \     | || (_| || |_) || |_) || (_| || (_| ||  __/
 # |_|  |_| \__,_||_| \__||_|       |_____||_| |_| \__,_|| .__/  \___/ |_||_| |_| \__|   /_/   \_\\___| \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/ | .__/  \__,_| \__, | \___|
-#                                                       |_|                                                                                            |_|            |___/       
+#                                                       |_|                                                                                            |_|            |___/
 #==================================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -2761,7 +2761,7 @@ $ActionsTabProcessKillerGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 Top    = $ActionsTabProcessKillerSelectFileRadioButton.Top - $($FormScale * 5)
                 Width  = $FormScale * 150
                 Height = $FormScale * 22
-                Add_Click = { 
+                Add_Click = {
                     if ($ActionsTabProcessKillerCollectNewProcessDataRadioButton.checked){
                         Stop-ProcessesOnMultipleComputers -CollectNewProcessData
                     }
@@ -2828,7 +2828,7 @@ $ActionsTabServiceKillerGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 Top    = $ActionsTabServiceKillerSelectFileRadioButton.Top - $($FormScale * 5)
                 Width  = $FormScale * 150
                 Height = $FormScale * 22
-                Add_Click = { 
+                Add_Click = {
                     if ($ActionsTabServiceKillerCollectNewServiceDataRadioButton.checked){
                         Stop-ServicesOnMultipleComputers -CollectNewServiceData
                     }
@@ -2895,7 +2895,7 @@ $ActionsTabAccountLogoutGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 Top    = $ActionsTabAccountLogoutSelectFileRadioButton.Top - $($FormScale * 5)
                 Width  = $FormScale * 150
                 Height = $FormScale * 22
-                Add_Click = { 
+                Add_Click = {
                     if ($ActionsTabAccountLogoutCollectLoggedOnAccountsRadioButton.checked){
                         Logout-AccountsOnMultipleComputers -CollectNewAccountData
                     }
@@ -2962,7 +2962,7 @@ $ActionsTabKillNetworkConnectionGroupBox = New-Object System.Windows.Forms.Group
                 Top    = $ActionsTabKillNetworkConnectionsSelectFileRadioButton.Top - $($FormScale * 5)
                 Width  = $FormScale * 150
                 Height = $FormScale * 22
-                Add_Click = { 
+                Add_Click = {
                     if ($ActionsTabGetNetworkConnectionsRadioButton.checked){
                         Kill-NetworkConnectionsOnMultipleComputers -CollectNewNetworkConnections
                     }
@@ -3002,7 +3002,7 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
                 Left   = $FormScale * 268
                 Top    = $ActionsTabQuarantineEndpointLabel.Top
                 Width  = $FormScale * 150
-                Height = $FormScale * 22        
+                Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor      = 'Black'
                 Add_MouseEnter = $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseEnter
@@ -3054,12 +3054,12 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
                 Top    = $ActionsTabApplyFirewallRulesLocalCopyToEndpointsRadioButton.Top - $($FormScale * 5)
                 Width  = $FormScale * 150
                 Height = $FormScale * 22
-                Add_Click = { 
-                    if ($ActionsTabCopyEndpointFirewallRulesRadioButton.checked) { 
-                        Quarantine-EndpointsWithFirewallRules -CopyEndpointFirewallRulesToLocalhost 
+                Add_Click = {
+                    if ($ActionsTabCopyEndpointFirewallRulesRadioButton.checked) {
+                        Quarantine-EndpointsWithFirewallRules -CopyEndpointFirewallRulesToLocalhost
                     }
-                    elseif ($ActionsTabApplyFirewallRulesLocalCopyToEndpointsRadioButton.checked) { 
-                        Quarantine-EndpointsWithFirewallRules -ApplyFirewallRulesLocalCopyToEndpoints 
+                    elseif ($ActionsTabApplyFirewallRulesLocalCopyToEndpointsRadioButton.checked) {
+                        Quarantine-EndpointsWithFirewallRules -ApplyFirewallRulesLocalCopyToEndpoints
                     }
                     [system.media.systemsounds]::Exclamation.play()
                 }
@@ -3072,12 +3072,12 @@ $Section1ActionOnEndpointTab.Controls.Add($ActionsTabQuarantineEndpointGroupBox)
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Interactions TabControl
-#  _____                          _          _      _                _____       _                                
-# | ____|__  __ ___   ___  _   _ | |_  __ _ | |__  | |  ___  ___    |_   _|__ _ | |__   _ __    __ _   __ _   ___ 
+#  _____                          _          _      _                _____       _
+# | ____|__  __ ___   ___  _   _ | |_  __ _ | |__  | |  ___  ___    |_   _|__ _ | |__   _ __    __ _   __ _   ___
 # |  _|  \ \/ // _ \ / __|| | | || __|/ _` || '_ \ | | / _ \/ __|     | | / _` || '_ \ | '_ \  / _` | / _` | / _ \
 # | |___  >  <|  __/| (__ | |_| || |_| (_| || |_) || ||  __/\__ \     | || (_| || |_) || |_) || (_| || (_| ||  __/
 # |_____|/_/\_\\___| \___| \__,_| \__|\__,_||_.__/ |_| \___||___/     |_| \__,_||_.__/ | .__/  \__,_| \__, | \___|
-#                                                                                      |_|            |___/          
+#                                                                                      |_|            |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -3178,7 +3178,7 @@ $ExternalProgramsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 Enabled  = $True
                 Add_MouseHover = $ExternalProgramsCheckTimeTextBoxAdd_MouseHover
             }
-        
+
             $ExternalProgramsOptionsGroupBox.Controls.AddRange(@($ExternalProgramsProtocolRadioButtonLabel,$ExternalProgramsRPCRadioButton,$ExternalProgramsWinRMRadioButton,$ExternalProgramsCheckTimeLabel,$ExternalProgramsCheckTimeTextBox))
 $Section1ExecutablesTab.Controls.Add($ExternalProgramsOptionsGroupBox)
 
@@ -3204,7 +3204,7 @@ $Section1ExecutablesTab.Controls.Add($SysinternalsSysmonCheckbox)
 $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Location  = @{ X = $ExternalProgramsOptionsGroupBox.Location.X
                    Y =  $ExternalProgramsOptionsGroupBox.Location.Y + $ExternalProgramsOptionsGroupBox.Size.Height + $($FormScale * 5) }
-    Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width 
+    Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width
                    Height = $FormScale * 133 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
@@ -3231,7 +3231,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                             Height = $FormScale * $SysinternalsButtonHeight }
                 Add_Click = { Select-SysinternalsSysmonXmlConfig }
             }
-            $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonSelectConfigButton) 
+            $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonSelectConfigButton)
             CommonButtonSettings -Button $SysinternalsSysmonSelectConfigButton
 
 
@@ -3245,7 +3245,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Add_Click      = $SysinternalsSysmonEventIdsButtonAdd_Click
                 Add_MouseHover = $SysinternalsSysmonEventIdsButtonAdd_MouseHover
             }
-            $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonEventIdsButton) 
+            $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonEventIdsButton)
             CommonButtonSettings -Button $SysinternalsSysmonEventIdsButton
 
 
@@ -3254,7 +3254,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Location = @{ X = $FormScale * 125
                             Y = $SysinternalsSysmonSelectConfigButton.Location.Y + $($FormScale * 1) }
                 Size     = @{ Width  = $FormScale * 300
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
                 BackColor = "White"
@@ -3269,7 +3269,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Location = @{ X = $FormScale * 200
                             Y = $SysinternalsSysmonConfigTextBox.Location.Y + $SysinternalsSysmonConfigTextBox.Size.Height + $($FormScale * 8) }
                 Size     = @{ Width  = $FormScale * 130
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Blue"
             }
@@ -3282,7 +3282,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X + $SysinternalsSysmonRenameServiceProcessLabel.Size.Width + $($FormScale * 10)
                             Y = $SysinternalsSysmonRenameServiceProcessLabel.Location.Y - $($FormScale * 3) }
                 Size     = @{ Width  = $FormScale * 85
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Add_MouseHover = $SysinternalsSysmonRenameServiceProcessTextBoxAdd_MouseHover
             }
@@ -3294,7 +3294,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
                 Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X
                             Y = $SysinternalsSysmonRenameServiceProcessLabel.Location.Y + $SysinternalsSysmonRenameServiceProcessLabel.Size.Height }
                 Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessLabel.Size.Width
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Blue"
             }
@@ -3304,7 +3304,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
             . "$Dependencies\Code\System.Windows.Forms\Textbox\SysinternalsSysmonRenameDriverTextBox.ps1"
             $SysinternalsSysmonRenameDriverTextBox = New-Object System.Windows.Forms.Textbox -Property @{
                 Text     = "SysmonDrv"
-                Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X 
+                Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X
                             Y = $SysinternalsSysmonRenameDriverLabel.Location.Y - $($FormScale * 3) }
                 Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessTextBox.Size.Width
                             Height = $FormScale * 22 }
@@ -3314,7 +3314,7 @@ $ExternalProgramsSysmonGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
             }
             $ExternalProgramsSysmonGroupBox.Controls.Add($SysinternalsSysmonRenameDriverTextBox)
 $Section1ExecutablesTab.Controls.Add($ExternalProgramsSysmonGroupBox)
-        
+
 
 #============================================================================================================================================================
 # Sysinternals Autoruns
@@ -3337,7 +3337,7 @@ $Section1ExecutablesTab.Controls.Add($SysinternalsAutorunsCheckbox)
 $ExternalProgramsAutorunsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Location  = @{ X = $ExternalProgramsSysmonGroupBox.Location.X
                    Y = $ExternalProgramsSysmonGroupBox.Location.Y + $ExternalProgramsSysmonGroupBox.Size.Height + $($FormScale * 5) }
-    Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width 
+    Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width
                    Height = $FormScale * 76 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
 }
@@ -3364,7 +3364,7 @@ $ExternalProgramsAutorunsGroupBox = New-Object System.Windows.Forms.GroupBox -Pr
                             Height = $FormScale * $SysinternalsButtonHeight }
                 Add_Click = $SysinternalsAutorunsButtonAdd_Click
             }
-            $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsButton) 
+            $ExternalProgramsAutorunsGroupBox.Controls.Add($SysinternalsAutorunsButton)
             CommonButtonSettings -Button $SysinternalsAutorunsButton
 
 
@@ -3373,7 +3373,7 @@ $ExternalProgramsAutorunsGroupBox = New-Object System.Windows.Forms.GroupBox -Pr
                 Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X
                             Y = $SysinternalsAutorunsButton.Location.Y }
                 Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessLabel.Size.Width
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Blue"
             }
@@ -3386,7 +3386,7 @@ $ExternalProgramsAutorunsGroupBox = New-Object System.Windows.Forms.GroupBox -Pr
                 Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X
                             Y = $SysinternalsAutorunsRenameProcessLabel.Location.Y - $($FormScale * 3) }
                 Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessTextBox.Size.Width
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Add_MouseHover = $SysinternalsAutorunsRenameProcessTextBoxAdd_MouseHover
             }
@@ -3415,7 +3415,7 @@ $Section1ExecutablesTab.Controls.Add($SysinternalsProcessMonitorCheckbox)
 $ExternalProgramsProcmonGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Location  = @{ X = $ExternalProgramsAutorunsGroupBox.Location.X
                    Y = $ExternalProgramsAutorunsGroupBox.Location.Y + $ExternalProgramsAutorunsGroupBox.Size.Height + $($FormScale * 5) }
-    Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width 
+    Size      = @{ Width  = $ExternalProgramsOptionsGroupBox.Size.Width
                    Height = $FormScale * 102 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
@@ -3443,7 +3443,7 @@ $ExternalProgramsProcmonGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                             Height = $FormScale * $SysinternalsButtonHeight }
                 Add_Click = $SysinternalsProcmonButtonAdd_Click
             }
-            $ExternalProgramsProcmonGroupBox.Controls.Add($SysinternalsProcmonButton) 
+            $ExternalProgramsProcmonGroupBox.Controls.Add($SysinternalsProcmonButton)
             CommonButtonSettings -Button $SysinternalsProcmonButton
 
 
@@ -3452,7 +3452,7 @@ $ExternalProgramsProcmonGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X
                             Y = $SysinternalsProcmonButton.Location.Y }
                 Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessLabel.Size.Width
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Blue"
             }
@@ -3464,7 +3464,7 @@ $ExternalProgramsProcmonGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X
                             Y = $SysinternalsProcmonCaptureTimeLabel.Location.Y }
                 Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessTextBox.Size.Width
-                            Height = $FormScale * 22 } 
+                            Height = $FormScale * 22 }
                 Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             }
             $ProcmonCaptureTimes = @('5 Seconds','10 Seconds','15 Seconds','30 Seconds','1 Minute','2 Minutes','3 Minutes','4 Minutes','5 Minutes')
@@ -3477,7 +3477,7 @@ $ExternalProgramsProcmonGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 Location = @{ X = $SysinternalsSysmonRenameServiceProcessLabel.Location.X
                             Y = $SysinternalsProcmonCaptureTimeLabel.Location.Y + $SysinternalsProcmonCaptureTimeLabel.Size.Height + $($FormScale * 5) }
                 Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessLabel.Size.Width
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Blue"
             }
@@ -3490,7 +3490,7 @@ $ExternalProgramsProcmonGroupBox = New-Object System.Windows.Forms.GroupBox -Pro
                 Location = @{ X = $SysinternalsSysmonRenameServiceProcessTextBox.Location.X
                             Y = $SysinternalsProcmonRenameProcessLabel.Location.Y - $($FormScale * 3) }
                 Size     = @{ Width  = $SysinternalsSysmonRenameServiceProcessTextBox.Size.Width
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Add_MouseHover = $SysinternalsProcmonRenameProcessTextBoxAdd_MouseHover
             }
@@ -3519,7 +3519,7 @@ $Section1ExecutablesTab.Controls.Add($ExeScriptUserSpecifiedExecutableAndScriptC
 $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Location  = @{ X = $ExternalProgramsProcmonGroupBox.Location.X
                    Y = $ExternalProgramsProcmonGroupBox.Location.Y + $ExternalProgramsProcmonGroupBox.Size.Height + $($FormScale * 5) }
-    Size      = @{ Width  = $ExternalProgramsProcmonGroupBox.Size.Width 
+    Size      = @{ Width  = $ExternalProgramsProcmonGroupBox.Size.Width
                    Height = $FormScale * 135 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
@@ -3547,7 +3547,7 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Add_Click      = { Select-UserSpecifiedExecutable }
                 Add_MouseHover = $ExeScriptSelectExecutableButtonAdd_MouseHover
             }
-            $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectExecutableButton) 
+            $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectExecutableButton)
             CommonButtonSettings -Button $ExeScriptSelectExecutableButton
 
 
@@ -3556,7 +3556,7 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Location = @{ X = $FormScale * 125
                             Y = $ExeScriptSelectExecutableButton.Location.Y + $($FormScale * 1) }
                 Size     = @{ Width  = $FormScale * 200
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
                 BackColor = "White"
@@ -3571,11 +3571,11 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Location = @{ X = $ExeScriptSelectExecutableTextBox.Location.X + $ExeScriptSelectExecutableTextBox.Size.Width + $($FormScale * 10)
                             Y = $ExeScriptSelectExecutableTextBox.Location.Y }
                 Size     = @{ Width  = $FormScale * 45
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
-                Add_Click = { 
-                    $ExeScriptSelectExecutableTextBox.text = "Directory:" 
+                Add_Click = {
+                    $ExeScriptSelectExecutableTextBox.text = "Directory:"
                     if ($ExeScriptSelectExecutableTextBox.text -eq "Directory:") {$ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false}
                 }
                 Checked   = $True
@@ -3585,13 +3585,13 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
 
             $ExeScriptSelectFileRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
                 Text     = "File"
-                Location = @{ X = $ExeScriptSelectDirRadioButton.Location.X + $ExeScriptSelectDirRadioButton.Size.Width 
+                Location = @{ X = $ExeScriptSelectDirRadioButton.Location.X + $ExeScriptSelectDirRadioButton.Size.Width
                             Y = $ExeScriptSelectDirRadioButton.Location.Y }
                 Size     = @{ Width  = $FormScale * 40
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_Click = { 
-                    $ExeScriptSelectExecutableTextBox.text = "File:" 
+                Add_Click = {
+                    $ExeScriptSelectExecutableTextBox.text = "File:"
                     if ($ExeScriptSelectExecutableTextBox.text -eq "File:") {$ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false}
                 }
                 ForeColor = "Black"
@@ -3611,16 +3611,16 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Add_Click      = { Select-UserSpecifiedScript }
                 Add_MouseHover = $ExeScriptSelectScriptButtonAdd_MouseHover
             }
-            $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectScriptButton) 
+            $ExeScriptProgramGroupBox.Controls.Add($ExeScriptSelectScriptButton)
             CommonButtonSettings -Button $ExeScriptSelectScriptButton
 
-            
+
             $ExeScriptSelectScriptTextBox = New-Object System.Windows.Forms.Textbox -Property @{
                 Text     = "Script:"
                 Location = @{ X = $FormScale * 125
                             Y = $ExeScriptSelectScriptButton.Location.Y + $($FormScale * 1) }
                 Size     = @{ Width  = $ExeScriptSelectExecutableTextBox.Size.Width
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
                 BackColor = "White"
@@ -3636,10 +3636,10 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Location = @{ X = $ExeScriptSelectDirRadioButton.Location.X
                             Y = $ExeScriptSelectScriptTextBox.Location.Y }
                 Size     = @{ Width  = $FormScale * 90
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
-                Add_Click = $ExeScriptScriptOnlyCheckboxAdd_Click 
+                Add_Click = $ExeScriptScriptOnlyCheckboxAdd_Click
             }
             $ExeScriptProgramGroupBox.Controls.Add($ExeScriptScriptOnlyCheckbox)
 
@@ -3653,7 +3653,7 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = "Black"
             }
-            $ExeScriptProgramGroupBox.Controls.Add($ExeScriptDestinationDirectoryLabel) 
+            $ExeScriptProgramGroupBox.Controls.Add($ExeScriptDestinationDirectoryLabel)
 
 
             $script:ExeScriptDestinationDirectoryTextBox = New-Object System.Windows.Forms.Textbox -Property @{
@@ -3661,24 +3661,24 @@ $ExeScriptProgramGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Location = @{ X = $FormScale * 125
                             Y = $ExeScriptDestinationDirectoryLabel.Location.Y - $($FormScale * 2) }
                 Size     = @{ Width  = $FormScale * 300
-                            Height = $FormScale * 22 }    
+                            Height = $FormScale * 22 }
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 AutoCompleteSource = "FileSystem"
                 AutoCompleteMode   = "SuggestAppend"
                 }
             $ExeScriptProgramGroupBox.Controls.Add($script:ExeScriptDestinationDirectoryTextBox)
 $Section1ExecutablesTab.Controls.Add($ExeScriptProgramGroupBox)
-            
+
 
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl
-#   _____                                             _    _                   _____       _      ____                     
-#  | ____| _ __   _   _  _ __ ___    ___  _ __  __ _ | |_ (_)  ___   _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   _____                                             _    _                   _____       _      ____
+#  | ____| _ __   _   _  _ __ ___    ___  _ __  __ _ | |_ (_)  ___   _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  |  _|  | '_ \ | | | || '_ ` _ \  / _ \| '__|/ _` || __|| | / _ \ | '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |___ | | | || |_| || | | | | ||  __/| |  | (_| || |_ | || (_) || | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_____||_| |_| \__,_||_| |_| |_| \___||_|   \__,_| \__||_| \___/ |_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                                                              |___/       
+#                                                                                                              |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -3713,7 +3713,7 @@ if (!(Test-Path $CustomPortsToScan)) {
 
 # Using the inputs selected or provided from the GUI, it scans the specified IPs or network range for specified ports
 # The intent of this scan is not to be stealth, but rather find hosts; such as those not in active directory
-# The results can be added to the computer treenodes 
+# The results can be added to the computer treenodes
 . "$Dependencies\Code\Execution\Enumeration\Conduct-PortScan.ps1"
 
 
@@ -3734,8 +3734,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor     = "Black"
-                Add_Click = { 
-                    if ($this.checked){  
+                Add_Click = {
+                    if ($this.checked){
                         $EnumerationPortScanSpecificIPTextbox.enabled     = $false
                         $EnumerationPortScanIPRangeNetworkTextbox.enabled = $false
                         $EnumerationPortScanIPRangeFirstTextbox.enabled   = $false
@@ -3767,7 +3767,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPNote1Label)
 
-        
+
             $EnumerationPortScanSpecificIPTextbox = New-Object System.Windows.Forms.TextBox -Property @{
                 Text   = ""
                 Left   = $EnumerationPortScanIPNote1Label.Left
@@ -3783,7 +3783,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificIPTextbox)
 
-            
+
             $EnumerationPortScanIPRangeNote1Label = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Network Range:  (ex: [ 192.168.1 ]  [ 1 ]  [ 100 ])"
                 Left   = $EnumerationPortScanSpecificIPTextbox.Left
@@ -3851,7 +3851,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeFirstTextbox)
 
-            
+
             $EnumerationPortScanIPRangeLastLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Last IP"
                 Left   = $EnumerationPortScanIPRangeFirstLabel.Left + $EnumerationPortScanIPRangeFirstLabel.Width + $($FormScale * 20)
@@ -3862,7 +3862,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 ForeColor = "Black"
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeLastLabel)
-            
+
 
             $EnumerationPortScanIPRangeLastTextbox = New-Object System.Windows.Forms.TextBox -Property @{
                 Text   = ""
@@ -3932,7 +3932,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Height = $FormScale * 20
                 Add_Click = $EnumerationPortScanPortsSelectionButtonAdd_Click
             }
-            $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortsSelectionButton) 
+            $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortsSelectionButton)
             CommonButtonSettings -Button $EnumerationPortScanPortsSelectionButton
 
 
@@ -3975,7 +3975,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeFirstTextbox)
 
-            
+
             $EnumerationPortScanPortRangeLastLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Last Port"
                 Left   = $EnumerationPortScanIPRangeLastLabel.Left
@@ -4016,7 +4016,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTestICMPFirstCheckBox)
 
-            
+
             $EnumerationPortScanTimeoutLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Timeout (ms)"
                 Left   = $EnumerationPortScanPortRangeFirstLabel.Left
@@ -4060,14 +4060,14 @@ Show-ToolTip -Title "Execute Scan" -Icon "Info" -Message @"
 "@
                 }
             }
-            $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanExecutionButton) 
+            $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanExecutionButton)
             CommonButtonSettings -Button $EnumerationPortScanExecutionButton
-                        
-$Section1EnumerationTab.Controls.Add($EnumerationPortScanGroupBox) 
+
+$Section1EnumerationTab.Controls.Add($EnumerationPortScanGroupBox)
 
 
 # Using the inputs selected or provided from the GUI, it conducts a basic ping sweep
-# The results can be added to the computer treenodes 
+# The results can be added to the computer treenodes
 # Lists all IPs in a subnet
 . "$Dependencies\Code\Main Body\Get-SubnetRange.ps1"
 
@@ -4100,7 +4100,7 @@ $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
             $EnumerationPingSweepIPNetworkCIDRTextbox = New-Object System.Windows.Forms.TextBox -Property @{
                 Text   = ""
                 Left   = $FormScale * 190
-                Top    = $EnumerationPingSweepNote1Label.Top 
+                Top    = $EnumerationPingSweepNote1Label.Top
                 Width  = $FormScale * 100
                 Height = $FormScale * $EnumerationLabelHeight
                 MultiLine     = $False
@@ -4123,9 +4123,9 @@ $EnumerationPingSweepGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                 Height = $FormScale * 22
                 Add_Click = $EnumerationPingSweepExecutionButtonAdd_Click
             }
-            $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepExecutionButton) 
+            $EnumerationPingSweepGroupBox.Controls.Add($EnumerationPingSweepExecutionButton)
             CommonButtonSettings -Button $EnumerationPingSweepExecutionButton
-$Section1EnumerationTab.Controls.Add($EnumerationPingSweepGroupBox) 
+$Section1EnumerationTab.Controls.Add($EnumerationPingSweepGroupBox)
 
 
 . "$Dependencies\Code\System.Windows.Forms\Button\EnumerationResolveDNSNameButton.ps1"
@@ -4137,7 +4137,7 @@ $EnumerationResolveDNSNameButton = New-Object System.Windows.Forms.Button -Prope
     Height = $FormScale * 22
     Add_Click = $EnumerationResolveDNSNameButtonAdd_Click
 }
-$Section1EnumerationTab.Controls.Add($EnumerationResolveDNSNameButton) 
+$Section1EnumerationTab.Controls.Add($EnumerationResolveDNSNameButton)
 CommonButtonSettings -Button $EnumerationResolveDNSNameButton
 
 
@@ -4162,7 +4162,7 @@ $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.But
     Height = $FormScale * 22
     Add_Click = $EnumerationComputerListBoxAddToListButtonAdd_Click
 }
-$Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxAddToListButton) 
+$Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxAddToListButton)
 CommonButtonSettings -Button $EnumerationComputerListBoxAddToListButton
 
 
@@ -4175,7 +4175,7 @@ $EnumerationComputerListBoxSelectAllButton = New-Object System.Windows.Forms.But
     Text   = "Select All"
     Add_Click = $EnumerationComputerListBoxSelectAllButtonAdd_Click
 }
-$Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxSelectAllButton) 
+$Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxSelectAllButton)
 CommonButtonSettings -Button $EnumerationComputerListBoxSelectAllButton
 
 
@@ -4188,19 +4188,19 @@ $EnumerationComputerListBoxClearButton = New-Object System.Windows.Forms.Button 
     Text   = 'Clear List'
     Add_Click = $EnumerationComputerListBoxClearButtonAdd_Click
 }
-$Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxClearButton) 
+$Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxClearButton)
 CommonButtonSettings -Button $EnumerationComputerListBoxClearButton
 
 
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl
-#    ____  _                  _     _  _       _            _____       _      ____                     
-#   / ___|| |__    ___   ___ | | __| |(_) ___ | |_  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#    ____  _                  _     _  _       _            _____       _      ____
+#   / ___|| |__    ___   ___ | | __| |(_) ___ | |_  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | |    | '_ \  / _ \ / __|| |/ /| || |/ __|| __|/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |___ | | | ||  __/| (__ |   < | || |\__ \| |_ \__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #   \____||_| |_| \___| \___||_|\_\|_||_||___/ \__||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                                           |___/       
+#                                                                                           |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -4217,7 +4217,7 @@ $TabRightPosition     = 3
 $TabhDownPosition     = 3
 $TabAreaWidth         = 446
 $TabAreaHeight        = 557
-$TextBoxRightPosition = -2 
+$TextBoxRightPosition = -2
 $TextBoxDownPosition  = -2
 $TextBoxWidth         = 442
 $TextBoxHeight        = 536
@@ -4226,7 +4226,7 @@ $TextBoxHeight        = 536
 #============================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Checklist Tabpage
-#    ____  _                  _     _  _       _            _____       _       ____               _                _ 
+#    ____  _                  _     _  _       _            _____       _       ____               _                _
 #   / ___|| |__    ___   ___ | | __| |(_) ___ | |_  ___    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
 #  | |    | '_ \  / _ \ / __|| |/ /| || |/ __|| __|/ __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
 #  | |___ | | | ||  __/| (__ |   < | || |\__ \| |_ \__ \     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
@@ -4261,12 +4261,12 @@ $ResourceChecklistFiles = Get-ChildItem "$Dependencies\Checklists"
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl
-#   ____                                                  _____       _      ____                     
-#  |  _ \  _ __  ___    ___  ___  ___  ___   ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   ____                                                  _____       _      ____
+#  |  _ \  _ __  ___    ___  ___  ___  ___   ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | |_) || '__|/ _ \  / __|/ _ \/ __|/ __| / _ \/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  |  __/ | |  | (_) || (__|  __/\__ \\__ \|  __/\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_|    |_|   \___/  \___|\___||___/|___/ \___||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                                         |___/       
+#                                                                                         |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -4283,16 +4283,16 @@ $TabRightPosition       = 3
 $TabhDownPosition       = 3
 $TabAreaWidth           = 446
 $TabAreaHeight          = 557
-$TextBoxRightPosition   = -2 
+$TextBoxRightPosition   = -2
 $TextBoxDownPosition    = -2
 $TextBoxWidth           = 442
 $TextBoxHeight          = 536
 
-    
+
 #============================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Processes Tab
-#  ____                                                  _____       _       ____               _                _ 
+#  ____                                                  _____       _       ____               _                _
 #  |  _ \  _ __  ___    ___  ___  ___  ___   ___  ___    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
 #  | |_) || '__|/ _ \  / __|/ _ \/ __|/ __| / _ \/ __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
 #  |  __/ | |  | (_) || (__|  __/\__ \\__ \|  __/\__ \     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
@@ -4318,12 +4318,12 @@ $Section1ProcessesTab.Controls.Add($MainLeftProcessesTabControl)
     #=================================================================================================================================================================================
     #
     #  Parent: Main Form -> Main Left TabControl -> Processes TabControl
-    #   ____                                   _              _  _             ____                                 _             _     _____       _      ____                     
-    #  |  _ \  _   _  _ __    __ _  _ __ ___  (_)  ___  __ _ | || | _   _     / ___|  ___  _ __    ___  _ __  __ _ | |_  ___   __| |   |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+    #   ____                                   _              _  _             ____                                 _             _     _____       _      ____
+    #  |  _ \  _   _  _ __    __ _  _ __ ___  (_)  ___  __ _ | || | _   _     / ___|  ___  _ __    ___  _ __  __ _ | |_  ___   __| |   |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
     #  | | | || | | || '_ \  / _` || '_ ` _ \ | | / __|/ _` || || || | | |   | |  _  / _ \| '_ \  / _ \| '__|/ _` || __|/ _ \ / _` |     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
     #  | |_| || |_| || | | || (_| || | | | | || || (__| (_| || || || |_| |   | |_| ||  __/| | | ||  __/| |  | (_| || |_|  __/| (_| |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
     #  |____/  \__, ||_| |_| \__,_||_| |_| |_||_| \___|\__,_||_||_| \__, |    \____| \___||_| |_| \___||_|   \__,_| \__|\___| \__,_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-    #          |___/                                                |___/                                                                                               |___/       
+    #          |___/                                                |___/                                                                                               |___/
     #=================================================================================================================================================================================
     $script:ProgressBarFormProgressBar.Value += 1
     $script:ProgressBarSelectionForm.Refresh()
@@ -4335,12 +4335,12 @@ $Section1ProcessesTab.Controls.Add($MainLeftProcessesTabControl)
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl
-#    ___          _   _         _                 _____       _      ____                     
-#   / _ \  _ __  | \ | |  ___  | |_  ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#    ___          _   _         _                 _____       _      ____
+#   / _ \  _ __  | \ | |  ___  | |_  ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | | | || '_ \ |  \| | / _ \ | __|/ _ \/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |_| || |_) || |\  || (_) || |_|  __/\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #   \___/ | .__/ |_| \_| \___/  \__|\___||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#         |_|                                                                     |___/       
+#         |_|                                                                     |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -4378,7 +4378,7 @@ $OpNotesDownPositionShift  = 22
 
 $OpNotesLabel = New-Object System.Windows.Forms.Label -Property @{
     Text      = "Enter Your Operator Notes (OpNotes) - Auto-Timestamp:"
-    Location = @{ X = $FormScale * $OpNotesRightPosition 
+    Location = @{ X = $FormScale * $OpNotesRightPosition
                   Y = $FormScale * $OpNotesDownPosition }
     Size     = @{ Width  = $FormScale * $OpNotesInputTextBoxWidth
                   Height = $FormScale * $OpNotesInputTextBoxHeight }
@@ -4413,7 +4413,7 @@ $OpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
                   Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesAddButtonAdd_Click
 }
-$Section1OpNotesTab.Controls.Add($OpNotesAddButton) 
+$Section1OpNotesTab.Controls.Add($OpNotesAddButton)
 CommonButtonSettings -Button $OpNotesAddButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
@@ -4428,7 +4428,7 @@ $OpNotesSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
                   Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesSelectAllButtonAdd_Click
 }
-$Section1OpNotesTab.Controls.Add($OpNotesSelectAllButton) 
+$Section1OpNotesTab.Controls.Add($OpNotesSelectAllButton)
 CommonButtonSettings -Button $OpNotesSelectAllButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
@@ -4458,7 +4458,7 @@ $OpNotesMoveUpButton = New-Object System.Windows.Forms.Button -Property @{
                   Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesMoveUpButtonAdd_Click
 }
-$Section1OpNotesTab.Controls.Add($OpNotesMoveUpButton) 
+$Section1OpNotesTab.Controls.Add($OpNotesMoveUpButton)
 CommonButtonSettings -Button $OpNotesMoveUpButton
 
 $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
@@ -4474,7 +4474,7 @@ $OpNotesRemoveButton = New-Object System.Windows.Forms.Button -Property @{
                       Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesRemoveButtonAdd_Click
 }
-$Section1OpNotesTab.Controls.Add($OpNotesRemoveButton) 
+$Section1OpNotesTab.Controls.Add($OpNotesRemoveButton)
 CommonButtonSettings -Button $OpNotesRemoveButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
@@ -4489,7 +4489,7 @@ $OpNotesCreateReportButton = New-Object System.Windows.Forms.Button -Property @{
                   Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesCreateReportButtonAdd_Click
 }
-$Section1OpNotesTab.Controls.Add($OpNotesCreateReportButton) 
+$Section1OpNotesTab.Controls.Add($OpNotesCreateReportButton)
 CommonButtonSettings -Button $OpNotesCreateReportButton
 
 $OpNotesRightPosition += $OpNotesRightPositionShift
@@ -4518,7 +4518,7 @@ $OpNotesMoveDownButton = New-Object System.Windows.Forms.Button -Property @{
                   Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesMoveDownButtonAdd_Click
 }
-$Section1OpNotesTab.Controls.Add($OpNotesMoveDownButton) 
+$Section1OpNotesTab.Controls.Add($OpNotesMoveDownButton)
 CommonButtonSettings -Button $OpNotesMoveDownButton
 
 $OpNotesDownPosition += $OpNotesDownPositionShift + $($FormScale + 5)
@@ -4556,12 +4556,12 @@ if (Test-Path -Path $OpNotesFile) {
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl
-#   ___          __            _____       _      ____                     
-#  |_ _| _ __   / _|  ___     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   ___          __            _____       _      ____
+#  |_ _| _ __   / _|  ___     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #   | | | '_ \ | |_  / _ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #   | | | | | ||  _|| (_) |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |___||_| |_||_|   \___/      |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                              |___/       
+#                                                              |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -4577,7 +4577,7 @@ $TabRightPosition       = 3
 $TabhDownPosition       = 3
 $TabAreaWidth           = 446
 $TabAreaHeight          = 557
-$TextBoxRightPosition   = -2 
+$TextBoxRightPosition   = -2
 $TextBoxDownPosition    = -2
 $TextBoxWidth           = 442
 $TextBoxHeight          = 536
@@ -4585,7 +4585,7 @@ $TextBoxHeight          = 536
 #============================================================================================================================================================
 #
 #  Parent: Main Form -> Main Left TabControl -> Info TabPage
-#   ___          __            _____       _       ____               _                _ 
+#   ___          __            _____       _       ____               _                _
 #  |_ _| _ __   / _|  ___     |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
 #   | | | '_ \ | |_  / _ \      | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
 #   | | | | | ||  _|| (_) |     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
@@ -4612,16 +4612,16 @@ $ResourceFiles = Get-ChildItem "$Dependencies\About"
 
 # Iterates through the files and dynamically creates tabs and imports data
 foreach ($File in $ResourceFiles) {
-   
+
     #=================================================================================================================================================================================
     #
     #  Parent: Main Form -> Main Left TabControl -> Info TabControl
-    #   ____                                   _              _  _             ____                                 _             _     _____       _      ____                     
-    #  |  _ \  _   _  _ __    __ _  _ __ ___  (_)  ___  __ _ | || | _   _     / ___|  ___  _ __    ___  _ __  __ _ | |_  ___   __| |   |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+    #   ____                                   _              _  _             ____                                 _             _     _____       _      ____
+    #  |  _ \  _   _  _ __    __ _  _ __ ___  (_)  ___  __ _ | || | _   _     / ___|  ___  _ __    ___  _ __  __ _ | |_  ___   __| |   |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
     #  | | | || | | || '_ \  / _` || '_ ` _ \ | | / __|/ _` || || || | | |   | |  _  / _ \| '_ \  / _ \| '__|/ _` || __|/ _ \ / _` |     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
     #  | |_| || |_| || | | || (_| || | | | | || || (__| (_| || || || |_| |   | |_| ||  __/| | | ||  __/| |  | (_| || |_|  __/| (_| |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
     #  |____/  \__, ||_| |_| \__,_||_| |_| |_||_| \___|\__,_||_||_| \__, |    \____| \___||_| |_| \___||_|   \__,_| \__|\___| \__,_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-    #          |___/                                                |___/                                                                                               |___/       
+    #          |___/                                                |___/                                                                                               |___/
     #=================================================================================================================================================================================
     $script:ProgressBarFormProgressBar.Value += 1
     $script:ProgressBarSelectionForm.Refresh()
@@ -4634,7 +4634,7 @@ foreach ($File in $ResourceFiles) {
     $MainLeftInfoTabControl.Controls.Add($Section1AboutSubTab)
 
 
-    $TabContents = Get-Content -Path $File.FullName -Force | ForEach-Object {$_ + "`r`n"} 
+    $TabContents = Get-Content -Path $File.FullName -Force | ForEach-Object {$_ + "`r`n"}
     $Section1AboutSubTabTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text       = "$TabContents"
         Name       = "$file"
@@ -4646,14 +4646,14 @@ foreach ($File in $ResourceFiles) {
         ScrollBars = "Vertical"
         Font       = New-Object System.Drawing.Font("Courier New",$($FormScale * 9),0,0,0)
     }
-    $Section1AboutSubTab.Controls.Add($Section1AboutSubTabTextBox)    
+    $Section1AboutSubTab.Controls.Add($Section1AboutSubTabTextBox)
 }
 
 
 #============================================================================================================================================================
 #
 #  Parent: Main Form
-#   __  __         _             ____              _                  _____       _       ____               _                _ 
+#   __  __         _             ____              _                  _____       _       ____               _                _
 #  |  \/  |  __ _ (_) _ __      / ___| ___  _ __  | |_  ___  _ __    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
 #  | |\/| | / _` || || '_ \    | |    / _ \| '_ \ | __|/ _ \| '__|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
 #  | |  | || (_| || || | | |   | |___|  __/| | | || |_|  __/| |        | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
@@ -4682,12 +4682,12 @@ $PoShEasyWin.Controls.Add($MainCenterTabControl)
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Center TabControl
-#   __  __         _            _____       _      ____                     
-#  |  \/  |  __ _ (_) _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   __  __         _            _____       _      ____
+#  |  \/  |  __ _ (_) _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | |\/| | / _` || || '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |  | || (_| || || | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_|  |_| \__,_||_||_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                               |___/       
+#                                                               |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -4749,7 +4749,7 @@ $SingleHostIPAddButton = New-Object System.Windows.Forms.Button -Property @{
     Location = @{ X = $FormScale * ($Column3RightPosition + 240)
                   Y = $FormScale * $Column3DownPosition }
     Size     = @{ Width  = $FormScale * 115
-                  Height = $FormScale * $Column3BoxHeight } 
+                  Height = $FormScale * $Column3BoxHeight }
     Add_Click      = $SingleHostIPAddButtonAdd_Click
     Add_MouseHover = $SingleHostIPAddButtonAdd_MouseHover
 }
@@ -4778,7 +4778,7 @@ $script:CollectionSavedDirectoryTextBox = New-Object System.Windows.Forms.TextBo
     Name     = "Saved Directory List Box"
     Text    = $SaveDirectory
     Location = @{ X = $FormScale * $Column3RightPosition
-                  Y = $DirectoryListLabel.Location.Y + $DirectoryListLabel.Size.Height } 
+                  Y = $DirectoryListLabel.Location.Y + $DirectoryListLabel.Size.Height }
     Size     = @{ Width  = $FormScale * 354
                   Height = $FormScale * 22 }
     WordWrap = $false
@@ -4800,8 +4800,8 @@ $DirectoryOpenButton = New-Object System.Windows.Forms.Button -Property @{
     Location = @{ X = $FormScale * ($Column3RightPosition + 120)
                   Y = $script:CollectionSavedDirectoryTextBox.Location.Y + $script:CollectionSavedDirectoryTextBox.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 115
-                  Height = $FormScale * $Column3BoxHeight } 
-    Add_Click      = $DirectoryOpenButtonAdd_Click 
+                  Height = $FormScale * $Column3BoxHeight }
+    Add_Click      = $DirectoryOpenButtonAdd_Click
     Add_MouseHover = $DirectoryOpenButtonAdd_MouseHover
 }
 $MainCenterMainTab.Controls.Add($DirectoryOpenButton)
@@ -4814,11 +4814,11 @@ $DirectoryUpdateButton = New-Object System.Windows.Forms.Button -Property @{
     Location = @{ X = $DirectoryOpenButton.Location.X + $DirectoryOpenButton.Size.Width + $($FormScale * 5)
                   Y = $DirectoryOpenButton.Location.Y }
     Size     = @{ Width  = $FormScale * 115
-                  Height = $FormScale * $Column3BoxHeight } 
+                  Height = $FormScale * $Column3BoxHeight }
     Add_Click      = $DirectoryUpdateButtonAdd_Click
     Add_MouseHover = $DirectoryUpdateButtonAdd_MouseHover
 }
-$MainCenterMainTab.Controls.Add($DirectoryUpdateButton) 
+$MainCenterMainTab.Controls.Add($DirectoryUpdateButton)
 CommonButtonSettings -Button $DirectoryUpdateButton
 
 
@@ -4827,7 +4827,7 @@ $ResultsSectionLabel = New-Object System.Windows.Forms.Label -Property @{
     Location  = @{ X = $FormScale * 2
                    Y = $DirectoryUpdateButton.Location.Y + $DirectoryUpdateButton.Size.Height + $($FormScale * 15) }
     Size      = @{ Width  = $FormScale * 230
-                   Height = $FormScale * $Column3BoxHeight } 
+                   Height = $FormScale * $Column3BoxHeight }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = "Blue"
 }
@@ -4950,12 +4950,12 @@ CommonButtonSettings -Button $OpenCsvResultsButton
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Center TabControl
-#    ___          _    _                        _____       _      ____                     
-#   / _ \  _ __  | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#    ___          _    _                        _____       _      ____
+#   / _ \  _ __  | |_ (_)  ___   _ __   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | | | || '_ \ | __|| | / _ \ | '_ \ / __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |_| || |_) || |_ | || (_) || | | |\__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #   \___/ | .__/  \__||_| \___/ |_| |_||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#         |_|                                                                   |___/       
+#         |_|                                                                   |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -4973,11 +4973,11 @@ $MainCenterTabControl.Controls.Add($Section2OptionsTab)
 $script:OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.Forms.Combobox -Property @{
     Text   = $JobTimeOutSeconds
     Left   = $FormScale * 3
-    Top    = $FormScale * 11 
+    Top    = $FormScale * 11
     Width  = $FormScale * 50
-    Height = $FormScale * 22 
+    Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,2,0)
-    AutoCompleteMode = "SuggestAppend" 
+    AutoCompleteMode = "SuggestAppend"
     Add_MouseHover   = $script:OptionJobTimeoutSelectionComboBoxAdd_MouseHover
     Add_SelectedIndexChanged = { $This.Text | Set-Content "$PoShHome\Settings\Job Timeout.txt" -Force }
 }
@@ -5061,7 +5061,7 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object S
             }
             $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($CollectedDataDirectorySearchLimitLabel)
 
-            
+
             $OptionSearchProcessesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
                 Text     = "Processes"
                 Location = @{ X = $FormScale * 10
@@ -5076,7 +5076,7 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object S
             if (Test-Path "$PoShHome\Settings\Search - Processes Checkbox.txt") { $OptionSearchProcessesCheckBox.Checked = Get-Content "$PoShHome\Settings\Search - Processes Checkbox.txt" }
             $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchProcessesCheckBox)
 
-            
+
             $OptionSearchServicesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
                 Text     = "Services"
                 Location = @{ X = $FormScale * 10
@@ -5091,7 +5091,7 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object S
             if (Test-Path "$PoShHome\Settings\Search - Services Checkbox.txt") { $OptionSearchServicesCheckBox.Checked = Get-Content "$PoShHome\Settings\Search - Services Checkbox.txt" }
             $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchServicesCheckBox)
 
-            
+
             $OptionSearchNetworkTCPConnectionsCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
                 Text     = "Network TCP Connections"
                 Location = @{ X = $FormScale * 10
@@ -5145,7 +5145,7 @@ $OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property 
     Text     = "Show ToolTip"
     Location = @{ X = $FormScale * 3
                   Y = $OptionsAutoSaveChartsAsImages.Location.Y + $OptionsAutoSaveChartsAsImages.Size.Height }
-    Size     = @{ Width  = $FormScale * 200 
+    Size     = @{ Width  = $FormScale * 200
                   Height = $FormScale * $Column3BoxHeight }
     Enabled  = $true
     Checked  = $True
@@ -5205,11 +5205,11 @@ $Section2OptionsTab.Controls.Add($OptionKeepResultsByEndpointsFilesCheckBox)
 $OptionTextToSpeachButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Resize PoSh-EasyWin"
     Left = $FormScale * 3
-    Top  = $OptionKeepResultsByEndpointsFilesCheckBox.Top + $OptionKeepResultsByEndpointsFilesCheckBox.Height 
+    Top  = $OptionKeepResultsByEndpointsFilesCheckBox.Top + $OptionKeepResultsByEndpointsFilesCheckBox.Height
     Width  = $FormScale * 175
     Height = $FormScale * $Column3BoxHeight
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = { 
+    Add_Click = {
         Launch-FormScaleGUI -Relaunch
         If ($script:RelaunchEasyWin){
             $PoSHEasyWin.Close()
@@ -5230,7 +5230,7 @@ $OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
     Width  = $FormScale * 175
     Height = $FormScale * $Column3BoxHeight
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = { 
+    Add_Click = {
         Launch-ReadMe -ReadMe
     }
 }
@@ -5241,12 +5241,12 @@ CommonButtonSettings -Button $OptionViewReadMeButton
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Center TabControl
-#   ____   _          _    _       _    _                _____       _      ____                     
-#  / ___| | |_  __ _ | |_ (_) ___ | |_ (_)  ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   ____   _          _    _       _    _                _____       _      ____
+#  / ___| | |_  __ _ | |_ (_) ___ | |_ (_)  ___  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  \___ \ | __|/ _` || __|| |/ __|| __|| | / __|/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #   ___) || |_| (_| || |_ | |\__ \| |_ | || (__ \__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |____/  \__|\__,_| \__||_||___/ \__||_| \___||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                                        |___/       
+#                                                                                        |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -5324,8 +5324,8 @@ $script:ComputerTreeViewData = Import-Csv $ComputerTreeNodeFileSave -ErrorAction
 . "$Dependencies\Code\Main Body\AutoSave-HostData.ps1"
 
 # Initializes the Computer TreeView section that computer nodes are added to
-# TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views 
-# These include the root nodes of Search, and various Operating System and OU/CN names 
+# TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
+# These include the root nodes of Search, and various Operating System and OU/CN names
 . "$Dependencies\Code\Tree View\Computer\Initialize-ComputerTreeNodes.ps1"
 
 # If Computer treenodes are imported/created with missing data, this populates various fields with default data
@@ -5357,7 +5357,7 @@ $ComputerTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Prop
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
     Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown 
+    Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown
     Add_MouseHover     = $ComputerTreeNodeSearchComboBoxAdd_MouseHover
 }
 ForEach ($Tag in $TagListFileContents) { [void] $ComputerTreeNodeSearchComboBox.Items.Add($Tag) }
@@ -5463,8 +5463,8 @@ $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
 
 # Controls the layout of the computer treeview
 $script:ComputerTreeView.ExpandAll()
-[System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
-foreach ($root in $AllHostsNode) { 
+[System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+foreach ($root in $AllHostsNode) {
     foreach ($Category in $root.Nodes) {
         foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
     }
@@ -5504,7 +5504,7 @@ $ComputerTreeNodeOUHostnameRadioButton  = New-Object System.Windows.Forms.RadioB
                   Width  = $FormScale * 75 }
     Checked  = $false
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click      = $ComputerTreeNodeOUHostnameRadioButtonAdd_Click 
+    Add_Click      = $ComputerTreeNodeOUHostnameRadioButtonAdd_Click
     Add_MouseHover = $ComputerTreeNodeOUHostnameRadioButtonAdd_MouseHover
 }
 $PoShEasyWin.Controls.Add($ComputerTreeNodeOUHostnameRadioButton)
@@ -5513,7 +5513,7 @@ $PoShEasyWin.Controls.Add($ComputerTreeNodeOUHostnameRadioButton)
 #============================================================================================================================================================
 #
 #  Parent: Main Form
-#   __  __         _            ____   _         _      _       _____       _       ____               _                _ 
+#   __  __         _            ____   _         _      _       _____       _       ____               _                _
 #  |  \/  |  __ _ (_) _ __     |  _ \ (_)  __ _ | |__  | |_    |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
 #  | |\/| | / _` || || '_ \    | |_) || | / _` || '_ \ | __|     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
 #  | |  | || (_| || || | | |   |  _ < | || (_| || | | || |_      | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
@@ -5525,7 +5525,7 @@ $script:ProgressBarSelectionForm.Refresh()
 
 $MainRightTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name         = "Main Tab Window for Computer List"
-    Location     = @{ X = $FormScale * 1082 
+    Location     = @{ X = $FormScale * 1082
                       Y = $FormScale * 10 }
     Size         = @{ Height = $FormScale * 349
                       Width  = $FormScale * 140 }
@@ -5537,12 +5537,12 @@ $PoShEasyWin.Controls.Add($MainRightTabControl)
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Right TabControl
-#      _          _    _                   _____       _      ____                     
-#     / \    ___ | |_ (_)  ___   _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#      _          _    _                   _____       _      ____
+#     / \    ___ | |_ (_)  ___   _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #    / _ \  / __|| __|| | / _ \ | '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #   / ___ \| (__ | |_ | || (_) || | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  /_/   \_\\___| \__||_| \___/ |_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                       |___/       
+#                                                                       |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -5604,7 +5604,7 @@ $EventViewerButton = New-Object System.Windows.Forms.Button -Property @{
     Add_Click = $EventViewerButtonAdd_Click
     Add_MouseHover = $EventViewerButtonAdd_MouseHover
 }
-$Section3ActionTab.Controls.Add($EventViewerButton) 
+$Section3ActionTab.Controls.Add($EventViewerButton)
 CommonButtonSettings -Button $EventViewerButton
 
 $Column5DownPosition += $Column5DownPositionShift
@@ -5621,7 +5621,7 @@ $ComputerListRDPButton = New-Object System.Windows.Forms.Button -Property @{
     Add_MouseHover = $ComputerListRDPButtonAdd_MouseHover
     Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
 }
-$Section3ActionTab.Controls.Add($ComputerListRDPButton) 
+$Section3ActionTab.Controls.Add($ComputerListRDPButton)
 CommonButtonSettings -Button $ComputerListRDPButton
 
 $Column5DownPosition += $Column5DownPositionShift
@@ -5638,7 +5638,7 @@ $ComputerListPSSessionButton = New-Object System.Windows.Forms.Button -Property 
     Add_MouseHover = $ComputerListPSSessionButtonAdd_MouseHover
     Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
 }
-$Section3ActionTab.Controls.Add($ComputerListPSSessionButton) 
+$Section3ActionTab.Controls.Add($ComputerListPSSessionButton)
 CommonButtonSettings -Button $ComputerListPSSessionButton
 
 $Column5DownPosition += $Column5DownPositionShift
@@ -5648,9 +5648,9 @@ $Column5DownPosition += $Column5DownPositionShift
 $ComputerListPsExecButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'PsExec'
     Left   = $FormScale * $Column5RightPosition
-    Top    = $FormScale * $Column5DownPosition 
+    Top    = $FormScale * $Column5DownPosition
     Width  = $FormScale * $Column5BoxWidth
-    Height = $FormScale * $Column5BoxHeight 
+    Height = $FormScale * $Column5BoxHeight
     Add_Click = $ComputerListPsExecButtonAdd_Click
     Add_MouseHover = $ComputerListPsExecButtonAdd_MouseHover
     Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
@@ -5664,13 +5664,13 @@ $Column5DownPosition += $Column5DownPositionShift
 
 
 # Rolls the credenaisl: 250 characters of random: abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
-. "$Dependencies\Code\Credential Management\Generate-NewRollingPassword.ps1" 
+. "$Dependencies\Code\Credential Management\Generate-NewRollingPassword.ps1"
 
 # Used to create new credentials (Get-Credential), create a log entry, and save an encypted local copy
 . "$Dependencies\Code\Credential Management\Create-NewCredentials.ps1"
 # Encrypt an exported credential object
 # The Export-Clixml cmdlet encrypts credential objects by using the Windows Data Protection API.
-# The encryption ensures that only your user account on only that computer can decrypt the contents of the 
+# The encryption ensures that only your user account on only that computer can decrypt the contents of the
 # credential object. The exported CLIXML file can't be used on a different computer or by a different user.
 
 # Code to launch the Credential Management Form
@@ -5720,7 +5720,7 @@ $CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.Forms.C
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor     = 'Black'
     DropDownStyle = 'DropDownList'
-    Add_SelectedIndexChanged = { 
+    Add_SelectedIndexChanged = {
         & $CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged
         $This.Text | Set-Content "$PoShHome\Settings\Script Execution Mode.txt" -Force
     }
@@ -5756,12 +5756,12 @@ CommonButtonSettings -Button $ComputerListExecuteButton
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Right TabControl
-#   __  __                                       _____       _      ____                     
-#  |  \/  |  __ _  _ __    __ _   __ _   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   __  __                                       _____       _      ____
+#  |  \/  |  __ _  _ __    __ _   __ _   ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | |\/| | / _` || '_ \  / _` | / _` | / _ \     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |  | || (_| || | | || (_| || (_| ||  __/     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_|  |_| \__,_||_| |_| \__,_| \__, | \___|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                |___/                                           |___/       
+#                                |___/                                           |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -5886,7 +5886,7 @@ $StatusLabel = New-Object System.Windows.Forms.Label -Property @{
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = "Blue"
 }
-$PoShEasyWin.Controls.Add($StatusLabel)  
+$PoShEasyWin.Controls.Add($StatusLabel)
 
 
 $StatusListBox = New-Object System.Windows.Forms.ListBox -Property @{
@@ -5910,7 +5910,7 @@ $ProgressBarEndpointsLabel = New-Object System.Windows.Forms.Label -Property @{
     Height = $StatusLabel.Size.Height
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
-$PoShEasyWin.Controls.Add($ProgressBarEndpointsLabel)  
+$PoShEasyWin.Controls.Add($ProgressBarEndpointsLabel)
 
 
 $script:ProgressBarEndpointsProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
@@ -5920,7 +5920,7 @@ $script:ProgressBarEndpointsProgressBar = New-Object System.Windows.Forms.Progre
     Height = $FormScale * 15
     Forecolor = 'LightBlue'
     BackColor = 'white'
-    Style     = "Continuous" #"Marque" 
+    Style     = "Continuous" #"Marque"
     Minimum   = 0
 }
 $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
@@ -5934,7 +5934,7 @@ $ProgressBarQueriesLabel = New-Object System.Windows.Forms.Label -Property @{
     Height = $ProgressBarEndpointsLabel.Size.Height
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
-$PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)  
+$PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)
 
 
 $script:ProgressBarQueriesProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
@@ -5953,7 +5953,7 @@ $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
 #============================================================================================================================================================
 #
 #  Parent: Main Form
-#   __  __         _            ____          _    _                        _____       _       ____               _                _ 
+#   __  __         _            ____          _    _                        _____       _       ____               _                _
 #  |  \/  |  __ _ (_) _ __     | __ )   ___  | |_ | |_  ___   _ __ ___     |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
 #  | |\/| | / _` || || '_ \    |  _ \  / _ \ | __|| __|/ _ \ | '_ ` _ \      | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
 #  | |  | || (_| || || | | |   | |_) || (_) || |_ | |_| (_) || | | | | |     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
@@ -5978,12 +5978,12 @@ $PoShEasyWin.Controls.Add($MainBottomTabControl)
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Bottom TabControl
-#      _     _                    _       _____       _      ____                     
-#     / \   | |__    ___   _   _ | |_    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#      _     _                    _       _____       _      ____
+#     / \   | |__    ___   _   _ | |_    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #    / _ \  | '_ \  / _ \ | | | || __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #   / ___ \ | |_) || (_) || |_| || |_      | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  /_/   \_\|_.__/  \___/  \__,_| \__|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                      |___/       
+#                                                                      |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -6034,20 +6034,20 @@ $Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.RichTextBox -P
     WordWrap   = $true
     ReadOnly   = $True
     BackColor  = 'White'
-    ShortcutsEnabled = $true    
+    ShortcutsEnabled = $true
 }
-$Section3AboutTab.Controls.Add($Section1AboutSubTabRichTextBox)    
+$Section3AboutTab.Controls.Add($Section1AboutSubTabRichTextBox)
 
 
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Bottom TabControl
-#   ____                    _  _            _____       _      ____                     
-#  |  _ \  ___  ___  _   _ | || |_  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   ____                    _  _            _____       _      ____
+#  |  _ \  ___  ___  _   _ | || |_  ___    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | |_) |/ _ \/ __|| | | || || __|/ __|     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  |  _ <|  __/\__ \| |_| || || |_ \__ \     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_| \_\\___||___/ \__,_||_| \__||___/     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                           |___/       
+#                                                                           |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -6061,7 +6061,7 @@ $Section3ResultsTab = New-Object System.Windows.Forms.TabPage -Property @{
 $MainBottomTabControl.Controls.Add($Section3ResultsTab)
 
 
-. "$Dependencies\Code\System.Windows.Forms\Button\ResultsTabOpNotesAddButton.ps1" 
+. "$Dependencies\Code\System.Windows.Forms\Button\ResultsTabOpNotesAddButton.ps1"
 $ResultsTabOpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Add Selected To OpNotes"
     Location  = @{ X = $FormScale * 578
@@ -6071,7 +6071,7 @@ $ResultsTabOpNotesAddButton = New-Object System.Windows.Forms.Button -Property @
     Add_Click = $ResultsTabOpNotesAddButtonAdd_Click
     Add_MouseHover = $ResultsTabOpNotesAddButtonAdd_MouseHover
 }
-$Section3ResultsTab.Controls.Add($ResultsTabOpNotesAddButton) 
+$Section3ResultsTab.Controls.Add($ResultsTabOpNotesAddButton)
 CommonButtonSettings -Button $ResultsTabOpNotesAddButton
 
 
@@ -6093,12 +6093,12 @@ $Section3ResultsTab.Controls.Add($ResultsListBox)
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Bottom TabControl
-#   _   _              _       ____          _             _____       _      ____                     
-#  | | | |  ___   ___ | |_    |  _ \   __ _ | |_  __ _    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#   _   _              _       ____          _             _____       _      ____
+#  | | | |  ___   ___ | |_    |  _ \   __ _ | |_  __ _    |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | |_| | / _ \ / __|| __|   | | | | / _` || __|/ _` |     | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  |  _  || (_) |\__ \| |_    | |_| || (_| || |_| (_| |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #  |_| |_| \___/ |___/ \__|   |____/  \__,_| \__|\__,_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                                                                                          |___/       
+#                                                                                          |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -6112,7 +6112,7 @@ $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
 $MainBottomTabControl.Controls.Add($Section3HostDataTab)
 
 
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataNameTextBox.ps1" 
+. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataNameTextBox.ps1"
 $Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
                   Y = $FormScale * 3 }
@@ -6125,7 +6125,7 @@ $Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property
 $Section3HostDataTab.Controls.Add($Section3HostDataNameTextBox)
 
 
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOSTextBox.ps1" 
+. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOSTextBox.ps1"
 $Section3HostDataOSTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
                   Y = $Section3HostDataNameTextBox.Location.Y + $Section3HostDataNameTextBox.Size.Height + $($FormScale * 4) }
@@ -6138,7 +6138,7 @@ $Section3HostDataOSTextBox = New-Object System.Windows.Forms.TextBox -Property @
 $Section3HostDataTab.Controls.Add($Section3HostDataOSTextBox)
 
 
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOUTextBox.ps1" 
+. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOUTextBox.ps1"
 $Section3HostDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
                   Y = $Section3HostDataOSTextBox.Location.Y + $Section3HostDataOSTextBox.Size.Height + $($FormScale * 4) }
@@ -6151,7 +6151,7 @@ $Section3HostDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @
 $Section3HostDataTab.Controls.Add($Section3HostDataOUTextBox)
 
 
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataIPTextBox.ps1" 
+. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataIPTextBox.ps1"
 $Section3HostDataIPTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
                   Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + $($FormScale * 4) }
@@ -6164,7 +6164,7 @@ $Section3HostDataIPTextBox = New-Object System.Windows.Forms.TextBox -Property @
 $Section3HostDataTab.Controls.Add($Section3HostDataIPTextBox)
 
 
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataMACTextBox.ps1" 
+. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataMACTextBox.ps1"
 $Section3HostDataMACTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = $Section3HostDataIPTextBox.Size.Width + $($FormScale * 10)
                   Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + $($FormScale * 4) }
@@ -6208,12 +6208,12 @@ $Section3HostDataTab.Controls.Add($Section3HostDataMACTextBox)
                        Height = $FormScale * 25 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Black"
-        AutoCompleteSource = "ListItems" 
-        AutoCompleteMode   = "SuggestAppend" 
+        AutoCompleteSource = "ListItems"
+        AutoCompleteMode   = "SuggestAppend"
         Add_MouseHover     = $Section3HostDataSelectionDateTimeComboBoxAdd_MouseHover
     }
     $Section3HostDataTab.Controls.Add($Section3HostDataSelectionDateTimeComboBox)
-  
+
 
     . "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataGetDataButton.ps1"
     $Section3HostDataGetDataButton = New-Object System.Windows.Forms.Button -Property @{
@@ -6237,7 +6237,7 @@ $Section3HostDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Proper
                   Y = $Section3HostDataMACTextBox.Location.Y }
     Size     = @{ Width  = $FormScale * 200
                   Height = $FormScale * 25 }
-    AutoCompleteSource = "ListItems" 
+    AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
     Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_MouseHover     = $Section3HostDataTagsComboBoxAdd_MouseHover
@@ -6246,7 +6246,7 @@ ForEach ($Item in $TagListFileContents) { $Section3HostDataTagsComboBox.Items.Ad
 $Section3HostDataTab.Controls.Add($Section3HostDataTagsComboBox)
 
 
-. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataTagsAddButton.ps1" 
+. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataTagsAddButton.ps1"
 $Section3HostDataTagsAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Add"
     Location = @{ X = $Section3HostDataTagsComboBox.Size.Width + $Section3HostDataTagsComboBox.Location.X + $($FormScale * 5)
@@ -6293,7 +6293,7 @@ $Section3HostDataTab.Controls.Add($Section3HostDataSaveButton)
 CommonButtonSettings -Button $Section3HostDataSaveButton
 
 
-. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataNotesAddOpNotesButton.ps1" 
+. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataNotesAddOpNotesButton.ps1"
 $Section3HostDataNotesAddOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Add To OpNotes"
     Location = @{ X = $Section3HostDataSaveButton.Location.X
@@ -6303,26 +6303,26 @@ $Section3HostDataNotesAddOpNotesButton = New-Object System.Windows.Forms.Button 
     Add_Click = $Section3HostDataNotesAddOpNotesButtonAdd_Click
     Add_MouseHover = $Section3HostDataNotesAddOpNotesButtonAdd_MouseHover
 }
-$Section3HostDataTab.Controls.Add($Section3HostDataNotesAddOpNotesButton) 
+$Section3HostDataTab.Controls.Add($Section3HostDataNotesAddOpNotesButton)
 CommonButtonSettings -Button $Section3HostDataNotesAddOpNotesButton
 
 
 # Mass Tag one or multiple hosts in the computer treeview
-. "$Dependencies\Code\Tree View\Computer\Save-ComputerTreeNodeHostData.ps1" 
+. "$Dependencies\Code\Tree View\Computer\Save-ComputerTreeNodeHostData.ps1"
 
 # Checks if the Host Data has been modified and determines the text color: Green/Red
-. "$Dependencies\Code\Main Body\Check-HostDataIfModified.ps1" 
+. "$Dependencies\Code\Main Body\Check-HostDataIfModified.ps1"
 
 
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Bottom TabControl
-#    ___                                _____               _                     _    _                   _____       _      ____                     
-#   / _ \  _   _   ___  _ __  _   _    | ____|__  __ _ __  | |  ___   _ __  __ _ | |_ (_)  ___   _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___ 
+#    ___                                _____               _                     _    _                   _____       _      ____
+#   / _ \  _   _   ___  _ __  _   _    | ____|__  __ _ __  | |  ___   _ __  __ _ | |_ (_)  ___   _ __     |_   _|__ _ | |__  |  _ \  __ _   __ _   ___
 #  | | | || | | | / _ \| '__|| | | |   |  _|  \ \/ /| '_ \ | | / _ \ | '__|/ _` || __|| | / _ \ | '_ \      | | / _` || '_ \ | |_) |/ _` | / _` | / _ \
 #  | |_| || |_| ||  __/| |   | |_| |   | |___  >  < | |_) || || (_) || |  | (_| || |_ | || (_) || | | |     | || (_| || |_) ||  __/| (_| || (_| ||  __/
 #   \__\_\ \__,_| \___||_|    \__, |   |_____|/_/\_\| .__/ |_| \___/ |_|   \__,_| \__||_| \___/ |_| |_|     |_| \__,_||_.__/ |_|    \__,_| \__, | \___|
-#                             |___/                 |_|                                                                                    |___/       
+#                             |___/                 |_|                                                                                    |___/
 #=======================================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -6352,7 +6352,7 @@ $Section3QueryExplorationNameTextBox = New-Object System.Windows.Forms.TextBox -
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
     Add_MouseEnter = { $Section3QueryExplorationNameTextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationNameTextBox.size = @{ Width  = $FormScale * 195 } }    
+    Add_MouseLeave = { $Section3QueryExplorationNameTextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationNameLabel,$Section3QueryExplorationNameTextBox))
 
@@ -6397,10 +6397,10 @@ $Section3QueryExplorationWinRMWMITextBox = New-Object System.Windows.Forms.TextB
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
     Add_MouseEnter = { $Section3QueryExplorationWinRMWMITextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRMWMITextBox.size = @{ Width  = $FormScale * 195 } }    
+    Add_MouseLeave = { $Section3QueryExplorationWinRMWMITextBox.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationWinRMWMITextBox)
-        
+
 
 $Section3QueryExplorationWinRMCmdLabel = New-Object System.Windows.Forms.Label -Property @{
     Text     = "WinRM Cmd:"
@@ -6571,7 +6571,7 @@ $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationWinRSCmdT
 
 
 $Section3QueryExplorationDescriptionRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-    Location   = @{ X = $Section3QueryExplorationNameTextBox.Location.X + $Section3QueryExplorationNameTextBox.Size.Width + $($FormScale * 10) 
+    Location   = @{ X = $Section3QueryExplorationNameTextBox.Location.X + $Section3QueryExplorationNameTextBox.Size.Width + $($FormScale * 10)
                     Y = $Section3QueryExplorationNameTextBox.Location.Y }
     Size       = @{ Width  = $FormScale * 428
                     Height = $FormScale * 196 }
@@ -6646,7 +6646,7 @@ $Section3QueryExplorationViewScriptButton = New-Object System.Windows.Forms.Butt
 CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton
 
 
-# Charts - Convert CSV Number Strings To Intergers 
+# Charts - Convert CSV Number Strings To Intergers
 . "$Dependencies\Code\Charts\Convert-CsvNumberStringsToIntergers.ps1"
 
 # Checks and compiles selected command treenode to be execute
@@ -6654,14 +6654,14 @@ CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton
 . "$Dependencies\Code\Tree View\Command\Compile-SelectedCommandTreeNode.ps1"
 
 # Allows you to search the any number of registry paths for key names, value names, and value data.
-. "$Dependencies\Code\Execution\Search-Registry.ps1" 
+. "$Dependencies\Code\Execution\Search-Registry.ps1"
 
 # Searches for network connections that match provided IPs, Ports, or network connections started by specific process names
 # Required for Query-NetworkConnectionRemoteIPAddress, Query-NetworkConnectionRemotePort, and Query-NetworkConnectionProcess
 . "$Dependencies\Code\Execution\Query-NetworkConnection.ps1"
 
 # Compiles the .csv files in the collection directory then saves the combined file to the partent directory
-# The first line (collumn headers) is only copied once from the first file compiled, then skipped for the rest  
+# The first line (collumn headers) is only copied once from the first file compiled, then skipped for the rest
 . "$Dependencies\Code\Execution\Compile-CsvFiles.ps1"
 
 # Compiles the .xml files in the collection directory then saves the combined file to the partent directory
@@ -6672,10 +6672,10 @@ CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton
 
 # This is one of the core scripts that handles how queries are conducted
 # It monitors started PoSh-EasyWin jobs and updates the GUI
-. "$Dependencies\Code\Execution\Individual Execution\Monitor-Jobs.ps1" 
+. "$Dependencies\Code\Execution\Individual Execution\Monitor-Jobs.ps1"
 
 # Common code that runs after jobs have completed that updates the GUI, Compiles files (csv & xml), and logs
-. "$Dependencies\Code\Execution\Individual Execution\Post-MonitorJobs.ps1" 
+. "$Dependencies\Code\Execution\Individual Execution\Post-MonitorJobs.ps1"
 
 # If the file already exists in the directory (happens if you rerun the scan without updating the folder name/timestamp) it will delete it.
 . "$Dependencies\Code\Execution\Individual Execution\Conduct-PreCommandCheck.ps1"
@@ -6710,12 +6710,12 @@ Update-QueryHistory
 . "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
 
 #============================================================================================================================================================
-#   ____               _         _       _____                          _    _               
-#  / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
-#  \___ \  / __|| '__|| || '_ \ | __|   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \ 
+#   ____               _         _       _____                          _    _
+#  / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __
+#  \___ \  / __|| '__|| || '_ \ | __|   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \
 #   ___) || (__ | |   | || |_) || |_    | |___  >  <|  __/| (__ | |_| || |_ | || (_) || | | |
 #  |____/  \___||_|   |_|| .__/  \__|   |_____|/_/\_\\___| \___| \__,_| \__||_| \___/ |_| |_|
-#                        |_|                                                                 
+#                        |_|
 #============================================================================================================================================================
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -6740,14 +6740,14 @@ $ExecuteScriptHandler = {
     else {$Username = $PoShEasyWinAccountLaunch }
 
     # Clears previous and generates new computerlist
-    $script:ComputerList = @() 
+    $script:ComputerList = @()
     Generate-ComputerList
-    
+
     # Assigns the path to save the Collections to
     $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
     if ($SaveDirectory) { $script:CollectedDataTimeStampDirectory = $SaveDirectory }
 
-    
+
     $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
     Sort-CommandTreeNode
     Compile-SelectedCommandTreeNode
@@ -6767,7 +6767,7 @@ $ExecuteScriptHandler = {
     ####################################################
     #  Executes queries if it passes the above checks  #
     ####################################################
-    else {       
+    else {
         # This brings specific tabs to the forefront/front view
         #$MainLeftTabControl.SelectedTab = $Section1OpNotesTab
         #$MainCenterTabControl.SelectedTab = $MainCenterMainTab
@@ -6783,7 +6783,7 @@ $ExecuteScriptHandler = {
 
         $CollectionTimerStart = Get-Date
         $ResultsListBox.Items.Clear()
-        $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss'))  Collection Start Time")    
+        $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStart).ToString('yyyy/MM/dd HH:mm:ss'))  Collection Start Time")
         $ResultsListBox.Items.Insert(0,"")
 
         # The number of command queries completed
@@ -6811,7 +6811,7 @@ $ExecuteScriptHandler = {
 
         # Adds section checkboxes to the command count
         if ($CustomQueryScriptBlockCheckBox.checked)                                                    { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        
+
         if ($AccountsWinRMRadioButton.Checked -and $AccountsCurrentlyLoggedInConsoleCheckbox.Checked)   { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($AccountsWinRMRadioButton.Checked -and $AccountsCurrentlyLoggedInPSSessionCheckbox.Checked) { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($AccountsWinRMRadioButton.Checked -and $AccountActivityCheckbox.Checked)                    { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
@@ -6823,8 +6823,8 @@ $ExecuteScriptHandler = {
         if ($EventLogWinRMRadioButton.Checked -and $EventLogsEventIDsToMonitorCheckbox.Checked)         { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($EventLogRpcRadioButton.Checked   -and $EventLogsEventIDsManualEntryCheckbox.Checked)       { $CountCommandQueries++ ; $script:RpcCommandCount++ }
         if ($EventLogRpcRadioButton.Checked   -and $EventLogsEventIDsToMonitorCheckbox.Checked)         { $CountCommandQueries++ ; $script:RpcCommandCount++ }
-        if ($EventLogsQuickPickSelectionCheckbox.Checked) { 
-            foreach ($Query in $script:EventLogQueries) { 
+        if ($EventLogsQuickPickSelectionCheckbox.Checked) {
+            foreach ($Query in $script:EventLogQueries) {
                 if ($EventLogWinRMRadioButton.Checked -and $EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
                 if ($EventLogRpcRadioButton.Checked   -and $EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) { $CountCommandQueries++ ; $script:RpcCommandCount++ }
             }
@@ -6834,12 +6834,12 @@ $ExecuteScriptHandler = {
 
         if ($FileSearchDirectoryListingCheckbox.Checked)                { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($FileSearchFileSearchCheckbox.Checked)                      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $CountCommandQueries++ ; $script:WinRMCommandCount++ } 
+        if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
 
         if ($NetworkEndpointPacketCaptureCheckBox.Checked)              { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked)    { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($NetworkConnectionSearchRemotePortCheckbox.checked)         { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkConnectionSearchLocalPortCheckbox.checked)          { $CountCommandQueries++ ; $script:WinRMCommandCount++ }        
+        if ($NetworkConnectionSearchLocalPortCheckbox.checked)          { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($NetworkConnectionSearchProcessCheckbox.checked)            { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($NetworkConnectionSearchDNSCacheCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
 
@@ -6855,13 +6855,13 @@ $ExecuteScriptHandler = {
         $script:CommandsCheckedBoxesSelected          = $CommandsCheckedBoxesSelectedDedup
         $script:ProgressBarQueriesProgressBar.Maximum = $CountCommandQueries
 
-        #[int]$script:RpcCommandCount + [int]$script:SmbCommandCount + [int]$script:WinRMCommandCount 
+        #[int]$script:RpcCommandCount + [int]$script:SmbCommandCount + [int]$script:WinRMCommandCount
         $QueryCount = $script:SectionQueryCount + $script:CommandsCheckedBoxesSelected.count
 
         # Adds executed commands to query history commands variable
         $script:QueryHistoryCommands += $script:CommandsCheckedBoxesSelected
 
-        # Adds the selected commands to the Query History Command Nodes 
+        # Adds the selected commands to the Query History Command Nodes
         $QueryHistoryCategoryName = $script:CollectionSavedDirectoryTextBox.Text.Replace("$CollectedDataDirectory","").TrimStart('\')
         foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             $Command | Add-Member -MemberType NoteProperty -Name CategoryName -Value $QueryHistoryCategoryName -Force
@@ -6872,14 +6872,14 @@ $ExecuteScriptHandler = {
         $script:QueryHistory  + $script:CommandsCheckedBoxesSelected | Export-Clixml "$PoShHome\Query History.xml"
         $script:QueryHistory += $script:CommandsCheckedBoxesSelected
 
-        
+
         # Ensures that there are to lingering jobs in memory
         Get-Job -Name "PoSh-EasyWin:*" | Remove-Job -Force -ErrorAction SilentlyContinue
 
         #=======================================================================================================================================================================
-        #   ___             _  _         _      _                _     _____                          _    _               
-        #  |_ _| _ __    __| |(_)__   __(_)  __| | _   _   __ _ | |   | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
-        #   | | | '_ \  / _` || |\ \ / /| | / _` || | | | / _` || |   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \ 
+        #   ___             _  _         _      _                _     _____                          _    _
+        #  |_ _| _ __    __| |(_)__   __(_)  __| | _   _   __ _ | |   | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __
+        #   | | | '_ \  / _` || |\ \ / /| | / _` || | | | / _` || |   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \
         #   | | | | | || (_| || | \ V / | || (_| || |_| || (_| || |   | |___  >  <|  __/| (__ | |_| || |_ | || (_) || | | |
         #  |___||_| |_| \__,_||_|  \_/  |_| \__,_| \__,_| \__,_||_|   |_____|/_/\_\\___| \___| \__,_| \__||_| \___/ |_| |_|
         #
@@ -6891,14 +6891,14 @@ $ExecuteScriptHandler = {
         # These instances/jobs are one threaded when querying the same command type; eg: all process queries are multi-threaded, once their all complete it moves on to the service query
 
         function Conduct-IndividualExecution {
-            $ExecutionStartTime = Get-Date 
+            $ExecutionStartTime = Get-Date
             Create-ComputerNodeCheckBoxArray
 
             if ((Compare-Object -ReferenceObject $script:ComputerList -DifferenceObject $script:ComputerListHistory) -or `
                    !(([bool]($script:RpcCommandCount   -gt 0) -eq [bool]$script:RpcCommandCountHistory) -and `
                      ([bool]($script:SmbCommandCount   -gt 0) -eq [bool]$script:SmbCommandCountHistory) -and `
                      ([bool]($script:WinRmCommandCount -gt 0) -eq [bool]$script:WinRmCommandCountHistory))
-            ) { 
+            ) {
                 if ($script:RpcCommandCount -gt 0 ) {
                     if (Verify-Action -Title "RPC Port Check" -Question "Connecting Account:  $Username`n`nConduct a RPC Port Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
                         Check-Connection -CheckType "RPC Port Check" -MessageTrue "RPC Port 135 is Open" -MessageFalse "RPC Port 135 is Closed"
@@ -6968,20 +6968,20 @@ $ExecuteScriptHandler = {
             # Endpoint Packet Capture
             # Conducts a packet capture on the endpoints using netsh
             if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCapture.ps1" }
-                    
-            # Network Connection Search Remote IP Address 
+
+            # Network Connection Search Remote IP Address
             # Checks network connections for remote ip addresses and only returns those that match
             if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionRemoteIPAddress.ps1" }
-            
-            # Network Connection Search Remote Port 
+
+            # Network Connection Search Remote Port
             # Checks network connections for remote ports and only returns those that match
             if ($NetworkConnectionSearchRemotePortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionRemotePort.ps1" }
 
-            # Network Connection Search Local Port 
+            # Network Connection Search Local Port
             # Checks network connections for remote ports and only returns those that match
             if ($NetworkConnectionSearchLocalPortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionLocalPort.ps1" }
 
-            # Network Connection Search Remote Process 
+            # Network Connection Search Remote Process
             # Checks network connections for those started by a specified process name and only returns those that match
             if ($NetworkConnectionSearchProcessCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionProcess.ps1" }
 
@@ -7004,8 +7004,8 @@ $ExecuteScriptHandler = {
             # Pushes Process Monitor to remote hosts and pulls back the procmon results to be opened locally
             # Diskspace is calculated on local and target hosts to determine if there's a risk
             # Process Monitor and its supporting files are removed afterwards
-            if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Procmon.ps1" }        
-            
+            if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Procmon.ps1" }
+
             # User Specified Files and Custom Script
             # Pushes user Specified Files and Custom Script to the endpoints
             # The script has to manage all the particulars with the executable; execution, results retrieval, cleanup, etc.
@@ -7022,7 +7022,7 @@ $ExecuteScriptHandler = {
                 $MessageBox = [System.Windows.Forms.MessageBox]::Show("Multiple WinRM based commands were selected.
 Consider swtiching to 'Session Based' mode.
 Pros:
-   - Faster, especially with multiple queries 
+   - Faster, especially with multiple queries
    - Uses less local processor and memory
    - Requires less network connections
 Cons:
@@ -7048,24 +7048,24 @@ Cons:
             else { Conduct-IndividualExecution }
         }
         #=======================================================================================================================================================================
-        #    ____                          _  _            _     ____               _         _       _____                          _    _               
-        #   / ___| ___   _ __ ___   _ __  (_)| |  ___   __| |   / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
-        #  | |    / _ \ | '_ ` _ \ | '_ \ | || | / _ \ / _` |   \___ \  / __|| '__|| || '_ \ | __|   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \ 
+        #    ____                          _  _            _     ____               _         _       _____                          _    _
+        #   / ___| ___   _ __ ___   _ __  (_)| |  ___   __| |   / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __
+        #  | |    / _ \ | '_ ` _ \ | '_ \ | || | / _ \ / _` |   \___ \  / __|| '__|| || '_ \ | __|   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \
         #  | |___| (_) || | | | | || |_) || || ||  __/| (_| |    ___) || (__ | |   | || |_) || |_    | |___  >  <|  __/| (__ | |_| || |_ | || (_) || | | |
         #   \____|\___/ |_| |_| |_|| .__/ |_||_| \___| \__,_|   |____/  \___||_|   |_|| .__/  \__|   |_____|/_/\_\\___| \___| \__,_| \__||_| \___/ |_| |_|
-        #                          |_|                                                |_|                                                                 
+        #                          |_|                                                |_|
         #=======================================================================================================================================================================
         # Code that compiles individual command treenodes into one to execute
-        # A single compiled query for command nodes is sent to the hosts and when results are returned are automatcially 
+        # A single compiled query for command nodes is sent to the hosts and when results are returned are automatcially
         # saved to their own local csv files
         # This is faster when collecting data as only a single job per remote host is started locally for command treenode queries
         # The secondary progress bar is removed as it cannnot track compile queries
 
 
         elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Compiled Script' ) {
-            $ExecutionStartTime = Get-Date 
-            Generate-ComputerList 
-            
+            $ExecutionStartTime = Get-Date
+            Generate-ComputerList
+
             # Compiles the individual commands into an object hashtable '$script:QueryCommands'
             . "$Dependencies\Code\Execution\Compiled Script\Compile-QueryCommands.ps1"
 
@@ -7085,16 +7085,17 @@ Cons:
             }
             else {
                 Compile-QueryCommands
-                
+
                 # Prior to script execution, this launches a form to pre-view the script, allowing you to verify and edit its contents priot to being sent to endpoints
                 $CommandReviewEditForm = New-Object System.Windows.Forms.Form -Property @{
                     width         = $FormScale * 1025
                     height        = $FormScale * 525
                     StartPosition = "CenterScreen"
-                    Text          = ”Collection Script - Review, Edit, and Verify”
+                    Text          = �Collection Script - Review, Edit, and Verify�
                     Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
                     ControlBox    = $true
                     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Add_Closing = { $This.dispose() }
                 }
 
                     $CommandReviewEditLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -7118,9 +7119,9 @@ Cons:
                         Checked   = $false
                         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     }
-                    $CommandReviewEditEnabledRadioButton.Add_Click({ 
-                        $script:CommandReviewEditRichTextbox.BackColor = 'White' 
-                        $script:CommandReviewEditRichTextbox.ReadOnly  = $False 
+                    $CommandReviewEditEnabledRadioButton.Add_Click({
+                        $script:CommandReviewEditRichTextbox.BackColor = 'White'
+                        $script:CommandReviewEditRichTextbox.ReadOnly  = $False
                     })
                     $CommandReviewEditEnabledRadioButton.Add_MouseHover({
                         Show-ToolTip -Title "Enable Script Editing" -Icon "Info" -Message @"
@@ -7138,9 +7139,9 @@ Cons:
                                       Width  = $FormScale * 50 }
                         Checked  = $true
                         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        Add_Click = { 
-                            $script:CommandReviewEditRichTextbox.BackColor = 'LightGray' 
-                            $script:CommandReviewEditRichTextbox.ReadOnly  = $True 
+                        Add_Click = {
+                            $script:CommandReviewEditRichTextbox.BackColor = 'LightGray'
+                            $script:CommandReviewEditRichTextbox.ReadOnly  = $True
                         }
                         Add_MouseHover = {
                             Show-ToolTip -Title "Disable Script Editing" -Icon "Info" -Message @"
@@ -7153,23 +7154,23 @@ Cons:
 
                     $CommandReviewReloadNormalRawButton = New-Object System.Windows.Forms.Button -Property @{
                         Text      = "Reload Script (Raw)"
-                        Location  = @{ X = $FormScale * $CommandReviewEditDisabledRadioButton.Location.X + $CommandReviewEditDisabledRadioButton.Size.Width + 25 
+                        Location  = @{ X = $FormScale * $CommandReviewEditDisabledRadioButton.Location.X + $CommandReviewEditDisabledRadioButton.Size.Width + 25
                                     Y = $FormScale * 7 }
                         Size      = @{ Height = $FormScale * 22
                                     Width  = $FormScale * 175 }
                         Add_MouseHover = {
                             Show-ToolTip -Title "Reload Script - Normal" -Icon "Info" -Message @"
-+  When command treenode scripts are selected, they may load without return carriages depending on how they were created/formatted 
++  When command treenode scripts are selected, they may load without return carriages depending on how they were created/formatted
 +  To mitigate this, you can reload to get the scirpt's content normally or in a raw format
 "@                      }
-                        Add_Click = { 
-                            if ($CommandReviewReloadNormalRawButton.Text -eq "Reload Script (Raw)") { 
+                        Add_Click = {
+                            if ($CommandReviewReloadNormalRawButton.Text -eq "Reload Script (Raw)") {
                                 Compile-QueryCommands -raw
-                                $CommandReviewReloadNormalRawButton.Text = "Reload Script (Normal)" 
+                                $CommandReviewReloadNormalRawButton.Text = "Reload Script (Normal)"
                             }
-                            else { 
+                            else {
                                 Compile-QueryCommands
-                                $CommandReviewReloadNormalRawButton.Text = "Reload Script (Raw)" 
+                                $CommandReviewReloadNormalRawButton.Text = "Reload Script (Raw)"
                             }
                             Buffer-CommandReviewString
                         }
@@ -7179,7 +7180,7 @@ Cons:
 
 
                     $CommandReviewScriptBlockByteCountTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                        Location  = @{ X = $FormScale * $CommandReviewReloadNormalRawButton.Location.X + $CommandReviewReloadNormalRawButton.Size.Width + 25 
+                        Location  = @{ X = $FormScale * $CommandReviewReloadNormalRawButton.Location.X + $CommandReviewReloadNormalRawButton.Size.Width + 25
                                        Y = $FormScale * 7 }
                         Size      = @{ Height = $FormScale * 22
                                        Width  = $FormScale * 100 }
@@ -7204,8 +7205,8 @@ Cons:
                             else {
                                 $CommandReviewEditExecuteButton.Enabled   = $false
                                 $CommandReviewEditExecuteButton.Text      = "Cancel"
-                                $CommandReviewEditExecuteButton.ForeColor = "Red"                
-                            }  
+                                $CommandReviewEditExecuteButton.ForeColor = "Red"
+                            }
                         }
                     }
 
@@ -7218,9 +7219,9 @@ Cons:
                                     Y = $FormScale * 5 }
                         Size      = @{ Height = $FormScale * 25
                                     Width  = $FormScale * 100 }
-                        Add_Click = { 
+                        Add_Click = {
                             $script:CommandReviewEditRichTextbox.SaveFile("C:\Richtext_RTF.rtf")
-                            $CommandReviewEditForm.close() 
+                            $CommandReviewEditForm.close()
                         }
                         Add_MouseHover = {
                             Show-ToolTip -Title "Cancel or Execute" -Icon "Info" -Message @"
@@ -7253,8 +7254,8 @@ Cons:
                         ReadOnly   = $True
                         BackColor  = 'LightGray' #LightSteelBlue
                         ShortcutsEnabled = $true
-                        Add_KeyDown = { 
-                            if ($_.KeyCode) { $CommandReviewScriptBlockByteCountTextbox.Text = "$([System.Text.Encoding]::UTF7.GetByteCount($($script:CommandReviewEditRichTextbox.Text))) bytes" } 
+                        Add_KeyDown = {
+                            if ($_.KeyCode) { $CommandReviewScriptBlockByteCountTextbox.Text = "$([System.Text.Encoding]::UTF7.GetByteCount($($script:CommandReviewEditRichTextbox.Text))) bytes" }
                         }
                     }
                     $CommandReviewEditForm.Controls.Add($script:CommandReviewEditRichTextbox)
@@ -7268,7 +7269,7 @@ Cons:
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                         $script:CommandReviewString = @"
 Invoke-Command -Credential `$script:Credential -ComputerName `$TargetComputer -ScriptBlock {
-    param(`$TargetComputer) 
+    param(`$TargetComputer)
     `$QueryResults = @{}
 
 
@@ -7277,7 +7278,7 @@ Invoke-Command -Credential `$script:Credential -ComputerName `$TargetComputer -S
                         else {
                             $script:CommandReviewString = @"
 Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
-    param(`$TargetComputer) 
+    param(`$TargetComputer)
     `$QueryResults = @{}
 
 
@@ -7330,18 +7331,18 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
                         $CommandReviewScriptBlockByteCountTextbox.Text = "$([System.Text.Encoding]::UTF7.GetByteCount($script:CommandReviewString)) bytes"
                     }
                     Buffer-CommandReviewString
-            
-                $CommandReviewEditForm.ShowDialog() | Out-Null 
+
+                $CommandReviewEditForm.ShowDialog() | Out-Null
 
                 # Executes Compiled Script if the code is verified
                 . "$Dependencies\Code\Execution\Compiled Script\Execute-CompiledScriptIfVerified.ps1"
             }
         }
-        
+
         #=======================================================================================================================================================================
-        #   ____                   _                   ____                         _     _____                          _    _               
-        #  / ___|   ___  ___  ___ (_)  ___   _ __     | __ )   __ _  ___   ___   __| |   | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __  
-        #  \___ \  / _ \/ __|/ __|| | / _ \ | '_ \    |  _ \  / _` |/ __| / _ \ / _` |   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \ 
+        #   ____                   _                   ____                         _     _____                          _    _
+        #  / ___|   ___  ___  ___ (_)  ___   _ __     | __ )   __ _  ___   ___   __| |   | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __
+        #  \___ \  / _ \/ __|/ __|| | / _ \ | '_ \    |  _ \  / _` |/ __| / _ \ / _` |   |  _|  \ \/ // _ \ / __|| | | || __|| | / _ \ | '_ \
         #   ___) ||  __/\__ \\__ \| || (_) || | | |   | |_) || (_| |\__ \|  __/| (_| |   | |___  >  <|  __/| (__ | |_| || |_ | || (_) || | | |
         #  |____/  \___||___/|___/|_| \___/ |_| |_|   |____/  \__,_||___/ \___| \__,_|   |_____|/_/\_\\___| \___| \__,_| \__||_| \___/ |_| |_|
         #
@@ -7349,8 +7350,8 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
         # A session is established to each endpoint, and queries are executed through it
 
         elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based' -and $script:RpcCommandCount -eq 0 -and $script:SmbCommandCount -eq 0 ) {
-            $ExecutionStartTime = Get-Date 
-            Generate-ComputerList 
+            $ExecutionStartTime = Get-Date
+            Generate-ComputerList
             Compile-QueryCommands
 
             $StatusListBox.Items.Clear()
@@ -7361,7 +7362,7 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
             $PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
             $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
             $PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)
-            $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)            
+            $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
 
             $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
             New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
@@ -7382,10 +7383,10 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
                 . "$Dependencies\Code\Execution\Session Based\Uncheck-ComputerTreeNodesWithoutSessions.ps1"
             }
 
-            if ($PSSession.count -eq 1) { 
+            if ($PSSession.count -eq 1) {
                 $ResultsListBox.Items.Insert(1,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Session Created to $(($PSSession | Where-Object {$_.state -match 'open'}).count) Endpoint")
             }
-            elseif ($PSSession.count -gt 1) { 
+            elseif ($PSSession.count -gt 1) {
                 $ResultsListBox.Items.Insert(1,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Sessions Created to $(($PSSession | Where-Object {$_.state -match 'open'}).count) Endpoints")
             }
             else {
@@ -7397,22 +7398,22 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
             $script:ProgressBarQueriesProgressBar.Maximum   = $CountCommandQueries
             $script:ProgressBarEndpointsProgressBar.Maximum = ($PSSession.ComputerName).Count
 
-            
+
             if ($PSSession.count -ge 1) {
                 New-Item -ItemType Directory -Path "$($script:CollectionSavedDirectoryTextBox.Text)" -Force
-        
+
                 # Individual Queries
                 if ($script:CommandsCheckedBoxesSelected.count -gt 0) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-IndividualQueries.ps1" }
-                
+
                 # Query Build
                 if ($CustomQueryScriptBlockCheckBox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-QueryBuild.ps1" }
-                
+
                 # Accounts Currently Logged In Console
                 if ($AccountsCurrentlyLoggedInConsoleCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-AccountsCurrentlyLoggedInConsole.ps1" }
 
                 # Accounts Currently Logged In PSSession
                 if ($AccountsCurrentlyLoggedInPSSessionCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-AccountsCurrentlyLoggedInPSSession.ps1" }
-                
+
                 # Account Logon Activity
                 if ($AccountActivityCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-AccountLogonActivity.ps1" }
 
@@ -7438,8 +7439,8 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
 
                 # Alternate Data Stream
                 # Combines the inputs from the various GUI fields to query for Alternate Data Streams
-                if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-FileSearchAlternateDataStream.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' } 
-            
+                if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-FileSearchAlternateDataStream.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+
                 # Endpoint Packet Capture
                 # Conducts a packet capture on the endpoints using netsh
                 if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-EndpointPacketCapture.ps1" }
@@ -7541,7 +7542,7 @@ Start-Sleep -Seconds 1
 $script:ProgressBarSelectionForm.Hide()
 
 # Shows the GUI
-$PoShEasyWin.ShowDialog() | Out-Null 
+$PoShEasyWin.ShowDialog() | Out-Null
 
 } # END for $ScriptBlockForGuiLoadAndProgressBar
 
@@ -7555,11 +7556,13 @@ Download at: https://GitHub.com/high101bro
 
     $script:ProgressBarFormProgressBar.Value   = 0
     $script:ProgressBarFormProgressBar.Maximum = 40
-    
+
     Invoke-command $ScriptBlockForGuiLoadAndProgressBar
 }
 
 if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
     Launch-ProgressBarForm -FormTitle "PoSh-EasyWin  [$InitialScriptLoadTime]" -ShowImage -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
 }
+
+
 

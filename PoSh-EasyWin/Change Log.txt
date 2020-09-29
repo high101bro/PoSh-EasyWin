@@ -1,39 +1,23 @@
-TO DO LIST: 
-	Create user data directory
-	Add feautues that adds a metadata tag to each endpoint node for:
-		- Preferred Protocol
-		- Available protocols used
-		- list of queried times
-		- protocols Identified
-		- services running
-		- input from enumeration scans
-	verify multi file download
-	Verify previous query searches open csv for endpionts by date works
-	SMB WMI compile results
-	Add import hash list
-	Add import registry location IOCs
-	Commented out Compile results... need to finish removing old code
-	Account logon activity (both)... fix resultslistbox entries... when ran they disaply artifact data
-	Add support for RPC native commands with Invoke-wmimethod and copy results...
-	Vet scripts to ensure they're logging correctly
-	tweek endpoint tagging
-	Update logging from flat text to create custom Event Logs
-	update checklist to include easy resetting, persistence, and better overall appearance
-	Update other charts to include changing chart view and it's associated button
-	keep trying to develop a solution to launch show-eventlog not within domain...
-	Add * support for directory in file search/hash search
-	Add comment that directory listing support c:/*/*/dir -- asterisks
-	launch another PoSh-EasyWin gui
-	create quaentine tab
-		provide access to view firewall rules downloaded
-		provide access to quaentine firewall rules applied
+==================================================
+v5.1.4 - 29 Sep 20
+==================================================
 
-!!!!!!!!!!!!!!!!  IndividualPush-Sysmon when individual execution
-						if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                            if (!$script:Credential) { Create-NewCredentials }
+Implemented code to freeup memory
+	Originally I thought I had a memory leak, but then I learned more about Windows' Memory and Garbage Collection
+	https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#:~:text=All%20threads%20in%20the%20process,a%20time%20for%20managed%20applications.&text=The%20fewer%20objects%20allocated%20on,garbage%20collector%20has%20to%20do.
+	Essentially, I implemented the following in a few choice locations to manually freeup some memory
+		[System.GC]::Collect()
+	It's called after:
+		Charts are exited
+		Queries/Collections are completed
+	Garbage Collection
+		Normally managed by the system and an algorithm
+		For my purposes it doesn't happen often enough, so I manually execute garbage collection
+	Memory release
+		"The garbage collector's optimizing engine determines the best time to perform a collection based on the allocations being made. When the garbage collector performs a collection, it releases the memory for objects that are no longer being used by the application. It determines which objects are no longer being used by examining the application's roots. An application's roots include static fields, local variables and parameters on a thread's stack, and CPU registers."
 
-!!!!!!!!!!!!!!!! packet capture continues over and over
-
+Added Disposing of form objects to all the system.windows.forms.form objects
+	Method: Add_Closing = { $This.dispose() }
 
 ==================================================
 v5.1.3 - 28 Sep 20

@@ -19,6 +19,7 @@ function Launch-ProgressBarForm {
         ShowIcon      = $true
         TopMost       = $true
         Add_Shown     = $ScriptBlockProgressBarInput
+        Add_Closing = { $This.dispose() }
     }
 
     if ($ShowImage) {
