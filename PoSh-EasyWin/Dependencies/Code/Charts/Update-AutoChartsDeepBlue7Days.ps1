@@ -1,5 +1,5 @@
 
-function Update-AutoChartsDeepBlue {
+function Update-AutoChartsDeepBlue7Days {
     param($ComputerNameList)
     $script:ProgressBarFormProgressBar.Value   = 0
     $script:ProgressBarFormProgressBar.Maximum = $script:ComputerList.count
@@ -9,7 +9,9 @@ function Update-AutoChartsDeepBlue {
 #    $PullNewDataScriptPath = "$QueryCommandsAndScripts\Scripts-Host\Threat Hunting with Deep Blue.ps1"
 
     $ExecutionStartTime = Get-Date
-
+    $RegexFile     = Get-Content "$Dependencies\DeepBlue\regexes.txt"
+    $WhiteListFile = Get-Content "$Dependencies\DeepBlue\whitelist.txt"
+    
     Foreach ($TargetComputer in $ComputerNameList) {
         <#
         if ($AutoChartPullNewDataEnrichedCheckBox.checked) {
@@ -40,7 +42,8 @@ function Update-AutoChartsDeepBlue {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Threat Hunting with Deep Blue - (WinRM)'
-                    Invoke-Command -FilePath "$Dependencies\Code\Main Body\Invoke-DeepBlue.ps1" `
+                    Invoke-Command -FilePath "$Dependencies\Code\Main Body\Invoke-DeepBlue7Days.ps1" `
+                    -ArgumentList @($RegexFile,$WhiteListFile) `
                     -ComputerName $TargetComputer `
                     -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                     -Credential $script:Credential
@@ -77,7 +80,7 @@ Elasped Time:  $($Timecount -replace '-','')"
                     $Username = $script:Credential.UserName
                     $Password = $script:Credential.GetNetworkCredential().Password
 
-                    & $PsExecPath "\\$TargetComputer" -AcceptEULA -NoBanner -u $UserName -p $Password powershell -command "Invoke-Command -FilePath '$Dependencies\Code\Main Body\Invoke-DeepBlue.ps1'" | ConvertTo-Csv -NoType | ConvertFrom-Csv | Export-CSV "$($script:CollectionSavedDirectoryTextBox.text)\Results By Endpoints\$CollectionName\$CollectionName -- $TargetComputer.csv" -NoTypeInformation
+                    & $PsExecPath "\\$TargetComputer" -AcceptEULA -NoBanner -u $UserName -p $Password powershell -command "Invoke-Command -FilePath '$Dependencies\Code\Main Body\Invoke-DeepBlue7Days.ps1' -ArgumentList @($RegexFile,$WhiteListFile)" | ConvertTo-Csv -NoType | ConvertFrom-Csv | Export-CSV "$($script:CollectionSavedDirectoryTextBox.text)\Results By Endpoints\$CollectionName\$CollectionName -- $TargetComputer.csv" -NoTypeInformation
                     $script:ProgressBarFormProgressBar.Value += 1
                 }
             }
@@ -85,7 +88,8 @@ Elasped Time:  $($Timecount -replace '-','')"
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Threat Hunting with Deep Blue - (WinRM)'
 
-                    Invoke-Command -FilePath "$Dependencies\Code\Main Body\Invoke-DeepBlue.ps1" `
+                    Invoke-Command -FilePath "$Dependencies\Code\Main Body\Invoke-DeepBlue7Days.ps1" `
+                    -ArgumentList @($RegexFile,$WhiteListFile) `
                     -ComputerName $TargetComputer `
                     -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
                 }
@@ -118,7 +122,7 @@ Iterating Through Endpoints
 Time Updates As Endpoints Respond
 Elasped Time:  $($Timecount -replace '-','')"
 
-                    & $PsExecPath "\\$TargetComputer" -AcceptEULA -NoBanner powershell -command "Invoke-Command -FilePath '$Dependencies\Code\Main Body\Invoke-DeepBlue.ps1'" | ConvertTo-Csv -NoType | ConvertFrom-Csv | Export-CSV "$($script:CollectionSavedDirectoryTextBox.text)\Results By Endpoints\$CollectionName\$CollectionName -- $TargetComputer.csv" -NoTypeInformation
+                    & $PsExecPath "\\$TargetComputer" -AcceptEULA -NoBanner powershell -command "Invoke-Command -FilePath '$Dependencies\Code\Main Body\Invoke-DeepBlue7Days.ps1' -ArgumentList @($RegexFile,$WhiteListFile)" | ConvertTo-Csv -NoType | ConvertFrom-Csv | Export-CSV "$($script:CollectionSavedDirectoryTextBox.text)\Results By Endpoints\$CollectionName\$CollectionName -- $TargetComputer.csv" -NoTypeInformation
                     $script:ProgressBarFormProgressBar.Value += 1
                 }
             }

@@ -71,7 +71,9 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         "SMB Shares",
         "Software",
         "Startups",
-        "Threat Hunting with Deep Blue"
+        "Threat Hunting with Deep Blue (All)",
+        "Threat Hunting with Deep Blue (Last 7 Days)",
+        "Threat Hunting with Deep Blue (Last 24 Hours)"
     )
     ForEach ($Item in $AutoChartsAvailable) { [void] $AutoChartSelectChartComboBox.Items.Add($Item) }
     $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox)
@@ -222,8 +224,18 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue") {
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlue.ps1"
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue (All)") {
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlueAll.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue (Last 7 Days)") {
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlue7Days.ps1"
+            $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
+            [void]$script:AutoChartsForm.ShowDialog()
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue (Last 24 Hours)") {
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlue24Hours.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }

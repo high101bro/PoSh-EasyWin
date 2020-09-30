@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.5.1.4
+    Version        : v.5.1.5
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -29,7 +29,7 @@
                      etl2pcapng.exe, WinPmem.exe
                      wKillcx is a small command-line utility to close any TCP connection under Windows XP/Vista/Seven as well as Windows Server 2003/2008. The source code (assembly language) is included with the binary.
 
-    Updated        : 29 Sep 2020
+    Updated        : 30 Sep 2020
     Created        : 21 Aug 2018
 
     Author         : Daniel Komnick (high101bro)
@@ -4871,7 +4871,9 @@ CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
 . "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryGroups.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryUserAccounts.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsApplicationCrashes.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue.ps1"
+. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlueAll.ps1"
+. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue7Days.ps1"
+. "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue24Hours.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsLoginActivity.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsNetworkConnections.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsNetworkInterfaces.ps1"

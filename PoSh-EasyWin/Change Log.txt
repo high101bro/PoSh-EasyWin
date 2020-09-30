@@ -1,4 +1,15 @@
 ==================================================
+v5.1.5 - 30 Sep 20
+==================================================
+
+PowerShell Charts / Dashboards Invoke-DeepBlue
+	Identified bug with - wasn't passing the regex and whitelist files into the function as parameters
+	Created two additional dashboards (ghetto way), and renamed the original
+		Threat Hunting (Deep Blue) All
+		Threat Hunting (Deep Blue) 7 Days
+		Threat Hunting (Deep Blue) 24 Hours
+
+==================================================
 v5.1.4 - 29 Sep 20
 ==================================================
 

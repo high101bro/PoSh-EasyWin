@@ -2,21 +2,19 @@
 # Credits to DeepBlueCLI 2.01 for original script     #
 # Modified script for compatibility with PoSh-EasyWin #
 #######################################################
-param ([string]$file=$env:file,[string]$log=$env:log)
+param ($RegexFile,$WhiteListFile,[string]$file=$env:file,[string]$log=$env:log)
 
-"DeepBlue $(Get-Date)" > c:\deepblue.txt
-
-function Invoke-DeepBlue {
+function Invoke-DeepBlue7Days {
 
     # Set up the global variables
     $text      = ""   # Temporary scratch pad variable to hold output text
     $minlength = 1000 # Minimum length of command line to alert
 
     # Load cmd match regexes from csv file, ignore comments
-    $regexes   = Get-Content "$Dependencies\DeepBlue\regexes.txt" | Select-String '^[^#]' | ConvertFrom-Csv
+    $regexes   = $RegexFile | Select-String '^[^#]' | ConvertFrom-Csv
 
     # Load cmd whitelist regexes from csv file, ignore comments
-    $whitelist = Get-Content "$Dependencies\DeepBlue\whitelist.txt" | Select-String '^[^#]' | ConvertFrom-Csv
+    $whitelist = $WhiteListFile | Select-String '^[^#]' | ConvertFrom-Csv
     $logname   = Check-Options $file $log
 
     #"Processing the " + $logname + " log..."
@@ -569,25 +567,26 @@ function Create-Filter($file, $logname)
     $applocker_events="8003,8004,8006,8007"
     $powershell_events="4103,4104"
     $sysmon_events="1,7"
+
     if ($file -ne ""){
         switch ($logname){
-            "Security"    {$filter="@{path=""$file"";ID=$sec_events}"}
-            "System"      {$filter="@{path=""$file"";ID=$sys_events}"}
-            "Application" {$filter="@{path=""$file"";ID=$app_events}"}
-            "Applocker"   {$filter="@{path=""$file"";ID=$applocker_events}"}
-            "Powershell"  {$filter="@{path=""$file"";ID=$powershell_events}"}
-            "Sysmon"      {$filter="@{path=""$file"";ID=$sysmon_events}"}
+            "Security"    {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);path=""$file"";ID=$sec_events}"}
+            "System"      {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);path=""$file"";ID=$sys_events}"}
+            "Application" {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);path=""$file"";ID=$app_events}"}
+            "Applocker"   {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);path=""$file"";ID=$applocker_events}"}
+            "Powershell"  {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);path=""$file"";ID=$powershell_events}"}
+            "Sysmon"      {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);path=""$file"";ID=$sysmon_events}"}
             default       {"Logic error 1, should not reach here...";Exit 1}
         }
     }
     else{
         switch ($logname){
-            "Security"    {$filter="@{Logname=""Security"";ID=$sec_events}"}
-            "System"      {$filter="@{Logname=""System"";ID=$sys_events}"}
-            "Application" {$filter="@{Logname=""Application"";ID=$app_events}"}
-            "Applocker"   {$filter="@{logname=""Microsoft-Windows-AppLocker/EXE and DLL"";ID=$applocker_events}"}
-            "Powershell"  {$filter="@{logname=""Microsoft-Windows-PowerShell/Operational"";ID=$powershell_events}"}
-            "Sysmon"      {$filter="@{logname=""Microsoft-Windows-Sysmon/Operational"";ID=$sysmon_events}"}
+            "Security"    {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);Logname=""Security"";ID=$sec_events}"}
+            "System"      {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);Logname=""System"";ID=$sys_events}"}
+            "Application" {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);Logname=""Application"";ID=$app_events}"}
+            "Applocker"   {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);logname=""Microsoft-Windows-AppLocker/EXE and DLL"";ID=$applocker_events}"}
+            "Powershell"  {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);logname=""Microsoft-Windows-PowerShell/Operational"";ID=$powershell_events}"}
+            "Sysmon"      {$filter="@{StartTime=(Get-Date).AddDays(-7);EndTime=(Get-Date);logname=""Microsoft-Windows-Sysmon/Operational"";ID=$sysmon_events}"}
             default       {"Logic error 2, should not reach here...";Exit 1}
         }
     }
@@ -723,7 +722,7 @@ function Remove-Spaces($string){
     return $string
 }
 
-. Invoke-DeepBlue
+. Invoke-DeepBlue7Days
 
 $EventsFound
 

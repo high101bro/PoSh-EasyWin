@@ -5,7 +5,7 @@ Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
 ### Creates Tabs From Each File
 $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Property @{
-    Text   = 'Threat Hunting (Deep Blue)'
+    Text   = 'Threat Hunting (Deep Blue) All Time'
     Size   = @{ Width  = $FormScale * 1700
                 Height = $FormScale * 1050 }
     #Anchor = $AnchorAll
@@ -62,7 +62,7 @@ function Close-AllOptions {
 
 ### Main Label at the top
 $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property @{
-    Text   = 'Threat Hunting (Deep Blue)'
+    Text   = 'Threat Hunting (Deep Blue) All Time'
     Location = @{ X = $FormScale * 5
                   Y = $FormScale * 5 }
     Size   = @{ Width  = $FormScale * 1150
@@ -196,7 +196,7 @@ $AutoChartPullNewDataButton.Add_Click({
             [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-EasyWin')
         }
         else {
-            $ScriptBlockProgressBarInput = { Update-AutoChartsDeepBlue -ComputerNameList $ChartComputerList }
+            $ScriptBlockProgressBarInput = { Update-AutoChartsDeepBlueAll -ComputerNameList $ChartComputerList }
             Launch-ProgressBarForm -FormTitle 'Progress Bar' -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
         }
     }
@@ -211,7 +211,7 @@ $AutoChartPullNewDataButton.Add_Click({
             [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints','PoSh-EasyWin')
         }
         else {
-            $ScriptBlockProgressBarInput = { Update-AutoChartsDeepBlue -ComputerNameList $script:ComputerList }
+            $ScriptBlockProgressBarInput = { Update-AutoChartsDeepBlueAll -ComputerNameList $script:ComputerList }
             Launch-ProgressBarForm -FormTitle 'Progress Bar' -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
         }
     }

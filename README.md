@@ -4,7 +4,7 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v.5.1.4                                                        |
+|  Version       |  v.5.1.5                                                        |
 |  Author        |  Daniel Komnick (high101bro)                                    |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
@@ -13,7 +13,7 @@
 |  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe              |
 |                |  etl2pcapng.exe, WinPmem.exe                                    |
 |                |                                                                 |
-|  Updated       |  29 Sep 2020                                                    |
+|  Updated       |  30 Sep 2020                                                    |
 |  Created       |  21 Aug 2018                                                    |
 
 ***
