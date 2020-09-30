@@ -116,3 +116,4 @@ Add-Type -Type $csharp_code
 $result = [chentiangemalc.NetworkRoutines]::ConvertEtlToPcap($Path.FullName,$Destination.FullName,$MaxPacketSizeBytes)
 
 Write-Host "$result packets converted."
+

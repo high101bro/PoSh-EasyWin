@@ -1,17 +1,17 @@
 function Deselect-AllCommands {
-    [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes 
-    foreach ($root in $AllCommandsNode) { 
+    [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes
+    foreach ($root in $AllCommandsNode) {
         $root.Checked   = $false
         $root.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
         $root.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
         $root.Collapse()
         if ($root.text -notmatch 'Query History') { $root.Expand() }
-        foreach ($Category in $root.Nodes) { 
+        foreach ($Category in $root.Nodes) {
             $Category.Checked   = $false
             $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
             $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
             $Category.Collapse()
-            foreach ($Entry in $Category.nodes) { 
+            foreach ($Entry in $Category.nodes) {
                 $Entry.Checked   = $false
                 $Entry.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Entry.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
@@ -44,7 +44,8 @@ function Deselect-AllCommands {
     $SysinternalsAutorunsCheckbox.checked                      = $false
     $SysinternalsProcessMonitorCheckbox.checked                = $false
     $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false
-    
-    Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands    
+
+    Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
 }
- 
+
+

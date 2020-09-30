@@ -1,4 +1,4 @@
-function Show-Process($Process, [Switch]$Maximize) {   
+function Show-Process($Process, [Switch]$Maximize) {
     $sig = '
         [DllImport("user32.dll")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
         [DllImport("user32.dll")] public static extern int SetForegroundWindow(IntPtr hwnd);
@@ -7,7 +7,7 @@ function Show-Process($Process, [Switch]$Maximize) {
     $type = Add-Type -MemberDefinition $sig -Name WindowAPI -PassThru
     $hwnd = $process.MainWindowHandle
     $null = $type::ShowWindowAsync($hwnd, $Mode)
-    $null = $type::SetForegroundWindow($hwnd) 
+    $null = $type::SetForegroundWindow($hwnd)
 }
 <#
 # launch Notepad minimized, then make it visible
@@ -24,3 +24,5 @@ Show-Process -Process $notepad -Maximize
 Start-Sleep -Seconds 2
 Show-Process -Process (Get-Process -Id $PID)
 #>
+
+

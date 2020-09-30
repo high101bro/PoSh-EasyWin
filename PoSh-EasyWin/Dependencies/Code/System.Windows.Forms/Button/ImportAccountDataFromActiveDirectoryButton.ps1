@@ -33,7 +33,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
             ForeColor = "Black"
         }
-        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMNoteLabel)  
+        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMNoteLabel)
 
 
         . "$Dependencies\Code\System.Windows.Forms\TextBox\ImportFromADWinRMManuallEntryTextBox.ps1"
@@ -42,7 +42,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             left      = $FormScale * 5
             top       = $ImportFromADWinRMNoteLabel.top + $ImportFromADWinRMNoteLabel.height + $($FormScale * 5)
             Width     = $FormScale * 185
-            Height    = $FormScale * 22   
+            Height    = $FormScale * 22
             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
             ForeColor = "Black"
             Add_MouseEnter = $ImportFromADWinRMManuallEntryTextBoxAdd_MouseEnter
@@ -57,7 +57,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             left      = $ImportFromADWinRMManuallEntryTextBox.Left + $ImportFromADWinRMManuallEntryTextBox.Width + $($FormScale * 5)
             top       = $ImportFromADWinRMManuallEntryTextBox.Top - + $($FormScale * 3)
             Width     = $FormScale * 155
-            Height    = $FormScale * 22    
+            Height    = $FormScale * 22
             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
             ForeColor = "Black"
             Add_Click = {
@@ -80,13 +80,13 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             top       = $ImportFromADWinRMManuallEntryTextBox.Top
             Width     = $FormScale * 100
             Height    = $FormScale * 20
-            Add_Click = { 
+            Add_Click = {
                 Create-ComputerNodeCheckBoxArray
                 if ($ImportFromADWinRMManuallEntryTextBox.Text -ne '<Enter a hostname/IP>' -and $ImportFromADWinRMManuallEntryTextBox.Text -ne '' -and $ImportFromADWinRMAutoCheckBox.checked -eq $false ) {
                     if (Verify-Action -Title "Verification: Active Directory Import" -Question "Import Active Directory account information from the following?" -Computer $ImportFromADWinRMManuallEntryTextBox.text) {
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Importing Hosts From Active Directory")
-                            
+
                         # This brings specific tabs to the forefront/front view
                         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
                         $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
@@ -95,17 +95,17 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName
                             $Password = '"PASSWORD HIDDEN"'
-                            Invoke-Command -ScriptBlock { 
+                            Invoke-Command -ScriptBlock {
                                 Get-ADUser -Filter * -Properties * `
-                                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive 
+                                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                             } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential `
                             | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
                         }
                         else {
-                            Invoke-Command -ScriptBlock { 
+                            Invoke-Command -ScriptBlock {
                                 Get-ADUser -Filter * -Properties * `
-                                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive 
+                                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                             } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget `
                             | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
@@ -121,7 +121,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                     Create-ComputerNodeCheckBoxArray
                     if (Verify-Action -Title "Verification: Active Directory Import" -Question "Make sure to select the proper server.`nImport Active Directory hosts from the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
                         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-            
+
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Importing Hosts From Active Directory")
 
@@ -130,19 +130,19 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName
                             $Password = '"PASSWORD HIDDEN"'
-            
-                            Invoke-Command -ScriptBlock { 
+
+                            Invoke-Command -ScriptBlock {
                                 Get-ADUser -Filter * -Properties * `
-                                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive 
+                                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                             } -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential `
                             | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
-                            
+
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $script:ComputerTreeViewSelected -Credential [ $UserName | $Password ]"
                         }
                         else {
-                            Invoke-Command -ScriptBlock { 
+                            Invoke-Command -ScriptBlock {
                                 Get-ADUser -Filter * -Properties * `
-                                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive 
+                                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                             } -ComputerName $script:ComputerTreeViewSelected `
                             | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $script:ComputerTreeViewSelected"
@@ -156,13 +156,13 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                 }
                 elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Importing Hosts' }
                 elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Importing Hosts' }
-            
+
                 Import-AccountsFromDomain
 
                 $ImportFromADFrom.Close()
             }
         }
-        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMImportButton) 
+        $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMImportButton)
         CommonButtonSettings -Button $ImportFromADWinRMImportButton
     $ImportFromADFrom.Controls.Add($ImportFromADWinRMGroupBox)
 
@@ -174,7 +174,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
 
 
 
-    
+
     $ImportFromADLocalhostGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
         text      = "Import from Active Directory Locallly ($($env:COMPUTERNAME))"
         left      = $FormScale * 10
@@ -193,7 +193,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
             ForeColor = "Black"
         }
-        $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostNoteLabel)  
+        $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostNoteLabel)
 
 
         $ImportFromADLocalhostModuleCheckLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -201,7 +201,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             left      = $FormScale * 5
             top       = $ImportFromADLocalhostNoteLabel.top + $ImportFromADLocalhostNoteLabel.height + $($FormScale * 10)
             Width     = $FormScale * 255
-            Height    = $FormScale * 22   
+            Height    = $FormScale * 22
             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
             ForeColor = "Black"
         }
@@ -212,7 +212,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             left      = $ImportFromADLocalhostModuleCheckLabel.Left + $ImportFromADLocalhostModuleCheckLabel.Width
             top       = $ImportFromADLocalhostModuleCheckLabel.Top
             Width     = $FormScale * 90
-            Height    = $FormScale * 22    
+            Height    = $FormScale * 22
             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
         }
         $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostDetectedLabel)
@@ -233,33 +233,33 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             top       = $ImportFromADLocalhostDetectedLabel.Top - $($FormScale * 5)
             Width     = $FormScale * 100
             Height    = $FormScale * 20
-            Add_Click = { 
+            Add_Click = {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                     $Username = $script:Credential.UserName
                     $Password = '"PASSWORD HIDDEN"'
-                    Invoke-Command -ScriptBlock { 
+                    Invoke-Command -ScriptBlock {
                         Get-ADUser -Filter * -Properties * `
-                        | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive 
+                        | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                     } -Credential $script:Credential `
                     | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -Credential [ $UserName | $Password ]"
                 }
                 else {
-                    Invoke-Command -ScriptBlock { 
+                    Invoke-Command -ScriptBlock {
                         Get-ADUser -Filter * -Properties * `
-                        | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive 
+                        | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                     } `
                     | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive }"
-                }                
+                }
                 Import-AccountsFromDomain
 
                 $ImportFromADFrom.Close()
             }
         }
-        $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostImportButton) 
+        $ImportFromADLocalhostGroupBox.Controls.Add($ImportFromADLocalhostImportButton)
         CommonButtonSettings -Button $ImportFromADLocalhostImportButton
     $ImportFromADFrom.Controls.Add($ImportFromADLocalhostGroupBox)
 
@@ -283,5 +283,7 @@ $ImportEndpointDataFromActiveDirectoryButtonAdd_MouseHover = {
 +  Opens a form that provides you options on how to import account information from Acitve Directory
 "@
 }
-    
+
+
+
 

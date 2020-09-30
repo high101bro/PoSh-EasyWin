@@ -45,7 +45,7 @@ $Section3HostDataSelectionComboBoxAdd_MouseHover = {
 +  These files can be searchable, toggle in Options Tab.
 +  Note: Datetimes with more than one collection type won't
 display, these results will need to be navigated to manually.
-"@ 
+"@
 }
 
 $Section3HostDataSelectionComboBoxAdd_SelectedIndexChanged = {
@@ -76,10 +76,12 @@ $Section3HostDataSelectionComboBoxAdd_SelectedIndexChanged = {
             $script:HostDataCsvDateTime += $DirDateTime
             $script:HostDataCsvPath = $Csv.split('\')[-3,-2] -join '\'
         }
-    }                               
+    }
 
     Get-HostDataCsvResults $Section3HostDataSelectionComboBox.SelectedItem
     if ($($script:CSVFileMatch).count -eq 0) {$script:HostDataCsvDateTime = @('No Data Available')}
     else {Get-HostDataCsvDateTime}
     $Section3HostDataSelectionDateTimeComboBox.DataSource = $script:HostDataCsvDateTime
 }
+
+

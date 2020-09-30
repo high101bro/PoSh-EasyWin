@@ -10,7 +10,7 @@ $SysinternalsProcmonButtonAdd_Click = {
         $SysinternalsProcmonOpenFileDialog.ShowDialog()
     }
     else {
-        $SysinternalsProcmonOpenFileDialog.InitialDirectory = "$CollectedDataDirectory"   
+        $SysinternalsProcmonOpenFileDialog.InitialDirectory = "$CollectedDataDirectory"
         $SysinternalsProcmonOpenFileDialog.ShowDialog()
     }
     if ($($SysinternalsProcmonOpenFileDialog.filename)) {
@@ -19,3 +19,5 @@ $SysinternalsProcmonButtonAdd_Click = {
     #Returns button to default color if it was turned green after task completion
     CommonButtonSettings -Button $SysinternalsProcmonButton
 }
+
+

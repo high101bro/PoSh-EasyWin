@@ -1,4 +1,4 @@
-﻿Invoke-Command -ComputerName $PSTargets -ScriptBlock ${Function:Invoke-Sigcheck} -ArgumentList $url
+Invoke-Command -ComputerName $PSTargets -ScriptBlock ${Function:Invoke-Sigcheck} -ArgumentList $url
 
 # Ref: Matt Graeber https://specterops.io/assets/resources/SpecterOps_Subverting_Trust_in_Windows.pdf
 function Invoke-Sigcheck {
@@ -31,3 +31,4 @@ function Invoke-Sigcheck {
 	$results
 	Remove-Item $path
 }
+

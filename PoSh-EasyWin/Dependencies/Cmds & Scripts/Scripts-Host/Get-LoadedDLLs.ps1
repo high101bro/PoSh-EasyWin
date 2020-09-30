@@ -1,4 +1,4 @@
-﻿	[cmdletbinding()]
+	[cmdletbinding()]
 	Param([bool] $NoHash = $false)
 	$results = Get-Process | Select-Object -ExpandProperty Modules -ErrorAction SilentlyContinue | Sort-Object FileName -Unique | ForEach-Object {
 		if ($_.FileName -ne $null -AND -NOT $NoHash) {
@@ -12,3 +12,5 @@
 		$_
 	}
 	$results | Select-Object -Property ModuleName,FileName,MD5,Size,Company,Description,FileVersion,Product,ProductVersion
+
+

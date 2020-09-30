@@ -1,7 +1,7 @@
-if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {                
+if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {
     $Processes           = Get-WmiObject -Class Win32_Process
     $Connections         = Get-NetTCPConnection
-    
+
     foreach ($Conn in $Connections) {
         foreach ($Proc in $Processes) {
             if ($Conn.OwningProcess -eq $Proc.ProcessId) {
@@ -50,10 +50,10 @@ else {
             $Connection | Add-Member -MemberType NoteProperty 'ProcessName'     $proc.Caption
             $Connection | Add-Member -MemberType NoteProperty 'ExecutablePath'  $proc.ExecutablePath
             $Connection | Add-Member -MemberType NoteProperty 'CommandLine'     $proc.CommandLine
-            $Connection | Add-Member -MemberType NoteProperty 'CreationTime'    ([WMI] '').ConvertToDateTime($proc.CreationDate) 
+            $Connection | Add-Member -MemberType NoteProperty 'CreationTime'    ([WMI] '').ConvertToDateTime($proc.CreationDate)
             $Connection | Add-Member -MemberType NoteProperty 'Duration'        ((New-TimeSpan -Start ([WMI] '').ConvertToDateTime($proc.CreationDate)).ToString())
             $Connection | Add-Member -MemberType NoteProperty 'ScriptNote'      'NetStat.exe Enhanced'
-            
+
             if ($Connection.ExecutablePath -ne $null -AND -NOT $NoHash) {
                 $MD5Hash = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
                 $Hash    = [System.BitConverter]::ToString($MD5Hash.ComputeHash([System.IO.File]::ReadAllBytes($proc.ExecutablePath)))
@@ -64,8 +64,9 @@ else {
             }
             $Connection
         }
-        $NetStat 
+        $NetStat
     }
     $Connections = Get-Netstat
 }
 $Connections | Select-Object -Property PSComputerName, Protocol,LocalAddress,LocalPort,RemoteAddress,RemotePort,State,ProcessName,ProcessId,ParentProcessId,CreationTime,Duration,CommandLine,ExecutablePath,MD5Hash,OwningProcess,ScriptNote -ErrorAction SilentlyContinue
+

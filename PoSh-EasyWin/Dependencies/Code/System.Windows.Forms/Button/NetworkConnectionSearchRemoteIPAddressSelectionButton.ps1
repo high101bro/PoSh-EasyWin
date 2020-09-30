@@ -9,3 +9,5 @@ $NetworkConnectionSearchRemoteIPAddressSelectionButtonAdd_Click = {
     $NetworkConnectionSearchRemoteIPAddressRichTextbox.Text += $("`r`n" + $IPAddressToBeScan)
     $NetworkConnectionSearchRemoteIPAddressRichTextbox.Text  = $NetworkConnectionSearchRemoteIPAddressRichTextbox.Text.Trim("")
 }
+
+

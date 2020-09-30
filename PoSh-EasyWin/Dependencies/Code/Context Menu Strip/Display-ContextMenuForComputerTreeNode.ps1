@@ -17,7 +17,7 @@ function Display-ContextMenuForComputerTreeNode {
         ForeColor = 'Blue'
     }
     $ComputerListContextMenuStrip.Items.Add($script:ComputerListEndpointNameToolStripLabel)
-      
+
     #$comboBoxMenuItem = New-Object System.Windows.Forms.ToolStripComboBox
     #$comboBoxMenuItem.Items.Add('Option 1')
     #$comboBoxMenuItem.Items.Add('Option 2')
@@ -77,7 +77,7 @@ function Display-ContextMenuForComputerTreeNode {
         Add_CLick = $ComputerListRenameToolStripButtonAdd_Click
     }
     $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripButton)
-    
+
 
     $ComputerListMoveToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "Move"
@@ -93,7 +93,7 @@ function Display-ContextMenuForComputerTreeNode {
     }
     $ComputerListContextMenuStrip.Items.Add($ComputerListDeleteSelectedToolStripButton)
 
-    
+
         $ComputerListContextMenuStrip.Items.Add('-')
         $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
             Text      = 'Checked Endpoints'
@@ -103,7 +103,7 @@ function Display-ContextMenuForComputerTreeNode {
         $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
         $ComputerListContextMenuStrip.Items.Add('-')
 
-        
+
         $ComputerListDeselectAllToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "Uncheck All"
             Add_CLick = $ComputerListDeselectAllToolStripButtonAdd_Click
@@ -153,7 +153,7 @@ function Display-ContextMenuForComputerTreeNode {
             Add_CLick = $ComputerListPingToolStripButtonAdd_Click
         }
         $ComputerListContextMenuStrip.Items.Add($ComputerListPingToolStripButton)
-                
+
 
         $ComputerListRPCCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "   - RPC Port Check"
@@ -176,7 +176,9 @@ function Display-ContextMenuForComputerTreeNode {
             ForeColor = 'DarkRed'
             Add_CLick = $ComputerListWinRMCheckToolStripButtonAdd_Click
         }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListWinRMCheckToolStripButton)        
+        $ComputerListContextMenuStrip.Items.Add($ComputerListWinRMCheckToolStripButton)
 
     $Entry.ContextMenuStrip = $ComputerListContextMenuStrip
 }
+
+

@@ -28,10 +28,10 @@ function Show-TagForm {
         #DataSource         = $ArrayIfNotAddedWIth .Items.Add
     }
     #$TagListFileContents = Get-Content -Path $TagAutoListFile
-    ForEach ($Tag in $TagListFileContents) { 
-        $ComputerListMassTagNewTagNameComboBox.Items.Add($Tag) 
+    ForEach ($Tag in $TagListFileContents) {
+        $ComputerListMassTagNewTagNameComboBox.Items.Add($Tag)
     }
-    $ComputerListMassTagNewTagNameComboBox.Add_KeyDown({ 
+    $ComputerListMassTagNewTagNameComboBox.Add_KeyDown({
         if ($_.KeyCode -eq "Enter" -and $ComputerListMassTagNewTagNameComboBox.text -ne '') {
             $script:ComputerListMassTagValue = $ComputerListMassTagNewTagNameComboBox.text
             $ComputerListMassTagForm.Close()
@@ -43,7 +43,7 @@ function Show-TagForm {
                       Y = $ComputerListMassTagNewTagNameLabel.Location.Y + $ComputerListMassTagNewTagNameLabel.Size.Height + $($FormScale * 2) }
         Size     = @{ Width  = $FormScale * 100
                       Height = $FormScale * 25 }
-        Add_Click = { 
+        Add_Click = {
             if ($ComputerListMassTagNewTagNameComboBox.text -ne '') {
                 $script:ComputerListMassTagValue = $ComputerListMassTagNewTagNameComboBox.text
                 $ComputerListMassTagForm.Close()
@@ -91,7 +91,7 @@ $ComputerListTagAllCheckedToolStripButtonAdd_Click = {
         $script:ProgressBarEndpointsProgressBar.Value     = 0
         $script:ProgressBarQueriesProgressBar.Value       = 0
 
-        Create-ComputerNodeCheckBoxArray 
+        Create-ComputerNodeCheckBoxArray
         if ($script:ComputerTreeViewSelected.count -ge 0) {
             Show-TagForm
 
@@ -100,9 +100,9 @@ $ComputerListTagAllCheckedToolStripButtonAdd_Click = {
 
             if ($script:ComputerListMassTagValue) {
                 $ComputerListMassTagArray = @()
-                foreach ($node in $script:ComputerTreeViewSelected) {    
+                foreach ($node in $script:ComputerTreeViewSelected) {
                     foreach ($root in $AllHostsNode) {
-                        foreach ($Category in $root.Nodes) { 
+                        foreach ($Category in $root.Nodes) {
                             foreach ($Entry in $Category.Nodes) {
                                 if ($Entry.Checked -and $Entry.Text -notin $ComputerListMassTagArray) {
                                     $ComputerListMassTagArray += $Entry.Text
@@ -116,7 +116,7 @@ $ComputerListTagAllCheckedToolStripButtonAdd_Click = {
                                 $script:ProgressBarEndpointsProgressBar.Value += 1
                             }
                         }
-                    }  
+                    }
                 }
                 Save-ComputerTreeNodeHostData -SaveAllChecked
                 Check-HostDataIfModified
@@ -126,5 +126,7 @@ $ComputerListTagAllCheckedToolStripButtonAdd_Click = {
         }
     }
 }
+
+
 
 

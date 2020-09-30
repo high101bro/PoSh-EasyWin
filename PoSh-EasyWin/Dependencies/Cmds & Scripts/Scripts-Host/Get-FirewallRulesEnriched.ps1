@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
     Compiles information about firewall rules.
 
@@ -92,3 +92,5 @@ function Get-EnrichedFirewallRules {
     return $FirewallRuleSet
 }
 Get-EnrichedFirewallRules
+
+

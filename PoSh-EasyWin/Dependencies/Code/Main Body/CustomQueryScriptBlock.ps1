@@ -1,19 +1,19 @@
 <#
     .Description
-    Scriptblock that is executed to manage the Query Build features such as the interactions between 
+    Scriptblock that is executed to manage the Query Build features such as the interactions between
     the textbox and button, launching Show-Command, variable manipulation, and message prompts
 #>
 
 $CustomQueryScriptBlock = {
     $CustomQueryCheck = $true
     if ($script:CustomQueryScriptBlockTextbox.text -eq 'Enter A Get Cmdlet (ex: Get-Process)') {
-        [System.Windows.Forms.MessageBox]::Show("Error: Enter A Valid Get Cmdlet (ex: Get-Process)","PoSh-EasyWin Query Builder",'Ok','Error')        
+        [System.Windows.Forms.MessageBox]::Show("Error: Enter A Valid Get Cmdlet (ex: Get-Process)","PoSh-EasyWin Query Builder",'Ok','Error')
         $CustomQueryCheck = $false
         $CustomQueryScriptBlockCheckBox.checked = $false
         $CustomQueryScriptBlockCheckBox.enabled = $false
     }
     elseif ($script:CustomQueryScriptBlockTextbox.text -eq 'Enter Any Cmdlet') {
-        [System.Windows.Forms.MessageBox]::Show("Error: Enter Any Cmdlet that is avaible on this endpoint.","PoSh-EasyWin Query Builder",'Ok','Error')        
+        [System.Windows.Forms.MessageBox]::Show("Error: Enter Any Cmdlet that is avaible on this endpoint.","PoSh-EasyWin Query Builder",'Ok','Error')
         $CustomQueryCheck = $false
         $CustomQueryScriptBlockCheckBox.checked = $false
         $CustomQueryScriptBlockCheckBox.enabled = $false
@@ -41,7 +41,7 @@ $CustomQueryScriptBlock = {
                 $CustomQueryScriptBlockCheckBox.enabled = $false
             }
             else {
-                $script:CustomQueryScriptBlockTextbox.text = $script:ShowCommandQueryBuild    
+                $script:CustomQueryScriptBlockTextbox.text = $script:ShowCommandQueryBuild
                 $script:CustomQueryScriptBlockSaved = $script:ShowCommandQueryBuild
                 $CustomQueryScriptBlockCheckBox.enabled = $true
             }
@@ -73,9 +73,9 @@ $CustomQueryScriptBlock = {
         }
         elseif ($script:ShowCommandQueryBuild -match '-ComputerName' -and -not $CustomQueryScriptBlockOverrideCheckBox.checked) {
             [System.Windows.Forms.MessageBox]::Show("Error: Do not include the -ComputerName parameter.`nRather, make a selection from the Computer Treeview.","PoSh-EasyWin Query Builder",'Ok','Error')
-            
-            $script:ShowCommandQueryBuild = $script:ShowCommandQueryBuild -replace "-ComputerName\s(')?(\w|[0-9a-z_-])*(')?\s?",""  
-            $script:CustomQueryScriptBlockTextbox.text = $script:ShowCommandQueryBuild 
+
+            $script:ShowCommandQueryBuild = $script:ShowCommandQueryBuild -replace "-ComputerName\s(')?(\w|[0-9a-z_-])*(')?\s?",""
+            $script:CustomQueryScriptBlockTextbox.text = $script:ShowCommandQueryBuild
             $script:CustomQueryScriptBlockSaved = $script:ShowCommandQueryBuild
             $CustomQueryScriptBlockCheckBox.enabled = $true
         }
@@ -86,3 +86,4 @@ $CustomQueryScriptBlock = {
         }
     }
 }
+

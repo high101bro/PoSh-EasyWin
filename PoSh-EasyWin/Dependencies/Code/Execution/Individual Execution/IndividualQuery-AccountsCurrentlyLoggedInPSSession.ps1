@@ -11,7 +11,7 @@ $script:ProgressBarEndpointsProgressBar.Value = 0
 
 foreach ($TargetComputer in $script:ComputerList) {
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }           
+        if (!$script:Credential) { Create-NewCredentials }
 
         Start-Job -ScriptBlock {
             param($TargetComputer,$script:Credential)
@@ -29,13 +29,13 @@ foreach ($TargetComputer in $script:ComputerList) {
         } `
         -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
         -ArgumentList @($TargetComputer,$null)
-        
+
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate"
     }
 }
 Monitor-Jobs -CollectionName $CollectionName
 
-$CollectionCommandEndTime  = Get-Date                    
+$CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
@@ -50,3 +50,5 @@ Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryT
 
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+
+

@@ -93,7 +93,7 @@ $CloseWindow = {
                 }
             }
             $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
-            
+
 
             $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
                 Text   = 'Yes'
@@ -143,7 +143,7 @@ $CloseWindow = {
     $ReloadForm.Controls.Add($ReloadButton)
     FormButtonSettings -Button $ReloadButton
 
-    
+
     $ExitGuiButton = New-Object System.Windows.Forms.Button -Property @{
         Text   = 'Exit'
         Width  = 116
@@ -179,7 +179,7 @@ $CloseWindow = {
                 }
             }
             $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
-            
+
 
             $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
                 Text   = 'Yes'
@@ -227,19 +227,19 @@ $CloseWindow = {
 
         # Close Window
         #[Window.Action]::ShowWindow((Get-Process -id 5308).MainWindowHandle, 0)
-                        
+
         # Forefront Window
         #[Window.Action]::ShowWindow((Get-Process -id 5308).MainWindowHandle, 1)
-                        
+
         # Minimize Window
         #[Window.Action]::ShowWindow((Get-Process -id 5308).MainWindowHandle, 2)
-                                        
+
         # Maximize Window
         [Window.Action]::ShowWindow((Get-Process -id 5308).MainWindowHandle, 3)
-                        
-        # Restore Window 
+
+        # Restore Window
         #[Window.Action]::ShowWindow((Get-Process -id 5308).MainWindowHandle, 4)
-                        
+
         # Checks if it exists
         #[Window.Action]::ShowWindow((Get-Process -id 5308).MainWindowHandle, 5)
     # >
@@ -250,4 +250,6 @@ $CloseWindow = {
 Start-Process -FilePath powershell.exe -ArgumentList  "-WindowStyle Hidden  -Command Invoke-Command {$CloseWindow} -ArgumentList @($CurrentProcessId,[bool]'`$$FormAdminCheck','$EasyWinIcon','$Font',$($ThisScript.trim('&')))" -PassThru `
 | Select-Object -ExpandProperty Id | Set-Variable FormHelperProcessId
 #>
+
+
 

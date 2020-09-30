@@ -37,7 +37,7 @@ function Query-EventLogLogsEventIDsIndividualSelectionSessionBased {
     }
     # Replaces the ' OR ' at the end of the varable with a closing )"
     $Filter = $EventLogsEventIDsToMonitorCheckListBoxFilter -replace " OR $",")"
-    
+
     # Builds the Event Log Query Command
     $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
     if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
@@ -69,10 +69,10 @@ foreach ($TargetComputer in $script:ComputerList) {
                             -TargetComputer $TargetComputer
     Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
-    if ($EventLogWinRMRadioButton.Checked) { 
+    if ($EventLogWinRMRadioButton.Checked) {
         if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
-            if (!$script:Credential) { Create-NewCredentials }     
-           
+            if (!$script:Credential) { Create-NewCredentials }
+
             Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsIndividualSelectionSessionBased} `
             -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) `
             -ComputerName $TargetComputer `
@@ -88,8 +88,8 @@ foreach ($TargetComputer in $script:ComputerList) {
     }
     else {
         if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
-            if (!$script:Credential) { Create-NewCredentials }     
-            
+            if (!$script:Credential) { Create-NewCredentials }
+
             Start-Job -ScriptBlock {
                 param(
                     $EventLogsEventIDsToMonitorCheckListBoxCheckedItems,
@@ -112,7 +112,7 @@ foreach ($TargetComputer in $script:ComputerList) {
                 }
                 # Replaces the ' OR ' at the end of the varable with a closing )"
                 $Filter = $EventLogsEventIDsToMonitorCheckListBoxFilter -replace " OR $",")"
-                
+
                 # Builds the Event Log Query Command
                 $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
                 if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
@@ -127,7 +127,7 @@ foreach ($TargetComputer in $script:ComputerList) {
 | Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
 "@
 
-                Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"                
+                Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
             } `
             -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             -ArgumentList @($EventLogsEventIDsToMonitorCheckListBoxCheckedItems,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer,$script:Credential)
@@ -154,7 +154,7 @@ foreach ($TargetComputer in $script:ComputerList) {
                 }
                 # Replaces the ' OR ' at the end of the varable with a closing )"
                 $Filter = $EventLogsEventIDsToMonitorCheckListBoxFilter -replace " OR $",")"
-                
+
                 # Builds the Event Log Query Command
                 $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
                 if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
@@ -178,4 +178,6 @@ foreach ($TargetComputer in $script:ComputerList) {
 }
 
 Monitor-Jobs     -CollectionName $CollectionName
-Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime 
+Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
+
+

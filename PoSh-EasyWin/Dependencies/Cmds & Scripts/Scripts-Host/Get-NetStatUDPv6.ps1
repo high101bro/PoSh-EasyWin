@@ -1,4 +1,4 @@
-﻿$NetworkConnections = netstat -nao -p UDPv6
+$NetworkConnections = netstat -nao -p UDPv6
 $NetStat = Foreach ($line in $NetworkConnections[4..$NetworkConnections.count]) {
 	$line = $line -replace '^\s+',''
 	$line = $line -split '\s+'
@@ -28,3 +28,5 @@ $NetStat = Foreach ($line in $NetworkConnections[4..$NetworkConnections.count]) 
 	$Connection
 }
 $NetStat | Select-Object -Property PSComputerName,Protocol,LocalAddress,LocalPort,RemoteAddress,RemotePort,Name,ProcessId,ParentProcessId,MD5,ExecutablePath,CommandLine
+
+

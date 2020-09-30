@@ -23,3 +23,5 @@ $RegistrySearchCheckboxAdd_Click = {
 
     Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
 }
+
+

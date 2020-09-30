@@ -4,5 +4,7 @@ $Section3HostDataNameTextBoxAdd_MouseHover = {
 +  Hostnames are not case sensitive.
 +  Though IP addresses may be entered, WinRM queries may fail as
     IPs may only be used for authentication under certain conditions.
-"@ 
+"@
 }
+
+

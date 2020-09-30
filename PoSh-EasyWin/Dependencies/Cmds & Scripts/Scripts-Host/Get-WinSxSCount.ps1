@@ -1,4 +1,4 @@
-﻿<# 
+<#
 .SYNOPSIS
 Gets a count of WinSxS files.
 
@@ -8,8 +8,9 @@ WinSxS (or Windows SxS) is short of 'Windows Side by Side'. The WinSxS feature i
 DLL side-loading attack makes use of WinSxS directory. When an application uses this directory to retrieve DLL, it needs to have a manifest. This application manifest lists the DLL that can be used at run time by this application and is used to determine which version of DLL to use.
 #>
 
-[PSCustomObject]@{ 
+[PSCustomObject]@{
     Name           = 'Windows Side by Side (Count)'
     PSComputerName = hostname
     FileCount      = $((Get-ChildItem -Path 'C:\Windows\WinSxS').count)
 }
+

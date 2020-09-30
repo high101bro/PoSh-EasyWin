@@ -20,7 +20,7 @@ Function Get-AccountLogonActivity {
             13 { 'CachedUnlock' }
         }
     }
-    
+
     function LogonInterpretation {
         param($number)
         switch ($number) {
@@ -85,6 +85,7 @@ Function Get-AccountLogonActivity {
                 SourceNetworkAddress = $_.Properties.Value[18]
                 SourceNetworkPort    = $_.Properties.Value[19]
             }
-        } 
+        }
     }
 }
+

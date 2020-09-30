@@ -124,6 +124,8 @@ $ComputerListWinRMCheckToolStripButton = New-Object System.Windows.Forms.ToolStr
     ForeColor = 'DarkRed'
     Add_CLick = $ComputerListWinRMCheckToolStripButtonAdd_Click
 }
-$ComputerListContextMenuStrip.Items.Add($ComputerListWinRMCheckToolStripButton)        
+$ComputerListContextMenuStrip.Items.Add($ComputerListWinRMCheckToolStripButton)
+
+
 
 

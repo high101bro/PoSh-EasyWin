@@ -1,7 +1,7 @@
-﻿function Get-ProcessTree {
+function Get-ProcessTree {
     [CmdletBinding()]
     param([string]$ComputerName, [int]$IndentSize = 5)
-    
+
     $indentSize   = [Math]::Max(1, [Math]::Min(12, $indentSize))
     $computerName = ($computerName, ".")[[String]::IsNullOrEmpty($computerName)]
     $Processes    = Get-WmiObject Win32_Process -ComputerName $computerName
@@ -43,3 +43,4 @@
 }
 Get-ProcessTree -Verbose | select  @{name="PSComputerName";expression={$env:COMPUTERNAME}}, Level, ProcessId, ProcessNameIndented, ParentPID, ParentProcessName, CreationDate, WorkingSetSize, ProcessName, Path, Name
 #Get-ProcessTree -Verbose | select Level, ProcessId, ProcessNameIndented, ParentPID, CreationDate, WorkingSetSize, CommandLine, NetworkConnections, ProcessName | Ft -AutoSize
+

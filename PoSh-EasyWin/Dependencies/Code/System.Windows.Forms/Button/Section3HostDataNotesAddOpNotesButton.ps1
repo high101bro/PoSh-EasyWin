@@ -3,10 +3,10 @@ $Section3HostDataNotesAddOpNotesButtonAdd_Click = {
     if ($Section3HostDataNotesRichTextBox.text) {
         $TimeStamp = Get-Date
         $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($Section3HostDataNameTextBox.Text)")
-        Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($Section3HostDataNameTextBox.Text)" -Force        
+        Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($Section3HostDataNameTextBox.Text)" -Force
         foreach ( $Line in ($Section3HostDataNotesRichTextBox.text -split "`r`n") ){
             $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line")
-            Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line" -Force        
+            Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line" -Force
         }
         Save-OpNotes
     }
@@ -18,5 +18,7 @@ $Section3HostDataNotesAddOpNotesButtonAdd_MouseHover = {
 +  The selection can be contiguous by using the Shift key
     and/or be separate using the Ctrl key, the press OK.
 +  A Datetime stampe will be prefixed to the entry.
-"@ 
+"@
 }
+
+

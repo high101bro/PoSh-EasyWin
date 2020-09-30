@@ -8,13 +8,13 @@ $OpenXmlResultsButtonAdd_Click = {
         ShowHelp = $true
     }
     $ViewXMLResultsOpenResultsOpenFileDialog.ShowDialog()
-    if ($ViewXMLResultsOpenResultsOpenFileDialog.filename) { 
-        $ViewXMLResultsOpenResultsOpenFileDialog.filename | Set-Variable -Name ViewImportResults 
+    if ($ViewXMLResultsOpenResultsOpenFileDialog.filename) {
+        $ViewXMLResultsOpenResultsOpenFileDialog.filename | Set-Variable -Name ViewImportResults
         $SavePath = Split-Path -Path $ViewXMLResultsOpenResultsOpenFileDialog.filename
         $FileName = Split-Path -Path $ViewXMLResultsOpenResultsOpenFileDialog.filename -Leaf
 
         if ($ViewImportResults) {
-            Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SavePath $SavePath    
+            Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SavePath $SavePath
         }
     }
     else {
@@ -35,6 +35,8 @@ $OpenXmlResultsButtonAdd_MouseHover = {
 + Allows you to view and manipulate the results as object data from xml files
 + The results are stored in `$Results and passed into a new PowerShell terminal
 + The 'C:\Windows\Temp\PoSh-EasyWin' dir is created, mounted as a PSDrive, and used
-"@ 
+"@
 }
+
+
 

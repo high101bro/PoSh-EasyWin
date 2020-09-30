@@ -62,12 +62,12 @@ Invoke-Command -ScriptBlock {
 	)
 	Invoke-Expression "netsh trace start capture=yes capturetype=$CaptureType report=$Report persistent=no maxsize=$MaxSize overwrite=yes correlation=yes perfMerge=yes traceFile=$EndpointEtlTraceFile"
 	Start-Sleep -Seconds $CaptureSeconds
-	Invoke-Expression 'netsh trace stop' | Out-Null	
+	Invoke-Expression 'netsh trace stop' | Out-Null
 } -argumentlist @($CaptureType,$Report,$MaxSize,$EndpointEtlTraceFile,$CaptureSeconds) -Session $PSSession
 
 
 foreach ($Session in $PSSession) {
-	try { 
+	try {
 		$LocalEtlFilePath = "$script:CollectedDataTimeStampDirectory\$CollectionName\$($Session.ComputerName) - $TraceName.etl"
 		$LocalCabFilePath = "$script:CollectedDataTimeStampDirectory\$CollectionName\$($Session.ComputerName) - $TraceName.cab"
 		$OutPcapNG        = "$script:CollectedDataTimeStampDirectory\$CollectionName\$($Session.ComputerName) - $PacketCaptureName"
@@ -79,8 +79,8 @@ foreach ($Session in $PSSession) {
 		# Attempts to copy the files from the remote hosts
 		Copy-Item -Path $EndpointEtlTraceFile -Destination $LocalEtlFilePath -FromSession $Session -Force
 		Copy-Item -Path $EndpointCabTraceFile -Destination $LocalCabFilePath -FromSession $Session -Force
-		
-		$FileSize = [math]::round(((Get-Item $LocalEtlFilePath).Length/1mb),2)    
+
+		$FileSize = [math]::round(((Get-Item $LocalEtlFilePath).Length/1mb),2)
 		$ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Network Trace File is $FileSize MB")
 		$PoShEasyWin.Refresh()
 
@@ -89,13 +89,13 @@ foreach ($Session in $PSSession) {
 		$PoShEasyWin.Refresh()
 		& $etl2pcapng $LocalEtlFilePath $OutPcapNG | Out-Null
 
-		$FileSize = [math]::round(((Get-Item $OutPcapNG).Length/1mb),2)    
+		$FileSize = [math]::round(((Get-Item $OutPcapNG).Length/1mb),2)
 		$ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Pcap File is $FileSize MB")
 		$PoShEasyWin.Refresh()
 	}
 	catch {
 		# If an error occurs, it will display it
-		$ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy Error: $($_.Exception)") 
+		$ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy Error: $($_.Exception)")
 		Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy Error: $($_.Exception)"
 		$PoShEasyWin.Refresh()
 		break
@@ -112,14 +112,14 @@ foreach ($Session in $PSSession) {
 			param(
 				$EndpointEtlTraceFile,
 				$EndpointCabTraceFile
-			) 
+			)
 			Remove-Item -Path $EndpointEtlTraceFile -Force
-			Remove-Item -Path $EndpointCabTraceFile -Force 
-		} -ArgumentList @($EndpointEtlTraceFile,$EndpointCabTraceFile) -Session $Session 
+			Remove-Item -Path $EndpointCabTraceFile -Force
+		} -ArgumentList @($EndpointEtlTraceFile,$EndpointCabTraceFile) -Session $Session
 	}
-	catch { 
+	catch {
 		# If a error occurs, it will display it
-		$ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Remove Error: $($_.Exception)") 
+		$ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Remove Error: $($_.Exception)")
 		Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Remove Error: $($_.Exception)"
 		$PoShEasyWin.Refresh()
 		break
@@ -141,7 +141,9 @@ $script:ProgressBarQueriesProgressBar.Value += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
- 
+
+
+
 
 
 

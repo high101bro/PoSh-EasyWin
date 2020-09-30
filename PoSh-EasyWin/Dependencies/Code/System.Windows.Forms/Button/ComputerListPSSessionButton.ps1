@@ -33,7 +33,7 @@ $ComputerListPSSessionButtonAdd_Click = {
             #    $Domain   = $UserName.split('\')[0]
             #    $UserName = "$Name@$Domain"
             #}
-            
+
             $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential")
             #start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$('$Password' | ConvertTo-SecureString -AsPlainText -Force)))"
             start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)))"
@@ -42,14 +42,14 @@ $ComputerListPSSessionButtonAdd_Click = {
         }
         else {
             $ResultsListBox.Items.Add("Enter-PSSession -ComputerName $script:ComputerTreeViewSelected")
-            Start-Process PowerShell -ArgumentList "-noexit Enter-PSSession -ComputerName $script:ComputerTreeViewSelected" 
+            Start-Process PowerShell -ArgumentList "-noexit Enter-PSSession -ComputerName $script:ComputerTreeViewSelected"
             Start-Sleep -Seconds 3
         }
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Enter-PSSession -ComputerName $($script:ComputerTreeViewSelected)"
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword 
+            Generate-NewRollingPassword
         }
     }
     else {
@@ -69,5 +69,7 @@ the remote computer's IP must be in the local TrustedHosts.
 +  Command:
         Enter-PSSession -ComputerName <target>
 +  Compatiable with 'Specify Credentials'
-"@ 
+"@
 }
+
+

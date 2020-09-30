@@ -4,7 +4,9 @@ function Save-OpNotes {
 
     # Saves all OpNotes to file
     Set-Content -Path $OpNotesFile -Value ($OpNotesListBox.SelectedItems) -Force
-    
+
     # Unselects Fields
     for($i = 0; $i -lt $OpNotesListBox.Items.Count; $i++) { $OpNotesListBox.SetSelected($i, $false) }
 }
+
+

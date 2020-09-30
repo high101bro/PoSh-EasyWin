@@ -11,3 +11,5 @@ $OpNotesListBoxAdd_MouseLeave = {
     $OpNotesListBox.Size     = @{ Width  = $FormScale * $OpNotesMainTextBoxWidth
                                   Height = $FormScale * $OpNotesMainTextBoxHeight }
 }
+
+

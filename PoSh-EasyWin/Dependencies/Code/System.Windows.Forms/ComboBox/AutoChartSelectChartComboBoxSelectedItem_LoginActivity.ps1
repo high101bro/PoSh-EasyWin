@@ -14,7 +14,7 @@ $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Pro
     AutoScroll    = $True
 }
 $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTab01)
- 
+
 # Searches though the all Collection Data Directories to find files that match
 $script:ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
 
@@ -28,7 +28,7 @@ $script:AutoChart01LoginActivityCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Current Login Activity') { $script:AutoChart01LoginActivityCSVFileMatch += $CSVFile } }
-} 
+}
 
 $script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01LoginActivityCSVFileMatch | Select-Object -Last 1
 $script:AutoChartDataSourceCsv = $null
@@ -69,7 +69,7 @@ $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property 
     Size   = @{ Width  = $FormScale * 1150
                 Height = $FormScale * 25 }
     Font   = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
-    TextAlign = 'MiddleCenter' 
+    TextAlign = 'MiddleCenter'
 }
 
 
@@ -228,7 +228,7 @@ $AutoChartPullNewDataButton.Add_Click({
         $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
         $script:AutoChartOpenResultsOpenFileDialogfilename = $AutoChartOpenResultsOpenFileDialog.filename
         $script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
-    
+
         $script:AutoChartDataSourceCsvFileName = $AutoChartOpenResultsOpenFileDialog.filename
     }
 
@@ -261,13 +261,13 @@ $script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataEnrichedChec
 
 function AutoChartOpenDataInShell {
     if ($script:AutoChartOpenResultsOpenFileDialogfilename) { $ViewImportResults = $script:AutoChartOpenResultsOpenFileDialogfilename -replace '.csv','.xml' }
-    else { $ViewImportResults = $script:AutoChartCSVFileMostRecentCollection -replace '.csv','.xml' } 
+    else { $ViewImportResults = $script:AutoChartCSVFileMostRecentCollection -replace '.csv','.xml' }
 
     if (Test-ProfileLoaded $ViewImportResults) {
         $SaveProfileLoaded = Split-ProfileLoaded -ProfileLoaded $script:AutoChartOpenResultsOpenFileDialogfilename
         $FileName = Split-ProfileLoaded -ProfileLoaded $script:AutoChartOpenResultsOpenFileDialogfilename -Leaf
-    
-        Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SaveProfileLoaded $SaveProfileLoaded    
+
+        Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SaveProfileLoaded $SaveProfileLoaded
     }
     else { [System.Windows.MessageBox]::Show("Error: Cannot Import Data!`nThe associated .xml file was not located.","PoSh-EasyWin") }
 }
@@ -304,7 +304,7 @@ $script:AutoChart01LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart01LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart01LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -368,7 +368,7 @@ $script:AutoChart01LoginActivity.Series["Owner"].Color             = 'Red'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart01LoginActivityUniqueCount
-                        Computers   = $script:AutoChart01LoginActivityCsvComputers 
+                        Computers   = $script:AutoChart01LoginActivityCsvComputers
                     }
                     $script:AutoChart01LoginActivityOverallDataResults += $script:AutoChart01LoginActivityDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -381,12 +381,12 @@ $script:AutoChart01LoginActivity.Series["Owner"].Color             = 'Red'
             else {
                 $script:AutoChart01LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart01LoginActivityTitle.Text = "Owner`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart01
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart01LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart01LoginActivity.Location.X + $($FormScale * 5)
@@ -395,7 +395,7 @@ $script:AutoChart01LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart01LoginActivityOptionsButton
-$script:AutoChart01LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart01LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart01LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart01LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart01LoginActivity.Controls.Add($script:AutoChart01LoginActivityManipulationPanel)
@@ -434,14 +434,14 @@ $script:AutoChart01LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart01LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01LoginActivityOverallDataResults.count))                
+    $script:AutoChart01LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01LoginActivityOverallDataResults.count))
     $script:AutoChart01LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart01LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart01LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart01LoginActivityTrimOffFirstTrackBar.Value
@@ -468,7 +468,7 @@ $script:AutoChart01LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -491,11 +491,11 @@ $script:AutoChart01LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart01LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart01LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart01LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart01LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -521,9 +521,9 @@ $script:AutoChart01LoginActivity3DToggleButton = New-Object Windows.Forms.Button
 CommonButtonSettings -Button $script:AutoChart01LoginActivity3DToggleButton
 $script:AutoChart01LoginActivity3DInclination = 0
 $script:AutoChart01LoginActivity3DToggleButton.Add_Click({
-    
+
     $script:AutoChart01LoginActivity3DInclination += 10
-    if ( $script:AutoChart01LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart01LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart01LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart01LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart01LoginActivity3DInclination
         $script:AutoChart01LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart01LoginActivity3DInclination)"
@@ -532,12 +532,12 @@ $script:AutoChart01LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart01LoginActivity3DInclination -le 90 ) {
         $script:AutoChart01LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart01LoginActivity3DInclination
-        $script:AutoChart01LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart01LoginActivity3DInclination)" 
+        $script:AutoChart01LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart01LoginActivity3DInclination)"
 #        $script:AutoChart01LoginActivity.Series["Owner"].Points.Clear()
 #        $script:AutoChart01LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01LoginActivity.Series["Owner"].Points.AddXY($_.DataField.Owner,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart01LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart01LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart01LoginActivity3DInclination = 0
         $script:AutoChart01LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart01LoginActivity3DInclination
         $script:AutoChart01LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -569,7 +569,7 @@ $script:AutoChart01LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart01 {    
+function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
     $script:AutoChart01LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Owner' -eq $($script:AutoChart01LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart01LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -577,7 +577,7 @@ function script:InvestigateDifference-AutoChart01 {
 
     # List of all endpoints within the csv file
     $script:AutoChart01LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart01LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart01LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart01LoginActivityImportCsvPosResults) { $script:AutoChart01LoginActivityImportCsvNegResults += $Endpoint } }
@@ -645,7 +645,7 @@ $script:AutoChart01LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart01LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart01LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
     CommonButtonSettings -Button $script:AutoChart01LoginActivityInvestDiffExecuteButton
@@ -660,7 +660,7 @@ $script:AutoChart01LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart01LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart01LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart01LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -672,7 +672,7 @@ $script:AutoChart01LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart01LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -726,7 +726,7 @@ $script:AutoChart01LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01LoginActivityOpenInShell
-$script:AutoChart01LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart01LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01LoginActivityManipulationPanel.controls.Add($script:AutoChart01LoginActivityOpenInShell)
 
 
@@ -738,7 +738,7 @@ $script:AutoChart01LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01LoginActivityViewResults
-$script:AutoChart01LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart01LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart01LoginActivityManipulationPanel.controls.Add($script:AutoChart01LoginActivityViewResults)
 
 
@@ -761,7 +761,7 @@ $script:AutoChart01LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart01LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart01LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart01LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart01LoginActivitySaveButton.Location.Y + $script:AutoChart01LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -817,7 +817,7 @@ $script:AutoChart02LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart02LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart02LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -835,7 +835,7 @@ $script:AutoChart02LoginActivityArea.Area3DStyle.Inclination = 75
 $script:AutoChart02LoginActivity.ChartAreas.Add($script:AutoChart02LoginActivityArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart02LoginActivity.Series.Add("Connections Per Host")  
+$script:AutoChart02LoginActivity.Series.Add("Connections Per Host")
 $script:AutoChart02LoginActivity.Series["Connections Per Host"].Enabled           = $True
 $script:AutoChart02LoginActivity.Series["Connections Per Host"].BorderWidth       = 1
 $script:AutoChart02LoginActivity.Series["Connections Per Host"].IsVisibleInLegend = $false
@@ -846,7 +846,7 @@ $script:AutoChart02LoginActivity.Series["Connections Per Host"]['PieLineColor'] 
 $script:AutoChart02LoginActivity.Series["Connections Per Host"]['PieLabelStyle']  = 'Outside'
 $script:AutoChart02LoginActivity.Series["Connections Per Host"].ChartType         = 'DoughNut'
 $script:AutoChart02LoginActivity.Series["Connections Per Host"].Color             = 'Blue'
-        
+
         function Generate-AutoChart02 {
             $script:AutoChart02LoginActivityCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
             $script:AutoChart02LoginActivityUniqueDataFields = ($script:AutoChartDataSourceCsv).ProcessID | Sort-Object -Property 'ProcessID'
@@ -870,18 +870,18 @@ $script:AutoChart02LoginActivity.Series["Connections Per Host"].Color           
 
                 foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
                     if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
-                    if ( $AutoChart02CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart02CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $Line.ProcessID ) {
                                 if ( $Line.ProcessID -ne "" ) { $AutoChart02YResults += $Line.ProcessID ; $AutoChart02ResultsCount += 1 }
                                 if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
                             $AutoChart02CurrentComputer = $Line.PSComputerName
-                            $AutoChart02YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
-                                Computer     = $AutoChart02Computer 
+                                Computer     = $AutoChart02Computer
                             }
                             $script:AutoChart02LoginActivityOverallDataResults += $AutoChart02YDataResults
                             $AutoChart02YResults     = @()
@@ -896,7 +896,7 @@ $script:AutoChart02LoginActivity.Series["Connections Per Host"].Color           
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }    
+                $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }
                 $script:AutoChart02LoginActivityOverallDataResults += $AutoChart02YDataResults
                 $script:AutoChart02LoginActivityOverallDataResults | ForEach-Object { $script:AutoChart02LoginActivity.Series["Connections Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -910,12 +910,12 @@ $script:AutoChart02LoginActivity.Series["Connections Per Host"].Color           
                 $script:AutoChart02LoginActivity.Series["Connections Per Host"].Points.Clear()
                 $script:AutoChart02LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart02LoginActivityTitle.Text = "Connections Per Host`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart02
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart02LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart02LoginActivity.Location.X + $($FormScale * 5)
@@ -924,7 +924,7 @@ $script:AutoChart02LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart02LoginActivityOptionsButton
-$script:AutoChart02LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart02LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart02LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart02LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart02LoginActivity.Controls.Add($script:AutoChart02LoginActivityManipulationPanel)
@@ -963,20 +963,20 @@ $script:AutoChart02LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart02LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02LoginActivityOverallDataResults.count))                
+    $script:AutoChart02LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02LoginActivityOverallDataResults.count))
     $script:AutoChart02LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart02LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart02LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart02LoginActivityTrimOffFirstTrackBar.Value
         $script:AutoChart02LoginActivityTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart02LoginActivityTrimOffFirstTrackBar.Value)"
         $script:AutoChart02LoginActivity.Series["Connections Per Host"].Points.Clear()
-        $script:AutoChart02LoginActivityOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02LoginActivity.Series["Connections Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart02LoginActivityOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02LoginActivity.Series["Connections Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart02LoginActivityTrimOffFirstGroupBox.Controls.Add($script:AutoChart02LoginActivityTrimOffFirstTrackBar)
 $script:AutoChart02LoginActivityManipulationPanel.Controls.Add($script:AutoChart02LoginActivityTrimOffFirstGroupBox)
@@ -997,7 +997,7 @@ $script:AutoChart02LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -1020,11 +1020,11 @@ $script:AutoChart02LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart02LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart02LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart02LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart02LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1050,7 +1050,7 @@ CommonButtonSettings -Button $script:AutoChart02LoginActivity3DToggleButton
 $script:AutoChart02LoginActivity3DInclination = 0
 $script:AutoChart02LoginActivity3DToggleButton.Add_Click({
     $script:AutoChart02LoginActivity3DInclination += 10
-    if ( $script:AutoChart02LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart02LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart02LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart02LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart02LoginActivity3DInclination
         $script:AutoChart02LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart02LoginActivity3DInclination)"
@@ -1060,12 +1060,12 @@ $script:AutoChart02LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart02LoginActivity3DInclination -le 90 ) {
         $script:AutoChart02LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart02LoginActivity3DInclination
-        $script:AutoChart02LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart02LoginActivity3DInclination)" 
+        $script:AutoChart02LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart02LoginActivity3DInclination)"
 #        $script:AutoChart02LoginActivity.Series["Connections Per Host"].Points.Clear()
 #        $script:AutoChart02LoginActivityOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02LoginActivity.Series["Connections Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart02LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart02LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart02LoginActivity3DInclination = 0
         $script:AutoChart02LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart02LoginActivity3DInclination
         $script:AutoChart02LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -1096,7 +1096,7 @@ $script:AutoChart02LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart02 {    
+function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
     $script:AutoChart02LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart02LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -1104,7 +1104,7 @@ function script:InvestigateDifference-AutoChart02 {
 
     # List of all endpoints within the csv file
     $script:AutoChart02LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart02LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart02LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart02LoginActivityImportCsvPosResults) { $script:AutoChart02LoginActivityImportCsvNegResults += $Endpoint } }
@@ -1172,7 +1172,7 @@ $script:AutoChart02LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart02LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart02LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
     CommonButtonSettings -Button $script:AutoChart02LoginActivityInvestDiffExecuteButton
@@ -1187,7 +1187,7 @@ $script:AutoChart02LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart02LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart02LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart02LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -1199,7 +1199,7 @@ $script:AutoChart02LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart02LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -1253,7 +1253,7 @@ $script:AutoChart02LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02LoginActivityOpenInShell
-$script:AutoChart02LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart02LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02LoginActivityManipulationPanel.controls.Add($script:AutoChart02LoginActivityOpenInShell)
 
 
@@ -1265,7 +1265,7 @@ $script:AutoChart02LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02LoginActivityViewResults
-$script:AutoChart02LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart02LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart02LoginActivityManipulationPanel.controls.Add($script:AutoChart02LoginActivityViewResults)
 
 
@@ -1288,7 +1288,7 @@ $script:AutoChart02LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart02LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart02LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart02LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart02LoginActivitySaveButton.Location.Y + $script:AutoChart02LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -1341,7 +1341,7 @@ $script:AutoChart03LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart03LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart03LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -1359,7 +1359,7 @@ $script:AutoChart03LoginActivityArea.Area3DStyle.Inclination = 75
 $script:AutoChart03LoginActivity.ChartAreas.Add($script:AutoChart03LoginActivityArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart03LoginActivity.Series.Add("Client IP")  
+$script:AutoChart03LoginActivity.Series.Add("Client IP")
 $script:AutoChart03LoginActivity.Series["Client IP"].Enabled           = $True
 $script:AutoChart03LoginActivity.Series["Client IP"].BorderWidth       = 1
 $script:AutoChart03LoginActivity.Series["Client IP"].IsVisibleInLegend = $false
@@ -1386,7 +1386,7 @@ $script:AutoChart03LoginActivity.Series["Client IP"].Color             = 'Green'
             if ($script:AutoChart03LoginActivityUniqueDataFields.count -gt 0){
                 $script:AutoChart03LoginActivityTitle.ForeColor = 'Black'
                 $script:AutoChart03LoginActivityTitle.Text = "Client IP"
-                
+
                 # If the Second field/Y Axis equals PSComputername, it counts it
                 $script:AutoChart03LoginActivityOverallDataResults = @()
 
@@ -1397,7 +1397,7 @@ $script:AutoChart03LoginActivity.Series["Client IP"].Color             = 'Green'
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.ClientIP -eq $DataField.ClientIP) {
                             $Count += 1
-                            if ( $script:AutoChart03LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03LoginActivityCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart03LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03LoginActivityCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart03LoginActivityUniqueCount = $script:AutoChart03LoginActivityCsvComputers.Count
@@ -1405,7 +1405,7 @@ $script:AutoChart03LoginActivity.Series["Client IP"].Color             = 'Green'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart03LoginActivityUniqueCount
-                        Computers   = $script:AutoChart03LoginActivityCsvComputers 
+                        Computers   = $script:AutoChart03LoginActivityCsvComputers
                     }
                     $script:AutoChart03LoginActivityOverallDataResults += $script:AutoChart03LoginActivityDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -1419,12 +1419,12 @@ $script:AutoChart03LoginActivity.Series["Client IP"].Color             = 'Green'
             else {
                 $script:AutoChart03LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart03LoginActivityTitle.Text = "Client IP`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart03
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart03LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart03LoginActivity.Location.X + $($FormScale * 5)
@@ -1433,7 +1433,7 @@ $script:AutoChart03LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart03LoginActivityOptionsButton
-$script:AutoChart03LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart03LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart03LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart03LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart03LoginActivity.Controls.Add($script:AutoChart03LoginActivityManipulationPanel)
@@ -1472,20 +1472,20 @@ $script:AutoChart03LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart03LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03LoginActivityOverallDataResults.count))                
+    $script:AutoChart03LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03LoginActivityOverallDataResults.count))
     $script:AutoChart03LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart03LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart03LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart03LoginActivityTrimOffFirstTrackBar.Value
         $script:AutoChart03LoginActivityTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart03LoginActivityTrimOffFirstTrackBar.Value)"
         $script:AutoChart03LoginActivity.Series["Client IP"].Points.Clear()
-        $script:AutoChart03LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03LoginActivity.Series["Client IP"].Points.AddXY($_.DataField.ClientIP,$_.UniqueCount)}    
+        $script:AutoChart03LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03LoginActivity.Series["Client IP"].Points.AddXY($_.DataField.ClientIP,$_.UniqueCount)}
     })
     $script:AutoChart03LoginActivityTrimOffFirstGroupBox.Controls.Add($script:AutoChart03LoginActivityTrimOffFirstTrackBar)
 $script:AutoChart03LoginActivityManipulationPanel.Controls.Add($script:AutoChart03LoginActivityTrimOffFirstGroupBox)
@@ -1506,7 +1506,7 @@ $script:AutoChart03LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -1529,11 +1529,11 @@ $script:AutoChart03LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart03LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart03LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart03LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart03LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1559,7 +1559,7 @@ CommonButtonSettings -Button $script:AutoChart03LoginActivity3DToggleButton
 $script:AutoChart03LoginActivity3DInclination = 0
 $script:AutoChart03LoginActivity3DToggleButton.Add_Click({
     $script:AutoChart03LoginActivity3DInclination += 10
-    if ( $script:AutoChart03LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart03LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart03LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart03LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart03LoginActivity3DInclination
         $script:AutoChart03LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart03LoginActivity3DInclination)"
@@ -1568,12 +1568,12 @@ $script:AutoChart03LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart03LoginActivity3DInclination -le 90 ) {
         $script:AutoChart03LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart03LoginActivity3DInclination
-        $script:AutoChart03LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart03LoginActivity3DInclination)" 
+        $script:AutoChart03LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart03LoginActivity3DInclination)"
 #        $script:AutoChart03LoginActivity.Series["Client IP"].Points.Clear()
 #        $script:AutoChart03LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03LoginActivity.Series["Client IP"].Points.AddXY($_.DataField.ClientIP,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart03LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart03LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart03LoginActivity3DInclination = 0
         $script:AutoChart03LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart03LoginActivity3DInclination
         $script:AutoChart03LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -1604,7 +1604,7 @@ $script:AutoChart03LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart03 {    
+function script:InvestigateDifference-AutoChart03 {
     # List of Positive Endpoints that positively match
     $script:AutoChart03LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ClientIP' -eq $($script:AutoChart03LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart03LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -1612,7 +1612,7 @@ function script:InvestigateDifference-AutoChart03 {
 
     # List of all endpoints within the csv file
     $script:AutoChart03LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart03LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart03LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart03LoginActivityImportCsvPosResults) { $script:AutoChart03LoginActivityImportCsvNegResults += $Endpoint } }
@@ -1680,7 +1680,7 @@ $script:AutoChart03LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart03LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart03LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
     CommonButtonSettings -Button $script:AutoChart03LoginActivityInvestDiffExecuteButton
@@ -1695,7 +1695,7 @@ $script:AutoChart03LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart03LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart03LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart03LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -1707,7 +1707,7 @@ $script:AutoChart03LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart03LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -1739,7 +1739,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart03LoginActivityManipulationPanel.controls.Add($script:AutoChart03LoginActivityCheckDiffButton)
-    
+
 
 $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -1761,7 +1761,7 @@ $script:AutoChart03LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03LoginActivityOpenInShell
-$script:AutoChart03LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart03LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart03LoginActivityManipulationPanel.controls.Add($script:AutoChart03LoginActivityOpenInShell)
 
 
@@ -1773,7 +1773,7 @@ $script:AutoChart03LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03LoginActivityViewResults
-$script:AutoChart03LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart03LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart03LoginActivityManipulationPanel.controls.Add($script:AutoChart03LoginActivityViewResults)
 
 
@@ -1796,7 +1796,7 @@ $script:AutoChart03LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart03LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart03LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart03LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart03LoginActivitySaveButton.Location.Y + $script:AutoChart03LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -1811,7 +1811,7 @@ $script:AutoChart03LoginActivityNoticeTextbox = New-Object System.Windows.Forms.
 $script:AutoChart03LoginActivityManipulationPanel.Controls.Add($script:AutoChart03LoginActivityNoticeTextbox)
 
 $script:AutoChart03LoginActivity.Series["Client IP"].Points.Clear()
-$script:AutoChart03LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03LoginActivity.Series["Client IP"].Points.AddXY($_.DataField.ClientIP,$_.UniqueCount)}    
+$script:AutoChart03LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03LoginActivity.Series["Client IP"].Points.AddXY($_.DataField.ClientIP,$_.UniqueCount)}
 
 
 
@@ -1850,7 +1850,7 @@ $script:AutoChart04LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart04LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart04LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -1868,7 +1868,7 @@ $script:AutoChart04LoginActivityArea.Area3DStyle.Inclination = 75
 $script:AutoChart04LoginActivity.ChartAreas.Add($script:AutoChart04LoginActivityArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart04LoginActivity.Series.Add("Connection State")  
+$script:AutoChart04LoginActivity.Series.Add("Connection State")
 $script:AutoChart04LoginActivity.Series["Connection State"].Enabled           = $True
 $script:AutoChart04LoginActivity.Series["Connection State"].BorderWidth       = 1
 $script:AutoChart04LoginActivity.Series["Connection State"].IsVisibleInLegend = $false
@@ -1906,7 +1906,7 @@ $script:AutoChart04LoginActivity.Series["Connection State"].Color             = 
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.State) -eq $DataField.State) {
                             $Count += 1
-                            if ( $script:AutoChart04LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04LoginActivityCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart04LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04LoginActivityCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart04LoginActivityUniqueCount = $script:AutoChart04LoginActivityCsvComputers.Count
@@ -1914,7 +1914,7 @@ $script:AutoChart04LoginActivity.Series["Connection State"].Color             = 
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart04LoginActivityUniqueCount
-                        Computers   = $script:AutoChart04LoginActivityCsvComputers 
+                        Computers   = $script:AutoChart04LoginActivityCsvComputers
                     }
                     $script:AutoChart04LoginActivityOverallDataResults += $script:AutoChart04LoginActivityDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -1928,12 +1928,12 @@ $script:AutoChart04LoginActivity.Series["Connection State"].Color             = 
             else {
                 $script:AutoChart04LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart04LoginActivityTitle.Text = "Connection State`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart04
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart04LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart04LoginActivity.Location.X + $($FormScale * 5)
@@ -1942,7 +1942,7 @@ $script:AutoChart04LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart04LoginActivityOptionsButton
-$script:AutoChart04LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart04LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart04LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart04LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart04LoginActivity.Controls.Add($script:AutoChart04LoginActivityManipulationPanel)
@@ -1981,20 +1981,20 @@ $script:AutoChart04LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart04LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04LoginActivityOverallDataResults.count))                
+    $script:AutoChart04LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04LoginActivityOverallDataResults.count))
     $script:AutoChart04LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart04LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart04LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart04LoginActivityTrimOffFirstTrackBar.Value
         $script:AutoChart04LoginActivityTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart04LoginActivityTrimOffFirstTrackBar.Value)"
         $script:AutoChart04LoginActivity.Series["Connection State"].Points.Clear()
-        $script:AutoChart04LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04LoginActivity.Series["Connection State"].Points.AddXY($_.DataField.State,$_.UniqueCount)}    
+        $script:AutoChart04LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04LoginActivity.Series["Connection State"].Points.AddXY($_.DataField.State,$_.UniqueCount)}
     })
     $script:AutoChart04LoginActivityTrimOffFirstGroupBox.Controls.Add($script:AutoChart04LoginActivityTrimOffFirstTrackBar)
 $script:AutoChart04LoginActivityManipulationPanel.Controls.Add($script:AutoChart04LoginActivityTrimOffFirstGroupBox)
@@ -2015,7 +2015,7 @@ $script:AutoChart04LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -2038,11 +2038,11 @@ $script:AutoChart04LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart04LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart04LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart04LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart04LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -2068,7 +2068,7 @@ CommonButtonSettings -Button $script:AutoChart04LoginActivity3DToggleButton
 $script:AutoChart04LoginActivity3DInclination = 0
 $script:AutoChart04LoginActivity3DToggleButton.Add_Click({
     $script:AutoChart04LoginActivity3DInclination += 10
-    if ( $script:AutoChart04LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart04LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart04LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart04LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart04LoginActivity3DInclination
         $script:AutoChart04LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart04LoginActivity3DInclination)"
@@ -2077,12 +2077,12 @@ $script:AutoChart04LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart04LoginActivity3DInclination -le 90 ) {
         $script:AutoChart04LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart04LoginActivity3DInclination
-        $script:AutoChart04LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart04LoginActivity3DInclination)" 
+        $script:AutoChart04LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart04LoginActivity3DInclination)"
 #        $script:AutoChart04LoginActivity.Series["Connection State"].Points.Clear()
 #        $script:AutoChart04LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04LoginActivity.Series["Connection State"].Points.AddXY($_.DataField.State,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart04LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart04LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart04LoginActivity3DInclination = 0
         $script:AutoChart04LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart04LoginActivity3DInclination
         $script:AutoChart04LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -2113,7 +2113,7 @@ $script:AutoChart04LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart04 {    
+function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
     $script:AutoChart04LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'State' -eq $($script:AutoChart04LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart04LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -2121,7 +2121,7 @@ function script:InvestigateDifference-AutoChart04 {
 
     # List of all endpoints within the csv file
     $script:AutoChart04LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart04LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart04LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart04LoginActivityImportCsvPosResults) { $script:AutoChart04LoginActivityImportCsvNegResults += $Endpoint } }
@@ -2189,10 +2189,10 @@ $script:AutoChart04LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart04LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart04LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart04LoginActivityInvestDiffExecuteButton 
+    CommonButtonSettings -Button $script:AutoChart04LoginActivityInvestDiffExecuteButton
     $script:AutoChart04LoginActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
     $script:AutoChart04LoginActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04 })
 
@@ -2204,7 +2204,7 @@ $script:AutoChart04LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart04LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart04LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart04LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -2216,7 +2216,7 @@ $script:AutoChart04LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart04LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -2248,7 +2248,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart04LoginActivityManipulationPanel.controls.Add($script:AutoChart04LoginActivityCheckDiffButton)
-    
+
 
 $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -2270,7 +2270,7 @@ $script:AutoChart04LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04LoginActivityOpenInShell
-$script:AutoChart04LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart04LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart04LoginActivityManipulationPanel.controls.Add($script:AutoChart04LoginActivityOpenInShell)
 
 
@@ -2282,7 +2282,7 @@ $script:AutoChart04LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04LoginActivityViewResults
-$script:AutoChart04LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart04LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart04LoginActivityManipulationPanel.controls.Add($script:AutoChart04LoginActivityViewResults)
 
 
@@ -2305,7 +2305,7 @@ $script:AutoChart04LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart04LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart04LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart04LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart04LoginActivitySaveButton.Location.Y + $script:AutoChart04LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -2320,7 +2320,7 @@ $script:AutoChart04LoginActivityNoticeTextbox = New-Object System.Windows.Forms.
 $script:AutoChart04LoginActivityManipulationPanel.Controls.Add($script:AutoChart04LoginActivityNoticeTextbox)
 
 $script:AutoChart04LoginActivity.Series["Connection State"].Points.Clear()
-$script:AutoChart04LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04LoginActivity.Series["Connection State"].Points.AddXY($_.DataField.State,$_.UniqueCount)}    
+$script:AutoChart04LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04LoginActivity.Series["Connection State"].Points.AddXY($_.DataField.State,$_.UniqueCount)}
 
 
 
@@ -2358,7 +2358,7 @@ $script:AutoChart05LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart05LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart05LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -2376,7 +2376,7 @@ $script:AutoChart05LoginActivityArea.Area3DStyle.Inclination = 75
 $script:AutoChart05LoginActivity.ChartAreas.Add($script:AutoChart05LoginActivityArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart05LoginActivity.Series.Add("Shell Run Time")  
+$script:AutoChart05LoginActivity.Series.Add("Shell Run Time")
 $script:AutoChart05LoginActivity.Series["Shell Run Time"].Enabled           = $True
 $script:AutoChart05LoginActivity.Series["Shell Run Time"].BorderWidth       = 1
 $script:AutoChart05LoginActivity.Series["Shell Run Time"].IsVisibleInLegend = $false
@@ -2414,7 +2414,7 @@ $script:AutoChart05LoginActivity.Series["Shell Run Time"].Color             = 'O
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.ShellRunTime) -eq $DataField.ShellRunTime) {
                             $Count += 1
-                            if ( $script:AutoChart05LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart05LoginActivityCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart05LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart05LoginActivityCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart05LoginActivityUniqueCount = $script:AutoChart05LoginActivityCsvComputers.Count
@@ -2422,7 +2422,7 @@ $script:AutoChart05LoginActivity.Series["Shell Run Time"].Color             = 'O
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart05LoginActivityUniqueCount
-                        Computers   = $script:AutoChart05LoginActivityCsvComputers 
+                        Computers   = $script:AutoChart05LoginActivityCsvComputers
                     }
                     $script:AutoChart05LoginActivityOverallDataResults += $script:AutoChart05LoginActivityDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -2436,12 +2436,12 @@ $script:AutoChart05LoginActivity.Series["Shell Run Time"].Color             = 'O
             else {
                 $script:AutoChart05LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart05LoginActivityTitle.Text = "Shell Run Time`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart05
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart05LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart05LoginActivity.Location.X + $($FormScale * 5)
@@ -2450,7 +2450,7 @@ $script:AutoChart05LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart05LoginActivityOptionsButton
-$script:AutoChart05LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart05LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart05LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart05LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart05LoginActivity.Controls.Add($script:AutoChart05LoginActivityManipulationPanel)
@@ -2489,20 +2489,20 @@ $script:AutoChart05LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart05LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05LoginActivityOverallDataResults.count))                
+    $script:AutoChart05LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05LoginActivityOverallDataResults.count))
     $script:AutoChart05LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart05LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart05LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart05LoginActivityTrimOffFirstTrackBar.Value
         $script:AutoChart05LoginActivityTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart05LoginActivityTrimOffFirstTrackBar.Value)"
         $script:AutoChart05LoginActivity.Series["Shell Run Time"].Points.Clear()
-        $script:AutoChart05LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05LoginActivity.Series["Shell Run Time"].Points.AddXY($_.DataField.ShellRunTime,$_.UniqueCount)}    
+        $script:AutoChart05LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05LoginActivity.Series["Shell Run Time"].Points.AddXY($_.DataField.ShellRunTime,$_.UniqueCount)}
     })
     $script:AutoChart05LoginActivityTrimOffFirstGroupBox.Controls.Add($script:AutoChart05LoginActivityTrimOffFirstTrackBar)
 $script:AutoChart05LoginActivityManipulationPanel.Controls.Add($script:AutoChart05LoginActivityTrimOffFirstGroupBox)
@@ -2523,7 +2523,7 @@ $script:AutoChart05LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -2546,11 +2546,11 @@ $script:AutoChart05LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart05LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Bar' 
+    Text      = 'Bar'
     Location  = @{ X = $script:AutoChart05LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart05LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart05LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -2576,7 +2576,7 @@ CommonButtonSettings -Button $script:AutoChart05LoginActivity3DToggleButton
 $script:AutoChart05LoginActivity3DInclination = 0
 $script:AutoChart05LoginActivity3DToggleButton.Add_Click({
     $script:AutoChart05LoginActivity3DInclination += 10
-    if ( $script:AutoChart05LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart05LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart05LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart05LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart05LoginActivity3DInclination
         $script:AutoChart05LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart05LoginActivity3DInclination)"
@@ -2585,12 +2585,12 @@ $script:AutoChart05LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart05LoginActivity3DInclination -le 90 ) {
         $script:AutoChart05LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart05LoginActivity3DInclination
-        $script:AutoChart05LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart05LoginActivity3DInclination)" 
+        $script:AutoChart05LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart05LoginActivity3DInclination)"
 #        $script:AutoChart05LoginActivity.Series["Shell Run Time"].Points.Clear()
 #        $script:AutoChart05LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05LoginActivity.Series["Shell Run Time"].Points.AddXY($_.DataField.ShellRunTime,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart05LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart05LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart05LoginActivity3DInclination = 0
         $script:AutoChart05LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart05LoginActivity3DInclination
         $script:AutoChart05LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -2621,7 +2621,7 @@ $script:AutoChart05LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart05 {    
+function script:InvestigateDifference-AutoChart05 {
     # List of Positive Endpoints that positively match
     $script:AutoChart05LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ShellRunTime' -eq $($script:AutoChart05LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart05LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -2629,7 +2629,7 @@ function script:InvestigateDifference-AutoChart05 {
 
     # List of all endpoints within the csv file
     $script:AutoChart05LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart05LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart05LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart05LoginActivityImportCsvPosResults) { $script:AutoChart05LoginActivityImportCsvNegResults += $Endpoint } }
@@ -2697,10 +2697,10 @@ $script:AutoChart05LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart05LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart05LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart05LoginActivityInvestDiffExecuteButton 
+    CommonButtonSettings -Button $script:AutoChart05LoginActivityInvestDiffExecuteButton
     $script:AutoChart05LoginActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart05 }})
     $script:AutoChart05LoginActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart05 })
 
@@ -2712,7 +2712,7 @@ $script:AutoChart05LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart05LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart05LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart05LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -2724,7 +2724,7 @@ $script:AutoChart05LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart05LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -2756,7 +2756,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart05LoginActivityManipulationPanel.controls.Add($script:AutoChart05LoginActivityCheckDiffButton)
-    
+
 
 $AutoChart05ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -2778,7 +2778,7 @@ $script:AutoChart05LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart05LoginActivityOpenInShell
-$script:AutoChart05LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart05LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart05LoginActivityManipulationPanel.controls.Add($script:AutoChart05LoginActivityOpenInShell)
 
 
@@ -2790,7 +2790,7 @@ $script:AutoChart05LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart05LoginActivityViewResults
-$script:AutoChart05LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart05LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart05LoginActivityManipulationPanel.controls.Add($script:AutoChart05LoginActivityViewResults)
 
 
@@ -2813,7 +2813,7 @@ $script:AutoChart05LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart05LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart05LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart05LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart05LoginActivitySaveButton.Location.Y + $script:AutoChart05LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -2828,7 +2828,7 @@ $script:AutoChart05LoginActivityNoticeTextbox = New-Object System.Windows.Forms.
 $script:AutoChart05LoginActivityManipulationPanel.Controls.Add($script:AutoChart05LoginActivityNoticeTextbox)
 
 $script:AutoChart05LoginActivity.Series["Shell Run Time"].Points.Clear()
-$script:AutoChart05LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05LoginActivity.Series["Shell Run Time"].Points.AddXY($_.DataField.ShellRunTime,$_.UniqueCount)}    
+$script:AutoChart05LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05LoginActivity.Series["Shell Run Time"].Points.AddXY($_.DataField.ShellRunTime,$_.UniqueCount)}
 
 
 
@@ -2866,7 +2866,7 @@ $script:AutoChart06LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart06LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart06LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -2884,7 +2884,7 @@ $script:AutoChart06LoginActivityArea.Area3DStyle.Inclination = 75
 $script:AutoChart06LoginActivity.ChartAreas.Add($script:AutoChart06LoginActivityArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart06LoginActivity.Series.Add("Shell Inactivity Time")  
+$script:AutoChart06LoginActivity.Series.Add("Shell Inactivity Time")
 $script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Enabled           = $True
 $script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].BorderWidth       = 1
 $script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].IsVisibleInLegend = $false
@@ -2922,7 +2922,7 @@ $script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Color          
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.ShellInactivity) -eq $DataField.ShellInactivity) {
                             $Count += 1
-                            if ( $script:AutoChart06LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart06LoginActivityCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart06LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart06LoginActivityCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart06LoginActivityUniqueCount = $script:AutoChart06LoginActivityCsvComputers.Count
@@ -2930,7 +2930,7 @@ $script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Color          
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart06LoginActivityUniqueCount
-                        Computers   = $script:AutoChart06LoginActivityCsvComputers 
+                        Computers   = $script:AutoChart06LoginActivityCsvComputers
                     }
                     $script:AutoChart06LoginActivityOverallDataResults += $script:AutoChart06LoginActivityDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -2944,12 +2944,12 @@ $script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Color          
             else {
                 $script:AutoChart06LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart06LoginActivityTitle.Text = "Shell Inactivity Time`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart06
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart06LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart06LoginActivity.Location.X + $($FormScale * 5)
@@ -2958,7 +2958,7 @@ $script:AutoChart06LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart06LoginActivityOptionsButton
-$script:AutoChart06LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart06LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart06LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart06LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart06LoginActivity.Controls.Add($script:AutoChart06LoginActivityManipulationPanel)
@@ -2997,20 +2997,20 @@ $script:AutoChart06LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart06LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06LoginActivityOverallDataResults.count))                
+    $script:AutoChart06LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06LoginActivityOverallDataResults.count))
     $script:AutoChart06LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart06LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart06LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart06LoginActivityTrimOffFirstTrackBar.Value
         $script:AutoChart06LoginActivityTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart06LoginActivityTrimOffFirstTrackBar.Value)"
         $script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Points.Clear()
-        $script:AutoChart06LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Points.AddXY($_.DataField.ShellInactivity,$_.UniqueCount)}    
+        $script:AutoChart06LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Points.AddXY($_.DataField.ShellInactivity,$_.UniqueCount)}
     })
     $script:AutoChart06LoginActivityTrimOffFirstGroupBox.Controls.Add($script:AutoChart06LoginActivityTrimOffFirstTrackBar)
 $script:AutoChart06LoginActivityManipulationPanel.Controls.Add($script:AutoChart06LoginActivityTrimOffFirstGroupBox)
@@ -3031,7 +3031,7 @@ $script:AutoChart06LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -3054,11 +3054,11 @@ $script:AutoChart06LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart06LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Bar' 
+    Text      = 'Bar'
     Location  = @{ X = $script:AutoChart06LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart06LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart06LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -3084,7 +3084,7 @@ CommonButtonSettings -Button $script:AutoChart06LoginActivity3DToggleButton
 $script:AutoChart06LoginActivity3DInclination = 0
 $script:AutoChart06LoginActivity3DToggleButton.Add_Click({
     $script:AutoChart06LoginActivity3DInclination += 10
-    if ( $script:AutoChart06LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart06LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart06LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart06LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart06LoginActivity3DInclination
         $script:AutoChart06LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart06LoginActivity3DInclination)"
@@ -3093,12 +3093,12 @@ $script:AutoChart06LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart06LoginActivity3DInclination -le 90 ) {
         $script:AutoChart06LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart06LoginActivity3DInclination
-        $script:AutoChart06LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart06LoginActivity3DInclination)" 
+        $script:AutoChart06LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart06LoginActivity3DInclination)"
 #        $script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Points.Clear()
 #        $script:AutoChart06LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Points.AddXY($_.DataField.ShellInactivity,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart06LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart06LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart06LoginActivity3DInclination = 0
         $script:AutoChart06LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart06LoginActivity3DInclination
         $script:AutoChart06LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -3129,7 +3129,7 @@ $script:AutoChart06LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart06 {    
+function script:InvestigateDifference-AutoChart06 {
     # List of Positive Endpoints that positively match
     $script:AutoChart06LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ShellInactivity' -eq $($script:AutoChart06LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart06LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -3137,7 +3137,7 @@ function script:InvestigateDifference-AutoChart06 {
 
     # List of all endpoints within the csv file
     $script:AutoChart06LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart06LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart06LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart06LoginActivityImportCsvPosResults) { $script:AutoChart06LoginActivityImportCsvNegResults += $Endpoint } }
@@ -3205,7 +3205,7 @@ $script:AutoChart06LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart06LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart06LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
     CommonButtonSettings -Button $script:AutoChart06LoginActivityInvestDiffExecuteButton
@@ -3220,7 +3220,7 @@ $script:AutoChart06LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart06LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart06LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart06LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -3232,7 +3232,7 @@ $script:AutoChart06LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart06LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -3264,7 +3264,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart06LoginActivityManipulationPanel.controls.Add($script:AutoChart06LoginActivityCheckDiffButton)
-    
+
 
 $AutoChart06ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -3286,7 +3286,7 @@ $script:AutoChart06LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart06LoginActivityOpenInShell
-$script:AutoChart06LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart06LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart06LoginActivityManipulationPanel.controls.Add($script:AutoChart06LoginActivityOpenInShell)
 
 
@@ -3298,7 +3298,7 @@ $script:AutoChart06LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart06LoginActivityViewResults
-$script:AutoChart06LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart06LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart06LoginActivityManipulationPanel.controls.Add($script:AutoChart06LoginActivityViewResults)
 
 
@@ -3321,7 +3321,7 @@ $script:AutoChart06LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart06LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart06LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart06LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart06LoginActivitySaveButton.Location.Y + $script:AutoChart06LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -3336,7 +3336,7 @@ $script:AutoChart06LoginActivityNoticeTextbox = New-Object System.Windows.Forms.
 $script:AutoChart06LoginActivityManipulationPanel.Controls.Add($script:AutoChart06LoginActivityNoticeTextbox)
 
 $script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Points.Clear()
-$script:AutoChart06LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Points.AddXY($_.DataField.ShellInactivity,$_.UniqueCount)}    
+$script:AutoChart06LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06LoginActivity.Series["Shell Inactivity Time"].Points.AddXY($_.DataField.ShellInactivity,$_.UniqueCount)}
 
 
 
@@ -3375,7 +3375,7 @@ $script:AutoChart07LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart07LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart07LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -3393,7 +3393,7 @@ $script:AutoChart07LoginActivityArea.Area3DStyle.Inclination = 75
 $script:AutoChart07LoginActivity.ChartAreas.Add($script:AutoChart07LoginActivityArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart07LoginActivity.Series.Add("Child Processes")  
+$script:AutoChart07LoginActivity.Series.Add("Child Processes")
 $script:AutoChart07LoginActivity.Series["Child Processes"].Enabled           = $True
 $script:AutoChart07LoginActivity.Series["Child Processes"].BorderWidth       = 1
 $script:AutoChart07LoginActivity.Series["Child Processes"].IsVisibleInLegend = $false
@@ -3431,7 +3431,7 @@ $script:AutoChart07LoginActivity.Series["Child Processes"].Color             = '
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.ChildProcesses) -eq $DataField.ChildProcesses) {
                             $Count += 1
-                            if ( $script:AutoChart07LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart07LoginActivityCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart07LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart07LoginActivityCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart07LoginActivityUniqueCount = $script:AutoChart07LoginActivityCsvComputers.Count
@@ -3439,7 +3439,7 @@ $script:AutoChart07LoginActivity.Series["Child Processes"].Color             = '
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart07LoginActivityUniqueCount
-                        Computers   = $script:AutoChart07LoginActivityCsvComputers 
+                        Computers   = $script:AutoChart07LoginActivityCsvComputers
                     }
                     $script:AutoChart07LoginActivityOverallDataResults += $script:AutoChart07LoginActivityDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -3453,12 +3453,12 @@ $script:AutoChart07LoginActivity.Series["Child Processes"].Color             = '
             else {
                 $script:AutoChart07LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart07LoginActivityTitle.Text = "Child Processes`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart07
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart07LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart07LoginActivity.Location.X + $($FormScale * 5)
@@ -3467,7 +3467,7 @@ $script:AutoChart07LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart07LoginActivityOptionsButton
-$script:AutoChart07LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart07LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart07LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart07LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart07LoginActivity.Controls.Add($script:AutoChart07LoginActivityManipulationPanel)
@@ -3506,20 +3506,20 @@ $script:AutoChart07LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart07LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart07LoginActivityOverallDataResults.count))                
+    $script:AutoChart07LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart07LoginActivityOverallDataResults.count))
     $script:AutoChart07LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart07LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart07LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart07LoginActivityTrimOffFirstTrackBar.Value
         $script:AutoChart07LoginActivityTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart07LoginActivityTrimOffFirstTrackBar.Value)"
         $script:AutoChart07LoginActivity.Series["Child Processes"].Points.Clear()
-        $script:AutoChart07LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07LoginActivity.Series["Child Processes"].Points.AddXY($_.DataField.ChildProcesses,$_.UniqueCount)}    
+        $script:AutoChart07LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07LoginActivity.Series["Child Processes"].Points.AddXY($_.DataField.ChildProcesses,$_.UniqueCount)}
     })
     $script:AutoChart07LoginActivityTrimOffFirstGroupBox.Controls.Add($script:AutoChart07LoginActivityTrimOffFirstTrackBar)
 $script:AutoChart07LoginActivityManipulationPanel.Controls.Add($script:AutoChart07LoginActivityTrimOffFirstGroupBox)
@@ -3540,7 +3540,7 @@ $script:AutoChart07LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -3563,11 +3563,11 @@ $script:AutoChart07LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart07LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart07LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart07LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart07LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -3593,7 +3593,7 @@ CommonButtonSettings -Button $script:AutoChart07LoginActivity3DToggleButton
 $script:AutoChart07LoginActivity3DInclination = 0
 $script:AutoChart07LoginActivity3DToggleButton.Add_Click({
     $script:AutoChart07LoginActivity3DInclination += 10
-    if ( $script:AutoChart07LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart07LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart07LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart07LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart07LoginActivity3DInclination
         $script:AutoChart07LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart07LoginActivity3DInclination)"
@@ -3602,12 +3602,12 @@ $script:AutoChart07LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart07LoginActivity3DInclination -le 90 ) {
         $script:AutoChart07LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart07LoginActivity3DInclination
-        $script:AutoChart07LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart07LoginActivity3DInclination)" 
+        $script:AutoChart07LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart07LoginActivity3DInclination)"
 #        $script:AutoChart07LoginActivity.Series["Child Processes"].Points.Clear()
 #        $script:AutoChart07LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07LoginActivity.Series["Child Processes"].Points.AddXY($_.DataField.ChildProcesses,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart07LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart07LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart07LoginActivity3DInclination = 0
         $script:AutoChart07LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart07LoginActivity3DInclination
         $script:AutoChart07LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -3638,7 +3638,7 @@ $script:AutoChart07LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart07 {    
+function script:InvestigateDifference-AutoChart07 {
     # List of Positive Endpoints that positively match
     $script:AutoChart07LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ChildProcesses' -eq $($script:AutoChart07LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart07LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -3646,7 +3646,7 @@ function script:InvestigateDifference-AutoChart07 {
 
     # List of all endpoints within the csv file
     $script:AutoChart07LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart07LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart07LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart07LoginActivityImportCsvPosResults) { $script:AutoChart07LoginActivityImportCsvNegResults += $Endpoint } }
@@ -3714,7 +3714,7 @@ $script:AutoChart07LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart07LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart07LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
     CommonButtonSettings -Button $script:AutoChart07LoginActivityInvestDiffExecuteButton
@@ -3729,7 +3729,7 @@ $script:AutoChart07LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart07LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart07LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart07LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -3741,7 +3741,7 @@ $script:AutoChart07LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart07LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -3773,7 +3773,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart07LoginActivityManipulationPanel.controls.Add($script:AutoChart07LoginActivityCheckDiffButton)
-    
+
 
 $AutoChart07ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -3795,7 +3795,7 @@ $script:AutoChart07LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart07LoginActivityOpenInShell
-$script:AutoChart07LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart07LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart07LoginActivityManipulationPanel.controls.Add($script:AutoChart07LoginActivityOpenInShell)
 
 
@@ -3807,7 +3807,7 @@ $script:AutoChart07LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart07LoginActivityViewResults
-$script:AutoChart07LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart07LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart07LoginActivityManipulationPanel.controls.Add($script:AutoChart07LoginActivityViewResults)
 
 
@@ -3830,7 +3830,7 @@ $script:AutoChart07LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart07LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart07LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart07LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart07LoginActivitySaveButton.Location.Y + $script:AutoChart07LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -3845,7 +3845,7 @@ $script:AutoChart07LoginActivityNoticeTextbox = New-Object System.Windows.Forms.
 $script:AutoChart07LoginActivityManipulationPanel.Controls.Add($script:AutoChart07LoginActivityNoticeTextbox)
 
 $script:AutoChart07LoginActivity.Series["Child Processes"].Points.Clear()
-$script:AutoChart07LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07LoginActivity.Series["Child Processes"].Points.AddXY($_.DataField.ChildProcesses,$_.UniqueCount)}    
+$script:AutoChart07LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07LoginActivity.Series["Child Processes"].Points.AddXY($_.DataField.ChildProcesses,$_.UniqueCount)}
 
 
 
@@ -3885,7 +3885,7 @@ $script:AutoChart08LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart08LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart08LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -3903,7 +3903,7 @@ $script:AutoChart08LoginActivityArea.Area3DStyle.Inclination = 75
 $script:AutoChart08LoginActivity.ChartAreas.Add($script:AutoChart08LoginActivityArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart08LoginActivity.Series.Add("Memory Used")  
+$script:AutoChart08LoginActivity.Series.Add("Memory Used")
 $script:AutoChart08LoginActivity.Series["Memory Used"].Enabled           = $True
 $script:AutoChart08LoginActivity.Series["Memory Used"].BorderWidth       = 1
 $script:AutoChart08LoginActivity.Series["Memory Used"].IsVisibleInLegend = $false
@@ -3941,7 +3941,7 @@ $script:AutoChart08LoginActivity.Series["Memory Used"].Color             = 'Purp
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.MemoryUsed) -eq $DataField.MemoryUsed) {
                             $Count += 1
-                            if ( $script:AutoChart08LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart08LoginActivityCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart08LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart08LoginActivityCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart08LoginActivityUniqueCount = $script:AutoChart08LoginActivityCsvComputers.Count
@@ -3949,7 +3949,7 @@ $script:AutoChart08LoginActivity.Series["Memory Used"].Color             = 'Purp
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart08LoginActivityUniqueCount
-                        Computers   = $script:AutoChart08LoginActivityCsvComputers 
+                        Computers   = $script:AutoChart08LoginActivityCsvComputers
                     }
                     $script:AutoChart08LoginActivityOverallDataResults += $script:AutoChart08LoginActivityDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -3963,12 +3963,12 @@ $script:AutoChart08LoginActivity.Series["Memory Used"].Color             = 'Purp
             else {
                 $script:AutoChart08LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart08LoginActivityTitle.Text = "Memory Used`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart08
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart08LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart08LoginActivity.Location.X + $($FormScale * 5)
@@ -3977,7 +3977,7 @@ $script:AutoChart08LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart08LoginActivityOptionsButton
-$script:AutoChart08LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart08LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart08LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart08LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart08LoginActivity.Controls.Add($script:AutoChart08LoginActivityManipulationPanel)
@@ -4016,20 +4016,20 @@ $script:AutoChart08LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart08LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart08LoginActivityOverallDataResults.count))                
+    $script:AutoChart08LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart08LoginActivityOverallDataResults.count))
     $script:AutoChart08LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart08LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart08LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart08LoginActivityTrimOffFirstTrackBar.Value
         $script:AutoChart08LoginActivityTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart08LoginActivityTrimOffFirstTrackBar.Value)"
         $script:AutoChart08LoginActivity.Series["Memory Used"].Points.Clear()
-        $script:AutoChart08LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08LoginActivity.Series["Memory Used"].Points.AddXY($_.DataField.MemoryUsed,$_.UniqueCount)}    
+        $script:AutoChart08LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08LoginActivity.Series["Memory Used"].Points.AddXY($_.DataField.MemoryUsed,$_.UniqueCount)}
     })
     $script:AutoChart08LoginActivityTrimOffFirstGroupBox.Controls.Add($script:AutoChart08LoginActivityTrimOffFirstTrackBar)
 $script:AutoChart08LoginActivityManipulationPanel.Controls.Add($script:AutoChart08LoginActivityTrimOffFirstGroupBox)
@@ -4050,7 +4050,7 @@ $script:AutoChart08LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -4073,11 +4073,11 @@ $script:AutoChart08LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart08LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart08LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart08LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart08LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -4103,7 +4103,7 @@ CommonButtonSettings -Button $script:AutoChart08LoginActivity3DToggleButton
 $script:AutoChart08LoginActivity3DInclination = 0
 $script:AutoChart08LoginActivity3DToggleButton.Add_Click({
     $script:AutoChart08LoginActivity3DInclination += 10
-    if ( $script:AutoChart08LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart08LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart08LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart08LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart08LoginActivity3DInclination
         $script:AutoChart08LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart08LoginActivity3DInclination)"
@@ -4112,12 +4112,12 @@ $script:AutoChart08LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart08LoginActivity3DInclination -le 90 ) {
         $script:AutoChart08LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart08LoginActivity3DInclination
-        $script:AutoChart08LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart08LoginActivity3DInclination)" 
+        $script:AutoChart08LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart08LoginActivity3DInclination)"
 #        $script:AutoChart08LoginActivity.Series["Memory Used"].Points.Clear()
 #        $script:AutoChart08LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08LoginActivity.Series["Memory Used"].Points.AddXY($_.DataField.MemoryUsed,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart08LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart08LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart08LoginActivity3DInclination = 0
         $script:AutoChart08LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart08LoginActivity3DInclination
         $script:AutoChart08LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -4149,7 +4149,7 @@ $script:AutoChart08LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart08 {    
+function script:InvestigateDifference-AutoChart08 {
     # List of Positive Endpoints that positively match
     $script:AutoChart08LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'MemoryUsed' -eq $($script:AutoChart08LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart08LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -4157,7 +4157,7 @@ function script:InvestigateDifference-AutoChart08 {
 
     # List of all endpoints within the csv file
     $script:AutoChart08LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart08LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart08LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart08LoginActivityImportCsvPosResults) { $script:AutoChart08LoginActivityImportCsvNegResults += $Endpoint } }
@@ -4225,10 +4225,10 @@ $script:AutoChart08LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart08LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart08LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart08LoginActivityInvestDiffExecuteButton 
+    CommonButtonSettings -Button $script:AutoChart08LoginActivityInvestDiffExecuteButton
     $script:AutoChart08LoginActivityInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart08 }})
     $script:AutoChart08LoginActivityInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart08 })
 
@@ -4240,7 +4240,7 @@ $script:AutoChart08LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart08LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart08LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart08LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -4252,7 +4252,7 @@ $script:AutoChart08LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart08LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -4284,7 +4284,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart08LoginActivityManipulationPanel.controls.Add($script:AutoChart08LoginActivityCheckDiffButton)
-    
+
 
 $AutoChart08ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -4306,7 +4306,7 @@ $script:AutoChart08LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart08LoginActivityOpenInShell
-$script:AutoChart08LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart08LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart08LoginActivityManipulationPanel.controls.Add($script:AutoChart08LoginActivityOpenInShell)
 
 
@@ -4318,7 +4318,7 @@ $script:AutoChart08LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart08LoginActivityViewResults
-$script:AutoChart08LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart08LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart08LoginActivityManipulationPanel.controls.Add($script:AutoChart08LoginActivityViewResults)
 
 
@@ -4341,7 +4341,7 @@ $script:AutoChart08LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart08LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart08LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart08LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart08LoginActivitySaveButton.Location.Y + $script:AutoChart08LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -4396,7 +4396,7 @@ $script:AutoChart09LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart09LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart09LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -4414,7 +4414,7 @@ $script:AutoChart09LoginActivityArea.Area3DStyle.Inclination = 75
 $script:AutoChart09LoginActivity.ChartAreas.Add($script:AutoChart09LoginActivityArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart09LoginActivity.Series.Add("Profile Loaded")  
+$script:AutoChart09LoginActivity.Series.Add("Profile Loaded")
 $script:AutoChart09LoginActivity.Series["Profile Loaded"].Enabled           = $True
 $script:AutoChart09LoginActivity.Series["Profile Loaded"].BorderWidth       = 1
 $script:AutoChart09LoginActivity.Series["Profile Loaded"].IsVisibleInLegend = $false
@@ -4452,7 +4452,7 @@ $script:AutoChart09LoginActivity.Series["Profile Loaded"].Color             = 'Y
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.ProfileLoaded) -eq $DataField.ProfileLoaded) {
                             $Count += 1
-                            if ( $script:AutoChart09LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart09LoginActivityCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart09LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart09LoginActivityCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart09LoginActivityUniqueCount = $script:AutoChart09LoginActivityCsvComputers.Count
@@ -4460,7 +4460,7 @@ $script:AutoChart09LoginActivity.Series["Profile Loaded"].Color             = 'Y
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart09LoginActivityUniqueCount
-                        Computers   = $script:AutoChart09LoginActivityCsvComputers 
+                        Computers   = $script:AutoChart09LoginActivityCsvComputers
                     }
                     $script:AutoChart09LoginActivityOverallDataResults += $script:AutoChart09LoginActivityDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -4474,12 +4474,12 @@ $script:AutoChart09LoginActivity.Series["Profile Loaded"].Color             = 'Y
             else {
                 $script:AutoChart09LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart09LoginActivityTitle.Text = "Profile Loaded`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart09
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart09LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart09LoginActivity.Location.X + $($FormScale * 5)
@@ -4488,7 +4488,7 @@ $script:AutoChart09LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart09LoginActivityOptionsButton
-$script:AutoChart09LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart09LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart09LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart09LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart09LoginActivity.Controls.Add($script:AutoChart09LoginActivityManipulationPanel)
@@ -4527,20 +4527,20 @@ $script:AutoChart09LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart09LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart09LoginActivityOverallDataResults.count))                
+    $script:AutoChart09LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart09LoginActivityOverallDataResults.count))
     $script:AutoChart09LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart09LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart09LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart09LoginActivityTrimOffFirstTrackBar.Value
         $script:AutoChart09LoginActivityTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart09LoginActivityTrimOffFirstTrackBar.Value)"
         $script:AutoChart09LoginActivity.Series["Profile Loaded"].Points.Clear()
-        $script:AutoChart09LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09LoginActivity.Series["Profile Loaded"].Points.AddXY($_.DataField.ProfileLoaded,$_.UniqueCount)}    
+        $script:AutoChart09LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09LoginActivity.Series["Profile Loaded"].Points.AddXY($_.DataField.ProfileLoaded,$_.UniqueCount)}
     })
     $script:AutoChart09LoginActivityTrimOffFirstGroupBox.Controls.Add($script:AutoChart09LoginActivityTrimOffFirstTrackBar)
 $script:AutoChart09LoginActivityManipulationPanel.Controls.Add($script:AutoChart09LoginActivityTrimOffFirstGroupBox)
@@ -4561,7 +4561,7 @@ $script:AutoChart09LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -4584,11 +4584,11 @@ $script:AutoChart09LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart09LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart09LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart09LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart09LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -4614,7 +4614,7 @@ CommonButtonSettings -Button $script:AutoChart09LoginActivity3DToggleButton
 $script:AutoChart09LoginActivity3DInclination = 0
 $script:AutoChart09LoginActivity3DToggleButton.Add_Click({
     $script:AutoChart09LoginActivity3DInclination += 10
-    if ( $script:AutoChart09LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart09LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart09LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart09LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart09LoginActivity3DInclination
         $script:AutoChart09LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart09LoginActivity3DInclination)"
@@ -4623,12 +4623,12 @@ $script:AutoChart09LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart09LoginActivity3DInclination -le 90 ) {
         $script:AutoChart09LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart09LoginActivity3DInclination
-        $script:AutoChart09LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart09LoginActivity3DInclination)" 
+        $script:AutoChart09LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart09LoginActivity3DInclination)"
 #        $script:AutoChart09LoginActivity.Series["Profile Loaded"].Points.Clear()
 #        $script:AutoChart09LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09LoginActivity.Series["Profile Loaded"].Points.AddXY($_.DataField.ProfileLoaded,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart09LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart09LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart09LoginActivity3DInclination = 0
         $script:AutoChart09LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart09LoginActivity3DInclination
         $script:AutoChart09LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -4660,7 +4660,7 @@ $script:AutoChart09LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart09 {    
+function script:InvestigateDifference-AutoChart09 {
     # List of Positive Endpoints that positively match
     $script:AutoChart09LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ProfileLoaded' -eq $($script:AutoChart09LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart09LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -4668,7 +4668,7 @@ function script:InvestigateDifference-AutoChart09 {
 
     # List of all endpoints within the csv file
     $script:AutoChart09LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart09LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart09LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart09LoginActivityImportCsvPosResults) { $script:AutoChart09LoginActivityImportCsvNegResults += $Endpoint } }
@@ -4736,7 +4736,7 @@ $script:AutoChart09LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart09LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart09LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
     CommonButtonSettings -Button $script:AutoChart09LoginActivityInvestDiffExecuteButton
@@ -4751,7 +4751,7 @@ $script:AutoChart09LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart09LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart09LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart09LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -4763,7 +4763,7 @@ $script:AutoChart09LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart09LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -4795,7 +4795,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart09LoginActivityManipulationPanel.controls.Add($script:AutoChart09LoginActivityCheckDiffButton)
-    
+
 
 $AutoChart09ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -4817,7 +4817,7 @@ $script:AutoChart09LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart09LoginActivityOpenInShell
-$script:AutoChart09LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart09LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart09LoginActivityManipulationPanel.controls.Add($script:AutoChart09LoginActivityOpenInShell)
 
 
@@ -4829,7 +4829,7 @@ $script:AutoChart09LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart09LoginActivityViewResults
-$script:AutoChart09LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart09LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart09LoginActivityManipulationPanel.controls.Add($script:AutoChart09LoginActivityViewResults)
 
 
@@ -4852,7 +4852,7 @@ $script:AutoChart09LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart09LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart09LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart09LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart09LoginActivitySaveButton.Location.Y + $script:AutoChart09LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -4867,7 +4867,7 @@ $script:AutoChart09LoginActivityNoticeTextbox = New-Object System.Windows.Forms.
 $script:AutoChart09LoginActivityManipulationPanel.Controls.Add($script:AutoChart09LoginActivityNoticeTextbox)
 
 $script:AutoChart09LoginActivity.Series["Profile Loaded"].Points.Clear()
-$script:AutoChart09LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09LoginActivity.Series["Profile Loaded"].Points.AddXY($_.DataField.ProfileLoaded,$_.UniqueCount)}    
+$script:AutoChart09LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09LoginActivity.Series["Profile Loaded"].Points.AddXY($_.DataField.ProfileLoaded,$_.UniqueCount)}
 
 
 
@@ -4907,7 +4907,7 @@ $script:AutoChart10LoginActivity = New-object System.Windows.Forms.DataVisualiza
 }
 $script:AutoChart10LoginActivity.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart10LoginActivityTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -4925,7 +4925,7 @@ $script:AutoChart10LoginActivityArea.Area3DStyle.Inclination = 75
 $script:AutoChart10LoginActivity.ChartAreas.Add($script:AutoChart10LoginActivityArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart10LoginActivity.Series.Add("Compression Mode")  
+$script:AutoChart10LoginActivity.Series.Add("Compression Mode")
 $script:AutoChart10LoginActivity.Series["Compression Mode"].Enabled           = $True
 $script:AutoChart10LoginActivity.Series["Compression Mode"].BorderWidth       = 1
 $script:AutoChart10LoginActivity.Series["Compression Mode"].IsVisibleInLegend = $false
@@ -4963,7 +4963,7 @@ $script:AutoChart10LoginActivity.Series["Compression Mode"].Color             = 
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.CompressionMode) -eq $DataField.CompressionMode) {
                             $Count += 1
-                            if ( $script:AutoChart10LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart10LoginActivityCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart10LoginActivityCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart10LoginActivityCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart10LoginActivityUniqueCount = $script:AutoChart10LoginActivityCsvComputers.Count
@@ -4971,7 +4971,7 @@ $script:AutoChart10LoginActivity.Series["Compression Mode"].Color             = 
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart10LoginActivityUniqueCount
-                        Computers   = $script:AutoChart10LoginActivityCsvComputers 
+                        Computers   = $script:AutoChart10LoginActivityCsvComputers
                     }
                     $script:AutoChart10LoginActivityOverallDataResults += $script:AutoChart10LoginActivityDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -4985,12 +4985,12 @@ $script:AutoChart10LoginActivity.Series["Compression Mode"].Color             = 
             else {
                 $script:AutoChart10LoginActivityTitle.ForeColor = 'Red'
                 $script:AutoChart10LoginActivityTitle.Text = "Compression Mode`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart10
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart10LoginActivityOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart10LoginActivity.Location.X + $($FormScale * 5)
@@ -4999,7 +4999,7 @@ $script:AutoChart10LoginActivityOptionsButton = New-Object Windows.Forms.Button 
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart10LoginActivityOptionsButton
-$script:AutoChart10LoginActivityOptionsButton.Add_Click({  
+$script:AutoChart10LoginActivityOptionsButton.Add_Click({
     if ($script:AutoChart10LoginActivityOptionsButton.Text -eq 'Options v') {
         $script:AutoChart10LoginActivityOptionsButton.Text = 'Options ^'
         $script:AutoChart10LoginActivity.Controls.Add($script:AutoChart10LoginActivityManipulationPanel)
@@ -5038,20 +5038,20 @@ $script:AutoChart10LoginActivityTrimOffFirstGroupBox = New-Object System.Windows
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart10LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart10LoginActivityOverallDataResults.count))                
+    $script:AutoChart10LoginActivityTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart10LoginActivityOverallDataResults.count))
     $script:AutoChart10LoginActivityTrimOffFirstTrackBarValue   = 0
     $script:AutoChart10LoginActivityTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart10LoginActivityTrimOffFirstTrackBarValue = $script:AutoChart10LoginActivityTrimOffFirstTrackBar.Value
         $script:AutoChart10LoginActivityTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart10LoginActivityTrimOffFirstTrackBar.Value)"
         $script:AutoChart10LoginActivity.Series["Compression Mode"].Points.Clear()
-        $script:AutoChart10LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10LoginActivity.Series["Compression Mode"].Points.AddXY($_.DataField.CompressionMode,$_.UniqueCount)}    
+        $script:AutoChart10LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10LoginActivity.Series["Compression Mode"].Points.AddXY($_.DataField.CompressionMode,$_.UniqueCount)}
     })
     $script:AutoChart10LoginActivityTrimOffFirstGroupBox.Controls.Add($script:AutoChart10LoginActivityTrimOffFirstTrackBar)
 $script:AutoChart10LoginActivityManipulationPanel.Controls.Add($script:AutoChart10LoginActivityTrimOffFirstGroupBox)
@@ -5072,7 +5072,7 @@ $script:AutoChart10LoginActivityTrimOffLastGroupBox = New-Object System.Windows.
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -5095,11 +5095,11 @@ $script:AutoChart10LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart10LoginActivityChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart10LoginActivityTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart10LoginActivityTrimOffFirstGroupBox.Location.Y + $script:AutoChart10LoginActivityTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -5125,7 +5125,7 @@ CommonButtonSettings -Button $script:AutoChart10LoginActivity3DToggleButton
 $script:AutoChart10LoginActivity3DInclination = 0
 $script:AutoChart10LoginActivity3DToggleButton.Add_Click({
     $script:AutoChart10LoginActivity3DInclination += 10
-    if ( $script:AutoChart10LoginActivity3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart10LoginActivity3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart10LoginActivityArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart10LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart10LoginActivity3DInclination
         $script:AutoChart10LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart10LoginActivity3DInclination)"
@@ -5134,12 +5134,12 @@ $script:AutoChart10LoginActivity3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart10LoginActivity3DInclination -le 90 ) {
         $script:AutoChart10LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart10LoginActivity3DInclination
-        $script:AutoChart10LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart10LoginActivity3DInclination)" 
+        $script:AutoChart10LoginActivity3DToggleButton.Text  = "3D On ($script:AutoChart10LoginActivity3DInclination)"
 #        $script:AutoChart10LoginActivity.Series["Compression Mode"].Points.Clear()
 #        $script:AutoChart10LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10LoginActivity.Series["Compression Mode"].Points.AddXY($_.DataField.CompressionMode,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart10LoginActivity3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart10LoginActivity3DToggleButton.Text  = "3D Off"
         $script:AutoChart10LoginActivity3DInclination = 0
         $script:AutoChart10LoginActivityArea.Area3DStyle.Inclination = $script:AutoChart10LoginActivity3DInclination
         $script:AutoChart10LoginActivityArea.Area3DStyle.Enable3D    = $false
@@ -5171,7 +5171,7 @@ $script:AutoChart10LoginActivityManipulationPanel.Controls.Add($script:AutoChart
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart10 {    
+function script:InvestigateDifference-AutoChart10 {
     # List of Positive Endpoints that positively match
     $script:AutoChart10LoginActivityImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'CompressionMode' -eq $($script:AutoChart10LoginActivityInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart10LoginActivityInvestDiffPosResultsTextBox.Text = ''
@@ -5179,7 +5179,7 @@ function script:InvestigateDifference-AutoChart10 {
 
     # List of all endpoints within the csv file
     $script:AutoChart10LoginActivityImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart10LoginActivityImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart10LoginActivityImportCsvAll) { if ($Endpoint -notin $script:AutoChart10LoginActivityImportCsvPosResults) { $script:AutoChart10LoginActivityImportCsvNegResults += $Endpoint } }
@@ -5247,7 +5247,7 @@ $script:AutoChart10LoginActivityCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart10LoginActivityInvestDiffDropDownComboBox.Location.y + $script:AutoChart10LoginActivityInvestDiffDropDownComboBox.Size.Height + $($FormScale * 5) }
-        Width    = $Formscale * 100 
+        Width    = $Formscale * 100
         Height   = $Formscale * 20
     }
     CommonButtonSettings -Button $script:AutoChart10LoginActivityInvestDiffExecuteButton
@@ -5262,7 +5262,7 @@ $script:AutoChart10LoginActivityCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart10LoginActivityInvestDiffPosResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart10LoginActivityInvestDiffPosResultsLabel.Location.y + $script:AutoChart10LoginActivityInvestDiffPosResultsLabel.Size.Height }
@@ -5274,7 +5274,7 @@ $script:AutoChart10LoginActivityCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart10LoginActivityInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -5306,7 +5306,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart10LoginActivityManipulationPanel.controls.Add($script:AutoChart10LoginActivityCheckDiffButton)
-    
+
 
 $AutoChart10ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -5328,7 +5328,7 @@ $script:AutoChart10LoginActivityOpenInShell = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart10LoginActivityOpenInShell
-$script:AutoChart10LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart10LoginActivityOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart10LoginActivityManipulationPanel.controls.Add($script:AutoChart10LoginActivityOpenInShell)
 
 
@@ -5340,7 +5340,7 @@ $script:AutoChart10LoginActivityViewResults = New-Object Windows.Forms.Button -P
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart10LoginActivityViewResults
-$script:AutoChart10LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart10LoginActivityViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart10LoginActivityManipulationPanel.controls.Add($script:AutoChart10LoginActivityViewResults)
 
 
@@ -5363,7 +5363,7 @@ $script:AutoChart10LoginActivityManipulationPanel.controls.Add($script:AutoChart
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart10LoginActivityNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart10LoginActivitySaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart10LoginActivitySaveButton.Location.X
                         Y = $script:AutoChart10LoginActivitySaveButton.Location.Y + $script:AutoChart10LoginActivitySaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -5378,7 +5378,9 @@ $script:AutoChart10LoginActivityNoticeTextbox = New-Object System.Windows.Forms.
 $script:AutoChart10LoginActivityManipulationPanel.Controls.Add($script:AutoChart10LoginActivityNoticeTextbox)
 
 $script:AutoChart10LoginActivity.Series["Compression Mode"].Points.Clear()
-$script:AutoChart10LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10LoginActivity.Series["Compression Mode"].Points.AddXY($_.DataField.CompressionMode,$_.UniqueCount)}    
+$script:AutoChart10LoginActivityOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10LoginActivityTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10LoginActivityTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10LoginActivity.Series["Compression Mode"].Points.AddXY($_.DataField.CompressionMode,$_.UniqueCount)}
+
+
 
 
 

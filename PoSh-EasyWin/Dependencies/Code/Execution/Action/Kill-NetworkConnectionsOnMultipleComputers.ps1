@@ -24,7 +24,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
     }
     elseif ($CollectNewNetworkConnections) {
         Generate-ComputerList
-        
+
         if ($script:ComputerList.count -eq 0){
             [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect network connections from. Alternatively, you can select a CSV file from a previous network connection collection.','Error: No Endpoints Selected')
         }
@@ -32,10 +32,10 @@ function Kill-NetworkConnectionsOnMultipleComputers {
             if ($ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 $GetNetworkConnectionsTCPEnriched = {
-                    if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {                
+                    if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {
                         $Processes           = Get-WmiObject -Class Win32_Process
                         $Connections         = Get-NetTCPConnection
-                        
+
                         foreach ($Conn in $Connections) {
                             foreach ($Proc in $Processes) {
                                 if ($Conn.OwningProcess -eq $Proc.ProcessId) {
@@ -48,7 +48,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
                                     $Conn | Add-Member -MemberType NoteProperty 'CommandLine'     $Proc.CommandLine
                                     $Conn | Add-Member -MemberType NoteProperty 'ExecutablePath'  $proc.ExecutablePath
                                     $Conn | Add-Member -MemberType NoteProperty 'ScriptNote'       'Get-NetTCPConnection Enhanced'
-                    
+
                                     if ($Conn.ExecutablePath -ne $null -AND -NOT $NoHash) {
                                         $MD5Hash = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
                                         $Hash    = [System.BitConverter]::ToString($MD5Hash.ComputeHash([System.IO.File]::ReadAllBytes($proc.ExecutablePath)))
@@ -84,10 +84,10 @@ function Kill-NetworkConnectionsOnMultipleComputers {
                                 $Connection | Add-Member -MemberType NoteProperty 'ProcessName'     $proc.Caption
                                 $Connection | Add-Member -MemberType NoteProperty 'ExecutablePath'  $proc.ExecutablePath
                                 $Connection | Add-Member -MemberType NoteProperty 'CommandLine'     $proc.CommandLine
-                                $Connection | Add-Member -MemberType NoteProperty 'CreationTime'    ([WMI] '').ConvertToDateTime($proc.CreationDate) 
+                                $Connection | Add-Member -MemberType NoteProperty 'CreationTime'    ([WMI] '').ConvertToDateTime($proc.CreationDate)
                                 $Connection | Add-Member -MemberType NoteProperty 'Duration'        ((New-TimeSpan -Start ([WMI] '').ConvertToDateTime($proc.CreationDate)).ToString())
                                 $Connection | Add-Member -MemberType NoteProperty 'ScriptNote'      'NetStat.exe Enhanced'
-                                
+
                                 if ($Connection.ExecutablePath -ne $null -AND -NOT $NoHash) {
                                     $MD5Hash = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
                                     $Hash    = [System.BitConverter]::ToString($MD5Hash.ComputeHash([System.IO.File]::ReadAllBytes($proc.ExecutablePath)))
@@ -98,7 +98,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
                                 }
                                 $Connection
                             }
-                            $NetStat 
+                            $NetStat
                         }
                         $Connections = Get-Netstat
                     }
@@ -130,7 +130,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Multi-Endpoint Network Connection Killer")
 
-    foreach ($Computer in $Computers) {    
+    foreach ($Computer in $Computers) {
         $Session = $null
 
         try {
@@ -165,8 +165,8 @@ function Kill-NetworkConnectionsOnMultipleComputers {
                     $RemotePort    = $Connection.RemotePort
                     $ProcessName   = $Connection.ProcessName
                     $ProcessID     = $Connection.ProcessID
-                   
-                    Invoke-Command -ScriptBlock { 
+
+                    Invoke-Command -ScriptBlock {
                         param($ProcessID)
                         Stop-Process -Id $ProcessID -Force
                     } -ArgumentList $ProcessID -Session $Session
@@ -183,11 +183,13 @@ function Kill-NetworkConnectionsOnMultipleComputers {
     }
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
-    
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword 
+        Generate-NewRollingPassword
     }
 }
+
+
 
 

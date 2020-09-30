@@ -8,3 +8,5 @@ $CommandsTreeviewDeselectAllButtonAdd_MouseHover = {
 +  Commands and queries in other Tabs must be manually unchecked.
 "@
 }
+
+

@@ -16,32 +16,32 @@ if ($ExeScriptScriptOnlyCheckbox.checked -eq $false) {
     if ($ExeScriptSelectDirRadioButton.checked){
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[+] Copying the directory '$($ExeScriptSelectExecutableTextBox.Text)' and its contents to:"
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copying the directory '$($ExeScriptSelectExecutableTextBox.Text)' and its contents to:")
-        $PoShEasyWin.Refresh()        
+        $PoShEasyWin.Refresh()
     }
     elseif ($ExeScriptSelectFileRadioButton.checked){
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[+] Copying the file '$($ExeScriptSelectExecutableTextBox.Text)' to:"
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copying the file '$($ExeScriptSelectExecutableTextBox.Text)' to:")
-        $PoShEasyWin.Refresh()        
+        $PoShEasyWin.Refresh()
     }
 
     foreach ($Session in $PSSession) {
-        try { 
+        try {
             if ($ExeScriptSelectDirRadioButton.checked -eq $true) {
-                Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "$TargetFolder" -Recurse -ToSession $Session -Force -ErrorAction Stop 
+                Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "$TargetFolder" -Recurse -ToSession $Session -Force -ErrorAction Stop
                 $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination $TargetFolder -Recurse -ToSession $Session -Force -ErrorAction Stop"            
+                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination $TargetFolder -Recurse -ToSession $Session -Force -ErrorAction Stop"
             }
             elseif ($ExeScriptSelectFileRadioButton.checked -eq $true) {
-                Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop 
+                Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop
                 $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination $TargetFolder -ToSession $Session -Force -ErrorAction Stop"    
+                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination $TargetFolder -ToSession $Session -Force -ErrorAction Stop"
             }
             $PoShEasyWin.Refresh()
 
             $script:ProgressBarEndpointsProgressBar.Value += 1
             $PoShEasyWin.Refresh()
         }
-        catch { 
+        catch {
             $ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy Error:  $($_.Exception)")
             Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy Error: $($_.Exception)"
             $PoShEasyWin.Refresh()
@@ -59,14 +59,14 @@ $script:ProgressBarEndpointsProgressBar.Value = 0
 foreach ($Session in $PSSession) {
     try {
         try {
-            Invoke-Command -FilePath $ExeScriptSelectScriptPath -Session $Session  
+            Invoke-Command -FilePath $ExeScriptSelectScriptPath -Session $Session
         }
         catch{}
         $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
-        Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Invoke-Command -FilePath $ExeScriptSelectScriptPath -Session $Session" 
+        Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Invoke-Command -FilePath $ExeScriptSelectScriptPath -Session $Session"
         $PoShEasyWin.Refresh()
     }
-    catch { 
+    catch {
         $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Execution Error:  $($_.Exception)")
         Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Execution Error: $($_.Exception)"
         $PoShEasyWin.Refresh()
@@ -82,4 +82,6 @@ $PoShEasyWin.Refresh()
 $script:ProgressBarQueriesProgressBar.Value += 1
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+
+
 

@@ -30,7 +30,7 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
     }
     # Replaces the ' OR ' at the end of the varable with a closing )"
     $Filter = $EventLogsEventIDsManualEntryTextboxFilter -replace " OR $",")"
-    
+
     # Builds the Event Log Query Command
     $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
     if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
@@ -44,7 +44,7 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
     $EventLogQueryPipe = @"
 | Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
 "@
-    $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"    
+    $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"
     Invoke-Expression $EventLogQueryBuild
 }
 
@@ -78,3 +78,5 @@ $script:ProgressBarQueriesProgressBar.Value += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+
+

@@ -1,13 +1,13 @@
-$NetworkConnectionSearchRemotePortRichTextboxAdd_MouseEnter = { 
-    if ($this.text -eq "Enter Remote Ports; One Per Line") { 
-        $this.text = "" 
-    } 
+$NetworkConnectionSearchRemotePortRichTextboxAdd_MouseEnter = {
+    if ($this.text -eq "Enter Remote Ports; One Per Line") {
+        $this.text = ""
+    }
 }
 
-$NetworkConnectionSearchRemotePortRichTextboxAdd_MouseLeave = { 
-    if ($this.text -eq "") { 
-        $this.text = "Enter Remote Ports; One Per Line" 
-    } 
+$NetworkConnectionSearchRemotePortRichTextboxAdd_MouseLeave = {
+    if ($this.text -eq "") {
+        $this.text = "Enter Remote Ports; One Per Line"
+    }
 }
 
 $NetworkConnectionSearchRemotePortRichTextboxAdd_MouseHover = {
@@ -15,5 +15,7 @@ $NetworkConnectionSearchRemotePortRichTextboxAdd_MouseHover = {
 +  Check hosts for connections to one or more remote ports
 +  Enter Remote Ports
 +  One Per Line
-"@ 
+"@
 }
+
+

@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = 'SilentlyContinue'
+$ErrorActionPreference = 'SilentlyContinue'
 $CollectionTime     = Get-Date
 $Processes          = Get-WmiObject Win32_Process
 $Services           = Get-WmiObject Win32_Service
@@ -60,7 +60,7 @@ foreach ( $svc in $Services ) {
     }
 }
 
-# Create HashTable of Process Filepath's MD5Hash 
+# Create HashTable of Process Filepath's MD5Hash
 $MD5Hashtable = @{}
 foreach ( $Proc in $Processes ) {
     if ( $Proc.Path -and $Proc.Path -notin $MD5Hashtable.keys ) {
@@ -68,7 +68,7 @@ foreach ( $Proc in $Processes ) {
     }
 }
 
-# Create HashTable of Process Filepath's Authenticode Signature Information 
+# Create HashTable of Process Filepath's Authenticode Signature Information
 $TrackPaths  = @()
 $AuthenCodeSigStatus            = @{}
 $AuthenCodeSigSignerCertificate = @{}
@@ -106,7 +106,7 @@ function Write-ProcessTree($Process) {
     $ModuleCount           = $Modules.count
 
     $ThreadCount           = $EnrichedProcess.Threads.count
-    
+
     $Owner                 = $Process.GetOwner().Domain.ToString() + "\"+ $Process.GetOwner().User.ToString()
     $OwnerSID              = $Process.GetOwnerSid().Sid.ToString()
     $EnrichedProcess `
@@ -125,7 +125,7 @@ function Write-ProcessTree($Process) {
     | Add-Member NoteProperty 'ModuleCount'            $ModuleCount       -PassThru -Force `
     | Add-Member NoteProperty 'ThreadCount'            $ThreadCount       -PassThru -Force `
     | Add-Member NoteProperty 'Owner'                  $Owner             -PassThru -Force `
-    | Add-Member NoteProperty 'OwnerSID'               $OwnerSID          -PassThru -Force 
+    | Add-Member NoteProperty 'OwnerSID'               $OwnerSID          -PassThru -Force
 }
 
 $Processes | Foreach-Object { Write-ProcessTree -Process $PSItem} | Select Name, ProcessID, ParentProcessName, ParentProcessID, ServiceInfo,`
@@ -140,3 +140,4 @@ WorkingSet, @{Name='MemoryUsage';Expression={
 MD5Hash, SignerCertificate, StatusMessage, SignerCompany, Company, Product, ProductVersion, Description, `
 Modules, ModuleCount, Threads, ThreadCount, Handle, Handles, HandleCount, `
 Owner, OwnerSID
+

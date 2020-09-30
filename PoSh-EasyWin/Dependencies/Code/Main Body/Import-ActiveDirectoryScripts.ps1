@@ -1,7 +1,7 @@
 Function Import-ActiveDirectoryScripts {
     Foreach ($script in (Get-ChildItem -Path "$QueryCommandsAndScripts\Scripts-AD" | Where-Object {$_.Extension -eq '.ps1'})) {
         $CollectionName = $script.basename
-        $script:AllActiveDirectoryCommands += [PSCustomObject]@{ 
+        $script:AllActiveDirectoryCommands += [PSCustomObject]@{
             Name                 = $CollectionName
             Type                 = "script"
             Command_WinRM_Script = "Invoke-Command -FilePath '$($script.FullName)'"
@@ -12,3 +12,4 @@ Function Import-ActiveDirectoryScripts {
         }
     }
 }
+

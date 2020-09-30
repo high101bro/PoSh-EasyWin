@@ -17,11 +17,11 @@ Invoke-Command -ScriptBlock {
         param($DirectoryPath,$MaximumDepth)
         if ([int]$MaximumDepth -gt 0) {
             Invoke-Expression $GetChildItemDepth
-            
+
             # Older operating systems don't support the -depth parameter, needed to create a function to do so for backwards compatability
             #Get-ChildItem -Path $DirectoryPath -Depth $MaximumDepth
-            
-            Get-ChildItemDepth -Path $DirectoryPath -Depth $MaximumDepth -Force -ErrorAction SilentlyContinue  
+
+            Get-ChildItemDepth -Path $DirectoryPath -Depth $MaximumDepth -Force -ErrorAction SilentlyContinue
         }
         else {
             Get-ChildItem -Path $DirectoryPath -Force -ErrorAction SilentlyContinue
@@ -43,4 +43,6 @@ $script:ProgressBarQueriesProgressBar.Value   += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+
+
 

@@ -13,7 +13,7 @@ $NetworkConnectionSearchProcess = $NetworkConnectionSearchProcessRichTextbox.Lin
 
 $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Network Connection - Remote Process Name"
 
-#Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} -argumentlist $null,$null,$NetworkConnectionSearchProcess -Session $PSSession | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force                
+#Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} -argumentlist $null,$null,$NetworkConnectionSearchProcess -Session $PSSession | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
 Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
 -ArgumentList @($null,$null,$null,$NetworkConnectionSearchProcess) `
 -Session $PSSession `
@@ -30,3 +30,5 @@ $script:ProgressBarQueriesProgressBar.Value += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+
+

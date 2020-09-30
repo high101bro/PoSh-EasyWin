@@ -32,3 +32,5 @@ $script:ProgressBarQueriesProgressBar.Value   += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+
+

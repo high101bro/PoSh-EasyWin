@@ -1,6 +1,6 @@
 <#
     .Description
-    This iterates though the commands selected and determines how to exactly execute them 
+    This iterates though the commands selected and determines how to exactly execute them
     based off their labeled protocol and command type.
 #>
 Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
@@ -61,11 +61,11 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $OutputFileFileType = "txt"
     }
 
-    
+
     $CommandName = $Command.Name
     $CommandType = $Command.Type
 
-  
+
     # Checks for the file output type, removes previous results with a file, then executes the commands
     if ( $Command.Type -eq "(WinRM) Script" ) {
         $OutputFilePath = "$script:CollectedDataTimeStampDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType"
@@ -79,7 +79,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $SessionData | Export-Csv -Path "$OutputFilePath.csv" -NoTypeInformation -Force
         $SessionData | Export-Clixml -Path "$OutputFilePath.xml"
         Remove-Variable -Name SessionData
-    }   
+    }
     elseif ( $OutputFileFileType -eq "csv" ) {
         $OutputFilePath = "$script:CollectedDataTimeStampDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType"
         Remove-Item -Path "$OutputFilePath.csv" -Force -ErrorAction SilentlyContinue
@@ -117,3 +117,5 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 $AutoCreateDashboardChartButton.BackColor = 'LightGreen'
 $AutoCreateMultiSeriesChartButton.BackColor = 'LightGreen'
 $BuildChartButton.BackColor = 'LightGreen'
+
+

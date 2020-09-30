@@ -1,8 +1,8 @@
-$AutoCreateDashboardChartButtonAdd_Click = { 
+$AutoCreateDashboardChartButtonAdd_Click = {
     # https://bytecookie.wordpress.com/2012/04/13/tutorial-powershell-and-microsoft-chart-controls-or-how-to-spice-up-your-reports/
     # https://blogs.msdn.microsoft.com/alexgor/2009/03/27/aligning-multiple-series-with-categorical-values/
     # Auto Charts Select Property Function
- 
+
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
     [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing")
 
@@ -74,7 +74,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         "Threat Hunting with Deep Blue"
     )
     ForEach ($Item in $AutoChartsAvailable) { [void] $AutoChartSelectChartComboBox.Items.Add($Item) }
-    $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox) 
+    $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox)
 
 
     #----------------------------
@@ -104,7 +104,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
                       Height = $FormScale * 22 }
     }
     CommonButtonSettings -Button $AutoChartsExecuteButton
-    $AutoChartsExecuteButton.Add_Click({ 
+    $AutoChartsExecuteButton.Add_Click({
         if ($AutoChartSelectChartComboBox.text -eq 'Select A Chart') { $AutoChartSelectChartComboBox.ForeColor = 'Red' }
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
         Launch-AutoChartsViewCharts
@@ -113,24 +113,24 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         #####################################################################################################################################
         #####################################################################################################################################
         ##
-        ## Auto Create Charts Form 
+        ## Auto Create Charts Form
         ##
-        #####################################################################################################################################             
+        #####################################################################################################################################
         #####################################################################################################################################
         $AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
             [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
-        $script:AutoChartsForm = New-Object Windows.Forms.Form -Property @{        
+        $script:AutoChartsForm = New-Object Windows.Forms.Form -Property @{
             Location = @{ X = $FormScale * 5
                           Y = $FormScale * 5 }
             Size     = @{ Width  = $PoShEasyWin.Size.Width    #1241
-                          Height = $PoShEasyWin.Size.Height } #638    
+                          Height = $PoShEasyWin.Size.Height } #638
             StartPosition = "CenterScreen"
             Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
             Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             Add_Closing = { $This.dispose() }
         }
-        
-        
+
+
         #####################################################################################################################################
         ##
         ## Auto Create Charts TabControl
@@ -143,7 +143,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             Location = @{ X = $FormScale * 5
                           Y = $FormScale * 5 }
             Size     = @{ Width  = $PoShEasyWin.Size.Width - $($FormScale * 25)
-                          Height = $PoShEasyWin.Size.Height - $($FormScale * 50) }        
+                          Height = $PoShEasyWin.Size.Height - $($FormScale * 50) }
         }
         $AutoChartsTabControl.ShowToolTips  = $True
         $AutoChartsTabControl.SelectedIndex = 0
@@ -152,77 +152,77 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         $script:AutoChartsForm.Controls.Add($AutoChartsTabControl)
 
         # Dashboard with multiple charts
-        if ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Quick View") { 
+        if ($AutoChartSelectChartComboBox.SelectedItem -eq "Dashboard Quick View") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Hunt.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Computers") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Computers") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryComputers.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Groups") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory Groups") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryGroups.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory User Accounts") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Active Directory User Accounts") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ActiveDirectoryUserAccounts.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Application Crashes") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Application Crashes") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ApplicationCrashes.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Login Activity") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Login Activity") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_LoginActivity.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Network Connections") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Network Connections") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_NetworkConnections.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Network Interfaces") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Network Interfaces") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_NetworkInterfaces.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Processes") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Processes") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Processes.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Security Patches") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Security Patches") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_SecurityPatches.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Services") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Services") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "SMB Shares") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "SMB Shares") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_SmbShare.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
-        }                
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Software") { 
+        }
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Software") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Software.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startups") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startups") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Startups.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue") { 
+        elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlue.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
@@ -230,12 +230,12 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         # Garbage Collection to free up memory
         [System.GC]::Collect()
     }
-    $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)   
+    $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)
     [void] $AutoChartsSelectionForm.ShowDialog()
 
     CommonButtonSettings -Button $OpenXmlResultsButton
     CommonButtonSettings -Button $OpenCsvResultsButton
-    
+
     CommonButtonSettings -Button $BuildChartButton
     CommonButtonSettings -Button $AutoCreateDashboardChartButton
     CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
@@ -245,8 +245,10 @@ $AutoCreateDashboardChartButtonAdd_MouseHover = {
     Show-ToolTip -Title "Dashboard Charts" -Icon "Info" -Message @"
 +  Utilizes PowerShell (v3) charts to visualize data.
 +  These charts are auto created from pre-selected CSV files and fields.
-+  The dashboard consists of multiple charts from the same CSV file and 
++  The dashboard consists of multiple charts from the same CSV file and
     are designed for easy analysis of data to identify outliers.
 +  Each chart can be modified and an image can be saved.
-"@ 
+"@
 }
+
+

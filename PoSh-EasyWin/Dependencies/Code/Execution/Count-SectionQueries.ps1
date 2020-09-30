@@ -1,11 +1,11 @@
 Function Count-SectionQueries {
     $script:SectionQueryCount = 0
- 
+
     if ($CustomQueryScriptBlockCheckBox.checked)                    { $script:SectionQueryCount++ }
     if ($RegistrySearchCheckbox.checked)                            { $script:SectionQueryCount++ }
     if ($FileSearchDirectoryListingCheckbox.Checked)                { $script:SectionQueryCount++ }
     if ($FileSearchFileSearchCheckbox.Checked)                      { $script:SectionQueryCount++ }
-    if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $script:SectionQueryCount++ } 
+    if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $script:SectionQueryCount++ }
     if ($SysinternalsSysmonCheckbox.Checked)                        { $script:SectionQueryCount++ }
     if ($SysinternalsAutorunsCheckbox.Checked)                      { $script:SectionQueryCount++ }
     if ($SysinternalsProcessMonitorCheckbox.Checked)                { $script:SectionQueryCount++ }
@@ -30,3 +30,4 @@ Function Count-SectionQueries {
         }
     }
 }
+

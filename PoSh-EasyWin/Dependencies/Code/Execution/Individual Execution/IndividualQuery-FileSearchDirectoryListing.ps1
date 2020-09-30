@@ -1,8 +1,8 @@
 $CollectionName = "Directory Listing"
-$CollectionCommandStartTime = Get-Date 
+$CollectionCommandStartTime = Get-Date
 
 $StatusListBox.Items.Clear()
-$StatusListBox.Items.Add("Query: $CollectionName")                    
+$StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
 foreach ($TargetComputer in $script:ComputerList) {
@@ -22,10 +22,10 @@ foreach ($TargetComputer in $script:ComputerList) {
                 param($DirectoryPath,$MaximumDepth)
                 if ([int]$MaximumDepth -gt 0) {
                     Invoke-Expression $GetChildItemDepth
-                    
+
                     # Older operating systems don't support the -depth parameter, needed to create a function to do so for backwards compatability
                     #Get-ChildItem -Path $DirectoryPath -Depth $MaximumDepth
-                    
+
                     Get-ChildItemDepth -Path $DirectoryPath -Depth $MaximumDepth `
                     | Select-Object PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer
                 }
@@ -35,7 +35,7 @@ foreach ($TargetComputer in $script:ComputerList) {
                 }
             }
             Get-DirectoryListing -DirectoryPath $DirectoryPath -MaximumDepth $MaximumDepth
-        
+
         } `
         -ArgumentList $DirectoryPath,$MaximumDepth,$GetChildItemDepth `
         -ComputerName $TargetComputer `
@@ -49,10 +49,10 @@ foreach ($TargetComputer in $script:ComputerList) {
                 param($DirectoryPath,$MaximumDepth)
                 if ([int]$MaximumDepth -gt 0) {
                     Invoke-Expression $GetChildItemDepth
-                    
+
                     # Older operating systems don't support the -depth parameter, needed to create a function to do so for backwards compatability
                     #Get-ChildItem -Path $DirectoryPath -Depth $MaximumDepth
-                    
+
                     Get-ChildItemDepth -Path $DirectoryPath -Depth $MaximumDepth `
                     | Select-Object PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer
                 }
@@ -62,7 +62,7 @@ foreach ($TargetComputer in $script:ComputerList) {
                 }
             }
             Get-DirectoryListing -DirectoryPath $DirectoryPath -MaximumDepth $MaximumDepth
-        
+
         } `
         -ArgumentList $DirectoryPath,$MaximumDepth,$GetChildItemDepth `
         -ComputerName $TargetComputer `
@@ -72,7 +72,7 @@ foreach ($TargetComputer in $script:ComputerList) {
 
 Monitor-Jobs -CollectionName $CollectionName
 
-$CollectionCommandEndTime  = Get-Date                    
+$CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
@@ -85,3 +85,5 @@ Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryT
 
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+
+

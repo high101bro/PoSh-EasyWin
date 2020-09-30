@@ -14,7 +14,7 @@ $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Pro
     AutoScroll    = $True
 }
 $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTab01)
-  
+
 # Searches though the all Collection Data Directories to find files that match
 $script:ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
 
@@ -28,7 +28,7 @@ $script:AutoChart01NetworkConnectionsCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Network Connections' -or $CSVFile -match 'NetworkConnections') { $script:AutoChart01NetworkConnectionsCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01NetworkConnectionsCSVFileMatch | Select-Object -Last 1
 $script:AutoChartDataSourceCsv = $null
 $script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartCSVFileMostRecentCollection
@@ -52,7 +52,7 @@ $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property 
     Size   = @{ Width  = $FormScale * 1150
                 Height = $FormScale * 25 }
     Font   = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
-    TextAlign = 'MiddleCenter' 
+    TextAlign = 'MiddleCenter'
 }
 
 
@@ -213,7 +213,7 @@ $AutoChartPullNewDataButton.Add_Click({
         $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
         $script:AutoChartOpenResultsOpenFileDialogfilename = $AutoChartOpenResultsOpenFileDialog.filename
         $script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
-    
+
         $script:AutoChartDataSourceCsvFileName = $AutoChartOpenResultsOpenFileDialog.filename
     }
 
@@ -240,7 +240,7 @@ $script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataEnrichedChec
 $script:AutoChartDataSourceXmlPath = $null
 function AutoChartOpenDataInShell {
     if ($script:AutoChartOpenResultsOpenFileDialogfilename) { $ViewImportResults = $script:AutoChartOpenResultsOpenFileDialogfilename -replace '.csv','.xml' }
-    else { $ViewImportResults = $script:AutoChartCSVFileMostRecentCollection -replace '.csv','.xml' } 
+    else { $ViewImportResults = $script:AutoChartCSVFileMostRecentCollection -replace '.csv','.xml' }
 
     if ($script:AutoChartDataSourceXmlPath) {
         $SavePath = Split-Path -Path $script:AutoChartDataSourceXmlPath
@@ -289,7 +289,7 @@ $script:AutoChart01NetworkConnections = New-object System.Windows.Forms.DataVisu
 }
 $script:AutoChart01NetworkConnections.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart01NetworkConnectionsTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -335,7 +335,7 @@ function Generate-AutoChart01NetworkConnections {
             }
             $script:AutoChart01NetworkConnectionsUniqueDataFields = $script:AutoChart01NetworkConnectionsUniqueDataFields `
             | Select-Object -Property 'LocalAddressPort' | Sort-Object {[string]$_.LocalAddressPort} -Unique
-            
+
             $script:AutoChartsProgressBar.ForeColor = 'Red'
             $script:AutoChartsProgressBar.Minimum = 0
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart01NetworkConnectionsUniqueDataFields.count
@@ -356,7 +356,7 @@ function Generate-AutoChart01NetworkConnections {
                     $Count = 0
                     $script:AutoChart01NetworkConnectionsCsvComputers = @()
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
-                        if ( 
+                        if (
                             ($Line.LocalAddress.split('.')[0..2] -join '.') -eq (($DataField.LocalAddressPort).split(':')[0].split('.')[0..2] -join '.') -and
                             $Line.LocalPort -eq (($DataField.LocalAddressPort).split(':')[1])
                             ) {
@@ -368,8 +368,8 @@ function Generate-AutoChart01NetworkConnections {
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart01NetworkConnectionsCsvComputers.Count
-                        Computers   = $script:AutoChart01NetworkConnectionsCsvComputers 
-                    }           
+                        Computers   = $script:AutoChart01NetworkConnectionsCsvComputers
+                    }
                     $script:AutoChart01NetworkConnectionsOverallDataResults += $script:AutoChart01NetworkConnectionsDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
@@ -387,12 +387,12 @@ function Generate-AutoChart01NetworkConnections {
             else {
                 $script:AutoChart01NetworkConnectionsTitle.ForeColor = 'Red'
                 $script:AutoChart01NetworkConnectionsTitle.Text = "IPv4 Ports Listening`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart01NetworkConnections
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart01NetworkConnectionsOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart01NetworkConnections.Location.X + $($FormScale * 5)
@@ -401,7 +401,7 @@ $script:AutoChart01NetworkConnectionsOptionsButton = New-Object Windows.Forms.Bu
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsOptionsButton
-$script:AutoChart01NetworkConnectionsOptionsButton.Add_Click({  
+$script:AutoChart01NetworkConnectionsOptionsButton.Add_Click({
     if ($script:AutoChart01NetworkConnectionsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart01NetworkConnectionsOptionsButton.Text = 'Options ^'
         $script:AutoChart01NetworkConnections.Controls.Add($script:AutoChart01NetworkConnectionsManipulationPanel)
@@ -441,14 +441,14 @@ $script:AutoChart01NetworkConnectionsTrimOffFirstGroupBoX = New-Object System.Wi
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart01NetworkConnectionsTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01NetworkConnectionsOverallDataResults.count))                
+    $script:AutoChart01NetworkConnectionsTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01NetworkConnectionsOverallDataResults.count))
     $script:AutoChart01NetworkConnectionsTrimOffFirstTrackBarValue   = 0
     $script:AutoChart01NetworkConnectionsTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart01NetworkConnectionsTrimOffFirstTrackBarValue = $script:AutoChart01NetworkConnectionsTrimOffFirstTrackBar.Value
@@ -475,7 +475,7 @@ $script:AutoChart01NetworkConnectionsTrimOffLastGroupBoX = New-Object System.Win
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -498,11 +498,11 @@ $script:AutoChart01NetworkConnectionsManipulationPanel.Controls.Add($script:Auto
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart01NetworkConnectionsChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart01NetworkConnectionsTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart01NetworkConnectionsTrimOffFirstGroupBox.Location.Y + $script:AutoChart01NetworkConnectionsTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -526,19 +526,19 @@ $script:AutoChart01NetworkConnections3DToggleButton = New-Object Windows.Forms.B
 CommonButtonSettings -Button $script:AutoChart01NetworkConnections3DToggleButton
 $script:AutoChart01NetworkConnections3DInclination = 0
 $script:AutoChart01NetworkConnections3DToggleButton.Add_Click({
-    
+
     $script:AutoChart01NetworkConnections3DInclination += 10
-    if ( $script:AutoChart01NetworkConnections3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart01NetworkConnections3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart01NetworkConnectionsArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart01NetworkConnectionsArea.Area3DStyle.Inclination = $script:AutoChart01NetworkConnections3DInclination
         $script:AutoChart01NetworkConnections3DToggleButton.Text  = "3D On ($script:AutoChart01NetworkConnections3DInclination)"
     }
     elseif ( $script:AutoChart01NetworkConnections3DInclination -le 90 ) {
         $script:AutoChart01NetworkConnectionsArea.Area3DStyle.Inclination = $script:AutoChart01NetworkConnections3DInclination
-        $script:AutoChart01NetworkConnections3DToggleButton.Text  = "3D On ($script:AutoChart01NetworkConnections3DInclination)" 
+        $script:AutoChart01NetworkConnections3DToggleButton.Text  = "3D On ($script:AutoChart01NetworkConnections3DInclination)"
     }
-    else { 
-        $script:AutoChart01NetworkConnections3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart01NetworkConnections3DToggleButton.Text  = "3D Off"
         $script:AutoChart01NetworkConnections3DInclination = 0
         $script:AutoChart01NetworkConnectionsArea.Area3DStyle.Inclination = $script:AutoChart01NetworkConnections3DInclination
         $script:AutoChart01NetworkConnectionsArea.Area3DStyle.Enable3D    = $false
@@ -568,7 +568,7 @@ $script:AutoChart01NetworkConnectionsManipulationPanel.Controls.Add($script:Auto
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart01NetworkConnections {    
+function script:InvestigateDifference-AutoChart01NetworkConnections {
     # List of Positive Endpoints that positively match
     $script:AutoChart01NetworkConnectionsImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'LocalAddressPort' -eq $($script:AutoChart01NetworkConnectionsInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart01NetworkConnectionsInvestDiffPosResultsTextBox.Text = ''
@@ -576,7 +576,7 @@ function script:InvestigateDifference-AutoChart01NetworkConnections {
 
     # List of all endpoints within the csv file
     $script:AutoChart01NetworkConnectionsImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart01NetworkConnectionsImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart01NetworkConnectionsImportCsvAll) { if ($Endpoint -notin $script:AutoChart01NetworkConnectionsImportCsvPosResults) { $script:AutoChart01NetworkConnectionsImportCsvNegResults += $Endpoint } }
@@ -644,7 +644,7 @@ $script:AutoChart01NetworkConnectionsCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart01NetworkConnectionsInvestDiffDropDownComboBox.Location.y + $script:AutoChart01NetworkConnectionsInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsInvestDiffExecuteButton
@@ -659,7 +659,7 @@ $script:AutoChart01NetworkConnectionsCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart01NetworkConnectionsInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart01NetworkConnectionsInvestDiffPosResultsLabel.Location.y + $script:AutoChart01NetworkConnectionsInvestDiffPosResultsLabel.Size.Height }
@@ -671,7 +671,7 @@ $script:AutoChart01NetworkConnectionsCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart01NetworkConnectionsInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -725,7 +725,7 @@ $script:AutoChart01NetworkConnectionsOpenInShell = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsOpenInShell
-$script:AutoChart01NetworkConnectionsOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart01NetworkConnectionsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01NetworkConnectionsManipulationPanel.controls.Add($script:AutoChart01NetworkConnectionsOpenInShell)
 
 
@@ -761,7 +761,7 @@ $script:AutoChart01NetworkConnectionsViewResults = New-Object Windows.Forms.Butt
 }
 CommonButtonSettings -Button $script:AutoChart01NetworkConnectionsViewResults
 $script:AutoChart01NetworkConnectionsViewResults.Add_Click({
-    $script:AutoChartDataSourceCsv | Out-GridView }) 
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart01NetworkConnectionsManipulationPanel.controls.Add($script:AutoChart01NetworkConnectionsViewResults)
 
 
@@ -784,7 +784,7 @@ $script:AutoChart01NetworkConnectionsManipulationPanel.controls.Add($script:Auto
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart01NetworkConnectionsNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart01NetworkConnectionsSortButton.Location.X 
+    Location    = @{ X = $script:AutoChart01NetworkConnectionsSortButton.Location.X
                         Y = $script:AutoChart01NetworkConnectionsSortButton.Location.Y + $script:AutoChart01NetworkConnectionsSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -841,7 +841,7 @@ $script:AutoChart02NetworkConnections = New-object System.Windows.Forms.DataVisu
 $script:AutoChart02NetworkConnections.Add_MouseHover({ Close-AllOptions })
 
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart02NetworkConnectionsTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -884,11 +884,11 @@ function Generate-AutoChart02NetworkConnections {
                     $_.RemoteAddress.split('.')[0]               -in $LocalNetworkArray -or
                    ($_.RemoteAddress.split('.')[0..1] -join '.') -in $LocalNetworkArray
                 )
-            }            
+            }
 
             $script:AutoChart02NetworkConnectionsUniqueDataFields = $script:AutoChart02NetworkConnectionsUniqueDataFields `
             | Select-Object 'RemoteAddress'  | Sort-Object -Property 'RemoteAddress' -Unique
-            
+
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
             $script:AutoChartsProgressBar.Minimum = 0
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart02NetworkConnectionsUniqueDataFields.count
@@ -917,8 +917,8 @@ function Generate-AutoChart02NetworkConnections {
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart02NetworkConnectionsCsvComputers.Count
-                        Computers   = $script:AutoChart02NetworkConnectionsCsvComputers 
-                    }           
+                        Computers   = $script:AutoChart02NetworkConnectionsCsvComputers
+                    }
                     $script:AutoChart02NetworkConnectionsOverallDataResults += $script:AutoChart02NetworkConnectionsDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
@@ -936,12 +936,12 @@ function Generate-AutoChart02NetworkConnections {
             else {
                 $script:AutoChart02NetworkConnectionsTitle.ForeColor = 'Blue'
                 $script:AutoChart02NetworkConnectionsTitle.Text = "Connections to Private Network Endpoints`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart02NetworkConnections
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart02NetworkConnectionsOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart02NetworkConnections.Location.X + $($FormScale * 5)
@@ -950,7 +950,7 @@ $script:AutoChart02NetworkConnectionsOptionsButton = New-Object Windows.Forms.Bu
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsOptionsButton
-$script:AutoChart02NetworkConnectionsOptionsButton.Add_Click({  
+$script:AutoChart02NetworkConnectionsOptionsButton.Add_Click({
     if ($script:AutoChart02NetworkConnectionsOptionsButton.Text -eq 'Options v') {
         $script:AutoChart02NetworkConnectionsOptionsButton.Text = 'Options ^'
         $script:AutoChart02NetworkConnections.Controls.Add($script:AutoChart02NetworkConnectionsManipulationPanel)
@@ -990,14 +990,14 @@ $script:AutoChart02NetworkConnectionsTrimOffFirstGroupBoX = New-Object System.Wi
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart02NetworkConnectionsTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02NetworkConnectionsOverallDataResults.count))                
+    $script:AutoChart02NetworkConnectionsTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02NetworkConnectionsOverallDataResults.count))
     $script:AutoChart02NetworkConnectionsTrimOffFirstTrackBarValue   = 0
     $script:AutoChart02NetworkConnectionsTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart02NetworkConnectionsTrimOffFirstTrackBarValue = $script:AutoChart02NetworkConnectionsTrimOffFirstTrackBar.Value
@@ -1024,7 +1024,7 @@ $script:AutoChart02NetworkConnectionsTrimOffLastGroupBoX = New-Object System.Win
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -1047,11 +1047,11 @@ $script:AutoChart02NetworkConnectionsManipulationPanel.Controls.Add($script:Auto
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart02NetworkConnectionsChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart02NetworkConnectionsTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart02NetworkConnectionsTrimOffFirstGroupBox.Location.Y + $script:AutoChart02NetworkConnectionsTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1075,19 +1075,19 @@ $script:AutoChart02NetworkConnections3DToggleButton = New-Object Windows.Forms.B
 CommonButtonSettings -Button $script:AutoChart02NetworkConnections3DToggleButton
 $script:AutoChart02NetworkConnections3DInclination = 0
 $script:AutoChart02NetworkConnections3DToggleButton.Add_Click({
-    
+
     $script:AutoChart02NetworkConnections3DInclination += 10
-    if ( $script:AutoChart02NetworkConnections3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart02NetworkConnections3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart02NetworkConnectionsArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart02NetworkConnectionsArea.Area3DStyle.Inclination = $script:AutoChart02NetworkConnections3DInclination
         $script:AutoChart02NetworkConnections3DToggleButton.Text  = "3D On ($script:AutoChart02NetworkConnections3DInclination)"
     }
     elseif ( $script:AutoChart02NetworkConnections3DInclination -le 90 ) {
         $script:AutoChart02NetworkConnectionsArea.Area3DStyle.Inclination = $script:AutoChart02NetworkConnections3DInclination
-        $script:AutoChart02NetworkConnections3DToggleButton.Text  = "3D On ($script:AutoChart02NetworkConnections3DInclination)" 
+        $script:AutoChart02NetworkConnections3DToggleButton.Text  = "3D On ($script:AutoChart02NetworkConnections3DInclination)"
     }
-    else { 
-        $script:AutoChart02NetworkConnections3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart02NetworkConnections3DToggleButton.Text  = "3D Off"
         $script:AutoChart02NetworkConnections3DInclination = 0
         $script:AutoChart02NetworkConnectionsArea.Area3DStyle.Inclination = $script:AutoChart02NetworkConnections3DInclination
         $script:AutoChart02NetworkConnectionsArea.Area3DStyle.Enable3D    = $false
@@ -1117,7 +1117,7 @@ $script:AutoChart02NetworkConnectionsManipulationPanel.Controls.Add($script:Auto
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart02NetworkConnections {    
+function script:InvestigateDifference-AutoChart02NetworkConnections {
     # List of Positive Endpoints that positively match
     $script:AutoChart02NetworkConnectionsImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'RemoteAddress' -eq $($script:AutoChart02NetworkConnectionsInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart02NetworkConnectionsInvestDiffPosResultsTextBox.Text = ''
@@ -1125,7 +1125,7 @@ function script:InvestigateDifference-AutoChart02NetworkConnections {
 
     # List of all endpoints within the csv file
     $script:AutoChart02NetworkConnectionsImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart02NetworkConnectionsImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart02NetworkConnectionsImportCsvAll) { if ($Endpoint -notin $script:AutoChart02NetworkConnectionsImportCsvPosResults) { $script:AutoChart02NetworkConnectionsImportCsvNegResults += $Endpoint } }
@@ -1193,7 +1193,7 @@ $script:AutoChart02NetworkConnectionsCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart02NetworkConnectionsInvestDiffDropDownComboBox.Location.y + $script:AutoChart02NetworkConnectionsInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsInvestDiffExecuteButton
@@ -1208,7 +1208,7 @@ $script:AutoChart02NetworkConnectionsCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart02NetworkConnectionsInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart02NetworkConnectionsInvestDiffPosResultsLabel.Location.y + $script:AutoChart02NetworkConnectionsInvestDiffPosResultsLabel.Size.Height }
@@ -1220,7 +1220,7 @@ $script:AutoChart02NetworkConnectionsCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart02NetworkConnectionsInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -1274,7 +1274,7 @@ $script:AutoChart02NetworkConnectionsOpenInShell = New-Object Windows.Forms.Butt
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsOpenInShell
-$script:AutoChart02NetworkConnectionsOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart02NetworkConnectionsOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02NetworkConnectionsManipulationPanel.controls.Add($script:AutoChart02NetworkConnectionsOpenInShell)
 
 
@@ -1310,7 +1310,7 @@ $script:AutoChart02NetworkConnectionsViewResults = New-Object Windows.Forms.Butt
 }
 CommonButtonSettings -Button $script:AutoChart02NetworkConnectionsViewResults
 $script:AutoChart02NetworkConnectionsViewResults.Add_Click({
-    $script:AutoChartDataSourceCsv | Out-GridView }) 
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart02NetworkConnectionsManipulationPanel.controls.Add($script:AutoChart02NetworkConnectionsViewResults)
 
 
@@ -1333,7 +1333,7 @@ $script:AutoChart02NetworkConnectionsManipulationPanel.controls.Add($script:Auto
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart02NetworkConnectionsNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart02NetworkConnectionsSortButton.Location.X 
+    Location    = @{ X = $script:AutoChart02NetworkConnectionsSortButton.Location.X
                         Y = $script:AutoChart02NetworkConnectionsSortButton.Location.Y + $script:AutoChart02NetworkConnectionsSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -1346,6 +1346,8 @@ $script:AutoChart02NetworkConnectionsNoticeTextboX = New-Object System.Windows.F
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart02NetworkConnectionsManipulationPanel.Controls.Add($script:AutoChart02NetworkConnectionsNoticeTextbox)
+
+
 
 
 

@@ -1,4 +1,4 @@
-﻿$FormScale = 2.5
+$FormScale = 2.5
 $Font = 'Courier new'
 $Dependencies = 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin--BETA-Build\PoSh-EasyWin\Dependencies'
 $EasyWinIcon = "$Dependencies\Images\favicon.ico"
@@ -33,7 +33,7 @@ $PoShEasyWinLogoLoadingPictureBox = New-Object Windows.Forms.PictureBox -Propert
     SizeMode = 'StretchImage'
 }
 $script:ProgressBarSelectionForm.Controls.Add($PoShEasyWinLogoLoadingPictureBox)
-        
+
 $script:ProgressBarMainLabel = New-Object System.Windows.Forms.Label -Property @{
     Text   = 'PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs'
     Left   = $FormScale * 10
@@ -43,7 +43,7 @@ $script:ProgressBarMainLabel = New-Object System.Windows.Forms.Label -Property @
     Font   = New-Object System.Drawing.Font("$font",$($FormScale * 11),0,0,0)
 }
 $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMainLabel)
-        
+
 
 $ProgressBarFormProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
     Style    = "Continuous"
@@ -66,7 +66,7 @@ $InstallationLocationLabel = New-Object System.Windows.Forms.Label -Property @{
     Height  = $FormScale * 22
     Font    = New-Object System.Drawing.Font("$font",$($FormScale * 11),0,0,0)
     Padding = 5
-    
+
 }
 $script:ProgressBarSelectionForm.Controls.Add($InstallationLocationLabel)
 
@@ -154,4 +154,6 @@ $JobTimeoutLabel = New-Object System.Windows.Forms.Label -Property @{
 $script:ProgressBarSelectionForm.Controls.Add($JobTimeoutLabel)
 
 
-$script:ProgressBarSelectionForm.ShowDialog()    
+$script:ProgressBarSelectionForm.ShowDialog()
+
+

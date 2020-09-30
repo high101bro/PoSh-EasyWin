@@ -3,9 +3,9 @@ function Query-EventLog {
         $CollectionName,
         $Filter
     )
-    $CollectionCommandStartTime = Get-Date 
+    $CollectionCommandStartTime = Get-Date
     $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Query: $CollectionName")                    
+    $StatusListBox.Items.Add("Query: $CollectionName")
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
 
@@ -24,13 +24,13 @@ function Query-EventLog {
 
 
         # Code to set the amount of data to return
-        if ($EventLogsMaximumCollectionTextBox.Text -eq $null -or $EventLogsMaximumCollectionTextBox.Text -eq '' -or $EventLogsMaximumCollectionTextBox.Text -eq 0) { 
+        if ($EventLogsMaximumCollectionTextBox.Text -eq $null -or $EventLogsMaximumCollectionTextBox.Text -eq '' -or $EventLogsMaximumCollectionTextBox.Text -eq 0) {
             $EventLogQueryMax = $null
         }
         else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBox.Text)" }
 
 
-        # Code to include calendar start/end datetimes if checked 
+        # Code to include calendar start/end datetimes if checked
         if ( $EventLogsStartTimePicker.Checked -and $EventLogsStopTimePicker.Checked ) {
             $EventLogQueryFilter = @"
 -Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePicker.Value)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePicker.Value)))'))"
@@ -68,8 +68,8 @@ function Query-EventLog {
 
         if ($EventLogWinRMRadioButton.Checked) {
             if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
-                if (!$script:Credential) { Create-NewCredentials }           
-    
+                if (!$script:Credential) { Create-NewCredentials }
+
                 Invoke-Command -ScriptBlock ${function:Compiled-EventLogCommand} `
                 -ArgumentList @($EventLogsMaximumCollectionTextBox,$EventLogsStartTimePicker,$EventLogsStopTimePicker,$Filter) `
                 -ComputerName $TargetComputer `
@@ -77,7 +77,7 @@ function Query-EventLog {
                 -Credential $script:Credential
                 ${function:Compiled-EventLogCommand} | ogv
                 #                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Get-AccountLogonActivity} -ArgumentList @(`$AccountsStartTimePickerValue,`$AccountsStopTimePickerValue) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
-    
+
                 #$EventLogQueryBuild = "Invoke-Command -Credential $script:Credential $EventLogQueryComputer -ScriptBlock { $EventLogQueryCommand $EventLogQueryFilter } $EventLogQueryPipe"
                 #Start-Job -ScriptBlock {
                 #    param(
@@ -128,7 +128,7 @@ function Query-EventLog {
         }
     }
 
- 
+
 
 
 
@@ -169,8 +169,8 @@ function Query-EventLog {
 
 
     Monitor-Jobs -CollectionName $CollectionName
-    
-    $CollectionCommandEndTime  = Get-Date                    
+
+    $CollectionCommandEndTime  = Get-Date
     $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 
 
@@ -187,3 +187,4 @@ function Query-EventLog {
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
 }
+

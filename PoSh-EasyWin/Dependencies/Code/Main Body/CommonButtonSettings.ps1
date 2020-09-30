@@ -18,8 +18,10 @@ function CommonButtonSettings {
 
     $contextMenuStrip1 = New-Object System.Windows.Forms.ContextMenuStrip
     $contextMenuStrip1.Items.Add("Item 1")
-    $contextMenuStrip1.Items.Add("Item 2")  
+    $contextMenuStrip1.Items.Add("Item 2")
     $Button.ShortcutsEnabled = $false
     $Button.ContextMenuStrip = $contextMenuStrip1
     #>
 }
+
+

@@ -1,4 +1,4 @@
-﻿#######################################################
+#######################################################
 # Credits to DeepBlueCLI 2.01 for original script     #
 # Modified script for compatibility with PoSh-EasyWin #
 #######################################################
@@ -16,7 +16,7 @@ function Invoke-DeepBlue {
     $regexes   = Get-Content "$Dependencies\DeepBlue\regexes.txt" | Select-String '^[^#]' | ConvertFrom-Csv
 
     # Load cmd whitelist regexes from csv file, ignore comments
-    $whitelist = Get-Content "$Dependencies\DeepBlue\whitelist.txt" | Select-String '^[^#]' | ConvertFrom-Csv 
+    $whitelist = Get-Content "$Dependencies\DeepBlue\whitelist.txt" | Select-String '^[^#]' | ConvertFrom-Csv
     $logname   = Check-Options $file $log
 
     #"Processing the " + $logname + " log..."
@@ -42,14 +42,14 @@ function Invoke-DeepBlue {
     # Obfuscation variables:
     $minpercent           = .65  # minimum percentage of alphanumeric and common symbols
     $maxbinary            = .50  # Maximum percentage of zeros and ones to detect binary encoding
-    
+
     # Password spray variables:
     $passspraytrack       = @{}
     $passsprayuniqusermax = 6
     $passsprayloginmax    = 6
-    
+
     # Sysmon variables:
-    # Check for unsigned EXEs/DLLs. This can be very chatty, so it's disabled. 
+    # Check for unsigned EXEs/DLLs. This can be very chatty, so it's disabled.
     # Set $checkunsigned to 1 to enable:
     $checkunsigned = 0
 
@@ -88,7 +88,7 @@ function Invoke-DeepBlue {
                     Check-Command -EventID 4688
                 }
             }
-            elseif ($event.id -eq 4672){ 
+            elseif ($event.id -eq 4672){
                 # Special privileges assigned to new logon (possible admin access)
                 $username=$eventXML.Event.EventData.Data[1]."#text"
                 $domain=$eventXML.Event.EventData.Data[2]."#text"
@@ -96,7 +96,7 @@ function Invoke-DeepBlue {
                 $privileges=$eventXML.Event.EventData.Data[4]."#text"
                 if ($privileges -Match "SeDebugPrivilege") { #Admin account with SeDebugPrivilege
                     if ($alert_all_admin){ # Alert for every admin logon
-                        $obj.Message = "Logon with SeDebugPrivilege (admin access)" 
+                        $obj.Message = "Logon with SeDebugPrivilege (admin access)"
                         $obj.Results = "Username: $username`n"
                         $obj.Results += "Domain: $domain`n"
                         $obj.Results += "User SID: $securityid`n"
@@ -105,16 +105,16 @@ function Invoke-DeepBlue {
                     }
                     # Track User SIDs used during admin logons (can track one account logging into multiple systems)
                     $totaladminlogons+=1
-                    if($adminlogons.ContainsKey($username)){ 
+                    if($adminlogons.ContainsKey($username)){
                         $string=$adminlogons.$username
-                        if (-Not ($string -Match $securityid)){ # One username with multiple admin logon SIDs 
+                        if (-Not ($string -Match $securityid)){ # One username with multiple admin logon SIDs
                             $multipleadminlogons.Set_Item($username,1)
                             $string+=" $securityid"
                             $adminlogons.Set_Item($username,$string)
                         }
                     }
                     Else{
-                        $adminlogons.add($username,$securityid) 
+                        $adminlogons.add($username,$securityid)
 
                         #$adminlogons.$username=$securityid
                     }
@@ -208,7 +208,7 @@ function Invoke-DeepBlue {
                 $targetusername=$eventXML.Event.EventData.Data[5]."#text"
                 $sourceip=$eventXML.Event.EventData.Data[12]."#text"
 
-                # For each #4648 event, increment a counter in $passspraytrack. If that counter exceeds 
+                # For each #4648 event, increment a counter in $passspraytrack. If that counter exceeds
                 # $passsprayloginmax, then check for $passsprayuniqusermax also exceeding threshold and raise a notice.
                 if ($passspraytrack[$targetusername] -eq $null) {
                     $passspraytrack[$targetusername] = 1
@@ -220,7 +220,7 @@ function Invoke-DeepBlue {
                     # of accounts that also have similar explicit login patterns.
                     $passsprayuniquser=0
                     foreach($key in $passspraytrack.keys) {
-                        if ($passspraytrack[$key] -gt $passsprayloginmax) { 
+                        if ($passspraytrack[$key] -gt $passsprayloginmax) {
                             $passsprayuniquser+=1
                         }
                     }
@@ -241,9 +241,9 @@ function Invoke-DeepBlue {
                     }
                 }
             }
-            elseif ($event.id -eq 1102){ 
+            elseif ($event.id -eq 1102){
                 # The Audit log file was cleared.
-                if ($event.Message){ 
+                if ($event.Message){
                     # Security 1102 Message is a blob of text that looks like this:
                     # The audit log was cleared.
                     $array = $event.message -split '\n' # Split each line of the message into an array
@@ -266,17 +266,17 @@ function Invoke-DeepBlue {
                     $obj.Message = "New Service Created"
                     $obj.Command = $commandline
                     $obj.Results = "Service name: $servicename`n"
-                    $obj.Results +=$text 
+                    $obj.Results +=$text
                     $EventsFound += $obj
                 }
                 # Check for suspicious cmd
                 if ($commandline){
-                    $servicecmd=1 # CLIs via service creation get extra checks 
+                    $servicecmd=1 # CLIs via service creation get extra checks
                     Check-Command -EventID 7045
                 }
             }
             elseif ($event.id -eq 7030){
-                # The ... service is marked as an interactive service.  However, the system is configured 
+                # The ... service is marked as an interactive service.  However, the system is configured
                 # to not allow interactive services.  This service may not function properly.
                 $servicename=$eventXML.Event.EventData.Data."#text"
                 $obj.Message = "Interactive service warning"
@@ -321,12 +321,12 @@ function Invoke-DeepBlue {
                 $obj.Results = "The System log was cleared."
                 $EventsFound += $obj
             }
-        } 
+        }
         elseif ($logname -eq "Application"){
             if (($event.id -eq 2) -and ($event.Providername -eq "EMET")){
                 # EMET Block
                 $obj.Message="EMET Block"
-                if ($event.Message){ 
+                if ($event.Message){
                     # EMET Message is a blob of text that looks like this:
                     $array = $event.message -split '\n' # Split each line of the message into an array
                     $text = $array[0]
@@ -336,7 +336,7 @@ function Invoke-DeepBlue {
                     $obj.Message="EMET Block"
                     $obj.Command = "$command"
                     $obj.Results = "$text`n"
-                    $obj.Results += "$username`n" 
+                    $obj.Results += "$username`n"
                 }
                 Else{
                     # If the message is blank: EMET is not installed locally.
@@ -345,7 +345,7 @@ function Invoke-DeepBlue {
                 }
                 $EventsFound += $obj
             }
-        }  
+        }
         elseif ($logname -eq "Applocker"){
             if ($event.id -eq 8003){
                 # ...was allowed to run but would have been prevented from running if the AppLocker policy were enforced.
@@ -355,7 +355,7 @@ function Invoke-DeepBlue {
                 $obj.Results = $event.message
                 $EventsFound += $obj
             }
-            elseif ($event.id -eq 8004){ 
+            elseif ($event.id -eq 8004){
                 $obj.Message="Applocker Block"
                 # ...was prevented from running.
                 $command = $event.message -Replace " was .*$",""
@@ -363,11 +363,11 @@ function Invoke-DeepBlue {
                 $obj.Results = $event.message
                 $EventsFound += $obj
             }
-        } 
+        }
         elseif ($logname -eq "PowerShell"){
             if ($event.id -eq 4103){
                 $commandline= $eventXML.Event.EventData.Data[2]."#text"
-                if ($commandline -Match "Host Application"){ 
+                if ($commandline -Match "Host Application"){
                     # Multiline replace, remove everything before "Host Application = "
                     $commandline = $commandline -Replace "(?ms)^.*Host.Application = ",""
                     # Remove every line after the "Host Application = " line.
@@ -378,11 +378,11 @@ function Invoke-DeepBlue {
                 }
             }
             elseif ($event.id -eq 4104){
-                # This section requires PowerShell command logging for event 4104 , which seems to be default with 
-                # Windows 10, but may not not the default with older Windows versions (which may log the script 
-                # block but not the command that launched it). 
+                # This section requires PowerShell command logging for event 4104 , which seems to be default with
+                # Windows 10, but may not not the default with older Windows versions (which may log the script
+                # block but not the command that launched it).
                 # Caveats included because more testing of various Windows versions is needed
-                # 
+                #
                 # If the command itself is not being logged:
                 # Add the following to \Windows\System32\WindowsPowerShell\v1.0\profile.ps1
                 # $LogCommandHealthEvent = $true
@@ -408,7 +408,7 @@ function Invoke-DeepBlue {
             }
             elseif ($event.id -eq 7){
                 # Check for unsigned EXEs/DLLs:
-                # This can be very chatty, so it's disabled. 
+                # This can be very chatty, so it's disabled.
                 # Set $checkunsigned to 1 (global variable section) to enable:
                 if ($checkunsigned){
                     if ($eventXML.Event.EventData.Data[6]."#text" -eq "false"){
@@ -476,7 +476,7 @@ function Invoke-DeepBlue {
         $obj.EventId = 4625
         $EventsFound += $obj
     }
-} 
+}
 
 
 
@@ -523,8 +523,8 @@ function Check-Options($file, $log)
         }
     }
     else{ # Filename provided, check if it exists:
-        if (Test-Path $file){ # File exists. Todo: verify it is an evtx file. 
-            # Get-WinEvent will generate this error for non-evtx files: "...file does not appear to be a valid log file. 
+        if (Test-Path $file){ # File exists. Todo: verify it is an evtx file.
+            # Get-WinEvent will generate this error for non-evtx files: "...file does not appear to be a valid log file.
             # Specify only .evtx, .etl, or .evt filesas values of the Path parameter."
             #
             # Check the LogName of the first event
@@ -561,7 +561,7 @@ function Check-Options($file, $log)
 
 function Create-Filter($file, $logname)
 {
-    # Return the Get-Winevent filter 
+    # Return the Get-Winevent filter
     #
     $sys_events="104,7030,7036,7040,7045"
     $sec_events="4688,4672,4720,4728,4732,4756,4625,4673,4674,4648,1102"
@@ -664,7 +664,7 @@ function Check-Regex($string,$type){
             }
         }
     }
-    #if ($regextext){ 
+    #if ($regextext){
     #   $regextext = $regextext.Substring(0,$regextext.Length-1) # Remove final newline.
     #}
     return $regextext
@@ -682,14 +682,14 @@ function Check-Obfu($string){
     if ($length -gt 0){
         $percent=(($length-$noalphastring.length)/$length)
         # Adjust minpercent for very short commands, to avoid triggering short warnings
-        if (($length/100) -lt $minpercent){ 
-            $minpercent=($length/100) 
+        if (($length/100) -lt $minpercent){
+            $minpercent=($length/100)
         }
         if ($percent -lt $minpercent){
             $percent = "{0:P0}" -f $percent      # Convert to a percent
             $obfutext += "Possible command obfuscation: only $percent alphanumeric and common symbols`n"
         }
-        # Calculate the percent of binary characters  
+        # Calculate the percent of binary characters
         $percent=(($nobinarystring.length-$length/$length)/$length)
         $binarypercent = 1-$percent
         if ($binarypercent -gt $maxbinary){
@@ -726,3 +726,4 @@ function Remove-Spaces($string){
 . Invoke-DeepBlue
 
 $EventsFound
+

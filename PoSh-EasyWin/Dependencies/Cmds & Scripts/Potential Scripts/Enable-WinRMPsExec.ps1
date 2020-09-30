@@ -1,4 +1,4 @@
-﻿function Enable-WinRMPsExec {
+function Enable-WinRMPsExec {
 	[cmdletbinding()]
 	Param([String[]] $SMBTargets)
 	$ChangedTargets = @()
@@ -21,3 +21,4 @@
 	}
 	return $ChangedTargets
 }
+

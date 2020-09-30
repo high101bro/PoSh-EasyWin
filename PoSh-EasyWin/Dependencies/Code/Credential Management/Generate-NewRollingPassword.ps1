@@ -1,17 +1,17 @@
 function Generate-NewRollingPassword {
-    function Get-RandomCharacters($length, $characters) { 
-        $random = 1..$length | ForEach-Object { Get-Random -Maximum $characters.length } 
-        $private:ofs="" 
+    function Get-RandomCharacters($length, $characters) {
+        $random = 1..$length | ForEach-Object { Get-Random -Maximum $characters.length }
+        $private:ofs=""
         return [String]$characters[$random]
     }
-    
+
     # Active Directory has a max password length of 256 characters
     # note: Previous versions had the random password set at 250 characters, but this was scalled back because during testing cmdkey doesn't seem to support anything larger
     $NumberOfCharacters = 32 #100 #150 #200 #250
 
     #abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890`~!@#$%^&*()_+-=[]\{}|;:'",./<>?
     $GeneratedPassword  = Get-RandomCharacters -length $NumberOfCharacters -characters @"
-abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890 
+abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
 "@
 
     $script:CredentialManagementGeneratedRollingPasswordTextBox.text = $GeneratedPassword
@@ -37,17 +37,17 @@ abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
             param(
                 $PoShEasyWinAccount,
                 $SecurePassword
-            ) 
-            Set-ADAccountPassword -Identity $PoShEasyWinAccount -Reset -NewPassword $SecurePassword 
+            )
+            Set-ADAccountPassword -Identity $PoShEasyWinAccount -Reset -NewPassword $SecurePassword
         } -ArgumentList @($PoShEasyWinAccount,$SecurePassword)
     }
     else {
-        Invoke-Command -ComputerName $ActiveDirectoryServer -ScriptBlock { 
+        Invoke-Command -ComputerName $ActiveDirectoryServer -ScriptBlock {
             param(
                 $PoShEasyWinDomainNameAndAccount,
                 $SecurePassword
-            ) 
-            Set-ADAccountPassword -Identity $PoShEasyWinDomainNameAndAccount -Reset -NewPassword $SecurePassword 
+            )
+            Set-ADAccountPassword -Identity $PoShEasyWinDomainNameAndAccount -Reset -NewPassword $SecurePassword
         } -ArgumentList @($PoShEasyWinDomainNameAndAccount,$SecurePassword)
     }
 
@@ -60,7 +60,7 @@ abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
 
     # Encrypt an exported credential object
     # The Export-Clixml cmdlet encrypts credential objects by using the Windows Data Protection API.
-    # The encryption ensures that only your user account on only that computer can decrypt the contents of the 
+    # The encryption ensures that only your user account on only that computer can decrypt the contents of the
     # credential object. The exported CLIXML file can't be used on a different computer or by a different user.
     if ($PoShEasyWinDomainName -ne '') {
         $PoShEasyWinDomainNameAndAccount = "$($PoShEasyWinDomainName)-$($PoShEasyWinAccount)"
@@ -68,7 +68,7 @@ abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
     else {
         $PoShEasyWinDomainNameAndAccount = $PoShEasyWinAccount
     }
- 
+
     $DateTime = "{0:yyyy-MM-dd @ HHmm.ss}" -f (Get-Date)
     Move-Item -Path "$script:CredentialManagementPath\$PoShEasyWinDomainNameAndAccount (*).xml" -Destination "$script:CredentialManagementPath\Rolled Credentials"
     $CredentialName = "$PoShEasyWinDomainNameAndAccount ($DateTime).xml"
@@ -81,3 +81,4 @@ abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
     $StatusListBox.Items.Add("Credentials:  $CredentialName")
     $script:CredentialManagementPasswordRollingAccountCheckbox.checked = $true
 }
+

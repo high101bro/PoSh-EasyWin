@@ -1,48 +1,48 @@
-﻿<# 
+<#
 .Description
 	Gets the software installed by using the registry.
 #>
 $Software = @()
-$Paths    = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall","SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")         
-ForEach($Path in $Paths) { 
+$Paths    = @("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall","SOFTWARE\\Wow6432node\\Microsoft\\Windows\\CurrentVersion\\Uninstall")
+ForEach($Path in $Paths) {
 Write-Verbose  "Checking Path: $Path"
-#  Create an instance of the Registry Object and open the HKLM base key 
-Try  {$reg=[microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$env:Computername,'Registry64')} 
-Catch  {Write-Error $_ ; Continue} 
-#  Drill down into the Uninstall key using the OpenSubKey Method 
+#  Create an instance of the Registry Object and open the HKLM base key
+Try  {$reg=[microsoft.win32.registrykey]::OpenRemoteBaseKey('LocalMachine',$env:Computername,'Registry64')}
+Catch  {Write-Error $_ ; Continue}
+#  Drill down into the Uninstall key using the OpenSubKey Method
 Try  {
-	$regkey=$reg.OpenSubKey($Path)  
-	# Retrieve an array of string that contain all the subkey names 
-	$subkeys=$regkey.GetSubKeyNames()      
-	# Open each Subkey and use GetValue Method to return the required  values for each 
-	ForEach ($key in $subkeys){   
+	$regkey=$reg.OpenSubKey($Path)
+	# Retrieve an array of string that contain all the subkey names
+	$subkeys=$regkey.GetSubKeyNames()
+	# Open each Subkey and use GetValue Method to return the required  values for each
+	ForEach ($key in $subkeys){
 		Write-Verbose "Key: $Key"
-		$thisKey=$Path+"\\"+$key 
-		Try {  
-			$thisSubKey=$reg.OpenSubKey($thisKey)   
-			# Prevent Objects with empty DisplayName 
+		$thisKey=$Path+"\\"+$key
+		Try {
+			$thisSubKey=$reg.OpenSubKey($thisKey)
+			# Prevent Objects with empty DisplayName
 			$DisplayName =  $thisSubKey.getValue("DisplayName")
 			If ($DisplayName  -AND $DisplayName  -notmatch '^Update  for|rollup|^Security Update|^Service Pack|^HotFix') {
 				$Date = $thisSubKey.GetValue('InstallDate')
 				If ($Date) {
 					Try {$Date = [datetime]::ParseExact($Date, 'yyyyMMdd', $Null)}
 					Catch{Write-Warning "$($env:Computername): $_ <$($Date)>" ; $Date = $Null}
-				} 
-				# Create New Object with empty Properties 
-				$Publisher =  Try {$thisSubKey.GetValue('Publisher').Trim()} 
+				}
+				# Create New Object with empty Properties
+				$Publisher =  Try {$thisSubKey.GetValue('Publisher').Trim()}
 					Catch {$thisSubKey.GetValue('Publisher')}
 				$Version = Try {
 					#Some weirdness with trailing [char]0 on some strings
 					$thisSubKey.GetValue('DisplayVersion').TrimEnd(([char[]](32,0)))
-				} 
+				}
 					Catch {$thisSubKey.GetValue('DisplayVersion')}
-				$UninstallString =  Try {$thisSubKey.GetValue('UninstallString').Trim()} 
+				$UninstallString =  Try {$thisSubKey.GetValue('UninstallString').Trim()}
 					Catch {$thisSubKey.GetValue('UninstallString')}
-				$InstallLocation =  Try {$thisSubKey.GetValue('InstallLocation').Trim()} 
+				$InstallLocation =  Try {$thisSubKey.GetValue('InstallLocation').Trim()}
 					Catch {$thisSubKey.GetValue('InstallLocation')}
-				$InstallSource =  Try {$thisSubKey.GetValue('InstallSource').Trim()} 
+				$InstallSource =  Try {$thisSubKey.GetValue('InstallSource').Trim()}
 					Catch {$thisSubKey.GetValue('InstallSource')}
-				$HelpLink = Try {$thisSubKey.GetValue('HelpLink').Trim()} 
+				$HelpLink = Try {$thisSubKey.GetValue('HelpLink').Trim()}
 					Catch {$thisSubKey.GetValue('HelpLink')}
 				$Object = [pscustomobject]@{
 					Computername = $env:Computername
@@ -59,11 +59,12 @@ Try  {
 				$Object.pstypenames.insert(0,'System.Software.Inventory')
 				$Software += $Object
 				}
-			} 
+			}
 			Catch {Write-Warning "$Key : $_"}
 		}
-	} 
-	Catch  {}   
-	$reg.Close() 
-} 
+	}
+	Catch  {}
+	$reg.Close()
+}
 $Software
+

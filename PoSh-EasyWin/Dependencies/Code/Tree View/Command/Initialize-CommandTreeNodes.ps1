@@ -24,6 +24,8 @@ function Initialize-CommandTreeNodes {
     $script:TreeNodeActiveDirectoryCommands.Expand()
     $script:TreeNodePreviouslyExecutedCommands.Collapse()
     $script:CommandsTreeView.Nodes.Clear()
-    
+
     Update-TreeNodeComputerState
 }
+
+

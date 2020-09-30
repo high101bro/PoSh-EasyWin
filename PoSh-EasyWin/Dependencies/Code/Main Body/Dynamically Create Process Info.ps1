@@ -14,7 +14,7 @@ foreach ($File in $ResourceFiles) {
     #-----------------------------
     # Imports Data Into Textboxes
     #-----------------------------
-    $TabContents = Get-Content -Path $File.FullName -Force | ForEach-Object {$_ + "`r`n"} 
+    $TabContents = Get-Content -Path $File.FullName -Force | ForEach-Object {$_ + "`r`n"}
     $Section1ProcessesSubTabTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Name       = "$file"
         Text       = "$TabContents"
@@ -28,3 +28,5 @@ foreach ($File in $ResourceFiles) {
     }
     $Section1ProcessesSubTab.Controls.Add($Section1ProcessesSubTabTextBox)
 }
+
+

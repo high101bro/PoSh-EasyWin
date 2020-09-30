@@ -1,6 +1,6 @@
-$CommandsTreeViewSearchComboBoxAdd_KeyDown = { 
-    if ($_.KeyCode -eq "Enter") { 
-        Search-CommandTreeNode 
+$CommandsTreeViewSearchComboBoxAdd_KeyDown = {
+    if ($_.KeyCode -eq "Enter") {
+        Search-CommandTreeNode
     }
 }
 
@@ -9,5 +9,7 @@ $CommandsTreeViewSearchComboBoxAdd_MouseHover = {
 +  Searches may be typed in manually.
 +  Searches can include any character.
 +  There are several default searches available.
-"@ 
+"@
 }
+
+

@@ -7,3 +7,5 @@ $OptionStatisticsUpdateIntervalComboboxAdd_MouseHover = {
 +  Do not set the value to zero '0'.
 "@
 }
+
+

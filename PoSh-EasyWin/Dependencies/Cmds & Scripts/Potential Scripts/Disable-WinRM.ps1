@@ -1,4 +1,4 @@
-﻿function Disable-WinRM {
+function Disable-WinRM {
 	[cmdletbinding()]
 	Param([String[]] $Targets)
 
@@ -20,3 +20,4 @@
 		.\PsExec.exe \\$i -s sc config winrm start= disabled
 	}
 }
+

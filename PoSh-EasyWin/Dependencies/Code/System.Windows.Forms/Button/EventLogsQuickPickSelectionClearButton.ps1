@@ -4,5 +4,7 @@ $EventLogsQuickPickSelectionClearButtonAdd_Click = {
         $EventLogsQuickPickSelectionCheckedlistbox.SetSelected($i,$False)
         $EventLogsQuickPickSelectionCheckedlistbox.SetItemChecked($i,$False)
         $EventLogsQuickPickSelectionCheckedlistbox.SetItemCheckState($i,$False)
-    }    
+    }
 }
+
+

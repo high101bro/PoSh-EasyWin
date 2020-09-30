@@ -14,7 +14,7 @@ public class PInvoke {
     $ScreenWidth  = [PInvoke]::GetDeviceCaps($hdc, 118)
     $ScreenHeight = [PInvoke]::GetDeviceCaps($hdc, 117)
 
-    
+
     $FormOriginalWidth  = 1260
     $FormOriginalHeight = 660
     $FormScale = 1
@@ -39,20 +39,20 @@ Screen Resolution Detected:  $($ScreenWidth) x $($ScreenHeight)
 
 You can also set or delete the value in the following file:
     '$PoShSettings\Form Scaling Modifier.txt'
-    
+
 Use the trackbar below to scale PoSh-EasyWin's interface:"
         Left = 10
-        Top  = 10 
+        Top  = 10
         Autosize = $true
     }
     $ResolutionCheckForm.Controls.Add($ResolutionCheckMessageLabel)
 
-    
+
     $script:ResolutionCheckScalingTrackBar = New-Object System.Windows.Forms.TrackBar -Property @{
         Left = $ResolutionCheckMessageLabel.Location.X
-        Top = $ResolutionCheckMessageLabel.Location.Y + $ResolutionCheckMessageLabel.Size.Height + 20 
+        Top = $ResolutionCheckMessageLabel.Location.Y + $ResolutionCheckMessageLabel.Size.Height + 20
         Width  = $ResolutionCheckForm.Size.Width * 0.8
-        Height = 22        
+        Height = 22
         Orientation   = "Horizontal"
         TickFrequency = 1
         TickStyle     = "TopLeft"
@@ -60,7 +60,7 @@ Use the trackbar below to scale PoSh-EasyWin's interface:"
         Maximum       = 30
         Value         = 10
     }
-    $script:ResolutionCheckScalingTrackBar.add_ValueChanged({ 
+    $script:ResolutionCheckScalingTrackBar.add_ValueChanged({
         $script:ResolutionCheckScalingTrackBarValue = $script:ResolutionCheckScalingTrackBar.Value / 10
         $ResolutionCheckSelectLabel.Text = $script:ResolutionCheckScalingTrackBarValue
         $FormScale = $script:ResolutionCheckScalingTrackBarValue
@@ -120,7 +120,7 @@ Use the trackbar below to scale PoSh-EasyWin's interface:"
 
     $ResolutionCheckRelaunchMessageLabel = New-Object System.Windows.Forms.Label -Property @{
         Left = $ResolutionCheckOkayButton.Left + $ResolutionCheckOkayButton.Width + 10
-        Top  = $ResolutionCheckOkayButton.Top 
+        Top  = $ResolutionCheckOkayButton.Top
         Autosize  = $true
         ForeColor = 'Red'
     }
@@ -129,3 +129,5 @@ Use the trackbar below to scale PoSh-EasyWin's interface:"
 
     $ResolutionCheckForm.ShowDialog()
 }
+
+

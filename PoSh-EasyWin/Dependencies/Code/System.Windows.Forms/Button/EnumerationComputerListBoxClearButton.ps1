@@ -1,3 +1,5 @@
-$EnumerationComputerListBoxClearButtonAdd_Click = { 
-    $EnumerationComputerListBox.Items.Clear() 
+$EnumerationComputerListBoxClearButtonAdd_Click = {
+    $EnumerationComputerListBox.Items.Clear()
 }
+
+

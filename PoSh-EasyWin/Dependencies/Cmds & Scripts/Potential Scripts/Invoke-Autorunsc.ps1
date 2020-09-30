@@ -1,4 +1,4 @@
-﻿Invoke-Command -ComputerName $PSTargets -ScriptBlock ${Function:Invoke-Autorunsc} -ArgumentList $url
+Invoke-Command -ComputerName $PSTargets -ScriptBlock ${Function:Invoke-Autorunsc} -ArgumentList $url
 
 function Invoke-Autorunsc {
 	[cmdletbinding()]
@@ -12,3 +12,4 @@ function Invoke-Autorunsc {
 	Remove-Item C:\blue_temp
 	$results
 }
+

@@ -1,13 +1,13 @@
-$NetworkConnectionSearchLocalPortRichTextboxAdd_MouseEnter = { 
-    if ($this.text -eq "Enter Local Ports; One Per Line") { 
-        $this.text = "" 
-    } 
+$NetworkConnectionSearchLocalPortRichTextboxAdd_MouseEnter = {
+    if ($this.text -eq "Enter Local Ports; One Per Line") {
+        $this.text = ""
+    }
 }
 
-$NetworkConnectionSearchLocalPortRichTextboxAdd_MouseLeave = { 
-    if ($this.text -eq "") { 
-        $this.text = "Enter Local Ports; One Per Line" 
-    } 
+$NetworkConnectionSearchLocalPortRichTextboxAdd_MouseLeave = {
+    if ($this.text -eq "") {
+        $this.text = "Enter Local Ports; One Per Line"
+    }
 }
 
 $NetworkConnectionSearchLocalPortRichTextboxAdd_MouseHover = {
@@ -15,5 +15,7 @@ $NetworkConnectionSearchLocalPortRichTextboxAdd_MouseHover = {
 +  Check hosts for connections with the listed local port
 +  Enter Local Ports
 +  One Per Line
-"@ 
+"@
 }
+
+

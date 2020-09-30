@@ -27,9 +27,11 @@ foreach ($File in $ResourceChecklistFiles) {
             Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         if ($Checklist.Check -eq $True) { $Checklist.ForeColor = "Blue" }
-        $Section1ChecklistSubTab.Controls.Add($Checklist)          
+        $Section1ChecklistSubTab.Controls.Add($Checklist)
 
         $ChecklistDownPosition += $ChecklistDownPositionShift
     }
     $ChecklistDownPosition = $FormScale * 10
 }
+
+

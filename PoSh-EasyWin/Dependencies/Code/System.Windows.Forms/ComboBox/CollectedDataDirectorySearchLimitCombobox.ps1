@@ -5,3 +5,5 @@ $CollectedDataDirectorySearchLimitComboboxAdd_MouseHover = {
 +  The more directories you search, the longer the wait time.
 "@
 }
+
+

@@ -4,7 +4,7 @@ function Show-ToolTip {
         $Message = 'No Message Specified',
         $Icon    = 'Warning'
     )
-    $ToolTip = New-Object System.Windows.Forms.ToolTip    
+    $ToolTip = New-Object System.Windows.Forms.ToolTip
     if ($OptionShowToolTipCheckBox.Checked){
         $ToolTipMessage1   = "`n`n+  ToolTips can be disabled in the Options Tab."
         $ToolTip.SetToolTip($this,$($Message + $ToolTipMessage1))
@@ -16,3 +16,4 @@ function Show-ToolTip {
         $ToolTip.ToolTipTitle   = $Title
     }
 }
+

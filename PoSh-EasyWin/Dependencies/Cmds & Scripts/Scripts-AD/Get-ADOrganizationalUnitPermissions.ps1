@@ -1,4 +1,4 @@
-﻿            # This array will hold the report output.
+            # This array will hold the report output.
             $report = @()
 
             $schemaIDGUID = @{}
@@ -19,7 +19,7 @@
             # Add report columns to contain the OU path and string names of the ObjectTypes.
             ForEach ($OU in $OUs) {
                 $report += Get-Acl -Path "AD:\$OU" |
-                 Select-Object -ExpandProperty Access | 
+                 Select-Object -ExpandProperty Access |
                  Select-Object @{name='organizationalUnit';expression={$OU}}, `
                                @{name='objectTypeName';expression={if ($_.objectType.ToString() -eq '00000000-0000-0000-0000-000000000000') {'All'} Else {$schemaIDGUID.Item($_.objectType)}}}, `
                                @{name='inheritedObjectTypeName';expression={$schemaIDGUID.Item($_.inheritedObjectType)}}, `
@@ -27,7 +27,7 @@
             }
             $report | Select OrganizationalUnit, IdentityReference, ObjectTypeName, InheritedObjectTypeName, ActiveDirectoryRights, InheritanceType, AccessControlType, IsInherited, InheritanceFlags, ProgationFlags, ObjectType, InheritedObjectType, ObjectFlags
 
-            <# 
+            <#
             # Various reports of interest
 
             # Show only explicitly assigned permissions by Group and OU
@@ -41,5 +41,6 @@
             $report |
              Where-Object {$_.IdentityReference -like "*$filter*"} |
              Select-Object IdentityReference, OrganizationalUnit, IsInherited -Unique |
-             Sort-Object IdentityReference 
+             Sort-Object IdentityReference
              #>
+

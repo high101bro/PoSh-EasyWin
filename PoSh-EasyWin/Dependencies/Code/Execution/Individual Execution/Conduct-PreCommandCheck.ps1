@@ -1,7 +1,7 @@
 function Conduct-PreCommandCheck {
     param(
-        $script:CollectedDataTimeStampDirectory, 
-        $CollectionName, 
+        $script:CollectedDataTimeStampDirectory,
+        $CollectionName,
         $TargetComputer,
         $IndividualHostResults
     )
@@ -12,3 +12,4 @@ function Conduct-PreCommandCheck {
     # Creates a directory to save compiled results
     New-Item -ItemType Directory -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)" -Force -ErrorAction SilentlyContinue
 }
+

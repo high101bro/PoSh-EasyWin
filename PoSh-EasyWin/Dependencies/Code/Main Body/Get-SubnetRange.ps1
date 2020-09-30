@@ -6,7 +6,7 @@ Function Get-SubnetRange {
         $IP,
         [string]
         $netmask
-    )  
+    )
     Begin {
         $IPs = New-Object System.Collections.ArrayList
 
@@ -27,11 +27,11 @@ Function Get-SubnetRange {
                     $MaskBit = $BinaryMask.Substring($_,1)
                     IF ($IPBit -eq '1' -and $MaskBit -eq '1') {
                         $NetAdd = $NetAdd + "1"
-                    } 
-                    elseif ($IPBit -eq ".") { $NetAdd = $NetAdd +'.'} 
+                    }
+                    elseif ($IPBit -eq ".") { $NetAdd = $NetAdd +'.'}
                     else { $NetAdd = $NetAdd + "0" }
                 }
-                if ($Binary) { return $NetAdd } 
+                if ($Binary) { return $NetAdd }
                 else { return ConvertFrom-BinaryIP $NetAdd }
             }
         }
@@ -48,8 +48,8 @@ Function Get-SubnetRange {
                         if (($octet - [math]::pow(2,(7-$_)))-ge 0) {
                             $octet = $octet - [math]::pow(2,(7-$_))
                             [string]$strout = $strout + "1"
-                        } 
-                        else { [string]$strout = $strout + "0" }  
+                        }
+                        else { [string]$strout = $strout + "0" }
                     }
                     $out += $strout
                 }
@@ -126,13 +126,13 @@ Function Get-SubnetRange {
                 iF ($netMask.length -le 3) {
                     $masklength = $netmask.replace('/','')
                     $Subnet = ConvertFrom-MaskLength $masklength
-                } 
+                }
                 else {
                     $Subnet = $netmask
                     $masklength = ConvertTo-MaskLength -Mask $netmask
                 }
                 $network = Get-NetworkAddress -IP $IP -Mask $Subnet
-            
+
                 [int]$FirstOctet,[int]$SecondOctet,[int]$ThirdOctet,[int]$FourthOctet = $network.split('.')
                 $TotalIPs = ([math]::pow(2,(32-$masklength)) -2)
                 $blocks = ($TotalIPs - ($TotalIPs % 256))/256
@@ -144,17 +144,17 @@ Function Get-SubnetRange {
                                     If ($SecondOctet -eq 255) {
                                         $FirstOctet++
                                         $secondOctet = 0
-                                    } 
+                                    }
                                     else {
                                         $SecondOctet++
                                         $ThirdOctet = 0
                                     }
-                                } 
+                                }
                                 else {
                                     $FourthOctet = 0
                                     $ThirdOctet++
-                                }  
-                            } 
+                                }
+                            }
                             else {
                                 $FourthOctet++
                             }
@@ -171,17 +171,17 @@ Function Get-SubnetRange {
                                 If ($SecondOctet -eq 255) {
                                     $FirstOctet++
                                     $secondOctet = 0
-                                } 
+                                }
                                 else {
                                     $SecondOctet++
                                     $ThirdOctet = 0
                                 }
-                            } 
+                            }
                             else {
                                 $FourthOctet = 0
                                 $ThirdOctet++
-                            }  
-                        } 
+                            }
+                        }
                         else {
                             $FourthOctet++
                         }
@@ -198,3 +198,5 @@ Function Get-SubnetRange {
         $Script:IPList = $IPs
     }
 }
+
+

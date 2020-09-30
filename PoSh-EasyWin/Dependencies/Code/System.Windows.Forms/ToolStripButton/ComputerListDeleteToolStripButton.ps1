@@ -2,17 +2,17 @@ $ComputerListDeleteSelectedToolStripButtonAdd_Click = {
     # This brings specific tabs to the forefront/front view
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
-    Create-ComputerNodeCheckBoxArray 
+    Create-ComputerNodeCheckBoxArray
     if ($script:EntrySelected) {
         $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of Endpoint Node: $($script:EntrySelected.text)`r`n`r`nAll Endpoint metadata and notes will be lost.`r`n`r`nAny previously collected data will still remain.",'Delete Endpoint','YesNo')
 
         Switch ( $MessageBox ) {
             'Yes' {
                 # Removes selected computer nodes
-                [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
+                [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
                 foreach ($root in $AllHostsNode) {
-                    foreach ($Category in $root.Nodes) { 
-                        foreach ($Entry in $Category.nodes) { 
+                    foreach ($Category in $root.Nodes) {
+                        foreach ($Entry in $Category.nodes) {
                             if ($Entry.text -eq $script:EntrySelected.text) {
                                 # Removes the node from the treeview
                                 $Entry.remove()
@@ -52,7 +52,7 @@ $ComputerListDeleteAllCheckedToolStripButtonAdd_Click = {
         # This brings specific tabs to the forefront/front view
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
-        Create-ComputerNodeCheckBoxArray 
+        Create-ComputerNodeCheckBoxArray
         if ($script:ComputerTreeViewSelected.count -eq 1) {
             $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of $($script:ComputerTreeViewSelected.count) Endpoint Node.`r`n`r`nAll Endpoint metadata and notes will be lost.`r`nAny previously collected data will still remain.",'Delete Endpoint','YesNo')
         }
@@ -64,10 +64,10 @@ $ComputerListDeleteAllCheckedToolStripButtonAdd_Click = {
             'Yes' {
                 if ($script:ComputerTreeViewSelected.count -gt 0) {
                     foreach ($i in $script:ComputerTreeViewSelected) {
-                        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
+                        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
                         foreach ($root in $AllHostsNode) {
-                            foreach ($Category in $root.Nodes) { 
-                                foreach ($Entry in $Category.nodes) { 
+                            foreach ($Category in $root.Nodes) {
+                                foreach ($Entry in $Category.nodes) {
                                     if ($Entry.checked) {
                                         $Entry.remove()
                                         # Removes the host from the variable storing the all the computers
@@ -77,22 +77,22 @@ $ComputerListDeleteAllCheckedToolStripButtonAdd_Click = {
                             }
                         }
                     }
-                    # Removes selected category nodes - Note: had to put this in its own loop... 
+                    # Removes selected category nodes - Note: had to put this in its own loop...
                     # the saving of nodes didn't want to work properly when use in the above loop when switching between treenode views.
                     foreach ($i in $script:ComputerTreeViewSelected) {
                         foreach ($root in $AllHostsNode) {
-                            foreach ($Category in $root.Nodes) { 
+                            foreach ($Category in $root.Nodes) {
                                 if ($Category.checked) { $Category.remove() }
                             }
                         }
                     }
                     # Removes selected root node - Note: had to put this in its own loop... see above category note
                     foreach ($i in $script:ComputerTreeViewSelected) {
-                        foreach ($root in $AllHostsNode) {                
+                        foreach ($root in $AllHostsNode) {
                             if ($root.checked) {
                                 foreach ($Category in $root.Nodes) { $Category.remove() }
                                 $root.remove()
-                                if ($i -eq "All Endpoints") { $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList) }                                    
+                                if ($i -eq "All Endpoints") { $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList) }
                             }
                         }
                     }
@@ -102,10 +102,10 @@ $ComputerListDeleteAllCheckedToolStripButtonAdd_Click = {
                     #Removed For Testing#$ResultsListBox.Items.Clear()
                     $ResultsListBox.Items.Add("The following hosts have been deleted:  ")
                     $ComputerListDeletedArray = @()
-                    foreach ($Node in $script:ComputerTreeViewSelected) { 
+                    foreach ($Node in $script:ComputerTreeViewSelected) {
                         if ($Node -notin $ComputerListDeletedArray) {
                             $ComputerListDeletedArray += $Node
-                            $ResultsListBox.Items.Add(" - $Node") 
+                            $ResultsListBox.Items.Add(" - $Node")
                         }
                     }
 
@@ -125,6 +125,8 @@ $ComputerListDeleteAllCheckedToolStripButtonAdd_Click = {
         }
     }
 }
+
+
 
 
 

@@ -3,10 +3,10 @@ function Sort-CommandTreeNode {
     $script:CommandsCheckedBoxesSelected = @()
 
     if ($CommandsViewMethodRadioButton.checked) {
-        [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes 
-        foreach ($root in $AllCommandsNode) { 
+        [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes
+        foreach ($root in $AllCommandsNode) {
             foreach ($Category in $root.Nodes) {
-                foreach ($Entry in $Category.nodes) { 
+                foreach ($Entry in $Category.nodes) {
                     if ($Entry.Checked) { $script:CommandsCheckedBoxesSelected += $Entry.Text }
                 }
             }
@@ -19,16 +19,16 @@ function Sort-CommandTreeNode {
         Update-QueryHistory
     }
     elseif ($CommandsViewQueryRadioButton.checked) {
-        [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes 
-        foreach ($root in $AllCommandsNode) { 
+        [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes
+        foreach ($root in $AllCommandsNode) {
             foreach ($Category in $root.Nodes) {
-                foreach ($Entry in $Category.nodes) { 
+                foreach ($Entry in $Category.nodes) {
                     if ($Entry.Checked) {
                         $script:CommandsCheckedBoxesSelected += $Entry.Text
                     }
                 }
             }
-        }            
+        }
         $script:CommandsTreeView.Nodes.Clear()
         Initialize-CommandTreeNodes
         AutoSave-HostData
@@ -40,3 +40,4 @@ function Sort-CommandTreeNode {
     Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
     Start-Sleep -Seconds  1
 }
+

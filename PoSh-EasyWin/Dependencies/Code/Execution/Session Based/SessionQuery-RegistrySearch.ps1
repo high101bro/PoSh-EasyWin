@@ -7,7 +7,7 @@ $CollectionCommandStartTime = Get-Date
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
- 
+
 
 $script:ProgressBarEndpointsProgressBar.Value   = 0
 
@@ -27,7 +27,7 @@ $SearchRegistryValueData = @()
 foreach ($ValueData in $($script:RegistryValueDataSearchRichTextbox.Text).split("`r`n")){ $SearchRegistryValueData += $ValueData.trim() | Where {$_ -ne ''} }
 
 
-if ($RegistryKeyNameCheckbox.checked)   { 
+if ($RegistryKeyNameCheckbox.checked)   {
     $CountCommandQueries++
     if ($RegistrySearchRecursiveCheckbox.checked) {
         $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryKeyName,$true,$false,$false)
@@ -36,7 +36,7 @@ if ($RegistryKeyNameCheckbox.checked)   {
         $SearchRegistryCommand = @($RegistrySearchDirectory,$false,$SearchRegistryKeyName,$true,$false,$false)
     }
 }
-if ($RegistryValueNameCheckbox.checked) { 
+if ($RegistryValueNameCheckbox.checked) {
     $CountCommandQueries++
     if ($RegistrySearchRecursiveCheckbox.checked) {
         $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryValueName,$false,$true,$false)
@@ -45,7 +45,7 @@ if ($RegistryValueNameCheckbox.checked) {
         $SearchRegistryCommand = @($RegistrySearchDirectory,$false,$SearchRegistryValueName,$false,$true,$false)
     }
 }
-if ($RegistryValueDataCheckbox.checked) { 
+if ($RegistryValueDataCheckbox.checked) {
     $CountCommandQueries++
     if ($RegistrySearchRecursiveCheckbox.checked) {
         $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryValueData,$false,$false,$true)
@@ -72,9 +72,11 @@ $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
 
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
-$PoShEasyWin.Refresh() 
+$PoShEasyWin.Refresh()
 
 $script:ProgressBarQueriesProgressBar.Value   += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+
+

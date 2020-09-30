@@ -11,5 +11,7 @@ $StatisticsViewLogButtonAdd_MouseHover = {
     Network enumeration scannning for hosts: IPs and Ports.
     Connectivity checks: Ping, WinRM, & RPC.
     Remote access to hosts, but not commands executed within.
-"@ 
+"@
 }
+
+

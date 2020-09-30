@@ -5,7 +5,7 @@ function Create-NewCredentials {
 
     # Encrypt an exported credential object
     # The Export-Clixml cmdlet encrypts credential objects by using the Windows Data Protection API.
-    # The encryption ensures that only your user account on only that computer can decrypt the contents of the 
+    # The encryption ensures that only your user account on only that computer can decrypt the contents of the
     # credential object. The exported CLIXML file can't be used on a different computer or by a different user.
     $NewCredentialsUsername = ($script:Credential.UserName).replace('\','-')
     $DateTime = "{0:yyyy-MM-dd @ HHmm.ss}" -f (Get-Date)
@@ -18,3 +18,4 @@ function Create-NewCredentials {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Credentials:  $CredentialName")
 }
+

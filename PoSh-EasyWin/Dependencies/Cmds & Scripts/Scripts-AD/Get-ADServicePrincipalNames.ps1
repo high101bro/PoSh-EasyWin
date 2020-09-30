@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         Get Service Principal Names
 
@@ -17,7 +17,7 @@
 
     .PARAMETER ServiceClass
         Service class to filter on.
-        
+
         Examples:
             HOST
             MSSQLSvc
@@ -38,37 +38,37 @@
 
     .EXAMPLE
         Get-Spn -ServiceType MSSQLSvc
-        
+
         #This command gets all MSSQLSvc SPNs for the current domain
-    
+
     .EXAMPLE
         Get-Spn -ComputerName SQLServer54, SQLServer55
-        
+
         #List SPNs associated with SQLServer54, SQLServer55
-    
+
     .EXAMPLE
         Get-SPN -SPN http*
 
         #List SPNs maching http*
-    
+
     .EXAMPLE
         Get-SPN -ComputerName SQLServer54 -Domain Contoso.org
 
         # List SPNs associated with SQLServer54 in contoso.org
 
-    .NOTES 
+    .NOTES
         Adapted from
             http://www.itadmintools.com/2011/08/list-spns-in-active-directory-using.html
             http://poshcode.org/3234
-        Version History 
-            v1.0   - Chad Miller - Initial release 
+        Version History
+            v1.0   - Chad Miller - Initial release
             v1.1   - ramblingcookiemonster - added parameters to specify service type, host, and specification
             v1.1.1 - ramblingcookiemonster - added parameterset for explicit SPN lookup, added ServiceClass to results
 
     .FUNCTIONALITY
-        Active Directory             
+        Active Directory
 #>
-    
+
 [cmdletbinding(DefaultParameterSetName='Parse')]
 param(
     [Parameter( Position=0,
@@ -88,7 +88,7 @@ param(
 
     [string]$Domain
 )
-    
+
 #Set up domain specification, borrowed from PyroTek3
 #https://github.com/PyroTek3/PowerShell-AD-Recon/blob/master/Find-PSServiceAccounts
     if(-not $Domain)
@@ -138,10 +138,10 @@ foreach($computer in $ComputerName)
 
         $account = $result.GetDirectoryEntry()
         foreach ($servicePrincipalName in $account.servicePrincipalName.Value) {
-                
+
             #Regex will capture computername and port/instance
             if($servicePrincipalName -match "^(?<ServiceClass>$ServiceFilter)\/(?<computer>[^\.|^:]+)[^:]*(:{1}(?<port>\w+))?$") {
-                    
+
                 #Build up an object, get properties in the right order, filter on computername
                 New-Object psobject -property @{
                     ComputerName=$matches.computer
@@ -149,11 +149,13 @@ foreach($computer in $ComputerName)
                     ServiceClass=$matches.ServiceClass
                     sAMAccountName=$($account.sAMAccountName)
                     SPN=$servicePrincipalName
-                } | 
+                } |
                     Select-Object ComputerName, Specification, ServiceClass, sAMAccountName, SPN |
                     #To get results that match parameters, filter on comp and spec
                     Where-Object {$_.ComputerName -like $computer -and $_.Specification -like $Specification}
-            } 
+            }
         }
     }
 }
+
+

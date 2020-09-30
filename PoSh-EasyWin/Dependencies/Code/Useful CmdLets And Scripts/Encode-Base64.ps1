@@ -7,3 +7,5 @@ function Encode-Base64 {
 }
 
 #Encode-Base64 -FileName 'C:\image.png'
+
+

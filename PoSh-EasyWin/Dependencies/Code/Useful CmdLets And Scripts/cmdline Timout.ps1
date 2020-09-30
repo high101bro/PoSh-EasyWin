@@ -21,4 +21,6 @@ function Read-KeyOrTimeout {
     }
     Write-Output "You typed $($response.toUpper())"
 }
-Read-KeyOrTimeOut 
+Read-KeyOrTimeOut
+
+

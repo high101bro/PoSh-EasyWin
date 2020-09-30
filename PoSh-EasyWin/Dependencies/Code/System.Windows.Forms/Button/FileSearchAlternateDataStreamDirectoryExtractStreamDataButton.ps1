@@ -17,7 +17,7 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
     $SelectedFilesToExtractStreamData = $null
     $SelectedFilesToExtractStreamData = $ExtractStreamDataFrom | Out-GridView -Title 'Retrieve & Extract Alternate Data Stream' -PassThru
 
-    if ($SelectedFilesToExtractStreamData) { 
+    if ($SelectedFilesToExtractStreamData) {
         $DownloadSize = $SelectedFilesToExtractStreamData | Select-Object -ExpandProperty length | Measure-Object -Sum | Select-Object -ExpandProperty Sum
         if     ($DownloadSize -gt 1000000000) { $DownloadSize = "$([Math]::Round($($DownloadSize / 1gb),2)) GB" }
         elseif ($DownloadSize -gt 1000000)    { $DownloadSize = "$([Math]::Round($($DownloadSize / 1mb),2)) MB" }
@@ -25,10 +25,10 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
         elseif ($DownloadSize -le 1000)       { $DownloadSize = "$DownloadSize Bytes" }
 
         $ConfirmSelection = $False
-        $MessageBox = [System.Windows.Forms.MessageBox]::Show("Total data amount prior to compression and download:  $DownloadSize","PoSh-EasyWin - Extract Stream Data",[System.Windows.Forms.MessageBoxButtons]::OKCancel)	
+        $MessageBox = [System.Windows.Forms.MessageBox]::Show("Total data amount prior to compression and download:  $DownloadSize","PoSh-EasyWin - Extract Stream Data",[System.Windows.Forms.MessageBoxButtons]::OKCancel)
         switch ($MessageBox){
-            "OK"     { $ConfirmSelection = $true } 
-            "Cancel" { $ConfirmSelection = $False } 
+            "OK"     { $ConfirmSelection = $true }
+            "Cancel" { $ConfirmSelection = $False }
         }
     }
 
@@ -59,7 +59,7 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
         $script:ProgressBarEndpointsProgressBar.Value   = 0
 
 
-        function Extract-AlternateDataStream {                
+        function Extract-AlternateDataStream {
             # Identified file is first compressed on the endpoint
             # If the target item is a directory, the directory will be directly compressed
             # If the target item is not a directory, it will copy the item to c:\Windows\Temp
@@ -75,12 +75,12 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
                 Invoke-Expression $ZipFile
                 Zip-File -Path $StreamDataRemoteSaveLocation -Destination 'C:\Windows\Temp' -Compression Optimal -ADS
             } -Argumentlist @($File,$StreamDataRemoteSaveLocation,$ZipFile) -Session $session
-                            
+
 
             # File is hashed remotely on endpoint, then copied back over the network
-            $RetrievedFileHashMD5 = Invoke-Command -ScriptBlock { 
-                param($StreamDataRemoteSaveLocation) 
-                (Get-FileHash -Algorithm MD5 -Path $StreamDataRemoteSaveLocation).Hash 
+            $RetrievedFileHashMD5 = Invoke-Command -ScriptBlock {
+                param($StreamDataRemoteSaveLocation)
+                (Get-FileHash -Algorithm MD5 -Path $StreamDataRemoteSaveLocation).Hash
             } -Argumentlist $StreamDataRemoteSaveLocation -Session $session
             Copy-Item -Path "c:\Windows\Temp\$($File.Stream).zip" -Destination "$LocalSavePath\$($File.Stream) [MD5=$RetrievedFileHashMD5].zip" -FromSession $session
 
@@ -91,9 +91,9 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
             # Gets AuthenticodeSignature information
             Create-RetrievedFileDetails -LocalSavePath $LocalSavePath -File $StreamDataRemoteSaveLocation -ADS $File -AdsUpdateName "$LocalSavePath\$($File.Stream) [MD5=$RetrievedFileHashMD5].zip"
 
-        
+
             # The extracted alternate data stream and zipped file are removed from the endpoint
-            Invoke-Command -ScriptBlock { 
+            Invoke-Command -ScriptBlock {
                 param(
                     $File,
                     $StreamDataRemoteSaveLocation
@@ -101,27 +101,27 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
                 Remove-Item -Path $StreamDataRemoteSaveLocation -Force
                 Remove-Item "c:\Windows\Temp\$($File.Stream).zip" -Force
             } -ArgumentList @($File,$StreamDataRemoteSaveLocation) -Session $session
-                            
+
             $script:ProgressBarQueriesProgressBar.Value += 1
         }
 
 
 
         Foreach ($File in $SelectedFilesToExtractStreamData) {
-            if ($ExtractStreamDataCurrentComputer -eq '') {        
+            if ($ExtractStreamDataCurrentComputer -eq '') {
                 $ExtractStreamDataCurrentComputer = $File.PSComputerName
                 $script:ProgressBarQueriesProgressBar.Maximum = ($SelectedFilesToExtractStreamData | Where {$_.PSComputerName -eq $ExtractStreamDataCurrentComputer}).count
                 $script:ProgressBarQueriesProgressBar.Value   = 0
 
 
                 $LocalSavePath = "$RetrieveFilesSaveDirectory\Retrieved & Extracted Stream Data - $ExtractStreamDataCurrentComputer"
-                if ( -not (Test-Path -Path "$RetrieveFilesSaveDirectory\Retrieved & Extracted Stream Data - $ExtractStreamDataCurrentComputer") ) { 
-                    New-Item -Type Directory -Path $LocalSavePath 
+                if ( -not (Test-Path -Path "$RetrieveFilesSaveDirectory\Retrieved & Extracted Stream Data - $ExtractStreamDataCurrentComputer") ) {
+                    New-Item -Type Directory -Path $LocalSavePath
                 }
 
 
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                    if (!$script:Credential) { Create-NewCredentials }            
+                    if (!$script:Credential) { Create-NewCredentials }
                     $session = New-PSSession -ComputerName $ExtractStreamDataCurrentComputer -Name "PoSh-EasyWin Extract Stream Data $ExtractStreamDataCurrentComputer" -Credential $script:Credential
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "- New-PSSession -ComputerName $ExtractStreamDataCurrentComputer -Credential $script:Credential"
                 }
@@ -133,7 +133,7 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
                 Extract-AlternateDataStream
             }
             elseif ($ExtractStreamDataCurrentComputer -eq $File.PSComputerName) {
-                # no need for new session as there is already one open to the target computer 
+                # no need for new session as there is already one open to the target computer
 
                 Extract-AlternateDataStream
             }
@@ -147,18 +147,18 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
 
 
                 $LocalSavePath = "$RetrieveFilesSaveDirectory\Retrieved & Extracted Stream Data - $ExtractStreamDataCurrentComputer"
-                if ( -not (Test-Path -Path "$RetrieveFilesSaveDirectory\Retrieved & Extracted Stream Data - $ExtractStreamDataCurrentComputer") ) { 
-                    New-Item -Type Directory -Path $LocalSavePath 
+                if ( -not (Test-Path -Path "$RetrieveFilesSaveDirectory\Retrieved & Extracted Stream Data - $ExtractStreamDataCurrentComputer") ) {
+                    New-Item -Type Directory -Path $LocalSavePath
                 }
 
 
                 $session = New-PSSession -ComputerName $ExtractStreamDataCurrentComputer -Name "PoSh-EasyWin Extract Stream Data $ExtractStreamDataCurrentComputer"
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "- New-PSSession -ComputerName $ExtractStreamDataCurrentComputer"
 
-                
+
                 Extract-AlternateDataStream
-                
-                
+
+
                 $script:ProgressBarEndpointsProgressBar.Value += 1
                 $PoShEasyWin.Refresh()
             }
@@ -177,11 +177,11 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Retrieved Files Saved To: $RetrieveFilesSaveDirectory"
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Retrieved Files From Endpoints Were Zipped To 'c:\Windows\Temp\' Then Removed"
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword 
+            Generate-NewRollingPassword
         }
-    
+
         if ($SelectedFilesToExtractStreamData) { Start-Sleep -Seconds 1;  Invoke-Item -Path $RetrieveFilesSaveDirectory }
         $PoShEasyWin.Refresh()
     }
@@ -190,6 +190,8 @@ $FileSearchAlternateDataStreamDirectoryExtractStreamDataButtonAdd_Click = {
     CommonButtonSettings -Button $RetrieveFilesButton
 
     CommonButtonSettings -Button $OpenXmlResultsButton
-    CommonButtonSettings -Button $OpenCsvResultsButton    
+    CommonButtonSettings -Button $OpenCsvResultsButton
 
 }
+
+

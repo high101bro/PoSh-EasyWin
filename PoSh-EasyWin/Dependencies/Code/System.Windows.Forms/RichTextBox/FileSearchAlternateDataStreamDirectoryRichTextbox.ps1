@@ -1,13 +1,13 @@
-$FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseEnter = { 
-    if ($this.text -eq "Enter Directories; One Per Line") { 
-        $this.text = "" 
-    } 
+$FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseEnter = {
+    if ($this.text -eq "Enter Directories; One Per Line") {
+        $this.text = ""
+    }
 }
 
-$FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseLeave = { 
-    if ($this.text -eq "") { 
-        $this.text = "Enter Directories; One Per Line" 
-    } 
+$FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseLeave = {
+    if ($this.text -eq "") {
+        $this.text = "Enter Directories; One Per Line"
+    }
 }
 
 $FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseHover = {
@@ -15,3 +15,5 @@ $FileSearchAlternateDataStreamDirectoryRichTextboxAdd_MouseHover = {
 +  Enter Directories
 +  One Per Line
 "@ }
+
+

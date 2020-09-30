@@ -24,7 +24,7 @@ function Open-XmlResultsInShell {
         { `$ErrorActionPreference = 'SilentlyContinue'; },
         { foreach (`$i in (0..(40-(`$Message.length)))) {Write-Host ' '-NoNewLine}; },
         { Write-Host -f Green '  [Complete]'; },
-        { Write-Host ' '; },            
+        { Write-Host ' '; },
 
         { `$Message = 'Generating Variables and Functions...'; },
         { Write-Host -f Yellow "`$Message" -NoNewLine; },
@@ -37,11 +37,11 @@ function Open-XmlResultsInShell {
         { Write-Host ' '; },
 
         { if (`$Answer -eq `$true) {`$Message = 'Processing Select Results...'}; },
-        { if (`$Answer -eq `$true) {Write-Host -f Yellow "`$Message"}; },            
+        { if (`$Answer -eq `$true) {Write-Host -f Yellow "`$Message"}; },
         { if (`$Answer -eq `$true) {`$PropertyUniqueCount = @()} else {`$PropertyUniqueCount = 'These statistics were not generated...'}; },
         { if (`$Answer -eq `$true) {foreach (`$p in `$PropertyList) { Write-Host "``t`$p" -NoNewLine; foreach (`$i in (0..(33-(`$p.length)))) {Write-Host ' '-NoNewLine} ;`$PropertyUniqueCount += [pscustomobject]@{Name = "`$p";Value = (`$Results.`$p | Select -unique).count}; Write-host -f Green '[Complete]'  }} ; },
-        { Write-Host ' '; },            
-        
+        { Write-Host ' '; },
+
         { function View-Results {`$Results | Out-GridView -Title 'PoSh-EasyWin - View Results'}; },
         { function Open-ResultsDirectory {`Invoke-Item `$SavePath}; },
 
@@ -97,11 +97,13 @@ function Open-XmlResultsInShell {
         { Write-Host -f White        "$('='*100)"; },
         { Write-Host""; },
 
-        { `$ErrorActionPreference = 'Continue'; }           
+        { `$ErrorActionPreference = 'Continue'; }
 "@
-    Invoke-Expression $Command 
+    Invoke-Expression $Command
 
     #Start-Sleep 1
     #Remove-Item C:\Windows\Temp\PoSh-EasyWin -Force -ErrorAction SilentlyContinue
 
 }
+
+

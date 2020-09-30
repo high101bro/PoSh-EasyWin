@@ -1,7 +1,7 @@
-ï»¿function New-CryptographyKey()
+function New-CryptographyKey()
 {
 <#
-.SYNOPSIS 
+.SYNOPSIS
 Generates a random cryptography key.
 
 .DESCRIPTION
@@ -62,14 +62,14 @@ Param(
         {
             Write-Error $_
         }
-        
+
     }
 }
 
 Function Protect-File
 {
 <#
-.SYNOPSIS 
+.SYNOPSIS
 Encrypts a file using a symmetrical algorithm.
 
 .DESCRIPTION
@@ -169,7 +169,7 @@ Param(
     Process
     {
         $Files = Get-Item -LiteralPath $FileName
-    
+
         ForEach($File in $Files)
         {
             $DestinationFile = $File.FullName + $Suffix
@@ -188,7 +188,7 @@ Param(
                 $Transform = $Crypto.CreateEncryptor()
                 $CryptoStream = New-Object System.Security.Cryptography.CryptoStream($FileStreamWriter, $Transform, [System.Security.Cryptography.CryptoStreamMode]::Write)
                 $FileStreamReader.CopyTo($CryptoStream)
-    
+
                 #Close open files
                 $CryptoStream.FlushFinalBlock()
                 $CryptoStream.Close()
@@ -200,11 +200,11 @@ Param(
 
                 #Output ecrypted file
                 $result = Get-Item $DestinationFile
-                $result | Add-Member â€“MemberType NoteProperty â€“Name SourceFile â€“Value $File.FullName
-                $result | Add-Member â€“MemberType NoteProperty â€“Name Algorithm â€“Value $Algorithm
-                $result | Add-Member â€“MemberType NoteProperty â€“Name Key â€“Value $Key
-                $result | Add-Member â€“MemberType NoteProperty â€“Name CipherMode â€“Value $Crypto.Mode
-                $result | Add-Member â€“MemberType NoteProperty â€“Name PaddingMode â€“Value $Crypto.Padding
+                $result | Add-Member –MemberType NoteProperty –Name SourceFile –Value $File.FullName
+                $result | Add-Member –MemberType NoteProperty –Name Algorithm –Value $Algorithm
+                $result | Add-Member –MemberType NoteProperty –Name Key –Value $Key
+                $result | Add-Member –MemberType NoteProperty –Name CipherMode –Value $Crypto.Mode
+                $result | Add-Member –MemberType NoteProperty –Name PaddingMode –Value $Crypto.Padding
                 $result
             }
             Catch
@@ -231,7 +231,7 @@ Param(
 Function Unprotect-File
 {
 <#
-.SYNOPSIS 
+.SYNOPSIS
 Decrypts a file encrypted with Protect-File.
 
 .DESCRIPTION
@@ -373,7 +373,7 @@ Param(
                 if($RemoveSource){Remove-Item $File.FullName}
 
                 #Output decrypted file
-                Get-Item $DestinationFile | Add-Member â€“MemberType NoteProperty â€“Name SourceFile â€“Value $File.FullName -PassThru
+                Get-Item $DestinationFile | Add-Member –MemberType NoteProperty –Name SourceFile –Value $File.FullName -PassThru
             }
             Catch
             {
@@ -399,3 +399,4 @@ Param(
 Export-ModuleMember -Function New-CryptographyKey
 Export-ModuleMember -Function Protect-File
 Export-ModuleMember -Function Unprotect-File
+

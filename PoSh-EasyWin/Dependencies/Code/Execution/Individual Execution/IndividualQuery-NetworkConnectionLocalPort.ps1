@@ -5,8 +5,8 @@ $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 foreach ($TargetComputer in $script:ComputerList) {
     param(
-        $script:CollectedDataTimeStampDirectory, 
-        $script:IndividualHostResults, 
+        $script:CollectedDataTimeStampDirectory,
+        $script:IndividualHostResults,
         $CollectionName,
         $TargetComputer
     )
@@ -20,9 +20,9 @@ foreach ($TargetComputer in $script:ComputerList) {
     #$NetworkConnectionSearchLocalPort = @()
     #foreach ($Port in $($NetworkConnectionSearchLocalPortRichTextbox.Text).split("`r`n")){ $NetworkConnectionSearchLocalPort += $Port }
 
-        
+
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }             
+        if (!$script:Credential) { Create-NewCredentials }
 
         Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
         -ArgumentList @($null,$null,$NetworkConnectionSearchLocalPort,$null) `
@@ -42,7 +42,7 @@ foreach ($TargetComputer in $script:ComputerList) {
 
 Monitor-Jobs -CollectionName $CollectionName
 
-$CollectionCommandEndTime  = Get-Date                    
+$CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
@@ -54,5 +54,7 @@ Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryT
                  -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).xml"
 
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
-Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"                 
+Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+
+
 

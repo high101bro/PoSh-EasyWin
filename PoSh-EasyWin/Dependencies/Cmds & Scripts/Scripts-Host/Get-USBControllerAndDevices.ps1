@@ -1,4 +1,4 @@
-﻿<#
+<#
 Antecedent: A CIM_USBController representing the Universal Serial Bus (USB) controller associated with this device.
 Dependent: Describes the logical device connected to the Universal Serial Bus (USB) controller.
 #>
@@ -22,6 +22,8 @@ Get-WmiObject -Class Win32_USBControllerDevice | Foreach-Object {
     }
 } `
 | Select-Object -Property PSComputerName, * `
-| Sort-Object Description,DeviceID 
+| Sort-Object Description,DeviceID
+
+
 
 

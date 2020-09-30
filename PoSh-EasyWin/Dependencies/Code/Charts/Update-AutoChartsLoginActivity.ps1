@@ -14,7 +14,7 @@ function Update-AutoChartsLoginActivity {
     Foreach ($TargetComputer in $ComputerNameList) {
         <#
         if ($AutoChartPullNewDataEnrichedCheckBox.checked) {
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {                        
+            if ($ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Get-LoginActivityEnriched - (WinRM) Script'
@@ -68,12 +68,12 @@ function Update-AutoChartsLoginActivity {
                     $Second      = [int](($Minute - ([Math]::Truncate($Minute))) * 60)
                     $Minute      = [Math]::Truncate($Minute)
                     $Timecount   = [datetime]::Parse("$Hour`:$Minute`:$Second")
-    
+
                     $script:ProgressBarMainLabel.text = "Status:
 Iterating Through Endpoints
 Time Updates As Endpoints Respond
 Elasped Time:  $($Timecount -replace '-','')"
-                 
+
                     $Username = $script:Credential.UserName
                     $Password = $script:Credential.GetNetworkCredential().Password
 
@@ -110,12 +110,12 @@ Elasped Time:  $($Timecount -replace '-','')"
                     $Second      = [int](($Minute - ([Math]::Truncate($Minute))) * 60)
                     $Minute      = [Math]::Truncate($Minute)
                     $Timecount   = [datetime]::Parse("$Hour`:$Minute`:$Second")
-    
+
                     $script:ProgressBarMainLabel.text = "Status:
 Iterating Through Endpoints
 Time Updates As Endpoints Respond
 Elasped Time:  $($Timecount -replace '-','')"
-                 
+
                     & $PsExecPath "\\$TargetComputer" -AcceptEULA -NoBanner powershell -command "Invoke-Command -ScriptBlock { Get-WSManInstance -ResourceURI Shell -Enumerate } | ConvertTo-Csv -NoType" | ConvertFrom-Csv | Export-CSV "$($script:CollectionSavedDirectoryTextBox.text)\$CollectionName\$CollectionName -- $TargetComputer.csv" -NoTypeInformation
                     $script:ProgressBarFormProgressBar.Value += 1
                 }
@@ -133,21 +133,21 @@ Elasped Time:  $($Timecount -replace '-','')"
 
     # Removes Compiled CSV file
     Remove-Item "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).csv" -Force
-    
+
     if (-not $AutoChartProtocolSMBRadioButton.checked) {
         Monitor-Jobs -CollectionName $CollectionName
     }
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword 
+        Generate-NewRollingPassword
     }
-    
+
     Compile-CsvFiles -LocationOfCSVsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)\*.csv" `
                      -LocationToSaveCompiledCSV "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).csv"
 
     Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)\*.xml" `
-                     -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).xml"                
+                     -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).xml"
 
     $script:AutoChartDataSourceCsv     = Import-Csv "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).csv"
     $script:AutoChartDataSourceXmlPath = "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).xml"
@@ -156,3 +156,5 @@ Elasped Time:  $($Timecount -replace '-','')"
 
     $this.close()
 }
+
+

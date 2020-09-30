@@ -20,13 +20,13 @@ function Generate-AutoChartsCommand {
     # Location of Uncompiled Results
     $script:IndividualHostResults           = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
 
-    # Removes a tab if it already exists... Since the same variable is used when spawning multi-series tabs whenever multiple tabs are created, the previous ones break and are unable to close 
-    $AutoChartsTabControl.Controls.Remove($script:AutoChartsIndividualTabPage)            
+    # Removes a tab if it already exists... Since the same variable is used when spawning multi-series tabs whenever multiple tabs are created, the previous ones break and are unable to close
+    $AutoChartsTabControl.Controls.Remove($script:AutoChartsIndividualTabPage)
 
     if ($FilePath) {
         # If a filepath is provided it will select only that file and those 'younger' than it (derived by filename not file age)
-        
-        # This is the directory name of the file selected 
+
+        # This is the directory name of the file selected
         $FilePathDirSelected = $( (($script:AutoChartDataSourceCsvProcessesFileName | Split-Path).split('\'))[-1] )
 
         $inc = 0
@@ -44,20 +44,20 @@ function Generate-AutoChartsCommand {
 
 
     # Filter results for just WMI Collections
-    if ( $AutoChartsWmiCollectionsCheckBox.Checked ) { 
+    if ( $AutoChartsWmiCollectionsCheckBox.Checked ) {
         # Searches though the all Collection Data Directories to find files that match the $QueryName
         $script:CSVFileMatch = @()
         foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
-            $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName | Where {$_ -match 'WMI'} 
+            $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName | Where {$_ -match 'WMI'}
             foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match $QueryName) { $script:CSVFileMatch += $CSVFile } }
         }
     }
-    # Filter results for other than WMI Collections    
-    elseif ( $AutoChartsPoShCollectionsCheckBox.Checked ) { 
+    # Filter results for other than WMI Collections
+    elseif ( $AutoChartsPoShCollectionsCheckBox.Checked ) {
         # Searches though the all Collection Data Directories to find files that match the $QueryName
         $script:CSVFileMatch = @()
         foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
-            $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName | Where {$_ -notmatch 'WMI'} 
+            $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName | Where {$_ -notmatch 'WMI'}
             foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match $QueryName) { $script:CSVFileMatch += $CSVFile } }
         }
     }
@@ -80,7 +80,7 @@ function Generate-AutoChartsCommand {
     # Checks if the files selected are identicle, removing series as necessary that are to prevent erroneous double data
     if ($script:CSVFilePathMostRecent -eq $script:CSVFilePathPrevious) {$script:CSVFilePathPrevious = $null}
     if ($script:CSVFilePathMostRecent -eq $script:CSVFilePathBaseline) {$script:CSVFilePathBaseline = $null}
-    if ($script:CSVFilePathPrevious   -eq $script:CSVFilePathBaseline) {$script:CSVFilePathPrevious = $null}   
+    if ($script:CSVFilePathPrevious   -eq $script:CSVFilePathBaseline) {$script:CSVFilePathPrevious = $null}
 
 
     Add-Type -AssemblyName System.Windows.Forms
@@ -106,9 +106,9 @@ function Generate-AutoChartsCommand {
     }
     #$script:AutoChartCharting.DataManipulator.Sort() = "Descending"
 
-    
+
     #--------------------------
-    # Auto Create Charts Title 
+    # Auto Create Charts Title
     #--------------------------
     $script:AutoChartTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title
     if (Test-Path "$script:CSVFilePathMostRecent") {
@@ -140,14 +140,14 @@ function Generate-AutoChartsCommand {
     $script:AutoChartCharting.ChartAreas.Add($script:AutoChartsArea)
 
     #--------------------------
-    # Auto Create Charts Legend 
+    # Auto Create Charts Legend
     #--------------------------
     $script:Legend                      = New-Object system.Windows.Forms.DataVisualization.Charting.Legend
     $script:Legend.Enabled              = $True
     $script:Legend.Name                 = "Collection Legend"
     $script:Legend.Title                = "Legend"
     $script:Legend.TitleAlignment       = "topleft"
-    $script:Legend.TitleFont            = New-Object System.Drawing.Font @('Microsoft Sans Serif',$($FormScale * 11), [System.Drawing.FontStyle]::Bold)    
+    $script:Legend.TitleFont            = New-Object System.Drawing.Font @('Microsoft Sans Serif',$($FormScale * 11), [System.Drawing.FontStyle]::Bold)
     $script:Legend.IsEquallySpacedItems = $True
     $script:Legend.BorderColor          = 'White'
     $script:AutoChartCharting.Legends.Add($script:Legend)
@@ -155,7 +155,7 @@ function Generate-AutoChartsCommand {
     #--------------------------------------------
     # Auto Create Charts Data Series Most Recent
     #--------------------------------------------
-    $script:AutoChartCharting.Series.Add("Most Recent")  
+    $script:AutoChartCharting.Series.Add("Most Recent")
     $script:AutoChartCharting.Series["Most Recent"].Enabled           = $True
     $script:AutoChartCharting.Series["Most Recent"].ChartType         = 'Column'
     $script:AutoChartCharting.Series["Most Recent"].Color             = 'Blue'
@@ -177,9 +177,9 @@ function Generate-AutoChartsCommand {
     $script:AutoChartCharting.Series["Previous"].Enabled           = $True
     $script:AutoChartCharting.Series["Previous"].ChartType         = 'Point'
     $script:AutoChartCharting.Series["Previous"].Color             = 'Red'
-    $script:AutoChartCharting.Series["Previous"].MarkerColor       = 'Red'  
+    $script:AutoChartCharting.Series["Previous"].MarkerColor       = 'Red'
     $script:AutoChartCharting.Series["Previous"].MarkerStyle       = 'Circle' # None, Diamond, Square, Circle
-    $script:AutoChartCharting.Series["Previous"].MarkerSize        = '10'            
+    $script:AutoChartCharting.Series["Previous"].MarkerSize        = '10'
     $script:AutoChartCharting.Series["Previous"].BorderWidth       = 5
     $script:AutoChartCharting.Series["Previous"].IsVisibleInLegend = $true
     $script:AutoChartCharting.Series["Previous"].Chartarea         = "Chart Area"
@@ -206,10 +206,10 @@ function Generate-AutoChartsCommand {
     $script:AutoChartCharting.Series["Baseline"]['PieLineColor']   = 'Black'
     $script:AutoChartCharting.Series["Baseline"]['PieLabelStyle']  = 'Outside'
 
-          
+
     #------------------------------------------------------------
     # Auto Create Charts - Code that counts computers that match
-    #------------------------------------------------------------   
+    #------------------------------------------------------------
     # Compiles the data for only unique/similar hosts... hosts not common among all files are not aggregated
     $Script:MergedCSVUniquePropertyDataResults = @()
     $script:CsvFileCommonDataBaseline   = @()
@@ -253,7 +253,7 @@ function Generate-AutoChartsCommand {
     # Checks to see if hosts in the overall unique list exist in each csv
     # If one is found that doesn't exist in the csv file, it is removed from the overall list
     # This is to ensure that the results when compared between baseline, previous and most recent match the same computers
-    foreach ($UniqueHost in $script:CsvUniqueHosts) { 
+    foreach ($UniqueHost in $script:CsvUniqueHosts) {
         if (Test-Path $script:CSVFilePathBaseline) {
             if ($CsvFileBaselineHosts -notcontains $UniqueHost) { $script:CsvUniqueHosts = $script:CsvUniqueHosts | Where-Object {$_ -ne $UniqueHost} }
         }
@@ -267,21 +267,21 @@ function Generate-AutoChartsCommand {
 
 
     if (Test-Path $script:CSVFilePathBaseline) {
-        foreach ($UniqueHost in $script:CsvUniqueHosts) { 
-            $Script:MergedCSVUniquePropertyDataResults += $script:CsvFileDataBaseline | Where { $_.PSComputerName -eq $UniqueHost } 
-            $script:CsvFileCommonDataBaseline += $script:CsvFileDataBaseline | Where { $_.PSComputerName -eq $UniqueHost } 
+        foreach ($UniqueHost in $script:CsvUniqueHosts) {
+            $Script:MergedCSVUniquePropertyDataResults += $script:CsvFileDataBaseline | Where { $_.PSComputerName -eq $UniqueHost }
+            $script:CsvFileCommonDataBaseline += $script:CsvFileDataBaseline | Where { $_.PSComputerName -eq $UniqueHost }
         }
     }
     if (Test-Path $script:CSVFilePathPrevious) {
-        foreach ($UniqueHost in $script:CsvUniqueHosts) { 
-            $Script:MergedCSVUniquePropertyDataResults += $script:CsvFileDataPrevious | Where { $_.PSComputerName -eq $UniqueHost } 
-            $script:CsvFileCommonDataPrevious += $script:CsvFileDataPrevious | Where { $_.PSComputerName -eq $UniqueHost } 
+        foreach ($UniqueHost in $script:CsvUniqueHosts) {
+            $Script:MergedCSVUniquePropertyDataResults += $script:CsvFileDataPrevious | Where { $_.PSComputerName -eq $UniqueHost }
+            $script:CsvFileCommonDataPrevious += $script:CsvFileDataPrevious | Where { $_.PSComputerName -eq $UniqueHost }
         }
     }
     if (Test-Path $script:CSVFilePathMostRecent) {
-        foreach ($UniqueHost in $script:CsvUniqueHosts) { 
-            $Script:MergedCSVUniquePropertyDataResults += $script:CsvFileDataMostRecent | Where { $_.PSComputerName -eq $UniqueHost } 
-            $script:CsvFileCommonDataMostRecent += $script:CsvFileDataMostRecent | Where { $_.PSComputerName -eq $UniqueHost } 
+        foreach ($UniqueHost in $script:CsvUniqueHosts) {
+            $Script:MergedCSVUniquePropertyDataResults += $script:CsvFileDataMostRecent | Where { $_.PSComputerName -eq $UniqueHost }
+            $script:CsvFileCommonDataMostRecent += $script:CsvFileDataMostRecent | Where { $_.PSComputerName -eq $UniqueHost }
         }
     }
 
@@ -302,14 +302,14 @@ function Generate-AutoChartsCommand {
 
     # The purpose of the code below is to ultiately add any missing unique fields to each collection.
     # ex: If the most recent scan/collection contained an item not in the baseline, the baseline will now contain that item but at a zero value
-    # This is needed to ensure columns align when viewing multiple scans at once       
+    # This is needed to ensure columns align when viewing multiple scans at once
     $script:OverallDataResultsBaseline = @()
     if (Test-Path $script:CSVFilePathBaseline) {
         # If the Second field/Y Axis equals PSComputername, it counts it
         if ($script:PropertyY -eq "PSComputerName") {
             $DataSourceBaseline = @()
-            foreach ($UniqueHostBaseline in $script:CsvUniqueHosts) { 
-                $DataSourceBaseline += $script:CsvFileCommonDataBaseline | Where-Object { $_.PSComputerName -eq $UniqueHostBaseline } 
+            foreach ($UniqueHostBaseline in $script:CsvUniqueHosts) {
+                $DataSourceBaseline += $script:CsvFileCommonDataBaseline | Where-Object { $_.PSComputerName -eq $UniqueHostBaseline }
             }
             # Gets a unique list of each item and appends it to ensure each collection has the same number of fields
             # This essentially ends up adding a +1 count to all exist fiends, but will be later subtracted later
@@ -320,7 +320,7 @@ function Generate-AutoChartsCommand {
             $UniqueDataFieldsBaseline   = $DataSourceBaseline | Select-Object -Property $script:PropertyX | Sort-Object -Property $script:PropertyX -Unique
             # In this case, Y is the unique hostname/computername/endpoint names
             $UniqueComputerListBaseline = $DataSourceBaseline | Select-Object -Property $script:PropertyY | Sort-Object -Property $script:PropertyY -Unique
-        
+
             # Counts the number of times that any given property possess a given value
             $Index = 1
             foreach ($DataFieldBaseline in $UniqueDataFieldsBaseline) {
@@ -329,16 +329,16 @@ function Generate-AutoChartsCommand {
                 foreach ( $LineBaseline in $DataSourceBaseline ) {
                     if ($($LineBaseline.$script:PropertyX) -eq $($DataFieldBaseline.$script:PropertyX)) {
                         $CountBaseline += 1
-                        if ( $CsvComputersBaseline -notcontains $($LineBaseline.$script:PropertyY) ) { $CsvComputersBaseline += $($LineBaseline.$script:PropertyY) }                        
+                        if ( $CsvComputersBaseline -notcontains $($LineBaseline.$script:PropertyY) ) { $CsvComputersBaseline += $($LineBaseline.$script:PropertyY) }
                     }
                 }
-                # The - 1 is subtracted to account for the one added when adding $Script:MergedCSVUniquePropertyDataResults 
-                $UniqueCountBaseline = $CsvComputersBaseline.Count - 1 
+                # The - 1 is subtracted to account for the one added when adding $Script:MergedCSVUniquePropertyDataResults
+                $UniqueCountBaseline = $CsvComputersBaseline.Count - 1
                 $DataResultsBaseline = New-Object PSObject -Property @{
                     DataField   = $DataFieldBaseline
                     TotalCount  = $CountBaseline
                     UniqueCount = $UniqueCountBaseline
-                    Computers   = $CsvComputersBaseline 
+                    Computers   = $CsvComputersBaseline
                     Index       = $Index
                 }
                 $script:OverallDataResultsBaseline += $DataResultsBaseline
@@ -350,10 +350,10 @@ function Generate-AutoChartsCommand {
         }
 
         # If the Second field/Y Axis DOES NOT equals PSComputername, it uses the field provided
-        elseif ($script:PropertyX -eq "PSComputerName") {   
+        elseif ($script:PropertyX -eq "PSComputerName") {
 
             $DataSourceBaseline = @()
-            $DataSourceBaseline = $script:CsvFileCommonDataBaseline 
+            $DataSourceBaseline = $script:CsvFileCommonDataBaseline
 
             $SelectedDataFieldBaseline  = $DataSourceBaseline | Select-Object -Property $script:PropertyY | Sort-Object -Property $script:PropertyY -Unique
             $UniqueComputerListBaseline = $DataSourceBaseline | Select-Object -Property $script:PropertyX | Sort-Object -Property $script:PropertyX -Unique
@@ -364,14 +364,14 @@ function Generate-AutoChartsCommand {
             $YResultsBaseline           = @()
             foreach ( $LineBaseline in $DataSourceBaseline ) {
                 if ( $CheckIfFirstLineBaseline -eq 'False' ) { $CurrentComputerBaseline  = $LineBaseline.$script:PropertyX ; $CheckIfFirstLineBaseline = 'True' }
-                if ( $CheckIfFirstLineBaseline -eq 'True' ) { 
+                if ( $CheckIfFirstLineBaseline -eq 'True' ) {
                     if ( $LineBaseline.$script:PropertyX -eq $CurrentComputerBaseline ) {
                         if ( $YResultsBaseline -notcontains $LineBaseline.$script:PropertyY ) {
                             if ( $LineBaseline.$script:PropertyY -ne "" ) { $YResultsBaseline += $LineBaseline.$script:PropertyY ; $ResultsCountBaseline += 1 }
                             if ( $ComputerBaseline -notcontains $LineBaseline.$script:PropertyX ) { $ComputerBaseline = $LineBaseline.$script:PropertyX }
-                        }       
+                        }
                     }
-                    elseif ( $LineBaseline.$script:PropertyX -ne $CurrentComputerBaseline ) { 
+                    elseif ( $LineBaseline.$script:PropertyX -ne $CurrentComputerBaseline ) {
                         $CurrentComputerBaseline = $LineBaseline.$script:PropertyX
                         $DataResultsBaseline     = New-Object PSObject -Property @{ ResultsCount = $ResultsCountBaseline ; Computer = $ComputerBaseline }
                         $script:OverallDataResultsBaseline += $DataResultsBaseline
@@ -385,9 +385,9 @@ function Generate-AutoChartsCommand {
                     }
                 }
             }
-            $DataResultsBaseline = New-Object PSObject -Property @{ ResultsCount = $ResultsCountBaseline ; Computer = $ComputerBaseline }    
+            $DataResultsBaseline = New-Object PSObject -Property @{ ResultsCount = $ResultsCountBaseline ; Computer = $ComputerBaseline }
             $script:OverallDataResultsBaseline += $DataResultsBaseline
-        } 
+        }
     }
 
 
@@ -404,8 +404,8 @@ function Generate-AutoChartsCommand {
         # If the Second field/Y Axis equals PSComputername, it counts it
         if ($script:PropertyY -eq "PSComputerName") {
             $DataSourcePrevious = @()
-            foreach ($UniqueHostPrevious in $script:CsvUniqueHosts) { 
-                $DataSourcePrevious += $script:CsvFileCommonDataPrevious | Where-Object { $_.PSComputerName -eq $UniqueHostPrevious } 
+            foreach ($UniqueHostPrevious in $script:CsvUniqueHosts) {
+                $DataSourcePrevious += $script:CsvFileCommonDataPrevious | Where-Object { $_.PSComputerName -eq $UniqueHostPrevious }
             }
             # Gets a unique list of each item and appends it to ensure each collection has the same number of fields
             # This essentially ends up adding a +1 count to all exist fiends, but will be later subtracted later
@@ -414,7 +414,7 @@ function Generate-AutoChartsCommand {
             # Important, gets a unique list for X and Y
             $UniqueDataFieldsPrevious   = $DataSourcePrevious | Select-Object -Property $script:PropertyX | Sort-Object -Property $script:PropertyX -Unique
             $UniqueComputerListPrevious = $DataSourcePrevious | Select-Object -Property $script:PropertyY | Sort-Object -Property $script:PropertyY -Unique
-        
+
             # Generates and Counts the data
             # Counts the number of times that any given property possess a given value
             $Index = 1
@@ -424,16 +424,16 @@ function Generate-AutoChartsCommand {
                 foreach ( $LinePrevious in $DataSourcePrevious ) {
                     if ($($LinePrevious.$script:PropertyX) -eq $($DataFieldPrevious.$script:PropertyX)) {
                         $CountPrevious += 1
-                        if ( $CsvComputersPrevious -notcontains $($LinePrevious.$script:PropertyY) ) { $CsvComputersPrevious += $($LinePrevious.$script:PropertyY) }                        
+                        if ( $CsvComputersPrevious -notcontains $($LinePrevious.$script:PropertyY) ) { $CsvComputersPrevious += $($LinePrevious.$script:PropertyY) }
                     }
                 }
-                # The - 1 is subtracted to account for the one added when adding $Script:MergedCSVUniquePropertyDataResults 
-                $UniqueCountPrevious = $CsvComputersPrevious.Count - 1 
+                # The - 1 is subtracted to account for the one added when adding $Script:MergedCSVUniquePropertyDataResults
+                $UniqueCountPrevious = $CsvComputersPrevious.Count - 1
                 $DataResultsPrevious = New-Object PSObject -Property @{
                     DataField   = $DataFieldPrevious
                     TotalCount  = $CountPrevious
                     UniqueCount = $UniqueCountPrevious
-                    Computers   = $CsvComputersPrevious 
+                    Computers   = $CsvComputersPrevious
                     Index       = $Index
                 }
                 $script:OverallDataResultsPrevious += $DataResultsPrevious
@@ -446,10 +446,10 @@ function Generate-AutoChartsCommand {
         }
 
         # If the Second field/Y Axis DOES NOT equals PSComputername, it uses the field provided
-        elseif ($script:PropertyX -eq "PSComputerName") {   
+        elseif ($script:PropertyX -eq "PSComputerName") {
 
             $DataSourcePrevious = @()
-            $DataSourcePrevious = $script:CsvFileCommonDataPrevious 
+            $DataSourcePrevious = $script:CsvFileCommonDataPrevious
 
             $SelectedDataFieldPrevious  = $DataSourcePrevious | Select-Object -Property $script:PropertyY | Sort-Object -Property $script:PropertyY -Unique
             $UniqueComputerListPrevious = $DataSourcePrevious | Select-Object -Property $script:PropertyX | Sort-Object -Property $script:PropertyX -Unique
@@ -460,14 +460,14 @@ function Generate-AutoChartsCommand {
             $YResultsPrevious           = @()
             foreach ( $LinePrevious in $DataSourcePrevious ) {
                 if ( $CheckIfFirstLinePrevious -eq 'False' ) { $CurrentComputerPrevious  = $LinePrevious.$script:PropertyX ; $CheckIfFirstLinePrevious = 'True' }
-                if ( $CheckIfFirstLinePrevious -eq 'True' ) { 
+                if ( $CheckIfFirstLinePrevious -eq 'True' ) {
                     if ( $LinePrevious.$script:PropertyX -eq $CurrentComputerPrevious ) {
                         if ( $YResultsPrevious -notcontains $LinePrevious.$script:PropertyY ) {
                             if ( $LinePrevious.$script:PropertyY -ne "" ) { $YResultsPrevious += $LinePrevious.$script:PropertyY ; $ResultsCountPrevious += 1 }
                             if ( $ComputerPrevious -notcontains $LinePrevious.$script:PropertyX ) { $ComputerPrevious = $LinePrevious.$script:PropertyX }
-                        }       
+                        }
                     }
-                    elseif ( $LinePrevious.$script:PropertyX -ne $CurrentComputerPrevious ) { 
+                    elseif ( $LinePrevious.$script:PropertyX -ne $CurrentComputerPrevious ) {
                         $CurrentComputerPrevious = $LinePrevious.$script:PropertyX
                         $DataResultsPrevious     = New-Object PSObject -Property @{ ResultsCount = $ResultsCountPrevious ; Computer = $ComputerPrevious }
                         $script:OverallDataResultsPrevious += $DataResultsPrevious
@@ -481,9 +481,9 @@ function Generate-AutoChartsCommand {
                     }
                 }
             }
-            $DataResultsPrevious = New-Object PSObject -Property @{ ResultsCount = $ResultsCountPrevious ; Computer = $ComputerPrevious }    
+            $DataResultsPrevious = New-Object PSObject -Property @{ ResultsCount = $ResultsCountPrevious ; Computer = $ComputerPrevious }
             $script:OverallDataResultsPrevious += $DataResultsPrevious
-        } 
+        }
     }
 
 
@@ -501,8 +501,8 @@ function Generate-AutoChartsCommand {
         # If the Second field/Y Axis equals PSComputername, it counts it
         if ($script:PropertyY -eq "PSComputerName") {
             $DataSourceMostRecent = @()
-            foreach ($UniqueHostMostRecent in $script:CsvUniqueHosts) { 
-                $DataSourceMostRecent += $script:CsvFileCommonDataMostRecent | Where-Object { $_.PSComputerName -eq $UniqueHostMostRecent } 
+            foreach ($UniqueHostMostRecent in $script:CsvUniqueHosts) {
+                $DataSourceMostRecent += $script:CsvFileCommonDataMostRecent | Where-Object { $_.PSComputerName -eq $UniqueHostMostRecent }
             }
             # Gets a unique list of each item and appends it to ensure each collection has the same number of fields
             # This essentially ends up adding a +1 count to all exist fiends, but will be later subtracted later
@@ -511,7 +511,7 @@ function Generate-AutoChartsCommand {
             # Important, gets a unique list for X and Y
             $UniqueDataFieldsMostRecent   = $DataSourceMostRecent | Select-Object -Property $script:PropertyX | Sort-Object -Property $script:PropertyX -Unique
             $UniqueComputerListMostRecent = $DataSourceMostRecent | Select-Object -Property $script:PropertyY | Sort-Object -Property $script:PropertyY -Unique
-        
+
             # Generates and Counts the data
             # Counts the number of times that any given property possess a given value
             $Index = 1
@@ -521,11 +521,11 @@ function Generate-AutoChartsCommand {
                 foreach ( $LineMostRecent in $DataSourceMostRecent ) {
                     if ($($LineMostRecent.$script:PropertyX) -eq $($DataFieldMostRecent.$script:PropertyX)) {
                         $CountMostRecent += 1
-                        if ( $CsvComputersMostRecent -notcontains $($LineMostRecent.$script:PropertyY) ) { $CsvComputersMostRecent += $($LineMostRecent.$script:PropertyY) }                        
+                        if ( $CsvComputersMostRecent -notcontains $($LineMostRecent.$script:PropertyY) ) { $CsvComputersMostRecent += $($LineMostRecent.$script:PropertyY) }
                     }
                 }
-                # The - 1 is subtracted to account for the one added when adding $Script:MergedCSVUniquePropertyDataResults 
-                $UniqueCountMostRecent = $CsvComputersMostRecent.Count - 1 
+                # The - 1 is subtracted to account for the one added when adding $Script:MergedCSVUniquePropertyDataResults
+                $UniqueCountMostRecent = $CsvComputersMostRecent.Count - 1
                 $DataResultsMostRecent = New-Object PSObject -Property @{
                     DataField   = $DataFieldMostRecent
                     TotalCount  = $CountMostRecent
@@ -543,9 +543,9 @@ function Generate-AutoChartsCommand {
         }
 
         # If the Second field/Y Axis DOES NOT equals PSComputername, it uses the field provided
-        elseif ($script:PropertyX -eq "PSComputerName") {        
+        elseif ($script:PropertyX -eq "PSComputerName") {
             $DataSourceMostRecent = @()
-            $DataSourceMostRecent = $script:CsvFileCommonDataMostRecent 
+            $DataSourceMostRecent = $script:CsvFileCommonDataMostRecent
 
             $SelectedDataFieldMostRecent  = $DataSourceMostRecent | Select-Object -Property $script:PropertyY | Sort-Object -Property $script:PropertyY -Unique
             $UniqueComputerListMostRecent = $DataSourceMostRecent | Select-Object -Property $script:PropertyX | Sort-Object -Property $script:PropertyX -Unique
@@ -556,14 +556,14 @@ function Generate-AutoChartsCommand {
             $YResultsMostRecent           = @()
             foreach ( $LineMostRecent in $DataSourceMostRecent ) {
                 if ( $CheckIfFirstLineMostRecent -eq 'False' ) { $CurrentComputerMostRecent  = $LineMostRecent.$script:PropertyX ; $CheckIfFirstLineMostRecent = 'True' }
-                if ( $CheckIfFirstLineMostRecent -eq 'True' ) { 
+                if ( $CheckIfFirstLineMostRecent -eq 'True' ) {
                     if ( $LineMostRecent.$script:PropertyX -eq $CurrentComputerMostRecent ) {
                         if ( $YResultsMostRecent -notcontains $LineMostRecent.$script:PropertyY ) {
                             if ( $LineMostRecent.$script:PropertyY -ne "" ) { $YResultsMostRecent += $LineMostRecent.$script:PropertyY ; $ResultsCountMostRecent += 1 }
                             if ( $ComputerMostRecent -notcontains $LineMostRecent.$script:PropertyX ) { $ComputerMostRecent = $LineMostRecent.$script:PropertyX }
-                        }       
+                        }
                     }
-                    elseif ( $LineMostRecent.$script:PropertyX -ne $CurrentComputerMostRecent ) { 
+                    elseif ( $LineMostRecent.$script:PropertyX -ne $CurrentComputerMostRecent ) {
                         $CurrentComputerMostRecent = $LineMostRecent.$script:PropertyX
                         $DataResultsMostRecent     = New-Object PSObject -Property @{ ResultsCount = $ResultsCountMostRecent ; Computer = $ComputerMostRecent }
                         $script:OverallDataResultsMostRecent += $DataResultsMostRecent
@@ -577,9 +577,9 @@ function Generate-AutoChartsCommand {
                     }
                 }
             }
-            $DataResultsMostRecent = New-Object PSObject -Property @{ ResultsCount = $ResultsCountMostRecent ; Computer = $ComputerMostRecent }    
+            $DataResultsMostRecent = New-Object PSObject -Property @{ ResultsCount = $ResultsCountMostRecent ; Computer = $ComputerMostRecent }
             $script:OverallDataResultsMostRecent += $DataResultsMostRecent
-        }        
+        }
     } # END if ( $script:CSVFilePathMostRecent )
 
     Clear-Variable -Name MergedCSVDataResults
@@ -603,19 +603,19 @@ function script:Update-MultiSeriesChart {
                 $Order += 1
             }
             if ($TrackBar){
-                $script:OverallDataResultsMostRecent | 
-                Sort-Object -Property ChartOrder | 
-                Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
-                Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                $script:OverallDataResultsMostRecent |
+                Sort-Object -Property ChartOrder |
+                Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue |
+                Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue |
                 ForEach-Object {
                     $script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
                 }
             }
             else {
-                $script:OverallDataResultsMostRecent | 
-                Sort-Object -Property ChartOrder | 
+                $script:OverallDataResultsMostRecent |
+                Sort-Object -Property ChartOrder |
                 ForEach-Object {
-                    $script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)    
+                    $script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
                     $script:AutoChartsProgressBar.Value += 1
                 }
             }
@@ -627,10 +627,10 @@ function script:Update-MultiSeriesChart {
 
             if ($TrackBar){
                 foreach ($Order in $ChartOrder) {
-                    $script:OverallDataResultsBaseline | 
-                    Sort-Object -Property UniqueCount,Index | 
-                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
-                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                    $script:OverallDataResultsBaseline |
+                    Sort-Object -Property UniqueCount,Index |
+                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue |
+                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue |
                     ForEach-Object {
                         if ($_.Index -eq $Order){
                             $script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
@@ -640,8 +640,8 @@ function script:Update-MultiSeriesChart {
             }
             else {
                 foreach ($Order in $ChartOrder) {
-                    $script:OverallDataResultsBaseline | 
-                    Sort-Object -Property UniqueCount,Index | 
+                    $script:OverallDataResultsBaseline |
+                    Sort-Object -Property UniqueCount,Index |
                     ForEach-Object {
                         if ($_.Index -eq $Order){
                             $script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
@@ -657,10 +657,10 @@ function script:Update-MultiSeriesChart {
 
             if ($TrackBar){
                 foreach ($Order in $ChartOrder) {
-                    $script:OverallDataResultsPrevious | 
-                    Sort-Object -Property UniqueCount,Index  | 
-                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
-                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                    $script:OverallDataResultsPrevious |
+                    Sort-Object -Property UniqueCount,Index  |
+                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue |
+                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue |
                     ForEach-Object {
                         if ($_.Index -eq $Order){
                             $script:AutoChartCharting.Series["Previous"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
@@ -670,8 +670,8 @@ function script:Update-MultiSeriesChart {
             }
             else {
                 foreach ($Order in $ChartOrder) {
-                    $script:OverallDataResultsPrevious | 
-                    Sort-Object -Property UniqueCount,Index  | 
+                    $script:OverallDataResultsPrevious |
+                    Sort-Object -Property UniqueCount,Index  |
                     ForEach-Object {
                         if ($_.Index -eq $Order){
                             $script:AutoChartCharting.Series["Previous"].Points.AddXY($_.DataField.$script:PropertyX,$_.UniqueCount)
@@ -693,14 +693,14 @@ function script:Update-MultiSeriesChart {
             }
 
             if ($TrackBar){
-                $script:OverallDataResultsMostRecent | 
-                Sort-Object -Property ChartOrder | 
-                Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
-                Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                $script:OverallDataResultsMostRecent |
+                Sort-Object -Property ChartOrder |
+                Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue |
+                Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue |
                 ForEach-Object {
                     if ($_.Index -eq $Order){
                         $script:AutoChartCharting.Series["Most Recent"].Points.AddXY($_.Computer,$_.ResultsCount)
-                    } 
+                    }
                 }
             }
             else {
@@ -711,27 +711,27 @@ function script:Update-MultiSeriesChart {
             }
         }
         $ChartOrder = $script:OverallDataResultsMostRecent | Sort-Object -Property ChartOrder | Select-Object -ExpandProperty Index
-        
+
         if (Test-Path $script:CSVFilePathBaseline) {
             $script:AutoChartCharting.Series["Baseline"].Points.Clear()
 
             if ($TrackBar){
                 foreach ($Order in $ChartOrder) {
-                    $script:OverallDataResultsBaseline | 
-                    Sort-Object -Property UniqueCount,Index | 
-                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
-                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                    $script:OverallDataResultsBaseline |
+                    Sort-Object -Property UniqueCount,Index |
+                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue |
+                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue |
                     ForEach-Object {
                         if ($_.Index -eq $Order){
                             $script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.Computer,$_.ResultsCount)
-                        }        
+                        }
                     }
                 }
             }
             else {
                 foreach ($Order in $ChartOrder) {
-                    $script:OverallDataResultsBaseline | 
-                    Sort-Object -Property UniqueCount,Index | 
+                    $script:OverallDataResultsBaseline |
+                    Sort-Object -Property UniqueCount,Index |
                     ForEach-Object {
                         if ($_.Index -eq $Order){
                             $script:AutoChartCharting.Series["Baseline"].Points.AddXY($_.Computer,$_.ResultsCount)
@@ -747,21 +747,21 @@ function script:Update-MultiSeriesChart {
 
             if ($TrackBar){
                 foreach ($Order in $ChartOrder) {
-                    $script:OverallDataResultsPrevious | 
-                    Sort-Object -Property UniqueCount,Index | 
-                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue | 
-                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue | 
+                    $script:OverallDataResultsPrevious |
+                    Sort-Object -Property UniqueCount,Index |
+                    Select-Object -skip $script:AutoChartsTrimOffFirstTrackBarValue |
+                    Select-Object -SkipLast $script:AutoChartsTrimOffLastTrackBarValue |
                     ForEach-Object {
                         if ($_.Index -eq $Order){
                             $script:AutoChartCharting.Series["Previous"].Points.AddXY($_.Computer,$_.ResultsCount)
-                        }        
+                        }
                     }
                 }
             }
             else {
                 foreach ($Order in $ChartOrder) {
-                    $script:OverallDataResultsPrevious | 
-                    Sort-Object -Property UniqueCount,Index | 
+                    $script:OverallDataResultsPrevious |
+                    Sort-Object -Property UniqueCount,Index |
                     ForEach-Object {
                         if ($_.Index -eq $Order){
                             $script:AutoChartCharting.Series["Previous"].Points.AddXY($_.Computer,$_.ResultsCount)
@@ -781,7 +781,7 @@ script:Update-MultiSeriesChart
 
 
 
-    
+
     ############################################################################################################
     # Auto Create Charts Processes
     ############################################################################################################
@@ -794,10 +794,10 @@ script:Update-MultiSeriesChart
     $script:AutoChartsIndividualTabPage.Anchor  = $AnchorAll
     $script:AutoChartsIndividualTabPage.Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     $script:AutoChartsIndividualTabPage.UseVisualStyleBackColor = $True
-    $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTabPage)            
-    $AutoChartsTabControl.SelectedTab = $script:AutoChartsIndividualTabPage 
+    $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTabPage)
+    $AutoChartsTabControl.SelectedTab = $script:AutoChartsIndividualTabPage
 
-    ### Auto Chart Panel that contains all the options to manage open/close feature 
+    ### Auto Chart Panel that contains all the options to manage open/close feature
     $script:AutoChartsOptionsButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Options v"
         Location  = @{ X = $script:AutoChartCharting.Location.X + $($FormScale * 10)
@@ -807,7 +807,7 @@ script:Update-MultiSeriesChart
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Left;
     }
     CommonButtonSettings -Button $script:AutoChartsOptionsButton
-    $script:AutoChartsOptionsButton.Add_Click({  
+    $script:AutoChartsOptionsButton.Add_Click({
         if ($script:AutoChartsOptionsButton.Text -eq 'Options v') {
             $script:AutoChartsOptionsButton.Text = 'Options ^'
             $script:AutoChartCharting.Controls.Add($script:AutoChartsManipulationPanel)
@@ -830,7 +830,7 @@ script:Update-MultiSeriesChart
     }
     CommonButtonSettings -Button $script:AutoChartsCloseTabButton
     $script:AutoChartsCloseTabButton.Add_Click({
-        $AutoChartsTabControl.Controls.Remove($script:AutoChartsIndividualTabPage)            
+        $AutoChartsTabControl.Controls.Remove($script:AutoChartsIndividualTabPage)
     })
     $script:AutoChartsIndividualTabPage.Controls.Add($script:AutoChartsCloseTabButton)
 
@@ -873,14 +873,14 @@ script:Update-MultiSeriesChart
             Location    = @{ X = $($FormScale * 1)
                              Y = $($FormScale * 20) }
             Size        = @{ Width  = $FormScale * 285
-                             Height = $FormScale * 22 }                
+                             Height = $FormScale * 22 }
             Orientation   = "Horizontal"
-            TickFrequency = 1 
+            TickFrequency = 1
             TickStyle     = "TopLeft"
             Minimum       = 0
-            Value         = 0 
+            Value         = 0
         }
-        $script:AutoChartsTrimOffFirstTrackBar.SetRange(0, $($script:OverallDataResultsMostRecent.count))             
+        $script:AutoChartsTrimOffFirstTrackBar.SetRange(0, $($script:OverallDataResultsMostRecent.count))
         $script:AutoChartsTrimOffFirstTrackBarValue   = 0
         $script:AutoChartsTrimOffFirstTrackBar.add_ValueChanged({
             $script:AutoChartsTrimOffFirstTrackBarValue = $script:AutoChartsTrimOffFirstTrackBar.Value
@@ -913,7 +913,7 @@ script:Update-MultiSeriesChart
             Location      = @{ X = $($FormScale * 1)
                                Y = $($FormScale * 20) }
             Size          = @{ Width  = $FormScale * 285
-                               Height = $FormScale * 22}                
+                               Height = $FormScale * 22}
             Orientation   = "Horizontal"
             TickFrequency = 1
             TickStyle     = "TopLeft"
@@ -949,10 +949,10 @@ script:Update-MultiSeriesChart
     }
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsTitleNameTextbox)
     $script:AutoChartsTitleNameTextbox.Text = ($script:CSVFilePathMostRecent.split('\'))[-1] -replace '.csv',''
-    $script:AutoChartsTitleNameTextbox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { 
-        $script:AutoChartTitle.Text = $script:AutoChartsTitleNameTextbox.Text  
+    $script:AutoChartsTitleNameTextbox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {
+        $script:AutoChartTitle.Text = $script:AutoChartsTitleNameTextbox.Text
     }})
-        
+
 
     #------------------------------
     # Auto Charts - Notice Textbox
@@ -973,25 +973,25 @@ script:Update-MultiSeriesChart
     }
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsNoticeTextbox)
 
-    
+
     #==============================================================================================================================
     # AutoCharts - Investigate Difference
     #==============================================================================================================================
     function script:Investigate-CsvFileData ($ImportCsvFileData) {
-        function InvestigateDifference-AutoChart {    
+        function InvestigateDifference-AutoChart {
             # Clears out data
             $AutoChartsInvestigateDifferencePositiveResultsTextBox.Text = ""
             $AutoChartsInvestigateDifferenceNegativeResultsTextBox.Text = ""
-    
+
             # List of Positive Endpoints that positively match
             $AutoChartsImportCsvPositiveResultsEndpoints = $AutoChartsInvestigateDifferenceImportCsv | Where-Object Name -eq $($AutoChartsInvestigateDifferenceDropDownComboBox.Text) | Select-Object -ExpandProperty PSComputerName -Unique
 
             #if using .listbox# ForEach ($Endpoint in $AutoChartsImportCsvPositiveResultsEndpoints) { $AutoChartsInvestigateDifferencePositiveResultsTextBox.Items.Add($Endpoint) }
             ForEach ($Endpoint in $AutoChartsImportCsvPositiveResultsEndpoints) { $AutoChartsInvestigateDifferencePositiveResultsTextBox.Text += "$Endpoint`r`n" }
-    
+
             # List of all endpoints within the csv file
             $AutoChartsImportCsvAllEndpointsList = $AutoChartsInvestigateDifferenceImportCsv | Select-Object -ExpandProperty PSComputerName -Unique
-            
+
             $AutoChartsImportCsvNegativeResults = @()
             # Creates a list of Endpoints with Negative Results
             foreach ($Endpoint in $AutoChartsImportCsvAllEndpointsList) {
@@ -1000,12 +1000,12 @@ script:Update-MultiSeriesChart
             # Populates the listbox with Negative Endpoint Results
             #if useing .listbox# ForEach ($Endpoint in $AutoChartsImportCsvNegativeResults) { $AutoChartsInvestigateDifferenceNegativeResultsTextBox.Items.Add($Endpoint) }
             ForEach ($Endpoint in $AutoChartsImportCsvNegativeResults) { $AutoChartsInvestigateDifferenceNegativeResultsTextBox.Text += "$Endpoint`r`n" }
-        
+
             # Updates the label to include the count
             $AutoChartsInvestigateDifferencePositiveResultsLabel.Text = "Positive Match ($($AutoChartsImportCsvPositiveResultsEndpoints.count))"
             $AutoChartsInvestigateDifferenceNegativeResultsLabel.Text = "Negative Match ($($AutoChartsImportCsvNegativeResults.count))"
         }
-    
+
         $AutoChartsInvestigateDifferenceImportCsv = Import-Csv $ImportCsvFileData
         #$AutoChartsInvestigateDifferenceDropDownArray = $AutoChartsInvestigateDifferenceImportCsv | Select-Object -Property Name -ExpandProperty Name | Sort-Object -Unique | Select-Object -Skip $script:AutoChartsTrimOffFirstTrackBarValue | Select -SkipLast $script:AutoChartsTrimOffLastTrackBarValue
         $AutoChartsInvestigateDifferenceDropDownArray = $AutoChartsInvestigateDifferenceImportCsv | Select-Object -Property Name -ExpandProperty Name | Sort-Object -Unique
@@ -1054,15 +1054,15 @@ script:Update-MultiSeriesChart
             Text     = "Execute"
             Location = @{ X = $FormScale * 10
                             Y = $AutoChartsInvestigateDifferenceDropDownComboBox.Location.y + $AutoChartsInvestigateDifferenceDropDownComboBox.Size.Height + $($FormScale * 10) }
-            Width    = $FormScale * 100 
+            Width    = $FormScale * 100
             Height   = $FormScale * 20
         }
         CommonButtonSettings -Button $AutoChartsInvestigateDifferenceExecuteButton
         $AutoChartsInvestigateDifferenceExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { InvestigateDifference-AutoChart }})
         $AutoChartsInvestigateDifferenceExecuteButton.Add_Click({ InvestigateDifference-AutoChart })
-        $AutoChartsInvestigateDifferenceForm.Controls.Add($AutoChartsInvestigateDifferenceExecuteButton)   
+        $AutoChartsInvestigateDifferenceForm.Controls.Add($AutoChartsInvestigateDifferenceExecuteButton)
 
-        
+
         #---------------------------------------------------------
         # Investigate Difference Positive Results Label & TextBox
         #---------------------------------------------------------
@@ -1073,7 +1073,7 @@ script:Update-MultiSeriesChart
             Size       = @{ Width  = $FormScale * 140
                             Height = $FormScale * 22 }
             Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        }        
+        }
         $AutoChartsInvestigateDifferencePositiveResultsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
             Location   = @{ X = $FormScale * 10
                             Y = $AutoChartsInvestigateDifferencePositiveResultsLabel.Location.y + $AutoChartsInvestigateDifferencePositiveResultsLabel.Size.Height }
@@ -1124,10 +1124,10 @@ script:Update-MultiSeriesChart
     #==================================================================================================================
     $script:AutoChartsTitleCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Display Title'
-        Location  = @{ X = $script:AutoChartsTrimOffLastGroupBox.Location.X + $script:AutoChartsTrimOffLastGroupBox.Size.Width + $($FormScale * 6) 
+        Location  = @{ X = $script:AutoChartsTrimOffLastGroupBox.Location.X + $script:AutoChartsTrimOffLastGroupBox.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsTrimOffLastGroupBox.Location.Y + $($FormScale * 2) }
         Size      = @{ Width  = $FormScale * 125
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Checked   = $true
     }
@@ -1143,15 +1143,15 @@ script:Update-MultiSeriesChart
     #================================
     $script:AutoChartsSaveChartImageButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Save Image"
-        Location  = @{ X = $script:AutoChartsTitleCheckBox.Location.X + $script:AutoChartsTitleCheckBox.Size.Width + $($FormScale * 6)   
+        Location  = @{ X = $script:AutoChartsTitleCheckBox.Location.X + $script:AutoChartsTitleCheckBox.Size.Width + $($FormScale * 6)
                        Y = $script:AutoChartsTitleCheckBox.Location.Y }
         Size      = @{ Width = $FormScale * 100
                        Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
-    CommonButtonSettings -Button $script:AutoChartsSaveChartImageButton 
+    CommonButtonSettings -Button $script:AutoChartsSaveChartImageButton
     $script:AutoChartsSaveChartImageButton.Add_Click({
-        Save-ChartImage -Chart $script:AutoChartCharting  -Title $script:AutoChartTitle 
+        Save-ChartImage -Chart $script:AutoChartCharting  -Title $script:AutoChartTitle
     })
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsSaveChartImageButton)
 
@@ -1160,11 +1160,11 @@ script:Update-MultiSeriesChart
     # Auto Create Charts Select Chart Label
     #=======================================
     $script:AutoChartsChartTypeFilterLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text      = 'Category Filter -->' 
-        Location = @{ X = $script:AutoChartsSaveChartImageButton.Location.X + $script:AutoChartsSaveChartImageButton.Size.Width + $($FormScale * 6)  
+        Text      = 'Category Filter -->'
+        Location = @{ X = $script:AutoChartsSaveChartImageButton.Location.X + $script:AutoChartsSaveChartImageButton.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsSaveChartImageButton.Location.Y + 4 }
         Size      = @{ Width  = $FormScale * 100
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeFilterLabel)
@@ -1174,11 +1174,11 @@ script:Update-MultiSeriesChart
     # Auto Create Charts Select Chart Type
     #======================================
     $script:AutoChartsChartTypeFilterComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text      = 'Column' 
-        Location = @{ X = $script:AutoChartsChartTypeFilterLabel.Location.X + $script:AutoChartsChartTypeFilterLabel.Size.Width + $($FormScale * 6)  
+        Text      = 'Column'
+        Location = @{ X = $script:AutoChartsChartTypeFilterLabel.Location.X + $script:AutoChartsChartTypeFilterLabel.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsChartTypeFilterLabel.Location.Y - $($FormScale * 4) }
         Size      = @{ Width  = $FormScale * 75
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
@@ -1262,7 +1262,7 @@ script:Update-MultiSeriesChart
         Location  = @{ X = $script:AutoChartsTitleCheckBox.Location.X
                        Y = $script:AutoChartsTitleCheckBox.Location.Y + $script:AutoChartsTitleCheckBox.Size.Height + $($FormScale * 6)  }
         Size      = @{ Width  = $FormScale * 125
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
         Checked   = $true
@@ -1287,28 +1287,28 @@ script:Update-MultiSeriesChart
     #==========================================
     $script:AutoChartsResultsMostRecentButton = New-Object Windows.Forms.Button -Property @{
         Text      = "View Results"
-        Location  = @{ X = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.X + $script:AutoChartsDisplayMostRecentSeriesCheckBox.Size.Width + $($FormScale * 6) 
+        Location  = @{ X = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.X + $script:AutoChartsDisplayMostRecentSeriesCheckBox.Size.Width + $($FormScale * 6)
                        Y = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.Y }
         Size      = @{ Width  = $FormScale * 100
                        Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsResultsMostRecentButton
-    $script:AutoChartsResultsMostRecentButton.Add_Click({ Import-CSV $script:CSVFilePathMostRecent | Out-GridView -Title "$script:CSVFilePathMostRecent" }) 
+    $script:AutoChartsResultsMostRecentButton.Add_Click({ Import-CSV $script:CSVFilePathMostRecent | Out-GridView -Title "$script:CSVFilePathMostRecent" })
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsResultsMostRecentButton)
 
     # Autosaves the chart if checked
     $FileName = ($script:CSVFilePathMostRecent).split('\')[-1].replace('.csv','')
     $FileDate = ($script:CSVFilePathMostRecent).split('\')[-2]
     if ($OptionsAutoSaveChartsAsImages.checked) { $script:AutoChartCharting.SaveImage("$AutosavedChartsDirectory\$FileDate - $FileName.png", 'png') }
-    
+
 
     #=====================================
     # Auto Create Investigate Most Recent
     #=====================================
     $script:AutoChartsInvestigateMostRecentButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Investigate"
-        Location = @{ X = $script:AutoChartsResultsMostRecentButton.Location.X + $script:AutoChartsResultsMostRecentButton.Size.Width + $($FormScale * 6)  
+        Location = @{ X = $script:AutoChartsResultsMostRecentButton.Location.X + $script:AutoChartsResultsMostRecentButton.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsResultsMostRecentButton.Location.Y}
         Size      = @{ Width  = $FormScale * 100
                        Height = $FormScale * 22 }
@@ -1329,11 +1329,11 @@ script:Update-MultiSeriesChart
     # Auto Create Charts Select Chart Type
     #======================================
     $script:AutoChartsChartTypeMostRecentComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text      = 'Column' 
-        Location = @{ X = $script:AutoChartsInvestigateMostRecentButton.Location.X + $script:AutoChartsInvestigateMostRecentButton.Size.Width + $($FormScale * 6)  
+        Text      = 'Column'
+        Location = @{ X = $script:AutoChartsInvestigateMostRecentButton.Location.X + $script:AutoChartsInvestigateMostRecentButton.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsInvestigateMostRecentButton.Location.Y }
         Size      = @{ Width  = $FormScale * 75
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Blue"
         AutoCompleteSource = "ListItems"
@@ -1347,13 +1347,13 @@ script:Update-MultiSeriesChart
     })
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeMostRecentComboBox)
 
-    
+
     #===============================
     # Change the color of the chart
     #===============================
     $script:AutoChartsChangeColorMostRecentComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Blue"
-        Location = @{ X = $script:AutoChartsChartTypeMostRecentComboBox.Location.X + $script:AutoChartsChartTypeMostRecentComboBox.Size.Width + $($FormScale * 6)  
+        Location = @{ X = $script:AutoChartsChartTypeMostRecentComboBox.Location.X + $script:AutoChartsChartTypeMostRecentComboBox.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsChartTypeMostRecentComboBox.Location.Y}
         Size      = @{ Width  = $FormScale * 75
                        Height = $FormScale * 20 }
@@ -1384,10 +1384,10 @@ script:Update-MultiSeriesChart
     #==================================================================================================================
     $script:AutoChartsDisplayPreviousSeriesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Previous Series'
-        Location = @{ X = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.X 
+        Location = @{ X = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.X
                       Y = $script:AutoChartsDisplayMostRecentSeriesCheckBox.Location.Y + $script:AutoChartsDisplayMostRecentSeriesCheckBox.Size.Height + $($FormScale * 6)  }
         Size      = @{ Width  = $FormScale * 125
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Red"
         Checked   = $true
@@ -1412,28 +1412,28 @@ script:Update-MultiSeriesChart
     #=======================================
     $script:AutoChartsResultsPreviousButton = New-Object Windows.Forms.Button -Property @{
         Text      = "View Results"
-        Location = @{ X = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.X + $script:AutoChartsDisplayPreviousSeriesCheckBox.Size.Width + $($FormScale * 6)  
+        Location = @{ X = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.X + $script:AutoChartsDisplayPreviousSeriesCheckBox.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.Y }
         Size     = @{ Width  = $FormScale * 100
                       Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsResultsPreviousButton
-    $script:AutoChartsResultsPreviousButton.Add_Click({ Import-CSV $script:CSVFilePathPrevious | Out-GridView -Title "$script:CSVFilePathPrevious" }) 
+    $script:AutoChartsResultsPreviousButton.Add_Click({ Import-CSV $script:CSVFilePathPrevious | Out-GridView -Title "$script:CSVFilePathPrevious" })
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsResultsPreviousButton)
 
     # Autosaves the chart if checked
     $FileName = ($script:CSVFilePathPrevious).split('\')[-1].replace('.csv','')
     $FileDate = ($script:CSVFilePathPrevious).split('\')[-2]
     if ($OptionsAutoSaveChartsAsImages.checked) { $script:AutoChartCharting.SaveImage("$AutosavedChartsDirectory\$FileDate-$FileName.png", 'png') }
-    
+
 
     #=====================================
     # Auto Create Investigate Most Recent
     #=====================================
     $script:AutoChartsInvestigatePreviousButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Investigate"
-        Location = @{ X = $script:AutoChartsResultsPreviousButton.Location.X + $script:AutoChartsResultsPreviousButton.Size.Width + $($FormScale * 6)  
+        Location = @{ X = $script:AutoChartsResultsPreviousButton.Location.X + $script:AutoChartsResultsPreviousButton.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsResultsPreviousButton.Location.Y}
         Size      = @{ Width  = $FormScale * 100
                        Height = $FormScale * 22 }
@@ -1455,10 +1455,10 @@ script:Update-MultiSeriesChart
     #======================================
     $script:AutoChartsChartTypePreviousComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = 'Point'
-        Location = @{ X = $script:AutoChartsInvestigatePreviousButton.Location.X + $script:AutoChartsInvestigatePreviousButton.Size.Width + $($FormScale * 6)  
+        Location = @{ X = $script:AutoChartsInvestigatePreviousButton.Location.X + $script:AutoChartsInvestigatePreviousButton.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsInvestigatePreviousButton.Location.Y }
         Size      = @{ Width  = $FormScale * 75
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Red"
         AutoCompleteSource = "ListItems"
@@ -1478,7 +1478,7 @@ script:Update-MultiSeriesChart
     #===============================
     $script:AutoChartsChangeColorPreviousComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Red"
-        Location = @{ X = $script:AutoChartsChartTypePreviousComboBox.Location.X + $script:AutoChartsChartTypePreviousComboBox.Size.Width + $($FormScale * 6)  
+        Location = @{ X = $script:AutoChartsChartTypePreviousComboBox.Location.X + $script:AutoChartsChartTypePreviousComboBox.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsChartTypePreviousComboBox.Location.Y}
         Size      = @{ Width  = $FormScale * 75
                        Height = $FormScale * 20 }
@@ -1509,10 +1509,10 @@ script:Update-MultiSeriesChart
     #==================================================================================================================
     $script:AutoChartsDisplayBaselineSeriesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
         Text      = 'Baseline Series'
-        Location = @{ X = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.X 
+        Location = @{ X = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.X
                       Y = $script:AutoChartsDisplayPreviousSeriesCheckBox.Location.Y + $script:AutoChartsDisplayPreviousSeriesCheckBox.Size.Height + $($FormScale * 6)  }
         Size      = @{ Width  = $FormScale * 125
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Orange"
         Checked   = $true
@@ -1537,14 +1537,14 @@ script:Update-MultiSeriesChart
     #=======================================
     $script:AutoChartsResultsBaselineButton = New-Object Windows.Forms.Button -Property @{
         Text      = "View Results"
-        Location = @{ X = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.X + $script:AutoChartsDisplayBaselineSeriesCheckBox.Size.Width + $($FormScale * 6)  
+        Location = @{ X = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.X + $script:AutoChartsDisplayBaselineSeriesCheckBox.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.Y }
         Size     = @{ Width  = $FormScale * 100
                       Height = $FormScale * 22 }
         Anchor    = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
     }
     CommonButtonSettings -Button $script:AutoChartsResultsBaselineButton
-    $script:AutoChartsResultsBaselineButton.Add_Click({ Import-CSV $script:CSVFilePathBaseline | Out-GridView -Title "$script:CSVFilePathBaseline" }) 
+    $script:AutoChartsResultsBaselineButton.Add_Click({ Import-CSV $script:CSVFilePathBaseline | Out-GridView -Title "$script:CSVFilePathBaseline" })
     $script:AutoChartsManipulationPanel.controls.Add($script:AutoChartsResultsBaselineButton)
 
     # Autosaves the chart if checked
@@ -1558,7 +1558,7 @@ script:Update-MultiSeriesChart
     #==================================
     $script:AutoChartsInvestigateBaselineButton = New-Object Windows.Forms.Button -Property @{
         Text      = "Investigate"
-        Location  = @{ X = $script:AutoChartsResultsBaselineButton.Location.X + $script:AutoChartsResultsBaselineButton.Size.Width + $($FormScale * 6) 
+        Location  = @{ X = $script:AutoChartsResultsBaselineButton.Location.X + $script:AutoChartsResultsBaselineButton.Size.Width + $($FormScale * 6)
                        Y = $script:AutoChartsResultsBaselineButton.Location.Y }
         Size      = @{ Width  = $FormScale * 100
                        Height = $FormScale * 22 }
@@ -1579,11 +1579,11 @@ script:Update-MultiSeriesChart
     # Auto Create Charts Select Chart Type
     #======================================
     $script:AutoChartsChartTypeBaselineComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text      = 'Point' 
-        Location = @{ X = $script:AutoChartsInvestigateBaselineButton.Location.X + $script:AutoChartsInvestigateBaselineButton.Size.Width + $($FormScale * 6)  
+        Text      = 'Point'
+        Location = @{ X = $script:AutoChartsInvestigateBaselineButton.Location.X + $script:AutoChartsInvestigateBaselineButton.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsInvestigateBaselineButton.Location.Y }
         Size      = @{ Width  = $FormScale * 75
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = "Orange"
         AutoCompleteSource = "ListItems"
@@ -1603,7 +1603,7 @@ script:Update-MultiSeriesChart
     #===============================
     $script:AutoChartsChangeColorBaselineComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
         Text      = "Orange"
-        Location = @{ X = $script:AutoChartsChartTypeBaselineComboBox.Location.X + $script:AutoChartsChartTypeBaselineComboBox.Size.Width + $($FormScale * 6)  
+        Location = @{ X = $script:AutoChartsChartTypeBaselineComboBox.Location.X + $script:AutoChartsChartTypeBaselineComboBox.Size.Width + $($FormScale * 6)
                       Y = $script:AutoChartsChartTypeBaselineComboBox.Location.Y}
         Size      = @{ Width  = $FormScale * 75
                        Height = $FormScale * 20 }
@@ -1633,11 +1633,11 @@ script:Update-MultiSeriesChart
     #==================================================================================================================
     #==================================================================================================================
     $script:AutoChartsLegendCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-        Text      = 'Display Legend' 
-        Location  = @{ X = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.X 
+        Text      = 'Display Legend'
+        Location  = @{ X = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.X
                        Y = $script:AutoChartsDisplayBaselineSeriesCheckBox.Location.Y + $script:AutoChartsDisplayBaselineSeriesCheckBox.Size.Height + $($FormScale * 6)  }
         Size      = @{ Width  = $FormScale * 125
-                       Height = $FormScale * 22 }     
+                       Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         Checked   = $true
     }
@@ -1652,11 +1652,11 @@ script:Update-MultiSeriesChart
     # Auto Create Charts Select Chart Label
     #=======================================
     $script:AutoChartsChartTypeApplyAllLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text     = 'Apply To All -->' 
+        Text     = 'Apply To All -->'
         Location = @{ X = $script:AutoChartsInvestigateBaselineButton.Location.X
                       Y = $script:AutoChartsInvestigateBaselineButton.Location.Y + $script:AutoChartsInvestigateBaselineButton.Size.Height + $($FormScale * 6)  + $($FormScale * 2) }
         Size     = @{ Width  = $FormScale * 100
-                      Height = $FormScale * 22 }     
+                      Height = $FormScale * 22 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $script:AutoChartsManipulationPanel.Controls.Add($script:AutoChartsChartTypeApplyAllLabel)
@@ -1666,11 +1666,11 @@ script:Update-MultiSeriesChart
     # Auto Create Charts Select Chart Type
     #======================================
     $script:AutoChartsChartTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text      = 'Column' 
+        Text      = 'Column'
         Location = @{ X = $script:AutoChartsChartTypeBaselineComboBox.Location.X
                         Y = $script:AutoChartsChartTypeBaselineComboBox.Location.Y + $script:AutoChartsChartTypeBaselineComboBox.Size.Height + $($FormScale * 6)  }
         Size      = @{ Width  = $FormScale * 75
-                        Height = $FormScale * 22 }     
+                        Height = $FormScale * 22 }
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         AutoCompleteSource = "ListItems"
         AutoCompleteMode   = "SuggestAppend"
@@ -1712,19 +1712,19 @@ script:Update-MultiSeriesChart
     }
     CommonButtonSettings -Button $script:AutoCharts3DToggleButton
     $script:AutoCharts3DInclination = 0
-    $script:AutoCharts3DToggleButton.Add_Click({            
+    $script:AutoCharts3DToggleButton.Add_Click({
         $script:AutoCharts3DInclination += 10
-        if ( $script:AutoCharts3DToggleButton.Text -eq "3D Off" ) { 
+        if ( $script:AutoCharts3DToggleButton.Text -eq "3D Off" ) {
             $script:AutoChartsArea.Area3DStyle.Enable3D    = $true
             $script:AutoChartsArea.Area3DStyle.Inclination = $script:AutoCharts3DInclination
             $script:AutoCharts3DToggleButton.Text  = "3D On ($script:AutoCharts3DInclination)"
         }
         elseif ( $script:AutoCharts3DInclination -le 90 ) {
             $script:AutoChartsArea.Area3DStyle.Inclination = $script:AutoCharts3DInclination
-            $script:AutoCharts3DToggleButton.Text  = "3D On ($script:AutoCharts3DInclination)" 
+            $script:AutoCharts3DToggleButton.Text  = "3D On ($script:AutoCharts3DInclination)"
         }
-        else { 
-            $script:AutoCharts3DToggleButton.Text  = "3D Off" 
+        else {
+            $script:AutoCharts3DToggleButton.Text  = "3D Off"
             $script:AutoCharts3DInclination = 0
             $script:AutoChartsArea.Area3DStyle.Inclination = $script:AutoCharts3DInclination
             $script:AutoChartsArea.Area3DStyle.Enable3D    = $false
@@ -1737,3 +1737,5 @@ script:Update-MultiSeriesChart
     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
     [void]$script:AutoChartsForm.ShowDialog()
 }
+
+

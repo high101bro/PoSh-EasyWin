@@ -6,8 +6,8 @@ $SysinternalsSysmonEventIdsButtonAdd_Click = {
         $EventLogsEventIDsManualEntryTextbox.Text += "$EventID`r`n"
     }
 
-    if ($EventCodeManualEntrySelectionContents){ 
-        $MainLeftCollectionsTabControl.SelectedTab = $Section1EventLogsTab 
+    if ($EventCodeManualEntrySelectionContents){
+        $MainLeftCollectionsTabControl.SelectedTab = $Section1EventLogsTab
     }
 }
 
@@ -16,5 +16,7 @@ $SysinternalsSysmonEventIdsButtonAdd_MouseHover = {
 +  Shows a list of Sysmon specific event IDs
 +  These Event IDs will only be generated on endpoints that have Sysmon installed
 +  https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon
-"@ 
+"@
 }
+
+

@@ -10,8 +10,8 @@ $script:ProgressBarEndpointsProgressBar.Value = 0
 $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName"
 
 Invoke-Command -ScriptBlock {
-    param($script:ShowCommandQueryBuild) 
-    Invoke-Expression -Command $script:ShowCommandQueryBuild 
+    param($script:ShowCommandQueryBuild)
+    Invoke-Expression -Command $script:ShowCommandQueryBuild
 } `
 -ArgumentList $script:ShowCommandQueryBuild `
 -Session $PSSession `
@@ -31,4 +31,6 @@ $script:ProgressBarQueriesProgressBar.Value   += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+
+
 

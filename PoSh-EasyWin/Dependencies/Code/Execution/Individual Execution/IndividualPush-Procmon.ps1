@@ -1,7 +1,7 @@
 # Executes RPC/DCOM based commands if the RPC Radio Button is Checked
 if ($ExternalProgramsRPCRadioButton.checked) {
     $CollectionName = "Procmon"
-    $CollectionCommandStartTime = Get-Date 
+    $CollectionCommandStartTime = Get-Date
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Query: $CollectionName")
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
@@ -17,33 +17,33 @@ if ($ExternalProgramsRPCRadioButton.checked) {
         '3 Minutes'   {180}
         '4 Minutes'   {240}
         '5 Minutes'   {360}
-        Default       {5} 
+        Default       {5}
     }
 
-    # Collect Remote host Disk Space       
+    # Collect Remote host Disk Space
     # Diskspace is calculated on local and target hosts to determine if there's a risk
     # Procmon is copied over to the target host, and data is gathered there and then exported back
     # The Procmon program and capture file are deleted
     Function Get-DiskSpace {
         param([string] $TargetComputer)
-        try { 
-            $HD = Get-WmiObject Win32_LogicalDisk -ComputerName $TargetComputer -Filter "DeviceID='C:'" -ErrorAction Stop 
+        try {
+            $HD = Get-WmiObject Win32_LogicalDisk -ComputerName $TargetComputer -Filter "DeviceID='C:'" -ErrorAction Stop
             Create-LogEntry -TargetComputer $TargetComputer -LogFile $LogFile -Message "Get-DiskSpace:  Get-WmiObject Win32_LogicalDisk -ComputerName $TargetComputer -Filter `"DeviceID='C:'`" -ErrorAction Stop"
-        } 
-        catch { $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Unable to connect to $TargetComputer. $_") 
+        }
+        catch { $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Unable to connect to $TargetComputer. $_")
             continue
         }
         if (!$HD) { throw }
         $FreeSpace = [math]::round(($HD.FreeSpace/1gb),2)
         return $FreeSpace
-    } 
+    }
 
     $ProcmonName                   = 'ProcMon'
     $ProcmonExecutable             = "$ProcmonName.exe"
     $AdminShare                    = 'C$'
     $RemoteDrive                   = 'C:'
     $LocalPathForProcmonExecutable = "$ExternalPrograms\Procmon.exe"
-    $TargetFolder                  = "Windows\Temp"      
+    $TargetFolder                  = "Windows\Temp"
 
     New-Item -Type Directory -Path $script:CollectionSavedDirectoryTextBox.Text -ErrorAction SilentlyContinue
 
@@ -62,34 +62,34 @@ if ($ExternalProgramsRPCRadioButton.checked) {
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
- 
-        # Process monitor generates enormous amounts of data.  
+
+        # Process monitor generates enormous amounts of data.
         # To try and offer some protections, the script won't run if the source or target have less than 500MB free
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Verifying free diskspace on localhost and endpoints")
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[!] Verifying free diskspace on localhost and endpoints"
         $PoShEasyWin.Refresh()
-        if ( $(Get-DiskSpace -TargetComputer $TargetComputer) -lt 0.5) { 
+        if ( $(Get-DiskSpace -TargetComputer $TargetComputer) -lt 0.5) {
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] $TargetComputer has less than 500MB free - aborting as precaution")
             Create-LogEntry -LogFile $LogFile -TargetComputer "[!] $TargetComputer has less than 500MB free - aborting as precaution"
-            break 
+            break
         }
 
-        if ( $(Get-DiskSpace -TargetComputer $Env:ComputerName) -lt 0.5 ) { 
+        if ( $(Get-DiskSpace -TargetComputer $Env:ComputerName) -lt 0.5 ) {
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Local computer has less than 500MB free - aborting as precaution")
             Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Local computer ($Env:ComputerName) has less than 500MB free - aborting as precaution"
             break
         }
 
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [+] Copying $ProcmonName to $TargetComputer")
-        try { 
-            Copy-Item $LocalPathForProcmonExecutable "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop 
+        try {
+            Copy-Item $LocalPathForProcmonExecutable "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop
             Create-LogEntry -TargetComputer $TargetComputer -LogFile $LogFile -Message "Copy-Item $LocalPathForProcmonExecutable `"\\$TargetComputer\$AdminShare\$TargetFolder`" -Force -ErrorAction Stop "
-        } 
-        catch { 
-            $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy Error: $($_.Exception)") 
+        }
+        catch {
+            $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy Error: $($_.Exception)")
             Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy Error: $($_.Exception)"
             $PoShEasyWin.Refresh()
-            break 
+            break
         }
 
         # Process monitor must be launched as a separate process otherwise the sleep and terminate commands below would never execute and fill the disk
@@ -139,14 +139,14 @@ if ($ExternalProgramsRPCRadioButton.checked) {
             }
             else {
                 $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [+] Copying $ProcmonName data to local machine for analysis")
-                try { 
-                    Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$ProcmonName.pml" "$script:IndividualHostResults\$CollectionName" -Force -ErrorAction Stop 
+                try {
+                    Copy-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$ProcmonName.pml" "$script:IndividualHostResults\$CollectionName" -Force -ErrorAction Stop
                     Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "Copy-Item `"\\$TargetComputer\$AdminShare\$TargetFolder\$ProcmonName.pml`" `"$script:IndividualHostResults\$CollectionName`" -Force -ErrorAction Stop"
                 }
                 catch { $_ }
-    
+
                 $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [-] Removing $ProcmonName executable and data file from $TargetComputer")
-                                
+
                 Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$ProcmonName.pml" -Force
                 Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "Remove-Item `"\\$TargetComputer\$AdminShare\$TargetFolder\$ProcmonName.pml`" -Force"
 
@@ -154,7 +154,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
                 Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "Remove-Item `"\\$TargetComputer\$AdminShare\$TargetFolder\$ProcmonName.exe`" -Force"
 
                 Rename-Item "$script:IndividualHostResults\$CollectionName\$ProcmonName.pml" "$script:IndividualHostResults\$CollectionName\ProcMon-$TargetComputer.pml" -Force
-                $FileSize = [math]::round(((Get-Item "$script:IndividualHostResults\$CollectionName\ProcMon-$TargetComputer.pml").Length/1mb),2)    
+                $FileSize = [math]::round(((Get-Item "$script:IndividualHostResults\$CollectionName\ProcMon-$TargetComputer.pml").Length/1mb),2)
                 $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] ..\ProcMon-$TargetComputer.pml is $FileSize MB.")
 
                 #$ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Launching $ProcmonName and loading collected log data")
@@ -162,22 +162,22 @@ if ($ExternalProgramsRPCRadioButton.checked) {
                 break
             }
         }
-            
 
-        $CollectionCommandEndTime1  = Get-Date            
+
+        $CollectionCommandEndTime1  = Get-Date
         $CollectionCommandDiffTime1 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime1
         $ResultsListBox.Items.RemoveAt(1)
         $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime1]  $CollectionName - $TargetComputer")
     }
 
     if ($SysinternalsProcmonRenameProcessTextBox.text -ne 'Procmon') {
-        # Removes the local renamed copy of Procmon 
-        Remove-Item "$ExternalPrograms\$($SysinternalsProcmonRenameProcessTextBox.text).exe" -Force 
+        # Removes the local renamed copy of Procmon
+        Remove-Item "$ExternalPrograms\$($SysinternalsProcmonRenameProcessTextBox.text).exe" -Force
     }
 
     $SysinternalsProcmonButton .BackColor = 'LightGreen'
-    
-    $CollectionCommandEndTime0  = Get-Date 
+
+    $CollectionCommandEndTime0  = Get-Date
     $CollectionCommandDiffTime0 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime0
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime0]  $CollectionName")
@@ -194,10 +194,10 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
     # Unchecks hosts that do not have a session established
     . "$Dependencies\Code\Execution\Session Based\Uncheck-ComputerTreeNodesWithoutSessions.ps1"
 
-    if ($PSSession.count -eq 1) { 
+    if ($PSSession.count -eq 1) {
         $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Session Created to $($PSSession.count) Endpoint")
     }
-    elseif ($PSSession.count -gt 1) { 
+    elseif ($PSSession.count -gt 1) {
         $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Sessions Created to $($PSSession.count) Endpoints")
     }
     else {
@@ -209,14 +209,16 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
     $script:ProgressBarQueriesProgressBar.Maximum   = $CountCommandQueries
     $script:ProgressBarEndpointsProgressBar.Maximum = ($PSSession.ComputerName).Count
 
-    
+
     if ($PSSession.count -ge 1) {
-        . "$Dependencies\Code\Execution\Session Based\SessionPush-Procmon.ps1" 
+        . "$Dependencies\Code\Execution\Session Based\SessionPush-Procmon.ps1"
     }
     Get-PSSession | Remove-PSSession
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Remove-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
 
 }
+
+
 
 
 

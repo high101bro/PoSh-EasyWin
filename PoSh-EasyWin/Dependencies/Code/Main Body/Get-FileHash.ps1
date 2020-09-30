@@ -5,8 +5,8 @@ $GetFileHash = @'
 function Get-FileHash{
     param (
         [string]$Path,
-        [string]$Algorithm    
-    ) 
+        [string]$Algorithm
+    )
     if ($Algorithm -eq 'MD5') {
         $HashAlgorithm = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
     }
@@ -28,7 +28,7 @@ function Get-FileHash{
 
 
     $Hash=[System.BitConverter]::ToString($HashAlgorithm.ComputeHash([System.IO.File]::ReadAllBytes($Path)))
-    
+
     $Properties = @{
         "Path"       = $Path
         "Hash"       = $Hash.Replace("-", "")
@@ -40,4 +40,6 @@ function Get-FileHash{
 }
 '@
 Invoke-Expression -Command $GetFileHash
+
+
 

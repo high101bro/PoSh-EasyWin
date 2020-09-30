@@ -9,3 +9,5 @@ $NetworkConnectionSearchRemotePortSelectionButtonAdd_Click = {
     $NetworkConnectionSearchRemotePortRichTextbox.Text += $("`r`n" + $PortsToBeScan)
     $NetworkConnectionSearchRemotePortRichTextbox.Text  = $NetworkConnectionSearchRemotePortRichTextbox.Text.Trim("")
 }
+
+

@@ -10,7 +10,7 @@ $SysinternalsAutorunsButtonAdd_Click = {
         $SysinternalsAutorunsOpenFileDialog.ShowDialog() | Out-Null
     }
     else {
-        $SysinternalsAutorunsOpenFileDialog.InitialDirectory = "$CollectedDataDirectory"   
+        $SysinternalsAutorunsOpenFileDialog.InitialDirectory = "$CollectedDataDirectory"
         $SysinternalsAutorunsOpenFileDialog.ShowDialog() | Out-Null
     }
     if ($($SysinternalsAutorunsOpenFileDialog.filename)) {
@@ -19,3 +19,5 @@ $SysinternalsAutorunsButtonAdd_Click = {
     #Returns button to default color if it was turned green after task completion
     CommonButtonSettings -Button $SysinternalsAutorunsButton
 }
+
+

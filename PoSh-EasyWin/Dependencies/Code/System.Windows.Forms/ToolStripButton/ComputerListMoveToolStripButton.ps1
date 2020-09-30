@@ -17,7 +17,7 @@ function Show-MoveForm {
         Add_Closing = { $This.dispose() }
     }
     $ComputerTreeNodePopup.Text = $FormTitleEndpoints
-    
+
     #----------------------------------------------
     # ComputerList TreeView Popup Execute ComboBox
     #----------------------------------------------
@@ -33,12 +33,12 @@ function Show-MoveForm {
     }
     # Dynamically creates the combobox's Category list used for the move destination
     $ComputerTreeNodeCategoryList = @()
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
+    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
     ForEach ($root in $AllHostsNode) { foreach ($Category in $root.Nodes) { $ComputerTreeNodeCategoryList += $Category.text } }
     ForEach ($Item in $ComputerTreeNodeCategoryList) { $ComputerTreeNodePopupMoveComboBox.Items.Add($Item) }
 
     # Moves the hostname/IPs to the new Category
-    $ComputerTreeNodePopupMoveComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { 
+    $ComputerTreeNodePopupMoveComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {
         if ($SelectedEndpoint){ Move-ComputerTreeNodeSelected -SelectedEndpoint }
         else { Move-ComputerTreeNodeSelected }
     } })
@@ -55,7 +55,7 @@ function Show-MoveForm {
                       Height = $FormScale * 25 }
     }
     CommonButtonSettings -Button $ComputerTreeNodePopupExecuteButton
-    $ComputerTreeNodePopupExecuteButton.Add_Click({ 
+    $ComputerTreeNodePopupExecuteButton.Add_Click({
         # This brings specific tabs to the forefront/front view
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
         if ($SelectedEndpoint){ Move-ComputerTreeNodeSelected -SelectedEndpoint }
@@ -63,7 +63,7 @@ function Show-MoveForm {
         $ComputerTreeNodePopup.close()
     })
     $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupExecuteButton)
-    $ComputerTreeNodePopup.ShowDialog()               
+    $ComputerTreeNodePopup.ShowDialog()
 
 }
 
@@ -73,21 +73,21 @@ function Show-MoveForm {
 
 $ComputerListMoveSelectedToolStripButtonAdd_Click = {
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-    
+
     Create-ComputerNodeCheckBoxArray
     if ($script:EntrySelected) {
         Show-MoveForm -FormTitleEndpoints "Move: $($script:EntrySelected.Text)" -SelectedEndpoint
-            
+
         $script:ComputerTreeView.Nodes.Clear()
         Initialize-ComputerTreeNodes
 
         if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-            Foreach($Computer in $script:ComputerTreeViewData) { 
+            Foreach($Computer in $script:ComputerTreeViewData) {
                 Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
             }
         }
         elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
-            Foreach($Computer in $script:ComputerTreeViewData) { 
+            Foreach($Computer in $script:ComputerTreeViewData) {
                 Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
             }
         }
@@ -106,13 +106,13 @@ $ComputerListMoveSelectedToolStripButtonAdd_Click = {
 
 $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
     Create-ComputerNodeCheckBoxArray
-    
+
     if ($script:ComputerTreeViewSelected.count -eq 0){
         [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Move All')
     }
     else {
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-        
+
         Create-ComputerNodeCheckBoxArray
         if ($script:ComputerTreeViewSelected.count -ge 0) {
             Show-MoveForm -FormTitleEndpoints "Moving $($script:ComputerTreeViewSelected.count) Endpoints"
@@ -121,16 +121,16 @@ $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
             Initialize-ComputerTreeNodes
 
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
-                Foreach($Computer in $script:ComputerTreeViewData) { 
+                Foreach($Computer in $script:ComputerTreeViewData) {
                     Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
                 }
             }
             elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
-                Foreach($Computer in $script:ComputerTreeViewData) { 
+                Foreach($Computer in $script:ComputerTreeViewData) {
                     Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
                 }
             }
-            
+
             Remove-EmptyCategory
             AutoSave-HostData
             Save-HostData
@@ -144,3 +144,5 @@ $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
         else { ComputerNodeSelectedLessThanOne -Message 'Move Selection' }
     }
 }
+
+

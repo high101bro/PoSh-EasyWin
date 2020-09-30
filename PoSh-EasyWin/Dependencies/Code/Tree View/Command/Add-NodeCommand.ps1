@@ -1,6 +1,6 @@
-function Add-NodeCommand { 
-    param ( 
-        $RootNode, 
+function Add-NodeCommand {
+    param (
+        $RootNode,
         $Category,
         $Entry,
         $ToolTip
@@ -10,11 +10,11 @@ function Add-NodeCommand {
         Text = "$Entry"
     }
 
-    if ($ToolTip) { 
-        $newNode.ToolTipText  = "$ToolTip" 
+    if ($ToolTip) {
+        $newNode.ToolTipText  = "$ToolTip"
     }
-    else { 
-        $newNode.ToolTipText  = "No Data Available" 
+    else {
+        $newNode.ToolTipText  = "No Data Available"
     }
 
     If ($RootNode.Nodes.Tag -contains $Category) {
@@ -28,7 +28,7 @@ function Add-NodeCommand {
             #ToolTipText   = "Checkbox this Category to query all its hosts"
         }
         #$CategoryNode.Expand()
-        
+
         if ($Category -match '[\[\(]WinRM[\)\]].+') {
             $CategoryNode.ToolTipText = @"
 Windows Remote Management (WinRM)
@@ -38,7 +38,7 @@ Port:      5985/5986 (WinRM v2+)
                 47001 (If a WinRM listener not created)
                 Any (listeners can be configured on any port)
 Encrypted: Yes, HTTP  - message level encryption
-                Yes, HTTPS - added TLS protocol encyption 
+                Yes, HTTPS - added TLS protocol encyption
 OS:        Win7 / 2008R2+
                 Older Operating Systems with WinRM installed
 Data:      Deserialized Objects
@@ -69,7 +69,7 @@ Cons:      Uses random high ports
             $CategoryNode.ToolTipText = @"
 Server Message Block (via PSExec.exe)
 Protocols: SMB (and NetBIOS)
-Encrypted: Yes, v3.0+ 
+Encrypted: Yes, v3.0+
 Ports:     445 and 139 (over NetBIOS)
 OS:        Port 445 - Windows 2000 and above
 Data:      Serialized Data (though EasyWin will convert it)
@@ -90,3 +90,4 @@ Cons:      Not natively supported, requires PSExec.exe
     }
     $Null = $CommandNode.Nodes.Add($newNode)
 }
+

@@ -11,7 +11,7 @@ function Monitor-Jobs {
 
     # Initially updates statistics
     $StatisticsResults = Get-PoShEasyWinStatistics
-    $StatisticsNumberOfCSVs.text = $StatisticsResults        
+    $StatisticsNumberOfCSVs.text = $StatisticsResults
 
     $SleepMilliSeconds = 250
     $script:ProgressBarEndpointsProgressBar.Value = 0
@@ -24,20 +24,20 @@ function Monitor-Jobs {
     $StatisticsUpdateIntervalCount = 0
 
     # The number of Jobs created by PoSh-EasyWin
-    $JobsCount = (Get-Job -Name "PoSh-EasyWin:*").count                  
+    $JobsCount = (Get-Job -Name "PoSh-EasyWin:*").count
     $script:ProgressBarEndpointsProgressBar.Maximum = $JobsCount
     $script:ProgressBarFormProgressBar.Maximum      = $JobsCount
 
     $Done = 0
-    
+
     do {
-        # Updates Statistics 
+        # Updates Statistics
         $StatisticsUpdateIntervalCount++
         if (($StatisticsUpdateIntervalCount % $StatisticsUpdateInterval) -eq 0) {
             $StatisticsResults = Get-PoShEasyWinStatistics
-            $StatisticsNumberOfCSVs.text = $StatisticsResults        
+            $StatisticsNumberOfCSVs.text = $StatisticsResults
         }
-        
+
         # The number of Jobs created by PoSh-EasyWin
         $CurrentJobs = Get-Job -Name "PoSh-EasyWin:*"
 
@@ -46,7 +46,7 @@ function Monitor-Jobs {
 
         # Calcualtes and formats time elaspsed
         $CurrentTime = Get-Date
-        $Timecount   = $ExecutionStartTime - $CurrentTime        
+        $Timecount   = $ExecutionStartTime - $CurrentTime
         $Hour        = [Math]::Truncate($Timecount)
         $Minute      = ($CollectionTime - $Hour) * 60
         $Second      = [int](($Minute - ([Math]::Truncate($Minute))) * 60)
@@ -54,7 +54,7 @@ function Monitor-Jobs {
         $Timecount   = [datetime]::Parse("$Hour`:$Minute`:$Second")
 
         # Provides updates on the jobs
-        $ResultsListBox.Items.Insert(0,"Running Jobs:  $($JobsCount - $Done)")        
+        $ResultsListBox.Items.Insert(0,"Running Jobs:  $($JobsCount - $Done)")
         $ResultsListBox.Items.Insert(1,"Current Time:  $($CurrentTime)")
         $ResultsListBox.Items.Insert(2,"Elasped Time:  $($Timecount -replace '-','')")
         $ResultsListBox.Items.Insert(3,"")
@@ -69,7 +69,7 @@ function Monitor-Jobs {
         # Default have is 250 ms. If you change this, be sure to update the $StatisticsUpdateInterval variarible within this function
         Start-Sleep -MilliSeconds $SleepMilliSeconds
         $ResultsListBox.Refresh()
-        
+
         # Checks if the current job is running too long and stops it
         foreach ($Job in $CurrentJobs) {
             # Gets the results from jobs that are completed, saves them, and deletes the job
@@ -79,29 +79,29 @@ function Monitor-Jobs {
                 $script:ProgressBarFormProgressBar.Value      = $Done
 
                 $JobName     = $Job.Name  -replace 'PoSh-EasyWin: ',''
-                $JobReceived = $Job | Receive-Job #-Keep 
+                $JobReceived = $Job | Receive-Job #-Keep
 
                 if (-not $NotExportFiles) {
                     if ($job.Location -notmatch $(($Job.Name -split ' ')[-1]) ) {
                         if ($SaveProperties) {
                             # This is needed because when jobs are started locally that use invoke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
                             $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.csv" -NoTypeInformation
-                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml" 
+                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml"
                         }
                         else {
                             # This is needed because when jobs are started locally that use inovke-command, the localhost is used as the PSComputerName becuase it started the job rather than the invoke-command to a remote computer
                             $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.csv" -NoTypeInformation
-                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml" 
+                            $JobReceived | Select-Object @{n='PSComputerName';e={"$(($Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml"
                         }
                     }
                     else {
                         if ($SaveProperties) {
                             $JobReceived | Select-Object $(iex $SaveProperties) | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.csv" -NoTypeInformation
-                            $JobReceived | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml" 
+                            $JobReceived | Select-Object $(iex $SaveProperties) | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml"
                         }
                         else {
                             $JobReceived | Export-CSV    "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.csv" -NoTypeInformation
-                            $JobReceived | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml" 
+                            $JobReceived | Export-Clixml "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$JobName.xml"
                         }
                     }
                 }
@@ -110,8 +110,8 @@ function Monitor-Jobs {
             elseif ($CurrentTime -gt ($Job.PSBeginTime).AddSeconds($JobsTimer)) {
                 $TimeStamp = $($CurrentTime).ToString('yyyy/MM/dd HH:mm:ss')
                 $ResultsListBox.Items.insert(5,"$($TimeStamp)   - Job Timed Out: $((($Job | Select-Object -ExpandProperty Name) -split '-')[-1])")
-                $Job | Stop-Job 
-                $Job | Receive-Job 
+                $Job | Stop-Job
+                $Job | Receive-Job
                 $Job | Remove-Job -Force
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message " - Job [TIMED OUT]: `"$($Job.Name)`" - Started at $($Job.PSBeginTime) - Ran for $($CurrentTime - $Job.PSBeginTime)"
                 break
@@ -121,7 +121,7 @@ function Monitor-Jobs {
         $ResultsListBox.Items.RemoveAt(0)
         $ResultsListBox.Items.RemoveAt(0)
         $ResultsListBox.Items.RemoveAt(0)
-        $ResultsListBox.Items.RemoveAt(0)  
+        $ResultsListBox.Items.RemoveAt(0)
     } while ($Done -lt $JobsCount)
 
     # Logs Jobs Beginning and Ending Times
@@ -135,8 +135,9 @@ function Monitor-Jobs {
 
     # Updates Statistics One last time
     $StatisticsResults           = Get-PoShEasyWinStatistics
-    $StatisticsNumberOfCSVs.text = $StatisticsResults        
+    $StatisticsNumberOfCSVs.text = $StatisticsResults
     Get-Job -Name "PoSh-EasyWin:*" | Remove-Job -Force -ErrorAction SilentlyContinue
     $PoShEasyWin.Refresh()
     Start-Sleep -Seconds 1
 }
+

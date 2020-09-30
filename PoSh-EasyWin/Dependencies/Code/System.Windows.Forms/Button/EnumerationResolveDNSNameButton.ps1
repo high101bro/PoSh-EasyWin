@@ -1,8 +1,8 @@
-$EnumerationResolveDNSNameButtonAdd_Click = { 
+$EnumerationResolveDNSNameButtonAdd_Click = {
     if ($($EnumerationComputerListBox.SelectedItems).count -eq 0){
         [system.media.systemsounds]::Exclamation.play()
         $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Add("DNS Resolution:  Make at least one selection")    
+        $StatusListBox.Items.Add("DNS Resolution:  Make at least one selection")
     }
     else {
         if (Verify-Action -Title "Verification: Resolve DNS" -Question "Conduct a DNS Resolution of the following?" -Computer $($EnumerationComputerListBox.SelectedItems -join ', ')) {
@@ -13,7 +13,7 @@ $EnumerationResolveDNSNameButtonAdd_Click = {
 
             # Resolve DNS Names
             $DNSResolutionList = @()
-            foreach ($Selected in $($EnumerationComputerListBox.SelectedItems)) {      
+            foreach ($Selected in $($EnumerationComputerListBox.SelectedItems)) {
                 $DNSResolution      = (((Resolve-DnsName $Selected).NameHost).split('.'))[0]
                 $DNSResolutionList += $DNSResolution
                 $EnumerationComputerListBox.Items.Remove($Selected)
@@ -27,3 +27,5 @@ $EnumerationResolveDNSNameButtonAdd_Click = {
         }
     }
 }
+
+

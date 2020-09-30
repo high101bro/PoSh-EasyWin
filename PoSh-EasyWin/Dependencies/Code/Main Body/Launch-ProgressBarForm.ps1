@@ -33,7 +33,7 @@ function Launch-ProgressBarForm {
             SizeMode = 'StretchImage'
         }
         $script:ProgressBarSelectionForm.Controls.Add($PoShEasyWinLogoLoadingPictureBox)
-        
+
         $script:ProgressBarMainLabel = New-Object System.Windows.Forms.Label -Property @{
             Text   = "Status:"
             Left   = $FormScale * 10
@@ -55,7 +55,7 @@ function Launch-ProgressBarForm {
         }
         $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMainLabel)
     }
-        
+
 
     $script:ProgressBarFormProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
         Style    = "Continuous"
@@ -92,5 +92,6 @@ function Launch-ProgressBarForm {
     }
     $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMessageLabel)
 
-    $script:ProgressBarSelectionForm.ShowDialog()    
+    $script:ProgressBarSelectionForm.ShowDialog()
 }
+

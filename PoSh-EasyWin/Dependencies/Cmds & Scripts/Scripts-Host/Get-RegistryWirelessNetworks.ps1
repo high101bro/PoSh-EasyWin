@@ -3,11 +3,11 @@ function Get-WirelessNetworks {
     $RegistryKeyNames = Get-ChildItem -Name $RegistryPath
     $Data = @()
     foreach ($Key in $RegistryKeyNames){
-        $KeyPath = $RegistryPath + $Key 
+        $KeyPath = $RegistryPath + $Key
         $KeyProperty = get-itemproperty -Path $KeyPath
 
         $DateCreated = $KeyProperty.DateCreated
-          $DC_Hexes  = [System.BitConverter]::ToString($KeyProperty.datecreated) -split '-'  
+          $DC_Hexes  = [System.BitConverter]::ToString($KeyProperty.datecreated) -split '-'
           $DC_Year   = [Convert]::ToInt32($DC_Hexes[1]+$DC_Hexes[0],16)
           $DC_Month  = [Convert]::ToInt32($DC_Hexes[3]+$DC_Hexes[2],16)
           $DC_Day    = [Convert]::ToInt32($DC_Hexes[7]+$DC_Hexes[6],16)
@@ -17,7 +17,7 @@ function Get-WirelessNetworks {
           $DateCreatedFormatted = [datetime]"$DC_Month/$DC_Day/$DC_Year $DC_Hour`:$DC_Minute`:$DC_Second"
 
         $DateLastConnected = $KeyProperty.DateLastConnected
-          $DLC_Hexes  = [System.BitConverter]::ToString($KeyProperty.DateLastConnected) -split '-'  
+          $DLC_Hexes  = [System.BitConverter]::ToString($KeyProperty.DateLastConnected) -split '-'
           $DLC_Year   = [Convert]::ToInt32($DLC_Hexes[1]+$DLC_Hexes[0],16)
           $DLC_Month  = [Convert]::ToInt32($DLC_Hexes[3]+$DLC_Hexes[2],16)
           $DLC_Day    = [Convert]::ToInt32($DLC_Hexes[7]+$DLC_Hexes[6],16)
@@ -37,3 +37,4 @@ function Get-WirelessNetworks {
     $Data
 }
 Get-WirelessNetworks | Select-Object -Property PSComputerName, SSID, ProfileName, DateCreated, DateLastConnected
+

@@ -122,7 +122,7 @@ function Check-RollingAccountPrerequisites {
         }
     }
 
-    
+
     $PrerequisitesCheckSelectCredentialRollingAccount = $false
     if ((Test-Path "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt")) {
         if ( $CredentialManagementSelectCredentialRollingAccountTextBox.text -ne (Get-Content "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt")) {
@@ -157,7 +157,7 @@ function Check-RollingAccountPrerequisites {
             $PrerequisitesCheckSelectCredentialRollingAccount = $false
         }
     }
-}  
+}
 
 #---------------------------------------------------
 # Credential Management Select Credentials GroupBox
@@ -205,7 +205,7 @@ $CredentialManagementAvailableCredentialsGroupBox  = New-Object System.Windows.F
                       Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $CredentialManagementSelectCredentialsButton
-    $CredentialManagementSelectCredentialsButton.Add_Click({ 
+    $CredentialManagementSelectCredentialsButton.Add_Click({
         try {
             [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
             $CredentialManagementSelectCredentialsOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog
@@ -253,7 +253,7 @@ $CredentialManagementAvailableCredentialsGroupBox  = New-Object System.Windows.F
                       Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $CredentialManagementCreateNewCredentialsButton
-    $CredentialManagementCreateNewCredentialsButton.Add_Click({        
+    $CredentialManagementCreateNewCredentialsButton.Add_Click({
         Create-NewCredentials
 
         Start-Sleep -Seconds 2
@@ -311,7 +311,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
         ForeColor = 'Black'
         Checked  = $script:RollCredentialsState
     }
-    $script:CredentialManagementPasswordRollingAccountCheckbox.Add_Click({ 
+    $script:CredentialManagementPasswordRollingAccountCheckbox.Add_Click({
         $This.Checked | Set-Content "$PoShHome\Settings\Role Credentials Checkbox.txt"
 
         if ($script:CredentialManagementActiveDirectoryTextBox.text -eq '' `
@@ -322,7 +322,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
             $script:CredentialManagementPasswordRollingAccountCheckbox.checked = $false
         }
         else {
-            if ($script:CredentialManagementPasswordRollingAccountCheckbox.checked) { 
+            if ($script:CredentialManagementPasswordRollingAccountCheckbox.checked) {
                 #[System.Windows.MessageBox]::Show('Checkboxing this also forces an initial credential roll.')
                 Generate-NewRollingPassword
                 $script:RollCredentialsState = $true
@@ -339,12 +339,12 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
 
- 
+
     #------------------------------------------------
-    # Credential Management Password Rolling Account 
+    # Credential Management Password Rolling Account
     #------------------------------------------------
     $CredentialManagementPasswordRollingAccountLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text     = "Enter the account name that will be used for password rolling after queries and remote connections are executed. This does not create the account, it just changes the account's password. You must coordinate with the administrator to create an account like: `"EasyWin`"" 
+        Text     = "Enter the account name that will be used for password rolling after queries and remote connections are executed. This does not create the account, it just changes the account's password. You must coordinate with the administrator to create an account like: `"EasyWin`""
         Location = @{ X = $FormScale * 5
                       Y = $script:CredentialManagementPasswordRollingAccountCheckbox.Location.Y + $script:CredentialManagementPasswordRollingAccountCheckbox.Size.Height + $($FormScale * 5) }
         Size     = @{ Width  = $FormScale * 465
@@ -356,7 +356,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     $script:CredentialManagementPasswordRollingAccountTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-        Location = @{ X = $CredentialManagementPasswordRollingAccountLabel.Location.X 
+        Location = @{ X = $CredentialManagementPasswordRollingAccountLabel.Location.X
                       Y = $CredentialManagementPasswordRollingAccountLabel.Location.Y + $CredentialManagementPasswordRollingAccountLabel.Size.Height }
         Size     = @{ Width  = $FormScale * 300
                       Height = $FormScale * 25 }
@@ -365,7 +365,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     }
     $script:CredentialManagementPasswordRollingAccountTextBox.Add_MouseEnter({ Check-RollingAccountPrerequisites })
     $script:CredentialManagementPasswordRollingAccountTextBox.Add_MouseLeave({ Check-RollingAccountPrerequisites })
-    $script:CredentialManagementPasswordRollingAccountTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { 
+    $script:CredentialManagementPasswordRollingAccountTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {
         if ($script:CredentialManagementPasswordRollingAccountTextBox.text -ne ''){
             $script:CredentialManagementPasswordRollingAccountTextBox.text | Out-File "$script:CredentialManagementPath\Specified Rolling Account.txt"
         }
@@ -376,13 +376,13 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     $script:CredentialManagementPasswordRollingAccountButton = New-Object System.Windows.Forms.Button -Property @{
-        Location = @{ X = $script:CredentialManagementPasswordRollingAccountTextBox.Location.X + $script:CredentialManagementPasswordRollingAccountTextBox.Size.Width + $($FormScale * 10) 
+        Location = @{ X = $script:CredentialManagementPasswordRollingAccountTextBox.Location.X + $script:CredentialManagementPasswordRollingAccountTextBox.Size.Width + $($FormScale * 10)
                       Y = $script:CredentialManagementPasswordRollingAccountTextBox.Location.Y }
         Size     = @{ Width  = $FormScale * 150
                       Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $script:CredentialManagementPasswordRollingAccountButton
-    $script:CredentialManagementPasswordRollingAccountButton.Add_Click({ 
+    $script:CredentialManagementPasswordRollingAccountButton.Add_Click({
         if ($script:CredentialManagementPasswordRollingAccountTextBox.text -ne ''){
             $script:CredentialManagementPasswordRollingAccountTextBox.text | Out-File "$script:CredentialManagementPath\Specified Rolling Account.txt"
         }
@@ -407,10 +407,10 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     #-----------------------------------------------------
-    # Credential Management Domain Controller Server Name 
+    # Credential Management Domain Controller Server Name
     #-----------------------------------------------------
     $CredentialManagementActiveDirectoryLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text     = "Enter the domain controller hostname that is used for credential management." 
+        Text     = "Enter the domain controller hostname that is used for credential management."
         Location = @{ X = $FormScale * 5
                       Y = $script:CredentialManagementPasswordRollingAccountTextBox.Location.Y + $script:CredentialManagementPasswordRollingAccountTextBox.Size.Height + $($FormScale * 10) }
         Size     = @{ Width  = $FormScale * 465
@@ -422,7 +422,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     $script:CredentialManagementActiveDirectoryTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-        Location = @{ X = $CredentialManagementActiveDirectoryLabel.Location.X 
+        Location = @{ X = $CredentialManagementActiveDirectoryLabel.Location.X
                       Y = $CredentialManagementActiveDirectoryLabel.Location.Y  + $CredentialManagementActiveDirectoryLabel.Size.Height }
         Size     = @{ Width  = $FormScale * 300
                       Height = $FormScale * 25 }
@@ -431,12 +431,12 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     }
     $script:CredentialManagementActiveDirectoryTextBox.Add_MouseEnter({ Check-RollingAccountPrerequisites })
     $script:CredentialManagementActiveDirectoryTextBox.Add_MouseLeave({ Check-RollingAccountPrerequisites })
-    $script:CredentialManagementActiveDirectoryTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { 
+    $script:CredentialManagementActiveDirectoryTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {
         if ($script:CredentialManagementActiveDirectoryTextBox.text -ne ''){
             $script:CredentialManagementActiveDirectoryTextBox.text | Out-File "$script:CredentialManagementPath\Specified Domain Controller.txt"
         }
         else {Remove-Item "$script:CredentialManagementPath\Specified Domain Controller.txt"}
-        Check-RollingAccountPrerequisites 
+        Check-RollingAccountPrerequisites
     } })
     $CredentialManagementPasswordRollingAccountGroupBox.Controls.Add($script:CredentialManagementActiveDirectoryTextBox)
 
@@ -448,7 +448,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
                       Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $script:CredentialManagementActiveDirectoryButton
-    $script:CredentialManagementActiveDirectoryButton.Add_Click({ 
+    $script:CredentialManagementActiveDirectoryButton.Add_Click({
         if ($script:CredentialManagementActiveDirectoryTextBox.text -ne ''){
             $script:CredentialManagementActiveDirectoryTextBox.text | Out-File "$script:CredentialManagementPath\Specified Domain Controller.txt"
         }
@@ -484,7 +484,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     # Credential Management Password Domain Name
     #--------------------------------------------
     $CredentialManagementPasswordDomainNameLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text     = "Enter the domain name for the credential rolling account." 
+        Text     = "Enter the domain name for the credential rolling account."
         Location = @{ X = $FormScale * 5
                       Y = $script:CredentialManagementActiveDirectoryButton.Location.Y + $script:CredentialManagementActiveDirectoryButton.Size.Height + $($FormScale * 10) }
         Size     = @{ Width  = $FormScale * 465
@@ -496,7 +496,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     $script:CredentialManagementPasswordDomainNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-        Location = @{ X = $CredentialManagementPasswordDomainNameLabel.Location.X 
+        Location = @{ X = $CredentialManagementPasswordDomainNameLabel.Location.X
                       Y = $CredentialManagementPasswordDomainNameLabel.Location.Y + $CredentialManagementPasswordDomainNameLabel.Size.Height }
         Size     = @{ Width  = $FormScale * 300
                       Height = $FormScale * 25 }
@@ -505,7 +505,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     }
     $script:CredentialManagementPasswordDomainNameTextBox.Add_MouseEnter({ Check-RollingAccountPrerequisites })
     $script:CredentialManagementPasswordDomainNameTextBox.Add_MouseLeave({ Check-RollingAccountPrerequisites })
-    $script:CredentialManagementPasswordDomainNameTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { 
+    $script:CredentialManagementPasswordDomainNameTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") {
         if ($script:CredentialManagementPasswordDomainNameTextBox.text -ne ''){
             $script:CredentialManagementPasswordDomainNameTextBox.text | Out-File "$script:CredentialManagementPath\Specified Domain Name.txt"
         }
@@ -516,13 +516,13 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     $script:CredentialManagementPasswordDomainNameButton = New-Object System.Windows.Forms.Button -Property @{
-        Location = @{ X = $script:CredentialManagementPasswordDomainNameTextBox.Location.X + $script:CredentialManagementPasswordDomainNameTextBox.Size.Width + $($FormScale * 10) 
+        Location = @{ X = $script:CredentialManagementPasswordDomainNameTextBox.Location.X + $script:CredentialManagementPasswordDomainNameTextBox.Size.Width + $($FormScale * 10)
                       Y = $script:CredentialManagementPasswordDomainNameTextBox.Location.Y }
         Size     = @{ Width  = $FormScale * 150
                       Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $script:CredentialManagementPasswordDomainNameButton
-    $script:CredentialManagementPasswordDomainNameButton.Add_Click({ 
+    $script:CredentialManagementPasswordDomainNameButton.Add_Click({
         if ($script:CredentialManagementPasswordDomainNameTextBox.text -ne ''){
             $script:CredentialManagementPasswordDomainNameTextBox.text | Out-File "$script:CredentialManagementPath\Specified Domain Name.txt"
         }
@@ -540,7 +540,6 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
 
- 
 
 
 
@@ -553,7 +552,8 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
 
-    
+
+
 
 
 
@@ -591,7 +591,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
                       Height = $FormScale * 20 }
     }
     CommonButtonSettings -Button $CredentialManagementSelectCredentialRollingAccountButton
-    $CredentialManagementSelectCredentialRollingAccountButton.Add_Click({ 
+    $CredentialManagementSelectCredentialRollingAccountButton.Add_Click({
         try {
             [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
             $CredentialManagementSelectCredentialsOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog
@@ -648,7 +648,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     #--------------------------------------------------------------
     # Credential Management Generate New Password Label and Button
     #--------------------------------------------------------------
-    # note: Previous versions had the random password set at 250 characters, but this was scalled back because during testing cmdkey doesn't seem to support anything larger 
+    # note: Previous versions had the random password set at 250 characters, but this was scalled back because during testing cmdkey doesn't seem to support anything larger
     # a-z,A-Z,0-9``~!@#$%^&*()_+-=[]\{}|;:',`"./<>?
     $CredentialManagementGenerateNewPasswordLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Generates a new password for the rolling account consisting of 32 alpha-numeric random characters. This is done automatically after connections, but can be executed on demand."
@@ -663,7 +663,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
 
 
     $script:CredentialManagementGeneratedRollingPasswordTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-        Location = @{ X = $CredentialManagementGenerateNewPasswordLabel.Location.X 
+        Location = @{ X = $CredentialManagementGenerateNewPasswordLabel.Location.X
                       Y = $CredentialManagementGenerateNewPasswordLabel.Location.Y + $CredentialManagementGenerateNewPasswordLabel.Size.Height }
         Size     = @{ Width  = $FormScale * 300
                       Height = $FormScale * 25 }
@@ -737,7 +737,7 @@ if ((Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
 if ((Test-Path "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt")) {
     $CredentialManagementSelectCredentialRollingAccountTextBox.text = Get-Content "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt"
     $CredentialRoller = Get-Content "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt"
-    $script:AdminCredsToRollPassword = Import-CliXml "$script:CredentialManagementPath\$CredentialRoller" 
+    $script:AdminCredsToRollPassword = Import-CliXml "$script:CredentialManagementPath\$CredentialRoller"
 }
 Check-RollingAccountPrerequisites
 $CredentialManagementGenerateNewPasswordButton.enabled = $true
@@ -746,3 +746,4 @@ $CredentialManagementGenerateNewPasswordButton.enabled = $true
 $CredentialManagementForm.ShowDialog()
 
 }
+

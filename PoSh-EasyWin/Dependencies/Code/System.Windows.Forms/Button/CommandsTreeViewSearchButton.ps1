@@ -1,5 +1,5 @@
-$CommandsTreeViewSearchButtonAdd_Click = { 
-    Search-CommandTreeNode 
+$CommandsTreeViewSearchButtonAdd_Click = {
+    Search-CommandTreeNode
 }
 
 $CommandsTreeViewSearchButtonAdd_MouseHover = {
@@ -7,5 +7,7 @@ $CommandsTreeViewSearchButtonAdd_MouseHover = {
 +  Searches through query names and metadata.
 +  Search results are returned as nodes.
 +  Search results are not persistent.
-"@ 
+"@
 }
+
+

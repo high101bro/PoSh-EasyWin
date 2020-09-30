@@ -11,11 +11,13 @@ function Select-UserSpecifiedScript {
         InitialDirectory = $ExecAndScriptDir
     }
     $ExeScriptSelectScriptOpenFileDialog.ShowDialog() | Out-Null
-    if ($($ExeScriptSelectScriptOpenFileDialog.filename)) { 
-        $script:ExeScriptSelectScriptPath = $ExeScriptSelectScriptOpenFileDialog.filename 
+    if ($($ExeScriptSelectScriptOpenFileDialog.filename)) {
+        $script:ExeScriptSelectScriptPath = $ExeScriptSelectScriptOpenFileDialog.filename
 
         $ExeScriptSelectScriptTextBox.text = "$(($ExeScriptSelectScriptOpenFileDialog.filename).split('\')[-1])"
         #$Script:ExeScriptSelectScriptName  = $(($ExeScriptSelectScriptOpenFileDialog.filename).split('\')[-1])
     }
 }
+
+
 

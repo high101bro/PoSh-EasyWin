@@ -11,7 +11,7 @@ Function Completed-QueryExecution {
     $CollectionTimerStop = Get-Date
     $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Finished Collecting Data!")
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
         Generate-NewRollingPassword
         $ResultsListBox.Items.Insert(1,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Rolled Password For Account: $($script:CredentialManagementPasswordRollingAccountTextBox.text)")
@@ -28,7 +28,7 @@ Function Completed-QueryExecution {
         | Select-Object -ExpandProperty FullName
         $Dirs | Foreach-Object { Remove-Item $_ }
     } while ($Dirs.count -gt 0)
-    
+
 
     $StatusListBox.Items.Clear()
     if     ($CountCommandQueries -eq 1 -and $script:ComputerList.Count -eq 1) { $StatusListBox.Items.Add("Completed Executing $($CountCommandQueries) Command to $($script:ComputerList.Count) Endpoint") }
@@ -42,7 +42,7 @@ Function Completed-QueryExecution {
     $ResultsListBox.Items.Insert($TotalElapsedTimeOrder[1],"====================================================================================================")
     $ResultsListBox.Items.Insert($TotalElapsedTimeOrder[2],"")
 
-    
+
     # Ensures that the Progress Bars are full at the end of collection
     $script:ProgressBarEndpointsProgressBar.Maximum = 1
     $script:ProgressBarEndpointsProgressBar.Value   = 1
@@ -63,3 +63,5 @@ Function Completed-QueryExecution {
     # Garbage Collection to free up memory
     [System.GC]::Collect()
 }
+
+

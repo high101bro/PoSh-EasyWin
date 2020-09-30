@@ -1,8 +1,8 @@
 $CollectionName = "Alternate Data Streams"
-$CollectionCommandStartTime = Get-Date 
+$CollectionCommandStartTime = Get-Date
 
 $StatusListBox.Items.Clear()
-$StatusListBox.Items.Add("Query: $CollectionName")                    
+$StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
 foreach ($TargetComputer in $script:ComputerList) {
@@ -15,7 +15,7 @@ foreach ($TargetComputer in $script:ComputerList) {
     $MaximumDepth        = $FileSearchAlternateDataStreamMaxDepthTextbox.text
 
     if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
-        if (!$script:Credential) { Create-NewCredentials }    
+        if (!$script:Credential) { Create-NewCredentials }
         Invoke-Command -ScriptBlock ${function:Get-AlternateDataStream} `
         -ArgumentList @($DirectoriesToSearch,$MaximumDepth) `
         -ComputerName $TargetComputer `
@@ -26,7 +26,7 @@ foreach ($TargetComputer in $script:ComputerList) {
         Invoke-Command -ScriptBlock ${function:Get-AlternateDataStream} `
         -ArgumentList @($DirectoriesToSearch,$MaximumDepth) `
         -ComputerName $TargetComputer `
-        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"        
+        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
     }
 }
 #Note... properties selected elsewhere: PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer
@@ -36,7 +36,7 @@ Monitor-Jobs -CollectionName $CollectionName -SaveProperties @"
 
 $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton.BackColor = 'LightGreen'
 
-$CollectionCommandEndTime  = Get-Date                    
+$CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
@@ -49,3 +49,5 @@ Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryT
 
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+
+

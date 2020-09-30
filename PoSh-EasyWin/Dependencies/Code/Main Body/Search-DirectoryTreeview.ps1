@@ -7,9 +7,9 @@ function Search-DirectoryTreeView {
     #    Get-ChildItem $root -Recurse -Directory -Force `
     #    | ForEach-Object {
     #        $_.FullName.Replace($root, "").Trim("\")
-    #    } 
+    #    }
     #}
-    
+
     function FilterPaths {
         param($paths, $like)
         $paths | Where-Object {$_ -like "*$like*"} `
@@ -17,12 +17,12 @@ function Search-DirectoryTreeView {
             $i = $_.LastIndexOf("$like", [System.Globalization.CompareOptions]::IgnoreCase)
             if($i -gt -1) {
                 $j = $_.IndexOf("\", $i, [System.Globalization.CompareOptions]::IgnoreCase)
-                if($j -gt -1) { $_.SubString(0,$j) } 
+                if($j -gt -1) { $_.SubString(0,$j) }
                 else { $_ }
             }
-        } 
+        }
     }
-    
+
     function GetNodes {
         param($nodes)
          foreach ($n in $nodes) {
@@ -30,7 +30,7 @@ function Search-DirectoryTreeView {
             GetNodes($n.Nodes)
          }
     }
-    
+
     function HighlightNodes {
         param($nodes, $like)
         if(!$like){ return }
@@ -39,7 +39,7 @@ function Search-DirectoryTreeView {
             $_.BackColor = "Yellow"
         }
     }
-    
+
     function PopulateTree {
         param($treeView, $paths)
         $treeView.Nodes.Clear()
@@ -50,14 +50,14 @@ function Search-DirectoryTreeView {
                 $subPathAgg += ($subPath + '\')
                 $nodes = $treeView.Nodes.Find($subPathAgg, $true)
                 if ($nodes.Length -eq 0) {
-                    if ($lastNode -eq $null) { $lastNode = $treeView.Nodes.Add($subPathAgg, $subPath) } 
+                    if ($lastNode -eq $null) { $lastNode = $treeView.Nodes.Add($subPathAgg, $subPath) }
                     else { $lastNode = $lastNode.Nodes.Add($subPathAgg, $subPath) }
-                } 
+                }
                 else { $lastNode = $nodes[0] }
             }
         }
     }
-    
+
     $form = New-Object System.Windows.Forms.Form
     $form.Add_Closing = { $This.dispose() }
 
@@ -83,7 +83,7 @@ function Search-DirectoryTreeView {
 
     PopulateTree $tree $paths
     $tree.ExpandAll()
-    
+
     $txt.Add_TextChanged({param($sender,$e)
         $tree.BeginUpdate()
         $like     = $txt.Text
@@ -96,3 +96,4 @@ function Search-DirectoryTreeView {
     })
     $form.ShowDialog() | Out-Null
     $form.Dispose()}
+

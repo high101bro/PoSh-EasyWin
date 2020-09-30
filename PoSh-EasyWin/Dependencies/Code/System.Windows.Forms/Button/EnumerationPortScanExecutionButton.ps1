@@ -44,6 +44,8 @@ $EnumerationPortScanExecutionButtonAdd_Click = {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Port Scan:  Cancelled")
     }
-    
+
     Update-TreeNodeComputerState -NoMessage
 }
+
+

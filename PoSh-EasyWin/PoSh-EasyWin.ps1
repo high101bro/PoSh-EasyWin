@@ -1492,7 +1492,7 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Height       = $FormScale * 100
                 Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Format       = [windows.forms.datetimepickerFormat]::custom
-                CustomFormat = �dddd MMM dd, yyyy hh:mm tt�
+                CustomFormat = "dddd MMM dd, yyyy hh:mm tt"
                 Enabled      = $True
                 Checked      = $True
                 ShowCheckBox = $True
@@ -1529,7 +1529,7 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Height       = $FormScale * 100
                 Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Format       = [windows.forms.datetimepickerFormat]::custom
-                CustomFormat = �dddd MMM dd, yyyy hh:mm tt�
+                CustomFormat = "dddd MMM dd, yyyy hh:mm tt"
                 Enabled      = $True
                 Checked      = $True
                 ShowCheckBox = $True
@@ -7563,6 +7563,8 @@ Download at: https://GitHub.com/high101bro
 if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
     Launch-ProgressBarForm -FormTitle "PoSh-EasyWin  [$InitialScriptLoadTime]" -ShowImage -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
 }
+
+
 
 
 

@@ -1,5 +1,5 @@
-function Add-NodeComputer { 
-    param ( 
+function Add-NodeComputer {
+    param (
         $RootNode,
         $Category,
         $Entry,
@@ -8,8 +8,8 @@ function Add-NodeComputer {
     )
     $newNode      = New-Object System.Windows.Forms.TreeNode -Property @{
         Name = "$Entry"
-        Text = "$Entry"    
-    } 
+        Text = "$Entry"
+    }
 
     $MetadataOperatingSystem = New-Object System.Windows.Forms.TreeNode -Property @{
         Name = $($Metadata.OperatingSystem)
@@ -33,20 +33,20 @@ function Add-NodeComputer {
     }
     $newNode.Nodes.Add($MetadataIPv4Ports)
 
-    $MetadataIPv4Ports.Nodes.Add("[ Total Count: $($Metadata.'Port Scan'.split(',').Count) ]")    
+    $MetadataIPv4Ports.Nodes.Add("[ Total Count: $($Metadata.'Port Scan'.split(',').Count) ]")
     foreach ($PortScan in ($Metadata.'Port Scan'.split(','))) {
         $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
             Name = $PortScan
             Text = $PortScan
         }
-        $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)    
+        $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)
     }
 
-    if ($ToolTip) { 
-        $newNode.ToolTipText  = "$ToolTip" 
+    if ($ToolTip) {
+        $newNode.ToolTipText  = "$ToolTip"
     }
-    else { 
-        $newNode.ToolTipText  = "No Data Available" 
+    else {
+        $newNode.ToolTipText  = "No Data Available"
     }
 
     If ($RootNode.Nodes.Tag -contains $Category) {
@@ -66,3 +66,4 @@ function Add-NodeComputer {
     }
     $EndpointNode.Nodes.Add($newNode)
 }
+

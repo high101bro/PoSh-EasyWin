@@ -7,3 +7,4 @@ function Get-DNSCache {
     }
     $DNSQueryFoundList | Select-Object -Property PSComputerName, Entry, Name, Data, Type, Status, Section, TTL, DataLength
 }
+

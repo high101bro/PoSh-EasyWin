@@ -1,13 +1,13 @@
-$RegistrySearchDirectoryRichTextboxAdd_MouseEnter = { 
-    if ($this.text -eq "Enter Registry Paths; One Per Line") { 
-        $this.text = "" 
-    } 
+$RegistrySearchDirectoryRichTextboxAdd_MouseEnter = {
+    if ($this.text -eq "Enter Registry Paths; One Per Line") {
+        $this.text = ""
+    }
 }
 
-$RegistrySearchDirectoryRichTextboxAdd_MouseLeave = { 
-    if ($this.text -eq "") { 
-        $this.text = "Enter Registry Paths; One Per Line" 
-    } 
+$RegistrySearchDirectoryRichTextboxAdd_MouseLeave = {
+    if ($this.text -eq "") {
+        $this.text = "Enter Registry Paths; One Per Line"
+    }
 }
 
 $RegistrySearchDirectoryRichTextboxAdd_MouseHover = {
@@ -15,6 +15,7 @@ $RegistrySearchDirectoryRichTextboxAdd_MouseHover = {
 +  Enter Directories
 +  One Per Line
 +  Example: HKLM:\SYSTEM\CurrentControlSet\Services\
-"@ 
+"@
 }
- 
+
+

@@ -30,3 +30,4 @@ $Section3QueryExplorationEditCheckBoxAdd_Click = {
         $Section3QueryExplorationTagWordsTextBox.ReadOnly       = $true
     }
 }
+

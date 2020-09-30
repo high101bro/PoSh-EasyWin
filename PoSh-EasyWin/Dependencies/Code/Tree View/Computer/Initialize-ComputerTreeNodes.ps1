@@ -1,5 +1,5 @@
 function Initialize-ComputerTreeNodes {
-    $script:TreeNodeComputerList = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList 'All Endpoints' 
+    $script:TreeNodeComputerList = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList 'All Endpoints'
     $script:TreeNodeComputerList.Tag = "Computers"
     $script:TreeNodeComputerList.Expand()
     $script:TreeNodeComputerList.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
@@ -8,3 +8,5 @@ function Initialize-ComputerTreeNodes {
     $script:ComputerListSearch     = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList '* Search Results'
     $script:ComputerListSearch.Tag = "Search"
 }
+
+

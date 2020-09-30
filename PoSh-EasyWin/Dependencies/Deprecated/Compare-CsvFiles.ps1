@@ -71,8 +71,8 @@ $CompareButton.Add_Click({
         # Drop Down Label
         #-----------------
         $DropDownLabel          = New-Object System.Windows.Forms.Label
-        $DropDownLabel.Location = New-Object System.Drawing.Point(10,10) 
-        $DropDownLabel.size     = New-Object System.Drawing.Size(290,45) 
+        $DropDownLabel.Location = New-Object System.Drawing.Point(10,10)
+        $DropDownLabel.size     = New-Object System.Drawing.Size(290,45)
         $DropDownLabel.Text     = "What Property Field Do You Want To Compare?`n  <=   Found in the Reference File`n  =>   Found in the Difference File`n`nReplace the 'Name' property as necessary..."
         $DropDownLabel.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         $CompareCsvFilesForm.Controls.Add($DropDownLabel)
@@ -97,7 +97,7 @@ $CompareButton.Add_Click({
         $DropDownButton.Size     = New-Object System.Drawing.Size(100,20)
         $DropDownButton.Text     = "Execute"
         $DropDownButton.Add_Click({CompareCsvFilesFormReturn-DropDown})
-        $CompareCsvFilesForm.Controls.Add($DropDownButton)   
+        $CompareCsvFilesForm.Controls.Add($DropDownButton)
         CommonButtonSettings -Button $DropDownButton
 
         [void] $CompareCsvFilesForm.ShowDialog()
@@ -105,14 +105,14 @@ $CompareButton.Add_Click({
     }
     $Property = $null
     $Property = SelectProperty
-   
+
     #--------------------------------
     # Compares two Csv files Command
     #--------------------------------
     Compare-Object -ReferenceObject (Import-Csv $OpenCompareReferenceObjectFileDialog.FileName) -DifferenceObject (Import-Csv $OpenCompareDifferenceObjectFileDialog.FileName) -Property $Property `
         | Out-GridView -Title "Reference [<=]:  `"$(($OpenCompareReferenceObjectFileDialog.FileName).split('\') | ? {$_ -match '\d\d\d\d-\d\d-\d\d'})...$(($OpenCompareReferenceObjectFileDialog.FileName).split('\')[-1])`"  <-->  Difference [=>]:  `"$(($OpenCompareDifferenceObjectFileDialog.FileName).split('\') | ? {$_ -match '\d\d\d\d-\d\d-\d\d'})...$(($OpenCompareDifferenceObjectFileDialog.FileName).split('\')[-1])`"" -OutputMode Multiple | Set-Variable -Name CompareImportResults
 
-    # Outputs messages to ResultsListBox 
+    # Outputs messages to ResultsListBox
     #Removed For Testing#$ResultsListBox.Items.Clear()
     $ResultsListBox.Items.Add("Compare Reference File:  $($OpenCompareReferenceObjectFileDialog.FileName)")
     $ResultsListBox.Items.Add("Compare Difference File: $($OpenCompareDifferenceObjectFileDialog.FileName)")
@@ -125,7 +125,7 @@ $CompareButton.Add_Click({
         $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) Compare Property Field:  $($OpenCompareWhatToCompare)")
         foreach ($Selection in $CompareImportResults) {
             $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Compare: $($Selection -replace '@{','' -replace '}','')")
-            Add-Content -Path $OpNotesWriteOnlyFile -Value ("$($(Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($OpNotesListBox.SelectedItems)") -Force 
+            Add-Content -Path $OpNotesWriteOnlyFile -Value ("$($(Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($OpNotesListBox.SelectedItems)") -Force
         }
         $MainLeftTabControl.SelectedTab = $Section1OpNotesTab
     }
@@ -147,3 +147,5 @@ $CompareButton.Add_MouseHover({
     and/or be separate using the Ctrl key, the press OK.`n`n
 "@ })
 $MainCenterMainTab.Controls.Add($CompareButton)
+
+

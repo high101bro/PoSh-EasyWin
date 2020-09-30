@@ -33,11 +33,11 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
 "@
     }
     else { $EventLogQueryFilter = "-Filter `"$Filter`""}
-    
+
     $EventLogQueryPipe = @"
 | Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
 "@
-    $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"    
+    $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"
     Invoke-Expression $EventLogQueryBuild
 }
 
@@ -47,7 +47,7 @@ foreach ($Query in $script:EventLogQueries) {
         $CollectionName = "Event Logs - $($Query.Name)"
         $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Event Logs - $($Query.Name)"
 
-        
+
         $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName ($($Query.Name))")
         $PoShEasyWin.Refresh()
 
@@ -57,7 +57,7 @@ foreach ($Query in $script:EventLogQueries) {
         -Session $PSSession `
         | Set-Variable SessionData
 
-        
+
         $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
         $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
         Remove-Variable -Name SessionData -Force
@@ -77,3 +77,5 @@ foreach ($Query in $script:EventLogQueries) {
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+
+

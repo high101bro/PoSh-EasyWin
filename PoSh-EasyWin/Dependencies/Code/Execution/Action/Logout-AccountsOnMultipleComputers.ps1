@@ -22,7 +22,7 @@ function Logout-AccountsOnMultipleComputers {
     }
     elseif ($CollectNewAccountData) {
         Generate-ComputerList
-        
+
         if ($script:ComputerList.count -eq 0){
             [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect accounts logon info from. Alternatively, you can select a CSV file from a previous Accounts Currently Logon collection.','Error: No Endpoints Selected')
         }
@@ -30,7 +30,7 @@ function Logout-AccountsOnMultipleComputers {
             if ($ComputerListProvideCredentialsCheckBox.Checked) {
                 $ScriptBlock = {
                     ## Find all sessions matching the specified username
-                    $quser = quser | Where-Object {$_ -notmatch 'SESSIONNAME'} 
+                    $quser = quser | Where-Object {$_ -notmatch 'SESSIONNAME'}
 
                     $sessions = ($quser -split "`r`n").trim()
 
@@ -38,7 +38,7 @@ function Logout-AccountsOnMultipleComputers {
                         try {
                             # This checks if the value is an integer, if it is then it'll TRY, if it errors then it'll CATCH
                             [int]($session -split '  +')[2] | Out-Null
-                            
+
                             [PSCustomObject]@{
                                 PSComputerName = $env:COMPUTERNAME
                                 UserName       = ($session -split '  +')[0].TrimStart('>')
@@ -47,7 +47,7 @@ function Logout-AccountsOnMultipleComputers {
                                 State          = ($session -split '  +')[3]
                                 IdleTime       = ($session -split '  +')[4]
                                 LogonTime      = ($session -split '  +')[5]
-                            }        
+                            }
                         }
                         catch {
                             [PSCustomObject]@{
@@ -82,7 +82,7 @@ function Logout-AccountsOnMultipleComputers {
     $StatusListBox.Items.Add("Multi-Endpoint Account Logout")
     $ResultsListBox.Items.Clear()
 
-    foreach ($Computer in $Computers) {    
+    foreach ($Computer in $Computers) {
         $Session = $null
 
         try {
@@ -95,7 +95,7 @@ function Logout-AccountsOnMultipleComputers {
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $Computer"
             }
             $ResultsListBox.Items.Insert(0,"Connected to:  $Computer")
-    
+
             if ($Session) {
                 foreach ($Logon in $AccountsToLogout){
                     if ($Logon.PSComputerName -eq $Computer){
@@ -103,9 +103,9 @@ function Logout-AccountsOnMultipleComputers {
                         $SessionID   = $Logon.SessionID
                         $ResultsListBox.Items.Insert(1,"  - Logging Out:  [Computer]$Computer  [Account]$AccountName  [SessionID]$SessionId")
                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { param($SessionID) C:\Windows\System32\Logoff.exe $SessionID } -ArgumentList $SessionID -Session $Session"
-                        Invoke-Command -ScriptBlock { 
+                        Invoke-Command -ScriptBlock {
                             param($SessionID)
-                            & 'C:\Windows\System32\Logoff.exe' $SessionID 
+                            & 'C:\Windows\System32\Logoff.exe' $SessionID
                         } -ArgumentList $SessionID -Session $Session
                     }
                 }
@@ -121,10 +121,12 @@ function Logout-AccountsOnMultipleComputers {
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword 
+        Generate-NewRollingPassword
     }
 }
+
+
 
 

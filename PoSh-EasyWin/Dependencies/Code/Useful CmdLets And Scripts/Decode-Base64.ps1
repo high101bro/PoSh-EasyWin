@@ -5,7 +5,7 @@ function Decode-Base64 {
         [Parameter(Mandatory = $true, ParameterSetName = 'String')]
         $String
     )
-    
+
     if ($FileName){
         $Data = get-content $FileName
         $Bytes = [System.Text.Encoding]::UTF8.GetBytes($Data)
@@ -20,4 +20,5 @@ function Decode-Base64 {
         return $EncodedData
     }
 }
-# Decode-Base64 -String 
+# Decode-Base64 -String
+

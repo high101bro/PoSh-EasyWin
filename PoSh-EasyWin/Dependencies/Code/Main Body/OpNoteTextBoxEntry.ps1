@@ -6,7 +6,9 @@ function OpNoteTextBoxEntry {
 
     # Adds all entries to the OpNotesWriteOnlyFile -- This file gets all entries and are not editable from the GUI
     # Useful for looking into accidentally deleted entries
-    Add-Content -Path $OpNotesWriteOnlyFile -Value ("$($(Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) $($OpNotesInputTextBox.Text)") -Force 
-    
+    Add-Content -Path $OpNotesWriteOnlyFile -Value ("$($(Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) $($OpNotesInputTextBox.Text)") -Force
+
     $OpNotesInputTextBox.Text = ""
 }
+
+

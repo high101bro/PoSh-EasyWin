@@ -1,9 +1,9 @@
 # Executes RPC/DCOM based commands if the RPC Radio Button is Checked
 if ($ExternalProgramsRPCRadioButton.checked) {
     $CollectionName = "Sysmon"
-    $CollectionCommandStartTime = Get-Date 
+    $CollectionCommandStartTime = Get-Date
     $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Insert(0,"Query: $CollectionName")                    
+    $StatusListBox.Items.Insert(0,"Query: $CollectionName")
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
     $PoShEasyWin.Refresh()
 
@@ -45,12 +45,12 @@ if ($ExternalProgramsRPCRadioButton.checked) {
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [+] $SysmonName is already an installed service on $TargetComputer")
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [+] Copying $SysmonName to $TargetComputer to update $SysmonName configuration")
             $PoShEasyWin.Refresh()
-            try { Copy-Item $SysmonExecutablePath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop } 
-            catch { $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] $($_.Exception)"); break }                
+            try { Copy-Item $SysmonExecutablePath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop }
+            catch { $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] $($_.Exception)"); break }
 
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [+] Copying $Script:SysmonXMLName config file to $TargetComputer to be used by $SysmonName")
             $PoShEasyWin.Refresh()
-            try { Copy-Item $script:SysmonXMLPath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop } 
+            try { Copy-Item $script:SysmonXMLPath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop }
             catch { $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] $($_.Exception)"); break }
 
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Updating $SysmonName configuration on $TargetComputer")
@@ -66,7 +66,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
             }
             Start-Sleep -Seconds 5
 
-            $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [-] Removing $SysmonName executable and $Script:SysmonXMLName from $TargetComputer")                 
+            $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [-] Removing $SysmonName executable and $Script:SysmonXMLName from $TargetComputer")
             Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$SysmonExecutable" -Force
             Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$Script:SysmonXMLName" -Force
         }
@@ -74,12 +74,12 @@ if ($ExternalProgramsRPCRadioButton.checked) {
         else {
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [+] Copying $SysmonName to $TargetComputer")
             $PoShEasyWin.Refresh()
-            try { Copy-Item $SysmonExecutablePath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop } 
+            try { Copy-Item $SysmonExecutablePath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop }
             catch { $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] $($_.Exception)"); break }
 
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [+] Copying $Script:SysmonXMLName config file to $TargetComputer to be used by $SysmonName")
             $PoShEasyWin.Refresh()
-            try { Copy-Item $script:SysmonXMLPath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop } 
+            try { Copy-Item $script:SysmonXMLPath "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop }
             catch { $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] $($_.Exception)"); break }
 
             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Installing $SysmonName on $TargetComputer")
@@ -95,12 +95,12 @@ if ($ExternalProgramsRPCRadioButton.checked) {
             }
             Start-Sleep -Seconds 5
 
-            $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [-] Removing $SysmonName executable and $Script:SysmonXMLName from $TargetComputer")                 
+            $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [-] Removing $SysmonName executable and $Script:SysmonXMLName from $TargetComputer")
             $PoShEasyWin.Refresh()
             #Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$SysmonExecutable" -Force
             #Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$Script:SysmonXMLName" -Force
         }
-        $CollectionCommandEndTime1  = Get-Date 
+        $CollectionCommandEndTime1  = Get-Date
         $CollectionCommandDiffTime1 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime1
         $ResultsListBox.Items.RemoveAt(1)
         $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime1]  $CollectionName - $TargetComputer")
@@ -108,10 +108,10 @@ if ($ExternalProgramsRPCRadioButton.checked) {
     }
 
     if ($SysinternalsSysmonRenameServiceProcessTextBox.text -ne 'Sysmon') {
-        # Removes the local renamed copy of Sysmon 
+        # Removes the local renamed copy of Sysmon
         Remove-Item "$ExternalPrograms\$($SysinternalsSysmonRenameServiceProcessTextBox.text).exe" -Force
     }
-    $CollectionCommandEndTime0  = Get-Date 
+    $CollectionCommandEndTime0  = Get-Date
     $CollectionCommandDiffTime0 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime0
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime0]  $CollectionName")
@@ -136,10 +136,10 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
     # Unchecks hosts that do not have a session established
     . "$Dependencies\Code\Execution\Session Based\Uncheck-ComputerTreeNodesWithoutSessions.ps1"
 
-    if ($PSSession.count -eq 1) { 
+    if ($PSSession.count -eq 1) {
         $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Session Created to $($PSSession.count) Endpoint")
     }
-    elseif ($PSSession.count -gt 1) { 
+    elseif ($PSSession.count -gt 1) {
         $ResultsListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Sessions Created to $($PSSession.count) Endpoints")
     }
     else {
@@ -151,14 +151,16 @@ elseif ($ExternalProgramsWinRMRadioButton.checked) {
     $script:ProgressBarQueriesProgressBar.Maximum   = $CountCommandQueries
     $script:ProgressBarEndpointsProgressBar.Maximum = ($PSSession.ComputerName).Count
 
-    
+
     if ($PSSession.count -ge 1) {
-        . "$Dependencies\Code\Execution\Session Based\SessionPush-SysMon.ps1" 
+        . "$Dependencies\Code\Execution\Session Based\SessionPush-SysMon.ps1"
     }
     Get-PSSession | Remove-PSSession
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Remove-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
 
     $SysinternalsAutorunsButton.BackColor = 'LightGreen'
 }
+
+
 
 

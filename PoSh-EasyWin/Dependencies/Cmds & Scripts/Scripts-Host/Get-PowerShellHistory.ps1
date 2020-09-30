@@ -14,7 +14,7 @@ Foreach ($User in $Users) {
         $count = 1
         $UserHistory += Get-Content "$UserPowerShellHistoryPath" -ErrorAction Stop | ForEach-Object {"$_ `r`n"}
         foreach ($HistoryEntry in $UserHistory) {
-            $Results += [PSCustomObject]@{ 
+            $Results += [PSCustomObject]@{
                 PSComputerName    = "$env:COMPUTERNAME"
                 HistoryCount      = "$Count"
                 ProfileName       = "$($User.Name)"
@@ -26,7 +26,7 @@ Foreach ($User in $Users) {
         }
     }
     else {
-        $Results += [PSCustomObject]@{ 
+        $Results += [PSCustomObject]@{
             PSComputerName    = "$env:COMPUTERNAME"
             HistoryCount      = "0"
             ProfileName       = "$($User.Name)"
@@ -37,4 +37,6 @@ Foreach ($User in $Users) {
     }
 }
 $Results
+
+
 

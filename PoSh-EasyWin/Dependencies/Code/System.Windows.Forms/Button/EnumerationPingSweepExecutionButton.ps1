@@ -1,9 +1,9 @@
-$EnumerationPingSweepExecutionButtonAdd_Click = { 
+$EnumerationPingSweepExecutionButtonAdd_Click = {
     if (Verify-Action -Title "Verification: Ping Sweep" -Question "Conduct a Ping Sweep of the following?" -Computer $(
         $EnumerationPingSweepIPNetworkCIDRTextbox.Text
     )) {
         $ResultsListBox.Items.Clear()
-        Conduct-PingSweep 
+        Conduct-PingSweep
     }
     else {
         [system.media.systemsounds]::Exclamation.play()
@@ -11,3 +11,5 @@ $EnumerationPingSweepExecutionButtonAdd_Click = {
         $StatusListBox.Items.Add("Ping Sweep:  Cancelled")
     }
 }
+
+

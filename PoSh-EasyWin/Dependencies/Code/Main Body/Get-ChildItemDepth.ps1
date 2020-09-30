@@ -8,11 +8,11 @@ $GetChildItemDepth = @'
             [Byte]$Depth        = 255,
             [Byte]$CurrentDepth = 0
         )
-    
-        $CurrentDepth++    
+
+        $CurrentDepth++
         Get-ChildItem $Path -Force | Foreach {
             $_ | Where-Object { $_.Name -Like $Filter }
-    
+
             If ($_.PsIsContainer) {
                 If ($CurrentDepth -le $Depth) {
                     # Callback to this function
@@ -24,3 +24,5 @@ $GetChildItemDepth = @'
     }
 '@
 Invoke-Expression -Command $GetChildItemDepth
+
+

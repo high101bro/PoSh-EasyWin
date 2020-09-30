@@ -8,7 +8,7 @@ $ComputerListNSLookupCheckedToolStripButtonAdd_Click = {
         $script:ProgressBarEndpointsProgressBar.Value     = 0
         $script:ProgressBarQueriesProgressBar.Value       = 0
 
-        Create-ComputerNodeCheckBoxArray 
+        Create-ComputerNodeCheckBoxArray
         if ($script:ComputerTreeViewSelected.count -ge 0) {
 
             $MessageBox = [System.Windows.Forms.MessageBox]::Show("Conduct an NSLookup of $($script:ComputerTreeViewSelected.count) endpoints?","NSLookup",'YesNo','Info')
@@ -28,18 +28,18 @@ $ComputerListNSLookupCheckedToolStripButtonAdd_Click = {
 
             if ($MessageBoxAnswer -eq $true) {
                 $ComputerListNSLookupArray = @()
-                foreach ($node in $script:ComputerTreeViewSelected) {    
+                foreach ($node in $script:ComputerTreeViewSelected) {
                     foreach ($root in $AllHostsNode) {
-                        foreach ($Category in $root.Nodes) { 
+                        foreach ($Category in $root.Nodes) {
                             foreach ($Entry in $Category.Nodes) {
                                 $LookupEndpoint = $null
-                                
+
                                 if ($Entry.Checked -and $Entry.Text -notin $ComputerListNSLookupArray) {
                                     $ComputerListNSLookupArray += $Entry.Text
                                     $Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
                                     $Section3HostDataOSTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
                                     $Section3HostDataOUTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
-                                    
+
                                     $LookupEndpoint = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
                                     $NSlookup = $((Resolve-DnsName "$LookupEndpoint" | Sort-Object IPAddress | Select-Object -ExpandProperty IPAddress -Unique) -Join ', ')
                                     $Section3HostDataIPTextBox.Text   = $NSlookup
@@ -48,12 +48,12 @@ $ComputerListNSLookupCheckedToolStripButtonAdd_Click = {
                                     $Section3HostDataNotesRichTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                                     Save-ComputerTreeNodeHostData
 #                                    Save-HostData
-                                
+
                                 }
                                 $script:ProgressBarEndpointsProgressBar.Value += 1
                             }
                         }
-                    }  
+                    }
                 }
  #               Save-ComputerTreeNodeHostData -SaveAllChecked
  #               Check-HostDataIfModified
@@ -63,3 +63,5 @@ $ComputerListNSLookupCheckedToolStripButtonAdd_Click = {
         }
     }
 }
+
+

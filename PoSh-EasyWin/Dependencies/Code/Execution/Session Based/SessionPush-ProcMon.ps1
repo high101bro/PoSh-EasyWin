@@ -38,8 +38,8 @@ if ($SysinternalsProcmonRenameProcessTextBox.text -ne 'Procmon') {
 
 
 Function Get-SessionDiskSpace {
-    try { $HD = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" -ErrorAction Stop } 
-    catch { 
+    try { $HD = Get-WmiObject Win32_LogicalDisk -Filter "DeviceID='C:'" -ErrorAction Stop }
+    catch {
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Unable to connect to get diskspace.")
         $PoShEasyWin.Refresh()
         continue
@@ -49,7 +49,7 @@ Function Get-SessionDiskSpace {
     return $FreeSpace
 }
 
-# Process monitor generates enormous amounts of data.  
+# Process monitor generates enormous amounts of data.
 # To try and offer some protections, the script won't run if the source or target have less than 500MB free
 $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Verifying free diskspace on localhost and endpoints (500 MB)")
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Verifying free diskspace on localhost and endpoints"
@@ -60,7 +60,7 @@ $script:ProgressBarEndpointsProgressBar.Value = 0
 $ConnectedPSSessions    = @()
 $DisconnectedPSSessions = @()
 foreach ($Session in $PSSession) {
-    if((Invoke-Command -ScriptBlock ${function:Get-SessionDiskSpace} -Session $Session) -lt 0.5) { 
+    if((Invoke-Command -ScriptBlock ${function:Get-SessionDiskSpace} -Session $Session) -lt 0.5) {
         $Session | Disconnect-PSSession
         $DisconnectedPSSessions += $Session
         $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName) - Session disconnected to avoid filling disk")
@@ -72,7 +72,7 @@ foreach ($Session in $PSSession) {
     $PoShEasyWin.Refresh()
 }
 
-if ((Get-SessionDiskSpace) -lt 0.5) { 
+if ((Get-SessionDiskSpace) -lt 0.5) {
     Get-PSSession | Remove-PSSession
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Aborted Procmon Execution")
@@ -89,26 +89,26 @@ else {
         $PoShEasyWin.Refresh()
         $script:ProgressBarEndpointsProgressBar.Value = 0
         foreach ($Session in $PSSession) {
-            try { 
+            try {
                 # Attempts to send a copy of Procmon to the endpoints
-                Copy-Item -Path $LocalPathForProcmonExecutable -Destination "$RemoteTargetDirectory" -ToSession $Session -Force -ErrorAction Stop 
+                Copy-Item -Path $LocalPathForProcmonExecutable -Destination "$RemoteTargetDirectory" -ToSession $Session -Force -ErrorAction Stop
                 $ResultsListBox.Items.insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
                 Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $LocalPathForProcmonExecutable -Destination '$RemoteTargetDirectory' -ToSession $Session -Force -ErrorAction Stop"
                 $PoShEasyWin.Refresh()
-            } 
-            catch { 
+            }
+            catch {
                 # If an error occurs, it will display it
                 $ResultsListBox.Items.insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))         Copy Error: $($_.Exception)")
                 Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy Error: $($_.Exception)"
                 $PoShEasyWin.Refresh()
                 break
-            } 
+            }
             $script:ProgressBarEndpointsProgressBar.Value += 1
             $PoShEasyWin.Refresh()
         }
         if ($SysinternalsProcmonRenameProcessTextBox.text -ne 'Procmon') {
-            # Removes the local renamed copy of Procmon 
-            Remove-Item "$ExternalPrograms\$($SysinternalsProcmonRenameProcessTextBox.text).exe" -Force 
+            # Removes the local renamed copy of Procmon
+            Remove-Item "$ExternalPrograms\$($SysinternalsProcmonRenameProcessTextBox.text).exe" -Force
         }
 
         $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Executing Procmon on:")
@@ -139,7 +139,7 @@ else {
                 $ResultsListBox.Items.insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))         Execution Error: $($_.Exception)")
                 Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Executions Error: $($_.Exception)"
                 $PoShEasyWin.Refresh()
-                break       
+                break
             }
         }
 
@@ -174,27 +174,27 @@ else {
 
             foreach ($Session in $PSSession) {
                 if ($Session.ComputerName -notin $ProcmonCompletedEndpoints) {
-                    if ( $( Invoke-Command -ScriptBlock {param($ProcmonName) Get-Process $ProcmonName } -ArgumentList $ProcmonName -Session $Session )) {  
+                    if ( $( Invoke-Command -ScriptBlock {param($ProcmonName) Get-Process $ProcmonName } -ArgumentList $ProcmonName -Session $Session )) {
                         $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Still Running on $($Session.ComputerName)")
                         Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Invoke-Command -ScriptBlock {param($ProcmonName) Get-Process Procmon } -ArguementList $ProcmonName -Session $Session"
                         $PoShEasyWin.Refresh()
                     }
                     else {
                         if (-not (Test-Path "$script:IndividualHostResults\Procmon\Procmon-$($Session.ComputerName).pml")) {
-                            try { 
+                            try {
                                 # Attempts to retrieve a copy of the results from the remote hosts
                                 $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Copying Procmon data from $($Session.ComputerName) for analysis")
                                 Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path '$RemoteTargetDirectory\Procmon.pml' -Destination '$script:IndividualHostResults\Procmon' -FromSession $Session -Force -ErrorAction Stop"
                                 $PoShEasyWin.Refresh()
                                 Copy-Item -Path "$RemoteTargetDirectory\$ProcmonName.pml" -Destination "$script:IndividualHostResults\Procmon" -FromSession $Session -Force
                                 Rename-Item "$script:IndividualHostResults\Procmon\$ProcmonName.pml" "$script:IndividualHostResults\Procmon\Procmon-$($Session.ComputerName).pml" -Force
-                                $FileSize = [math]::round(((Get-Item "$script:IndividualHostResults\Procmon\Procmon-$($Session.ComputerName).pml").Length/1mb),2)    
+                                $FileSize = [math]::round(((Get-Item "$script:IndividualHostResults\Procmon\Procmon-$($Session.ComputerName).pml").Length/1mb),2)
                                 $ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))          Procmon-$($Session.ComputerName).pml is $FileSize MB")
                                 $PoShEasyWin.Refresh()
                             }
                             catch {
                                 # If an error occurs, it will display it
-                                $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy Error: $($_.Exception)") 
+                                $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy Error: $($_.Exception)")
                                 Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy Error: $($_.Exception)"
                                 $PoShEasyWin.Refresh()
                                 break
@@ -211,20 +211,20 @@ else {
                                     param(
                                         $RemoteTargetDirectory,
                                         $ProcmonName
-                                    ) 
+                                    )
                                     Remove-Item -Path "$RemoteTargetDirectory\$ProcmonName.pml" -Force
-                                    Remove-Item -Path "$RemoteTargetDirectory\$ProcmonName.exe" -Force 
-                                } -ArgumentList @($RemoteTargetDirectory,$ProcmonName) -Session $Session 
+                                    Remove-Item -Path "$RemoteTargetDirectory\$ProcmonName.exe" -Force
+                                } -ArgumentList @($RemoteTargetDirectory,$ProcmonName) -Session $Session
                             }
-                            catch { 
+                            catch {
                                 # If a error occurs, it will display it
-                                $ResultsListBox.Items.Insert(5,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Remove Error: $($_.Exception)") 
+                                $ResultsListBox.Items.Insert(5,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Remove Error: $($_.Exception)")
                                 Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Remove Error: $($_.Exception)"
                                 $PoShEasyWin.Refresh()
                                 break
                             }
                             $ProcmonCompletedEndpoints += $Session.ComputerName
-                            $script:ProgressBarEndpointsProgressBar.Value += 1                   
+                            $script:ProgressBarEndpointsProgressBar.Value += 1
                             $PoShEasyWin.Refresh()
                         }
                     }
@@ -238,7 +238,7 @@ else {
             elseif ((Get-Date) -gt ( ($CollectionCommandStartTime).addseconds(([int]$script:OptionJobTimeoutSelectionComboBox.text) + $ProcmonDuration))) {
                 $ResultsListBox.Items.Insert(3,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Timeout: $CollectionName ($([int]$script:OptionJobTimeoutSelectionComboBox.Text) Seconds)")
                 $PoShEasyWin.Refresh()
-                break 
+                break
             }
         }
     }
@@ -264,3 +264,5 @@ $PoShEasyWin.Refresh()
 
 $script:ProgressBarQueriesProgressBar.Value += 1
 Start-Sleep -match 500
+
+

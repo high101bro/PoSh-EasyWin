@@ -1,4 +1,4 @@
-﻿Function Get-LoginEvents {
+Function Get-LoginEvents {
     Param (
         [Parameter(
             ValueFromPipeline = $true,
@@ -65,3 +65,5 @@
     End{}
 }
 Get-LoginEvents -StartTime $([datetime]::Today.AddHours(-24)) -EndTime $([datetime]::Today)
+
+

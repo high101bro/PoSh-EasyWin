@@ -1,4 +1,4 @@
-$ComputerListWinRMCheckToolStripButtonAdd_Click = { 
+$ComputerListWinRMCheckToolStripButtonAdd_Click = {
     Create-ComputerNodeCheckBoxArray
 
     if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
@@ -9,7 +9,7 @@ $ComputerListWinRMCheckToolStripButtonAdd_Click = {
     }
     else {
         if (Verify-Action -Title "Verification: WinRM Check" -Question "Connecting Account:  $Username`n`nConduct a WinRM Check to the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
-            Check-Connection -CheckType "WinRM Check" -MessageTrue "Able to Verify WinRM" -MessageFalse "Unable to Verify WinRM" 
+            Check-Connection -CheckType "WinRM Check" -MessageTrue "Able to Verify WinRM" -MessageFalse "Unable to Verify WinRM"
         }
         else {
             [system.media.systemsounds]::Exclamation.play()
@@ -28,6 +28,8 @@ $ComputerListWinRMCheckToolStripButtonAdd_MouseHover = {
     Test-WSman -ComputerName <target>
 +  Command  Alternative (Sends Ping First):
     Test-NetConnection CommonTCPPort WINRM -ComputerName <target>
-"@ 
+"@
 }
 #>
+
+

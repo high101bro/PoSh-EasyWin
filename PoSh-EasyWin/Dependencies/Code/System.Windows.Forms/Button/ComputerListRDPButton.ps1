@@ -5,7 +5,7 @@ $ComputerListRDPButtonAdd_Click = {
 
     if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
-    
+
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
         $VerifyAction = Verify-Action -Title "Verification: Remote Desktop" -Question "Connecting Account:  $Username`n`nOpen a Remote Desktop session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
         $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
@@ -17,11 +17,11 @@ $ComputerListRDPButtonAdd_Click = {
     if ($VerifyAction) {
         # This brings specific tabs to the forefront/front view
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-        if ($ComputerListProvideCredentialsCheckBox.Checked) { 
+        if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
 
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
-            
+
             $Username = $null
             $Password = $null
             $Username = $script:Credential.UserName
@@ -36,7 +36,7 @@ $ComputerListRDPButtonAdd_Click = {
                 # cmdkey /delete:targetname   <-- deletes target credential
             #cmdkey /generic:TERMSRV/$script:ComputerTreeViewSelected /user:$Username /pass:$Password
             cmdkey /delete:"$script:ComputerTreeViewSelected"
-            cmdkey /delete /ras   
+            cmdkey /delete /ras
 
             #doesn't store in base64# cmdkey /generic:$script:ComputerTreeViewSelected /user:"$Username" /pass:"$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String(`"$Password`")))"
 
@@ -45,18 +45,18 @@ $ComputerListRDPButtonAdd_Click = {
 
             # There seems to be a delay between the credential passing before credentials can be removed locally from cmdkey and them still being needed
             Start-Sleep -Seconds 5
-            cmdkey /delete /ras               
-            cmdkey /delete:"$script:ComputerTreeViewSelected" 
+            cmdkey /delete /ras
+            cmdkey /delete:"$script:ComputerTreeViewSelected"
 
-            if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+            if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
                 Start-Sleep -Seconds 3
-                Generate-NewRollingPassword 
+                Generate-NewRollingPassword
             }
         }
         else {
             #ensures no credentials are stored for use
-            cmdkey /delete /ras               
-            cmdkey /delete:"$script:ComputerTreeViewSelected" 
+            cmdkey /delete /ras
+            cmdkey /delete:"$script:ComputerTreeViewSelected"
 
             mstsc /v:$($script:ComputerTreeViewSelected):3389 /admin /noConsentPrompt /f
         }
@@ -81,5 +81,7 @@ Show-ToolTip -Title "Remote Desktop Connection" -Icon "Info" -Message @"
         mstsc /v:<target>:3389 /NoConsentPrompt
         mstsc /v:<target>:3389 /user:USERNAME /pass:PASSWORD /NoConsentPrompt
 +  Compatiable with 'Specify Credentials' if permitted by network policy
-"@ 
+"@
 }
+
+

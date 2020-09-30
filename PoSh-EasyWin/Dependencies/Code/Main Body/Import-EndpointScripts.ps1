@@ -2,7 +2,7 @@ Function Import-EndpointScripts {
     Foreach ($script in (Get-ChildItem -Path "$QueryCommandsAndScripts\Scripts-Host" | Where-Object {$_.Extension -eq '.ps1'})) {
         #if ($script -match 'processes' -or $script -match 'services') {
         #    $CollectionName = $script.basename
-        #    $script:AllEndpointCommands += [PSCustomObject]@{ 
+        #    $script:AllEndpointCommands += [PSCustomObject]@{
         #        Name                 = $CollectionName
         #        Type                 = "script, chart"
         #        Command_WinRM_Script = "Invoke-Command -FilePath '$($script.FullName)'"
@@ -14,7 +14,7 @@ Function Import-EndpointScripts {
         #}
         #else {
             $CollectionName = $script.basename
-            $script:AllEndpointCommands += [PSCustomObject]@{ 
+            $script:AllEndpointCommands += [PSCustomObject]@{
                 Name                 = $CollectionName
                 Type                 = "script"
                 Command_WinRM_Script = "Invoke-Command -FilePath '$($script.FullName)'"
@@ -26,3 +26,4 @@ Function Import-EndpointScripts {
         #}
     }
 }
+

@@ -1,4 +1,4 @@
-ï»¿Function Get-ADTrustsInfo {
+Function Get-ADTrustsInfo {
     <#
     .SYNOPSIS
         Query AD for all trusts in the specified domain and check their state.
@@ -31,8 +31,8 @@
                 }
                 switch ($_.Properties.trusttype)
                 {
-                    1 {$TrustType="Windows NT"}       #Downlevel (2000 et infÃ©rieur)
-                    2 {$TrustType="Active Directory"} #Uplevel (2003 et supÃ©rieur)
+                    1 {$TrustType="Windows NT"}       #Downlevel (2000 et inférieur)
+                    2 {$TrustType="Active Directory"} #Uplevel (2003 et supérieur)
                     3 {$TrustType="Kerberos realm"}   #Not AD Based
                     4 {$TrustType="DCE"}
                     default {$TrustType="N/A"}
@@ -42,7 +42,7 @@
                 $SID=(New-Object -TypeName System.Security.Principal.SecurityIdentifier -ArgumentList $_.properties.securityidentifier[0], 0).value
                 Write-Verbose "Querying WMI..."
                 $wmitrust=Get-WmiObject -namespace "root/MicrosoftActiveDirectory" -class Microsoft_DomainTrustStatus -ComputerName $DomainName -Filter "SID='$SID'"
-                
+
                 [String[]]$TrustAttributes=$null
                 if([int32]$_.properties.trustattributes[0] -band 0x00000001){$TrustAttributes+="Non Transitive"}
                 if([int32]$_.properties.trustattributes[0] -band 0x00000002){$TrustAttributes+="UpLevel"}
@@ -70,5 +70,6 @@
     }#End process
     End{
     }
-} 
+}
 Get-ADTrustsInfo | Select-Object @{name="PSComputerName";expression={$env:COMPUTERNAME}}, Created, TrustName, Type, Direction, Attributes, LastChanged, Status, DomainSID
+

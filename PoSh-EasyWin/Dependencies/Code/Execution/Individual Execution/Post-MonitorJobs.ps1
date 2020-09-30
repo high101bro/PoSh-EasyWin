@@ -3,7 +3,7 @@ function Post-MonitorJobs {
         $CollectionCommandStartTime,
         $CollectionName
     )
-    $CollectionCommandEndTime  = Get-Date                    
+    $CollectionCommandEndTime  = Get-Date
     $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
@@ -16,4 +16,6 @@ function Post-MonitorJobs {
 
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
 }
+
+
 

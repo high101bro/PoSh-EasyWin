@@ -4,7 +4,7 @@ $SystemTrayNotifyIcon = {
     param($CurrentProcessId,$FormAdminCheck,$EasyWinIcon,$Font,$ThisScript,$InitialScriptLoadTime)
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing
-            
+
     $PoShEasyWinSystemTrayNotifyIcon = New-Object System.Windows.Forms.NotifyIcon -Property @{
         Text        = 'PoSh-EasyWin  ' + '[' + $InitialScriptLoadTime + ']'
         Icon        = $EasyWinIcon
@@ -38,8 +38,8 @@ $SystemTrayNotifyIcon = {
                     Top    = 10
                 }
                 $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
-                
-    
+
+
                 $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
                     Text   = 'Yes'
                     Width  = 115
@@ -65,8 +65,8 @@ $SystemTrayNotifyIcon = {
                     }
                 }
                 $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
-    
-    
+
+
                 $VerifyNoButton = New-Object System.Windows.Forms.Button -Property @{
                     Text   = 'No'
                     Width  = 115
@@ -79,7 +79,7 @@ $SystemTrayNotifyIcon = {
                     }
                 }
                 $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
-    
+
                 $script:VerifyCloseForm.ShowDialog()
             }
         }
@@ -112,8 +112,8 @@ $SystemTrayNotifyIcon = {
                     Top    = 10
                 }
                 $script:VerifyCloseForm.Controls.Add($VerifyCloseLabel)
-                
-    
+
+
                 $VerifyYesButton = New-Object System.Windows.Forms.Button -Property @{
                     Text   = 'Yes'
                     Width  = 100
@@ -128,8 +128,8 @@ $SystemTrayNotifyIcon = {
                     }
                 }
                 $script:VerifyCloseForm.Controls.Add($VerifyYesButton)
-    
-    
+
+
                 $VerifyNoButton = New-Object System.Windows.Forms.Button -Property @{
                     Text   = 'No'
                     Width  = 100
@@ -142,13 +142,13 @@ $SystemTrayNotifyIcon = {
                     }
                 }
                 $script:VerifyCloseForm.Controls.Add($VerifyNoButton)
-    
+
 
                 $script:VerifyCloseForm.ShowDialog()
             }
-        } 
+        }
         $PoShEasyWinSystemTrayNotifyIcon.contextMenu.MenuItems.Add($SystemTrayCloseToolMenuItem)
-        
+
 
     ### Make PowerShell Disappear
     #
@@ -172,4 +172,6 @@ $SystemTrayNotifyIcon = {
 
 Start-Process -FilePath powershell.exe -ArgumentList  "-WindowStyle Hidden -Command Invoke-Command {$SystemTrayNotifyIcon} -ArgumentList @($CurrentProcessId,[bool]'`$$FormAdminCheck','$EasyWinIcon','$Font',$($ThisScript.trim('&')),'$InitialScriptLoadTime')" -PassThru `
 | Select-Object -ExpandProperty Id | Set-Variable FormHelperProcessId
+
+
 

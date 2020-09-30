@@ -9,7 +9,7 @@ function Get-AlternateDataStream {
                 [Byte]$Depth        = 255,
                 [Byte]$CurrentDepth = 0
             )
-            $CurrentDepth++    
+            $CurrentDepth++
             Get-ChildItem $Path -Force | ForEach-Object {
                 $_ | Where-Object { $_.Name -Like $Filter }
                 If ($_.PsIsContainer) {
@@ -20,15 +20,15 @@ function Get-AlternateDataStream {
                 }
             }
         }
-        
+
         # Older operating systems don't support the -depth parameter, needed to create a function to do so for backwards compatability
         #Get-ChildItem -Path $DirectoryPath -Depth $MaximumDepth
-        
+
         $AllFiles = Get-ChildItemDepth -Path $DirectoriesToSearch -Depth $MaximumDepth
-    } 
+    }
     else {
-        $AllFiles = Get-ChildItem -Path $DirectoriesToSearch -Force -ErrorAction SilentlyContinue    
-    } 
+        $AllFiles = Get-ChildItem -Path $DirectoriesToSearch -Force -ErrorAction SilentlyContinue
+    }
     $AdsFound = $AllFiles | ForEach-Object { Get-Item $_.FullName -Force -Stream * -ErrorAction SilentlyContinue } | Where-Object stream -ne ':$DATA'
     foreach ($Ads in $AdsFound) {
         $AdsData = Get-Content -Path "$($Ads.FileName)" -Stream "$($Ads.Stream)"
@@ -46,7 +46,8 @@ function Get-AlternateDataStream {
             elseif ($Ads.Length -gt 1000000)    { "$([Math]::Round($($Ads.Length / 1mb),2)) MB" }
             elseif ($Ads.Length -gt 1000)       { "$([Math]::Round($($Ads.Length / 1kb),2)) KB" }
             elseif ($Ads.Length -le 1000)       { "$($Ads.Length) Bytes" }
-        )                
+        )
     }
     $AdsFound
 }
+

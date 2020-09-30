@@ -1,6 +1,6 @@
 function Compile-XmlFiles {
     param (
-        [string]$LocationOfXMLsToCompile, 
+        [string]$LocationOfXMLsToCompile,
         [string]$LocationToSaveCompiledXML
     )
     Remove-Item -Path "$LocationToSaveCompiledXML" -Force
@@ -17,3 +17,5 @@ function Compile-XmlFiles {
         }
     }
 }
+
+

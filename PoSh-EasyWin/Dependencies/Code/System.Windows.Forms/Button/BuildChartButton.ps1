@@ -33,7 +33,7 @@ $BuildChartButtonAdd_Click = {
                 Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
             }
         #-------------------------
-        # Custom View Chart Title 
+        # Custom View Chart Title
         #-------------------------
             $ChartTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
                 text      = ($ViewChartOpenFileDialog.FileName.split('\'))[-1] -replace '.csv',''
@@ -61,7 +61,7 @@ $BuildChartButtonAdd_Click = {
             }
             $Chart.ChartAreas.Add($ChartArea)
         #--------------------------
-        # Custom View Chart Legend 
+        # Custom View Chart Legend
         #--------------------------
             $Legend = New-Object system.Windows.Forms.DataVisualization.Charting.Legend
             $Legend.Enabled = $Script:ViewChartChoice[6]
@@ -95,14 +95,14 @@ $BuildChartButtonAdd_Click = {
             # If the Second field/Y Axis equals PSComputername, it counts it
             if ($Script:ViewChartChoice[1] -eq "PSComputerName") {
                 $Script:ViewChartChoice0 = "Name"
-                $Script:ViewChartChoice1 = "PSComputerName"                
+                $Script:ViewChartChoice1 = "PSComputerName"
 
-                $UniqueDataFields = $DataSource | Select-Object -Property $Script:ViewChartChoice0 | Sort-Object -Property $Script:ViewChartChoice0 -Unique                
+                $UniqueDataFields = $DataSource | Select-Object -Property $Script:ViewChartChoice0 | Sort-Object -Property $Script:ViewChartChoice0 -Unique
                 $ComputerWithDataResults = @()
                 foreach ($DataField in $UniqueDataFields) {
                     $Count = 0
                     $Computers = @()
-                    foreach ( $Line in $DataSource ) { 
+                    foreach ( $Line in $DataSource ) {
                         if ( $Line.Name -eq $DataField.Name ) {
                             $Count += 1
                             if ( $Computers -notcontains $Line.PSComputerName ) { $Computers += $Line.PSComputerName }
@@ -113,7 +113,7 @@ $BuildChartButtonAdd_Click = {
                         DataField    = $DataField
                         TotalCount   = $Count
                         UniqueCount  = $UniqueCount
-                        ComputerHits = $Computers 
+                        ComputerHits = $Computers
                     }
                     $ComputerWithDataResults += $ComputersWithData
                 }
@@ -139,17 +139,17 @@ $BuildChartButtonAdd_Click = {
                     $DataSource `
                     | Sort-Object -Property $Script:ViewChartChoice[1] -Descending `
                     | Select-Object -First $Script:ViewChartChoice[3] `
-                    | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}  
+                    | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}
                 }
                 else {
                     $DataSource `
                     | Sort-Object -Property $Script:ViewChartChoice[1] `
                     | Select-Object -First $Script:ViewChartChoice[3] `
-                    | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}  
+                    | ForEach-Object {$Chart.Series["$Series01Name"].Points.AddXY( $(iex $DataSourceX), $(iex $DataSourceY) )}
                 }
-            }        
+            }
         #------------------------
-        # Custom View Chart Form 
+        # Custom View Chart Form
         #------------------------
             $AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
                 [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
@@ -232,9 +232,9 @@ $BuildChartButtonAdd_Click = {
             #----------------------------------
             # Custom View Chart Selection Form
             #----------------------------------
-            $ViewChartSelectionForm        = New-Object System.Windows.Forms.Form 
+            $ViewChartSelectionForm        = New-Object System.Windows.Forms.Form
             $ViewChartSelectionForm.width  = $FormScale * 327
-            $ViewChartSelectionForm.height = $FormScale * 287 
+            $ViewChartSelectionForm.height = $FormScale * 287
             $ViewChartSelectionForm.StartPosition = "CenterScreen"
             $ViewChartSelectionForm.Text   = "View Chart - Select Fields "
             $ViewChartSelectionForm.Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
@@ -246,8 +246,8 @@ $BuildChartButtonAdd_Click = {
             # Custom View Chart Main Label
             #------------------------------
             $ViewChartMainLabel          = New-Object System.Windows.Forms.Label
-            $ViewChartMainLabel.Location = New-Object System.Drawing.Point($($FormScale * 10),$($FormScale * 10)) 
-            $ViewChartMainLabel.size     = New-Object System.Drawing.Size($($FormScale * 290),$($FormScale * 25)) 
+            $ViewChartMainLabel.Location = New-Object System.Drawing.Point($($FormScale * 10),$($FormScale * 10))
+            $ViewChartMainLabel.size     = New-Object System.Drawing.Size($($FormScale * 290),$($FormScale * 25))
             $ViewChartMainLabel.Text     = "Fill out the bellow to view a chart of a csv file:`nNote: Currently some limitations with compiled results files."
             $ViewChartMainLabel.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             $ViewChartSelectionForm.Controls.Add($ViewChartMainLabel)
@@ -298,7 +298,7 @@ $BuildChartButtonAdd_Click = {
              [void] $ViewChartChartTypesComboBox.Items.Add($Item)
             }
             $ViewChartChartTypesComboBox.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            $ViewChartSelectionForm.Controls.Add($ViewChartChartTypesComboBox) 
+            $ViewChartSelectionForm.Controls.Add($ViewChartChartTypesComboBox)
 
             #---------------------------------------
             # Custom View Chart Limit Results Label
@@ -307,7 +307,7 @@ $BuildChartButtonAdd_Click = {
                 left     = $FormScale * 10
                 top      = $ViewChartChartTypesComboBox.Location.y + $ViewChartChartTypesComboBox.Size.Height + $($FormScale * 8)
                 width    = $FormScale * 120
-                height   = $FormScale * 25 
+                height   = $FormScale * 25
                 Text     = "Limit Results to:"
                 Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
             }
@@ -359,7 +359,7 @@ $BuildChartButtonAdd_Click = {
                     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 }
                 $ViewChartSortOrderGroupBox.Controls.AddRange(@($ViewChartAscendingRadioButton,$ViewChartDescendingRadioButton))
-            $ViewChartSelectionForm.Controls.Add($ViewChartSortOrderGroupBox) 
+            $ViewChartSelectionForm.Controls.Add($ViewChartSortOrderGroupBox)
 
             #------------------------------------
             # Custom View Chart Options GroupBox
@@ -395,7 +395,7 @@ $BuildChartButtonAdd_Click = {
                     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 }
                 $ViewChartOptionsGroupBox.Controls.AddRange(@($ViewChartLegendCheckBox,$ViewChart3DChartCheckBox))
-            $ViewChartSelectionForm.Controls.Add($ViewChartOptionsGroupBox) 
+            $ViewChartSelectionForm.Controls.Add($ViewChartOptionsGroupBox)
 
             #----------------------------------
             # Custom View Chart Execute Button
@@ -408,9 +408,9 @@ $BuildChartButtonAdd_Click = {
                 Text     = "Execute"
                 Add_Click = { ViewChartExecute }
             }
-            $ViewChartSelectionForm.Controls.Add($ViewChartExecuteButton)   
+            $ViewChartSelectionForm.Controls.Add($ViewChartExecuteButton)
             CommonButtonSettings -Button $ViewChartExecuteButton
-                  
+
             #---------------------------------------------
             # Custom View Chart Execute Button Note Label
             #---------------------------------------------
@@ -429,10 +429,10 @@ $BuildChartButtonAdd_Click = {
         $Property = $null
         $Property = ViewChartSelectProperty
     }
-    
+
     CommonButtonSettings -Button $OpenXmlResultsButton
     CommonButtonSettings -Button $OpenCsvResultsButton
-    
+
     CommonButtonSettings -Button $BuildChartButton
     CommonButtonSettings -Button $AutoCreateDashboardChartButton
     CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
@@ -442,9 +442,11 @@ $BuildChartButtonAdd_MouseHover = {
     Show-ToolTip -Title "Build Chart" -Icon "Info" -Message @"
 +  Utilizes PowerShell (v3) charts to visualize data.
 +  These charts are built manually from selecting a CSV file and fields.
-+  Use caution, inexperienced users can created charts that either represents 
++  Use caution, inexperienced users can created charts that either represents
     data incorrectly, is misleading, or displays nothing at all.
 +  This section is still under development. Goal is to eventually be able to
-   create persistent charts derived from charts you've built.   
+   create persistent charts derived from charts you've built.
 "@
 }
+
+

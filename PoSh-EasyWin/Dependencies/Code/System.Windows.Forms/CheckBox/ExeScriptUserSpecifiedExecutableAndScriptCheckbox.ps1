@@ -1,25 +1,25 @@
 $ExeScriptUserSpecifiedExecutableAndScriptCheckboxAdd_Click = {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("User Specified Executable and Script")
-    
+
     # Manages how the checkbox is handeled to ensure that a config is selected if sysmon is checked
-    if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked -and ($ExeScriptSelectExecutableTextBox.Text -eq "Directory:" -or $ExeScriptSelectExecutableTextBox.Text -eq "File:")) { 
+    if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked -and ($ExeScriptSelectExecutableTextBox.Text -eq "Directory:" -or $ExeScriptSelectExecutableTextBox.Text -eq "File:")) {
         Select-UserSpecifiedExecutable
     }
-    if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked -and $ExeScriptSelectScriptTextBox.Text -eq "Script:") { 
+    if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked -and $ExeScriptSelectScriptTextBox.Text -eq "Script:") {
         Select-UserSpecifiedScript
     }
 
-    if ($ExeScriptSelectExecutableTextBox.Text -eq "Executable:" -and $ExeScriptSelectScriptTextBox.Text -eq "Script:"){ 
+    if ($ExeScriptSelectExecutableTextBox.Text -eq "Executable:" -and $ExeScriptSelectScriptTextBox.Text -eq "Script:"){
         $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false
         [System.Windows.Forms.MessageBox]::Show("You need to first select an executable and script.","Prerequisite Check",'OK','Info')
 
     }
-    elseif ($ExeScriptSelectExecutableTextBox.Text -eq "Executable:"){ 
+    elseif ($ExeScriptSelectExecutableTextBox.Text -eq "Executable:"){
         $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false
         [System.Windows.Forms.MessageBox]::Show("You need to first select an executable.","Prerequisite Check",'OK','Info')
     }
-    elseif ($ExeScriptSelectScriptTextBox.Text -eq "Script:"){ 
+    elseif ($ExeScriptSelectScriptTextBox.Text -eq "Script:"){
         $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false
         [System.Windows.Forms.MessageBox]::Show("You need to first select an script.","Prerequisite Check",'OK','Info')
     }
@@ -38,3 +38,5 @@ $ExeScriptUserSpecifiedExecutableAndScriptCheckboxAdd_MouseHover = {
 +  The executable and script are copied to the endpoints' C:\Windows\Temp directory
 "@
 }
+
+

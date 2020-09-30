@@ -4,5 +4,7 @@ $EventLogsEventIDsToMonitorClearButtonAdd_Click = {
         $EventLogsEventIDsToMonitorChecklistbox.SetSelected($i,$False)
         $EventLogsEventIDsToMonitorChecklistbox.SetItemChecked($i,$False)
         $EventLogsEventIDsToMonitorChecklistbox.SetItemCheckState($i,$False)
-    }    
+    }
 }
+
+

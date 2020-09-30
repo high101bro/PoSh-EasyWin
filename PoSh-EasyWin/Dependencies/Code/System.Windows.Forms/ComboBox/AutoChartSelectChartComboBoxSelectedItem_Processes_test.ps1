@@ -355,26 +355,31 @@ $script:AutoChart01Processes.Series["Unique Processes"].Color             = 'Red
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
                 foreach ($DataField in $script:AutoChart01ProcessesUniqueDataFields) {
-                    $Count        = 0
+                    $Count = 0
                     $script:AutoChart01ProcessesCsvComputers = @()
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
-                        if ($($Line.Name) -eq $DataField.Name) {
+                        if ($Line.Name -eq $DataField.Name) {
                             $Count += 1
                             if ( $script:AutoChart01ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01ProcessesCsvComputers += $($Line.PSComputerName) }
                         }
                     }
-                    $script:AutoChart01ProcessesUniqueCount = $script:AutoChart01ProcessesCsvComputers.Count
                     $script:AutoChart01ProcessesDataResults = New-Object PSObject -Property @{
                         DataField   = $DataField
                         TotalCount  = $Count
-                        UniqueCount = $script:AutoChart01ProcessesUniqueCount
+                        UniqueCount = $script:AutoChart01ProcessesCsvComputers.Count
                         Computers   = $script:AutoChart01ProcessesCsvComputers
                     }
                     $script:AutoChart01ProcessesOverallDataResults += $script:AutoChart01ProcessesDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $script:AutoChart01ProcessesOverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart01Processes.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount) }
+
+                $script:AutoChart01ProcessesSortButton.text = "View: AlphaNum"
+                $script:AutoChart01ProcessesOverallDataResultsSortAlphaNum = $script:AutoChart01ProcessesOverallDataResults | Sort-Object @{Expression='UniqueCount';Descending=$false}, @{Expression={[string]$_.DataField.Name};Descending=$false}
+                $script:AutoChart01ProcessesOverallDataResultsSortCount    = $script:AutoChart01ProcessesOverallDataResults | Sort-Object @{Expression={[string]$_.DataField.Name};Descending=$false}, @{Expression='UniqueCount';Descending=$false}
+                $script:AutoChart01ProcessesOverallDataResults = $script:AutoChart01ProcessesOverallDataResultsSortCount
+
+                $script:AutoChart01ProcessesOverallDataResults | ForEach-Object { $script:AutoChart01Processes.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount) }
                 $script:AutoChart01ProcessesTrimOffLastTrackBar.SetRange(0, $($script:AutoChart01ProcessesOverallDataResults.count))
                 $script:AutoChart01ProcessesTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01ProcessesOverallDataResults.count))
             }
@@ -730,6 +735,32 @@ $script:AutoChart01ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01ProcessesManipulationPanel.controls.Add($script:AutoChart01ProcessesOpenInShell)
 
 
+
+$script:AutoChart01ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart01ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart01ProcessesOpenInShell.Location.Y + $script:AutoChart01ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart01ProcessesSortButton
+$script:AutoChart01ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart01ProcessesOverallDataResults = $script:AutoChart01ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+        $script:AutoChart01Processes.Series["Unique Processes"].Points.Clear()
+        $script:AutoChart01ProcessesOverallDataResults | Select-Object -skip $script:AutoChart01ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01Processes.Series["Unique Processes"].Points.AddXY($_.Computer,$_.ResultsCount)}
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart01ProcessesOverallDataResults = $script:AutoChart01ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+        $script:AutoChart01Processes.Series["Unique Processes"].Points.Clear()
+        $script:AutoChart01ProcessesOverallDataResults | Select-Object -skip $script:AutoChart01ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01ProcessesTrimOffLastTrackBarValue | ForEach-Object { $script:AutoChart01Processes.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount) }
+    }
+})
+$script:AutoChart01ProcessesManipulationPanel.controls.Add($script:AutoChart01ProcessesSortButton)
+
+
 $script:AutoChart01ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart01ProcessesOpenInShell.Location.X + $script:AutoChart01ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -738,16 +769,17 @@ $script:AutoChart01ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01ProcessesViewResults
-$script:AutoChart01ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart01ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart01ProcessesManipulationPanel.controls.Add($script:AutoChart01ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart01ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart01ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart01ProcessesOpenInShell.Location.Y + $script:AutoChart01ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart01ProcessesViewResults.Location.X
+                  Y = $script:AutoChart01ProcessesViewResults.Location.Y + $script:AutoChart01ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01ProcessesSaveButton
@@ -760,9 +792,9 @@ $script:AutoChart01ProcessesManipulationPanel.controls.Add($script:AutoChart01Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart01ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart01ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart01ProcessesSaveButton.Location.Y + $script:AutoChart01ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart01ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart01ProcessesSortButton.Location.X
+                        Y = $script:AutoChart01ProcessesSortButton.Location.Y + $script:AutoChart01ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -774,10 +806,6 @@ $script:AutoChart01ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart01ProcessesManipulationPanel.Controls.Add($script:AutoChart01ProcessesNoticeTextbox)
-
-$script:AutoChart01Processes.Series["Unique Processes"].Points.Clear()
-$script:AutoChart01ProcessesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01Processes.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
-
 
 
 
@@ -1257,6 +1285,30 @@ $script:AutoChart02ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02ProcessesManipulationPanel.controls.Add($script:AutoChart02ProcessesOpenInShell)
 
 
+
+$script:AutoChart02ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart02ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart02ProcessesOpenInShell.Location.Y + $script:AutoChart02ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart02ProcessesSortButton
+$script:AutoChart02ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart02ProcessesOverallDataResults = $script:AutoChart02ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart02ProcessesOverallDataResults = $script:AutoChart02ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+    }
+    $script:AutoChart02Processes.Series["Application Crashes Per Endpoint"].Points.Clear()
+    $script:AutoChart02ProcessesOverallDataResults | Select-Object -skip $script:AutoChart02ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02Processes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
+})
+$script:AutoChart02ProcessesManipulationPanel.controls.Add($script:AutoChart02ProcessesSortButton)
+
+
 $script:AutoChart02ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart02ProcessesOpenInShell.Location.X + $script:AutoChart02ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -1265,16 +1317,17 @@ $script:AutoChart02ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02ProcessesViewResults
-$script:AutoChart02ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart02ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart02ProcessesManipulationPanel.controls.Add($script:AutoChart02ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart02ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart02ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart02ProcessesOpenInShell.Location.Y + $script:AutoChart02ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart02ProcessesViewResults.Location.X
+                  Y = $script:AutoChart02ProcessesViewResults.Location.Y + $script:AutoChart02ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02ProcessesSaveButton
@@ -1287,9 +1340,9 @@ $script:AutoChart02ProcessesManipulationPanel.controls.Add($script:AutoChart02Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart02ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart02ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart02ProcessesSaveButton.Location.Y + $script:AutoChart02ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart02ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart02ProcessesSortButton.Location.X
+                        Y = $script:AutoChart02ProcessesSortButton.Location.Y + $script:AutoChart02ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -1301,10 +1354,6 @@ $script:AutoChart02ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart02ProcessesManipulationPanel.Controls.Add($script:AutoChart02ProcessesNoticeTextbox)
-
-$script:AutoChart02Processes.Series["Processes Per Host"].Points.Clear()
-$script:AutoChart02ProcessesOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02Processes.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
-
 
 
 
@@ -1765,6 +1814,30 @@ $script:AutoChart03ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart03ProcessesManipulationPanel.controls.Add($script:AutoChart03ProcessesOpenInShell)
 
 
+
+$script:AutoChart03ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart03ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart03ProcessesOpenInShell.Location.Y + $script:AutoChart03ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart03ProcessesSortButton
+$script:AutoChart03ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart03ProcessesOverallDataResults = $script:AutoChart03ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart03ProcessesOverallDataResults = $script:AutoChart03ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+    }
+    $script:AutoChart03Processes.Series["Application Crashes Per Endpoint"].Points.Clear()
+    $script:AutoChart03ProcessesOverallDataResults | Select-Object -skip $script:AutoChart03ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03Processes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
+})
+$script:AutoChart03ProcessesManipulationPanel.controls.Add($script:AutoChart03ProcessesSortButton)
+
+
 $script:AutoChart03ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart03ProcessesOpenInShell.Location.X + $script:AutoChart03ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -1773,16 +1846,17 @@ $script:AutoChart03ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03ProcessesViewResults
-$script:AutoChart03ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart03ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart03ProcessesManipulationPanel.controls.Add($script:AutoChart03ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart03ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart03ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart03ProcessesOpenInShell.Location.Y + $script:AutoChart03ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart03ProcessesViewResults.Location.X
+                  Y = $script:AutoChart03ProcessesViewResults.Location.Y + $script:AutoChart03ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03ProcessesSaveButton
@@ -1795,9 +1869,9 @@ $script:AutoChart03ProcessesManipulationPanel.controls.Add($script:AutoChart03Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart03ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart03ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart03ProcessesSaveButton.Location.Y + $script:AutoChart03ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart03ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart03ProcessesSortButton.Location.X
+                        Y = $script:AutoChart03ProcessesSortButton.Location.Y + $script:AutoChart03ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -1809,10 +1883,6 @@ $script:AutoChart03ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart03ProcessesManipulationPanel.Controls.Add($script:AutoChart03ProcessesNoticeTextbox)
-
-$script:AutoChart03Processes.Series["Process Company"].Points.Clear()
-$script:AutoChart03ProcessesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03Processes.Series["Process Company"].Points.AddXY($_.DataField.Company,$_.UniqueCount)}
-
 
 
 
@@ -2274,6 +2344,30 @@ $script:AutoChart04ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart04ProcessesManipulationPanel.controls.Add($script:AutoChart04ProcessesOpenInShell)
 
 
+
+$script:AutoChart04ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart04ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart04ProcessesOpenInShell.Location.Y + $script:AutoChart04ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart04ProcessesSortButton
+$script:AutoChart04ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart04ProcessesOverallDataResults = $script:AutoChart04ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart04ProcessesOverallDataResults = $script:AutoChart04ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+    }
+    $script:AutoChart04Processes.Series["Application Crashes Per Endpoint"].Points.Clear()
+    $script:AutoChart04ProcessesOverallDataResults | Select-Object -skip $script:AutoChart04ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04Processes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
+})
+$script:AutoChart04ProcessesManipulationPanel.controls.Add($script:AutoChart04ProcessesSortButton)
+
+
 $script:AutoChart04ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart04ProcessesOpenInShell.Location.X + $script:AutoChart04ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -2282,16 +2376,17 @@ $script:AutoChart04ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04ProcessesViewResults
-$script:AutoChart04ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart04ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart04ProcessesManipulationPanel.controls.Add($script:AutoChart04ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart04ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart04ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart04ProcessesOpenInShell.Location.Y + $script:AutoChart04ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart04ProcessesViewResults.Location.X
+                  Y = $script:AutoChart04ProcessesViewResults.Location.Y + $script:AutoChart04ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04ProcessesSaveButton
@@ -2304,9 +2399,9 @@ $script:AutoChart04ProcessesManipulationPanel.controls.Add($script:AutoChart04Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart04ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart04ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart04ProcessesSaveButton.Location.Y + $script:AutoChart04ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart04ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart04ProcessesSortButton.Location.X
+                        Y = $script:AutoChart04ProcessesSortButton.Location.Y + $script:AutoChart04ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -2318,10 +2413,6 @@ $script:AutoChart04ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart04ProcessesManipulationPanel.Controls.Add($script:AutoChart04ProcessesNoticeTextbox)
-
-$script:AutoChart04Processes.Series["Process Product"].Points.Clear()
-$script:AutoChart04ProcessesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04Processes.Series["Process Product"].Points.AddXY($_.DataField.Product,$_.UniqueCount)}
-
 
 
 
@@ -2390,7 +2481,7 @@ $script:AutoChart05Processes.Series["Processes with Network Activity"].Color    
         function Generate-AutoChart05 {
             $script:AutoChart05ProcessesCsvFileHosts       = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
             $script:AutoChart05ProcessesUniqueDataFields   = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' | Sort-Object -Property 'Name' -Unique
-            $script:AutoChart05ProcessesNetworkConnections = $script:AutoChart05ProcessesUniqueDataFields | Select-Object -Property 'NetworkConnections'
+            $script:AutoChart05ProcessesProcesses = $script:AutoChart05ProcessesUniqueDataFields | Select-Object -Property 'Processes'
 
             $script:AutoChartsProgressBar.ForeColor = 'Brown'
             $script:AutoChartsProgressBar.Minimum = 0
@@ -2400,7 +2491,7 @@ $script:AutoChart05Processes.Series["Processes with Network Activity"].Color    
 
             $script:AutoChart05Processes.Series["Processes with Network Activity"].Points.Clear()
 
-            if ($script:AutoChart05ProcessesNetworkConnections.count -gt 0){
+            if ($script:AutoChart05ProcessesProcesses.count -gt 0){
                 $script:AutoChart05ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart05ProcessesTitle.Text = "Processes with Network Activity"
 
@@ -2768,7 +2859,7 @@ $AutoChart05ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart05ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Processes With Network Activity" -PropertyX "NetworkConnections" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Processes With Network Activity" -PropertyX "Processes" -PropertyY "PSComputerName" }
 }
 CommonButtonSettings -Button $AutoChart05ExpandChartButton
 $script:AutoChart05ProcessesManipulationPanel.Controls.Add($AutoChart05ExpandChartButton)
@@ -2786,6 +2877,30 @@ $script:AutoChart05ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart05ProcessesManipulationPanel.controls.Add($script:AutoChart05ProcessesOpenInShell)
 
 
+
+$script:AutoChart05ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart05ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart05ProcessesOpenInShell.Location.Y + $script:AutoChart05ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart05ProcessesSortButton
+$script:AutoChart05ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart05ProcessesOverallDataResults = $script:AutoChart05ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart05ProcessesOverallDataResults = $script:AutoChart05ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+    }
+    $script:AutoChart05Processes.Series["Application Crashes Per Endpoint"].Points.Clear()
+    $script:AutoChart05ProcessesOverallDataResults | Select-Object -skip $script:AutoChart05ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05Processes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
+})
+$script:AutoChart05ProcessesManipulationPanel.controls.Add($script:AutoChart05ProcessesSortButton)
+
+
 $script:AutoChart05ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart05ProcessesOpenInShell.Location.X + $script:AutoChart05ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -2794,16 +2909,17 @@ $script:AutoChart05ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart05ProcessesViewResults
-$script:AutoChart05ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart05ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart05ProcessesManipulationPanel.controls.Add($script:AutoChart05ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart05ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart05ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart05ProcessesOpenInShell.Location.Y + $script:AutoChart05ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart05ProcessesViewResults.Location.X
+                  Y = $script:AutoChart05ProcessesViewResults.Location.Y + $script:AutoChart05ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart05ProcessesSaveButton
@@ -2816,9 +2932,9 @@ $script:AutoChart05ProcessesManipulationPanel.controls.Add($script:AutoChart05Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart05ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart05ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart05ProcessesSaveButton.Location.Y + $script:AutoChart05ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart05ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart05ProcessesSortButton.Location.X
+                        Y = $script:AutoChart05ProcessesSortButton.Location.Y + $script:AutoChart05ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -2830,10 +2946,6 @@ $script:AutoChart05ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart05ProcessesManipulationPanel.Controls.Add($script:AutoChart05ProcessesNoticeTextbox)
-
-$script:AutoChart05Processes.Series["Processes with Network Activity"].Points.Clear()
-$script:AutoChart05ProcessesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05Processes.Series["Processes with Network Activity"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
-
 
 
 
@@ -3293,6 +3405,30 @@ $script:AutoChart06ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart06ProcessesManipulationPanel.controls.Add($script:AutoChart06ProcessesOpenInShell)
 
 
+
+$script:AutoChart06ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart06ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart06ProcessesOpenInShell.Location.Y + $script:AutoChart06ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart06ProcessesSortButton
+$script:AutoChart06ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart06ProcessesOverallDataResults = $script:AutoChart06ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart06ProcessesOverallDataResults = $script:AutoChart06ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+    }
+    $script:AutoChart06Processes.Series["Application Crashes Per Endpoint"].Points.Clear()
+    $script:AutoChart06ProcessesOverallDataResults | Select-Object -skip $script:AutoChart06ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06Processes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
+})
+$script:AutoChart06ProcessesManipulationPanel.controls.Add($script:AutoChart06ProcessesSortButton)
+
+
 $script:AutoChart06ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart06ProcessesOpenInShell.Location.X + $script:AutoChart06ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -3301,16 +3437,17 @@ $script:AutoChart06ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart06ProcessesViewResults
-$script:AutoChart06ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart06ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart06ProcessesManipulationPanel.controls.Add($script:AutoChart06ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart06ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart06ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart06ProcessesOpenInShell.Location.Y + $script:AutoChart06ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart06ProcessesViewResults.Location.X
+                  Y = $script:AutoChart06ProcessesViewResults.Location.Y + $script:AutoChart06ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart06ProcessesSaveButton
@@ -3323,9 +3460,9 @@ $script:AutoChart06ProcessesManipulationPanel.controls.Add($script:AutoChart06Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart06ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart06ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart06ProcessesSaveButton.Location.Y + $script:AutoChart06ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart06ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart06ProcessesSortButton.Location.X
+                        Y = $script:AutoChart06ProcessesSortButton.Location.Y + $script:AutoChart06ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -3337,10 +3474,6 @@ $script:AutoChart06ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart06ProcessesManipulationPanel.Controls.Add($script:AutoChart06ProcessesNoticeTextbox)
-
-$script:AutoChart06Processes.Series["Process MD5 Hash"].Points.Clear()
-$script:AutoChart06ProcessesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart06ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06Processes.Series["Process MD5 Hash"].Points.AddXY($_.DataField.MD5Hash,$_.UniqueCount)}
-
 
 
 
@@ -3802,6 +3935,30 @@ $script:AutoChart07ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart07ProcessesManipulationPanel.controls.Add($script:AutoChart07ProcessesOpenInShell)
 
 
+
+$script:AutoChart07ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart07ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart07ProcessesOpenInShell.Location.Y + $script:AutoChart07ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart07ProcessesSortButton
+$script:AutoChart07ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart07ProcessesOverallDataResults = $script:AutoChart07ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart07ProcessesOverallDataResults = $script:AutoChart07ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+    }
+    $script:AutoChart07Processes.Series["Application Crashes Per Endpoint"].Points.Clear()
+    $script:AutoChart07ProcessesOverallDataResults | Select-Object -skip $script:AutoChart07ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07Processes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
+})
+$script:AutoChart07ProcessesManipulationPanel.controls.Add($script:AutoChart07ProcessesSortButton)
+
+
 $script:AutoChart07ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart07ProcessesOpenInShell.Location.X + $script:AutoChart07ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -3810,16 +3967,17 @@ $script:AutoChart07ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart07ProcessesViewResults
-$script:AutoChart07ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart07ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart07ProcessesManipulationPanel.controls.Add($script:AutoChart07ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart07ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart07ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart07ProcessesOpenInShell.Location.Y + $script:AutoChart07ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart07ProcessesViewResults.Location.X
+                  Y = $script:AutoChart07ProcessesViewResults.Location.Y + $script:AutoChart07ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart07ProcessesSaveButton
@@ -3832,9 +3990,9 @@ $script:AutoChart07ProcessesManipulationPanel.controls.Add($script:AutoChart07Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart07ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart07ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart07ProcessesSaveButton.Location.Y + $script:AutoChart07ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart07ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart07ProcessesSortButton.Location.X
+                        Y = $script:AutoChart07ProcessesSortButton.Location.Y + $script:AutoChart07ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -3846,10 +4004,6 @@ $script:AutoChart07ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart07ProcessesManipulationPanel.Controls.Add($script:AutoChart07ProcessesNoticeTextbox)
-
-$script:AutoChart07Processes.Series["Signer Certificate"].Points.Clear()
-$script:AutoChart07ProcessesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07Processes.Series["Signer Certificate"].Points.AddXY($_.DataField.SignerCertificate,$_.UniqueCount)}
-
 
 
 
@@ -4313,6 +4467,30 @@ $script:AutoChart08ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart08ProcessesManipulationPanel.controls.Add($script:AutoChart08ProcessesOpenInShell)
 
 
+
+$script:AutoChart08ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart08ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart08ProcessesOpenInShell.Location.Y + $script:AutoChart08ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart08ProcessesSortButton
+$script:AutoChart08ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart08ProcessesOverallDataResults = $script:AutoChart08ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart08ProcessesOverallDataResults = $script:AutoChart08ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+    }
+    $script:AutoChart08Processes.Series["Application Crashes Per Endpoint"].Points.Clear()
+    $script:AutoChart08ProcessesOverallDataResults | Select-Object -skip $script:AutoChart08ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08Processes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
+})
+$script:AutoChart08ProcessesManipulationPanel.controls.Add($script:AutoChart08ProcessesSortButton)
+
+
 $script:AutoChart08ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart08ProcessesOpenInShell.Location.X + $script:AutoChart08ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -4321,16 +4499,17 @@ $script:AutoChart08ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart08ProcessesViewResults
-$script:AutoChart08ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart08ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart08ProcessesManipulationPanel.controls.Add($script:AutoChart08ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart08ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart08ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart08ProcessesOpenInShell.Location.Y + $script:AutoChart08ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart08ProcessesViewResults.Location.X
+                  Y = $script:AutoChart08ProcessesViewResults.Location.Y + $script:AutoChart08ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart08ProcessesSaveButton
@@ -4343,9 +4522,9 @@ $script:AutoChart08ProcessesManipulationPanel.controls.Add($script:AutoChart08Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart08ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart08ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart08ProcessesSaveButton.Location.Y + $script:AutoChart08ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart08ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart08ProcessesSortButton.Location.X
+                        Y = $script:AutoChart08ProcessesSortButton.Location.Y + $script:AutoChart08ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -4357,10 +4536,6 @@ $script:AutoChart08ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart08ProcessesManipulationPanel.Controls.Add($script:AutoChart08ProcessesNoticeTextbox)
-
-$script:AutoChart08Processes.Series["Signer Company"].Points.Clear()
-$script:AutoChart08ProcessesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart08ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08Processes.Series["Signer Company"].Points.AddXY($_.DataField.SignerCompany,$_.UniqueCount)}
-
 
 
 
@@ -4824,6 +4999,30 @@ $script:AutoChart09ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart09ProcessesManipulationPanel.controls.Add($script:AutoChart09ProcessesOpenInShell)
 
 
+
+$script:AutoChart09ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart09ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart09ProcessesOpenInShell.Location.Y + $script:AutoChart09ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart09ProcessesSortButton
+$script:AutoChart09ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart09ProcessesOverallDataResults = $script:AutoChart09ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart09ProcessesOverallDataResults = $script:AutoChart09ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+    }
+    $script:AutoChart09Processes.Series["Application Crashes Per Endpoint"].Points.Clear()
+    $script:AutoChart09ProcessesOverallDataResults | Select-Object -skip $script:AutoChart09ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09Processes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
+})
+$script:AutoChart09ProcessesManipulationPanel.controls.Add($script:AutoChart09ProcessesSortButton)
+
+
 $script:AutoChart09ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart09ProcessesOpenInShell.Location.X + $script:AutoChart09ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -4832,16 +5031,17 @@ $script:AutoChart09ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart09ProcessesViewResults
-$script:AutoChart09ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart09ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart09ProcessesManipulationPanel.controls.Add($script:AutoChart09ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart09ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart09ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart09ProcessesOpenInShell.Location.Y + $script:AutoChart09ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart09ProcessesViewResults.Location.X
+                  Y = $script:AutoChart09ProcessesViewResults.Location.Y + $script:AutoChart09ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart09ProcessesSaveButton
@@ -4854,9 +5054,9 @@ $script:AutoChart09ProcessesManipulationPanel.controls.Add($script:AutoChart09Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart09ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart09ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart09ProcessesSaveButton.Location.Y + $script:AutoChart09ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart09ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart09ProcessesSortButton.Location.X
+                        Y = $script:AutoChart09ProcessesSortButton.Location.Y + $script:AutoChart09ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -4868,10 +5068,6 @@ $script:AutoChart09ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart09ProcessesManipulationPanel.Controls.Add($script:AutoChart09ProcessesNoticeTextbox)
-
-$script:AutoChart09Processes.Series["Process Path"].Points.Clear()
-$script:AutoChart09ProcessesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09Processes.Series["Process Path"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}
-
 
 
 
@@ -5335,6 +5531,30 @@ $script:AutoChart10ProcessesOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart10ProcessesManipulationPanel.controls.Add($script:AutoChart10ProcessesOpenInShell)
 
 
+
+$script:AutoChart10ProcessesSortButton = New-Object Windows.Forms.Button -Property @{
+    Text     = "View: Count"
+    Location = @{ X = $script:AutoChart10ProcessesOpenInShell.Location.X
+                  Y = $script:AutoChart10ProcessesOpenInShell.Location.Y + $script:AutoChart10ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 23 }
+}
+CommonButtonSettings -Button $script:AutoChart10ProcessesSortButton
+$script:AutoChart10ProcessesSortButton.Add_Click({
+    if ($this.Text -eq "View: Count") {
+        $script:AutoChart10ProcessesOverallDataResults = $script:AutoChart10ProcessesOverallDataResultsSortCount
+        $this.Text = "View: AlphaNum"
+    }
+    elseif (($this.Text -eq "View: AlphaNum")) {
+        $script:AutoChart10ProcessesOverallDataResults = $script:AutoChart10ProcessesOverallDataResultsSortAlphaNum
+        $this.Text = "View: Count"
+    }
+    $script:AutoChart10Processes.Series["Application Crashes Per Endpoint"].Points.Clear()
+    $script:AutoChart10ProcessesOverallDataResults | Select-Object -skip $script:AutoChart10ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10Processes.Series["Application Crashes Per Endpoint"].Points.AddXY($_.Computer,$_.ResultsCount)}
+})
+$script:AutoChart10ProcessesManipulationPanel.controls.Add($script:AutoChart10ProcessesSortButton)
+
+
 $script:AutoChart10ProcessesViewResults = New-Object Windows.Forms.Button -Property @{
     Text      = "View Results"
     Location  = @{ X = $script:AutoChart10ProcessesOpenInShell.Location.X + $script:AutoChart10ProcessesOpenInShell.Size.Width + $($FormScale * 5)
@@ -5343,16 +5563,17 @@ $script:AutoChart10ProcessesViewResults = New-Object Windows.Forms.Button -Prope
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart10ProcessesViewResults
-$script:AutoChart10ProcessesViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
+$script:AutoChart10ProcessesViewResults.Add_Click({
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart10ProcessesManipulationPanel.controls.Add($script:AutoChart10ProcessesViewResults)
 
 
 ### Save the chart to file
 $script:AutoChart10ProcessesSaveButton = New-Object Windows.Forms.Button -Property @{
     Text     = "Save Chart"
-    Location = @{ X = $script:AutoChart10ProcessesOpenInShell.Location.X
-                  Y = $script:AutoChart10ProcessesOpenInShell.Location.Y + $script:AutoChart10ProcessesOpenInShell.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 205
+    Location = @{ X = $script:AutoChart10ProcessesViewResults.Location.X
+                  Y = $script:AutoChart10ProcessesViewResults.Location.Y + $script:AutoChart10ProcessesViewResults.Size.Height + $($FormScale * 5) }
+    Size     = @{ Width  = $FormScale * 100
                   Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart10ProcessesSaveButton
@@ -5365,9 +5586,9 @@ $script:AutoChart10ProcessesManipulationPanel.controls.Add($script:AutoChart10Pr
 #==============================
 # Auto Charts - Notice Textbox
 #==============================
-$script:AutoChart10ProcessesNoticeTextbox = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart10ProcessesSaveButton.Location.X
-                        Y = $script:AutoChart10ProcessesSaveButton.Location.Y + $script:AutoChart10ProcessesSaveButton.Size.Height + $($FormScale * 6) }
+$script:AutoChart10ProcessesNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
+    Location    = @{ X = $script:AutoChart10ProcessesSortButton.Location.X
+                        Y = $script:AutoChart10ProcessesSortButton.Location.Y + $script:AutoChart10ProcessesSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
     Anchor      = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right
@@ -5379,10 +5600,6 @@ $script:AutoChart10ProcessesNoticeTextbox = New-Object System.Windows.Forms.Text
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart10ProcessesManipulationPanel.Controls.Add($script:AutoChart10ProcessesNoticeTextbox)
-
-$script:AutoChart10Processes.Series["Services Started By Processes"].Points.Clear()
-$script:AutoChart10ProcessesOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart10ProcessesTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10ProcessesTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10Processes.Series["Services Started By Processes"].Points.AddXY($_.DataField.ServiceInfo,$_.UniqueCount)}
-
 
 
 

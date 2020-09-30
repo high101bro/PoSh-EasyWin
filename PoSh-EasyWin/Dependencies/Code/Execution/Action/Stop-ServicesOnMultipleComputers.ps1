@@ -4,7 +4,7 @@ function Stop-ServicesOnMultipleComputers {
         [switch]$CollectNewServiceData
     )
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-    
+
     if ($SelectServiceCsvFile) {
         [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
         $SelectServiceFileToStopSelectedServicesOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
@@ -22,23 +22,23 @@ function Stop-ServicesOnMultipleComputers {
     }
     elseif ($CollectNewServiceData) {
         Generate-ComputerList
-        
+
         if ($script:ComputerList.count -eq 0){
             [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect Service data from. Alternatively, you can select a CSV file from a previous Service collection.','Error: No Endpoints Selected')
         }
         else {
             if ($ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
-                Invoke-Command -ScriptBlock { 
-                    Get-Service #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, * 
+                Invoke-Command -ScriptBlock {
+                    Get-Service #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, *
                 } -ComputerName $script:ComputerList -Credential $script:Credential `
                 | Select-Object -Property PSComputerName, * -ErrorAction SilentlyContinue `
                 | Sort-Object -Property Name, PSComputername, * -ErrorAction SilentlyContinue `
                 | Out-GridView -Title 'Select Services To Stop' -PassThru -OutVariable ServicesToStop
             }
             else {
-                Invoke-Command -ScriptBlock { 
-                    Get-Service #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, * 
+                Invoke-Command -ScriptBlock {
+                    Get-Service #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, *
                 } -ComputerName $script:ComputerList `
                 | Select-Object -Property PSComputerName, * -ErrorAction SilentlyContinue `
                 | Sort-Object -Property Name, PSComputername, * -ErrorAction SilentlyContinue `
@@ -54,7 +54,7 @@ function Stop-ServicesOnMultipleComputers {
     $StatusListBox.Items.Add("Multi-Endpoint Service Stopper")
     $ResultsListBox.Items.Clear()
 
-    foreach ($Computer in $Computers) {    
+    foreach ($Computer in $Computers) {
         $Session = $null
 
         try {
@@ -68,7 +68,7 @@ function Stop-ServicesOnMultipleComputers {
             }
             #Write-Host "Connected to:  $Computer" -ForegroundColor Cyan
             $ResultsListBox.Items.Insert(0,"Connected to:  $Computer")
-    
+
             if ($Session) {
                 foreach ($Service in $ServicesToStop){
                     if ($Service.PSComputerName -eq $Computer){
@@ -92,10 +92,12 @@ function Stop-ServicesOnMultipleComputers {
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword 
+        Generate-NewRollingPassword
     }
 }
+
+
 
 

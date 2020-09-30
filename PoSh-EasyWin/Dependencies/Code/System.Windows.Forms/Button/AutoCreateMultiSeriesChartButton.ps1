@@ -1,4 +1,4 @@
-$AutoCreateMultiSeriesChartButtonAdd_Click = { 
+$AutoCreateMultiSeriesChartButtonAdd_Click = {
     # https://bytecookie.wordpress.com/2012/04/13/tutorial-powershell-and-microsoft-chart-controls-or-how-to-spice-up-your-reports/
     # https://blogs.msdn.microsoft.com/alexgor/2009/03/27/aligning-multiple-series-with-categorical-values/
     # Auto Charts Select Property Function
@@ -89,7 +89,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         "Startups per Endpoint"
         )
     ForEach ($Item in $AutoChartsAvailable) { [void] $AutoChartSelectChartComboBox.Items.Add($Item) }
-    $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox) 
+    $AutoChartsSelectionForm.Controls.Add($AutoChartSelectChartComboBox)
 
 
     #----------------------------
@@ -130,7 +130,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
             Checked  = $false
             Enabled  = $true
             Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        }        
+        }
         $AutoChartsWmiCollectionsCheckBox.Add_Click({ $AutoChartsPoShCollectionsCheckBox.Checked = $false })
 
         ### View Chart WinRM Results Checkbox
@@ -145,9 +145,9 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
             Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         }
         $AutoChartsPoShCollectionsCheckBox.Add_Click({ $AutoChartsWmiCollectionsCheckBox.Checked  = $false })
-        
+
         $AutoChartsCreateChartsFromGroupBox.Controls.AddRange(@($AutoChartsWmiCollectionsCheckBox,$AutoChartsPoShCollectionsCheckBox))
-    $AutoChartsSelectionForm.Controls.Add($AutoChartsCreateChartsFromGroupBox) 
+    $AutoChartsSelectionForm.Controls.Add($AutoChartsCreateChartsFromGroupBox)
 
 
     #-----------------------------------
@@ -161,7 +161,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
                       Height = $FormScale * 59 }
     }
     CommonButtonSettings -Button $AutoChartsExecuteButton
-    $AutoChartsExecuteButton.Add_Click({ 
+    $AutoChartsExecuteButton.Add_Click({
         if ($AutoChartSelectChartComboBox.text -eq 'Select A Chart') { $AutoChartSelectChartComboBox.ForeColor = 'Red' }
         else { $AutoChartSelectChartComboBox.ForeColor = 'Black' }
         Launch-AutoChartsViewCharts
@@ -170,9 +170,9 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         #####################################################################################################################################
         #####################################################################################################################################
         ##
-        ## Auto Create Charts Form 
+        ## Auto Create Charts Form
         ##
-        #####################################################################################################################################             
+        #####################################################################################################################################
         #####################################################################################################################################
         $AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
             [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
@@ -195,7 +195,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         $AutoChartsTabControl.Name          = "Auto Charts"
         $AutoChartsTabControl.Text          = "Auto Charts"
         $AutoChartsTabControl.Location      = New-Object System.Drawing.Point($($FormScale * 5),$($FormScale * 5))
-        $AutoChartsTabControl.Size          = New-Object System.Drawing.Size($($FormScale * 1535),$($FormScale * 590)) 
+        $AutoChartsTabControl.Size          = New-Object System.Drawing.Size($($FormScale * 1535),$($FormScale * 590))
         $AutoChartsTabControl.ShowToolTips  = $True
         $AutoChartsTabControl.SelectedIndex = 0
         $AutoChartsTabControl.Anchor        = $AnchorAll
@@ -218,7 +218,7 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drives by Volume Name") { Generate-AutoChartsCommand -QueryName "LogicalDisk" -QueryTabName "Mapped Drives by Volume Name" -PropertyX "PSComputerName" -PropertyY "VolumeName" }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Mapped Drive Volume Names per Endpoint") { Generate-AutoChartsCommand -QueryName "LogicalDisk" -QueryTabName "Mapped Drive Volume Names per Endpoint" -PropertyX "VolumeName" -PropertyY "PSComputerName" }
 
-        # Processes 
+        # Processes
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Process Names") { Generate-AutoChartsCommand -QueryName "Processes" -QueryTabName "Process Names" -PropertyX "Name" -PropertyY "PSComputerName"}
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Process Paths") { Generate-AutoChartsCommand -QueryName "Processes" -QueryTabName "Process Paths" -PropertyX "Path" -PropertyY "PSComputerName" }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Process Company") { Generate-AutoChartsCommand -QueryName "Processes" -QueryTabName "Process Company" -PropertyX "Company" -PropertyY "PSComputerName" }
@@ -254,12 +254,12 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startup Commands") { Generate-AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startup Commands" -PropertyX "Command" -PropertyY "PSComputerName" }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startups per Endpoint") { Generate-AutoChartsCommand -QueryName "Startup Commands" -QueryTabName "Startups per Endpoint" -PropertyX "PSComputerName" -PropertyY "Name" }
     }
-    $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)   
+    $AutoChartsSelectionForm.Controls.Add($AutoChartsExecuteButton)
     [void] $AutoChartsSelectionForm.ShowDialog()
 
     CommonButtonSettings -Button $OpenXmlResultsButton
     CommonButtonSettings -Button $OpenCsvResultsButton
-    
+
     CommonButtonSettings -Button $BuildChartButton
     CommonButtonSettings -Button $AutoCreateDashboardChartButton
     CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
@@ -275,5 +275,7 @@ $AutoCreateMultiSeriesChartButtonAdd_MouseHover = {
     found in each series; non-common hosts result will be hidden.
 +  Charts can be filtered for data collected via WMI or PoSh commands.
 +  Charts can be modified and an image can be saved.
-"@ 
+"@
 }
+
+

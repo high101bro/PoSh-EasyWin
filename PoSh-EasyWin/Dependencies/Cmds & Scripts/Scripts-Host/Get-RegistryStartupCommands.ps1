@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = 'SilentlyContinue'
+$ErrorActionPreference = 'SilentlyContinue'
 
 #$env:computername
 #$ErrorActionPreference = 'SilentlyContinue'
@@ -31,7 +31,7 @@ $regkeys = @(
 )
 $Startups = @()
 foreach ($key in $regkeys) {
-    $entry = Get-ItemProperty -Path $key 
+    $entry = Get-ItemProperty -Path $key
     $entry = $entry | Select-Object * -ExcludeProperty PSPath, PSParentPath, PSChildName, PSDrive, PSProvider
     #$entry.psobject.Properties |ft
     foreach($item in $entry.PSObject.Properties) {
@@ -50,8 +50,9 @@ foreach ($key in $regkeys) {
                 SHA256   = [System.BitConverter]::ToString($sha256.ComputeHash($filebytes)) -replace "-","";
                 PSComputerName = $env:COMPUTERNAME
             }
-            $Startups += $HashObject 
+            $Startups += $HashObject
         }
     }
 }
 $Startups | Select-Object PSComputerName, Name, Path, MD5, SHA256, SignatureStatus, SignatureCompany
+

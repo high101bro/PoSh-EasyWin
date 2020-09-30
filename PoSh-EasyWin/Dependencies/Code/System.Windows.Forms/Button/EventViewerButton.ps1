@@ -17,9 +17,9 @@ $EventViewerButtonAdd_Click = {
                     if (!$script:Credential) { Create-NewCredentials }
                 }
                 # Note: Show-EventLog doesn't support -Credential, nor will it spawn a local GUI if used witn invoke-command/enter-pssession for a remote host with credentials provided
-                Foreach ($TargetComputer in $($script:ComputerList | Select-Object -Unique)){ 
+                Foreach ($TargetComputer in $($script:ComputerList | Select-Object -Unique)){
                     if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                        Invoke-Command -Command { 
+                        Invoke-Command -Command {
                             param(
                                 $TargetComputer,
                                 $script:Credential
@@ -36,7 +36,7 @@ $EventViewerButtonAdd_Click = {
                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Show-EventLog -ComputerName $($script:ComputerList)"
                     }
                     else{
-                        Show-EventLog -ComputerName $TargetComputer 
+                        Show-EventLog -ComputerName $TargetComputer
                         $ResultsListBox.Items.Add("Show-EventLog -ComputerName $script:ComputerList")
                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Show-EventLog -ComputerName $($script:ComputerList)"
                     }
@@ -46,7 +46,7 @@ $EventViewerButtonAdd_Click = {
                 [system.media.systemsounds]::Exclamation.play()
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Event Viewer:  Cancelled")
-            }    
+            }
         }
         elseif ($script:ComputerList.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Show Event Viewer' }
         elseif ($script:ComputerList.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Show Event Viewer' }
@@ -68,5 +68,7 @@ $EventViewerButtonAdd_MouseHover = {
 +  Uses RPC/DCOM, not WinRM
 +  Command:
         Show-EventLog -ComputerName <Hostname>
-"@ 
+"@
 }
+
+

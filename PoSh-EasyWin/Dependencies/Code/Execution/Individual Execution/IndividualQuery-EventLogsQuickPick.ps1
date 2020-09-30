@@ -33,11 +33,11 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
 "@
     }
     else { $EventLogQueryFilter = "-Filter `"$Filter`""}
-    
+
     $EventLogQueryPipe = @"
 | Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
 "@
-    $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"    
+    $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"
     Invoke-Expression $EventLogQueryBuild
 }
 
@@ -51,9 +51,9 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
 
 if ($EventLogWinRMRadioButton.Checked) {
     if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
-        if (!$script:Credential) { Create-NewCredentials }     
-            
-        foreach ($Query in $script:EventLogQueries) { 
+        if (!$script:Credential) { Create-NewCredentials }
+
+        foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
                 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
@@ -72,13 +72,13 @@ if ($EventLogWinRMRadioButton.Checked) {
                     -Credential $script:Credential
                 }
                 Monitor-Jobs     -CollectionName $CollectionName
-                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime         
+                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
             }
         }
     }
     else {
-            
-        foreach ($Query in $script:EventLogQueries) { 
+
+        foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
                 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
@@ -96,20 +96,20 @@ if ($EventLogWinRMRadioButton.Checked) {
                     -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
                 }
                 Monitor-Jobs     -CollectionName $CollectionName
-                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime         
+                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
             }
         }
     }
 }
 else {
     if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
-        if (!$script:Credential) { Create-NewCredentials }     
+        if (!$script:Credential) { Create-NewCredentials }
 
         foreach ($Query in $script:EventLogQueries) {
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {            
+            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
                 $CollectionName = "Event Logs - $($Query.Name)"
                 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
-                
+
                 Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                         -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                         -TargetComputer $TargetComputer
@@ -150,16 +150,16 @@ else {
                     -ArgumentList $Query.Filter, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer,$script:Credential
                 }
                 Monitor-Jobs     -CollectionName $CollectionName
-                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime   
-            }  
+                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
+            }
         }
     }
     else {
         foreach ($Query in $script:EventLogQueries) {
-            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {            
+            if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
                 $CollectionName = "Event Logs - $($Query.Name)"
                 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
-                
+
                 Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                         -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                         -TargetComputer $TargetComputer
@@ -199,8 +199,10 @@ else {
                     -ArgumentList $Query.Filter, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer
                 }
                 Monitor-Jobs     -CollectionName $CollectionName
-                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime   
-            }  
+                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
+            }
         }
     }
 }
+
+

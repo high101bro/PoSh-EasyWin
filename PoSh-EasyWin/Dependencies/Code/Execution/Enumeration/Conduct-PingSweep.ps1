@@ -2,7 +2,7 @@ Function Conduct-PingSweep {
     Function Create-PingList {
         param($IPAddress)
         $Comp = $IPAddress
-        if ($Comp -eq $Null) { . Create-PingList } 
+        if ($Comp -eq $Null) { . Create-PingList }
         elseif ($Comp -match "\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/\d{1,2}") {
             $Temp = $Comp.Split("/")
             $IP = $Temp[0]
@@ -33,3 +33,4 @@ Function Conduct-PingSweep {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Finished with Ping Sweep!")
 }
+

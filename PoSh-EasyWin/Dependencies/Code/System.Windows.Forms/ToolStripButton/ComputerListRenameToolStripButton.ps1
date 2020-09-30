@@ -2,7 +2,7 @@ $ComputerListRenameToolStripButtonAdd_Click = {
     # This brings specific tabs to the forefront/front view
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
 
-    Create-ComputerNodeCheckBoxArray 
+    Create-ComputerNodeCheckBoxArray
     if ($script:EntrySelected) {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Enter a new name:")
@@ -27,10 +27,10 @@ $ComputerListRenameToolStripButtonAdd_Click = {
         $script:ComputerTreeNodeRenamePopupTextBox.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 
         # Renames the computer treenode to the specified name
-        . "$Dependencies\Code\Tree View\Computer\Rename-ComputerTreeNodeSelected.ps1"          
-           
+        . "$Dependencies\Code\Tree View\Computer\Rename-ComputerTreeNodeSelected.ps1"
+
         # Moves the hostname/IPs to the new Category
-        $script:ComputerTreeNodeRenamePopupTextBox.Add_KeyDown({ 
+        $script:ComputerTreeNodeRenamePopupTextBox.Add_KeyDown({
             if ($_.KeyCode -eq "Enter") { Rename-ComputerTreeNodeSelected }
         })
         $ComputerTreeNodeRenamePopup.Controls.Add($script:ComputerTreeNodeRenamePopupTextBox)
@@ -49,9 +49,9 @@ $ComputerListRenameToolStripButtonAdd_Click = {
         $ComputerTreeNodeRenamePopupButton.Add_Click({ Rename-ComputerTreeNodeSelected })
         $ComputerTreeNodeRenamePopup.Controls.Add($ComputerTreeNodeRenamePopupButton)
 
-        $ComputerTreeNodeRenamePopup.ShowDialog()               
+        $ComputerTreeNodeRenamePopup.ShowDialog()
     }
-    else { 
+    else {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add($script:EntrySelected.text)
     }
@@ -62,3 +62,5 @@ $ComputerListRenameToolStripButtonAdd_Click = {
     AutoSave-HostData
     Save-HostData
 }
+
+

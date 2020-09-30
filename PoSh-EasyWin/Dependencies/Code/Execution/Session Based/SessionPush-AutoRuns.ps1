@@ -29,13 +29,13 @@ $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 foreach ($Session in $PSSession) {
-    try { 
-        Copy-Item -Path $LocalPathForAutorunsExecutable -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop 
+    try {
+        Copy-Item -Path $LocalPathForAutorunsExecutable -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop
         $ResultsListBox.Items.insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
         Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $LocalPathForAutorunsExecutable -Destination '$TargetFolder' -ToSession $Session -Force -ErrorAction Stop"
         $PoShEasyWin.Refresh()
-    } 
-    catch { 
+    }
+    catch {
         $ResultsListBox.Items.insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy Error: $($_.Exception)")
         Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy Error: $($_.Exception)"
         $PoShEasyWin.Refresh()
@@ -46,8 +46,8 @@ foreach ($Session in $PSSession) {
 }
 
 if ($SysinternalsAutorunsRenameProcessTextBox.text -ne 'Autoruns') {
-    # Removes the local renamed copy of Autoruns 
-    Remove-Item "$ExternalPrograms\$($SysinternalsAutorunsRenameProcessTextBox.text).exe" -Force 
+    # Removes the local renamed copy of Autoruns
+    Remove-Item "$ExternalPrograms\$($SysinternalsAutorunsRenameProcessTextBox.text).exe" -Force
 }
 
 $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Executing Autoruns on:")
@@ -94,34 +94,34 @@ while ($true) {
         }
     }
     $ResultsListBox.Items.RemoveAt(2)
-    $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Gathering Autoruns data")   
+    $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Gathering Autoruns data")
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[!] Checking Autoruns every $SecondsToCheck Seconds"
     $PoShEasyWin.Refresh()
 
     foreach ($Session in $PSSession) {
-        
+
         if ($Session.ComputerName -notin $AutoRunsCompletedEndpoints) {
-            if ($( Invoke-Command -ScriptBlock {param($AutorunsName); Get-Process $AutorunsName } -ArgumentList $AutorunsName -Session $Session )) {  
+            if ($( Invoke-Command -ScriptBlock {param($AutorunsName); Get-Process $AutorunsName } -ArgumentList $AutorunsName -Session $Session )) {
                 $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Still Running on $($Session.ComputerName)")
                 Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Invoke-Command -ScriptBlock {param(`$AutorunsName); Get-Process $AutorunsName } -ArguementList `$AutorunsName -Session $Session"
                 $PoShEasyWin.Refresh()
             }
             else {
                 if (-not (Test-Path "$script:IndividualHostResults\Autoruns\$AutorunsName-$($Session.ComputerName).arn")) {
-                    try { 
+                    try {
                         # Attempts to send a copy of Autoruns to the endpoints
                         $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Copying Autoruns data from $($Session.ComputerName) for analysis")
                         Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path '$TargetFolder\Autoruns.arn' -Destination '$script:IndividualHostResults\Autoruns' -FromSession $Session -Force -ErrorAction Stop"
                         $PoShEasyWin.Refresh()
-                        Copy-Item -Path "$TargetFolder\$AutorunsName.arn" -Destination "$script:IndividualHostResults\Autoruns" -FromSession $Session -Force -ErrorAction Stop 
+                        Copy-Item -Path "$TargetFolder\$AutorunsName.arn" -Destination "$script:IndividualHostResults\Autoruns" -FromSession $Session -Force -ErrorAction Stop
                         Rename-Item "$script:IndividualHostResults\Autoruns\$AutorunsName.arn" "$script:IndividualHostResults\Autoruns\Autoruns-$($Session.ComputerName).arn" -Force
-                        $FileSize = [math]::round(((Get-Item "$script:IndividualHostResults\Autoruns\Autoruns-$($Session.ComputerName).arn").Length/1mb),2)    
+                        $FileSize = [math]::round(((Get-Item "$script:IndividualHostResults\Autoruns\Autoruns-$($Session.ComputerName).arn").Length/1mb),2)
                         $ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))          Autoruns-$($Session.ComputerName).arn is $FileSize MB")
                         $PoShEasyWin.Refresh()
                     }
-                    catch { 
+                    catch {
                         # If an error occurs, it will display it
-                        $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Copy Error: $($_.Exception)") 
+                        $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))   [!] Copy Error: $($_.Exception)")
                         Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy Error: $($_.Exception)"
                         $PoShEasyWin.Refresh()
                         break
@@ -134,14 +134,14 @@ while ($true) {
                         $PoShEasyWin.Refresh()
                         Start-Sleep -Seconds 3
                         Invoke-Command -ScriptBlock {
-                            param($RemoteDrive,$TargetFolder,$AutorunsName) 
+                            param($RemoteDrive,$TargetFolder,$AutorunsName)
                             Remove-Item -Path "$TargetFolder\$AutorunsName.arn" -Force
-                            Remove-Item -Path "$TargetFolder\$AutorunsName.exe" -Force 
+                            Remove-Item -Path "$TargetFolder\$AutorunsName.exe" -Force
                         } -ArgumentList @($RemoteDrive,$TargetFolder,$AutorunsName) -Session $Session
                     }
-                    catch { 
+                    catch {
                         # If an error occurs, it will display it
-                        $ResultsListBox.Items.Insert(5,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Remove Error: $($_.Exception)") 
+                        $ResultsListBox.Items.Insert(5,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Remove Error: $($_.Exception)")
                         Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Remove Error: $($_.Exception)"
                         $PoShEasyWin.Refresh()
                         break
@@ -154,7 +154,7 @@ while ($true) {
             }
         }
     }
-    # Breaks the loop once all endpoints have finished  
+    # Breaks the loop once all endpoints have finished
     if ($AutoRunsCompletedEndpoints.count -eq $PSSession.count) {
         break
     }
@@ -162,7 +162,7 @@ while ($true) {
     elseif ((Get-Date) -gt ( ($CollectionCommandStartTime).addseconds([int]$script:OptionJobTimeoutSelectionComboBox.text))) {
         $ResultsListBox.Items.Insert(3,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Timeout: $CollectionName ($([int]$script:OptionJobTimeoutSelectionComboBox.Text) Seconds)")
         $PoShEasyWin.Refresh()
-        break 
+        break
     }
 }
 $ResultsListBox.Items.RemoveAt(1)
@@ -174,3 +174,4 @@ $SysinternalsAutorunsButton.BackColor = 'LightGreen'
 $script:ProgressBarQueriesProgressBar.Value += 1
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+

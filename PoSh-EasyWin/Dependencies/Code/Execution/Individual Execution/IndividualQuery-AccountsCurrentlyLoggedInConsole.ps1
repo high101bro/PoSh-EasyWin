@@ -19,14 +19,14 @@ Invoke-Command -ScriptBlock {
 } -Session $PSSession `
 | Set-Variable SessionData -Force
 #>
-<# Version 2 
+<# Version 2
 Invoke-Command -ScriptBlock {
     Get-WmiObject -Class Win32_Process -EA "Stop" `
     | Select-Object @{N='AccountName';E={$_.GetOwner().User}}, SessionID `
     | Where-Object {$_.AccountName -ne "NETWORK SERVICE" -and $_.AccountName -ne "LOCAL SERVICE" -and $_.AccountName -ne "SYSTEM" -and $_.AccountName -ne $null} `
     | Sort-Object -property AccountName -Unique `
     | ForEach-Object { New-Object pscustomobject -Property @{PSComputerName=$env:ComputerName;AccountName=$_.AccountName;SessionID=$_.SessionID} } `
-    | Select-Object PSComputerName,AccountName,SessionID 
+    | Select-Object PSComputerName,AccountName,SessionID
 } -Session $PSSession `
 | Set-Variable SessionData -Force
 #>
@@ -35,7 +35,7 @@ Invoke-Command -ScriptBlock {
 <# Version 3 #>
 $scriptBlock = {
     ## Find all sessions matching the specified username
-    $quser = quser | Where-Object {$_ -notmatch 'SESSIONNAME'} 
+    $quser = quser | Where-Object {$_ -notmatch 'SESSIONNAME'}
 
     $sessions = ($quser -split "`r`n").trim()
 
@@ -43,7 +43,7 @@ $scriptBlock = {
         try {
             # This checks if the value is an integer, if it is then it'll TRY, if it errors then it'll CATCH
             [int]($session -split '  +')[2] | Out-Null
-            
+
             [PSCustomObject]@{
                 PSComputerName = $env:COMPUTERNAME
                 UserName       = ($session -split '  +')[0].TrimStart('>')
@@ -52,7 +52,7 @@ $scriptBlock = {
                 State          = ($session -split '  +')[3]
                 IdleTime       = ($session -split '  +')[4]
                 LogonTime      = ($session -split '  +')[5]
-            }        
+            }
         }
         catch {
             [PSCustomObject]@{
@@ -71,14 +71,14 @@ $scriptBlock = {
 
 foreach ($TargetComputer in $script:ComputerList) {
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }           
+        if (!$script:Credential) { Create-NewCredentials }
 
         Invoke-Command -ScriptBlock $scriptBlock `
         -ComputerName $TargetComputer `
         -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
         -Credential $script:Credential `
         | Select-Object PSComputerName, *
-        
+
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$scriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
     }
     else {
@@ -86,13 +86,13 @@ foreach ($TargetComputer in $script:ComputerList) {
         -ComputerName $TargetComputer `
         -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
         | Select-Object PSComputerName, *
-        
+
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$scriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
     }
 }
 Monitor-Jobs -CollectionName $CollectionName
 
-$CollectionCommandEndTime  = Get-Date                    
+$CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
@@ -105,3 +105,5 @@ Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryT
 
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+
+

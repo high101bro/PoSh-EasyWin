@@ -1,9 +1,9 @@
 Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $CollectionCommandStartTime = Get-Date
     $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Query: $($Command.Name)")                    
+    $StatusListBox.Items.Add("Query: $($Command.Name)")
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
- 
+
     $CollectionName = $Command.ExportFileName
     $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
     New-Item -ItemType Directory -Path "$script:IndividualHostResults\$CollectionName" -Force
@@ -60,7 +60,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential"
             #    $OutputFileFileType = "txt"
             #}
-            
+
 
 
 
@@ -145,8 +145,8 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $CommandType = $Command.Type
 
         # Sends each query separetly to each computers, which produces a lot of network connections
-        # This section is purposefull not using Invoke-Command -AsJob becuase some commands use  RPC/DCOM 
- 
+        # This section is purposefull not using Invoke-Command -AsJob becuase some commands use  RPC/DCOM
+
             # Checks for the file output type, removes previous results with a file, then executes the commands
             if ( $OutputFileFileType -eq "csv" ) {
                 ## Now saving with Monitor-Jobs with the command Receive-Job
@@ -265,7 +265,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
                     $script:ProgressBarEndpointsProgressBar.Value += 1
                     # This executes native windows cmds with PSExec
-                    #Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected $UseCredential tasklist'" > c:\ressults.txt                    
+                    #Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected $UseCredential tasklist'" > c:\ressults.txt
                 }
 
 
@@ -279,7 +279,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         # Available priority values: Low, BelowNormal, Normal, AboveNormal, High, RealTime
                         [System.Threading.Thread]::CurrentThread.Priority = 'High'
                         ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
-            
+
                         # Runs all other commands an saves them locally as a .txt file
                         Invoke-Expression -Command $CommandString | Out-File $OutputFilePath -Force
                     } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
@@ -301,7 +301,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     # This allows the Endpoint progress bar to appear completed momentarily
     $script:ProgressBarEndpointsProgressBar.Maximum = 1; $script:ProgressBarEndpointsProgressBar.Value = 1; Start-Sleep -Milliseconds 250
 
-    $CollectionCommandEndTime  = Get-Date                    
+    $CollectionCommandEndTime  = Get-Date
     $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
@@ -334,3 +334,5 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         }
     }
 }
+
+

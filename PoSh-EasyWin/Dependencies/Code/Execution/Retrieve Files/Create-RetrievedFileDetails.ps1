@@ -7,7 +7,7 @@ function Create-RetrievedFileDetails {
     )
     #$RetrievedFileSavePath = "$LocalSavePath\File Details (Properties, File Hashes, Authenticode Signature).txt"
     $RetrievedFileSavePath = "$LocalSavePath\File Details.txt"
-  
+
 
     "" | Out-File $RetrievedFileSavePath
     if ($Ads) {
@@ -22,7 +22,7 @@ function Create-RetrievedFileDetails {
         "Stream Data (Sample of first 1000 characters)  : " + "$($ADS.StreamDataSample)" | Add-Content $RetrievedFileSavePath
         "Stream Data                                    : " + "Reference the zipped file: '$($ADS.Stream)'" | Add-Content $RetrievedFileSavePath
         "" | Add-Content $RetrievedFileSavePath
-    }    
+    }
 
 
     "====================================================================================================" | Add-Content $RetrievedFileSavePath
@@ -100,9 +100,9 @@ function Create-RetrievedFileDetails {
 
         $RetrievedFileHashSHA256 = Invoke-Command -ScriptBlock { param($File) (Get-FileHash -Algorithm SHA256 -Path "$File").Hash } -argumentlist $File -Session $session
         "File Hash SHA256                               : $RetrievedFileHashSHA256" | Add-Content $RetrievedFileSavePath
-        
+
         $RetrievedFileHashSHA512 = Invoke-Command -ScriptBlock { param($File) (Get-FileHash -Algorithm SHA512 -Path "$File").Hash } -argumentlist $File -Session $session
-        "File Hash SHA512                               : $RetrievedFileHashSHA512" | Add-Content $RetrievedFileSavePath    
+        "File Hash SHA512                               : $RetrievedFileHashSHA512" | Add-Content $RetrievedFileSavePath
     }
     else{
         $RetrievedFileHashSHA1   = Invoke-Command -ScriptBlock { param($File) (Get-FileHash -Algorithm SHA1   -Path "$($File.FullName)").Hash } -argumentlist $File -Session $session
@@ -110,11 +110,11 @@ function Create-RetrievedFileDetails {
 
         $RetrievedFileHashSHA256 = Invoke-Command -ScriptBlock { param($File) (Get-FileHash -Algorithm SHA256 -Path "$($File.FullName)").Hash } -argumentlist $File -Session $session
         "File Hash SHA256                               : $RetrievedFileHashSHA256" | Add-Content $RetrievedFileSavePath
-        
-        $RetrievedFileHashSHA512 = Invoke-Command -ScriptBlock { param($File) (Get-FileHash -Algorithm SHA512 -Path "$($File.FullName)").Hash } -argumentlist $File -Session $session        
-        "File Hash SHA512                               : $RetrievedFileHashSHA512" | Add-Content $RetrievedFileSavePath    
+
+        $RetrievedFileHashSHA512 = Invoke-Command -ScriptBlock { param($File) (Get-FileHash -Algorithm SHA512 -Path "$($File.FullName)").Hash } -argumentlist $File -Session $session
+        "File Hash SHA512                               : $RetrievedFileHashSHA512" | Add-Content $RetrievedFileSavePath
     }
-     
+
 
      "`n" | Add-Content $RetrievedFileSavePath
     "====================================================================================================" | Add-Content $RetrievedFileSavePath
@@ -213,7 +213,7 @@ function Create-RetrievedFileDetails {
     "                  Inheritance Flags            : " + $item.InheritanceFlags | Add-Content $RetrievedFileSavePath
     "                  Propagation Flags            : " + $item.PropagationFlags | Add-Content $RetrievedFileSavePath
     "" | Add-Content $RetrievedFileSavePath
-    }                
+    }
     "               Sddl                            : " + $RetrievedFileAuthenticodeSignature.SignerCertificate.PublicKey.Key.CspKeyContainerInfo.CryptoKeySecurity.Sddl | Add-Content $RetrievedFileSavePath
     "               Access To String                : Reference Below" | Add-Content $RetrievedFileSavePath
     foreach ($item in $($RetrievedFileAuthenticodeSignature.SignerCertificate.PublicKey.Key.CspKeyContainerInfo.CryptoKeySecurity.AccessToString -split "`n")) {
@@ -276,15 +276,15 @@ function Create-RetrievedFileDetails {
     "         Oid Friendly Name                     : " + $RetrievedFileAuthenticodeSignature.SignerCertificate.PublicKey.EncodedParameters.Oid.FriendlyName | Add-Content $RetrievedFileSavePath
     "         Oid Value                             : " + $RetrievedFileAuthenticodeSignature.SignerCertificate.PublicKey.EncodedParameters.Oid.Value | Add-Content $RetrievedFileSavePath
 #                "         Raw Data                              : " + $RetrievedFileAuthenticodeSignature.SignerCertificate.PublicKey.EncodedParameters.RawData | Add-Content $RetrievedFileSavePath
-    
+
     Add-Type -Assembly 'System.IO.Compression.FileSystem'
-    if ($ADS) { 
+    if ($ADS) {
         $RetrievedFileToUpdate = [System.IO.Compression.ZipFile]::Open("$AdsUpdateName", 'update')
         [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($RetrievedFileToUpdate, $RetrievedFileSavePath, "File Details.txt",'Optimal')
     }
     else {
         $RetrievedFileToUpdate = [System.IO.Compression.ZipFile]::Open("$LocalSavePath\$($File.BaseName) [MD5=$RetrievedFileHashMD5].zip", 'update')
-        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($RetrievedFileToUpdate, $RetrievedFileSavePath, "File Details.txt",'Optimal')    
+        [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($RetrievedFileToUpdate, $RetrievedFileSavePath, "File Details.txt",'Optimal')
     }
     #[System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($RetrievedFileToUpdate, $RetrievedFileSavePath, "File Details (Properties, File Hashes, Authenticode Signature).txt",'Optimal')
     #[System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($RetrievedFileToUpdate, "$LocalSavePath\File Details (Properties).csv", "File Details (Properties).csv",'Optimal')
@@ -292,11 +292,12 @@ function Create-RetrievedFileDetails {
     #[System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($RetrievedFileToUpdate, "$LocalSavePath\File Details (Authenticode Signature).csv", "File Details (Authenticode Signature).csv",'Optimal')
     #[System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($RetrievedFileToUpdate, "$LocalSavePath\File Details (Authenticode Signature).xml", "File Details (Authenticode Signature).xml",'Optimal')
     $RetrievedFileToUpdate.Dispose()
-    
+
     Remove-Item $RetrievedFileSavePath -Force
     #Remove-Item "$LocalSavePath\File Details (Properties).csv", "File Details (Properties).csv" -Force
     #Remove-Item "$LocalSavePath\File Details (Properties).xml", "File Details (Properties).xml" -Force
     #Remove-Item "$LocalSavePath\File Details (Authenticode Signature).csv", "File Details (Authenticode Signature).csv" -Force
     #Remove-Item "$LocalSavePath\File Details (Authenticode Signature).xml", "File Details (Authenticode Signature).xml" -Force
 }
- 
+
+

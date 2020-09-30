@@ -23,7 +23,7 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
         Location = @{ X = $FormScale * 10
                       Y = $FormScale * 10 }
         Width  = $FormScale * 300
-        Height = $FormScale * 25 
+        Height = $FormScale * 25
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $ComputerTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
@@ -37,7 +37,7 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
         Location = @{ X = $FormScale * 10
                       Y = $ComputerTreeNodePopupAddTextBox.Location.Y + $ComputerTreeNodePopupAddTextBox.Size.Height + $($FormScale * 10) }
         Width  = $FormScale * 300
-        Height = $FormScale * 25 
+        Height = $FormScale * 25
         AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
         AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
         Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -104,3 +104,5 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
     Save-HostData
     $ComputerTreeNodePopup.ShowDialog()
 }
+
+

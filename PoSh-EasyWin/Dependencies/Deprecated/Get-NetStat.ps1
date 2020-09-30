@@ -3,13 +3,13 @@ param (
 )
 
 $Connections = Invoke-Command -ScriptBlock { cmd /c netstat -anob -p tcp }
-    
+
 if ($string) {
     # Processes collection to format it from txt to csv
     $Connections = $Connections | Select-Object -skip 3
     $TCPdata = @()
-    $Connections.trim() | Out-String | ForEach-Object { 
-        $TCPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;TCP","`r`nTCP" -replace ";;","  " -replace " {2,}","," -creplace "PID","PID,ExecutedProcess" -replace "^,|,$","" 
+    $Connections.trim() | Out-String | ForEach-Object {
+        $TCPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;TCP","`r`nTCP" -replace ";;","  " -replace " {2,}","," -creplace "PID","PID,ExecutedProcess" -replace "^,|,$",""
         # -replace "`r`n",";;"                       Replaces return cariages and newlines with a new place holder field separator
         # -replace ";;;;",";;"                       Replaces instances where two return carriages and newlines were back to back
         # -creplace ";;TCP","`r`nTCP"                Replaces the beginning of the TCP network connection line with a return carriage/new line
@@ -42,8 +42,8 @@ else {
     # Processes collection to format it from txt to csv
     $Connections = $Connections | Select-Object -skip 4
     $TCPdata = @()
-    $Connections.trim() | Out-String | ForEach-Object { 
-        $TCPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;TCP","`r`nTCP" -replace ";;","  " -replace " {2,}","," -creplace "PID","PID,ExecutedProcess" -replace "^,|,$","" 
+    $Connections.trim() | Out-String | ForEach-Object {
+        $TCPdata += $_ -replace "`r`n",";;" -replace ";;;;",";;" -creplace ";;TCP","`r`nTCP" -replace ";;","  " -replace " {2,}","," -creplace "PID","PID,ExecutedProcess" -replace "^,|,$",""
         # -replace "`r`n",";;"                       Replaces return cariages and newlines with a new place holder field separator
         # -replace ";;;;",";;"                       Replaces instances where two return carriages and newlines were back to back
         # -creplace ";;TCP","`r`nTCP"                Replaces the beginning of the TCP network connection line with a return carriage/new line
@@ -79,4 +79,6 @@ else {
     }
     $NetstatData | Select-Object PSComputerName, Protocol, LocalAddress, LocalPort, RemoteAddress, RemotePort, State, PID, ExecutedProcess
 }
+
+
 

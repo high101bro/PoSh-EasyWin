@@ -1,6 +1,6 @@
-$ComputerTreeNodeSearchComboBoxAdd_KeyDown = { 
-    if ($_.KeyCode -eq "Enter") { 
-        Search-ComputerTreeNode 
+$ComputerTreeNodeSearchComboBoxAdd_KeyDown = {
+    if ($_.KeyCode -eq "Enter") {
+        Search-ComputerTreeNode
     }
 }
 
@@ -10,5 +10,7 @@ $ComputerTreeNodeSearchComboBoxAdd_MouseHover = {
 +  Search can include any character.
 +  Tags are pre-built to assist with standarized notes.
 +  Can search CSV Results, enable them in the Options Tab.
-"@ 
+"@
 }
+
+

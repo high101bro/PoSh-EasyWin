@@ -4,5 +4,7 @@ $EventLogsMaximumCollectionLabelAdd_MouseHover = {
 +  This can be used with the datatime picker
 +  If left blank, it will collect all available Event Logs
 +  An entry of 0 (zero) will return no Event Logs
-"@  
+"@
 }
+
+

@@ -5,7 +5,7 @@ $ComputerListPsExecButtonAdd_Click = {
 
     if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
-    
+
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
         $VerifyAction = Verify-Action -Title "Verification: PSExec" -Question "Connecting Account:  $Username`n`nEnter a PSEexec session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
         $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
@@ -17,7 +17,7 @@ $ComputerListPsExecButtonAdd_Click = {
     if ($VerifyAction) {
         # This brings specific tabs to the forefront/front view
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-    
+
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("PsExec:  $($script:ComputerTreeViewSelected)")
         #Removed For Testing#$ResultsListBox.Items.Clear()
@@ -26,7 +26,7 @@ $ComputerListPsExecButtonAdd_Click = {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
             $Password = $script:Credential.GetNetworkCredential().Password
-            
+
             if ($Username -like '*@*'){
                 $User     = $Username.split('@')[0]
                 $Domain   = $Username.split('@')[1]
@@ -38,7 +38,7 @@ $ComputerListPsExecButtonAdd_Click = {
             #opens in black terminal# Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected -u '$Username' -p '$Password' cmd'"
             start-process powershell "-noexit -command $PsExecPath -accepteula -nobanner \\$script:ComputerTreeViewSelected -u $Username -p $Password cmd"
         }
-        else { 
+        else {
             $ResultsListBox.Items.Add("./PsExec.exe -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd")
             $ResultsListBox.Items.Add("$PsExecPath -AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd")
             #opens in black terminal# Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected cmd'"
@@ -46,9 +46,9 @@ $ComputerListPsExecButtonAdd_Click = {
         }
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PsExec: $($script:ComputerTreeViewSelected)"
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
-            Generate-NewRollingPassword 
+            Generate-NewRollingPassword
         }
     }
     else {
@@ -67,5 +67,7 @@ $ComputerListPsExecButtonAdd_MouseHover = {
         PsExec.exe -AcceptEULA -NoBanner \\<target> cmd
         PsExec.exe -AcceptEULA -NoBanner \\<target> -u <domain\username> -p <password> cmd
 +  Compatiable with 'Specify Credentials'
-"@ 
+"@
 }
+
+

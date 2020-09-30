@@ -14,7 +14,7 @@ $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Pro
     AutoScroll    = $True
 }
 $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTab01)
-  
+
 # Searches though the all Collection Data Directories to find files that match
 $script:ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
 
@@ -28,7 +28,7 @@ $script:AutoChart01DeepBlueCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Deep Blue' -or $CSVFile -match 'DeepBlue') { $script:AutoChart01DeepBlueCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01DeepBlueCSVFileMatch | Select-Object -Last 1
 $script:AutoChartDataSourceCsv = $null
 $script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartCSVFileMostRecentCollection
@@ -68,7 +68,7 @@ $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property 
     Size   = @{ Width  = $FormScale * 1150
                 Height = $FormScale * 25 }
     Font   = New-Object System.Drawing.Font @('Microsoft Sans Serif','16', [System.Drawing.FontStyle]::Bold)
-    TextAlign = 'MiddleCenter' 
+    TextAlign = 'MiddleCenter'
 }
 
 
@@ -229,7 +229,7 @@ $AutoChartPullNewDataButton.Add_Click({
         $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
         $script:AutoChartOpenResultsOpenFileDialogfilename = $AutoChartOpenResultsOpenFileDialog.filename
         $script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
-    
+
         $script:AutoChartDataSourceCsvFileName = $AutoChartOpenResultsOpenFileDialog.filename
     }
 
@@ -264,7 +264,7 @@ $script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataEnrichedChec
 $script:AutoChartDataSourceXmlPath = $null
 function AutoChartOpenDataInShell {
     if ($script:AutoChartOpenResultsOpenFileDialogfilename) { $ViewImportResults = $script:AutoChartOpenResultsOpenFileDialogfilename -replace '.csv','.xml' }
-    else { $ViewImportResults = $script:AutoChartCSVFileMostRecentCollection -replace '.csv','.xml' } 
+    else { $ViewImportResults = $script:AutoChartCSVFileMostRecentCollection -replace '.csv','.xml' }
 
     if ($script:AutoChartDataSourceXmlPath) {
         $SavePath = Split-Path -Path $script:AutoChartDataSourceXmlPath
@@ -313,7 +313,7 @@ $script:AutoChart01DeepBlue = New-object System.Windows.Forms.DataVisualization.
 }
 $script:AutoChart01DeepBlue.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart01DeepBlueTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -354,16 +354,16 @@ $script:AutoChart01DeepBlue.Series["Application Name"].Color             = 'Red'
                 $script:AutoChartsProgressBar.Maximum = $script:AutoChart01DeepBlueUniqueDataFields.count
                 $script:AutoChartsProgressBar.Value   = 0
                 $script:AutoChartsProgressBar.Update()
-            
+
                 $script:AutoChart01DeepBlue.Series["Application Name"].Points.Clear()
 
                 if ($script:AutoChart01DeepBlueUniqueDataFields.count -gt 0){
                     $script:AutoChart01DeepBlueTitle.ForeColor = 'Black'
                     $script:AutoChart01DeepBlueTitle.Text = "Potentials Findings By Event Type"
-            
+
                     # If the Second field/Y Axis equals PSComputername, it counts it
                     $script:AutoChart01DeepBlueOverallDataResults = @()
-            
+
                     # Generates and Counts the data - Counts the number of times that any given property possess a given value
                     foreach ($DataField in $script:AutoChart01DeepBlueUniqueDataFields) {
                         $Count        = 0
@@ -379,7 +379,7 @@ $script:AutoChart01DeepBlue.Series["Application Name"].Color             = 'Red'
                             DataField   = $DataField
                             TotalCount  = $Count
                             UniqueCount = $script:AutoChart01DeepBlueUniqueCount
-                            Computers   = $script:AutoChart01DeepBlueCsvComputers 
+                            Computers   = $script:AutoChart01DeepBlueCsvComputers
                         }
                         $script:AutoChart01DeepBlueOverallDataResults += $script:AutoChart01DeepBlueDataResults
                         $script:AutoChartsProgressBar.Value += 1
@@ -389,7 +389,7 @@ $script:AutoChart01DeepBlue.Series["Application Name"].Color             = 'Red'
                     $script:AutoChart01DeepBlueOverallDataResultsSortAlphaNum = $script:AutoChart01DeepBlueOverallDataResults | Sort-Object @{Expression='UniqueCount';Descending=$false}, @{Expression={[string]$_.DataField};Descending=$false}
                     $script:AutoChart01DeepBlueOverallDataResultsSortCount    = $script:AutoChart01DeepBlueOverallDataResults | Sort-Object @{Expression={[string]$_.DataField};Descending=$false}, @{Expression='UniqueCount';Descending=$false}
                     $script:AutoChart01DeepBlueOverallDataResults = $script:AutoChart01DeepBlueOverallDataResultsSortAlphaNum
-    
+
                     $script:AutoChart01DeepBlueOverallDataResults | ForEach-Object { $script:AutoChart01DeepBlue.Series["Application Name"].Points.AddXY($_.DataField.Message,$_.UniqueCount) }
                     $script:AutoChart01DeepBlueTrimOffLastTrackBar.SetRange(0, $($script:AutoChart01DeepBlueOverallDataResults.count))
                     $script:AutoChart01DeepBlueTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01DeepBlueOverallDataResults.count))
@@ -397,13 +397,13 @@ $script:AutoChart01DeepBlue.Series["Application Name"].Color             = 'Red'
                 else {
                     $script:AutoChart01DeepBlueTitle.ForeColor = 'Red'
                     $script:AutoChart01DeepBlueTitle.Text = "Potentials Findings By Event Type`n
-            [ No Data Available ]`n"                
+            [ No Data Available ]`n"
                 }
             }
             Generate-AutoChart01DeepBlue
 
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart01DeepBlueOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart01DeepBlue.Location.X + $($FormScale * 5)
@@ -412,7 +412,7 @@ $script:AutoChart01DeepBlueOptionsButton = New-Object Windows.Forms.Button -Prop
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart01DeepBlueOptionsButton
-$script:AutoChart01DeepBlueOptionsButton.Add_Click({  
+$script:AutoChart01DeepBlueOptionsButton.Add_Click({
     if ($script:AutoChart01DeepBlueOptionsButton.Text -eq 'Options v') {
         $script:AutoChart01DeepBlueOptionsButton.Text = 'Options ^'
         $script:AutoChart01DeepBlue.Controls.Add($script:AutoChart01DeepBlueManipulationPanel)
@@ -452,14 +452,14 @@ $script:AutoChart01DeepBlueTrimOffFirstGroupBoX = New-Object System.Windows.Form
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart01DeepBlueTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01DeepBlueOverallDataResults.count))                
+    $script:AutoChart01DeepBlueTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01DeepBlueOverallDataResults.count))
     $script:AutoChart01DeepBlueTrimOffFirstTrackBarValue   = 0
     $script:AutoChart01DeepBlueTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart01DeepBlueTrimOffFirstTrackBarValue = $script:AutoChart01DeepBlueTrimOffFirstTrackBar.Value
@@ -486,7 +486,7 @@ $script:AutoChart01DeepBlueTrimOffLastGroupBoX = New-Object System.Windows.Forms
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -509,11 +509,11 @@ $script:AutoChart01DeepBlueManipulationPanel.Controls.Add($script:AutoChart01Dee
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart01DeepBlueChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Bar' 
+    Text      = 'Bar'
     Location  = @{ X = $script:AutoChart01DeepBlueTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart01DeepBlueTrimOffFirstGroupBox.Location.Y + $script:AutoChart01DeepBlueTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -537,19 +537,19 @@ $script:AutoChart01DeepBlue3DToggleButton = New-Object Windows.Forms.Button -Pro
 CommonButtonSettings -Button $script:AutoChart01DeepBlue3DToggleButton
 $script:AutoChart01DeepBlue3DInclination = 0
 $script:AutoChart01DeepBlue3DToggleButton.Add_Click({
-    
+
     $script:AutoChart01DeepBlue3DInclination += 10
-    if ( $script:AutoChart01DeepBlue3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart01DeepBlue3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart01DeepBlueArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart01DeepBlueArea.Area3DStyle.Inclination = $script:AutoChart01DeepBlue3DInclination
         $script:AutoChart01DeepBlue3DToggleButton.Text  = "3D On ($script:AutoChart01DeepBlue3DInclination)"
     }
     elseif ( $script:AutoChart01DeepBlue3DInclination -le 90 ) {
         $script:AutoChart01DeepBlueArea.Area3DStyle.Inclination = $script:AutoChart01DeepBlue3DInclination
-        $script:AutoChart01DeepBlue3DToggleButton.Text  = "3D On ($script:AutoChart01DeepBlue3DInclination)" 
+        $script:AutoChart01DeepBlue3DToggleButton.Text  = "3D On ($script:AutoChart01DeepBlue3DInclination)"
     }
-    else { 
-        $script:AutoChart01DeepBlue3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart01DeepBlue3DToggleButton.Text  = "3D Off"
         $script:AutoChart01DeepBlue3DInclination = 0
         $script:AutoChart01DeepBlueArea.Area3DStyle.Inclination = $script:AutoChart01DeepBlue3DInclination
         $script:AutoChart01DeepBlueArea.Area3DStyle.Enable3D    = $false
@@ -579,7 +579,7 @@ $script:AutoChart01DeepBlueManipulationPanel.Controls.Add($script:AutoChart01Dee
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart01DeepBlue {    
+function script:InvestigateDifference-AutoChart01DeepBlue {
     # List of Positive Endpoints that positively match
     $script:AutoChart01DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$_.Message -eq $($script:AutoChart01DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart01DeepBlueInvestDiffPosResultsTextBox.Text = ''
@@ -587,7 +587,7 @@ function script:InvestigateDifference-AutoChart01DeepBlue {
 
     # List of all endpoints within the csv file
     $script:AutoChart01DeepBlueImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart01DeepBlueImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart01DeepBlueImportCsvAll) { if ($Endpoint -notin $script:AutoChart01DeepBlueImportCsvPosResults) { $script:AutoChart01DeepBlueImportCsvNegResults += $Endpoint } }
@@ -655,7 +655,7 @@ $script:AutoChart01DeepBlueCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart01DeepBlueInvestDiffDropDownComboBox.Location.y + $script:AutoChart01DeepBlueInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart01DeepBlueInvestDiffExecuteButton
@@ -670,7 +670,7 @@ $script:AutoChart01DeepBlueCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart01DeepBlueInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart01DeepBlueInvestDiffPosResultsLabel.Location.y + $script:AutoChart01DeepBlueInvestDiffPosResultsLabel.Size.Height }
@@ -682,7 +682,7 @@ $script:AutoChart01DeepBlueCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart01DeepBlueInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -736,7 +736,7 @@ $script:AutoChart01DeepBlueOpenInShell = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01DeepBlueOpenInShell
-$script:AutoChart01DeepBlueOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart01DeepBlueOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01DeepBlueManipulationPanel.controls.Add($script:AutoChart01DeepBlueOpenInShell)
 
 
@@ -772,7 +772,7 @@ $script:AutoChart01DeepBlueViewResults = New-Object Windows.Forms.Button -Proper
 }
 CommonButtonSettings -Button $script:AutoChart01DeepBlueViewResults
 $script:AutoChart01DeepBlueViewResults.Add_Click({
-    $script:AutoChartDataSourceCsv | Out-GridView }) 
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart01DeepBlueManipulationPanel.controls.Add($script:AutoChart01DeepBlueViewResults)
 
 
@@ -795,7 +795,7 @@ $script:AutoChart01DeepBlueManipulationPanel.controls.Add($script:AutoChart01Dee
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart01DeepBlueNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart01DeepBlueSortButton.Location.X 
+    Location    = @{ X = $script:AutoChart01DeepBlueSortButton.Location.X
                         Y = $script:AutoChart01DeepBlueSortButton.Location.Y + $script:AutoChart01DeepBlueSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -852,7 +852,7 @@ $script:AutoChart02DeepBlue = New-object System.Windows.Forms.DataVisualization.
 $script:AutoChart02DeepBlue.Add_MouseHover({ Close-AllOptions })
 
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart02DeepBlueTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -886,7 +886,7 @@ $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Color             = 
             $script:AutoChart02DeepBlueCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
             $script:AutoChart02DeepBlueUniqueDataFields  = $script:AutoChartDataSourceCsv `
             | Select-Object -Property Message | Sort-Object Message -Unique
-        
+
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
             $script:AutoChartsProgressBar.Minimum = 0
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart02DeepBlueUniqueDataFields.count
@@ -907,18 +907,18 @@ $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Color             = 
                 foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
                     $LineName = $Line.Message
                     if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
-                    if ( $AutoChart02CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart02CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $LineName ) {
                                 if ( $LineName -ne "" ) { $AutoChart02YResults += $LineName ; $AutoChart02ResultsCount += 1 }
                                 if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
                             $AutoChart02CurrentComputer = $Line.PSComputerName
-                            $AutoChart02YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
-                                Computer     = $AutoChart02Computer 
+                                Computer     = $AutoChart02Computer
                             }
                             $script:AutoChart02DeepBlueOverallDataResults += $AutoChart02YDataResults
                             $AutoChart02YResults     = @()
@@ -933,11 +933,11 @@ $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Color             = 
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }    
+                $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }
                 $script:AutoChart02DeepBlueOverallDataResults += $AutoChart02YDataResults
 
                 $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Points.Clear()
-                
+
                 $script:AutoChart02DeepBlueSortButton.text = "View: Count"
                 $script:AutoChart02DeepBlueOverallDataResultsSortAlphaNum = $script:AutoChart02DeepBlueOverallDataResults | Sort-Object @{Expression='UniqueCount';Descending=$false}, @{Expression={[string]$_.DataField};Descending=$false}
                 $script:AutoChart02DeepBlueOverallDataResultsSortCount    = $script:AutoChart02DeepBlueOverallDataResults | Sort-Object @{Expression={[string]$_.DataField};Descending=$false}, @{Expression='UniqueCount';Descending=$false}
@@ -950,12 +950,12 @@ $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Color             = 
             else {
                 $script:AutoChart02DeepBlueTitle.ForeColor = 'Blue'
                 $script:AutoChart02DeepBlueTitle.Text = "Findings Per Endpoint`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart02DeepBlue
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart02DeepBlueOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart02DeepBlue.Location.X + $($FormScale * 5)
@@ -964,7 +964,7 @@ $script:AutoChart02DeepBlueOptionsButton = New-Object Windows.Forms.Button -Prop
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart02DeepBlueOptionsButton
-$script:AutoChart02DeepBlueOptionsButton.Add_Click({  
+$script:AutoChart02DeepBlueOptionsButton.Add_Click({
     if ($script:AutoChart02DeepBlueOptionsButton.Text -eq 'Options v') {
         $script:AutoChart02DeepBlueOptionsButton.Text = 'Options ^'
         $script:AutoChart02DeepBlue.Controls.Add($script:AutoChart02DeepBlueManipulationPanel)
@@ -1004,14 +1004,14 @@ $script:AutoChart02DeepBlueTrimOffFirstGroupBoX = New-Object System.Windows.Form
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart02DeepBlueTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02DeepBlueOverallDataResults.count))                
+    $script:AutoChart02DeepBlueTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02DeepBlueOverallDataResults.count))
     $script:AutoChart02DeepBlueTrimOffFirstTrackBarValue   = 0
     $script:AutoChart02DeepBlueTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart02DeepBlueTrimOffFirstTrackBarValue = $script:AutoChart02DeepBlueTrimOffFirstTrackBar.Value
@@ -1038,7 +1038,7 @@ $script:AutoChart02DeepBlueTrimOffLastGroupBoX = New-Object System.Windows.Forms
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -1061,11 +1061,11 @@ $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($script:AutoChart02Dee
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart02DeepBlueChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Pie' 
+    Text      = 'Pie'
     Location  = @{ X = $script:AutoChart02DeepBlueTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart02DeepBlueTrimOffFirstGroupBox.Location.Y + $script:AutoChart02DeepBlueTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1089,19 +1089,19 @@ $script:AutoChart02DeepBlue3DToggleButton = New-Object Windows.Forms.Button -Pro
 CommonButtonSettings -Button $script:AutoChart02DeepBlue3DToggleButton
 $script:AutoChart02DeepBlue3DInclination = 0
 $script:AutoChart02DeepBlue3DToggleButton.Add_Click({
-    
+
     $script:AutoChart02DeepBlue3DInclination += 10
-    if ( $script:AutoChart02DeepBlue3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart02DeepBlue3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart02DeepBlueArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart02DeepBlueArea.Area3DStyle.Inclination = $script:AutoChart02DeepBlue3DInclination
         $script:AutoChart02DeepBlue3DToggleButton.Text  = "3D On ($script:AutoChart02DeepBlue3DInclination)"
     }
     elseif ( $script:AutoChart02DeepBlue3DInclination -le 90 ) {
         $script:AutoChart02DeepBlueArea.Area3DStyle.Inclination = $script:AutoChart02DeepBlue3DInclination
-        $script:AutoChart02DeepBlue3DToggleButton.Text  = "3D On ($script:AutoChart02DeepBlue3DInclination)" 
+        $script:AutoChart02DeepBlue3DToggleButton.Text  = "3D On ($script:AutoChart02DeepBlue3DInclination)"
     }
-    else { 
-        $script:AutoChart02DeepBlue3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart02DeepBlue3DToggleButton.Text  = "3D Off"
         $script:AutoChart02DeepBlue3DInclination = 0
         $script:AutoChart02DeepBlueArea.Area3DStyle.Inclination = $script:AutoChart02DeepBlue3DInclination
         $script:AutoChart02DeepBlueArea.Area3DStyle.Enable3D    = $false
@@ -1131,7 +1131,7 @@ $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($script:AutoChart02Dee
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart02DeepBlue {    
+function script:InvestigateDifference-AutoChart02DeepBlue {
     # List of Positive Endpoints that positively match
     $script:AutoChart02DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$_.Message -eq $($script:AutoChart02DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart02DeepBlueInvestDiffPosResultsTextBox.Text = ''
@@ -1139,7 +1139,7 @@ function script:InvestigateDifference-AutoChart02DeepBlue {
 
     # List of all endpoints within the csv file
     $script:AutoChart02DeepBlueImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart02DeepBlueImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart02DeepBlueImportCsvAll) { if ($Endpoint -notin $script:AutoChart02DeepBlueImportCsvPosResults) { $script:AutoChart02DeepBlueImportCsvNegResults += $Endpoint } }
@@ -1207,7 +1207,7 @@ $script:AutoChart02DeepBlueCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart02DeepBlueInvestDiffDropDownComboBox.Location.y + $script:AutoChart02DeepBlueInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart02DeepBlueInvestDiffExecuteButton
@@ -1222,7 +1222,7 @@ $script:AutoChart02DeepBlueCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart02DeepBlueInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart02DeepBlueInvestDiffPosResultsLabel.Location.y + $script:AutoChart02DeepBlueInvestDiffPosResultsLabel.Size.Height }
@@ -1234,7 +1234,7 @@ $script:AutoChart02DeepBlueCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart02DeepBlueInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -1288,7 +1288,7 @@ $script:AutoChart02DeepBlueOpenInShell = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02DeepBlueOpenInShell
-$script:AutoChart02DeepBlueOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart02DeepBlueOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02DeepBlueManipulationPanel.controls.Add($script:AutoChart02DeepBlueOpenInShell)
 
 
@@ -1324,7 +1324,7 @@ $script:AutoChart02DeepBlueViewResults = New-Object Windows.Forms.Button -Proper
 }
 CommonButtonSettings -Button $script:AutoChart02DeepBlueViewResults
 $script:AutoChart02DeepBlueViewResults.Add_Click({
-    $script:AutoChartDataSourceCsv | Out-GridView }) 
+    $script:AutoChartDataSourceCsv | Out-GridView })
 $script:AutoChart02DeepBlueManipulationPanel.controls.Add($script:AutoChart02DeepBlueViewResults)
 
 
@@ -1347,7 +1347,7 @@ $script:AutoChart02DeepBlueManipulationPanel.controls.Add($script:AutoChart02Dee
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart02DeepBlueNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart02DeepBlueSortButton.Location.X 
+    Location    = @{ X = $script:AutoChart02DeepBlueSortButton.Location.X
                         Y = $script:AutoChart02DeepBlueSortButton.Location.Y + $script:AutoChart02DeepBlueSortButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -1360,6 +1360,8 @@ $script:AutoChart02DeepBlueNoticeTextboX = New-Object System.Windows.Forms.Textb
     BorderStyle = 'FixedSingle' #None, FixedSingle, Fixed3D
 }
 $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($script:AutoChart02DeepBlueNoticeTextbox)
+
+
 
 
 

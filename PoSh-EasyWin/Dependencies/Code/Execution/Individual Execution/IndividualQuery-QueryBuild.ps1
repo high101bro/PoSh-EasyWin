@@ -1,7 +1,7 @@
 $CollectionName = ($script:CustomQueryScriptBlockTextbox.text -split ' ')[0]
-$CollectionCommandStartTime = Get-Date 
+$CollectionCommandStartTime = Get-Date
 $StatusListBox.Items.Clear()
-$StatusListBox.Items.Add("Query: $CollectionName")                    
+$StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
 #$OutputFilePath      = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName"
@@ -16,9 +16,9 @@ foreach ($TargetComputer in $script:ComputerList) {
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }
 
-        Invoke-Command -ScriptBlock { 
-            param($script:ShowCommandQueryBuild) 
-            Invoke-Expression -Command $script:ShowCommandQueryBuild 
+        Invoke-Command -ScriptBlock {
+            param($script:ShowCommandQueryBuild)
+            Invoke-Expression -Command $script:ShowCommandQueryBuild
         } `
         -ArgumentList $script:ShowCommandQueryBuild `
         -ComputerName $TargetComputer `
@@ -28,9 +28,9 @@ foreach ($TargetComputer in $script:ComputerList) {
         Create-LogEntry -LogFile $LogFile -Message "Invoke-Command -ScriptBlock { param(`$script:ShowCommandQueryBuild) Invoke-Expression -Command $script:ShowCommandQueryBuild } -ComputerName $TargetComputer -ArgumentList `$script:ShowCommandQueryBuild  -Credential `$script:Credential"
     }
     else {
-        Invoke-Command -ScriptBlock { 
-            param($script:ShowCommandQueryBuild) 
-            Invoke-Expression -Command $script:ShowCommandQueryBuild 
+        Invoke-Command -ScriptBlock {
+            param($script:ShowCommandQueryBuild)
+            Invoke-Expression -Command $script:ShowCommandQueryBuild
         } `
         -ArgumentList $script:ShowCommandQueryBuild `
         -ComputerName $TargetComputer `
@@ -41,7 +41,7 @@ foreach ($TargetComputer in $script:ComputerList) {
 }
 Monitor-Jobs -CollectionName $CollectionName
 
-$CollectionCommandEndTime  = Get-Date                    
+$CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
@@ -54,3 +54,5 @@ Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryT
 
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+
+

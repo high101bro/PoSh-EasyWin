@@ -1,4 +1,4 @@
-$CollectionCommandStartTime = Get-Date 
+$CollectionCommandStartTime = Get-Date
 if     ($FileSearchSelectFileHashComboBox.Text -eq 'Filename') {$CollectionName = "File Search"}
 elseif ($FileSearchSelectFileHashComboBox.Text -eq 'MD5')      {$CollectionName = "MD5 Hash Search"}
 elseif ($FileSearchSelectFileHashComboBox.Text -eq 'SHA1')     {$CollectionName = "SHA1 Hash Search"}
@@ -9,7 +9,7 @@ elseif ($FileSearchSelectFileHashComboBox.Text -eq 'RIPEMD160'){$CollectionName 
 else   {$CollectionName = "Search"}
 
 $StatusListBox.Items.Clear()
-$StatusListBox.Items.Add("Query: $CollectionName")                    
+$StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
 foreach ($TargetComputer in $script:ComputerList) {
@@ -25,7 +25,7 @@ foreach ($TargetComputer in $script:ComputerList) {
     $MaximumDepth        = $FileSearchFileSearchMaxDepthTextbox.text
 
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }           
+        if (!$script:Credential) { Create-NewCredentials }
 
         Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} `
         -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection) `
@@ -49,7 +49,7 @@ foreach ($TargetComputer in $script:ComputerList) {
 
 Monitor-Jobs -CollectionName $CollectionName
 
-$CollectionCommandEndTime  = Get-Date                    
+$CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
@@ -62,3 +62,5 @@ Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryT
 
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+
+

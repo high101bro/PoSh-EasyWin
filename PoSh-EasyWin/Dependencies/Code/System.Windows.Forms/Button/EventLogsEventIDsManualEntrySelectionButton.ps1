@@ -5,3 +5,5 @@ $EventLogsEventIDsManualEntrySelectionButtonAdd_Click = {
         $EventLogsEventIDsManualEntryTextbox.Text += "$EventID`r`n"
     }
 }
+
+

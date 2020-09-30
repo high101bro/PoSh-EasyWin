@@ -4,7 +4,7 @@ function Launch-RekallWinPmemForm {
     $script:ReportedDiskFreeSpace            = $null
     $script:RekalWinPmemDiskPercentageUse    = $null
     $script:RekallWinPmemReportedAverageLoad = $null
-    
+
     function RekallWinPmemStatusCheckUpdate {
         $RekallWinPmemStatusMessageTextbox.Text = $null
 
@@ -27,7 +27,7 @@ function Launch-RekallWinPmemForm {
             $RekallWinPmemRemoteTotalDiskSpaceLabel.Text = $('{0,-40}{1,-20}{2}' -f 'Total Disk Space:',"$([math]::round($($script:ReportedDiskSize / 1GB),2)) GB", "Pass")
 
             $RekallWinPmemStatusMessageTextbox.Text += "[+] Passes disk size check`r`n"
-        }            
+        }
 
         # Update Disk Free Space Status
         if ($script:ReportedDiskFreeSpace -lt $RekallWinPmemSettingMinimumAvailbleDiskSpaceComboBox.Text){
@@ -37,7 +37,7 @@ function Launch-RekallWinPmemForm {
         else {
             $RekallWinPmemRemoteAvailableDiskSpaceLabel.Text = $('{0,-40}{1,-20}{2}' -f 'Available Disk Space:',"$([math]::round($($script:ReportedDiskFreeSpace  / 1GB),2)) GB", "Pass")
             $RekallWinPmemStatusMessageTextbox.Text += "[+] Passes disk free space check`r`n"
-        }            
+        }
 
         # Update Disk Utilization Percentage Use Status
         if ( $script:RekalWinPmemDiskPercentageUse -gt 75 ) {
@@ -58,7 +58,7 @@ function Launch-RekallWinPmemForm {
             $RekallWinPmemRemoteCPULevelLabel.Text = $('{0,-40}{1,-20}{2}' -f 'CPU Utilitzation (10s Avg):', "$([math]::Round($script:RekallWinPmemReportedAverageLoad,2)) %", "Okay")
             $RekallWinPmemStatusMessageTextbox.Text += "[+] Passes CPU utilization check`r`n"
         }
-                     
+
         $RekallWinPmemCheckRemoteResourcesButton.Text = "Update Status"
 
         if ($RekallWinPmemReportedTotalRAMLabel.Text -match 'Pass' -and $RekallWinPmemRemoteAvailableDiskSpaceLabel.Text -match 'Pass' -and $RekallWinPmemRemoteTotalDiskSpaceLabel.Text -match 'Pass') {
@@ -76,7 +76,7 @@ function Launch-RekallWinPmemForm {
         }
         else {
             $RekallWinPmemCollectMemoryButton.Enabled = $false
-            $RekallWinPmemCollectMemoryOverrideRiskCheckbox.Enabled = $false                
+            $RekallWinPmemCollectMemoryOverrideRiskCheckbox.Enabled = $false
         }
     }
 
@@ -186,7 +186,7 @@ function Launch-RekallWinPmemForm {
         # Rekall WinPmem - Settings Mimimal Available Disk Space Label
         #--------------------------------------------------------------
         $RekallWinPmemSettingMinimumAvailbleDiskSpaceLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text     = "The minimum endpoint disk space to permit memory collection."                     
+            Text     = "The minimum endpoint disk space to permit memory collection."
             Location = @{ X = $RekallWinPmemSettingMinimumAvailbleDiskSpaceComboBox.Location.X + $RekallWinPmemSettingMinimumAvailbleDiskSpaceComboBox.Size.Width + $($FormScale * 5)
                           Y = $RekallWinPmemSettingMinimumAvailbleDiskSpaceComboBox.Location.Y + $($FormScale * 2) }
             Size     = @{ Width  = $FormScale * 355
@@ -196,7 +196,7 @@ function Launch-RekallWinPmemForm {
         }
         $RekallWinPmemVerifySettingsGroupBox.Controls.Add($RekallWinPmemSettingMinimumAvailbleDiskSpaceLabel)
 
-    $RekallWinPmemForm.Controls.Add($RekallWinPmemVerifySettingsGroupBox) 
+    $RekallWinPmemForm.Controls.Add($RekallWinPmemVerifySettingsGroupBox)
 
     #----------------------------------------------
     # Rekall WinPmem - Reported Resources GroupBox
@@ -323,7 +323,7 @@ function Launch-RekallWinPmemForm {
                 $Message | Add-Content -Path $LogFile
 
                     # Determine Disk Total Size
-                    $script:ReportedDiskSize = $ReportedDiskInfo | Select-Object -ExpandProperty Size                
+                    $script:ReportedDiskSize = $ReportedDiskInfo | Select-Object -ExpandProperty Size
                     $RekallWinPmemRemoteTotalDiskSpaceLabel.Text = $('{0,-40}{1,-20}{2}' -f 'Total Disk Space:',"$([math]::round($($script:ReportedDiskSize / 1GB),2)) GB", "____")
                     Start-Sleep -Milliseconds 500
 
@@ -356,13 +356,13 @@ function Launch-RekallWinPmemForm {
             }
             RekallWinPmemStatusCheckUpdate
         })
-        $RekallWinPmemReportedResourcesGroupBox.Controls.Add($RekallWinPmemCheckRemoteResourcesButton) 
+        $RekallWinPmemReportedResourcesGroupBox.Controls.Add($RekallWinPmemCheckRemoteResourcesButton)
 
-    $RekallWinPmemForm.Controls.Add($RekallWinPmemReportedResourcesGroupBox) 
+    $RekallWinPmemForm.Controls.Add($RekallWinPmemReportedResourcesGroupBox)
 
 
     # -------------
-    # Progress Bar  
+    # Progress Bar
     #--------------
     $script:MemoryCaptureProgressBarLabel = New-Object System.Windows.Forms.Label -Property @{
         Text     = "Update Timer:"
@@ -372,7 +372,7 @@ function Launch-RekallWinPmemForm {
                       Height = $FormScale * 22 }
         Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
-    $RekallWinPmemForm.Controls.Add($script:MemoryCaptureProgressBarLabel)  
+    $RekallWinPmemForm.Controls.Add($script:MemoryCaptureProgressBarLabel)
 
     $script:MemoryCaptureProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
         Location = @{ X = $script:MemoryCaptureProgressBarLabel.Location.X + $script:MemoryCaptureProgressBarLabel.Size.Width
@@ -381,7 +381,7 @@ function Launch-RekallWinPmemForm {
                       Height = $FormScale * 15 }
         Forecolor = 'LightBlue'
         BackColor = 'white'
-        Style     = "Continuous" #"Marque" 
+        Style     = "Continuous" #"Marque"
         Minimum   = 0
     }
     $RekallWinPmemForm.Controls.Add($script:MemoryCaptureProgressBar)
@@ -416,7 +416,7 @@ function Launch-RekallWinPmemForm {
         Enabled   = $false
     }
     CommonButtonSettings -Button $RekallWinPmemCollectMemoryButton
-    $RekallWinPmemCollectMemoryButton.add_click({ 
+    $RekallWinPmemCollectMemoryButton.add_click({
         RekallWinPmemStatusCheckUpdate
         if ($RekallWinPmemCollectMemoryButton.Enabled) {
             Conduct-RekallWinPmemMemoryCapture -ChunkSize $($RekallWinPmemCompressionSettingChunkSizeComboBox.Text) -Compression $($RekallWinPmemCompressionSettingCompressionTypeComboBox.Text)
@@ -438,8 +438,8 @@ function Launch-RekallWinPmemForm {
         Enabled   = $false
     }
     $RekallWinPmemCollectMemoryOverrideRiskCheckbox.add_click({
-        if ($RekallWinPmemCollectMemoryOverrideRiskCheckbox.checked){ 
-            $RekallWinPmemCollectMemoryButton.Enabled = $true 
+        if ($RekallWinPmemCollectMemoryOverrideRiskCheckbox.checked){
+            $RekallWinPmemCollectMemoryButton.Enabled = $true
         }
         else { $RekallWinPmemCollectMemoryButton.Enabled = $false }
     })
@@ -494,7 +494,7 @@ function Launch-RekallWinPmemForm {
 
 function Conduct-RekallWinPmemMemoryCapture {
     $CollectionName = "Memory Capture"
-    $CollectionCommandStartTime = Get-Date 
+    $CollectionCommandStartTime = Get-Date
     Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
     Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                             -IndividualHostResults $script:IndividualHostResults -CollectionName $CollectionName `
@@ -502,14 +502,14 @@ function Conduct-RekallWinPmemMemoryCapture {
     Create-LogEntry -TargetComputer $script:ComputerTreeViewSelected -CollectionName $CollectionName -LogFile $LogFile
     Function RekallWinPmemMemoryCaptureData {
         # https://isc.sans.edu/forums/diary/Winpmem+Mild+mannered+memory+aquisition+tool/17054/
-        # This will create a raw memory image named "memory.raw" suitable for analysis with Volatility, Mandiants Redline and others.   
+        # This will create a raw memory image named "memory.raw" suitable for analysis with Volatility, Mandiants Redline and others.
 
         $CompressionsType    = $Compression.TrimEnd(' Compression')
 
         $ToolName              = "WinPmem"
         $ToolExecutable        = "$ToolName.exe"
         $ToolExecutablePath    = "$ExternalPrograms\WinPmem\$ToolExecutable"
-        $RemoteTargetDirectory = "c:\Windows\Temp"        
+        $RemoteTargetDirectory = "c:\Windows\Temp"
 
         # Starts the WinPmem Memory Capture and saves the capture to the targets Windows' Temp dir
 #        "Start-Process `"C:\$TempPath\$WinPmem`" -WindowStyle Hidden -ArgumentList `"C:\$TempPath\$MemoryCaptureFile`"" > "$ExternalPrograms\$MemoryCaptureScript"
@@ -528,14 +528,14 @@ function Conduct-RekallWinPmemMemoryCapture {
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "New-PSSession -ComputerName $($PSSession.ComputerName -join ', ')"
 
         foreach ($Session in $PSSession) {
-    
+
             $MemoryCaptureFile   = "MemoryCapture-$($Session.ComputerName).dmp"
             # Attempts to copy WinPmem to the endpoints
             Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $ToolExecutablePath -Destination $RemoteTargetDirectory -ToSession $Session -Force -ErrorAction Stop"
 
             try {
                 $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Copying over WinPmem.exe`r`n"+ $RekallWinPmemStatusMessageTextbox.text
-                Copy-Item -Path $ToolExecutablePath -Destination "$RemoteTargetDirectory" -ToSession $Session -Force -ErrorAction Stop 
+                Copy-Item -Path $ToolExecutablePath -Destination "$RemoteTargetDirectory" -ToSession $Session -Force -ErrorAction Stop
 
                 # # Copies WinPmem.exe and Strings.exe over to the TargetComputer
                 # $CopyWinPmemToTargetHost = "Copy-Item '$ExternalPrograms\$WinPmem' '\\$script:ComputerTreeViewSelected\C$\$TempPath' -Force"
@@ -543,7 +543,7 @@ function Conduct-RekallWinPmemMemoryCapture {
                 # $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - $CopyWinPmemToTargetHost"
                 # $Message | Add-Content -Path $LogFile
             }
-            catch { 
+            catch {
                 #$ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy $ToolExecutable Error:  $($_.Exception)")
                 $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Copy $ToolExecutable Error:  $($_.Exception)`r`n"+ $RekallWinPmemStatusMessageTextbox.text
                 Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy $ToolExecutable Error: $($_.Exception)"
@@ -570,7 +570,7 @@ function Conduct-RekallWinPmemMemoryCapture {
                 #$ResultsListBox.Items.insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))         Execution Error: $($_.Exception)")
                 $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Execution Error:  $($_.Exception)`r`n"+ $RekallWinPmemStatusMessageTextbox.text
                 Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Executions Error: $($_.Exception)"
-                break       
+                break
             }
 
 
@@ -645,11 +645,11 @@ function Conduct-RekallWinPmemMemoryCapture {
 # NEED TO MAKE A MENU TO OPT TO COPY BACK THE MEMORY FILE
             $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Copying Back Memory File: $([math]::round($(($MemoryCaptureSize).length / 1GB),2)) GB `r`n" + $RekallWinPmemStatusMessageTextbox.text
             Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path '$RemoteTargetDirectory\$MemoryCaptureFile' -Destination '$script:IndividualHostResults\Memory Capture' -FromSession $Session -Force -ErrorAction Stop"
-            try { 
-                Copy-Item -Path "$RemoteTargetDirectory\$MemoryCaptureFile" -Destination "$script:IndividualHostResults\Memory Capture" -FromSession $Session -Force -ErrorAction Stop 
+            try {
+                Copy-Item -Path "$RemoteTargetDirectory\$MemoryCaptureFile" -Destination "$script:IndividualHostResults\Memory Capture" -FromSession $Session -Force -ErrorAction Stop
                 $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($Session.ComputerName) - Copy Complete`r`n" + $RekallWinPmemStatusMessageTextbox.text
             }
-            catch { 
+            catch {
                 $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($Session.ComputerName) Copy Failed`r`n" + $RekallWinPmemStatusMessageTextbox.text
                 $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Error:  $($_.Exception)`r`n" + $RekallWinPmemStatusMessageTextbox.text
                 Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy $ToolExecutable Error: $($_.Exception)"
@@ -659,14 +659,14 @@ function Conduct-RekallWinPmemMemoryCapture {
 
             # Attempts to cleanup/remove the tool fromt the endpoint
             Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Remove-Item '$RemoteTargetDirectory\$ToolExecutable'"
-            try { 
+            try {
                 $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($Session.ComputerName) - Remove $ToolExecutable from $($Session.ComputerName)`r`n" + $RekallWinPmemStatusMessageTextbox.text
                 Invoke-Command -ScriptBlock {
                     param($RemoteTargetDirectory, $ToolExecutable)
                     Remove-Item "$RemoteTargetDirectory\$ToolExecutable"
                 } -ArgumentList @($RemoteTargetDirectory, $ToolExecutable) -Session $Session
             }
-            catch { 
+            catch {
             #    $ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Remove $ToolExecutable Error:  $($_.Exception)")
             $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($Session.ComputerName) - Remove $ToolExecutable Error:  $($_.Exception)`r`n" + $RekallWinPmemStatusMessageTextbox.text
                 Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Remove $ToolExecutable Error: $($_.Exception)"
@@ -676,14 +676,14 @@ function Conduct-RekallWinPmemMemoryCapture {
 
             # Attempts to cleanup/remove the memory capture fromt the endpoint
             Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Remove-Item '$RemoteTargetDirectory\$MemoryCaptureFile'"
-            try { 
+            try {
                 $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($Session.ComputerName) - Removing Memory Capture from $($Session.ComputerName)`r`n" + $RekallWinPmemStatusMessageTextbox.text
                 Invoke-Command -ScriptBlock {
                     param($RemoteTargetDirectory, $MemoryCaptureFile)
                     Remove-Item "$RemoteTargetDirectory\$MemoryCaptureFile"
                 } -ArgumentList @($RemoteTargetDirectory, $MemoryCaptureFile) -Session $Session
             }
-            catch { 
+            catch {
             #    $ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Remove $ToolExecutable Error:  $($_.Exception)")
             $RekallWinPmemStatusMessageTextbox.text = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $($Session.ComputerName) - Removing Memory Capture Error:  $($_.Exception)`r`n" + $RekallWinPmemStatusMessageTextbox.text
                 Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Remove $ToolExecutable Error: $($_.Exception)"
@@ -692,12 +692,12 @@ function Conduct-RekallWinPmemMemoryCapture {
 
 #>
         }
-          
+
         Conduct-PostCommandExecution $CollectionName
-        $CollectionCommandEndTime0  = Get-Date 
+        $CollectionCommandEndTime0  = Get-Date
         $CollectionCommandDiffTime0 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime0
         $RekallWinPmemStatusMessageTextbox.text = "$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime0]  $CollectionName`r`n" + $RekallWinPmemStatusMessageTextbox.text
-    
+
         $ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Memory Capture Has Finished!")
         $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Memory Capture Has Finished!"
         $Message | Add-Content -Path $LogFile
@@ -708,3 +708,5 @@ function Conduct-RekallWinPmemMemoryCapture {
     }
     RekallWinPmemMemoryCaptureData
 }
+
+

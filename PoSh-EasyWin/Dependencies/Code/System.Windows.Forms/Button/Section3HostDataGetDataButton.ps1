@@ -6,7 +6,7 @@ $Section3HostDataGetDataButtonAdd_Click = {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Showing Results:  $HostDataSection")
         $HostData | Out-GridView -Title 'PoSh-EasyWin: Collected Data' -OutputMode Multiple | Set-Variable -Name HostDataResultsSection
-    
+
         # Adds Out-GridView selected Host Data to OpNotes
         foreach ($Selection in $HostDataResultsSection) {
             $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $HostDataSection - $($Selection -replace '@{','' -replace '}','')")
@@ -17,7 +17,7 @@ $Section3HostDataGetDataButtonAdd_Click = {
     else {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("No Data Available:  $HostDataSection")
-        # Sounds a chime if there is not data 
+        # Sounds a chime if there is not data
         [system.media.systemsounds]::Exclamation.play()
     }
 }
@@ -30,3 +30,5 @@ Show-ToolTip -Title "Get Data" -Icon "Info" -Message @"
 If this is the case, navigate to the csv file manually.
 "@
 }
+
+

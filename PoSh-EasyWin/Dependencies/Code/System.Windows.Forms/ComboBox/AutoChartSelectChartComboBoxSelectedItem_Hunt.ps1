@@ -17,7 +17,7 @@ $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTab01)
 # Searches though the all Collection Data Directories to find files that match
 $script:ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
 
- 
+
 
 function Close-AllOptions {
     $script:AutoChart01OptionsButton.Text = 'Options v'
@@ -58,7 +58,7 @@ $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property 
     Size   = @{ Width  = $FormScale * 1150
                 Height = $FormScale * 25 }
     Font   = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
-    TextAlign = 'MiddleCenter' 
+    TextAlign = 'MiddleCenter'
 }
 
 
@@ -73,8 +73,8 @@ function AutoChartOpenDataInShell {
     if (Test-Path $ViewImportResults) {
         $SavePath = Split-Path -Path $script:AutoChartOpenResultsOpenFileDialogfilename
         $FileName = Split-Path -Path $script:AutoChartOpenResultsOpenFileDialogfilename -Leaf
-    
-        Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SavePath $SavePath    
+
+        Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SavePath $SavePath
     }
     else { [System.Windows.MessageBox]::Show("Error: Cannot Import Data!`nThe associated .xml file was not located.","PoSh-EasyWin") }
 }
@@ -103,7 +103,7 @@ $script:AutoChartProcessesCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Processes') { $script:AutoChartProcessesCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartProcessesCSVFileMostRecentCollection = $script:AutoChartProcessesCSVFileMatch | Select-Object -Last 1
 $script:AutoChartProcessesDataSource = Import-Csv $script:AutoChartProcessesCSVFileMostRecentCollection
 
@@ -120,7 +120,7 @@ $script:AutoChart01 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart01.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart01Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -184,7 +184,7 @@ $script:AutoChart01.Series["Unique Processes"].Color             = 'Red'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart01UniqueCount
-                        Computers   = $script:AutoChart01CsvComputers 
+                        Computers   = $script:AutoChart01CsvComputers
                     }
                     $script:AutoChart01OverallDataResults += $script:AutoChart01DataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -197,12 +197,12 @@ $script:AutoChart01.Series["Unique Processes"].Color             = 'Red'
             else {
                 $script:AutoChart01Title.ForeColor = 'Red'
                 $script:AutoChart01Title.Text = "Unique Processes`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart01
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart01OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart01.Location.X + $($FormScale * 5)
@@ -211,7 +211,7 @@ $script:AutoChart01OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart01OptionsButton
-$script:AutoChart01OptionsButton.Add_Click({  
+$script:AutoChart01OptionsButton.Add_Click({
     if ($script:AutoChart01OptionsButton.Text -eq 'Options v') {
         $script:AutoChart01OptionsButton.Text = 'Options ^'
         $script:AutoChart01.Controls.Add($script:AutoChart01ManipulationPanel)
@@ -251,14 +251,14 @@ $script:AutoChart01TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart01TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))                
+    $script:AutoChart01TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01OverallDataResults.count))
     $script:AutoChart01TrimOffFirstTrackBarValue   = 0
     $script:AutoChart01TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart01TrimOffFirstTrackBarValue = $script:AutoChart01TrimOffFirstTrackBar.Value
@@ -285,7 +285,7 @@ $script:AutoChart01TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -308,11 +308,11 @@ $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart01ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart01TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart01TrimOffFirstGroupBox.Location.Y + $script:AutoChart01TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -338,9 +338,9 @@ $script:AutoChart013DToggleButton = New-Object Windows.Forms.Button -Property @{
 CommonButtonSettings -Button $script:AutoChart013DToggleButton
 $script:AutoChart013DInclination = 0
 $script:AutoChart013DToggleButton.Add_Click({
-    
+
     $script:AutoChart013DInclination += 10
-    if ( $script:AutoChart013DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart013DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart01Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
         $script:AutoChart013DToggleButton.Text  = "3D On ($script:AutoChart013DInclination)"
@@ -349,12 +349,12 @@ $script:AutoChart013DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart013DInclination -le 90 ) {
         $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
-        $script:AutoChart013DToggleButton.Text  = "3D On ($script:AutoChart013DInclination)" 
+        $script:AutoChart013DToggleButton.Text  = "3D On ($script:AutoChart013DInclination)"
 #        $script:AutoChart01.Series["Unique Processes"].Points.Clear()
 #        $script:AutoChart01OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01.Series["Unique Processes"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart013DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart013DToggleButton.Text  = "3D Off"
         $script:AutoChart013DInclination = 0
         $script:AutoChart01Area.Area3DStyle.Inclination = $script:AutoChart013DInclination
         $script:AutoChart01Area.Area3DStyle.Enable3D    = $false
@@ -386,7 +386,7 @@ $script:AutoChart01ManipulationPanel.Controls.Add($script:AutoChart01ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart01 {    
+function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
     $script:AutoChart01ImportCsvPosResults = $script:AutoChartProcessesDataSource | Where-Object 'Name' -eq $($script:AutoChart01InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart01InvestDiffPosResultsTextBox.Text = ''
@@ -394,7 +394,7 @@ function script:InvestigateDifference-AutoChart01 {
 
     # List of all endpoints within the csv file
     $script:AutoChart01ImportCsvAll = $script:AutoChartProcessesDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart01ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart01ImportCsvAll) { if ($Endpoint -notin $script:AutoChart01ImportCsvPosResults) { $script:AutoChart01ImportCsvNegResults += $Endpoint } }
@@ -462,7 +462,7 @@ $script:AutoChart01CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart01InvestDiffDropDownComboBox.Location.y + $script:AutoChart01InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart01InvestDiffExecuteButton
@@ -477,7 +477,7 @@ $script:AutoChart01CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart01InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart01InvestDiffPosResultsLabel.Location.y + $script:AutoChart01InvestDiffPosResultsLabel.Size.Height }
@@ -489,7 +489,7 @@ $script:AutoChart01CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart01InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -543,7 +543,7 @@ $script:AutoChart01OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01OpenInShell
-$script:AutoChart01OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartProcessesCSVFileMostRecentCollection }) 
+$script:AutoChart01OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartProcessesCSVFileMostRecentCollection })
 $script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01OpenInShell)
 
 
@@ -555,7 +555,7 @@ $script:AutoChart01ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01ViewResults
-$script:AutoChart01ViewResults.Add_Click({ $script:AutoChartProcessesDataSource | Out-GridView -Title "$script:AutoChartProcessesCSVFileMostRecentCollection" }) 
+$script:AutoChart01ViewResults.Add_Click({ $script:AutoChartProcessesDataSource | Out-GridView -Title "$script:AutoChartProcessesCSVFileMostRecentCollection" })
 $script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01ViewResults)
 
 
@@ -578,7 +578,7 @@ $script:AutoChart01ManipulationPanel.controls.Add($script:AutoChart01SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart01NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart01SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart01SaveButton.Location.X
                         Y = $script:AutoChart01SaveButton.Location.Y + $script:AutoChart01SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -634,7 +634,7 @@ $script:AutoChart02 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart02.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart02Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -652,7 +652,7 @@ $script:AutoChart02Area.Area3DStyle.Inclination = 75
 $script:AutoChart02.ChartAreas.Add($script:AutoChart02Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart02.Series.Add("Processes Per Host")  
+$script:AutoChart02.Series.Add("Processes Per Host")
 $script:AutoChart02.Series["Processes Per Host"].Enabled           = $True
 $script:AutoChart02.Series["Processes Per Host"].BorderWidth       = 1
 $script:AutoChart02.Series["Processes Per Host"].IsVisibleInLegend = $false
@@ -663,7 +663,7 @@ $script:AutoChart02.Series["Processes Per Host"]['PieLineColor']   = 'Black'
 $script:AutoChart02.Series["Processes Per Host"]['PieLabelStyle']  = 'Outside'
 $script:AutoChart02.Series["Processes Per Host"].ChartType         = 'DoughNut'
 $script:AutoChart02.Series["Processes Per Host"].Color             = 'Red'
-        
+
         function Generate-AutoChart02 {
             $script:AutoChart02CsvFileHosts     = ($script:AutoChartProcessesDataSource).PSComputerName | Sort-Object -Unique
             $script:AutoChart02UniqueDataFields = ($script:AutoChartProcessesDataSource).ProcessID | Sort-Object -Property 'ProcessID'
@@ -687,18 +687,18 @@ $script:AutoChart02.Series["Processes Per Host"].Color             = 'Red'
 
                 foreach ( $Line in $($script:AutoChartProcessesDataSource | Sort-Object PSComputerName) ) {
                     if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
-                    if ( $AutoChart02CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart02CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $Line.ProcessID ) {
                                 if ( $Line.ProcessID -ne "" ) { $AutoChart02YResults += $Line.ProcessID ; $AutoChart02ResultsCount += 1 }
                                 if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
                             $AutoChart02CurrentComputer = $Line.PSComputerName
-                            $AutoChart02YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
-                                Computer     = $AutoChart02Computer 
+                                Computer     = $AutoChart02Computer
                             }
                             $script:AutoChart02OverallDataResults += $AutoChart02YDataResults
                             $AutoChart02YResults     = @()
@@ -713,7 +713,7 @@ $script:AutoChart02.Series["Processes Per Host"].Color             = 'Red'
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }    
+                $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }
                 $script:AutoChart02OverallDataResults += $AutoChart02YDataResults
                 $script:AutoChart02OverallDataResults | ForEach-Object { $script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -727,12 +727,12 @@ $script:AutoChart02.Series["Processes Per Host"].Color             = 'Red'
                 $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
                 $script:AutoChart02Title.ForeColor = 'Red'
                 $script:AutoChart02Title.Text = "Processes Per Host`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart02
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart02OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart02.Location.X + $($FormScale * 5)
@@ -741,7 +741,7 @@ $script:AutoChart02OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart02OptionsButton
-$script:AutoChart02OptionsButton.Add_Click({  
+$script:AutoChart02OptionsButton.Add_Click({
     if ($script:AutoChart02OptionsButton.Text -eq 'Options v') {
         $script:AutoChart02OptionsButton.Text = 'Options ^'
         $script:AutoChart02.Controls.Add($script:AutoChart02ManipulationPanel)
@@ -780,20 +780,20 @@ $script:AutoChart02TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart02TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))                
+    $script:AutoChart02TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02OverallDataResults.count))
     $script:AutoChart02TrimOffFirstTrackBarValue   = 0
     $script:AutoChart02TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart02TrimOffFirstTrackBarValue = $script:AutoChart02TrimOffFirstTrackBar.Value
         $script:AutoChart02TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart02TrimOffFirstTrackBar.Value)"
         $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
-        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart02TrimOffFirstGroupBox.Controls.Add($script:AutoChart02TrimOffFirstTrackBar)
 $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffFirstGroupBox)
@@ -814,7 +814,7 @@ $script:AutoChart02TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -837,11 +837,11 @@ $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart02ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart02TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart02TrimOffFirstGroupBox.Location.Y + $script:AutoChart02TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -867,7 +867,7 @@ CommonButtonSettings -Button $script:AutoChart023DToggleButton
 $script:AutoChart023DInclination = 0
 $script:AutoChart023DToggleButton.Add_Click({
     $script:AutoChart023DInclination += 10
-    if ( $script:AutoChart023DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart023DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart02Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
         $script:AutoChart023DToggleButton.Text  = "3D On ($script:AutoChart023DInclination)"
@@ -877,12 +877,12 @@ $script:AutoChart023DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart023DInclination -le 90 ) {
         $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
-        $script:AutoChart023DToggleButton.Text  = "3D On ($script:AutoChart023DInclination)" 
+        $script:AutoChart023DToggleButton.Text  = "3D On ($script:AutoChart023DInclination)"
 #        $script:AutoChart02.Series["Processes Per Host"].Points.Clear()
 #        $script:AutoChart02OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02.Series["Processes Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart023DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart023DToggleButton.Text  = "3D Off"
         $script:AutoChart023DInclination = 0
         $script:AutoChart02Area.Area3DStyle.Inclination = $script:AutoChart023DInclination
         $script:AutoChart02Area.Area3DStyle.Enable3D    = $false
@@ -913,7 +913,7 @@ $script:AutoChart02ManipulationPanel.Controls.Add($script:AutoChart02ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart02 {    
+function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
     $script:AutoChart02ImportCsvPosResults = $script:AutoChartProcessesDataSource | Where-Object 'Name' -eq $($script:AutoChart02InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart02InvestDiffPosResultsTextBox.Text = ''
@@ -921,7 +921,7 @@ function script:InvestigateDifference-AutoChart02 {
 
     # List of all endpoints within the csv file
     $script:AutoChart02ImportCsvAll = $script:AutoChartProcessesDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart02ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart02ImportCsvAll) { if ($Endpoint -notin $script:AutoChart02ImportCsvPosResults) { $script:AutoChart02ImportCsvNegResults += $Endpoint } }
@@ -989,7 +989,7 @@ $script:AutoChart02CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart02InvestDiffDropDownComboBox.Location.y + $script:AutoChart02InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart02InvestDiffExecuteButton
@@ -1004,7 +1004,7 @@ $script:AutoChart02CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart02InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart02InvestDiffPosResultsLabel.Location.y + $script:AutoChart02InvestDiffPosResultsLabel.Size.Height }
@@ -1016,7 +1016,7 @@ $script:AutoChart02CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart02InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -1070,7 +1070,7 @@ $script:AutoChart02OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02OpenInShell
-$script:AutoChart02OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartProcessesCSVFileMostRecentCollection }) 
+$script:AutoChart02OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartProcessesCSVFileMostRecentCollection })
 $script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02OpenInShell)
 
 
@@ -1082,7 +1082,7 @@ $script:AutoChart02ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02ViewResults
-$script:AutoChart02ViewResults.Add_Click({ $script:AutoChartProcessesDataSource | Out-GridView -Title "$script:AutoChartProcessesCSVFileMostRecentCollection" }) 
+$script:AutoChart02ViewResults.Add_Click({ $script:AutoChartProcessesDataSource | Out-GridView -Title "$script:AutoChartProcessesCSVFileMostRecentCollection" })
 $script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02ViewResults)
 
 
@@ -1105,7 +1105,7 @@ $script:AutoChart02ManipulationPanel.controls.Add($script:AutoChart02SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart02NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart02SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart02SaveButton.Location.X
                         Y = $script:AutoChart02SaveButton.Location.Y + $script:AutoChart02SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -1149,7 +1149,7 @@ $script:AutoChartServicesCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Services') { $script:AutoChartServicesCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartServicesCSVFileMostRecentCollection = $script:AutoChartServicesCSVFileMatch | Select-Object -Last 1
 $script:AutoChartServicesDataSource = Import-Csv $script:AutoChartServicesCSVFileMostRecentCollection
 
@@ -1167,7 +1167,7 @@ $script:AutoChart03 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart03.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart03Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -1185,7 +1185,7 @@ $script:AutoChart03Area.Area3DStyle.Inclination = 75
 $script:AutoChart03.ChartAreas.Add($script:AutoChart03Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart03.Series.Add("Running Services")  
+$script:AutoChart03.Series.Add("Running Services")
 $script:AutoChart03.Series["Running Services"].Enabled           = $True
 $script:AutoChart03.Series["Running Services"].BorderWidth       = 1
 $script:AutoChart03.Series["Running Services"].IsVisibleInLegend = $false
@@ -1222,11 +1222,11 @@ $script:AutoChart03.Series["Running Services"].Color             = 'Blue'
                 foreach ($DataField in $script:AutoChart03UniqueDataFields) {
                     $Count        = 0
                     $script:AutoChart03CsvComputers = @()
-                    
+
                     foreach ( $Line in $FilteredData ) {
                         if ($Line.Name -eq $DataField.Name) {
                             $Count += 1
-                            if ( $script:AutoChart03CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03CsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart03CsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03CsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart03UniqueCount = $script:AutoChart03CsvComputers.Count
@@ -1234,12 +1234,12 @@ $script:AutoChart03.Series["Running Services"].Color             = 'Blue'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart03UniqueCount
-                        Computers   = $script:AutoChart03CsvComputers 
+                        Computers   = $script:AutoChart03CsvComputers
                     }
                     $script:AutoChart03OverallDataResults += $script:AutoChart03DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
-                }                
+                }
                 $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | ForEach-Object { $script:AutoChart03.Series["Running Services"].Points.AddXY($_.DataField.Name,$_.UniqueCount) }
 
                 $script:AutoChart03TrimOffLastTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
@@ -1248,12 +1248,12 @@ $script:AutoChart03.Series["Running Services"].Color             = 'Blue'
             else {
                 $script:AutoChart03Title.ForeColor = 'Red'
                 $script:AutoChart03Title.Text = "$Filter Services`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart03 -Filter 'Running'
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart03OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart03.Location.X + $($FormScale * 5)
@@ -1262,7 +1262,7 @@ $script:AutoChart03OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart03OptionsButton
-$script:AutoChart03OptionsButton.Add_Click({  
+$script:AutoChart03OptionsButton.Add_Click({
     if ($script:AutoChart03OptionsButton.Text -eq 'Options v') {
         $script:AutoChart03OptionsButton.Text = 'Options ^'
         $script:AutoChart03.Controls.Add($script:AutoChart03ManipulationPanel)
@@ -1276,11 +1276,11 @@ $script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart03OptionsButton)
 
 # A filter combobox to modify what is displayed
 $script:AutoChart03FilterComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Running' 
-    Location  = @{ X = $script:AutoChart03OptionsButton.Location.X + 1 
+    Text      = 'Running'
+    Location  = @{ X = $script:AutoChart03OptionsButton.Location.X + 1
                     Y = $script:AutoChart03OptionsButton.Location.Y - $script:AutoChart03OptionsButton.Size.Height - $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 76
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1323,20 +1323,20 @@ $script:AutoChart03TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart03TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))                
+    $script:AutoChart03TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03OverallDataResults.count))
     $script:AutoChart03TrimOffFirstTrackBarValue   = 0
     $script:AutoChart03TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart03TrimOffFirstTrackBarValue = $script:AutoChart03TrimOffFirstTrackBar.Value
         $script:AutoChart03TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart03TrimOffFirstTrackBar.Value)"
         $script:AutoChart03.Series["Running Services"].Points.Clear()
-        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Running Services"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}    
+        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Running Services"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
     })
     $script:AutoChart03TrimOffFirstGroupBox.Controls.Add($script:AutoChart03TrimOffFirstTrackBar)
 $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffFirstGroupBox)
@@ -1357,7 +1357,7 @@ $script:AutoChart03TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -1381,11 +1381,11 @@ $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart03ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart03TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart03TrimOffFirstGroupBox.Location.Y + $script:AutoChart03TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1411,9 +1411,9 @@ $script:AutoChart033DToggleButton = New-Object Windows.Forms.Button -Property @{
 CommonButtonSettings -Button $script:AutoChart033DToggleButton
 $script:AutoChart033DInclination = 0
 $script:AutoChart033DToggleButton.Add_Click({
-    
+
     $script:AutoChart033DInclination += 10
-    if ( $script:AutoChart033DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart033DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart03Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
         $script:AutoChart033DToggleButton.Text  = "3D On ($script:AutoChart033DInclination)"
@@ -1422,12 +1422,12 @@ $script:AutoChart033DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart033DInclination -le 90 ) {
         $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
-        $script:AutoChart033DToggleButton.Text  = "3D On ($script:AutoChart033DInclination)" 
+        $script:AutoChart033DToggleButton.Text  = "3D On ($script:AutoChart033DInclination)"
 #        $script:AutoChart03.Series["Running Services"].Points.Clear()
 #        $script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Running Services"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart033DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart033DToggleButton.Text  = "3D Off"
         $script:AutoChart033DInclination = 0
         $script:AutoChart03Area.Area3DStyle.Inclination = $script:AutoChart033DInclination
         $script:AutoChart03Area.Area3DStyle.Enable3D    = $false
@@ -1459,7 +1459,7 @@ $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart03 ($Filter) {    
+function script:InvestigateDifference-AutoChart03 ($Filter) {
     # List of Positive Endpoints that positively match
     $script:AutoChart03ImportCsvPosResults = $script:AutoChartServicesDataSource | Where-Object 'Name' -eq $($script:AutoChart03InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart03InvestDiffPosResultsTextBox.Text = ''
@@ -1467,7 +1467,7 @@ function script:InvestigateDifference-AutoChart03 ($Filter) {
 
     # List of all endpoints within the csv file
     $script:AutoChart03ImportCsvAll = $script:AutoChartServicesDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart03ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart03ImportCsvAll) { if ($Endpoint -notin $script:AutoChart03ImportCsvPosResults) { $script:AutoChart03ImportCsvNegResults += $Endpoint } }
@@ -1536,7 +1536,7 @@ $script:AutoChart03CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart03InvestDiffDropDownComboBox.Location.y + $script:AutoChart03InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart03InvestDiffExecuteButton
@@ -1551,7 +1551,7 @@ $script:AutoChart03CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart03InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart03InvestDiffPosResultsLabel.Location.y + $script:AutoChart03InvestDiffPosResultsLabel.Size.Height }
@@ -1563,7 +1563,7 @@ $script:AutoChart03CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart03InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -1617,7 +1617,7 @@ $script:AutoChart03OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03OpenInShell
-$script:AutoChart03OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartServicesCSVFileMostRecentCollection }) 
+$script:AutoChart03OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartServicesCSVFileMostRecentCollection })
 $script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03OpenInShell)
 
 
@@ -1629,7 +1629,7 @@ $script:AutoChart03Results = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03Results
-$script:AutoChart03Results.Add_Click({ $script:AutoChartServicesDataSource | Out-GridView -Title "$script:AutoChartServicesCSVFileMostRecentCollection" }) 
+$script:AutoChart03Results.Add_Click({ $script:AutoChartServicesDataSource | Out-GridView -Title "$script:AutoChartServicesCSVFileMostRecentCollection" })
 $script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03Results)
 
 ### Save the chart to file
@@ -1651,7 +1651,7 @@ $script:AutoChart03ManipulationPanel.controls.Add($script:AutoChart03SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart03NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart03SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart03SaveButton.Location.X
                         Y = $script:AutoChart03SaveButton.Location.Y + $script:AutoChart03SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -1666,7 +1666,7 @@ $script:AutoChart03NoticeTextboX = New-Object System.Windows.Forms.Textbox -Prop
 $script:AutoChart03ManipulationPanel.Controls.Add($script:AutoChart03NoticeTextbox)
 
 $script:AutoChart03.Series["Running Services"].Points.Clear()
-$script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Running Services"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}    
+$script:AutoChart03OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03.Series["Running Services"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
 
 
 
@@ -1705,7 +1705,7 @@ $script:AutoChart04 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart04.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart04Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -1723,7 +1723,7 @@ $script:AutoChart04Area.Area3DStyle.Inclination = 75
 $script:AutoChart04.ChartAreas.Add($script:AutoChart04Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart04.Series.Add("Running Services Per Host")  
+$script:AutoChart04.Series.Add("Running Services Per Host")
 $script:AutoChart04.Series["Running Services Per Host"].Enabled           = $True
 $script:AutoChart04.Series["Running Services Per Host"].BorderWidth       = 1
 $script:AutoChart04.Series["Running Services Per Host"].IsVisibleInLegend = $false
@@ -1734,7 +1734,7 @@ $script:AutoChart04.Series["Running Services Per Host"]['PieLineColor']   = 'Bla
 $script:AutoChart04.Series["Running Services Per Host"]['PieLabelStyle']  = 'Outside'
 $script:AutoChart04.Series["Running Services Per Host"].ChartType         = 'DoughNut'
 $script:AutoChart04.Series["Running Services Per Host"].Color             = 'Blue'
-        
+
         function Generate-AutoChart04 ($Filter) {
             $script:AutoChart04CsvFileHosts     = $script:AutoChartServicesDataSource | Select-Object -Property 'PSComputerName' -ExpandProperty 'PSComputerName' | Sort-Object -Unique
             $script:AutoChart04UniqueDataFields = $script:AutoChartServicesDataSource | Where-Object {$_.State -eq "$Filter" -or $_.Status -eq "$Filter"} | Select-Object -Property 'Name' -ExpandProperty 'Name' | Sort-Object  -Unique
@@ -1757,21 +1757,21 @@ $script:AutoChart04.Series["Running Services Per Host"].Color             = 'Blu
                 $script:AutoChart04OverallDataResults = @()
 
                 $FilteredData = $script:AutoChartServicesDataSource | Where-Object {$_.State -eq "$Filter" -or $_.Status -eq "$Filter"} | Sort-Object PSComputerName
-                
+
                 foreach ( $Line in $FilteredData ) {
                     if ( $AutoChart04CheckIfFirstLine -eq $false ) { $AutoChart04CurrentComputer  = $Line.PSComputerName ; $AutoChart04CheckIfFirstLine = $true }
-                    if ( $AutoChart04CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart04CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart04CurrentComputer ) {
                             if ( $AutoChart04YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart04YResults += $Line.Name ; $AutoChart04ResultsCount += 1 }
                                 if ( $AutoChart04Computer -notcontains $Line.PSComputerName ) { $AutoChart04Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart04CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart04CurrentComputer ) {
                             $AutoChart04CurrentComputer = $Line.PSComputerName
-                            $AutoChart04YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart04YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart04ResultsCount
-                                Computer     = $AutoChart04Computer 
+                                Computer     = $AutoChart04Computer
                             }
                             $script:AutoChart04OverallDataResults += $AutoChart04YDataResults
                             $AutoChart04YResults     = @()
@@ -1786,7 +1786,7 @@ $script:AutoChart04.Series["Running Services Per Host"].Color             = 'Blu
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart04YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart04ResultsCount ; Computer = $AutoChart04Computer }    
+                $AutoChart04YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart04ResultsCount ; Computer = $AutoChart04Computer }
                 $script:AutoChart04OverallDataResults += $AutoChart04YDataResults
                 $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | ForEach-Object { $script:AutoChart04.Series["Running Services Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -1794,18 +1794,18 @@ $script:AutoChart04.Series["Running Services Per Host"].Color             = 'Blu
                 $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Running Services Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
 
                 $script:AutoChart04TrimOffLastTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
-                $script:AutoChart04TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))            
+                $script:AutoChart04TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
             }
             else {
                 $script:AutoChart04.Series["Running Services Per Host"].Points.Clear()
                 $script:AutoChart04Title.ForeColor = 'Red'
                 $script:AutoChart04Title.Text = "$Filter Services Per Host`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart04 -Filter 'Running'
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart04OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart04.Location.X + $($FormScale * 5)
@@ -1814,7 +1814,7 @@ $script:AutoChart04OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart04OptionsButton
-$script:AutoChart04OptionsButton.Add_Click({  
+$script:AutoChart04OptionsButton.Add_Click({
     if ($script:AutoChart04OptionsButton.Text -eq 'Options v') {
         $script:AutoChart04OptionsButton.Text = 'Options ^'
         $script:AutoChart04.Controls.Add($script:AutoChart04ManipulationPanel)
@@ -1828,11 +1828,11 @@ $script:AutoChartsIndividualTab01.Controls.Add($script:AutoChart04OptionsButton)
 
 # A filter combobox to modify what is displayed
 $script:AutoChart04FilterComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Running' 
+    Text      = 'Running'
     Location  = @{ X = $script:AutoChart04OptionsButton.Location.X + 1
                     Y = $script:AutoChart04OptionsButton.Location.Y - $script:AutoChart04OptionsButton.Size.Height - $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 76
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1875,20 +1875,20 @@ $script:AutoChart04TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart04TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))                
+    $script:AutoChart04TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04OverallDataResults.count))
     $script:AutoChart04TrimOffFirstTrackBarValue   = 0
     $script:AutoChart04TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart04TrimOffFirstTrackBarValue = $script:AutoChart04TrimOffFirstTrackBar.Value
         $script:AutoChart04TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart04TrimOffFirstTrackBar.Value)"
         $script:AutoChart04.Series["Running Services Per Host"].Points.Clear()
-        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Running Services Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Running Services Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart04TrimOffFirstGroupBox.Controls.Add($script:AutoChart04TrimOffFirstTrackBar)
 $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffFirstGroupBox)
@@ -1909,7 +1909,7 @@ $script:AutoChart04TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -1932,11 +1932,11 @@ $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart04ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart04TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart04TrimOffFirstGroupBox.Location.Y + $script:AutoChart04TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1962,7 +1962,7 @@ CommonButtonSettings -Button $script:AutoChart043DToggleButton
 $script:AutoChart043DInclination = 0
 $script:AutoChart043DToggleButton.Add_Click({
     $script:AutoChart043DInclination += 10
-    if ( $script:AutoChart043DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart043DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart04Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
         $script:AutoChart043DToggleButton.Text  = "3D On ($script:AutoChart043DInclination)"
@@ -1972,12 +1972,12 @@ $script:AutoChart043DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart043DInclination -le 90 ) {
         $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
-        $script:AutoChart043DToggleButton.Text  = "3D On ($script:AutoChart043DInclination)" 
+        $script:AutoChart043DToggleButton.Text  = "3D On ($script:AutoChart043DInclination)"
 #        $script:AutoChart04.Series["Running Services Per Host"].Points.Clear()
 #        $script:AutoChart04OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart04TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04.Series["Running Services Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart043DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart043DToggleButton.Text  = "3D Off"
         $script:AutoChart043DInclination = 0
         $script:AutoChart04Area.Area3DStyle.Inclination = $script:AutoChart043DInclination
         $script:AutoChart04Area.Area3DStyle.Enable3D    = $false
@@ -2008,7 +2008,7 @@ $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart04 {    
+function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
     $script:AutoChart04ImportCsvPosResults = $script:AutoChartServicesDataSource | Where-Object 'Name' -eq $($script:AutoChart04InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart04InvestDiffPosResultsTextBox.Text = ''
@@ -2016,7 +2016,7 @@ function script:InvestigateDifference-AutoChart04 {
 
     # List of all endpoints within the csv file
     $script:AutoChart04ImportCsvAll = $script:AutoChartServicesDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart04ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart04ImportCsvAll) { if ($Endpoint -notin $script:AutoChart04ImportCsvPosResults) { $script:AutoChart04ImportCsvNegResults += $Endpoint } }
@@ -2084,7 +2084,7 @@ $script:AutoChart04CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart04InvestDiffDropDownComboBox.Location.y + $script:AutoChart04InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart04InvestDiffExecuteButton
@@ -2099,7 +2099,7 @@ $script:AutoChart04CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart04InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart04InvestDiffPosResultsLabel.Location.y + $script:AutoChart04InvestDiffPosResultsLabel.Size.Height }
@@ -2111,7 +2111,7 @@ $script:AutoChart04CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart04InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -2143,7 +2143,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04CheckDiffButton)
-    
+
 
 $script:AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -2159,13 +2159,13 @@ $script:AutoChart04ManipulationPanel.Controls.Add($script:AutoChart04ExpandChart
 
 $script:AutoChart04OpenInShell = New-Object Windows.Forms.Button -Property @{
     Text      = "Open In Shell"
-    Location  = @{ X = $script:AutoChart04CheckDiffButton.Location.X 
+    Location  = @{ X = $script:AutoChart04CheckDiffButton.Location.X
                    Y = $script:AutoChart04CheckDiffButton.Location.Y + $script:AutoChart04CheckDiffButton.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 100
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04OpenInShell
-$script:AutoChart04OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartServicesCSVFileMostRecentCollection }) 
+$script:AutoChart04OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartServicesCSVFileMostRecentCollection })
 $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04OpenInShell)
 
 
@@ -2177,7 +2177,7 @@ $script:AutoChart04Results = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04Results
-$script:AutoChart04Results.Add_Click({ $script:AutoChartServicesDataSource | Out-GridView -Title "$script:AutoChartServicesCSVFileMostRecentCollection" }) 
+$script:AutoChart04Results.Add_Click({ $script:AutoChartServicesDataSource | Out-GridView -Title "$script:AutoChartServicesCSVFileMostRecentCollection" })
 $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04Results)
 
 ### Save the chart to file
@@ -2199,7 +2199,7 @@ $script:AutoChart04ManipulationPanel.controls.Add($script:AutoChart04SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart04NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart04SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart04SaveButton.Location.X
                         Y = $script:AutoChart04SaveButton.Location.Y + $script:AutoChart04SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -2245,7 +2245,7 @@ $script:AutoChartSoftwareCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Software') { $script:AutoChartSoftwareCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartSoftwareCSVFileMostRecentCollection = $script:AutoChartSoftwareCSVFileMatch | Select-Object -Last 1
 $script:AutoChartSoftwareDataSource = Import-Csv $script:AutoChartSoftwareCSVFileMostRecentCollection
 
@@ -2264,7 +2264,7 @@ $script:AutoChart05 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart05.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart05Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -2328,7 +2328,7 @@ $script:AutoChart05.Series["Software Names"].Color             = 'Green'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart05UniqueCount
-                        Computers   = $script:AutoChart05CsvComputers 
+                        Computers   = $script:AutoChart05CsvComputers
                     }
                     $script:AutoChart05OverallDataResults += $script:AutoChart05DataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -2341,12 +2341,12 @@ $script:AutoChart05.Series["Software Names"].Color             = 'Green'
             else {
                 $script:AutoChart05Title.ForeColor = 'Red'
                 $script:AutoChart05Title.Text = "Software Names`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart05
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart05OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart05.Location.X + $($FormScale * 5)
@@ -2355,7 +2355,7 @@ $script:AutoChart05OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart05OptionsButton
-$script:AutoChart05OptionsButton.Add_Click({  
+$script:AutoChart05OptionsButton.Add_Click({
     if ($script:AutoChart05OptionsButton.Text -eq 'Options v') {
         $script:AutoChart05OptionsButton.Text = 'Options ^'
         $script:AutoChart05.Controls.Add($script:AutoChart05ManipulationPanel)
@@ -2395,14 +2395,14 @@ $script:AutoChart05TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart05TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05OverallDataResults.count))                
+    $script:AutoChart05TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05OverallDataResults.count))
     $script:AutoChart05TrimOffFirstTrackBarValue   = 0
     $script:AutoChart05TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart05TrimOffFirstTrackBarValue = $script:AutoChart05TrimOffFirstTrackBar.Value
@@ -2429,7 +2429,7 @@ $script:AutoChart05TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -2452,11 +2452,11 @@ $script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart05ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart05TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart05TrimOffFirstGroupBox.Location.Y + $script:AutoChart05TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -2482,9 +2482,9 @@ $script:AutoChart053DToggleButton = New-Object Windows.Forms.Button -Property @{
 CommonButtonSettings -Button $script:AutoChart053DToggleButton
 $script:AutoChart053DInclination = 0
 $script:AutoChart053DToggleButton.Add_Click({
-    
+
     $script:AutoChart053DInclination += 10
-    if ( $script:AutoChart053DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart053DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart05Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart05Area.Area3DStyle.Inclination = $script:AutoChart053DInclination
         $script:AutoChart053DToggleButton.Text  = "3D On ($script:AutoChart053DInclination)"
@@ -2493,12 +2493,12 @@ $script:AutoChart053DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart053DInclination -le 90 ) {
         $script:AutoChart05Area.Area3DStyle.Inclination = $script:AutoChart053DInclination
-        $script:AutoChart053DToggleButton.Text  = "3D On ($script:AutoChart053DInclination)" 
+        $script:AutoChart053DToggleButton.Text  = "3D On ($script:AutoChart053DInclination)"
 #        $script:AutoChart05.Series["Software Names"].Points.Clear()
 #        $script:AutoChart05OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart05TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05.Series["Software Names"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart053DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart053DToggleButton.Text  = "3D Off"
         $script:AutoChart053DInclination = 0
         $script:AutoChart05Area.Area3DStyle.Inclination = $script:AutoChart053DInclination
         $script:AutoChart05Area.Area3DStyle.Enable3D    = $false
@@ -2530,7 +2530,7 @@ $script:AutoChart05ManipulationPanel.Controls.Add($script:AutoChart05ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart05 {    
+function script:InvestigateDifference-AutoChart05 {
     # List of Positive Endpoints that positively match
     $script:AutoChart05ImportCsvPosResults = $script:AutoChartSoftwareDataSource | Where-Object 'Name' -eq $($script:AutoChart05InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart05InvestDiffPosResultsTextBox.Text = ''
@@ -2538,7 +2538,7 @@ function script:InvestigateDifference-AutoChart05 {
 
     # List of all endpoints within the csv file
     $script:AutoChart05ImportCsvAll = $script:AutoChartSoftwareDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart05ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart05ImportCsvAll) { if ($Endpoint -notin $script:AutoChart05ImportCsvPosResults) { $script:AutoChart05ImportCsvNegResults += $Endpoint } }
@@ -2606,7 +2606,7 @@ $script:AutoChart05CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart05InvestDiffDropDownComboBox.Location.y + $script:AutoChart05InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart05InvestDiffExecuteButton
@@ -2621,7 +2621,7 @@ $script:AutoChart05CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart05InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart05InvestDiffPosResultsLabel.Location.y + $script:AutoChart05InvestDiffPosResultsLabel.Size.Height }
@@ -2633,7 +2633,7 @@ $script:AutoChart05CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart05InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -2687,7 +2687,7 @@ $script:AutoChart05OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart05OpenInShell
-$script:AutoChart05OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSoftwareCSVFileMostRecentCollection }) 
+$script:AutoChart05OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSoftwareCSVFileMostRecentCollection })
 $script:AutoChart05ManipulationPanel.controls.Add($script:AutoChart05OpenInShell)
 
 
@@ -2699,7 +2699,7 @@ $script:AutoChart05ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart05ViewResults
-$script:AutoChart05ViewResults.Add_Click({ $script:AutoChartSoftwareDataSource | Out-GridView -Title "$script:AutoChartSoftwareCSVFileMostRecentCollection" }) 
+$script:AutoChart05ViewResults.Add_Click({ $script:AutoChartSoftwareDataSource | Out-GridView -Title "$script:AutoChartSoftwareCSVFileMostRecentCollection" })
 $script:AutoChart05ManipulationPanel.controls.Add($script:AutoChart05ViewResults)
 
 
@@ -2722,7 +2722,7 @@ $script:AutoChart05ManipulationPanel.controls.Add($script:AutoChart05SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart05NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart05SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart05SaveButton.Location.X
                         Y = $script:AutoChart05SaveButton.Location.Y + $script:AutoChart05SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -2777,7 +2777,7 @@ $script:AutoChart06 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart06.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart06Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -2795,7 +2795,7 @@ $script:AutoChart06Area.Area3DStyle.Inclination = 75
 $script:AutoChart06.ChartAreas.Add($script:AutoChart06Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart06.Series.Add("Software Count Per Host")  
+$script:AutoChart06.Series.Add("Software Count Per Host")
 $script:AutoChart06.Series["Software Count Per Host"].Enabled           = $True
 $script:AutoChart06.Series["Software Count Per Host"].BorderWidth       = 1
 $script:AutoChart06.Series["Software Count Per Host"].IsVisibleInLegend = $false
@@ -2806,7 +2806,7 @@ $script:AutoChart06.Series["Software Count Per Host"]['PieLineColor']   = 'Black
 $script:AutoChart06.Series["Software Count Per Host"]['PieLabelStyle']  = 'Outside'
 $script:AutoChart06.Series["Software Count Per Host"].ChartType         = 'DoughNut'
 $script:AutoChart06.Series["Software Count Per Host"].Color             = 'Green'
-        
+
         function Generate-AutoChart06 {
             $script:AutoChart06CsvFileHosts     = ($script:AutoChartSoftwareDataSource).PSComputerName | Sort-Object -Unique
             $script:AutoChart06UniqueDataFields = ($script:AutoChartSoftwareDataSource).Name | Sort-Object -Property 'Name'
@@ -2830,18 +2830,18 @@ $script:AutoChart06.Series["Software Count Per Host"].Color             = 'Green
 
                 foreach ( $Line in $($script:AutoChartSoftwareDataSource | Sort-Object PSComputerName) ) {
                     if ( $AutoChart06CheckIfFirstLine -eq $false ) { $AutoChart06CurrentComputer  = $Line.PSComputerName ; $AutoChart06CheckIfFirstLine = $true }
-                    if ( $AutoChart06CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart06CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart06CurrentComputer ) {
                             if ( $AutoChart06YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart06YResults += $Line.Name ; $AutoChart06ResultsCount += 1 }
                                 if ( $AutoChart06Computer -notcontains $Line.PSComputerName ) { $AutoChart06Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart06CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart06CurrentComputer ) {
                             $AutoChart06CurrentComputer = $Line.PSComputerName
-                            $AutoChart06YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart06YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart06ResultsCount
-                                Computer     = $AutoChart06Computer 
+                                Computer     = $AutoChart06Computer
                             }
                             $script:AutoChart06OverallDataResults += $AutoChart06YDataResults
                             $AutoChart06YResults     = @()
@@ -2856,7 +2856,7 @@ $script:AutoChart06.Series["Software Count Per Host"].Color             = 'Green
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart06YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart06ResultsCount ; Computer = $AutoChart06Computer }    
+                $AutoChart06YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart06ResultsCount ; Computer = $AutoChart06Computer }
                 $script:AutoChart06OverallDataResults += $AutoChart06YDataResults
                 $script:AutoChart06OverallDataResults | ForEach-Object { $script:AutoChart06.Series["Software Count Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -2870,12 +2870,12 @@ $script:AutoChart06.Series["Software Count Per Host"].Color             = 'Green
                 $script:AutoChart06.Series["Software Count Per Host"].Points.Clear()
                 $script:AutoChart06Title.ForeColor = 'Red'
                 $script:AutoChart06Title.Text = "Software Count Per Host`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart06
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart06OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart06.Location.X + $($FormScale * 5)
@@ -2884,7 +2884,7 @@ $script:AutoChart06OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart06OptionsButton
-$script:AutoChart06OptionsButton.Add_Click({  
+$script:AutoChart06OptionsButton.Add_Click({
     if ($script:AutoChart06OptionsButton.Text -eq 'Options v') {
         $script:AutoChart06OptionsButton.Text = 'Options ^'
         $script:AutoChart06.Controls.Add($script:AutoChart06ManipulationPanel)
@@ -2923,20 +2923,20 @@ $script:AutoChart06TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart06TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06OverallDataResults.count))                
+    $script:AutoChart06TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06OverallDataResults.count))
     $script:AutoChart06TrimOffFirstTrackBarValue   = 0
     $script:AutoChart06TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart06TrimOffFirstTrackBarValue = $script:AutoChart06TrimOffFirstTrackBar.Value
         $script:AutoChart06TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart06TrimOffFirstTrackBar.Value)"
         $script:AutoChart06.Series["Software Count Per Host"].Points.Clear()
-        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Software Count Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Software Count Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart06TrimOffFirstGroupBox.Controls.Add($script:AutoChart06TrimOffFirstTrackBar)
 $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06TrimOffFirstGroupBox)
@@ -2957,7 +2957,7 @@ $script:AutoChart06TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -2980,11 +2980,11 @@ $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart06ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart06TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart06TrimOffFirstGroupBox.Location.Y + $script:AutoChart06TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -3010,7 +3010,7 @@ CommonButtonSettings -Button $script:AutoChart063DToggleButton
 $script:AutoChart063DInclination = 0
 $script:AutoChart063DToggleButton.Add_Click({
     $script:AutoChart063DInclination += 10
-    if ( $script:AutoChart063DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart063DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart06Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart06Area.Area3DStyle.Inclination = $script:AutoChart063DInclination
         $script:AutoChart063DToggleButton.Text  = "3D On ($script:AutoChart063DInclination)"
@@ -3020,12 +3020,12 @@ $script:AutoChart063DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart063DInclination -le 90 ) {
         $script:AutoChart06Area.Area3DStyle.Inclination = $script:AutoChart063DInclination
-        $script:AutoChart063DToggleButton.Text  = "3D On ($script:AutoChart063DInclination)" 
+        $script:AutoChart063DToggleButton.Text  = "3D On ($script:AutoChart063DInclination)"
 #        $script:AutoChart06.Series["Software Count Per Host"].Points.Clear()
 #        $script:AutoChart06OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06.Series["Software Count Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart063DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart063DToggleButton.Text  = "3D Off"
         $script:AutoChart063DInclination = 0
         $script:AutoChart06Area.Area3DStyle.Inclination = $script:AutoChart063DInclination
         $script:AutoChart06Area.Area3DStyle.Enable3D    = $false
@@ -3056,7 +3056,7 @@ $script:AutoChart06ManipulationPanel.Controls.Add($script:AutoChart06ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart06 {    
+function script:InvestigateDifference-AutoChart06 {
     # List of Positive Endpoints that positively match
     $script:AutoChart06ImportCsvPosResults = $script:AutoChartSoftwareDataSource | Where-Object 'Name' -eq $($script:AutoChart06InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart06InvestDiffPosResultsTextBox.Text = ''
@@ -3064,7 +3064,7 @@ function script:InvestigateDifference-AutoChart06 {
 
     # List of all endpoints within the csv file
     $script:AutoChart06ImportCsvAll = $script:AutoChartSoftwareDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart06ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart06ImportCsvAll) { if ($Endpoint -notin $script:AutoChart06ImportCsvPosResults) { $script:AutoChart06ImportCsvNegResults += $Endpoint } }
@@ -3132,7 +3132,7 @@ $script:AutoChart06CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart06InvestDiffDropDownComboBox.Location.y + $script:AutoChart06InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart06InvestDiffExecuteButton
@@ -3147,7 +3147,7 @@ $script:AutoChart06CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart06InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart06InvestDiffPosResultsLabel.Location.y + $script:AutoChart06InvestDiffPosResultsLabel.Size.Height }
@@ -3159,7 +3159,7 @@ $script:AutoChart06CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart06InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -3213,7 +3213,7 @@ $script:AutoChart06OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart06OpenInShell
-$script:AutoChart06OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSoftwareCSVFileMostRecentCollection }) 
+$script:AutoChart06OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSoftwareCSVFileMostRecentCollection })
 $script:AutoChart06ManipulationPanel.controls.Add($script:AutoChart06OpenInShell)
 
 
@@ -3225,7 +3225,7 @@ $script:AutoChart06ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart06ViewResults
-$script:AutoChart06ViewResults.Add_Click({ $script:AutoChartSoftwareDataSource | Out-GridView -Title "$script:AutoChartSoftwareCSVFileMostRecentCollection" }) 
+$script:AutoChart06ViewResults.Add_Click({ $script:AutoChartSoftwareDataSource | Out-GridView -Title "$script:AutoChartSoftwareCSVFileMostRecentCollection" })
 $script:AutoChart06ManipulationPanel.controls.Add($script:AutoChart06ViewResults)
 
 
@@ -3248,7 +3248,7 @@ $script:AutoChart06ManipulationPanel.controls.Add($script:AutoChart06SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart06NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart06SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart06SaveButton.Location.X
                         Y = $script:AutoChart06SaveButton.Location.Y + $script:AutoChart06SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -3293,7 +3293,7 @@ $script:AutoChartNetworkSettingsCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Network Settings') { $script:AutoChartNetworkSettingsCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartNetworkSettingsCSVFileMostRecentCollection = $script:AutoChartNetworkSettingsCSVFileMatch | Select-Object -Last 1
 $script:AutoChartNetworkSettingsDataSource = Import-Csv $script:AutoChartNetworkSettingsCSVFileMostRecentCollection
 
@@ -3311,7 +3311,7 @@ $script:AutoChart07 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart07.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart07Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -3375,8 +3375,8 @@ $script:AutoChart07.Series["Interface Alias"].Color             = 'Orange'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart07UniqueCount
-                        Computers   = $script:AutoChart07CsvComputers 
-                    }           
+                        Computers   = $script:AutoChart07CsvComputers
+                    }
                     $script:AutoChart07OverallDataResults += $script:AutoChart07DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
@@ -3388,12 +3388,12 @@ $script:AutoChart07.Series["Interface Alias"].Color             = 'Orange'
             else {
                 $script:AutoChart07Title.ForeColor = 'Red'
                 $script:AutoChart07Title.Text = "Interface Alias`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart07
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart07OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart07.Location.X + $($FormScale * 5)
@@ -3402,7 +3402,7 @@ $script:AutoChart07OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart07OptionsButton
-$script:AutoChart07OptionsButton.Add_Click({  
+$script:AutoChart07OptionsButton.Add_Click({
     if ($script:AutoChart07OptionsButton.Text -eq 'Options v') {
         $script:AutoChart07OptionsButton.Text = 'Options ^'
         $script:AutoChart07.Controls.Add($script:AutoChart07ManipulationPanel)
@@ -3442,14 +3442,14 @@ $script:AutoChart07TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart07TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart07OverallDataResults.count))                
+    $script:AutoChart07TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart07OverallDataResults.count))
     $script:AutoChart07TrimOffFirstTrackBarValue   = 0
     $script:AutoChart07TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart07TrimOffFirstTrackBarValue = $script:AutoChart07TrimOffFirstTrackBar.Value
@@ -3476,7 +3476,7 @@ $script:AutoChart07TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -3499,11 +3499,11 @@ $script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart07ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart07TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart07TrimOffFirstGroupBox.Location.Y + $script:AutoChart07TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -3529,9 +3529,9 @@ $script:AutoChart073DToggleButton = New-Object Windows.Forms.Button -Property @{
 CommonButtonSettings -Button $script:AutoChart073DToggleButton
 $script:AutoChart073DInclination = 0
 $script:AutoChart073DToggleButton.Add_Click({
-    
+
     $script:AutoChart073DInclination += 10
-    if ( $script:AutoChart073DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart073DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart07Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart07Area.Area3DStyle.Inclination = $script:AutoChart073DInclination
         $script:AutoChart073DToggleButton.Text  = "3D On ($script:AutoChart073DInclination)"
@@ -3540,12 +3540,12 @@ $script:AutoChart073DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart073DInclination -le 90 ) {
         $script:AutoChart07Area.Area3DStyle.Inclination = $script:AutoChart073DInclination
-        $script:AutoChart073DToggleButton.Text  = "3D On ($script:AutoChart073DInclination)" 
+        $script:AutoChart073DToggleButton.Text  = "3D On ($script:AutoChart073DInclination)"
 #        $script:AutoChart07.Series["Interface Alias"].Points.Clear()
 #        $script:AutoChart07OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart07TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart07TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart07.Series["Interface Alias"].Points.AddXY($_.DataField.InterfaceAlias,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart073DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart073DToggleButton.Text  = "3D Off"
         $script:AutoChart073DInclination = 0
         $script:AutoChart07Area.Area3DStyle.Inclination = $script:AutoChart073DInclination
         $script:AutoChart07Area.Area3DStyle.Enable3D    = $false
@@ -3577,7 +3577,7 @@ $script:AutoChart07ManipulationPanel.Controls.Add($script:AutoChart07ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart07 {    
+function script:InvestigateDifference-AutoChart07 {
     # List of Positive Endpoints that positively match
     $script:AutoChart07ImportCsvPosResults = $script:AutoChartNetworkSettingsDataSource | Where-Object 'InterfaceAlias' -eq $($script:AutoChart07InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart07InvestDiffPosResultsTextBox.Text = ''
@@ -3585,7 +3585,7 @@ function script:InvestigateDifference-AutoChart07 {
 
     # List of all endpoints within the csv file
     $script:AutoChart07ImportCsvAll = $script:AutoChartNetworkSettingsDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart07ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart07ImportCsvAll) { if ($Endpoint -notin $script:AutoChart07ImportCsvPosResults) { $script:AutoChart07ImportCsvNegResults += $Endpoint } }
@@ -3653,7 +3653,7 @@ $script:AutoChart07CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart07InvestDiffDropDownComboBox.Location.y + $script:AutoChart07InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart07InvestDiffExecuteButton
@@ -3668,7 +3668,7 @@ $script:AutoChart07CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart07InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart07InvestDiffPosResultsLabel.Location.y + $script:AutoChart07InvestDiffPosResultsLabel.Size.Height }
@@ -3680,7 +3680,7 @@ $script:AutoChart07CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart07InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -3734,7 +3734,7 @@ $script:AutoChart07OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart07OpenInShell
-$script:AutoChart07OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartNetworkSettingsCSVFileMostRecentCollection }) 
+$script:AutoChart07OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartNetworkSettingsCSVFileMostRecentCollection })
 $script:AutoChart07ManipulationPanel.controls.Add($script:AutoChart07OpenInShell)
 
 
@@ -3746,7 +3746,7 @@ $script:AutoChart07ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart07ViewResults
-$script:AutoChart07ViewResults.Add_Click({ $script:AutoChartNetworkSettingsDataSource | Out-GridView -Title "$script:AutoChartNetworkSettingsCSVFileMostRecentCollection" }) 
+$script:AutoChart07ViewResults.Add_Click({ $script:AutoChartNetworkSettingsDataSource | Out-GridView -Title "$script:AutoChartNetworkSettingsCSVFileMostRecentCollection" })
 $script:AutoChart07ManipulationPanel.controls.Add($script:AutoChart07ViewResults)
 
 
@@ -3769,7 +3769,7 @@ $script:AutoChart07ManipulationPanel.controls.Add($script:AutoChart07SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart07NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart07SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart07SaveButton.Location.X
                         Y = $script:AutoChart07SaveButton.Location.Y + $script:AutoChart07SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -3824,7 +3824,7 @@ $script:AutoChart08 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart08.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart08Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -3842,7 +3842,7 @@ $script:AutoChart08Area.Area3DStyle.Inclination = 75
 $script:AutoChart08.ChartAreas.Add($script:AutoChart08Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart08.Series.Add("Interfaces with IPs Per Host")  
+$script:AutoChart08.Series.Add("Interfaces with IPs Per Host")
 $script:AutoChart08.Series["Interfaces with IPs Per Host"].Enabled           = $True
 $script:AutoChart08.Series["Interfaces with IPs Per Host"].BorderWidth       = 1
 $script:AutoChart08.Series["Interfaces with IPs Per Host"].IsVisibleInLegend = $false
@@ -3877,18 +3877,18 @@ $script:AutoChart08.Series["Interfaces with IPs Per Host"].Color             = '
 
                 foreach ( $Line in $($script:AutoChartNetworkSettingsDataSource | Sort-Object PSComputerName) ) {
                     if ( $AutoChart08CheckIfFirstLine -eq $false ) { $AutoChart08CurrentComputer  = $Line.PSComputerName ; $AutoChart08CheckIfFirstLine = $true }
-                    if ( $AutoChart08CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart08CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart08CurrentComputer ) {
                             if ( $AutoChart08YResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart08YResults += $Line.IPAddress ; $AutoChart08ResultsCount += 1 }
                                 if ( $AutoChart08Computer -notcontains $Line.PSComputerName ) { $AutoChart08Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart08CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart08CurrentComputer ) {
                             $AutoChart08CurrentComputer = $Line.PSComputerName
-                            $AutoChart08YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart08YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart08ResultsCount
-                                Computer     = $AutoChart08Computer 
+                                Computer     = $AutoChart08Computer
                             }
                             $script:AutoChart08OverallDataResults += $AutoChart08YDataResults
                             $AutoChart08YResults     = @()
@@ -3903,7 +3903,7 @@ $script:AutoChart08.Series["Interfaces with IPs Per Host"].Color             = '
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart08YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart08ResultsCount ; Computer = $AutoChart08Computer }    
+                $AutoChart08YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart08ResultsCount ; Computer = $AutoChart08Computer }
                 $script:AutoChart08OverallDataResults += $AutoChart08YDataResults
                 $script:AutoChart08OverallDataResults | ForEach-Object { $script:AutoChart08.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -3917,12 +3917,12 @@ $script:AutoChart08.Series["Interfaces with IPs Per Host"].Color             = '
                 $script:AutoChart08.Series["Interfaces with IPs Per Host"].Points.Clear()
                 $script:AutoChart08Title.ForeColor = 'Red'
                 $script:AutoChart08Title.Text = "Interfaces with IPs Per Host`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart08
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart08OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart08.Location.X + $($FormScale * 5)
@@ -3931,7 +3931,7 @@ $script:AutoChart08OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart08OptionsButton
-$script:AutoChart08OptionsButton.Add_Click({  
+$script:AutoChart08OptionsButton.Add_Click({
     if ($script:AutoChart08OptionsButton.Text -eq 'Options v') {
         $script:AutoChart08OptionsButton.Text = 'Options ^'
         $script:AutoChart08.Controls.Add($script:AutoChart08ManipulationPanel)
@@ -3970,20 +3970,20 @@ $script:AutoChart08TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart08TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart08OverallDataResults.count))                
+    $script:AutoChart08TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart08OverallDataResults.count))
     $script:AutoChart08TrimOffFirstTrackBarValue   = 0
     $script:AutoChart08TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart08TrimOffFirstTrackBarValue = $script:AutoChart08TrimOffFirstTrackBar.Value
         $script:AutoChart08TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart08TrimOffFirstTrackBar.Value)"
         $script:AutoChart08.Series["Interfaces with IPs Per Host"].Points.Clear()
-        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart08TrimOffFirstGroupBox.Controls.Add($script:AutoChart08TrimOffFirstTrackBar)
 $script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08TrimOffFirstGroupBox)
@@ -4004,7 +4004,7 @@ $script:AutoChart08TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -4027,11 +4027,11 @@ $script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart08ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart08TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart08TrimOffFirstGroupBox.Location.Y + $script:AutoChart08TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -4057,7 +4057,7 @@ CommonButtonSettings -Button $script:AutoChart083DToggleButton
 $script:AutoChart083DInclination = 0
 $script:AutoChart083DToggleButton.Add_Click({
     $script:AutoChart083DInclination += 10
-    if ( $script:AutoChart083DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart083DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart08Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart08Area.Area3DStyle.Inclination = $script:AutoChart083DInclination
         $script:AutoChart083DToggleButton.Text  = "3D On ($script:AutoChart083DInclination)"
@@ -4067,12 +4067,12 @@ $script:AutoChart083DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart083DInclination -le 90 ) {
         $script:AutoChart08Area.Area3DStyle.Inclination = $script:AutoChart083DInclination
-        $script:AutoChart083DToggleButton.Text  = "3D On ($script:AutoChart083DInclination)" 
+        $script:AutoChart083DToggleButton.Text  = "3D On ($script:AutoChart083DInclination)"
 #        $script:AutoChart08.Series["Interfaces with IPs Per Host"].Points.Clear()
 #        $script:AutoChart08OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart08TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart08TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart08.Series["Interfaces with IPs Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart083DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart083DToggleButton.Text  = "3D Off"
         $script:AutoChart083DInclination = 0
         $script:AutoChart08Area.Area3DStyle.Inclination = $script:AutoChart083DInclination
         $script:AutoChart08Area.Area3DStyle.Enable3D    = $false
@@ -4103,7 +4103,7 @@ $script:AutoChart08ManipulationPanel.Controls.Add($script:AutoChart08ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart08 {    
+function script:InvestigateDifference-AutoChart08 {
     # List of Positive Endpoints that positively match
     $script:AutoChart08ImportCsvPosResults = $script:AutoChartNetworkSettingsDataSource | Where-Object 'Name' -eq $($script:AutoChart08InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart08InvestDiffPosResultsTextBox.Text = ''
@@ -4111,7 +4111,7 @@ function script:InvestigateDifference-AutoChart08 {
 
     # List of all endpoints within the csv file
     $script:AutoChart08ImportCsvAll = $script:AutoChartNetworkSettingsDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart08ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart08ImportCsvAll) { if ($Endpoint -notin $script:AutoChart08ImportCsvPosResults) { $script:AutoChart08ImportCsvNegResults += $Endpoint } }
@@ -4179,7 +4179,7 @@ $script:AutoChart08CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart08InvestDiffDropDownComboBox.Location.y + $script:AutoChart08InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart08InvestDiffExecuteButton
@@ -4194,7 +4194,7 @@ $script:AutoChart08CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart08InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart08InvestDiffPosResultsLabel.Location.y + $script:AutoChart08InvestDiffPosResultsLabel.Size.Height }
@@ -4206,7 +4206,7 @@ $script:AutoChart08CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart08InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -4260,7 +4260,7 @@ $script:AutoChart08OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart08OpenInShell
-$script:AutoChart08OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartNetworkSettingsCSVFileMostRecentCollection }) 
+$script:AutoChart08OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartNetworkSettingsCSVFileMostRecentCollection })
 $script:AutoChart08ManipulationPanel.controls.Add($script:AutoChart08OpenInShell)
 
 
@@ -4272,7 +4272,7 @@ $script:AutoChart08ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart08ViewResults
-$script:AutoChart08ViewResults.Add_Click({ $script:AutoChartNetworkSettingsDataSource | Out-GridView -Title "$script:AutoChartNetworkSettingsCSVFileMostRecentCollection" }) 
+$script:AutoChart08ViewResults.Add_Click({ $script:AutoChartNetworkSettingsDataSource | Out-GridView -Title "$script:AutoChartNetworkSettingsCSVFileMostRecentCollection" })
 $script:AutoChart08ManipulationPanel.controls.Add($script:AutoChart08ViewResults)
 
 
@@ -4295,7 +4295,7 @@ $script:AutoChart08ManipulationPanel.controls.Add($script:AutoChart08SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart08NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart08SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart08SaveButton.Location.X
                         Y = $script:AutoChart08SaveButton.Location.Y + $script:AutoChart08SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -4341,7 +4341,7 @@ $script:AutoChartStartupsCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'StartupCommand') { $script:AutoChartStartupsCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartStartupsCSVFileMostRecentCollection = $script:AutoChartStartupsCSVFileMatch | Select-Object -Last 1
 $script:AutoChartStartupsDataSource = Import-Csv $script:AutoChartStartupsCSVFileMostRecentCollection
 
@@ -4359,7 +4359,7 @@ $script:AutoChart09 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart09.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart09Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -4423,7 +4423,7 @@ $script:AutoChart09.Series["Startups"].Color             = 'Brown'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart09UniqueCount
-                        Computers   = $script:AutoChart09CsvComputers 
+                        Computers   = $script:AutoChart09CsvComputers
                     }
                     $script:AutoChart09OverallDataResults += $script:AutoChart09DataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -4436,12 +4436,12 @@ $script:AutoChart09.Series["Startups"].Color             = 'Brown'
             else {
                 $script:AutoChart09Title.ForeColor = 'Red'
                 $script:AutoChart09Title.Text = "Startups`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart09
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart09OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart09.Location.X + $($FormScale * 5)
@@ -4450,7 +4450,7 @@ $script:AutoChart09OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart09OptionsButton
-$script:AutoChart09OptionsButton.Add_Click({  
+$script:AutoChart09OptionsButton.Add_Click({
     if ($script:AutoChart09OptionsButton.Text -eq 'Options v') {
         $script:AutoChart09OptionsButton.Text = 'Options ^'
         $script:AutoChart09.Controls.Add($script:AutoChart09ManipulationPanel)
@@ -4490,14 +4490,14 @@ $script:AutoChart09TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart09TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart09OverallDataResults.count))                
+    $script:AutoChart09TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart09OverallDataResults.count))
     $script:AutoChart09TrimOffFirstTrackBarValue   = 0
     $script:AutoChart09TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart09TrimOffFirstTrackBarValue = $script:AutoChart09TrimOffFirstTrackBar.Value
@@ -4524,7 +4524,7 @@ $script:AutoChart09TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -4547,11 +4547,11 @@ $script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart09ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart09TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart09TrimOffFirstGroupBox.Location.Y + $script:AutoChart09TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -4577,9 +4577,9 @@ $script:AutoChart093DToggleButton = New-Object Windows.Forms.Button -Property @{
 CommonButtonSettings -Button $script:AutoChart093DToggleButton
 $script:AutoChart093DInclination = 0
 $script:AutoChart093DToggleButton.Add_Click({
-    
+
     $script:AutoChart093DInclination += 10
-    if ( $script:AutoChart093DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart093DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart09Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart09Area.Area3DStyle.Inclination = $script:AutoChart093DInclination
         $script:AutoChart093DToggleButton.Text  = "3D On ($script:AutoChart093DInclination)"
@@ -4588,12 +4588,12 @@ $script:AutoChart093DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart093DInclination -le 90 ) {
         $script:AutoChart09Area.Area3DStyle.Inclination = $script:AutoChart093DInclination
-        $script:AutoChart093DToggleButton.Text  = "3D On ($script:AutoChart093DInclination)" 
+        $script:AutoChart093DToggleButton.Text  = "3D On ($script:AutoChart093DInclination)"
 #        $script:AutoChart09.Series["Startups"].Points.Clear()
 #        $script:AutoChart09OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart09TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart09TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart09.Series["Startups"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart093DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart093DToggleButton.Text  = "3D Off"
         $script:AutoChart093DInclination = 0
         $script:AutoChart09Area.Area3DStyle.Inclination = $script:AutoChart093DInclination
         $script:AutoChart09Area.Area3DStyle.Enable3D    = $false
@@ -4625,7 +4625,7 @@ $script:AutoChart09ManipulationPanel.Controls.Add($script:AutoChart09ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart09 {    
+function script:InvestigateDifference-AutoChart09 {
     # List of Positive Endpoints that positively match
     $script:AutoChart09ImportCsvPosResults = $script:AutoChartStartupsDataSource | Where-Object 'Name' -eq $($script:AutoChart09InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart09InvestDiffPosResultsTextBox.Text = ''
@@ -4633,7 +4633,7 @@ function script:InvestigateDifference-AutoChart09 {
 
     # List of all endpoints within the csv file
     $script:AutoChart09ImportCsvAll = $script:AutoChartStartupsDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart09ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart09ImportCsvAll) { if ($Endpoint -notin $script:AutoChart09ImportCsvPosResults) { $script:AutoChart09ImportCsvNegResults += $Endpoint } }
@@ -4701,7 +4701,7 @@ $script:AutoChart09CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart09InvestDiffDropDownComboBox.Location.y + $script:AutoChart09InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart09InvestDiffExecuteButton
@@ -4716,7 +4716,7 @@ $script:AutoChart09CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart09InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart09InvestDiffPosResultsLabel.Location.y + $script:AutoChart09InvestDiffPosResultsLabel.Size.Height }
@@ -4728,7 +4728,7 @@ $script:AutoChart09CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart09InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -4782,7 +4782,7 @@ $script:AutoChart09OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart09OpenInShell
-$script:AutoChart09OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartStartupsCSVFileMostRecentCollection }) 
+$script:AutoChart09OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartStartupsCSVFileMostRecentCollection })
 $script:AutoChart09ManipulationPanel.controls.Add($script:AutoChart09OpenInShell)
 
 
@@ -4794,7 +4794,7 @@ $script:AutoChart09ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart09ViewResults
-$script:AutoChart09ViewResults.Add_Click({ $script:AutoChartStartupsDataSource | Out-GridView -Title "$script:AutoChartStartupsCSVFileMostRecentCollection" }) 
+$script:AutoChart09ViewResults.Add_Click({ $script:AutoChartStartupsDataSource | Out-GridView -Title "$script:AutoChartStartupsCSVFileMostRecentCollection" })
 $script:AutoChart09ManipulationPanel.controls.Add($script:AutoChart09ViewResults)
 
 
@@ -4817,7 +4817,7 @@ $script:AutoChart09ManipulationPanel.controls.Add($script:AutoChart09SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart09NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart09SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart09SaveButton.Location.X
                         Y = $script:AutoChart09SaveButton.Location.Y + $script:AutoChart09SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -4872,7 +4872,7 @@ $script:AutoChart10 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart10.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart10Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -4890,7 +4890,7 @@ $script:AutoChart10Area.Area3DStyle.Inclination = 75
 $script:AutoChart10.ChartAreas.Add($script:AutoChart10Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart10.Series.Add("Startups Per Host")  
+$script:AutoChart10.Series.Add("Startups Per Host")
 $script:AutoChart10.Series["Startups Per Host"].Enabled           = $True
 $script:AutoChart10.Series["Startups Per Host"].BorderWidth       = 1
 $script:AutoChart10.Series["Startups Per Host"].IsVisibleInLegend = $false
@@ -4901,7 +4901,7 @@ $script:AutoChart10.Series["Startups Per Host"]['PieLineColor']   = 'Black'
 $script:AutoChart10.Series["Startups Per Host"]['PieLabelStyle']  = 'Outside'
 $script:AutoChart10.Series["Startups Per Host"].ChartType         = 'DoughNut'
 $script:AutoChart10.Series["Startups Per Host"].Color             = 'Brown'
-        
+
         function Generate-AutoChart10 {
             $script:AutoChart10CsvFileHosts     = ($script:AutoChartStartupsDataSource).PSComputerName | Sort-Object -Unique
             $script:AutoChart10UniqueDataFields = ($script:AutoChartStartupsDataSource).Name | Sort-Object -Property 'Name'
@@ -4925,18 +4925,18 @@ $script:AutoChart10.Series["Startups Per Host"].Color             = 'Brown'
 
                 foreach ( $Line in $($script:AutoChartStartupsDataSource | Sort-Object PSComputerName) ) {
                     if ( $AutoChart10CheckIfFirstLine -eq $false ) { $AutoChart10CurrentComputer  = $Line.PSComputerName ; $AutoChart10CheckIfFirstLine = $true }
-                    if ( $AutoChart10CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart10CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart10CurrentComputer ) {
                             if ( $AutoChart10YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart10YResults += $Line.Name ; $AutoChart10ResultsCount += 1 }
                                 if ( $AutoChart10Computer -notcontains $Line.PSComputerName ) { $AutoChart10Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart10CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart10CurrentComputer ) {
                             $AutoChart10CurrentComputer = $Line.PSComputerName
-                            $AutoChart10YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart10YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart10ResultsCount
-                                Computer     = $AutoChart10Computer 
+                                Computer     = $AutoChart10Computer
                             }
                             $script:AutoChart10OverallDataResults += $AutoChart10YDataResults
                             $AutoChart10YResults     = @()
@@ -4951,7 +4951,7 @@ $script:AutoChart10.Series["Startups Per Host"].Color             = 'Brown'
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart10YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart10ResultsCount ; Computer = $AutoChart10Computer }    
+                $AutoChart10YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart10ResultsCount ; Computer = $AutoChart10Computer }
                 $script:AutoChart10OverallDataResults += $AutoChart10YDataResults
                 $script:AutoChart10OverallDataResults | ForEach-Object { $script:AutoChart10.Series["Startups Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -4965,12 +4965,12 @@ $script:AutoChart10.Series["Startups Per Host"].Color             = 'Brown'
                 $script:AutoChart10.Series["Startups Per Host"].Points.Clear()
                 $script:AutoChart10Title.ForeColor = 'Red'
                 $script:AutoChart10Title.Text = "Startups Per Host`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart10
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart10OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart10.Location.X + $($FormScale * 5)
@@ -4979,7 +4979,7 @@ $script:AutoChart10OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart10OptionsButton
-$script:AutoChart10OptionsButton.Add_Click({  
+$script:AutoChart10OptionsButton.Add_Click({
     if ($script:AutoChart10OptionsButton.Text -eq 'Options v') {
         $script:AutoChart10OptionsButton.Text = 'Options ^'
         $script:AutoChart10.Controls.Add($script:AutoChart10ManipulationPanel)
@@ -5018,20 +5018,20 @@ $script:AutoChart10TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart10TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart10OverallDataResults.count))                
+    $script:AutoChart10TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart10OverallDataResults.count))
     $script:AutoChart10TrimOffFirstTrackBarValue   = 0
     $script:AutoChart10TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart10TrimOffFirstTrackBarValue = $script:AutoChart10TrimOffFirstTrackBar.Value
         $script:AutoChart10TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart10TrimOffFirstTrackBar.Value)"
         $script:AutoChart10.Series["Startups Per Host"].Points.Clear()
-        $script:AutoChart10OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Startups Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart10OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Startups Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart10TrimOffFirstGroupBox.Controls.Add($script:AutoChart10TrimOffFirstTrackBar)
 $script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10TrimOffFirstGroupBox)
@@ -5052,7 +5052,7 @@ $script:AutoChart10TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -5075,11 +5075,11 @@ $script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart10ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart10TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart10TrimOffFirstGroupBox.Location.Y + $script:AutoChart10TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -5105,7 +5105,7 @@ CommonButtonSettings -Button $script:AutoChart103DToggleButton
 $script:AutoChart103DInclination = 0
 $script:AutoChart103DToggleButton.Add_Click({
     $script:AutoChart103DInclination += 10
-    if ( $script:AutoChart103DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart103DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart10Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart10Area.Area3DStyle.Inclination = $script:AutoChart103DInclination
         $script:AutoChart103DToggleButton.Text  = "3D On ($script:AutoChart103DInclination)"
@@ -5115,12 +5115,12 @@ $script:AutoChart103DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart103DInclination -le 90 ) {
         $script:AutoChart10Area.Area3DStyle.Inclination = $script:AutoChart103DInclination
-        $script:AutoChart103DToggleButton.Text  = "3D On ($script:AutoChart103DInclination)" 
+        $script:AutoChart103DToggleButton.Text  = "3D On ($script:AutoChart103DInclination)"
 #        $script:AutoChart10.Series["Startups Per Host"].Points.Clear()
 #        $script:AutoChart10OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart10TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart10TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart10.Series["Startups Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart103DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart103DToggleButton.Text  = "3D Off"
         $script:AutoChart103DInclination = 0
         $script:AutoChart10Area.Area3DStyle.Inclination = $script:AutoChart103DInclination
         $script:AutoChart10Area.Area3DStyle.Enable3D    = $false
@@ -5151,7 +5151,7 @@ $script:AutoChart10ManipulationPanel.Controls.Add($script:AutoChart10ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart10 {    
+function script:InvestigateDifference-AutoChart10 {
     # List of Positive Endpoints that positively match
     $script:AutoChart10ImportCsvPosResults = $script:AutoChartStartupsDataSource | Where-Object 'Name' -eq $($script:AutoChart10InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart10InvestDiffPosResultsTextBox.Text = ''
@@ -5159,7 +5159,7 @@ function script:InvestigateDifference-AutoChart10 {
 
     # List of all endpoints within the csv file
     $script:AutoChart10ImportCsvAll = $script:AutoChartStartupsDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart10ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart10ImportCsvAll) { if ($Endpoint -notin $script:AutoChart10ImportCsvPosResults) { $script:AutoChart10ImportCsvNegResults += $Endpoint } }
@@ -5227,7 +5227,7 @@ $script:AutoChart10CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart10InvestDiffDropDownComboBox.Location.y + $script:AutoChart10InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart10InvestDiffExecuteButton
@@ -5242,7 +5242,7 @@ $script:AutoChart10CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart10InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart10InvestDiffPosResultsLabel.Location.y + $script:AutoChart10InvestDiffPosResultsLabel.Size.Height }
@@ -5254,7 +5254,7 @@ $script:AutoChart10CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart10InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -5308,7 +5308,7 @@ $script:AutoChart10OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart10OpenInShell
-$script:AutoChart10OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartStartupsCSVFileMostRecentCollection }) 
+$script:AutoChart10OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartStartupsCSVFileMostRecentCollection })
 $script:AutoChart10ManipulationPanel.controls.Add($script:AutoChart10OpenInShell)
 
 
@@ -5320,7 +5320,7 @@ $script:AutoChart10ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart10ViewResults
-$script:AutoChart10ViewResults.Add_Click({ $script:AutoChartStartupsDataSource | Out-GridView -Title "$script:AutoChartStartupsCSVFileMostRecentCollection" }) 
+$script:AutoChart10ViewResults.Add_Click({ $script:AutoChartStartupsDataSource | Out-GridView -Title "$script:AutoChartStartupsCSVFileMostRecentCollection" })
 $script:AutoChart10ManipulationPanel.controls.Add($script:AutoChart10ViewResults)
 
 
@@ -5343,7 +5343,7 @@ $script:AutoChart10ManipulationPanel.controls.Add($script:AutoChart10SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart10NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart10SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart10SaveButton.Location.X
                         Y = $script:AutoChart10SaveButton.Location.Y + $script:AutoChart10SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -5384,7 +5384,7 @@ $script:AutoChartSecurityPatchesCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Security Patches') { $script:AutoChartSecurityPatchesCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartSecurityPatchesCSVFileMostRecentCollection = $script:AutoChartSecurityPatchesCSVFileMatch | Select-Object -Last 1
 $script:AutoChartSecurityPatchesDataSource = Import-Csv $script:AutoChartSecurityPatchesCSVFileMostRecentCollection
 
@@ -5402,7 +5402,7 @@ $script:AutoChart11 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart11.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart11Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -5466,7 +5466,7 @@ $script:AutoChart11.Series["Security Patches"].Color             = 'Gray'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart11UniqueCount
-                        Computers   = $script:AutoChart11CsvComputers 
+                        Computers   = $script:AutoChart11CsvComputers
                     }
                     $script:AutoChart11OverallDataResults += $script:AutoChart11DataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -5479,12 +5479,12 @@ $script:AutoChart11.Series["Security Patches"].Color             = 'Gray'
             else {
                 $script:AutoChart11Title.ForeColor = 'Red'
                 $script:AutoChart11Title.Text = "Security Patches`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart11
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart11OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart11.Location.X + $($FormScale * 5)
@@ -5493,7 +5493,7 @@ $script:AutoChart11OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart11OptionsButton
-$script:AutoChart11OptionsButton.Add_Click({  
+$script:AutoChart11OptionsButton.Add_Click({
     if ($script:AutoChart11OptionsButton.Text -eq 'Options v') {
         $script:AutoChart11OptionsButton.Text = 'Options ^'
         $script:AutoChart11.Controls.Add($script:AutoChart11ManipulationPanel)
@@ -5533,14 +5533,14 @@ $script:AutoChart11TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart11TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart11OverallDataResults.count))                
+    $script:AutoChart11TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart11OverallDataResults.count))
     $script:AutoChart11TrimOffFirstTrackBarValue   = 0
     $script:AutoChart11TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart11TrimOffFirstTrackBarValue = $script:AutoChart11TrimOffFirstTrackBar.Value
@@ -5567,7 +5567,7 @@ $script:AutoChart11TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -5590,11 +5590,11 @@ $script:AutoChart11ManipulationPanel.Controls.Add($script:AutoChart11TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart11ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart11TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart11TrimOffFirstGroupBox.Location.Y + $script:AutoChart11TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -5620,9 +5620,9 @@ $script:AutoChart113DToggleButton = New-Object Windows.Forms.Button -Property @{
 CommonButtonSettings -Button $script:AutoChart113DToggleButton
 $script:AutoChart113DInclination = 0
 $script:AutoChart113DToggleButton.Add_Click({
-    
+
     $script:AutoChart113DInclination += 10
-    if ( $script:AutoChart113DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart113DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart11Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart11Area.Area3DStyle.Inclination = $script:AutoChart113DInclination
         $script:AutoChart113DToggleButton.Text  = "3D On ($script:AutoChart113DInclination)"
@@ -5631,12 +5631,12 @@ $script:AutoChart113DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart113DInclination -le 90 ) {
         $script:AutoChart11Area.Area3DStyle.Inclination = $script:AutoChart113DInclination
-        $script:AutoChart113DToggleButton.Text  = "3D On ($script:AutoChart113DInclination)" 
+        $script:AutoChart113DToggleButton.Text  = "3D On ($script:AutoChart113DInclination)"
 #        $script:AutoChart11.Series["Security Patches"].Points.Clear()
 #        $script:AutoChart11OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart11TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart11TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart11.Series["Security Patches"].Points.AddXY($_.DataField.HotFixID,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart113DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart113DToggleButton.Text  = "3D Off"
         $script:AutoChart113DInclination = 0
         $script:AutoChart11Area.Area3DStyle.Inclination = $script:AutoChart113DInclination
         $script:AutoChart11Area.Area3DStyle.Enable3D    = $false
@@ -5668,7 +5668,7 @@ $script:AutoChart11ManipulationPanel.Controls.Add($script:AutoChart11ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart11 {    
+function script:InvestigateDifference-AutoChart11 {
     # List of Positive Endpoints that positively match
     $script:AutoChart11ImportCsvPosResults = $script:AutoChartSecurityPatchesDataSource | Where-Object 'HotFixID' -eq $($script:AutoChart11InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart11InvestDiffPosResultsTextBox.Text = ''
@@ -5676,7 +5676,7 @@ function script:InvestigateDifference-AutoChart11 {
 
     # List of all endpoints within the csv file
     $script:AutoChart11ImportCsvAll = $script:AutoChartSecurityPatchesDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart11ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart11ImportCsvAll) { if ($Endpoint -notin $script:AutoChart11ImportCsvPosResults) { $script:AutoChart11ImportCsvNegResults += $Endpoint } }
@@ -5744,7 +5744,7 @@ $script:AutoChart11CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart11InvestDiffDropDownComboBox.Location.y + $script:AutoChart11InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart11InvestDiffExecuteButton
@@ -5759,7 +5759,7 @@ $script:AutoChart11CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart11InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart11InvestDiffPosResultsLabel.Location.y + $script:AutoChart11InvestDiffPosResultsLabel.Size.Height }
@@ -5771,7 +5771,7 @@ $script:AutoChart11CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart11InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -5825,7 +5825,7 @@ $script:AutoChart11OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart11OpenInShell
-$script:AutoChart11OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSecurityPatchesCSVFileMostRecentCollection }) 
+$script:AutoChart11OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSecurityPatchesCSVFileMostRecentCollection })
 $script:AutoChart11ManipulationPanel.controls.Add($script:AutoChart11OpenInShell)
 
 
@@ -5837,7 +5837,7 @@ $script:AutoChart11ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart11ViewResults
-$script:AutoChart11ViewResults.Add_Click({ $script:AutoChartSecurityPatchesDataSource | Out-GridView -Title "$script:AutoChartSecurityPatchesCSVFileMostRecentCollection" }) 
+$script:AutoChart11ViewResults.Add_Click({ $script:AutoChartSecurityPatchesDataSource | Out-GridView -Title "$script:AutoChartSecurityPatchesCSVFileMostRecentCollection" })
 $script:AutoChart11ManipulationPanel.controls.Add($script:AutoChart11ViewResults)
 
 
@@ -5860,7 +5860,7 @@ $script:AutoChart11ManipulationPanel.controls.Add($script:AutoChart11SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart11NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart11SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart11SaveButton.Location.X
                         Y = $script:AutoChart11SaveButton.Location.Y + $script:AutoChart11SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -5913,7 +5913,7 @@ $script:AutoChart12 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart12.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart12Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -5931,7 +5931,7 @@ $script:AutoChart12Area.Area3DStyle.Inclination = 75
 $script:AutoChart12.ChartAreas.Add($script:AutoChart12Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart12.Series.Add("Security Patches Per Host")  
+$script:AutoChart12.Series.Add("Security Patches Per Host")
 $script:AutoChart12.Series["Security Patches Per Host"].Enabled           = $True
 $script:AutoChart12.Series["Security Patches Per Host"].BorderWidth       = 1
 $script:AutoChart12.Series["Security Patches Per Host"].IsVisibleInLegend = $false
@@ -5942,7 +5942,7 @@ $script:AutoChart12.Series["Security Patches Per Host"]['PieLineColor']   = 'Bla
 $script:AutoChart12.Series["Security Patches Per Host"]['PieLabelStyle']  = 'Outside'
 $script:AutoChart12.Series["Security Patches Per Host"].ChartType         = 'DoughNut'
 $script:AutoChart12.Series["Security Patches Per Host"].Color             = 'Gray'
-        
+
         function Generate-AutoChart12 {
             $script:AutoChart12CsvFileHosts     = ($script:AutoChartSecurityPatchesDataSource).PSComputerName | Sort-Object -Unique
             $script:AutoChart12UniqueDataFields = ($script:AutoChartSecurityPatchesDataSource).HotFixID | Sort-Object -Property 'HotFixID'
@@ -5966,18 +5966,18 @@ $script:AutoChart12.Series["Security Patches Per Host"].Color             = 'Gra
 
                 foreach ( $Line in $($script:AutoChartSecurityPatchesDataSource | Sort-Object PSComputerName) ) {
                     if ( $AutoChart12CheckIfFirstLine -eq $false ) { $AutoChart12CurrentComputer  = $Line.PSComputerName ; $AutoChart12CheckIfFirstLine = $true }
-                    if ( $AutoChart12CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart12CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart12CurrentComputer ) {
                             if ( $AutoChart12YResults -notcontains $Line.HotFixID ) {
                                 if ( $Line.HotFixID -ne "" ) { $AutoChart12YResults += $Line.HotFixID ; $AutoChart12ResultsCount += 1 }
                                 if ( $AutoChart12Computer -notcontains $Line.PSComputerName ) { $AutoChart12Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart12CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart12CurrentComputer ) {
                             $AutoChart12CurrentComputer = $Line.PSComputerName
-                            $AutoChart12YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart12YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart12ResultsCount
-                                Computer     = $AutoChart12Computer 
+                                Computer     = $AutoChart12Computer
                             }
                             $script:AutoChart12OverallDataResults += $AutoChart12YDataResults
                             $AutoChart12YResults     = @()
@@ -5992,7 +5992,7 @@ $script:AutoChart12.Series["Security Patches Per Host"].Color             = 'Gra
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart12YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart12ResultsCount ; Computer = $AutoChart12Computer }    
+                $AutoChart12YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart12ResultsCount ; Computer = $AutoChart12Computer }
                 $script:AutoChart12OverallDataResults += $AutoChart12YDataResults
                 $script:AutoChart12OverallDataResults | ForEach-Object { $script:AutoChart12.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -6006,12 +6006,12 @@ $script:AutoChart12.Series["Security Patches Per Host"].Color             = 'Gra
                 $script:AutoChart12.Series["Security Patches Per Host"].Points.Clear()
                 $script:AutoChart12Title.ForeColor = 'Red'
                 $script:AutoChart12Title.Text = "Security Patches Per Host`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart12
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart12OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart12.Location.X + $($FormScale * 5)
@@ -6020,7 +6020,7 @@ $script:AutoChart12OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart12OptionsButton
-$script:AutoChart12OptionsButton.Add_Click({  
+$script:AutoChart12OptionsButton.Add_Click({
     if ($script:AutoChart12OptionsButton.Text -eq 'Options v') {
         $script:AutoChart12OptionsButton.Text = 'Options ^'
         $script:AutoChart12.Controls.Add($script:AutoChart12ManipulationPanel)
@@ -6059,20 +6059,20 @@ $script:AutoChart12TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart12TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart12OverallDataResults.count))                
+    $script:AutoChart12TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart12OverallDataResults.count))
     $script:AutoChart12TrimOffFirstTrackBarValue   = 0
     $script:AutoChart12TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart12TrimOffFirstTrackBarValue = $script:AutoChart12TrimOffFirstTrackBar.Value
         $script:AutoChart12TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart12TrimOffFirstTrackBar.Value)"
         $script:AutoChart12.Series["Security Patches Per Host"].Points.Clear()
-        $script:AutoChart12OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart12TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart12TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart12.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart12OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart12TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart12TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart12.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart12TrimOffFirstGroupBox.Controls.Add($script:AutoChart12TrimOffFirstTrackBar)
 $script:AutoChart12ManipulationPanel.Controls.Add($script:AutoChart12TrimOffFirstGroupBox)
@@ -6093,7 +6093,7 @@ $script:AutoChart12TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -6116,11 +6116,11 @@ $script:AutoChart12ManipulationPanel.Controls.Add($script:AutoChart12TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart12ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart12TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart12TrimOffFirstGroupBox.Location.Y + $script:AutoChart12TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -6146,7 +6146,7 @@ CommonButtonSettings -Button $script:AutoChart123DToggleButton
 $script:AutoChart123DInclination = 0
 $script:AutoChart123DToggleButton.Add_Click({
     $script:AutoChart123DInclination += 10
-    if ( $script:AutoChart123DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart123DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart12Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart12Area.Area3DStyle.Inclination = $script:AutoChart123DInclination
         $script:AutoChart123DToggleButton.Text  = "3D On ($script:AutoChart123DInclination)"
@@ -6156,12 +6156,12 @@ $script:AutoChart123DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart123DInclination -le 90 ) {
         $script:AutoChart12Area.Area3DStyle.Inclination = $script:AutoChart123DInclination
-        $script:AutoChart123DToggleButton.Text  = "3D On ($script:AutoChart123DInclination)" 
+        $script:AutoChart123DToggleButton.Text  = "3D On ($script:AutoChart123DInclination)"
 #        $script:AutoChart12.Series["Security Patches Per Host"].Points.Clear()
 #        $script:AutoChart12OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart12TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart12TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart12.Series["Security Patches Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart123DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart123DToggleButton.Text  = "3D Off"
         $script:AutoChart123DInclination = 0
         $script:AutoChart12Area.Area3DStyle.Inclination = $script:AutoChart123DInclination
         $script:AutoChart12Area.Area3DStyle.Enable3D    = $false
@@ -6192,7 +6192,7 @@ $script:AutoChart12ManipulationPanel.Controls.Add($script:AutoChart12ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart12 {    
+function script:InvestigateDifference-AutoChart12 {
     # List of Positive Endpoints that positively match
     $script:AutoChart12ImportCsvPosResults = $script:AutoChartSecurityPatchesDataSource | Where-Object 'Name' -eq $($script:AutoChart12InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart12InvestDiffPosResultsTextBox.Text = ''
@@ -6200,7 +6200,7 @@ function script:InvestigateDifference-AutoChart12 {
 
     # List of all endpoints within the csv file
     $script:AutoChart12ImportCsvAll = $script:AutoChartSecurityPatchesDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart12ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart12ImportCsvAll) { if ($Endpoint -notin $script:AutoChart12ImportCsvPosResults) { $script:AutoChart12ImportCsvNegResults += $Endpoint } }
@@ -6268,7 +6268,7 @@ $script:AutoChart12CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart12InvestDiffDropDownComboBox.Location.y + $script:AutoChart12InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart12InvestDiffExecuteButton
@@ -6283,7 +6283,7 @@ $script:AutoChart12CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart12InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart12InvestDiffPosResultsLabel.Location.y + $script:AutoChart12InvestDiffPosResultsLabel.Size.Height }
@@ -6295,7 +6295,7 @@ $script:AutoChart12CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart12InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -6349,7 +6349,7 @@ $script:AutoChart12OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart12OpenInShell
-$script:AutoChart12OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSecurityPatchesCSVFileMostRecentCollection }) 
+$script:AutoChart12OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSecurityPatchesCSVFileMostRecentCollection })
 $script:AutoChart12ManipulationPanel.controls.Add($script:AutoChart12OpenInShell)
 
 
@@ -6361,7 +6361,7 @@ $script:AutoChart12ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart12ViewResults
-$script:AutoChart12ViewResults.Add_Click({ $script:AutoChartSecurityPatchesDataSource | Out-GridView -Title "$script:AutoChartSecurityPatchesCSVFileMostRecentCollection" }) 
+$script:AutoChart12ViewResults.Add_Click({ $script:AutoChartSecurityPatchesDataSource | Out-GridView -Title "$script:AutoChartSecurityPatchesCSVFileMostRecentCollection" })
 $script:AutoChart12ManipulationPanel.controls.Add($script:AutoChart12ViewResults)
 
 
@@ -6384,7 +6384,7 @@ $script:AutoChart12ManipulationPanel.controls.Add($script:AutoChart12SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart12NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart12SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart12SaveButton.Location.X
                         Y = $script:AutoChart12SaveButton.Location.Y + $script:AutoChart12SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -6424,7 +6424,7 @@ $script:AutoChartSmbSharesCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'SMB Shares') { $script:AutoChartSmbSharesCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartSmbSharesCSVFileMostRecentCollection = $script:AutoChartSmbSharesCSVFileMatch | Select-Object -Last 1
 $script:AutoChartSmbSharesDataSource = Import-Csv $script:AutoChartSmbSharesCSVFileMostRecentCollection
 
@@ -6442,7 +6442,7 @@ $script:AutoChart13 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart13.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart13Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -6506,8 +6506,8 @@ $script:AutoChart13.Series["Share Names"].Color             = 'SlateBLue'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart13UniqueCount
-                        Computers   = $script:AutoChart13CsvComputers 
-                    }           
+                        Computers   = $script:AutoChart13CsvComputers
+                    }
                     $script:AutoChart13OverallDataResults += $script:AutoChart13DataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
@@ -6519,12 +6519,12 @@ $script:AutoChart13.Series["Share Names"].Color             = 'SlateBLue'
             else {
                 $script:AutoChart13Title.ForeColor = 'Red'
                 $script:AutoChart13Title.Text = "Share Names`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart13
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart13OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart13.Location.X + $($FormScale * 5)
@@ -6533,7 +6533,7 @@ $script:AutoChart13OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart13OptionsButton
-$script:AutoChart13OptionsButton.Add_Click({  
+$script:AutoChart13OptionsButton.Add_Click({
     if ($script:AutoChart13OptionsButton.Text -eq 'Options v') {
         $script:AutoChart13OptionsButton.Text = 'Options ^'
         $script:AutoChart13.Controls.Add($script:AutoChart13ManipulationPanel)
@@ -6573,14 +6573,14 @@ $script:AutoChart13TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart13TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart13OverallDataResults.count))                
+    $script:AutoChart13TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart13OverallDataResults.count))
     $script:AutoChart13TrimOffFirstTrackBarValue   = 0
     $script:AutoChart13TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart13TrimOffFirstTrackBarValue = $script:AutoChart13TrimOffFirstTrackBar.Value
@@ -6607,7 +6607,7 @@ $script:AutoChart13TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -6630,11 +6630,11 @@ $script:AutoChart13ManipulationPanel.Controls.Add($script:AutoChart13TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart13ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart13TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart13TrimOffFirstGroupBox.Location.Y + $script:AutoChart13TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -6660,9 +6660,9 @@ $script:AutoChart133DToggleButton = New-Object Windows.Forms.Button -Property @{
 CommonButtonSettings -Button $script:AutoChart133DToggleButton
 $script:AutoChart133DInclination = 0
 $script:AutoChart133DToggleButton.Add_Click({
-    
+
     $script:AutoChart133DInclination += 10
-    if ( $script:AutoChart133DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart133DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart13Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart13Area.Area3DStyle.Inclination = $script:AutoChart133DInclination
         $script:AutoChart133DToggleButton.Text  = "3D On ($script:AutoChart133DInclination)"
@@ -6671,12 +6671,12 @@ $script:AutoChart133DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart133DInclination -le 90 ) {
         $script:AutoChart13Area.Area3DStyle.Inclination = $script:AutoChart133DInclination
-        $script:AutoChart133DToggleButton.Text  = "3D On ($script:AutoChart133DInclination)" 
+        $script:AutoChart133DToggleButton.Text  = "3D On ($script:AutoChart133DInclination)"
 #        $script:AutoChart13.Series["Share Names"].Points.Clear()
 #        $script:AutoChart13OverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart13TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart13TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart13.Series["Share Names"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart133DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart133DToggleButton.Text  = "3D Off"
         $script:AutoChart133DInclination = 0
         $script:AutoChart13Area.Area3DStyle.Inclination = $script:AutoChart133DInclination
         $script:AutoChart13Area.Area3DStyle.Enable3D    = $false
@@ -6708,7 +6708,7 @@ $script:AutoChart13ManipulationPanel.Controls.Add($script:AutoChart13ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart13 {    
+function script:InvestigateDifference-AutoChart13 {
     # List of Positive Endpoints that positively match
     $script:AutoChart13ImportCsvPosResults = $script:AutoChartSmbSharesDataSource | Where-Object 'Name' -eq $($script:AutoChart13InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart13InvestDiffPosResultsTextBox.Text = ''
@@ -6716,7 +6716,7 @@ function script:InvestigateDifference-AutoChart13 {
 
     # List of all endpoints within the csv file
     $script:AutoChart13ImportCsvAll = $script:AutoChartSmbSharesDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart13ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart13ImportCsvAll) { if ($Endpoint -notin $script:AutoChart13ImportCsvPosResults) { $script:AutoChart13ImportCsvNegResults += $Endpoint } }
@@ -6784,7 +6784,7 @@ $script:AutoChart13CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart13InvestDiffDropDownComboBox.Location.y + $script:AutoChart13InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart13InvestDiffExecuteButton
@@ -6799,7 +6799,7 @@ $script:AutoChart13CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart13InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart13InvestDiffPosResultsLabel.Location.y + $script:AutoChart13InvestDiffPosResultsLabel.Size.Height }
@@ -6811,7 +6811,7 @@ $script:AutoChart13CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart13InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -6865,7 +6865,7 @@ $script:AutoChart13OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart13OpenInShell
-$script:AutoChart13OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSmbSharesCSVFileMostRecentCollection }) 
+$script:AutoChart13OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSmbSharesCSVFileMostRecentCollection })
 $script:AutoChart13ManipulationPanel.controls.Add($script:AutoChart13OpenInShell)
 
 
@@ -6877,7 +6877,7 @@ $script:AutoChart13ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart13ViewResults
-$script:AutoChart13ViewResults.Add_Click({ $script:AutoChartSmbSharesDataSource | Out-GridView -Title "$script:AutoChartSmbSharesCSVFileMostRecentCollection" }) 
+$script:AutoChart13ViewResults.Add_Click({ $script:AutoChartSmbSharesDataSource | Out-GridView -Title "$script:AutoChartSmbSharesCSVFileMostRecentCollection" })
 $script:AutoChart13ManipulationPanel.controls.Add($script:AutoChart13ViewResults)
 
 
@@ -6900,7 +6900,7 @@ $script:AutoChart13ManipulationPanel.controls.Add($script:AutoChart13SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart13NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart13SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart13SaveButton.Location.X
                         Y = $script:AutoChart13SaveButton.Location.Y + $script:AutoChart13SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -6947,7 +6947,7 @@ $script:AutoChart14 = New-object System.Windows.Forms.DataVisualization.Charting
 }
 $script:AutoChart14.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart14Title = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -6965,7 +6965,7 @@ $script:AutoChart14Area.Area3DStyle.Inclination = 75
 $script:AutoChart14.ChartAreas.Add($script:AutoChart14Area)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart14.Series.Add("Shares Per Host")  
+$script:AutoChart14.Series.Add("Shares Per Host")
 $script:AutoChart14.Series["Shares Per Host"].Enabled           = $True
 $script:AutoChart14.Series["Shares Per Host"].BorderWidth       = 1
 $script:AutoChart14.Series["Shares Per Host"].IsVisibleInLegend = $false
@@ -7000,18 +7000,18 @@ $script:AutoChart14.Series["Shares Per Host"].Color             = 'SlateBLue'
 
                 foreach ( $Line in $($script:AutoChartSmbSharesDataSource | Sort-Object PSComputerName) ) {
                     if ( $AutoChart14CheckIfFirstLine -eq $false ) { $AutoChart14CurrentComputer  = $Line.PSComputerName ; $AutoChart14CheckIfFirstLine = $true }
-                    if ( $AutoChart14CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart14CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart14CurrentComputer ) {
                             if ( $AutoChart14YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart14YResults += $Line.Name ; $AutoChart14ResultsCount += 1 }
                                 if ( $AutoChart14Computer -notcontains $Line.PSComputerName ) { $AutoChart14Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart14CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart14CurrentComputer ) {
                             $AutoChart14CurrentComputer = $Line.PSComputerName
-                            $AutoChart14YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart14YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart14ResultsCount
-                                Computer     = $AutoChart14Computer 
+                                Computer     = $AutoChart14Computer
                             }
                             $script:AutoChart14OverallDataResults += $AutoChart14YDataResults
                             $AutoChart14YResults     = @()
@@ -7026,7 +7026,7 @@ $script:AutoChart14.Series["Shares Per Host"].Color             = 'SlateBLue'
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart14YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart14ResultsCount ; Computer = $AutoChart14Computer }    
+                $AutoChart14YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart14ResultsCount ; Computer = $AutoChart14Computer }
                 $script:AutoChart14OverallDataResults += $AutoChart14YDataResults
                 $script:AutoChart14OverallDataResults | ForEach-Object { $script:AutoChart14.Series["Shares Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -7040,12 +7040,12 @@ $script:AutoChart14.Series["Shares Per Host"].Color             = 'SlateBLue'
                 $script:AutoChart14.Series["Shares Per Host"].Points.Clear()
                 $script:AutoChart14Title.ForeColor = 'Red'
                 $script:AutoChart14Title.Text = "Shares Per Host`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart14
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart14OptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart14.Location.X + $($FormScale * 5)
@@ -7054,7 +7054,7 @@ $script:AutoChart14OptionsButton = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart14OptionsButton
-$script:AutoChart14OptionsButton.Add_Click({  
+$script:AutoChart14OptionsButton.Add_Click({
     if ($script:AutoChart14OptionsButton.Text -eq 'Options v') {
         $script:AutoChart14OptionsButton.Text = 'Options ^'
         $script:AutoChart14.Controls.Add($script:AutoChart14ManipulationPanel)
@@ -7093,20 +7093,20 @@ $script:AutoChart14TrimOffFirstGroupBoX = New-Object System.Windows.Forms.GroupB
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart14TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart14OverallDataResults.count))                
+    $script:AutoChart14TrimOffFirstTrackBar.SetRange(0, $($script:AutoChart14OverallDataResults.count))
     $script:AutoChart14TrimOffFirstTrackBarValue   = 0
     $script:AutoChart14TrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart14TrimOffFirstTrackBarValue = $script:AutoChart14TrimOffFirstTrackBar.Value
         $script:AutoChart14TrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart14TrimOffFirstTrackBar.Value)"
         $script:AutoChart14.Series["Shares Per Host"].Points.Clear()
-        $script:AutoChart14OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart14TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart14TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart14.Series["Shares Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart14OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart14TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart14TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart14.Series["Shares Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart14TrimOffFirstGroupBox.Controls.Add($script:AutoChart14TrimOffFirstTrackBar)
 $script:AutoChart14ManipulationPanel.Controls.Add($script:AutoChart14TrimOffFirstGroupBox)
@@ -7127,7 +7127,7 @@ $script:AutoChart14TrimOffLastGroupBoX = New-Object System.Windows.Forms.GroupBo
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -7150,11 +7150,11 @@ $script:AutoChart14ManipulationPanel.Controls.Add($script:AutoChart14TrimOffLast
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart14ChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart14TrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart14TrimOffFirstGroupBox.Location.Y + $script:AutoChart14TrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -7180,7 +7180,7 @@ CommonButtonSettings -Button $script:AutoChart143DToggleButton
 $script:AutoChart143DInclination = 0
 $script:AutoChart143DToggleButton.Add_Click({
     $script:AutoChart143DInclination += 10
-    if ( $script:AutoChart143DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart143DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart14Area.Area3DStyle.Enable3D    = $true
         $script:AutoChart14Area.Area3DStyle.Inclination = $script:AutoChart143DInclination
         $script:AutoChart143DToggleButton.Text  = "3D On ($script:AutoChart143DInclination)"
@@ -7190,12 +7190,12 @@ $script:AutoChart143DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart143DInclination -le 90 ) {
         $script:AutoChart14Area.Area3DStyle.Inclination = $script:AutoChart143DInclination
-        $script:AutoChart143DToggleButton.Text  = "3D On ($script:AutoChart143DInclination)" 
+        $script:AutoChart143DToggleButton.Text  = "3D On ($script:AutoChart143DInclination)"
 #        $script:AutoChart14.Series["Shares Per Host"].Points.Clear()
 #        $script:AutoChart14OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart14TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart14TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart14.Series["Shares Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart143DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart143DToggleButton.Text  = "3D Off"
         $script:AutoChart143DInclination = 0
         $script:AutoChart14Area.Area3DStyle.Inclination = $script:AutoChart143DInclination
         $script:AutoChart14Area.Area3DStyle.Enable3D    = $false
@@ -7226,7 +7226,7 @@ $script:AutoChart14ManipulationPanel.Controls.Add($script:AutoChart14ChangeColor
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart14 {    
+function script:InvestigateDifference-AutoChart14 {
     # List of Positive Endpoints that positively match
     $script:AutoChart14ImportCsvPosResults = $script:AutoChartSmbSharesDataSource | Where-Object 'Name' -eq $($script:AutoChart14InvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart14InvestDiffPosResultsTextBox.Text = ''
@@ -7234,7 +7234,7 @@ function script:InvestigateDifference-AutoChart14 {
 
     # List of all endpoints within the csv file
     $script:AutoChart14ImportCsvAll = $script:AutoChartSmbSharesDataSource | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart14ImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart14ImportCsvAll) { if ($Endpoint -notin $script:AutoChart14ImportCsvPosResults) { $script:AutoChart14ImportCsvNegResults += $Endpoint } }
@@ -7302,7 +7302,7 @@ $script:AutoChart14CheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart14InvestDiffDropDownComboBox.Location.y + $script:AutoChart14InvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart14InvestDiffExecuteButton
@@ -7317,7 +7317,7 @@ $script:AutoChart14CheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart14InvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart14InvestDiffPosResultsLabel.Location.y + $script:AutoChart14InvestDiffPosResultsLabel.Size.Height }
@@ -7329,7 +7329,7 @@ $script:AutoChart14CheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart14InvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -7383,7 +7383,7 @@ $script:AutoChart14OpenInShell = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart14OpenInShell
-$script:AutoChart14OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSmbSharesCSVFileMostRecentCollection }) 
+$script:AutoChart14OpenInShell.Add_Click({ AutoChartOpenDataInShell -MostRecentCollection $script:AutoChartSmbSharesCSVFileMostRecentCollection })
 $script:AutoChart14ManipulationPanel.controls.Add($script:AutoChart14OpenInShell)
 
 
@@ -7395,7 +7395,7 @@ $script:AutoChart14ViewResults = New-Object Windows.Forms.Button -Property @{
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart14ViewResults
-$script:AutoChart14ViewResults.Add_Click({ $script:AutoChartSmbSharesDataSource | Out-GridView -Title "$script:AutoChartSmbSharesCSVFileMostRecentCollection" }) 
+$script:AutoChart14ViewResults.Add_Click({ $script:AutoChartSmbSharesDataSource | Out-GridView -Title "$script:AutoChartSmbSharesCSVFileMostRecentCollection" })
 $script:AutoChart14ManipulationPanel.controls.Add($script:AutoChart14ViewResults)
 
 
@@ -7418,7 +7418,7 @@ $script:AutoChart14ManipulationPanel.controls.Add($script:AutoChart14SaveButton)
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart14NoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart14SaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart14SaveButton.Location.X
                         Y = $script:AutoChart14SaveButton.Location.Y + $script:AutoChart14SaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -7434,6 +7434,8 @@ $script:AutoChart14ManipulationPanel.Controls.Add($script:AutoChart14NoticeTextb
 
 $script:AutoChart14.Series["Shares Per Host"].Points.Clear()
 $script:AutoChart14OverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart14TrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart14TrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart14.Series["Shares Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
+
 
 
 

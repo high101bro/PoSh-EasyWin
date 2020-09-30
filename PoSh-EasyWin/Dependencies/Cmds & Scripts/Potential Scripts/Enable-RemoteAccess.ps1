@@ -1,4 +1,4 @@
-﻿function Enable-RemoteAccess {
+function Enable-RemoteAccess {
 	[cmdletbinding()]
 	Param([String[]] $Targets)
 
@@ -123,3 +123,4 @@
 
 	return $PSTargets
 }
+

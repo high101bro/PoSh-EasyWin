@@ -19,18 +19,19 @@ $ComputerListProvideCredentialsCheckBoxAdd_Click = {
     # Test View of Credentials
     ##Removed For Testing#$ResultsListBox.Items.Clear()
     #$ResultsListBox.Items.Add("Username: $($script:Credential.UserName)")
-    #$ResultsListBox.Items.Add("Password: $($script:Credential.GetNetworkCredential().Password)")    
+    #$ResultsListBox.Items.Add("Password: $($script:Credential.GetNetworkCredential().Password)")
 }
 
 $ComputerListProvideCredentialsCheckBoxAdd_MouseHover = {
     Show-ToolTip -Title "Specify Credentials" -Icon "Info" -Message @"
 +  Credentials are stored in memory as credential objects.
 +  Credentials stored on disk as XML files are encrypted credential objects using Windows Data Protection API.
-    This encryption ensures that only your user account on only that computer can decrypt the contents of the 
+    This encryption ensures that only your user account on only that computer can decrypt the contents of the
     credential object. The exported CLIXML file can't be used on a different computer or by a different user.
 +  To enable auto password rolling, both this checkbox and the one in Automatic Password Rolling must be checked.
 +  If checked, credentials are applied to:
     RDP, PSSession, PSExec
-"@ 
+"@
 }
- 
+
+

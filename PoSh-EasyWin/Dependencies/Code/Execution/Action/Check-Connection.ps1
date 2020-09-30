@@ -17,7 +17,7 @@ function Check-Connection {
         )
         $ConnectionTestResults = @()
         foreach -parallel -throttlelimit 30 ($Computer in $script:ComputerTreeViewSelected) {
-            $workflow:ConnectionTestResults += Test-Connection -ComputerName $Computer -Count 1 
+            $workflow:ConnectionTestResults += Test-Connection -ComputerName $Computer -Count 1
             InlineScript {
                 $script:ProgressBarEndpointsProgressBar.Value += 1
                 write-host 'inline test'
@@ -49,19 +49,19 @@ function Check-Connection {
 
     if ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message $CheckType }
     else {
-        $StatusListBox.Items.Clear()    
-        $StatusListBox.Items.Add("$($CheckType):  $($script:ComputerTreeViewSelected.count) hosts")    
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("$($CheckType):  $($script:ComputerTreeViewSelected.count) hosts")
 
         $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerTreeViewSelected.count
         $script:ProgressBarEndpointsProgressBar.Value   = 0
-    
+
         Start-Sleep -Milliseconds 50
-              
+
         $script:NotReachable = @()
         foreach ($target in $script:ComputerTreeViewSelected){
-            
-            if ($CheckType -eq "Ping") { 
-                $CheckCommand = Test-Connection -Count 1 -ComputerName $target 
+
+            if ($CheckType -eq "Ping") {
+                $CheckCommand = Test-Connection -Count 1 -ComputerName $target
 
                 if ($CheckCommand){
                     $ResultsListBox.Items.Insert(0,"$($MessageTrue):      $target")
@@ -115,7 +115,7 @@ function Check-Connection {
 
                 # The following tests for the default RPC port, but not the service itself
                 $CheckCommand = Test-Port -ComputerName $target -Port 445 | Select-Object -ExpandProperty Open
-                
+
                 if($CheckCommand){
                     $ResultsListBox.Items.Insert(0,"$($MessageTrue):      $target")
                 }
@@ -141,10 +141,10 @@ function Check-Connection {
             "PoSh-EasyWin")
         switch ($verify) {
             'Yes'{
-                [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
-                foreach ($root in $AllHostsNode) { 
+                [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+                foreach ($root in $AllHostsNode) {
                     $root.Checked = $False
-                    foreach ($Category in $root.Nodes) { 
+                    foreach ($Category in $root.Nodes) {
                         $Category.Checked = $False
                         $EntryNodeCheckedCount = 0
                         foreach ($Entry in $Category.nodes) {
@@ -154,15 +154,15 @@ function Check-Connection {
                                 $Entry.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
                             }
                             if ($Entry.Checked) {
-                                $EntryNodeCheckedCount += 1                  
+                                $EntryNodeCheckedCount += 1
                             }
-                        }   
+                        }
                         if ($EntryNodeCheckedCount -eq 0) {
                             $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                             $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
                         }
-                    }         
-                }   
+                    }
+                }
             }
             'No'     {continue}
             #'Cancel' {exit}
@@ -171,4 +171,6 @@ function Check-Connection {
         $ResultsListBox.Items.Insert(0,"Finished Testing Connections")
     }
 }
+
+
 

@@ -1,4 +1,4 @@
-﻿$Files = Get-ChildItem C:\WINDOWS\system32 -force
+$Files = Get-ChildItem C:\WINDOWS\system32 -force
 $HashList = @('975B45B669930B0CC773EAF2B414206F','B3A17BF375F35123F3CDAD743D59FEDC','F97C0041886519CEAE336B06AEBFC9E1')
 
 $HashAlgorithms = @('MACTripleDES','MD5','RIPEMD160','SHA1','SHA256','SHA384','SHA512')
@@ -15,4 +15,6 @@ foreach ($File in $Files) {
 $HashesFound
 
 
- 
+
+
+

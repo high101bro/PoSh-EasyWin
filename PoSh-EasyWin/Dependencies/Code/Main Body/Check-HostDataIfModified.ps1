@@ -6,5 +6,7 @@ function Check-HostDataIfModified {
     else {
         $Section3HostDataSaveButton.ForeColor = "Red"
         $Section3HostDataSaveButton.Text      = "Save Data"
-    } 
+    }
 }
+
+

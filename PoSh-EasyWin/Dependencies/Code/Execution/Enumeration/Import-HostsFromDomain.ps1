@@ -14,16 +14,16 @@ Function Import-HostsFromDomain([string]$Choice,[string]$Script:Domain) {
     New-Item -type file -force "$Script:Folder_Path\Computer_List$Script:curDate.txt" | Out-Null
     $Script:Compute = "$Script:Folder_Path\Computer_List$Script:curDate.txt"
     $strCategory = "(ObjectCategory=Computer)"
-       
+
     If($Choice -eq "Auto" -or $Choice -eq "" ) {
         $DNSName = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
         If($DNSName -ne $Null) {
-            $DNSArray = $DNSName.Split(".") 
-            for ($x = 0; $x -lt $DNSArray.Length ; $x++) {  
-                if ($x -eq ($DNSArray.Length - 1)){$Separator = ""}else{$Separator =","} 
+            $DNSArray = $DNSName.Split(".")
+            for ($x = 0; $x -lt $DNSArray.Length ; $x++) {
+                if ($x -eq ($DNSArray.Length - 1)){$Separator = ""}else{$Separator =","}
                 [string]$DN += "DC=" + $DNSArray[$x] + $Separator  } }
         $Script:Domain = $DN
-        Write-Output "Pulled computers from: "$Script:Domain 
+        Write-Output "Pulled computers from: "$Script:Domain
         $objSearcher = New-Object System.DirectoryServices.DirectorySearcher("LDAP://$Script:Domain")
         $objSearcher.Filter = $strCategory
         $objSearcher.PageSize = 100000
@@ -58,3 +58,4 @@ Function Import-HostsFromDomain([string]$Choice,[string]$Script:Domain) {
         #Write-Host "You did not supply a correct response, Please select a response." -foregroundColor Red
         . Import-HostsFromDomain }
 }
+

@@ -4,7 +4,7 @@ function Launch-ReadMe {
 function Conduct-NodeActionAcknowledgement {
     param($TreeView)
     [System.Windows.Forms.TreeNodeCollection]$AllNodes = $TreeView
-    foreach ($root in $AllNodes) { 
+    foreach ($root in $AllNodes) {
         if ($root.checked){
             foreach ($entry in $root.nodes){ $entry.checked = $true }
         }
@@ -12,7 +12,7 @@ function Conduct-NodeActionAcknowledgement {
         foreach ($Topic in $root.nodes){
             if ($Topic.checked){
                 $Topic.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-                $Topic.ForeColor = 'Green' #[System.Drawing.Color]::FromArgb(0,0,0,224)    
+                $Topic.ForeColor = 'Green' #[System.Drawing.Color]::FromArgb(0,0,0,224)
             }
             else {
                 $Topic.ForeColor = 'DarkRed'
@@ -33,7 +33,7 @@ $UserNoticeAcknowledgementForm = New-Object System.Windows.Forms.Form -Property 
     #clientsize = 100
     Add_Closing = { $This.dispose() }
 }
-if ($ReadMe) { 
+if ($ReadMe) {
     $UserNoticeAcknowledgementForm.text = "PoSh-EasyWin - Read Me"
     TopMost = $false
 }
@@ -41,37 +41,37 @@ if ($ReadMe) {
 
 $AcknowledgeLabel = New-Object System.Windows.Forms.Label -Property @{
     Text   = "Below is information to be aware of and understand about how PoSh-EasyWin operates. Each section can be expanded to view additional information. This window shows up during PoSh-EasyWin's first time launch, and can also be viewed again within the options tab."
-    Left   = $FormScale * 10 
+    Left   = $FormScale * 10
     Top    = $FormScale * 10
     Width  = $FormScale * 980
     Height = $FormScale * 35
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
-$UserNoticeAcknowledgementForm.Controls.Add($AcknowledgeLabel)  
+$UserNoticeAcknowledgementForm.Controls.Add($AcknowledgeLabel)
 
 
 $AcknowledgeTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-    Left   = $AcknowledgeLabel.Left 
+    Left   = $AcknowledgeLabel.Left
     Top    = $AcknowledgeLabel.Top + $AcknowledgeLabel.Height #($FormScale * 5)
     Width  = $FormScale * 980
     Height = $FormScale * 395
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     LabelEdit        = $False
     ShowLines        = $True
-    ShowNodeToolTips = $True        
-    Add_Click        = { 
+    ShowNodeToolTips = $True
+    Add_Click        = {
         if (-not (Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
-            Conduct-NodeActionAcknowledgement -TreeView $AcknowledgeTreeView.Nodes 
+            Conduct-NodeActionAcknowledgement -TreeView $AcknowledgeTreeView.Nodes
         }
     }
-    ###Add_AfterSelect  = { Conduct-NodeAction -TreeView $AcknowledgeTreeView.Nodes -Commands }    
+    ###Add_AfterSelect  = { Conduct-NodeAction -TreeView $AcknowledgeTreeView.Nodes -Commands }
 }
-$UserNoticeAcknowledgementForm.Controls.Add($AcknowledgeTreeView)  
+$UserNoticeAcknowledgementForm.Controls.Add($AcknowledgeTreeView)
 
 
 $AcknowledgeAllTreeNode = New-Object System.Windows.Forms.TreeNode -Property @{
     #Name = $line
-    Text = "Acknowledge All"        
+    Text = "Acknowledge All"
 }
 $AcknowledgeTreeView.Nodes.Add($AcknowledgeAllTreeNode)
 
@@ -118,7 +118,7 @@ $Acknowledgement = "About PoSh-EasyWin
                     3) Query History
                         Directory Save Name
                             *Populates history nodes of comamnds executed
-                        *Able to delete selected history nodes if desired 
+                        *Able to delete selected history nodes if desired
                 Commands - Groups nodes by their Command Names
                     1) Endpoint Commands
                         Processes
@@ -131,7 +131,7 @@ $Acknowledgement = "About PoSh-EasyWin
                     3) Query History
                         Directory Save Name
                             *Populates history nodes of comamnds executed
-                        *Able to delete selected history nodes if desired 
+                        *Able to delete selected history nodes if desired
             Easily update the Command TreeView
                 Endpoints Agnostics
                     $PoShHome\Dependencies\Cmds & Scripts\Commands - Endpoint.csv
@@ -165,7 +165,7 @@ $Acknowledgement = "About PoSh-EasyWin
                 Search Registry one or multiple paths
                     Enter one or more entries
                     Provides simple to view and import example locations
-                    Supports recurisve search 
+                    Supports recurisve search
                 Search by Key Name
                     Enter one or more entries
                     Supports regex and provides examples
@@ -175,7 +175,7 @@ $Acknowledgement = "About PoSh-EasyWin
                 Search by Value Data
                     Enter one or more entries
                     Supports regex and provides examples
-                Provides regex examples                
+                Provides regex examples
             File Search
                 Directory Listing
                     Supports recursive search
@@ -186,9 +186,9 @@ $Acknowledgement = "About PoSh-EasyWin
                     Supports recursive search
                     Enter one or more entries
                     Search by file name or file hash:
-                        Filename 
+                        Filename
                         MD5, SHA1, SHA384, SHA256, SHA512, RIPEMD160
-                Alternate Data Stream (ADS) Search with download and extract feature                
+                Alternate Data Stream (ADS) Search with download and extract feature
                     Supports recursive search
                     Enter one or more entries
                     Retrieve Extraced Stream Data
@@ -196,18 +196,18 @@ $Acknowledgement = "About PoSh-EasyWin
                 Packet capture
                     Duration in seconds (default 60)
                     Maximum MegaBytes (default 50 MB)
-                Remote IP 
+                Remote IP
                     Enter one or more entries
                     Able to Select IPs from those located in the Computer TreeView
-                Remote Port 
+                Remote Port
                     Enter one or more entries
                     Able to search for protocol default ports and select ports
                 Local Port
                     Enter one or more entries
                     Able to search for protocol default ports and select ports
-                Process Name 
+                Process Name
                     Enter one or more entries
-                    *Uses PID that owns the connection  
+                    *Uses PID that owns the connection
                 DNS Cache Entry
                     *This data is fairly volitile on the endpoints
         Multi-Endpoint Actions
@@ -249,7 +249,7 @@ $Acknowledgement = "About PoSh-EasyWin
         Windows Event Viewer
         Remote Memory Capture
         Storing and selecting credentials
-        Tool Tip Help   
+        Tool Tip Help
             Mouse hover over various fields to view helpful data is balloon
             For the most part implemented, some areas are missing
     Collected data is saved to the localhost in the following formats:
@@ -258,7 +258,7 @@ $Acknowledgement = "About PoSh-EasyWin
     Collected data is viewable in multiple ways:
         Opened in a spreadsheet format using PowerShell's Out-GridView
         Imported into a PowerShell terminal for command line manipulation and viewing
-        Multiple Charts generated to quickly identify areas of interest 
+        Multiple Charts generated to quickly identify areas of interest
     TreeView data allows for easy management of data
         Computer TreeView
             Nodes can be displayed by Organizational Units or by Operating Systems
@@ -317,7 +317,7 @@ Tips in order to run PoSh-EasyWin:
         Open a PowerShell terminal with admin privledges, then set the execution policy for the current process
             PS> Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope Process
         Verify the execution policy
-            PS> Get-ExecutionPolicy -List    
+            PS> Get-ExecutionPolicy -List
     Set the execution policy [Option 2] Using Group Policy
         Open the GPO for editing. In the GPO editor, select:
             Computer Configuration > Policies > Administrative Templates > Windows Components > Windows PowerShell
@@ -327,7 +327,7 @@ Tips in order to run PoSh-EasyWin:
             Click on 'Ok', then close the GPO Editor
             Push out GPO Updates, or on the computer's powershell/cmd terminal, type in 'gpupdate /force'
         Update the Group Policy on remote endpoints
-            Right-click on the GPO > Select 'Group Policy Update'            
+            Right-click on the GPO > Select 'Group Policy Update'
             PS> Invoke-GPUpdate -Computer `$hostname
         Update the Group Policy locally - note that this will update all policies
             PS> gpupdate /force
@@ -356,12 +356,12 @@ Tips in order to run PoSh-EasyWin:
             3) Configure Windows Remote Service
                 Computer Policies > Windows Settings > Security Settings > System Services
                     Double-click the Windows Remote Management (WS-Management) service to configure the properties
-                    In the new window that opens, select Automatic under Select Service Startup Mode 
+                    In the new window that opens, select Automatic under Select Service Startup Mode
                     Check the Define This Policy Setting option
                 Computer Policies > Preferences > Control Panel Settings > Services
                     Right-click it and select New | Service
                     Under the General Tab, select No Change from the drop-down menu next to Startup
-                    Enter WinRM in the text box next to the Service Name 
+                    Enter WinRM in the text box next to the Service Name
                     Select Start Service from the drop-down menu next to Service action
                     Under the Recovery Tab
                         Select 'Restart The Service' from the drop-down menu next to the First Failures
@@ -369,7 +369,7 @@ Tips in order to run PoSh-EasyWin:
                         Select 'Restart The Service' from the drop-down menu next to the Subsequent Failures
                     Then click OK to save the settings changes
             Update the Group Policy on remote endpoints
-                Right-click on the GPO > Select 'Group Policy Update'            
+                Right-click on the GPO > Select 'Group Policy Update'
                 PS> Invoke-GPUpdate -Computer `$hostname
             Update the Group Policy locally - note that this will update all policies
                 PS> gpupdate /force
@@ -391,14 +391,14 @@ PoSh-EasyWin supports the following protocols
             80 (WinRM v1)
             47001 (If a WinRM listener not created)
             Any (listeners can be configured on any port)
-        Encrypted: 
+        Encrypted:
             Yes, HTTP  - message level encryption
-            Yes, HTTPS - added TLS protocol encyption 
+            Yes, HTTPS - added TLS protocol encyption
         Operating Systems:
             Windows 7 and above
             Server 2008 R2 and above
             Older Operating Systems with WinRM installed
-        Data: 
+        Data:
             Deserialized Objects
         Pros:
             Single Port required
@@ -406,7 +406,7 @@ PoSh-EasyWin supports the following protocols
             Supports any cmdlet and native commands
         Cons:
             Requires WinRM service
-            Many admins/networks disable this if not used    
+            Many admins/networks disable this if not used
     Remote Procedure Call / Distributed Component Object Model (RPC/DCOM)
         Protocols: RPC/DCOM
         Encrypted: Not Encrypted (clear text)
@@ -424,12 +424,12 @@ PoSh-EasyWin supports the following protocols
         Cons:
             Uses random high ports
             Not firewall friendly
-            Transmits data in clear text    
+            Transmits data in clear text
     Server Message Block (SMB)
         Protocols:
             SMB
             NetBIOS
-        Encrypted: 
+        Encrypted:
             Yes: v3.0+
             No:  v1, v2, v2.1
         Ports:
@@ -449,14 +449,14 @@ PoSh-EasyWin supports the following protocols
             Creates the service: PSEXEC
             May be blocked via Anti-Virus / Endpoint Security
             May be blocked via Application White/Black Listing
-Best practice is to use two elevated credentials when conducting remote actions on endpoints with this tool: 
+Best practice is to use two elevated credentials when conducting remote actions on endpoints with this tool:
     1) The primary credential is used to authenticate with endpoints and do the actual collection or execution task
     2) The other credential automatically rolls the password after the primary credential finishes
     Both accounts need to be created by the network administrator for use
     This mitigates the risk of credentials being stolen on compromised endpoints
     Credentials are rolled immediately within 3-5 seconds after completing queries and tasks:
-        Completing queries using the WinRM, RPC, or SMB protocols 
-        Completing interaction tasks on endpoints such as: 
+        Completing queries using the WinRM, RPC, or SMB protocols
+        Completing interaction tasks on endpoints such as:
             multi-endpoint process killing
             multi-endpoint service stopper
             sysmon deployment
@@ -466,7 +466,7 @@ Best practice is to use two elevated credentials when conducting remote actions 
         Memory Collection using WinPmem
 Credentials can be securely stored to the localhost
     The stored credentials are secured wtih Windows standard Data Protection API (DPAPI)
-        DPAPI is a built-in way Windows users can use certificates to encrypt and decrypt information on the fly 
+        DPAPI is a built-in way Windows users can use certificates to encrypt and decrypt information on the fly
         The stored credentials are saved using the Extensible Markup Language as .xml files
     The stored credentials can only be read, imported, and decrypted by the user that has they RSA key stored
         The DPAPI keys are created in part using the User's Security Identifer (SID)
@@ -576,7 +576,7 @@ foreach ($line in ($Acknowledgement -split "\n")) {
 
 [System.Windows.Forms.TreeNodeCollection]$AllNodes = $AcknowledgeTreeView.Nodes
 $AllNodes.ExpandAll()
-foreach ($root in $AllNodes) { 
+foreach ($root in $AllNodes) {
     foreach ($Topic in $root.nodes){
         $Topic.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         $Topic.ForeColor = 'DarkRed' #[System.Drawing.Color]::FromArgb(0,0,0,224)
@@ -586,7 +586,7 @@ foreach ($root in $AllNodes) {
     }
 }
 
-if (-not $ReadMe){   
+if (-not $ReadMe){
     function FormScaleButtonSettings {
         param($Button)
         $Button.ForeColor = "Black"
@@ -618,14 +618,14 @@ if (-not $ReadMe){
         Add_Click = {
             $ProceedAfterAcknowledgement = $true
             [System.Windows.Forms.TreeNodeCollection]$AllNodes = $AcknowledgeTreeView.Nodes
-            foreach ($root in $AllNodes) { 
+            foreach ($root in $AllNodes) {
                 foreach ($Topic in $root.nodes){
                     if ($Topic.checked -eq $false){ $ProceedAfterAcknowledgement = $false}
                 }
             }
-            if ($ProceedAfterAcknowledgement){ 
+            if ($ProceedAfterAcknowledgement){
                 Get-Date | Set-Content "$PoShHome\Settings\User Notice And Acknowledgement.txt"
-                $UserNoticeAcknowledgementForm.Close() 
+                $UserNoticeAcknowledgementForm.Close()
             }
             else {
                 [System.Windows.Forms.MessageBox]::Show("Ensure to read and acknowledge all the topics by checkboxing the nodes with red text and turning them green. There is a lot of good information in there you should be aware of about this tool's operation.",'PoSh-EasyWin Notice & Acknowledgement')
@@ -638,6 +638,8 @@ if (-not $ReadMe){
 
 $UserNoticeAcknowledgementForm.ShowDialog()
 }
+
+
 
 
 

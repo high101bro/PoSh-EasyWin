@@ -6,7 +6,7 @@ function Query-NetworkConnection {
         [string[]]$ProcessName = $null
     )
 
-    if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {                
+    if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {
         $Processes           = Get-WmiObject -Class Win32_Process
         $Connections         = Get-NetTCPConnection
         $GetNetTCPConnection = $True
@@ -43,7 +43,7 @@ function Query-NetworkConnection {
                 $Connection | Add-Member -MemberType NoteProperty ProcessName     $proc.Caption
                 $Connection | Add-Member -MemberType NoteProperty ExecutablePath  $proc.ExecutablePath
                 $Connection | Add-Member -MemberType NoteProperty CommandLine     $proc.CommandLine
-                $Connection | Add-Member -MemberType NoteProperty CreationTime    ([WMI] '').ConvertToDateTime($proc.CreationDate) 
+                $Connection | Add-Member -MemberType NoteProperty CreationTime    ([WMI] '').ConvertToDateTime($proc.CreationDate)
                 #implemented lower #$Connection | Add-Member -MemberType NoteProperty Duration        $((New-TimeSpan -Start $($this.CreationTime).ToString()))
                 if ($Connection.ExecutablePath -ne $null -AND -NOT $NoHash) {
                     $MD5Hash = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
@@ -63,7 +63,7 @@ function Query-NetworkConnection {
     function CollectionNetworkData {
         $MD5Hash = $Hash = $null
         if ($GetNetTCPConnection) {
-            $proc           = Get-Process -Pid $conn.OwningProcess 
+            $proc           = Get-Process -Pid $conn.OwningProcess
         }
         $ConnectionsFound  += [PSCustomObject]@{
             LocalAddress    = $conn.LocalAddress
@@ -80,23 +80,25 @@ function Query-NetworkConnection {
             MD5Hash         = $(if($GetNetTCPConnection) {
                 $MD5Hash = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
                 $Hash    = [System.BitConverter]::ToString($MD5Hash.ComputeHash([System.IO.File]::ReadAllBytes($proc.path)))
-                $($Hash -replace "-","")                
+                $($Hash -replace "-","")
             } else {$conn.MD5Hash} )
             ExecutablePath  = $(if($GetNetTCPConnection) { $proc.Path } else {$conn.ExecutablePath} )
             Protocol        = $(if($GetNetTCPConnection) {'TCP'} else {$conn.Protocol} )
         }
-        return $ConnectionsFound    
+        return $ConnectionsFound
     }
 
-    $ConnectionsFound = @()        
-    
-    foreach ($Conn in $Connections) {        
+    $ConnectionsFound = @()
+
+    foreach ($Conn in $Connections) {
         if     ($IP)          { foreach ($DestIP in $IP)            { if (($Conn.RemoteAddress  -eq $DestIP)   -and ($DestIP   -ne '')) { CollectionNetworkData } } }
         elseif ($RemotePort)  { foreach ($DestPort in $RemotePort)  { if (($Conn.RemotePort     -eq $DestPort) -and ($DestPort -ne '')) { CollectionNetworkData } } }
-        elseif ($LocalPort)   { foreach ($SrcPort in $LocalPort)    { if (($Conn.LocalPort      -eq $SrcPort)  -and ($SrcPort  -ne '')) { CollectionNetworkData } } }            
+        elseif ($LocalPort)   { foreach ($SrcPort in $LocalPort)    { if (($Conn.LocalPort      -eq $SrcPort)  -and ($SrcPort  -ne '')) { CollectionNetworkData } } }
         elseif ($ProcessName) { foreach ($ProcName in $ProcessName) { if (($conn.ProcessName -match $ProcName) -and ($ProcName -ne '')) { CollectionNetworkData } } }
     }
-    return $ConnectionsFound 
+    return $ConnectionsFound
 
 }
+
+
 

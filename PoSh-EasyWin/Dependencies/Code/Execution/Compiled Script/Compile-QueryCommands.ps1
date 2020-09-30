@@ -10,7 +10,7 @@ function Compile-QueryCommands {
         if ($Command.Type -eq "(WinRM) Script") {
             $CommandScript = $command.command
             if ($raw) {
-                $script:QueryCommands += @{ 
+                $script:QueryCommands += @{
                     $Command.Name = @{ Name = $Command.Name
                     Command = @"
 
@@ -23,8 +23,8 @@ $(Invoke-Expression ("$CommandScript").Replace("Invoke-Command -FilePath '","Get
             else {
                 $File = ("$CommandScript").Replace("Invoke-Command -FilePath '","").TrimEnd("'")
                 $CommandContents = ""
-                Foreach ($line in (Get-Content $File)) {$CommandContents += "$line`r`n"}                            
-                $script:QueryCommands += @{ 
+                Foreach ($line in (Get-Content $File)) {$CommandContents += "$line`r`n"}
+                $script:QueryCommands += @{
                     $Command.Name = @{ Name = $Command.Name
                     Command = @"
 
@@ -71,9 +71,11 @@ $CommandContents
             $script:QueryCommands += @{ $Command.Name = @{ Name = $Command.Name ; Command = $Command.Command ; Properties = $Command.Properties }}
         }
 
-        
+
 
         $CommandName = $Command.Name
         $CommandType = $Command.Type
     }
 }
+
+

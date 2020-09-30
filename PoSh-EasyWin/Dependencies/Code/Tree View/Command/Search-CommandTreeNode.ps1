@@ -1,7 +1,7 @@
 <#
     .Description
     This function is used to search through the command treeview for matches.
-    Results are displayed within the Search treeview with a new sub-treenode labeled after the search entry. 
+    Results are displayed within the Search treeview with a new sub-treenode labeled after the search entry.
 #>
 function Search-CommandTreeNode {
     [cmdletbinding()]
@@ -13,7 +13,7 @@ function Search-CommandTreeNode {
 
     # Checks if the search node already exists
     $SearchNode = $false
-    foreach ($root in $AllCommandsNode) { 
+    foreach ($root in $AllCommandsNode) {
         if ($root.text -imatch 'Search Results') { $SearchNode = $true }
     }
     if ($SearchNode -eq $false) { $script:CommandsTreeView.Nodes.Add($script:TreeNodeCommandSearch) }
@@ -33,34 +33,34 @@ function Search-CommandTreeNode {
                     ($Command.Description -imatch $CommandSearchText))) {
 
 
-                    if ($Command.Command_WinRM_Script) { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script        
+                    if ($Command.Command_WinRM_Script) {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
                         $SearchFound += $Command
                     }
-                    if ($Command.Command_WinRM_PoSh)   { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) PoSh -- $($Command.Name)" -ToolTip $Command.Command_WinRM_PoSh 
+                    if ($Command.Command_WinRM_PoSh)   {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) PoSh -- $($Command.Name)" -ToolTip $Command.Command_WinRM_PoSh
                         $SearchFound += $Command
                     }
-                    if ($Command.Command_WinRM_WMI)    { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) WMI -- $($Command.Name)" -ToolTip $Command.Command_WinRM_WMI 
+                    if ($Command.Command_WinRM_WMI)    {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) WMI -- $($Command.Name)" -ToolTip $Command.Command_WinRM_WMI
                         $SearchFound += $Command
                     }
-                    #if ($Command.Command_WinRM_CMD)    { 
-                    #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRM_CMD 
+                    #if ($Command.Command_WinRM_CMD)    {
+                    #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRM_CMD
                     #    $SearchFound += $Command
                     #}
 
 
 
-                    #if ($Command.Command_RPC_PoSh)     { 
-                    #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) PoSh -- $($Command.Name)" -ToolTip $Command.Command_RPC_PoSh 
+                    #if ($Command.Command_RPC_PoSh)     {
+                    #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) PoSh -- $($Command.Name)" -ToolTip $Command.Command_RPC_PoSh
                     #    $SearchFound += $Command
                     #}
-                    if ($Command.Command_RPC_WMI)          { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_RPC_WMI 
+                    if ($Command.Command_RPC_WMI)          {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_RPC_WMI
                         $SearchFound += $Command
                     }
-                    #if ($Command.Command_RPC_CMD)     { 
+                    #if ($Command.Command_RPC_CMD)     {
                     #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) CMD -- $($Command.Name)" -ToolTip $Command.Command_RPC_CMD
                     #    $SearchFound += $Command
                     #}
@@ -68,16 +68,16 @@ function Search-CommandTreeNode {
 
 
 
-                    if ($Command.Command_SMB_PoSh)    { 
+                    if ($Command.Command_SMB_PoSh)    {
                         Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(SMB) PoSh -- $($Command.Name)" -ToolTip $Command.Command_SMB_PoSh
                         $SearchFound += $Command
                     }
-                    if ($Command.Command_SMB_WMI)    { 
+                    if ($Command.Command_SMB_WMI)    {
                         Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(SMB) WMI -- $($Command.Name)" -ToolTip $Command.Command_SMB_WMI
                         $SearchFound += $Command
                     }
-                    if ($Command.Command_SMB_CMD)    { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(SMB) CMD -- $($Command.Name)" -ToolTip $Command.Command_SMB_CMD 
+                    if ($Command.Command_SMB_CMD)    {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(SMB) CMD -- $($Command.Name)" -ToolTip $Command.Command_SMB_CMD
                         $SearchFound += $Command
                     }
                 }
@@ -89,12 +89,12 @@ function Search-CommandTreeNode {
         $CommandSearchText = $CommandsTreeViewSearchComboBox.Text
 
         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-    
+
         # Checks if the search has already been conduected
         $SearchCheck = $false
-        foreach ($root in $AllCommandsNode) { 
-            if ($root.text -imatch 'Search Results') {                    
-                foreach ($Category in $root.Nodes) { 
+        foreach ($root in $AllCommandsNode) {
+            if ($root.text -imatch 'Search Results') {
+                foreach ($Category in $root.Nodes) {
                     if ($Category.text -eq $CommandSearchText) { $SearchCheck = $true}
                 }
             }
@@ -105,7 +105,7 @@ function Search-CommandTreeNode {
         if ($CommandSearchText -ne "" -and $SearchCheck -eq $false) {
             $script:AllCommands  = $script:AllEndpointCommands
             $script:AllCommands += $script:AllActiveDirectoryCommands
-    
+
             Foreach($Command in $script:AllCommands) {
                 if (($SearchFound -inotcontains $Command) -and (
                     ($Command.Name -imatch $CommandSearchText) -or
@@ -113,50 +113,50 @@ function Search-CommandTreeNode {
                     ($Command.Description -imatch $CommandSearchText))) {
 
 
-                    if ($Command.Command_WinRM_Script) { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script        
+                    if ($Command.Command_WinRM_Script) {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script
                         $SearchFound += $Command
                     }
-                    if ($Command.Command_WinRM_PoSh)   { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) PoSh -- $($Command.Name)" -ToolTip $Command.Command_WinRM_PoSh 
+                    if ($Command.Command_WinRM_PoSh)   {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) PoSh -- $($Command.Name)" -ToolTip $Command.Command_WinRM_PoSh
                         $SearchFound += $Command
                     }
-                    if ($Command.Command_WinRM_WMI)    { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) WMI -- $($Command.Name)" -ToolTip $Command.Command_WinRM_WMI 
+                    if ($Command.Command_WinRM_WMI)    {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) WMI -- $($Command.Name)" -ToolTip $Command.Command_WinRM_WMI
                         $SearchFound += $Command
                     }
-                    #if ($Command.Command_WinRM_CMD)    { 
-                    #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRM_CMD 
+                    #if ($Command.Command_WinRM_CMD)    {
+                    #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(WinRM) CMD -- $($Command.Name)" -ToolTip $Command.Command_WinRM_CMD
                     #    $SearchFound += $Command
                     #}
 
 
 
-                    #if ($Command.Command_RPC_PoSh)     { 
-                    #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) PoSh -- $($Command.Name)" -ToolTip $Command.Command_RPC_PoSh 
+                    #if ($Command.Command_RPC_PoSh)     {
+                    #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) PoSh -- $($Command.Name)" -ToolTip $Command.Command_RPC_PoSh
                     #    $SearchFound += $Command
                     #}
-                    if ($Command.Command_RPC_WMI)          { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_RPC_WMI 
+                    if ($Command.Command_RPC_WMI)          {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) WMI -- $($Command.Name)" -ToolTip $Command.Command_RPC_WMI
                         $SearchFound += $Command
                     }
-                    #if ($Command.Command_RPC_CMD)     { 
+                    #if ($Command.Command_RPC_CMD)     {
                     #    Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(RPC) CMD -- $($Command.Name)" -ToolTip $Command.Command_RPC_CMD
                     #    $SearchFound += $Command
                     #}
 
 
 
-                    if ($Command.Command_SMB_PoSh)    { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(SMB) PoSh -- $($Command.Name)" -ToolTip $Command.Command_SMB_PoSh 
+                    if ($Command.Command_SMB_PoSh)    {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(SMB) PoSh -- $($Command.Name)" -ToolTip $Command.Command_SMB_PoSh
                         $SearchFound += $Command
                     }
-                    if ($Command.Command_SMB_WMI)    { 
+                    if ($Command.Command_SMB_WMI)    {
                         Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(SMB) WMI -- $($Command.Name)" -ToolTip $Command.Command_SMB_WMI
                         $SearchFound += $Command
                     }
-                    if ($Command.Command_SMB_CMD)    { 
-                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(SMB) CMD -- $($Command.Name)" -ToolTip $Command.Command_SMB_CMD 
+                    if ($Command.Command_SMB_CMD)    {
+                        Add-NodeCommand -RootNode $script:TreeNodeCommandSearch -Category $($CommandSearchText) -Entry "(SMB) CMD -- $($Command.Name)" -ToolTip $Command.Command_SMB_CMD
                         $SearchFound += $Command
                     }
 
@@ -165,17 +165,17 @@ function Search-CommandTreeNode {
                 }
             }
         }
-        
+
         # Expands the search results
-        [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes 
-        foreach ($root in $AllCommandsNode) { 
-            if ($root.text -match 'Search Results'){ 
+        [System.Windows.Forms.TreeNodeCollection]$AllCommandsNode = $script:CommandsTreeView.Nodes
+        foreach ($root in $AllCommandsNode) {
+            if ($root.text -match 'Search Results'){
                 $root.Collapse()
                 $root.Expand()
                 foreach ($Category in $root.Nodes) {
-                    if ($CommandSearchText -in $Category.text) { 
+                    if ($CommandSearchText -in $Category.text) {
                         $Category.EnsureVisible()
-                        $Category.Expand() 
+                        $Category.Expand()
                     }
                     else {
                         $Category.Collapse()
@@ -183,7 +183,7 @@ function Search-CommandTreeNode {
                 }
             }
         }
-    
+
         $CommandSearchText = ""
 
 
@@ -196,3 +196,5 @@ function Search-CommandTreeNode {
 
     }
 }
+
+

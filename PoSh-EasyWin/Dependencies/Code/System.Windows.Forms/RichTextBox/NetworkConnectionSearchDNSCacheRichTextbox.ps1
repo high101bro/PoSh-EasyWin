@@ -1,12 +1,12 @@
-$NetworkConnectionSearchDNSCacheRichTextboxAdd_MouseEnter = { 
-    if ($this.text -eq "Enter DNS query information or IP addresses; One Per Line") { 
-        $this.text = "" } 
+$NetworkConnectionSearchDNSCacheRichTextboxAdd_MouseEnter = {
+    if ($this.text -eq "Enter DNS query information or IP addresses; One Per Line") {
+        $this.text = "" }
 }
 
-$NetworkConnectionSearchDNSCacheRichTextboxAdd_MouseLeave = { 
-    if ($this.text -eq "") { 
-        $this.text = "Enter DNS query information or IP addresses; One Per Line" 
-    } 
+$NetworkConnectionSearchDNSCacheRichTextboxAdd_MouseLeave = {
+    if ($this.text -eq "") {
+        $this.text = "Enter DNS query information or IP addresses; One Per Line"
+    }
 }
 
 $NetworkConnectionSearchDNSCacheRichTextboxAdd_MouseHover = {
@@ -18,5 +18,7 @@ $NetworkConnectionSearchDNSCacheRichTextboxAdd_MouseHover = {
 +  The default DNS Cache time limits can be changed within the registry
 +  Enter DNS query information or IP addresses
 +  One Per Line
-"@ 
+"@
 }
+
+

@@ -1,4 +1,4 @@
-﻿## Get a list of all domain controllers in the forest
+## Get a list of all domain controllers in the forest
 $DcList = (Get-ADForest).Domains | ForEach { Get-ADDomainController -Discover -DomainName $_ } | ForEach { Get-ADDomainController -Server $_.Name -filter * } | Select Site, Name, Domain
 
 ## Get all replication subnets from Sites & Services
@@ -29,3 +29,4 @@ ForEach ($Subnet in $Subnets) {
 
 ## Export the array as a CSV file
 $ResultsArray | Sort Subnet
+

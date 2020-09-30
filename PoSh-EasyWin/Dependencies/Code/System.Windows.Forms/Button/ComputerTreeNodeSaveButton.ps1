@@ -13,6 +13,8 @@ $ComputerTreeNodeSaveButtonAdd_MouseHover = {
 
 +  Autosaves are made immedately when changes are made
 +  Autosaves are not loaded upon PoSh-EasyWin reload, use 'Import .CSV'
-+  Location: "$ComputerTreeNodeFileAutoSave" 
-"@ 
++  Location: "$ComputerTreeNodeFileAutoSave"
+"@
 }
+
+

@@ -4,3 +4,5 @@ $OpNotesInputTextBoxAdd_KeyDown = {
         if ($OpNotesInputTextBox.Text -ne "") { OpNoteTextBoxEntry }
     }
 }
+
+

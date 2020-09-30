@@ -1,4 +1,4 @@
-﻿# Useful resources
+# Useful resources
 # https://theposhwolf.com/howtos/PowerShell-and-Zip-Files/
 
 $ZipFile = @'
@@ -54,9 +54,9 @@ function Zip-File {
 
         $Path = $NewFolderName
         $Destination = $Destination + "\$FileName.zip"
-        if (Test-Path -Path $Destination) { Remove-Item -Path $Destination -Force -Recurse }            
+        if (Test-Path -Path $Destination) { Remove-Item -Path $Destination -Force -Recurse }
 
-    }    
+    }
     if ($TimeStamp) {
         $TimeInfo         = New-Object System.Globalization.DateTimeFormatInfo
         $CurrentTimestamp = Get-Date -Format $TimeInfo.SortableDateTimePattern
@@ -77,3 +77,5 @@ function Zip-File {
 }
 '@
 Invoke-Expression $ZipFile
+
+

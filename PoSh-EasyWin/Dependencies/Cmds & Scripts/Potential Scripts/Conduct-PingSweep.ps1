@@ -2,13 +2,13 @@ function Global:Conduct-PingSweep {
     <#
     .SYNOPSIS
         Sends ICMP echo request packets to a range of IPv4 addresses between two given addresses.
- 
+
     .DESCRIPTION
-        This function lets you sends ICMP echo request packets ("pings") to 
+        This function lets you sends ICMP echo request packets ("pings") to
         a range of IPv4 addresses using an asynchronous method.
 
         Therefore this technique is very fast but comes with a warning.
-        Ping sweeping a large subnet or network with many swithes may result in 
+        Ping sweeping a large subnet or network with many swithes may result in
         a peak of broadcast traffic.
         Use the -Interval parameter to adjust the time between each ping request.
         For example, an interval of 60 milliseconds is suitable for wireless networks.
@@ -43,7 +43,7 @@ function Global:Conduct-PingSweep {
         192.168.1.63                                 32                      64                     88
         192.168.1.254                                32                      64                      0
 
-        In this example all the ip addresses between 192.168.1.1 and 192.168.1.254 are pinged using 
+        In this example all the ip addresses between 192.168.1.1 and 192.168.1.254 are pinged using
         a 20 millisecond interval between each request.
         All the addresses that reply the ping request are listed.
 
@@ -77,7 +77,7 @@ function Global:Conduct-PingSweep {
             [System.Net.IPAddress]::Parse($($ip -join '.'))
         }
     }
-    
+
     $IPrange = New-Range $StartAddress $EndAddress
 
     $IpTotal = $IPrange.Count
@@ -104,17 +104,17 @@ function Global:Conduct-PingSweep {
         catch [System.InvalidOperationException]{}
 
         $index = [array]::indexof($IPrange,$_)
-    
+
         $script:ProgressBarEndpointsProgressBar.Value   = ($index / $IpTotal) * 100
         $script:ProgressBarQueriesProgressBar.Value   = (($index - $pending)/$IpTotal * 100)
-    
+
         #Write-Progress -Activity "Sending ping to" -Id 1 -status $_.IPAddressToString -PercentComplete (($index / $IpTotal) * 100)
         #Write-Progress -Activity "ICMP requests pending" -Id 2 -ParentId 1 -Status ($index - $pending) -PercentComplete (($index - $pending)/$IpTotal * 100)
 
         Start-Sleep -Milliseconds $Interval
     }
 
-    Write-Progress -Activity "Done sending ping requests" -Id 1 -Status 'Waiting' -PercentComplete 100 
+    Write-Progress -Activity "Done sending ping requests" -Id 1 -Status 'Waiting' -PercentComplete 100
 
     While($pending -lt $IpTotal){
         Wait-Event -SourceIdentifier "ID-Ping*" | Out-Null
@@ -125,16 +125,16 @@ function Global:Conduct-PingSweep {
     }
 
     if ($RawOutput) {
-        $Reply = Get-Event -SourceIdentifier "ID-Ping*" | ForEach { 
+        $Reply = Get-Event -SourceIdentifier "ID-Ping*" | ForEach {
             If($_.SourceEventArgs.Reply.Status -eq "Success"){
                 $_.SourceEventArgs.Reply
             }
             Unregister-Event $_.SourceIdentifier
             Remove-Event $_.SourceIdentifier
-        }    
+        }
     }
     else {
-        $Reply = Get-Event -SourceIdentifier "ID-Ping*" | ForEach { 
+        $Reply = Get-Event -SourceIdentifier "ID-Ping*" | ForEach {
             If($_.SourceEventArgs.Reply.Status -eq "Success"){
                 $_.SourceEventArgs.Reply | select @{
                       Name="IPAddress"   ; Expression={$_.Address}},
@@ -154,3 +154,4 @@ function Global:Conduct-PingSweep {
 }
 
 Conduct-PingSweep -StartAddress 10.10.10.0 -EndAddress 10.10.10.255 -Interval 5
+

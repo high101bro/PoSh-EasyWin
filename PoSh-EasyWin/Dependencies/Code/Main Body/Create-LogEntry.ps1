@@ -9,6 +9,7 @@ function Create-LogEntry {
         Add-Content -Path $LogFile -Value "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $Message"
     }
     else {
-        Add-Content -Path $LogFile -Value "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $TargetComputer`: $Message"    
+        Add-Content -Path $LogFile -Value "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $TargetComputer`: $Message"
     }
 }
+

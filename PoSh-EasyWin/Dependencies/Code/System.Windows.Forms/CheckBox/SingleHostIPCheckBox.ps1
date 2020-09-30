@@ -15,8 +15,10 @@ $SingleHostIPCheckBoxAdd_MouseHover = {
     Show-ToolTip -Title "Query A Single Endpoint" -Icon "Info" -Message @"
 +  Queries a single host provided in the input field,
      disabling the computer treeview list.
-+  Enter a valid hostname or IP address to collect data from. 
-     Depending upon host or domain configurations, some queries 
++  Enter a valid hostname or IP address to collect data from.
+     Depending upon host or domain configurations, some queries
      such as WinRM against valid IPs may not yield results.
-"@ 
+"@
 }
+
+

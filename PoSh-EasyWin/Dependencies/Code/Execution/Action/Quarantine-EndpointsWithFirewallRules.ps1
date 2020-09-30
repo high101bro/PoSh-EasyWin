@@ -14,9 +14,9 @@ function Quarantine-EndpointsWithFirewallRules {
         param($Message,$Computer)
         [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
         $ComputerListMassTagArray = @()
-        foreach ($node in $script:ComputerTreeViewSelected) {    
+        foreach ($node in $script:ComputerTreeViewSelected) {
             foreach ($root in $AllHostsNode) {
-                foreach ($Category in $root.Nodes) { 
+                foreach ($Category in $root.Nodes) {
                     foreach ($Entry in $Category.Nodes) {
                         if ($Entry.Checked -and $Entry.Text -eq "$Computer" -and $Entry.Text -notin $ComputerListMassTagArray) {
                             $ComputerListMassTagArray += $Entry.Text
@@ -29,7 +29,7 @@ function Quarantine-EndpointsWithFirewallRules {
                         }
                     }
                 }
-            }  
+            }
         }
         Save-ComputerTreeNodeHostData -SaveAllChecked
     }
@@ -71,7 +71,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                 $ResultsListBox.Items.Insert(0,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Restoring backup and removing quarantine firewall rules on $($script:ComputerList.count) Endpoints")
             }
 
-            foreach ($computer in $script:ComputerList) {           
+            foreach ($computer in $script:ComputerList) {
                 try {
                     if ($ComputerListProvideCredentialsCheckBox.Checked) {
                         if (!$script:Credential) { Create-NewCredentials }
@@ -80,8 +80,8 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Established a PSSession with $Computer")
                     }
-                    else { 
-                        $session = New-PSSession -ComputerName $Computer 
+                    else {
+                        $session = New-PSSession -ComputerName $Computer
                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message 'New-PSSession -ComputerName $Computer'
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Established a PSSession with $Computer")
@@ -100,7 +100,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                     if ($CopyEndpointFirewallRulesToLocalhost) {
                         $ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText = $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.Text
                         $CancelQuarantine = $false
-        
+
                         if (Test-Path "$OutputFirewallRulesDirectory\$Computer - Firewall Rules.wfw"){
                             [system.media.systemsounds]::Exclamation.play()
                             $OverwriteFirewallFile = [System.Windows.MessageBox]::Show("Warning: A version of the firewall rules for $Computer already exists.`n`nDo you want to overwrite the local copy?",'Overwrite Local Copy','YesNoCancel')
@@ -109,14 +109,14 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                                     Invoke-Command -ScriptBlock { netsh advfirewall export "C:\Windows\Temp\firewall-export.wfw" } -Session $Session
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message 'Invoke-Command -ScriptBlock { netsh advfirewall export "C:\Windows\Temp\firewall-export.wfw" } -Session $Session'
                                     $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  - Backing up firewall rules")
-            
+
                                     Copy-Item -Path "C:\Windows\Temp\firewall-export.wfw" -Destination "$OutputFirewallRulesDirectory\$Computer - Firewall Rules.wfw" -FromSession $Session -ErrorAction Stop -Force
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message 'Copy-Item -Path "C:\Windows\Temp\firewall-export.wfw" -Destination "$OutputFirewallRulesDirectory\$Computer - Firewall Rules.wfw" -FromSession $Session -ErrorAction Stop -Force'
                                     $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  - Copying back backup firewall rules")
 
                                     Invoke-Command -ScriptBlock { Remove-Item "C:\Windows\Temp\firewall-export.wfw" -Force } -Session $Session
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message 'Invoke-Command -ScriptBlock { Remove-Item "C:\Windows\Temp\firewall-export.wfw" -Force } -Session $Session'
-                                    $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  - Cleaning up files on endpoint")        
+                                    $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  - Cleaning up files on endpoint")
                                 }
                                 'No' { continue }
                                 'Cancel' { $CancelQuarantine = $true }
@@ -136,13 +136,13 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  - Cleaning up files on endpoint")
                         }
 
-                        if ($CancelQuarantine -eq $false) {                                                       
+                        if ($CancelQuarantine -eq $false) {
                             $ScriptBlockQuarantine = {
                                 param($RemoteAddress)
 
                                 # Removes all existing firewall rules
                                 Get-NetFirewallRule | Remove-NetFirewallRule
-                                
+
                                 # Locks down the endpoint
                                 Set-NetFirewallProfile `
                                     -Name                            Domain, Private, Public `
@@ -159,7 +159,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                                     -LogAllowed                      True  `
                                     -LogBlocked                      True  `
                                     -LogIgnored                      True  `
-                                    -LogFileName                     C:\Windows\Temp\Quarantine_Firewall_Log.log                          
+                                    -LogFileName                     C:\Windows\Temp\Quarantine_Firewall_Log.log
 
                                 New-NetFirewallRule `
                                     -Name                 'Incident Response Access (Inbound)' `
@@ -170,7 +170,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                                     -RemoteAddress         $RemoteAddress `
                                     -Direction             Inbound `
                                     -Protocol              Any `
-                                    -Action                Allow      
+                                    -Action                Allow
 
                                 New-NetFirewallRule `
                                     -Name                 'Disable UDP (Inbound)' `
@@ -210,7 +210,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                                     -Profile               Domain, Public, Private `
                                     -Direction             Outbound `
                                     -Protocol              Any `
-                                    -Action                Block                 
+                                    -Action                Block
 
                                 $EndpointFirewallArray = @($EndpointFirewallProfiles, $EndpointFirewallRules)
                                 return $EndpointFirewallArray
@@ -221,8 +221,8 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
 
                             Tag-QuarantineMessage -Computer $Computer -Message "[Quarantined] at $(Get-Date) -- Accessible from $ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText`n"
                         }
-                    }   
-                    
+                    }
+
 
 
 
@@ -232,7 +232,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                         foreach ($FirewallFileName in $EndpointOriginalFirewallFiles) {
                             $FirewallRulesFileComputerName = (($FirewallFileName.BaseName | Where {$_ -match 'Rules'}) -split ' - ')[0]
                             if ($Computer -eq $FirewallRulesFileComputerName) {
-                                
+
                                 $RestoreEndpointFirewallRulesFile = Import-Csv $FirewallFileName.FullName
 
                                 Copy-Item -Path "$OutputFirewallRulesDirectory\$Computer - Firewall Rules.wfw" -Destination "C:\Windows\Temp\firewall-export.wfw" -ToSession $Session -Force -ErrorAction Stop
@@ -241,7 +241,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
 
                                 $ScriptBlockUnQuarantine = {
                                     Get-NetFirewallRule | Remove-NetFirewallRule
-                                    netsh advfirewall import "C:\Windows\Temp\firewall-export.wfw" 
+                                    netsh advfirewall import "C:\Windows\Temp\firewall-export.wfw"
                                     Remove-Item "C:\Windows\Temp\firewall-export.wfw" -Force
                                 }
                                 Invoke-Command -ScriptBlock $ScriptBlockUnQuarantine -Session $Session
@@ -275,11 +275,13 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword 
+        Generate-NewRollingPassword
     }
 }
+
+
 
 
 

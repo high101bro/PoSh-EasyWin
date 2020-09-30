@@ -3,9 +3,9 @@ function Query-EventLog {
         $CollectionName,
         $Filter
     )
-    $CollectionCommandStartTime = Get-Date 
+    $CollectionCommandStartTime = Get-Date
     $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Query: $CollectionName")                    
+    $StatusListBox.Items.Add("Query: $CollectionName")
     $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
     foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
@@ -84,7 +84,7 @@ function Query-EventLog {
 
     Monitor-Jobs -CollectionName $CollectionName
 
-    $CollectionCommandEndTime  = Get-Date                    
+    $CollectionCommandEndTime  = Get-Date
     $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 
 
@@ -101,3 +101,4 @@ function Query-EventLog {
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
 }
+

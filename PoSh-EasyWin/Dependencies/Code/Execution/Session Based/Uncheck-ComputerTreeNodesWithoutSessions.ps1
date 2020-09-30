@@ -7,9 +7,9 @@ if ($EndpointsWithNoSessions.count -gt 0) {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Unchecked $($EndpointsWithNoSessions.Count) Endpoints Without Sessions")
     $PoShEasyWin.Refresh()
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
-    foreach ($root in $AllHostsNode) { 
-        foreach ($Category in $root.Nodes) { 
+    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+    foreach ($root in $AllHostsNode) {
+        foreach ($Category in $root.Nodes) {
             $Category.Checked = $False
             $EntryNodeCheckedCount = 0
             foreach ($Entry in $Category.nodes) {
@@ -19,14 +19,16 @@ if ($EndpointsWithNoSessions.count -gt 0) {
                     $Entry.ForeColor       = [System.Drawing.Color]::FromArgb(0,0,0,0)
                 }
                 if ($Entry.Checked) {
-                    $EntryNodeCheckedCount += 1                  
+                    $EntryNodeCheckedCount += 1
                 }
-            }   
+            }
             if ($EntryNodeCheckedCount -eq 0) {
                 $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                 $Category.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
             }
-        }         
+        }
     }
     Start-Sleep -Seconds 3
 }
+
+

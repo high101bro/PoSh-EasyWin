@@ -4,7 +4,7 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
- 
+
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
 $NetworkConnectionSearchLocalPort = $NetworkConnectionSearchLocalPortRichTextbox.Lines
@@ -30,4 +30,5 @@ $script:ProgressBarQueriesProgressBar.Value += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
- 
+
+

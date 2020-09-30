@@ -14,7 +14,7 @@ $script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Pro
     AutoScroll    = $True
 }
 $AutoChartsTabControl.Controls.Add($script:AutoChartsIndividualTab01)
- 
+
 # Searches though the all Collection Data Directories to find files that match
 $script:ListOfCollectedDataDirectories = (Get-ChildItem -Path $CollectedDataDirectory).FullName
 
@@ -28,7 +28,7 @@ $script:AutoChart01SmbShareCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
     foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'SMB Share') { $script:AutoChart01SmbShareCSVFileMatch += $CSVFile } }
-} 
+}
 $script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01SmbShareCSVFileMatch | Select-Object -Last 1
 $script:AutoChartDataSourceCsv = $null
 $script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartCSVFileMostRecentCollection
@@ -60,7 +60,7 @@ $script:AutoChartsMainLabel01 = New-Object System.Windows.Forms.Label -Property 
     Size   = @{ Width  = $FormScale * 1150
                 Height = $FormScale * 25 }
     Font   = New-Object System.Drawing.Font @('Microsoft Sans Serif','18', [System.Drawing.FontStyle]::Bold)
-    TextAlign = 'MiddleCenter' 
+    TextAlign = 'MiddleCenter'
 }
 
 
@@ -222,7 +222,7 @@ $AutoChartPullNewDataButton.Add_Click({
         $AutoChartOpenResultsOpenFileDialog.ShowHelp = $true
         $script:AutoChartOpenResultsOpenFileDialogfilename = $AutoChartOpenResultsOpenFileDialog.filename
         $script:AutoChartDataSourceCsv = Import-Csv $script:AutoChartOpenResultsOpenFileDialogfilename
-    
+
         $script:AutoChartDataSourceCsvFileName = $AutoChartOpenResultsOpenFileDialog.filename
     }
 
@@ -253,13 +253,13 @@ $script:AutoChartsIndividualTab01.Controls.Add($AutoChartPullNewDataEnrichedChec
 
 function AutoChartOpenDataInShell {
     if ($script:AutoChartOpenResultsOpenFileDialogfilename) { $ViewImportResults = $script:AutoChartOpenResultsOpenFileDialogfilename -replace '.csv','.xml' }
-    else { $ViewImportResults = $script:AutoChartCSVFileMostRecentCollection -replace '.csv','.xml' } 
+    else { $ViewImportResults = $script:AutoChartCSVFileMostRecentCollection -replace '.csv','.xml' }
 
     if (Test-Path $ViewImportResults) {
         $SavePath = Split-Path -Path $script:AutoChartOpenResultsOpenFileDialogfilename
         $FileName = Split-Path -Path $script:AutoChartOpenResultsOpenFileDialogfilename -Leaf
-    
-        Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SavePath $SavePath    
+
+        Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SavePath $SavePath
     }
     else { [System.Windows.MessageBox]::Show("Error: Cannot Import Data!`nThe associated .xml file was not located.","PoSh-EasyWin") }
 }
@@ -298,7 +298,7 @@ $script:AutoChart01SmbShare = New-object System.Windows.Forms.DataVisualization.
 }
 $script:AutoChart01SmbShare.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart01SmbShareTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -362,8 +362,8 @@ $script:AutoChart01SmbShare.Series["Share Names"].Color             = 'Red'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart01SmbShareUniqueCount
-                        Computers   = $script:AutoChart01SmbShareCsvComputers 
-                    }           
+                        Computers   = $script:AutoChart01SmbShareCsvComputers
+                    }
                     $script:AutoChart01SmbShareOverallDataResults += $script:AutoChart01SmbShareDataResults
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
@@ -375,12 +375,12 @@ $script:AutoChart01SmbShare.Series["Share Names"].Color             = 'Red'
             else {
                 $script:AutoChart01SmbShareTitle.ForeColor = 'Red'
                 $script:AutoChart01SmbShareTitle.Text = "Share Names`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart01
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart01SmbShareOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart01SmbShare.Location.X + $($FormScale * 5)
@@ -389,7 +389,7 @@ $script:AutoChart01SmbShareOptionsButton = New-Object Windows.Forms.Button -Prop
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart01SmbShareOptionsButton
-$script:AutoChart01SmbShareOptionsButton.Add_Click({  
+$script:AutoChart01SmbShareOptionsButton.Add_Click({
     if ($script:AutoChart01SmbShareOptionsButton.Text -eq 'Options v') {
         $script:AutoChart01SmbShareOptionsButton.Text = 'Options ^'
         $script:AutoChart01SmbShare.Controls.Add($script:AutoChart01SmbShareManipulationPanel)
@@ -429,14 +429,14 @@ $script:AutoChart01SmbShareTrimOffFirstGroupBoX = New-Object System.Windows.Form
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart01SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01SmbShareOverallDataResults.count))                
+    $script:AutoChart01SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart01SmbShareOverallDataResults.count))
     $script:AutoChart01SmbShareTrimOffFirstTrackBarValue   = 0
     $script:AutoChart01SmbShareTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart01SmbShareTrimOffFirstTrackBarValue = $script:AutoChart01SmbShareTrimOffFirstTrackBar.Value
@@ -463,7 +463,7 @@ $script:AutoChart01SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -486,11 +486,11 @@ $script:AutoChart01SmbShareManipulationPanel.Controls.Add($script:AutoChart01Smb
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart01SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart01SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart01SmbShareTrimOffFirstGroupBox.Location.Y + $script:AutoChart01SmbShareTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -516,9 +516,9 @@ $script:AutoChart01SmbShare3DToggleButton = New-Object Windows.Forms.Button -Pro
 CommonButtonSettings -Button $script:AutoChart01SmbShare3DToggleButton
 $script:AutoChart01SmbShare3DInclination = 0
 $script:AutoChart01SmbShare3DToggleButton.Add_Click({
-    
+
     $script:AutoChart01SmbShare3DInclination += 10
-    if ( $script:AutoChart01SmbShare3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart01SmbShare3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart01SmbShareArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart01SmbShareArea.Area3DStyle.Inclination = $script:AutoChart01SmbShare3DInclination
         $script:AutoChart01SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart01SmbShare3DInclination)"
@@ -527,12 +527,12 @@ $script:AutoChart01SmbShare3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart01SmbShare3DInclination -le 90 ) {
         $script:AutoChart01SmbShareArea.Area3DStyle.Inclination = $script:AutoChart01SmbShare3DInclination
-        $script:AutoChart01SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart01SmbShare3DInclination)" 
+        $script:AutoChart01SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart01SmbShare3DInclination)"
 #        $script:AutoChart01SmbShare.Series["Share Names"].Points.Clear()
 #        $script:AutoChart01SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart01SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart01SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart01SmbShare.Series["Share Names"].Points.AddXY($_.DataField.Name,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart01SmbShare3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart01SmbShare3DToggleButton.Text  = "3D Off"
         $script:AutoChart01SmbShare3DInclination = 0
         $script:AutoChart01SmbShareArea.Area3DStyle.Inclination = $script:AutoChart01SmbShare3DInclination
         $script:AutoChart01SmbShareArea.Area3DStyle.Enable3D    = $false
@@ -564,7 +564,7 @@ $script:AutoChart01SmbShareManipulationPanel.Controls.Add($script:AutoChart01Smb
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart01 {    
+function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
     $script:AutoChart01SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart01SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart01SmbShareInvestDiffPosResultsTextBox.Text = ''
@@ -572,7 +572,7 @@ function script:InvestigateDifference-AutoChart01 {
 
     # List of all endpoints within the csv file
     $script:AutoChart01SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart01SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart01SmbShareImportCsvAll) { if ($Endpoint -notin $script:AutoChart01SmbShareImportCsvPosResults) { $script:AutoChart01SmbShareImportCsvNegResults += $Endpoint } }
@@ -640,7 +640,7 @@ $script:AutoChart01SmbShareCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart01SmbShareInvestDiffDropDownComboBox.Location.y + $script:AutoChart01SmbShareInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart01SmbShareInvestDiffExecuteButton
@@ -655,7 +655,7 @@ $script:AutoChart01SmbShareCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart01SmbShareInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart01SmbShareInvestDiffPosResultsLabel.Location.y + $script:AutoChart01SmbShareInvestDiffPosResultsLabel.Size.Height }
@@ -667,7 +667,7 @@ $script:AutoChart01SmbShareCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart01SmbShareInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -721,7 +721,7 @@ $script:AutoChart01SmbShareOpenInShell = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01SmbShareOpenInShell
-$script:AutoChart01SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart01SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart01SmbShareManipulationPanel.controls.Add($script:AutoChart01SmbShareOpenInShell)
 
 
@@ -733,7 +733,7 @@ $script:AutoChart01SmbShareViewResults = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart01SmbShareViewResults
-$script:AutoChart01SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart01SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart01SmbShareManipulationPanel.controls.Add($script:AutoChart01SmbShareViewResults)
 
 
@@ -756,7 +756,7 @@ $script:AutoChart01SmbShareManipulationPanel.controls.Add($script:AutoChart01Smb
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart01SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart01SmbShareSaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart01SmbShareSaveButton.Location.X
                         Y = $script:AutoChart01SmbShareSaveButton.Location.Y + $script:AutoChart01SmbShareSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -812,7 +812,7 @@ $script:AutoChart02SmbShare = New-object System.Windows.Forms.DataVisualization.
 }
 $script:AutoChart02SmbShare.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart02SmbShareTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -830,7 +830,7 @@ $script:AutoChart02SmbShareArea.Area3DStyle.Inclination = 75
 $script:AutoChart02SmbShare.ChartAreas.Add($script:AutoChart02SmbShareArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart02SmbShare.Series.Add("Shares Per Host")  
+$script:AutoChart02SmbShare.Series.Add("Shares Per Host")
 $script:AutoChart02SmbShare.Series["Shares Per Host"].Enabled           = $True
 $script:AutoChart02SmbShare.Series["Shares Per Host"].BorderWidth       = 1
 $script:AutoChart02SmbShare.Series["Shares Per Host"].IsVisibleInLegend = $false
@@ -865,18 +865,18 @@ $script:AutoChart02SmbShare.Series["Shares Per Host"].Color             = 'Blue'
 
                 foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
                     if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
-                    if ( $AutoChart02CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart02CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart02YResults += $Line.Name ; $AutoChart02ResultsCount += 1 }
                                 if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
                             $AutoChart02CurrentComputer = $Line.PSComputerName
-                            $AutoChart02YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
-                                Computer     = $AutoChart02Computer 
+                                Computer     = $AutoChart02Computer
                             }
                             $script:AutoChart02SmbShareOverallDataResults += $AutoChart02YDataResults
                             $AutoChart02YResults     = @()
@@ -891,7 +891,7 @@ $script:AutoChart02SmbShare.Series["Shares Per Host"].Color             = 'Blue'
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }    
+                $AutoChart02YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart02ResultsCount ; Computer = $AutoChart02Computer }
                 $script:AutoChart02SmbShareOverallDataResults += $AutoChart02YDataResults
                 $script:AutoChart02SmbShareOverallDataResults | ForEach-Object { $script:AutoChart02SmbShare.Series["Shares Per Host"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -905,12 +905,12 @@ $script:AutoChart02SmbShare.Series["Shares Per Host"].Color             = 'Blue'
                 $script:AutoChart02SmbShare.Series["Shares Per Host"].Points.Clear()
                 $script:AutoChart02SmbShareTitle.ForeColor = 'Red'
                 $script:AutoChart02SmbShareTitle.Text = "Shares Per Host`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart02
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart02SmbShareOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart02SmbShare.Location.X + $($FormScale * 5)
@@ -919,7 +919,7 @@ $script:AutoChart02SmbShareOptionsButton = New-Object Windows.Forms.Button -Prop
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart02SmbShareOptionsButton
-$script:AutoChart02SmbShareOptionsButton.Add_Click({  
+$script:AutoChart02SmbShareOptionsButton.Add_Click({
     if ($script:AutoChart02SmbShareOptionsButton.Text -eq 'Options v') {
         $script:AutoChart02SmbShareOptionsButton.Text = 'Options ^'
         $script:AutoChart02SmbShare.Controls.Add($script:AutoChart02SmbShareManipulationPanel)
@@ -958,20 +958,20 @@ $script:AutoChart02SmbShareTrimOffFirstGroupBoX = New-Object System.Windows.Form
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart02SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02SmbShareOverallDataResults.count))                
+    $script:AutoChart02SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart02SmbShareOverallDataResults.count))
     $script:AutoChart02SmbShareTrimOffFirstTrackBarValue   = 0
     $script:AutoChart02SmbShareTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart02SmbShareTrimOffFirstTrackBarValue = $script:AutoChart02SmbShareTrimOffFirstTrackBar.Value
         $script:AutoChart02SmbShareTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart02SmbShareTrimOffFirstTrackBar.Value)"
         $script:AutoChart02SmbShare.Series["Shares Per Host"].Points.Clear()
-        $script:AutoChart02SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SmbShare.Series["Shares Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart02SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SmbShare.Series["Shares Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart02SmbShareTrimOffFirstGroupBox.Controls.Add($script:AutoChart02SmbShareTrimOffFirstTrackBar)
 $script:AutoChart02SmbShareManipulationPanel.Controls.Add($script:AutoChart02SmbShareTrimOffFirstGroupBox)
@@ -992,7 +992,7 @@ $script:AutoChart02SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -1015,11 +1015,11 @@ $script:AutoChart02SmbShareManipulationPanel.Controls.Add($script:AutoChart02Smb
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart02SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart02SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart02SmbShareTrimOffFirstGroupBox.Location.Y + $script:AutoChart02SmbShareTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1045,7 +1045,7 @@ CommonButtonSettings -Button $script:AutoChart02SmbShare3DToggleButton
 $script:AutoChart02SmbShare3DInclination = 0
 $script:AutoChart02SmbShare3DToggleButton.Add_Click({
     $script:AutoChart02SmbShare3DInclination += 10
-    if ( $script:AutoChart02SmbShare3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart02SmbShare3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart02SmbShareArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart02SmbShareArea.Area3DStyle.Inclination = $script:AutoChart02SmbShare3DInclination
         $script:AutoChart02SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart02SmbShare3DInclination)"
@@ -1055,12 +1055,12 @@ $script:AutoChart02SmbShare3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart02SmbShare3DInclination -le 90 ) {
         $script:AutoChart02SmbShareArea.Area3DStyle.Inclination = $script:AutoChart02SmbShare3DInclination
-        $script:AutoChart02SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart02SmbShare3DInclination)" 
+        $script:AutoChart02SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart02SmbShare3DInclination)"
 #        $script:AutoChart02SmbShare.Series["Shares Per Host"].Points.Clear()
 #        $script:AutoChart02SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart02SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart02SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart02SmbShare.Series["Shares Per Host"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart02SmbShare3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart02SmbShare3DToggleButton.Text  = "3D Off"
         $script:AutoChart02SmbShare3DInclination = 0
         $script:AutoChart02SmbShareArea.Area3DStyle.Inclination = $script:AutoChart02SmbShare3DInclination
         $script:AutoChart02SmbShareArea.Area3DStyle.Enable3D    = $false
@@ -1091,7 +1091,7 @@ $script:AutoChart02SmbShareManipulationPanel.Controls.Add($script:AutoChart02Smb
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart02 {    
+function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
     $script:AutoChart02SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart02SmbShareInvestDiffPosResultsTextBox.Text = ''
@@ -1099,7 +1099,7 @@ function script:InvestigateDifference-AutoChart02 {
 
     # List of all endpoints within the csv file
     $script:AutoChart02SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart02SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart02SmbShareImportCsvAll) { if ($Endpoint -notin $script:AutoChart02SmbShareImportCsvPosResults) { $script:AutoChart02SmbShareImportCsvNegResults += $Endpoint } }
@@ -1167,7 +1167,7 @@ $script:AutoChart02SmbShareCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart02SmbShareInvestDiffDropDownComboBox.Location.y + $script:AutoChart02SmbShareInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart02SmbShareInvestDiffExecuteButton
@@ -1182,7 +1182,7 @@ $script:AutoChart02SmbShareCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart02SmbShareInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart02SmbShareInvestDiffPosResultsLabel.Location.y + $script:AutoChart02SmbShareInvestDiffPosResultsLabel.Size.Height }
@@ -1194,7 +1194,7 @@ $script:AutoChart02SmbShareCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart02SmbShareInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -1248,7 +1248,7 @@ $script:AutoChart02SmbShareOpenInShell = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02SmbShareOpenInShell
-$script:AutoChart02SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart02SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart02SmbShareManipulationPanel.controls.Add($script:AutoChart02SmbShareOpenInShell)
 
 
@@ -1260,7 +1260,7 @@ $script:AutoChart02SmbShareViewResults = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart02SmbShareViewResults
-$script:AutoChart02SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart02SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart02SmbShareManipulationPanel.controls.Add($script:AutoChart02SmbShareViewResults)
 
 
@@ -1283,7 +1283,7 @@ $script:AutoChart02SmbShareManipulationPanel.controls.Add($script:AutoChart02Smb
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart02SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart02SmbShareSaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart02SmbShareSaveButton.Location.X
                         Y = $script:AutoChart02SmbShareSaveButton.Location.Y + $script:AutoChart02SmbShareSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -1341,7 +1341,7 @@ $script:AutoChart03SmbShare = New-object System.Windows.Forms.DataVisualization.
 }
 $script:AutoChart03SmbShare.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart03SmbShareTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -1359,7 +1359,7 @@ $script:AutoChart03SmbShareArea.Area3DStyle.Inclination = 75
 $script:AutoChart03SmbShare.ChartAreas.Add($script:AutoChart03SmbShareArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart03SmbShare.Series.Add("Share Paths")  
+$script:AutoChart03SmbShare.Series.Add("Share Paths")
 $script:AutoChart03SmbShare.Series["Share Paths"].Enabled           = $True
 $script:AutoChart03SmbShare.Series["Share Paths"].BorderWidth       = 1
 $script:AutoChart03SmbShare.Series["Share Paths"].IsVisibleInLegend = $false
@@ -1386,7 +1386,7 @@ $script:AutoChart03SmbShare.Series["Share Paths"].Color             = 'Green'
             if ($script:AutoChart03SmbShareUniqueDataFields.count -gt 0){
                 $script:AutoChart03SmbShareTitle.ForeColor = 'Black'
                 $script:AutoChart03SmbShareTitle.Text = "Share Paths"
-                
+
                 # If the Second field/Y Axis equals PSComputername, it counts it
                 $script:AutoChart03SmbShareOverallDataResults = @()
 
@@ -1397,7 +1397,7 @@ $script:AutoChart03SmbShare.Series["Share Paths"].Color             = 'Green'
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.Path -eq $DataField.Path) {
                             $Count += 1
-                            if ( $script:AutoChart03SmbShareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03SmbShareCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart03SmbShareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03SmbShareCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart03SmbShareUniqueCount = $script:AutoChart03SmbShareCsvComputers.Count
@@ -1405,7 +1405,7 @@ $script:AutoChart03SmbShare.Series["Share Paths"].Color             = 'Green'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart03SmbShareUniqueCount
-                        Computers   = $script:AutoChart03SmbShareCsvComputers 
+                        Computers   = $script:AutoChart03SmbShareCsvComputers
                     }
                     $script:AutoChart03SmbShareOverallDataResults += $script:AutoChart03SmbShareDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -1419,12 +1419,12 @@ $script:AutoChart03SmbShare.Series["Share Paths"].Color             = 'Green'
             else {
                 $script:AutoChart03SmbShareTitle.ForeColor = 'Red'
                 $script:AutoChart03SmbShareTitle.Text = "Share Paths`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart03
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart03SmbShareOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart03SmbShare.Location.X + $($FormScale * 5)
@@ -1433,7 +1433,7 @@ $script:AutoChart03SmbShareOptionsButton = New-Object Windows.Forms.Button -Prop
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart03SmbShareOptionsButton
-$script:AutoChart03SmbShareOptionsButton.Add_Click({  
+$script:AutoChart03SmbShareOptionsButton.Add_Click({
     if ($script:AutoChart03SmbShareOptionsButton.Text -eq 'Options v') {
         $script:AutoChart03SmbShareOptionsButton.Text = 'Options ^'
         $script:AutoChart03SmbShare.Controls.Add($script:AutoChart03SmbShareManipulationPanel)
@@ -1472,20 +1472,20 @@ $script:AutoChart03SmbShareTrimOffFirstGroupBoX = New-Object System.Windows.Form
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart03SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03SmbShareOverallDataResults.count))                
+    $script:AutoChart03SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart03SmbShareOverallDataResults.count))
     $script:AutoChart03SmbShareTrimOffFirstTrackBarValue   = 0
     $script:AutoChart03SmbShareTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart03SmbShareTrimOffFirstTrackBarValue = $script:AutoChart03SmbShareTrimOffFirstTrackBar.Value
         $script:AutoChart03SmbShareTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart03SmbShareTrimOffFirstTrackBar.Value)"
         $script:AutoChart03SmbShare.Series["Share Paths"].Points.Clear()
-        $script:AutoChart03SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SmbShare.Series["Share Paths"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}    
+        $script:AutoChart03SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SmbShare.Series["Share Paths"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}
     })
     $script:AutoChart03SmbShareTrimOffFirstGroupBox.Controls.Add($script:AutoChart03SmbShareTrimOffFirstTrackBar)
 $script:AutoChart03SmbShareManipulationPanel.Controls.Add($script:AutoChart03SmbShareTrimOffFirstGroupBox)
@@ -1506,7 +1506,7 @@ $script:AutoChart03SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -1529,11 +1529,11 @@ $script:AutoChart03SmbShareManipulationPanel.Controls.Add($script:AutoChart03Smb
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart03SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart03SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart03SmbShareTrimOffFirstGroupBox.Location.Y + $script:AutoChart03SmbShareTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -1559,7 +1559,7 @@ CommonButtonSettings -Button $script:AutoChart03SmbShare3DToggleButton
 $script:AutoChart03SmbShare3DInclination = 0
 $script:AutoChart03SmbShare3DToggleButton.Add_Click({
     $script:AutoChart03SmbShare3DInclination += 10
-    if ( $script:AutoChart03SmbShare3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart03SmbShare3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart03SmbShareArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart03SmbShareArea.Area3DStyle.Inclination = $script:AutoChart03SmbShare3DInclination
         $script:AutoChart03SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart03SmbShare3DInclination)"
@@ -1568,12 +1568,12 @@ $script:AutoChart03SmbShare3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart03SmbShare3DInclination -le 90 ) {
         $script:AutoChart03SmbShareArea.Area3DStyle.Inclination = $script:AutoChart03SmbShare3DInclination
-        $script:AutoChart03SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart03SmbShare3DInclination)" 
+        $script:AutoChart03SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart03SmbShare3DInclination)"
 #        $script:AutoChart03SmbShare.Series["Share Paths"].Points.Clear()
 #        $script:AutoChart03SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SmbShare.Series["Share Paths"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart03SmbShare3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart03SmbShare3DToggleButton.Text  = "3D Off"
         $script:AutoChart03SmbShare3DInclination = 0
         $script:AutoChart03SmbShareArea.Area3DStyle.Inclination = $script:AutoChart03SmbShare3DInclination
         $script:AutoChart03SmbShareArea.Area3DStyle.Enable3D    = $false
@@ -1604,7 +1604,7 @@ $script:AutoChart03SmbShareManipulationPanel.Controls.Add($script:AutoChart03Smb
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart03 {    
+function script:InvestigateDifference-AutoChart03 {
     # List of Positive Endpoints that positively match
     $script:AutoChart03SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Path' -eq $($script:AutoChart03SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart03SmbShareInvestDiffPosResultsTextBox.Text = ''
@@ -1612,7 +1612,7 @@ function script:InvestigateDifference-AutoChart03 {
 
     # List of all endpoints within the csv file
     $script:AutoChart03SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart03SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart03SmbShareImportCsvAll) { if ($Endpoint -notin $script:AutoChart03SmbShareImportCsvPosResults) { $script:AutoChart03SmbShareImportCsvNegResults += $Endpoint } }
@@ -1680,7 +1680,7 @@ $script:AutoChart03SmbShareCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart03SmbShareInvestDiffDropDownComboBox.Location.y + $script:AutoChart03SmbShareInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart03SmbShareInvestDiffExecuteButton
@@ -1695,7 +1695,7 @@ $script:AutoChart03SmbShareCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart03SmbShareInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart03SmbShareInvestDiffPosResultsLabel.Location.y + $script:AutoChart03SmbShareInvestDiffPosResultsLabel.Size.Height }
@@ -1707,7 +1707,7 @@ $script:AutoChart03SmbShareCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart03SmbShareInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -1739,7 +1739,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart03SmbShareManipulationPanel.controls.Add($script:AutoChart03SmbShareCheckDiffButton)
-    
+
 
 $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -1761,7 +1761,7 @@ $script:AutoChart03SmbShareOpenInShell = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03SmbShareOpenInShell
-$script:AutoChart03SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart03SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart03SmbShareManipulationPanel.controls.Add($script:AutoChart03SmbShareOpenInShell)
 
 
@@ -1773,7 +1773,7 @@ $script:AutoChart03SmbShareViewResults = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart03SmbShareViewResults
-$script:AutoChart03SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart03SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart03SmbShareManipulationPanel.controls.Add($script:AutoChart03SmbShareViewResults)
 
 
@@ -1796,7 +1796,7 @@ $script:AutoChart03SmbShareManipulationPanel.controls.Add($script:AutoChart03Smb
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart03SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart03SmbShareSaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart03SmbShareSaveButton.Location.X
                         Y = $script:AutoChart03SmbShareSaveButton.Location.Y + $script:AutoChart03SmbShareSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -1811,7 +1811,7 @@ $script:AutoChart03SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textb
 $script:AutoChart03SmbShareManipulationPanel.Controls.Add($script:AutoChart03SmbShareNoticeTextbox)
 
 $script:AutoChart03SmbShare.Series["Share Paths"].Points.Clear()
-$script:AutoChart03SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SmbShare.Series["Share Paths"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}    
+$script:AutoChart03SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart03SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart03SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart03SmbShare.Series["Share Paths"].Points.AddXY($_.DataField.Path,$_.UniqueCount)}
 
 
 
@@ -1857,7 +1857,7 @@ $script:AutoChart04SmbShare = New-object System.Windows.Forms.DataVisualization.
 }
 $script:AutoChart04SmbShare.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart04SmbShareTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter"
@@ -1875,7 +1875,7 @@ $script:AutoChart04SmbShareArea.Area3DStyle.Inclination = 75
 $script:AutoChart04SmbShare.ChartAreas.Add($script:AutoChart04SmbShareArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart04SmbShare.Series.Add("Current Users")  
+$script:AutoChart04SmbShare.Series.Add("Current Users")
 $script:AutoChart04SmbShare.Series["Current Users"].Enabled           = $True
 $script:AutoChart04SmbShare.Series["Current Users"].BorderWidth       = 1
 $script:AutoChart04SmbShare.Series["Current Users"].IsVisibleInLegend = $false
@@ -1913,7 +1913,7 @@ $script:AutoChart04SmbShare.Series["Current Users"].Color             = 'Orange'
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.CurrentUsers) -eq $DataField.CurrentUsers) {
                             $Count += 1
-                            if ( $script:AutoChart04SmbShareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04SmbShareCsvComputers += $($Line.PSComputerName) }                        
+                            if ( $script:AutoChart04SmbShareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04SmbShareCsvComputers += $($Line.PSComputerName) }
                         }
                     }
                     $script:AutoChart04SmbShareUniqueCount = $script:AutoChart04SmbShareCsvComputers.Count
@@ -1921,7 +1921,7 @@ $script:AutoChart04SmbShare.Series["Current Users"].Color             = 'Orange'
                         DataField   = $DataField
                         TotalCount  = $Count
                         UniqueCount = $script:AutoChart04SmbShareUniqueCount
-                        Computers   = $script:AutoChart04SmbShareCsvComputers 
+                        Computers   = $script:AutoChart04SmbShareCsvComputers
                     }
                     $script:AutoChart04SmbShareOverallDataResults += $script:AutoChart04SmbShareDataResults
                     $script:AutoChartsProgressBar.Value += 1
@@ -1935,12 +1935,12 @@ $script:AutoChart04SmbShare.Series["Current Users"].Color             = 'Orange'
             else {
                 $script:AutoChart04SmbShareTitle.ForeColor = 'Red'
                 $script:AutoChart04SmbShareTitle.Text = "Current Users`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart04
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart04SmbShareOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart04SmbShare.Location.X + $($FormScale * 5)
@@ -1949,7 +1949,7 @@ $script:AutoChart04SmbShareOptionsButton = New-Object Windows.Forms.Button -Prop
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart04SmbShareOptionsButton
-$script:AutoChart04SmbShareOptionsButton.Add_Click({  
+$script:AutoChart04SmbShareOptionsButton.Add_Click({
     if ($script:AutoChart04SmbShareOptionsButton.Text -eq 'Options v') {
         $script:AutoChart04SmbShareOptionsButton.Text = 'Options ^'
         $script:AutoChart04SmbShare.Controls.Add($script:AutoChart04SmbShareManipulationPanel)
@@ -1988,20 +1988,20 @@ $script:AutoChart04SmbShareTrimOffFirstGroupBoX = New-Object System.Windows.Form
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart04SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04SmbShareOverallDataResults.count))                
+    $script:AutoChart04SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart04SmbShareOverallDataResults.count))
     $script:AutoChart04SmbShareTrimOffFirstTrackBarValue   = 0
     $script:AutoChart04SmbShareTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart04SmbShareTrimOffFirstTrackBarValue = $script:AutoChart04SmbShareTrimOffFirstTrackBar.Value
         $script:AutoChart04SmbShareTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart04SmbShareTrimOffFirstTrackBar.Value)"
         $script:AutoChart04SmbShare.Series["Current Users"].Points.Clear()
-        $script:AutoChart04SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SmbShare.Series["Current Users"].Points.AddXY($_.DataField.CurrentUsers,$_.UniqueCount)}    
+        $script:AutoChart04SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SmbShare.Series["Current Users"].Points.AddXY($_.DataField.CurrentUsers,$_.UniqueCount)}
     })
     $script:AutoChart04SmbShareTrimOffFirstGroupBox.Controls.Add($script:AutoChart04SmbShareTrimOffFirstTrackBar)
 $script:AutoChart04SmbShareManipulationPanel.Controls.Add($script:AutoChart04SmbShareTrimOffFirstGroupBox)
@@ -2022,7 +2022,7 @@ $script:AutoChart04SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -2045,11 +2045,11 @@ $script:AutoChart04SmbShareManipulationPanel.Controls.Add($script:AutoChart04Smb
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart04SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart04SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart04SmbShareTrimOffFirstGroupBox.Location.Y + $script:AutoChart04SmbShareTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -2075,7 +2075,7 @@ CommonButtonSettings -Button $script:AutoChart04SmbShare3DToggleButton
 $script:AutoChart04SmbShare3DInclination = 0
 $script:AutoChart04SmbShare3DToggleButton.Add_Click({
     $script:AutoChart04SmbShare3DInclination += 10
-    if ( $script:AutoChart04SmbShare3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart04SmbShare3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart04SmbShareArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart04SmbShareArea.Area3DStyle.Inclination = $script:AutoChart04SmbShare3DInclination
         $script:AutoChart04SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart04SmbShare3DInclination)"
@@ -2084,12 +2084,12 @@ $script:AutoChart04SmbShare3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart04SmbShare3DInclination -le 90 ) {
         $script:AutoChart04SmbShareArea.Area3DStyle.Inclination = $script:AutoChart04SmbShare3DInclination
-        $script:AutoChart04SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart04SmbShare3DInclination)" 
+        $script:AutoChart04SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart04SmbShare3DInclination)"
 #        $script:AutoChart04SmbShare.Series["Current Users"].Points.Clear()
 #        $script:AutoChart04SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SmbShare.Series["Current Users"].Points.AddXY($_.DataField.CurrentUsers,$_.UniqueCount)}
     }
-    else { 
-        $script:AutoChart04SmbShare3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart04SmbShare3DToggleButton.Text  = "3D Off"
         $script:AutoChart04SmbShare3DInclination = 0
         $script:AutoChart04SmbShareArea.Area3DStyle.Inclination = $script:AutoChart04SmbShare3DInclination
         $script:AutoChart04SmbShareArea.Area3DStyle.Enable3D    = $false
@@ -2120,7 +2120,7 @@ $script:AutoChart04SmbShareManipulationPanel.Controls.Add($script:AutoChart04Smb
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart04 {    
+function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
     $script:AutoChart04SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'CurrentUsers' -eq $($script:AutoChart04SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart04SmbShareInvestDiffPosResultsTextBox.Text = ''
@@ -2128,7 +2128,7 @@ function script:InvestigateDifference-AutoChart04 {
 
     # List of all endpoints within the csv file
     $script:AutoChart04SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart04SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart04SmbShareImportCsvAll) { if ($Endpoint -notin $script:AutoChart04SmbShareImportCsvPosResults) { $script:AutoChart04SmbShareImportCsvNegResults += $Endpoint } }
@@ -2196,10 +2196,10 @@ $script:AutoChart04SmbShareCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart04SmbShareInvestDiffDropDownComboBox.Location.y + $script:AutoChart04SmbShareInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
-    CommonButtonSettings -Button $script:AutoChart04SmbShareInvestDiffExecuteButton 
+    CommonButtonSettings -Button $script:AutoChart04SmbShareInvestDiffExecuteButton
     $script:AutoChart04SmbShareInvestDiffExecuteButton.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart04 }})
     $script:AutoChart04SmbShareInvestDiffExecuteButton.Add_Click({ script:InvestigateDifference-AutoChart04 })
 
@@ -2211,7 +2211,7 @@ $script:AutoChart04SmbShareCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart04SmbShareInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart04SmbShareInvestDiffPosResultsLabel.Location.y + $script:AutoChart04SmbShareInvestDiffPosResultsLabel.Size.Height }
@@ -2223,7 +2223,7 @@ $script:AutoChart04SmbShareCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart04SmbShareInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -2255,7 +2255,7 @@ Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message @"
 +  Allows you to quickly search for the differences`n`n
 "@ })
 $script:AutoChart04SmbShareManipulationPanel.controls.Add($script:AutoChart04SmbShareCheckDiffButton)
-    
+
 
 $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Multi-Series'
@@ -2277,7 +2277,7 @@ $script:AutoChart04SmbShareOpenInShell = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04SmbShareOpenInShell
-$script:AutoChart04SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart04SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart04SmbShareManipulationPanel.controls.Add($script:AutoChart04SmbShareOpenInShell)
 
 
@@ -2289,7 +2289,7 @@ $script:AutoChart04SmbShareViewResults = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart04SmbShareViewResults
-$script:AutoChart04SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart04SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart04SmbShareManipulationPanel.controls.Add($script:AutoChart04SmbShareViewResults)
 
 
@@ -2312,7 +2312,7 @@ $script:AutoChart04SmbShareManipulationPanel.controls.Add($script:AutoChart04Smb
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart04SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart04SmbShareSaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart04SmbShareSaveButton.Location.X
                         Y = $script:AutoChart04SmbShareSaveButton.Location.Y + $script:AutoChart04SmbShareSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -2327,7 +2327,7 @@ $script:AutoChart04SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textb
 $script:AutoChart04SmbShareManipulationPanel.Controls.Add($script:AutoChart04SmbShareNoticeTextbox)
 
 $script:AutoChart04SmbShare.Series["Current Users"].Points.Clear()
-$script:AutoChart04SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SmbShare.Series["Current Users"].Points.AddXY($_.DataField.CurrentUsers,$_.UniqueCount)}    
+$script:AutoChart04SmbShareOverallDataResults | Sort-Object -Property UniqueCount | Select-Object -skip $script:AutoChart04SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart04SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart04SmbShare.Series["Current Users"].Points.AddXY($_.DataField.CurrentUsers,$_.UniqueCount)}
 
 
 
@@ -2371,7 +2371,7 @@ $script:AutoChart05SmbShare = New-object System.Windows.Forms.DataVisualization.
 }
 $script:AutoChart05SmbShare.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart05SmbShareTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -2389,7 +2389,7 @@ $script:AutoChart05SmbShareArea.Area3DStyle.Inclination = 75
 $script:AutoChart05SmbShare.ChartAreas.Add($script:AutoChart05SmbShareArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart05SmbShare.Series.Add("Unencrypted Shares")  
+$script:AutoChart05SmbShare.Series.Add("Unencrypted Shares")
 $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Enabled           = $True
 $script:AutoChart05SmbShare.Series["Unencrypted Shares"].BorderWidth       = 1
 $script:AutoChart05SmbShare.Series["Unencrypted Shares"].IsVisibleInLegend = $false
@@ -2424,18 +2424,18 @@ $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Color             = 'Br
 
                 foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.EncryptData -eq $false}| Sort-Object PSComputerName) ) {
                     if ( $AutoChart05CheckIfFirstLine -eq $false ) { $AutoChart05CurrentComputer  = $Line.PSComputerName ; $AutoChart05CheckIfFirstLine = $true }
-                    if ( $AutoChart05CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart05CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart05CurrentComputer ) {
                             if ( $AutoChart05YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart05YResults += $Line.Name ; $AutoChart05ResultsCount += 1 }
                                 if ( $AutoChart05Computer -notcontains $Line.PSComputerName ) { $AutoChart05Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart05CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart05CurrentComputer ) {
                             $AutoChart05CurrentComputer = $Line.PSComputerName
-                            $AutoChart05YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart05YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart05ResultsCount
-                                Computer     = $AutoChart05Computer 
+                                Computer     = $AutoChart05Computer
                             }
                             $script:AutoChart05SmbShareOverallDataResults += $AutoChart05YDataResults
                             $AutoChart05YResults     = @()
@@ -2450,7 +2450,7 @@ $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Color             = 'Br
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart05YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart05ResultsCount ; Computer = $AutoChart05Computer }    
+                $AutoChart05YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart05ResultsCount ; Computer = $AutoChart05Computer }
                 $script:AutoChart05SmbShareOverallDataResults += $AutoChart05YDataResults
                 $script:AutoChart05SmbShareOverallDataResults | ForEach-Object { $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -2464,12 +2464,12 @@ $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Color             = 'Br
                 $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Points.Clear()
                 $script:AutoChart05SmbShareTitle.ForeColor = 'Red'
                 $script:AutoChart05SmbShareTitle.Text = "Unencrypted Shares`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart05
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart05SmbShareOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart05SmbShare.Location.X + $($FormScale * 5)
@@ -2478,7 +2478,7 @@ $script:AutoChart05SmbShareOptionsButton = New-Object Windows.Forms.Button -Prop
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart05SmbShareOptionsButton
-$script:AutoChart05SmbShareOptionsButton.Add_Click({  
+$script:AutoChart05SmbShareOptionsButton.Add_Click({
     if ($script:AutoChart05SmbShareOptionsButton.Text -eq 'Options v') {
         $script:AutoChart05SmbShareOptionsButton.Text = 'Options ^'
         $script:AutoChart05SmbShare.Controls.Add($script:AutoChart05SmbShareManipulationPanel)
@@ -2517,20 +2517,20 @@ $script:AutoChart05SmbShareTrimOffFirstGroupBoX = New-Object System.Windows.Form
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart05SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05SmbShareOverallDataResults.count))                
+    $script:AutoChart05SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart05SmbShareOverallDataResults.count))
     $script:AutoChart05SmbShareTrimOffFirstTrackBarValue   = 0
     $script:AutoChart05SmbShareTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart05SmbShareTrimOffFirstTrackBarValue = $script:AutoChart05SmbShareTrimOffFirstTrackBar.Value
         $script:AutoChart05SmbShareTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart05SmbShareTrimOffFirstTrackBar.Value)"
         $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Points.Clear()
-        $script:AutoChart05SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05SmbShare.Series["Unencrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart05SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05SmbShare.Series["Unencrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart05SmbShareTrimOffFirstGroupBox.Controls.Add($script:AutoChart05SmbShareTrimOffFirstTrackBar)
 $script:AutoChart05SmbShareManipulationPanel.Controls.Add($script:AutoChart05SmbShareTrimOffFirstGroupBox)
@@ -2551,7 +2551,7 @@ $script:AutoChart05SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -2574,11 +2574,11 @@ $script:AutoChart05SmbShareManipulationPanel.Controls.Add($script:AutoChart05Smb
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart05SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart05SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart05SmbShareTrimOffFirstGroupBox.Location.Y + $script:AutoChart05SmbShareTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -2604,7 +2604,7 @@ CommonButtonSettings -Button $script:AutoChart05SmbShare3DToggleButton
 $script:AutoChart05SmbShare3DInclination = 0
 $script:AutoChart05SmbShare3DToggleButton.Add_Click({
     $script:AutoChart05SmbShare3DInclination += 10
-    if ( $script:AutoChart05SmbShare3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart05SmbShare3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart05SmbShareArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart05SmbShareArea.Area3DStyle.Inclination = $script:AutoChart05SmbShare3DInclination
         $script:AutoChart05SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart05SmbShare3DInclination)"
@@ -2614,12 +2614,12 @@ $script:AutoChart05SmbShare3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart05SmbShare3DInclination -le 90 ) {
         $script:AutoChart05SmbShareArea.Area3DStyle.Inclination = $script:AutoChart05SmbShare3DInclination
-        $script:AutoChart05SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart05SmbShare3DInclination)" 
+        $script:AutoChart05SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart05SmbShare3DInclination)"
 #        $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Points.Clear()
 #        $script:AutoChart05SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart05SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart05SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart05SmbShare.Series["Unencrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart05SmbShare3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart05SmbShare3DToggleButton.Text  = "3D Off"
         $script:AutoChart05SmbShare3DInclination = 0
         $script:AutoChart05SmbShareArea.Area3DStyle.Inclination = $script:AutoChart05SmbShare3DInclination
         $script:AutoChart05SmbShareArea.Area3DStyle.Enable3D    = $false
@@ -2650,7 +2650,7 @@ $script:AutoChart05SmbShareManipulationPanel.Controls.Add($script:AutoChart05Smb
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart05 {    
+function script:InvestigateDifference-AutoChart05 {
     # List of Positive Endpoints that positively match
     $script:AutoChart05SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart05SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart05SmbShareInvestDiffPosResultsTextBox.Text = ''
@@ -2658,7 +2658,7 @@ function script:InvestigateDifference-AutoChart05 {
 
     # List of all endpoints within the csv file
     $script:AutoChart05SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart05SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart05SmbShareImportCsvAll) { if ($Endpoint -notin $script:AutoChart05SmbShareImportCsvPosResults) { $script:AutoChart05SmbShareImportCsvNegResults += $Endpoint } }
@@ -2726,7 +2726,7 @@ $script:AutoChart05SmbShareCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart05SmbShareInvestDiffDropDownComboBox.Location.y + $script:AutoChart05SmbShareInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart05SmbShareInvestDiffExecuteButton
@@ -2741,7 +2741,7 @@ $script:AutoChart05SmbShareCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart05SmbShareInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart05SmbShareInvestDiffPosResultsLabel.Location.y + $script:AutoChart05SmbShareInvestDiffPosResultsLabel.Size.Height }
@@ -2753,7 +2753,7 @@ $script:AutoChart05SmbShareCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart05SmbShareInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -2807,7 +2807,7 @@ $script:AutoChart05SmbShareOpenInShell = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart05SmbShareOpenInShell
-$script:AutoChart05SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart05SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart05SmbShareManipulationPanel.controls.Add($script:AutoChart05SmbShareOpenInShell)
 
 
@@ -2819,7 +2819,7 @@ $script:AutoChart05SmbShareViewResults = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart05SmbShareViewResults
-$script:AutoChart05SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart05SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart05SmbShareManipulationPanel.controls.Add($script:AutoChart05SmbShareViewResults)
 
 
@@ -2842,7 +2842,7 @@ $script:AutoChart05SmbShareManipulationPanel.controls.Add($script:AutoChart05Smb
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart05SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart05SmbShareSaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart05SmbShareSaveButton.Location.X
                         Y = $script:AutoChart05SmbShareSaveButton.Location.Y + $script:AutoChart05SmbShareSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -2901,7 +2901,7 @@ $script:AutoChart06SmbShare = New-object System.Windows.Forms.DataVisualization.
 }
 $script:AutoChart06SmbShare.Add_MouseHover({ Close-AllOptions })
 
-### Auto Create Charts Title 
+### Auto Create Charts Title
 $script:AutoChart06SmbShareTitle = New-Object System.Windows.Forms.DataVisualization.Charting.Title -Property @{
     Font      = New-Object System.Drawing.Font @('Microsoft Sans Serif','10', [System.Drawing.FontStyle]::Bold)
     Alignment = "topcenter" #"topLeft"
@@ -2919,7 +2919,7 @@ $script:AutoChart06SmbShareArea.Area3DStyle.Inclination = 75
 $script:AutoChart06SmbShare.ChartAreas.Add($script:AutoChart06SmbShareArea)
 
 ### Auto Create Charts Data Series Recent
-$script:AutoChart06SmbShare.Series.Add("Encrypted Shares")  
+$script:AutoChart06SmbShare.Series.Add("Encrypted Shares")
 $script:AutoChart06SmbShare.Series["Encrypted Shares"].Enabled           = $True
 $script:AutoChart06SmbShare.Series["Encrypted Shares"].BorderWidth       = 1
 $script:AutoChart06SmbShare.Series["Encrypted Shares"].IsVisibleInLegend = $false
@@ -2954,18 +2954,18 @@ $script:AutoChart06SmbShare.Series["Encrypted Shares"].Color             = 'Brow
 
                 foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.EncryptData -eq $true}| Sort-Object PSComputerName) ) {
                     if ( $AutoChart06CheckIfFirstLine -eq $false ) { $AutoChart06CurrentComputer  = $Line.PSComputerName ; $AutoChart06CheckIfFirstLine = $true }
-                    if ( $AutoChart06CheckIfFirstLine -eq $true ) { 
+                    if ( $AutoChart06CheckIfFirstLine -eq $true ) {
                         if ( $Line.PSComputerName -eq $AutoChart06CurrentComputer ) {
                             if ( $AutoChart06YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart06YResults += $Line.Name ; $AutoChart06ResultsCount += 1 }
                                 if ( $AutoChart06Computer -notcontains $Line.PSComputerName ) { $AutoChart06Computer = $Line.PSComputerName }
-                            }       
+                            }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart06CurrentComputer ) { 
+                        elseif ( $Line.PSComputerName -ne $AutoChart06CurrentComputer ) {
                             $AutoChart06CurrentComputer = $Line.PSComputerName
-                            $AutoChart06YDataResults    = New-Object PSObject -Property @{ 
+                            $AutoChart06YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart06ResultsCount
-                                Computer     = $AutoChart06Computer 
+                                Computer     = $AutoChart06Computer
                             }
                             $script:AutoChart06SmbShareOverallDataResults += $AutoChart06YDataResults
                             $AutoChart06YResults     = @()
@@ -2980,7 +2980,7 @@ $script:AutoChart06SmbShare.Series["Encrypted Shares"].Color             = 'Brow
                     $script:AutoChartsProgressBar.Value += 1
                     $script:AutoChartsProgressBar.Update()
                 }
-                $AutoChart06YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart06ResultsCount ; Computer = $AutoChart06Computer }    
+                $AutoChart06YDataResults = New-Object PSObject -Property @{ ResultsCount = $AutoChart06ResultsCount ; Computer = $AutoChart06Computer }
                 $script:AutoChart06SmbShareOverallDataResults += $AutoChart06YDataResults
                 $script:AutoChart06SmbShareOverallDataResults | ForEach-Object { $script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount) }
 
@@ -2994,12 +2994,12 @@ $script:AutoChart06SmbShare.Series["Encrypted Shares"].Color             = 'Brow
                 $script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.Clear()
                 $script:AutoChart06SmbShareTitle.ForeColor = 'Red'
                 $script:AutoChart06SmbShareTitle.Text = "Encrypted Shares`n
-[ No Data Available ]`n"                
+[ No Data Available ]`n"
             }
         }
         Generate-AutoChart06
 
-### Auto Chart Panel that contains all the options to manage open/close feature 
+### Auto Chart Panel that contains all the options to manage open/close feature
 $script:AutoChart06SmbShareOptionsButton = New-Object Windows.Forms.Button -Property @{
     Text      = "Options v"
     Location  = @{ X = $script:AutoChart06SmbShare.Location.X + $($FormScale * 5)
@@ -3008,7 +3008,7 @@ $script:AutoChart06SmbShareOptionsButton = New-Object Windows.Forms.Button -Prop
                    Height = $FormScale * 20 }
 }
 CommonButtonSettings -Button $script:AutoChart06SmbShareOptionsButton
-$script:AutoChart06SmbShareOptionsButton.Add_Click({  
+$script:AutoChart06SmbShareOptionsButton.Add_Click({
     if ($script:AutoChart06SmbShareOptionsButton.Text -eq 'Options v') {
         $script:AutoChart06SmbShareOptionsButton.Text = 'Options ^'
         $script:AutoChart06SmbShare.Controls.Add($script:AutoChart06SmbShareManipulationPanel)
@@ -3047,20 +3047,20 @@ $script:AutoChart06SmbShareTrimOffFirstGroupBoX = New-Object System.Windows.Form
         Location    = @{ X = $FormScale * 1
                          Y = $FormScale * 30 }
         Size        = @{ Width  = $FormScale * 160
-                         Height = $FormScale * 25}                
+                         Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
         Minimum       = 0
-        Value         = 0 
+        Value         = 0
     }
-    $script:AutoChart06SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06SmbShareOverallDataResults.count))                
+    $script:AutoChart06SmbShareTrimOffFirstTrackBar.SetRange(0, $($script:AutoChart06SmbShareOverallDataResults.count))
     $script:AutoChart06SmbShareTrimOffFirstTrackBarValue   = 0
     $script:AutoChart06SmbShareTrimOffFirstTrackBar.add_ValueChanged({
         $script:AutoChart06SmbShareTrimOffFirstTrackBarValue = $script:AutoChart06SmbShareTrimOffFirstTrackBar.Value
         $script:AutoChart06SmbShareTrimOffFirstGroupBox.Text = "Trim Off First: $($script:AutoChart06SmbShareTrimOffFirstTrackBar.Value)"
         $script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.Clear()
-        $script:AutoChart06SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount)}    
+        $script:AutoChart06SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount)}
     })
     $script:AutoChart06SmbShareTrimOffFirstGroupBox.Controls.Add($script:AutoChart06SmbShareTrimOffFirstTrackBar)
 $script:AutoChart06SmbShareManipulationPanel.Controls.Add($script:AutoChart06SmbShareTrimOffFirstGroupBox)
@@ -3081,7 +3081,7 @@ $script:AutoChart06SmbShareTrimOffLastGroupBoX = New-Object System.Windows.Forms
         Location      = @{ X = $FormScale * 1
                            Y = $FormScale * 30 }
         Size          = @{ Width  = $FormScale * 160
-                           Height = $FormScale * 25}                
+                           Height = $FormScale * 25}
         Orientation   = "Horizontal"
         TickFrequencY = $FormScale * 1
         TickStyle     = "TopLeft"
@@ -3104,11 +3104,11 @@ $script:AutoChart06SmbShareManipulationPanel.Controls.Add($script:AutoChart06Smb
 # Auto Create Charts Select Chart Type
 #======================================
 $script:AutoChart06SmbShareChartTypeComboBoX = New-Object System.Windows.Forms.ComboBox -Property @{
-    Text      = 'Column' 
+    Text      = 'Column'
     Location  = @{ X = $script:AutoChart06SmbShareTrimOffFirstGroupBox.Location.X + $($FormScale * 80)
                     Y = $script:AutoChart06SmbShareTrimOffFirstGroupBox.Location.Y + $script:AutoChart06SmbShareTrimOffFirstGroupBox.Size.Height + $($FormScale * 5) }
     Size      = @{ Width  = $FormScale * 85
-                    Height = $FormScale * 20 }     
+                    Height = $FormScale * 20 }
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
@@ -3134,7 +3134,7 @@ CommonButtonSettings -Button $script:AutoChart06SmbShare3DToggleButton
 $script:AutoChart06SmbShare3DInclination = 0
 $script:AutoChart06SmbShare3DToggleButton.Add_Click({
     $script:AutoChart06SmbShare3DInclination += 10
-    if ( $script:AutoChart06SmbShare3DToggleButton.Text -eq "3D Off" ) { 
+    if ( $script:AutoChart06SmbShare3DToggleButton.Text -eq "3D Off" ) {
         $script:AutoChart06SmbShareArea.Area3DStyle.Enable3D    = $true
         $script:AutoChart06SmbShareArea.Area3DStyle.Inclination = $script:AutoChart06SmbShare3DInclination
         $script:AutoChart06SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart06SmbShare3DInclination)"
@@ -3144,12 +3144,12 @@ $script:AutoChart06SmbShare3DToggleButton.Add_Click({
     }
     elseif ( $script:AutoChart06SmbShare3DInclination -le 90 ) {
         $script:AutoChart06SmbShareArea.Area3DStyle.Inclination = $script:AutoChart06SmbShare3DInclination
-        $script:AutoChart06SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart06SmbShare3DInclination)" 
+        $script:AutoChart06SmbShare3DToggleButton.Text  = "3D On ($script:AutoChart06SmbShare3DInclination)"
 #        $script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.Clear()
 #        $script:AutoChart06SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount)}
     }
-    else { 
-        $script:AutoChart06SmbShare3DToggleButton.Text  = "3D Off" 
+    else {
+        $script:AutoChart06SmbShare3DToggleButton.Text  = "3D Off"
         $script:AutoChart06SmbShare3DInclination = 0
         $script:AutoChart06SmbShareArea.Area3DStyle.Inclination = $script:AutoChart06SmbShare3DInclination
         $script:AutoChart06SmbShareArea.Area3DStyle.Enable3D    = $false
@@ -3180,7 +3180,7 @@ $script:AutoChart06SmbShareManipulationPanel.Controls.Add($script:AutoChart06Smb
 #=====================================
 # AutoCharts - Investigate Difference
 #=====================================
-function script:InvestigateDifference-AutoChart06 {    
+function script:InvestigateDifference-AutoChart06 {
     # List of Positive Endpoints that positively match
     $script:AutoChart06SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart06SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
     $script:AutoChart06SmbShareInvestDiffPosResultsTextBox.Text = ''
@@ -3188,7 +3188,7 @@ function script:InvestigateDifference-AutoChart06 {
 
     # List of all endpoints within the csv file
     $script:AutoChart06SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
-    
+
     $script:AutoChart06SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
     foreach ($Endpoint in $script:AutoChart06SmbShareImportCsvAll) { if ($Endpoint -notin $script:AutoChart06SmbShareImportCsvPosResults) { $script:AutoChart06SmbShareImportCsvNegResults += $Endpoint } }
@@ -3256,7 +3256,7 @@ $script:AutoChart06SmbShareCheckDiffButton.Add_Click({
         Text     = "Execute"
         Location = @{ X = $FormScale * 10
                         Y = $script:AutoChart06SmbShareInvestDiffDropDownComboBox.Location.y + $script:AutoChart06SmbShareInvestDiffDropDownComboBox.Size.Height + $($FormScale + 5) }
-        Width    = $FormScale * 100 
+        Width    = $FormScale * 100
         Height   = $FormScale * 20
     }
     CommonButtonSettings -Button $script:AutoChart06SmbShareInvestDiffExecuteButton
@@ -3271,7 +3271,7 @@ $script:AutoChart06SmbShareCheckDiffButton.Add_Click({
         Size       = @{ Width  = $FormScale * 100
                         Height = $FormScale * 22 }
         Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }        
+    }
     $script:AutoChart06SmbShareInvestDiffPosResultsTextBoX = New-Object System.Windows.Forms.TextBox -Property @{
         Location   = @{ X = $FormScale * 10
                         Y = $script:AutoChart06SmbShareInvestDiffPosResultsLabel.Location.y + $script:AutoChart06SmbShareInvestDiffPosResultsLabel.Size.Height }
@@ -3283,7 +3283,7 @@ $script:AutoChart06SmbShareCheckDiffButton.Add_Click({
         WordWrap   = $false
         Multiline  = $true
         ScrollBars = "Vertical"
-    }            
+    }
 
     ### Investigate Difference Negative Results Label & TextBox
     $script:AutoChart06SmbShareInvestDiffNegResultsLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -3337,7 +3337,7 @@ $script:AutoChart06SmbShareOpenInShell = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart06SmbShareOpenInShell
-$script:AutoChart06SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell }) 
+$script:AutoChart06SmbShareOpenInShell.Add_Click({ AutoChartOpenDataInShell })
 $script:AutoChart06SmbShareManipulationPanel.controls.Add($script:AutoChart06SmbShareOpenInShell)
 
 
@@ -3349,7 +3349,7 @@ $script:AutoChart06SmbShareViewResults = New-Object Windows.Forms.Button -Proper
                    Height = $FormScale * 23 }
 }
 CommonButtonSettings -Button $script:AutoChart06SmbShareViewResults
-$script:AutoChart06SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" }) 
+$script:AutoChart06SmbShareViewResults.Add_Click({ $script:AutoChartDataSourceCsv | Out-GridView -Title "$script:AutoChartCSVFileMostRecentCollection" })
 $script:AutoChart06SmbShareManipulationPanel.controls.Add($script:AutoChart06SmbShareViewResults)
 
 
@@ -3372,7 +3372,7 @@ $script:AutoChart06SmbShareManipulationPanel.controls.Add($script:AutoChart06Smb
 # Auto Charts - Notice Textbox
 #==============================
 $script:AutoChart06SmbShareNoticeTextboX = New-Object System.Windows.Forms.Textbox -Property @{
-    Location    = @{ X = $script:AutoChart06SmbShareSaveButton.Location.X 
+    Location    = @{ X = $script:AutoChart06SmbShareSaveButton.Location.X
                         Y = $script:AutoChart06SmbShareSaveButton.Location.Y + $script:AutoChart06SmbShareSaveButton.Size.Height + $($FormScale * 6) }
     Size        = @{ Width  = $FormScale * 205
                         Height = $FormScale * 25 }
@@ -3388,6 +3388,8 @@ $script:AutoChart06SmbShareManipulationPanel.Controls.Add($script:AutoChart06Smb
 
 $script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.Clear()
 $script:AutoChart06SmbShareOverallDataResults | Sort-Object -Property ResultsCount | Select-Object -skip $script:AutoChart06SmbShareTrimOffFirstTrackBarValue | Select-Object -SkipLast $script:AutoChart06SmbShareTrimOffLastTrackBarValue | ForEach-Object {$script:AutoChart06SmbShare.Series["Encrypted Shares"].Points.AddXY($_.Computer,$_.ResultsCount)}
+
+
 
 
 

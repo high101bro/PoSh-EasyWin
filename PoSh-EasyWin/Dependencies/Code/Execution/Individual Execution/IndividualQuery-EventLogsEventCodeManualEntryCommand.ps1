@@ -1,8 +1,8 @@
 $CollectionName = "Event Logs - Event ID Manual Entry"
-$CollectionCommandStartTime = Get-Date 
+$CollectionCommandStartTime = Get-Date
 
 $StatusListBox.Items.Clear()
-$StatusListBox.Items.Add("Query: $CollectionName")                    
+$StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
@@ -36,7 +36,7 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
     }
     # Replaces the ' OR ' at the end of the varable with a closing )"
     $Filter = $EventLogsEventIDsManualEntryTextboxFilter -replace " OR $",")"
-    
+
     # Builds the Event Log Query Command
     $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
     if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
@@ -50,7 +50,7 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
     $EventLogQueryPipe = @"
 | Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
 "@
-    $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"    
+    $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"
     Invoke-Expression $EventLogQueryBuild
 }
 
@@ -63,8 +63,8 @@ foreach ($TargetComputer in $script:ComputerList) {
 
     if ($EventLogWinRMRadioButton.Checked) {
         if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
-            if (!$script:Credential) { Create-NewCredentials }     
-            
+            if (!$script:Credential) { Create-NewCredentials }
+
             Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} `
             -ArgumentList $EventLogsEventIDsManualEntryTextboxText, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked, $EventLogsStopTimePickerChecked, $EventLogsStartTimePickerValue, $EventLogsStopTimePickerValue `
             -ComputerName $TargetComputer `
@@ -80,7 +80,7 @@ foreach ($TargetComputer in $script:ComputerList) {
     }
     else {
         if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
-            if (!$script:Credential) { Create-NewCredentials }     
+            if (!$script:Credential) { Create-NewCredentials }
 
             Start-Job -ScriptBlock {
                 param(
@@ -97,21 +97,21 @@ foreach ($TargetComputer in $script:ComputerList) {
                 #$ManualEntry = ($EventLogsEventIDsManualEntryTextboxText).split("`r`n")
                 $ManualEntry = $ManualEntry -replace " ","" -replace "a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z",""
                 $ManualEntry = $ManualEntry | Where-Object {$_.trim() -ne ""}
-            
+
                 # Variables begins with an open "(
                 $EventLogsEventIDsManualEntryTextboxFilter = '('
-            
+
                 foreach ($EventCode in $ManualEntry) {
                     $EventLogsEventIDsManualEntryTextboxFilter += "(EventCode='$EventCode') OR "
                 }
                 # Replaces the ' OR ' at the end of the varable with a closing )"
                 $Filter = $EventLogsEventIDsManualEntryTextboxFilter -replace " OR $",")"
-                
+
                 # Builds the Event Log Query Command
                 $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
                 if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
                 else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBoxText)" }
-                
+
                 if ( $EventLogsStartTimePickerChecked -and $EventLogsStopTimePickerChecked ) {
                     $EventLogQueryFilter = @"
 -Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePickerValue)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePickerValue)))'))"
@@ -143,16 +143,16 @@ foreach ($TargetComputer in $script:ComputerList) {
                 #$ManualEntry = ($EventLogsEventIDsManualEntryTextboxText).split("`r`n")
                 $ManualEntry = $ManualEntry -replace " ","" -replace "a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z",""
                 $ManualEntry = $ManualEntry | Where-Object {$_.trim() -ne ""}
-            
+
                 # Variables begins with an open "(
                 $EventLogsEventIDsManualEntryTextboxFilter = '('
-            
+
                 foreach ($EventCode in $ManualEntry) {
                     $EventLogsEventIDsManualEntryTextboxFilter += "(EventCode='$EventCode') OR "
                 }
                 # Replaces the ' OR ' at the end of the varable with a closing )"
                 $Filter = $EventLogsEventIDsManualEntryTextboxFilter -replace " OR $",")"
-                
+
                 # Builds the Event Log Query Command
                 $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
                 if ($EventLogsMaximumCollectionTextBoxText -eq $null -or $EventLogsMaximumCollectionTextBoxText -eq '' -or $EventLogsMaximumCollectionTextBoxText -eq 0) { $EventLogQueryMax = $null}
@@ -177,4 +177,6 @@ foreach ($TargetComputer in $script:ComputerList) {
     }
 }
 Monitor-Jobs     -CollectionName $CollectionName
-Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime 
+Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
+
+

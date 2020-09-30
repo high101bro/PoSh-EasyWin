@@ -1,6 +1,6 @@
 function Compile-CsvFiles {
     param (
-        [string]$LocationOfCSVsToCompile, 
+        [string]$LocationOfCSVsToCompile,
         [string]$LocationToSaveCompiledCSV
     )
     Remove-Item -Path "$LocationToSaveCompiledCSV" -Force
@@ -12,11 +12,11 @@ function Compile-CsvFiles {
             Remove-Item $PSItem
         }
         else {
-            $CompiledCSVs +=  Import-Csv -Path $_        
+            $CompiledCSVs +=  Import-Csv -Path $_
         }
     }
     $CompiledCSVs | Select-Object -Property * -Unique | Export-Csv $LocationToSaveCompiledCSV -NoTypeInformation -Force
-    
+
     if ($OptionKeepResultsByEndpointsFilesCheckBox.checked -eq $false) {
         if (Test-Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\*\*.csv") {
             Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\*" -Recurse -Force
@@ -31,7 +31,7 @@ function Compile-CsvFiles {
 <#
 function Compile-CsvFiles {
     param (
-        [string]$LocationOfCSVsToCompile, 
+        [string]$LocationOfCSVsToCompile,
         [string]$LocationToSaveCompiledCSV
     )
     Remove-Item -Path "$LocationToSaveCompiledCSV" -Force
@@ -44,7 +44,7 @@ function Compile-CsvFiles {
         }
         else {
             $FilePath = $_
-            $Lines = $Lines = Get-Content $FilePath  
+            $Lines = $Lines = Get-Content $FilePath
             $LinesToWrite = switch($GetFirstLine) {
                 $true  {$Lines}
                 $false {$Lines | Select -Skip 1}
@@ -52,7 +52,7 @@ function Compile-CsvFiles {
             $GetFirstLine = $false
             Add-Content -Path "$LocationToSaveCompiledCSV" $LinesToWrite -Force
         }
-    }  
+    }
 }
 #>
 
@@ -65,3 +65,4 @@ $merged = $csv1 + $csv2
 $merged | Select -Property * -Unique
 
 #>
+

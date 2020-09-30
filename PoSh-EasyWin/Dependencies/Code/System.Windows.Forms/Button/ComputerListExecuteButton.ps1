@@ -5,5 +5,7 @@ $ComputerListExecuteButtonAdd_MouseHover = {
 +  Be sure to verify selections before execution.
 +  All queries to targets are logged with timestamps.
 +  Results are stored in CSV format.
-"@ 
+"@
 }
+
+

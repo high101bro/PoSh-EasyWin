@@ -6,7 +6,7 @@ $ImportEndpointDataFromTxtButtonAdd_Click = {
         filter           = "TXT (*.txt)| *.txt|All files (*.*)|*.*"
         ShowHelp         = $true
     }
-    $ComputerTreeNodeImportTxtOpenFileDialog.ShowDialog() | Out-Null    
+    $ComputerTreeNodeImportTxtOpenFileDialog.ShowDialog() | Out-Null
     $ComputerTreeNodeImportTxt = Get-Content $($ComputerTreeNodeImportTxtOpenFileDialog.filename)
 
     $StatusListBox.Items.Clear()
@@ -52,6 +52,8 @@ $ImportEndpointDataFromTxtButtonAdd_MouseHover = {
 +  This file should be formatted with one hostname or IP address per line
 "@
 }
-    
+
+
+
 
 

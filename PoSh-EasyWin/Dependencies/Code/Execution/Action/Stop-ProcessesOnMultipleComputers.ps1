@@ -4,7 +4,7 @@ function Stop-ProcessesOnMultipleComputers {
         [switch]$CollectNewProcessData
     )
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
-    
+
     if ($SelectProcessCsvFile) {
         [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
         $SelectProcessFileToStopSelectedProcessesOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
@@ -22,23 +22,23 @@ function Stop-ProcessesOnMultipleComputers {
     }
     elseif ($CollectNewProcessData) {
         Generate-ComputerList
-        
+
         if ($script:ComputerList.count -eq 0){
             [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect process data from. Alternatively, you can select a CSV file from a previous process collection.','Error: No Endpoints Selected')
         }
         else {
             if ($ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
-                Invoke-Command -ScriptBlock { 
-                    Get-Process #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, * 
+                Invoke-Command -ScriptBlock {
+                    Get-Process #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, *
                 } -ComputerName $script:ComputerList -Credential $script:Credential `
                 | Select-Object -Property PSComputerName, * -ErrorAction SilentlyContinue `
                 | Sort-Object -Property Name, PSComputername, * -ErrorAction SilentlyContinue `
                 | Out-GridView -Title 'Select Processes To Stop' -PassThru -OutVariable ProcessesToStop
             }
             else {
-                Invoke-Command -ScriptBlock { 
-                    Get-Process #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, * 
+                Invoke-Command -ScriptBlock {
+                    Get-Process #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, *
                 } -ComputerName $script:ComputerList `
                 | Select-Object -Property PSComputerName, * -ErrorAction SilentlyContinue `
                 | Sort-Object -Property Name, PSComputername, * -ErrorAction SilentlyContinue `
@@ -54,7 +54,7 @@ function Stop-ProcessesOnMultipleComputers {
     $StatusListBox.Items.Add("Multi-Endpoint Process Stopper")
     $ResultsListBox.Items.Clear()
 
-    foreach ($Computer in $Computers) {    
+    foreach ($Computer in $Computers) {
         $Session = $null
 
         try {
@@ -68,7 +68,7 @@ function Stop-ProcessesOnMultipleComputers {
             }
             #Write-Host "Connected to:  $Computer" -ForegroundColor Cyan
             $ResultsListBox.Items.Insert(0,"Connected to:  $Computer")
-    
+
             if ($Session) {
                 foreach ($Process in $ProcessesToStop){
                     if ($Process.PSComputerName -eq $Computer){
@@ -92,10 +92,12 @@ function Stop-ProcessesOnMultipleComputers {
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) { 
+    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
-        Generate-NewRollingPassword 
+        Generate-NewRollingPassword
     }
 }
+
+
 
 

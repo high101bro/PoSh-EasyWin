@@ -1,4 +1,4 @@
-﻿$regConfig = @"
+$regConfig = @"
 RegistryKey,Name
 "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa","scenoapplylegacyauditpolicy"
 "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System\Audit","ProcessCreationIncludeCmdLine_Enabled"
@@ -48,3 +48,5 @@ $regConfig | ConvertFrom-Csv | ForEach-Object {
 		}
 	}
 }
+
+

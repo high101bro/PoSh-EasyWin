@@ -26,7 +26,7 @@ foreach ($TargetComputer in $script:ComputerList) {
     foreach ($ValueData in $($script:RegistryValueDataSearchRichTextbox.Text).split("`r`n")){ $SearchRegistryValueData += $ValueData.trim() | Where {$_ -ne ''} }
 
 
-    if ($RegistryKeyNameCheckbox.checked)   { 
+    if ($RegistryKeyNameCheckbox.checked)   {
         $CountCommandQueries++
         if ($RegistrySearchRecursiveCheckbox.checked) {
             $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryKeyName,$true,$false,$false)
@@ -35,7 +35,7 @@ foreach ($TargetComputer in $script:ComputerList) {
             $SearchRegistryCommand = @($RegistrySearchDirectory,$false,$SearchRegistryKeyName,$true,$false,$false)
         }
     }
-    if ($RegistryValueNameCheckbox.checked) { 
+    if ($RegistryValueNameCheckbox.checked) {
         $CountCommandQueries++
         if ($RegistrySearchRecursiveCheckbox.checked) {
             $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryValueName,$false,$true,$false)
@@ -44,7 +44,7 @@ foreach ($TargetComputer in $script:ComputerList) {
             $SearchRegistryCommand = @($RegistrySearchDirectory,$false,$SearchRegistryValueName,$false,$true,$false)
         }
     }
-    if ($RegistryValueDataCheckbox.checked) { 
+    if ($RegistryValueDataCheckbox.checked) {
         $CountCommandQueries++
         if ($RegistrySearchRecursiveCheckbox.checked) {
             $SearchRegistryCommand = @($RegistrySearchDirectory,$true,$SearchRegistryValueData,$false,$false,$true)
@@ -56,7 +56,7 @@ foreach ($TargetComputer in $script:ComputerList) {
 
 
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }           
+        if (!$script:Credential) { Create-NewCredentials }
         Invoke-Command -ScriptBlock $QueryRegistryFunction `
         -ArgumentList $SearchRegistryCommand `
         -ComputerName $TargetComputer `
@@ -64,7 +64,7 @@ foreach ($TargetComputer in $script:ComputerList) {
         -Credential $script:Credential
 
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$QueryRegistryFunction -ArgumentList `$SearchRegistryCommand  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
-        $ResultsListBox.Items.Add("$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")    
+        $ResultsListBox.Items.Add("$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
     }
     else {
         Invoke-Command -ScriptBlock $QueryRegistryFunction `
@@ -73,13 +73,13 @@ foreach ($TargetComputer in $script:ComputerList) {
         -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
 
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$QueryRegistryFunction -ArgumentList `$SearchRegistryCommand  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)''"
-        $ResultsListBox.Items.Add("$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")    
+        $ResultsListBox.Items.Add("$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName -- $TargetComputer")
     }
 }
 
 Monitor-Jobs -CollectionName $CollectionName
 
-$CollectionCommandEndTime  = Get-Date                    
+$CollectionCommandEndTime  = Get-Date
 $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
 $ResultsListBox.Items.RemoveAt(0)
 $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $CollectionName")
@@ -91,5 +91,7 @@ Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryT
                  -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$($CollectionName).xml"
 
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
-Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"                 
+Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+
+
 

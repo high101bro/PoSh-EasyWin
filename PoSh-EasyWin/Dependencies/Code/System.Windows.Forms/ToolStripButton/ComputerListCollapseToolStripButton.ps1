@@ -1,7 +1,7 @@
 $ComputerListCollapseToolStripButtonAdd_Click = {
     if ($script:ExpandCollapseStatus -eq "Collapse") {
         $script:ComputerTreeView.CollapseAll()
-        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes 
+        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
         foreach ($root in $AllHostsNode) {  $root.Expand() }
         $ComputerListCollapseToolStripButton.Text = "Expand"
         $script:ExpandCollapseStatus = "Expand"
@@ -12,3 +12,5 @@ $ComputerListCollapseToolStripButtonAdd_Click = {
         $script:ExpandCollapseStatus = "Collapse"
     }
 }
+
+

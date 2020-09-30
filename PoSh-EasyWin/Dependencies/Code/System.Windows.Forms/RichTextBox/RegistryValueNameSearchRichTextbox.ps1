@@ -1,13 +1,13 @@
-$RegistryValueNameSearchRichTextboxAdd_MouseEnter = { 
-    if ($this.text -eq "Enter Value Name; One Per Line") { 
-        $this.text = "" 
-    } 
+$RegistryValueNameSearchRichTextboxAdd_MouseEnter = {
+    if ($this.text -eq "Enter Value Name; One Per Line") {
+        $this.text = ""
+    }
 }
 
-$RegistryValueNameSearchRichTextboxAdd_MouseLeave = { 
-    if ($this.text -eq "") { 
-        $this.text = "Enter Value Name; One Per Line" 
-    } 
+$RegistryValueNameSearchRichTextboxAdd_MouseLeave = {
+    if ($this.text -eq "") {
+        $this.text = "Enter Value Name; One Per Line"
+    }
 }
 
 $RegistryValueNameSearchRichTextboxAdd_MouseHover = {
@@ -20,5 +20,7 @@ $RegistryValueNameSearchRichTextboxAdd_MouseHover = {
     +  ^[(http)(https)]://
     +  [a-z0-9]
 +  Will return results with partial matches
-"@ 
+"@
 }
+
+

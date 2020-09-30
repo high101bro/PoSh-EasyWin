@@ -1,4 +1,4 @@
-﻿function Enable-WinRMWMI {
+function Enable-WinRMWMI {
 	[cmdletbinding()]
 	Param([String[]] $WMITargets)
 	$ChangedTargets = @()
@@ -17,3 +17,4 @@
 	}
 	return $ChangedTargets
 }
+

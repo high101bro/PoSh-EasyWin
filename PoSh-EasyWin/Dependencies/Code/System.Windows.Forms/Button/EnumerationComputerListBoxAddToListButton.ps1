@@ -4,7 +4,7 @@ $EnumerationComputerListBoxAddToListButtonAdd_Click = {
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Enumeration:  Added $($EnumerationComputerListBox.SelectedItems.Count) IPs")
     #Removed For Testing#$ResultsListBox.Items.Clear()
-    foreach ($Selected in $EnumerationComputerListBox.SelectedItems) {      
+    foreach ($Selected in $EnumerationComputerListBox.SelectedItems) {
         if ($script:ComputerTreeViewData.Name -contains $Selected) {
             Message-HostAlreadyExists -Message "Port Scan Import:  Warning" -Computer $Selected
         }
@@ -19,7 +19,7 @@ $EnumerationComputerListBoxAddToListButtonAdd_Click = {
                 Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip $Computer.IPv4Address
                 $ResultsListBox.Items.Add("$($Selected) has been added to /Unknown category")
             }
-            $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{ 
+            $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
                 Name            = $Selected
                 OperatingSystem = 'Unknown'
                 CanonicalName   = '/Unknown'
@@ -33,3 +33,5 @@ $EnumerationComputerListBoxAddToListButtonAdd_Click = {
     AutoSave-HostData
     Save-HostData
 }
+
+

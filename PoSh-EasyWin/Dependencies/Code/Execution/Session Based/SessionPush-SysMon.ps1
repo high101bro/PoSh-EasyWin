@@ -27,7 +27,7 @@ if ($SysinternalsSysmonRenameServiceProcessTextBox.text -ne 'Sysmon') {
 # Renames sysmon Driver name in order to obfuscate deployent
 if ($SysinternalsSysmonRenameDriverTextBox.text -ne 'SysmonDrv') {
     $SysmonDriverName = "$($SysinternalsSysmonRenameDriverTextBox.text)"
-} 
+}
 
 
 
@@ -37,9 +37,9 @@ Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[!] Copying over $
 $PoShEasyWin.Refresh()
 
 foreach ($Session in $PSSession) {
-    try { 
-        Copy-Item -Path $SysmonExecutablePath -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop 
-        Copy-Item -Path $script:SysmonXMLPath -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop                 
+    try {
+        Copy-Item -Path $SysmonExecutablePath -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop
+        Copy-Item -Path $script:SysmonXMLPath -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop
         $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
         Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $SysmonExecutablePath -Destination $TargetFolder -ToSession $Session -Force -ErrorAction Stop"
         Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $script:SysmonXMLPath -Destination $TargetFolder -ToSession $Session -Force -ErrorAction Stop"
@@ -49,7 +49,7 @@ foreach ($Session in $PSSession) {
 
         $PoShEasyWin.Refresh()
     }
-    catch { 
+    catch {
         $ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy $SysmonExecutable Error:  $($_.Exception)")
         Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy $SysmonExecutable Error: $($_.Exception)"
         $PoShEasyWin.Refresh()
@@ -58,8 +58,8 @@ foreach ($Session in $PSSession) {
 }
 
 if ($SysinternalsSysmonRenameServiceProcessTextBox.text -ne 'Sysmon') {
-    # Removes the local renamed copy of Sysmon 
-    Remove-Item "$ExternalPrograms\$($SysinternalsSysmonRenameServiceProcessTextBox.text).exe" -Force 
+    # Removes the local renamed copy of Sysmon
+    Remove-Item "$ExternalPrograms\$($SysinternalsSysmonRenameServiceProcessTextBox.text).exe" -Force
 }
 
 $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Configuring Sysmon")
@@ -72,7 +72,7 @@ foreach ($Session in $PSSession) {
         if ($SysinternalsSysmonRenameDriverTextBox.text -ne 'SysmonDrv' -and ($SysinternalsSysmonRenameDriverTextBox.text).length -ne 0 ) {
             # Checks if the Sysmon service exists, if not it will install sysmon and log it locally
             Invoke-Command -ScriptBlock {
-                param($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName)                    
+                param($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName)
                 # Installs Tool if service not detected
                 if (-not (Get-Service -Name "$SysmonName")){
                     Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEULA -i $TargetFolder\$Script:SysmonXMLName -d $SysmonDriverName"
@@ -92,7 +92,7 @@ foreach ($Session in $PSSession) {
         }
         else {
             Invoke-Command -ScriptBlock {
-                param($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName)                    
+                param($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName)
                 # Installs Tool if service not detected
                 if (-not (Get-Service -Name "$SysmonName")){
                     Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEULA -i $TargetFolder\$Script:SysmonXMLName"
@@ -101,8 +101,8 @@ foreach ($Session in $PSSession) {
                 else {
                     Start-Process -NoNewWindow -FilePath "$TargetFolder\$SysmonExecutable" -Argumentlist "/AcceptEULA -c $TargetFolder\$Script:SysmonXMLName"
                 }
-            } -Argumentlist @($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName) -Session $Session            
-            
+            } -Argumentlist @($SysmonName,$SysmonDriverName,$TargetFolder,$SysmonExecutable,$Script:SysmonXMLName) -Session $Session
+
             if (-not $(Invoke-Command -ScriptBlock { param($SysmonName); Get-Service -Name "$SysmonName" } -ArgumentList $SysmonName -Session $Session)) {
                 Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Start-Process -NoNewWindow -FilePath `"$TargetFolder\$SysmonExecutable`" -ArgumentList `"/AcceptEULA -i $TargetFolder\$Script:SysmonXMLName`""
             }
@@ -114,7 +114,7 @@ foreach ($Session in $PSSession) {
         $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
         $PoShEasyWin.Refresh()
     }
-    catch { 
+    catch {
         $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Execute Sysmon Error:  $($_.Exception)")
         Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Execute Sysmon Error: $($_.Exception)"
         $PoShEasyWin.Refresh()
@@ -157,25 +157,25 @@ while ($true) {
     foreach ($Session in $PSSession) {
         if ($Session.ComputerName -notin $SysmonCompletedEndpoints) {
             Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Invoke-Command -ScriptBlock { Get-Service '$SysmonName' } -Session $Session"
-            if (( Invoke-Command -ScriptBlock { Get-Service "$SysmonName" } -Session $Session )) {  
+            if (( Invoke-Command -ScriptBlock { Get-Service "$SysmonName" } -Session $Session )) {
                 $ResultsListBox.Items.Insert( 3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Sysmon running on $($Session.ComputerName) - Removing $SysmonExecutable and $Script:SysmonXMLName")
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[!] Sysmon running on $($Session.ComputerName) - Removing $SysmonExecutable and $Script:SysmonXMLName"
                 $PoShEasyWin.Refresh()
                 try {
-                    Invoke-Command -ScriptBlock { 
+                    Invoke-Command -ScriptBlock {
                         param(
                             $TargetFolder,
                             $SysmonExecutable,
                             $SysmonXMLName
                         )
-                        Remove-Item $TargetFolder\$SysmonExecutable -Recurse -Force 
+                        Remove-Item $TargetFolder\$SysmonExecutable -Recurse -Force
                         Remove-Item $TargetFolder\$SysmonXMLName    -Recurse -Force
                     } -Argumentlist $TargetFolder,$SysmonExecutable,$Script:SysmonXMLName -Session $Session
                     Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Remove-Item $TargetFolder\$SysmonExecutable -Force "
                     Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Remove-Item $TargetFolder\$Script:SysmonXMLName -Force "
                     $PoShEasyWin.Refresh()
                 }
-                catch { 
+                catch {
                     $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Cleanup Error:  $($_.Exception)")
                     Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Cleanup Error: $($_.Exception)"
                     $PoShEasyWin.Refresh()
@@ -200,7 +200,7 @@ while ($true) {
     elseif ((Get-Date) -gt ( ($CollectionCommandStartTime).addseconds([int]$script:OptionJobTimeoutSelectionComboBox.text))) {
         $ResultsListBox.Items.Insert(3,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Timeout: $CollectionName ($([int]$script:OptionJobTimeoutSelectionComboBox.Text) Seconds)")
         $PoShEasyWin.Refresh()
-        break 
+        break
     }
 }
 
@@ -211,3 +211,4 @@ $PoShEasyWin.Refresh()
 $script:ProgressBarQueriesProgressBar.Value += 1
 $PoShEasyWin.Refresh()
 Start-Sleep -match 500
+

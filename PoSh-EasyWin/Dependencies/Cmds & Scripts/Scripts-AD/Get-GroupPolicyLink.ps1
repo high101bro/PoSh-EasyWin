@@ -1,6 +1,6 @@
-﻿<#
+<#
 .Description
-    This script creates a report of all group policy links, their locations, and their configurations in the current domain.  
+    This script creates a report of all group policy links, their locations, and their configurations in the current domain.
     SOM = Scope of Management
 
     This GPO report does not list GPO filtering by permissions.
@@ -9,9 +9,9 @@
     -RSAT
     -AD PowerShell module
     -Group Policy module
-    
+
     Credit:
-        Modified and Based on 
+        Modified and Based on
             Ashley McGlone
             Microsoft Premier Field Engineer
             May 2013
@@ -119,4 +119,6 @@ ForEach ($SOM in $gPLinks) {
 }
 
 $report | Select-Object @{name='ScopeOfManagement';expression={$_.name}},@{name='SOM_Nested';expression={$_.name.PadLeft($_.name.length + ($_.depth * 5),'_')}}, DistinguishedName, BlockInheritance, LinkEnabled, Enforced, Precedence, DisplayName, GPOStatus, WMIFilter, GUID, PolicyDN
+
+
 

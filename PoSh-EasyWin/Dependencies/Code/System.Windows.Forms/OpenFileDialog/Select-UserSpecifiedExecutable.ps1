@@ -1,6 +1,6 @@
 function Select-UserSpecifiedExecutable {
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
-    
+
     if (Test-Path "$PoShHome\User Specified Executable And Script") {$ExecAndScriptDir = "$PoShHome\User Specified Executable And Script"}
     else {$ExecAndScriptDir = "$PoShHome"}
 
@@ -9,13 +9,13 @@ function Select-UserSpecifiedExecutable {
             $ExeScriptSelectExecutableFolderBrowserDialog = New-Object System.Windows.Forms.FolderBrowserDialog -Property @{
                 #RootFolder = $PoShHome
                 SelectedPath = $ExecAndScriptDir
-                ShowNewFolderButton = $false            
+                ShowNewFolderButton = $false
             }
             $ExeScriptSelectExecutableFolderBrowserDialog.ShowDialog()
-            
-            if ($($ExeScriptSelectExecutableFolderBrowserDialog.SelectedPath)) { 
-                $script:ExeScriptSelectDirOrFilePath = $ExeScriptSelectExecutableFolderBrowserDialog.SelectedPath 
-        
+
+            if ($($ExeScriptSelectExecutableFolderBrowserDialog.SelectedPath)) {
+                $script:ExeScriptSelectDirOrFilePath = $ExeScriptSelectExecutableFolderBrowserDialog.SelectedPath
+
                 $ExeScriptSelectExecutableTextBox.text = "$(($ExeScriptSelectExecutableFolderBrowserDialog.SelectedPath).split('\')[-1])"
             }
         }
@@ -29,11 +29,13 @@ function Select-UserSpecifiedExecutable {
         }
         $ExeScriptSelectExecutableOpenFileDialog.ShowDialog()
 
-        if ($($ExeScriptSelectExecutableOpenFileDialog.filename)) { 
-            $script:ExeScriptSelectDirOrFilePath = $ExeScriptSelectExecutableOpenFileDialog.filename 
-    
+        if ($($ExeScriptSelectExecutableOpenFileDialog.filename)) {
+            $script:ExeScriptSelectDirOrFilePath = $ExeScriptSelectExecutableOpenFileDialog.filename
+
             $ExeScriptSelectExecutableTextBox.text = "$(($ExeScriptSelectExecutableOpenFileDialog.filename).split('\')[-1])"
         }
-    } 
+    }
 }
+
+
 

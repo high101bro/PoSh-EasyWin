@@ -21,7 +21,7 @@ ExampleFunction -Dir $Directory
 # Files copied or producted on the endpoint(s) have to be manually cleaned up or scripted
 get-process | export-csv c:\windows\temp\processes.csv -notype
 
-# You can use cmd.exe's command switch ('/c') 
+# You can use cmd.exe's command switch ('/c')
 cmd /c netstat > .\netstat.txt
 
 # You can use the call operator ('&')
@@ -38,5 +38,7 @@ if (Test-Path 'c:\windows\temp\procmon.exe') {
     Start-Process -Filepath 'c:\windows\temp\procmon.exe' -ArgumentList @("/AcceptEULA /BackingFile c:\windows\temp\procmon /RunTime 5 /Quiet")
 
 }
+
+
 
 
