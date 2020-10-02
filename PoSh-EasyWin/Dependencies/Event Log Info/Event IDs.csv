@@ -410,3 +410,6 @@ System,Plug and Play Events,6421,Windows 10 [Version 1511],A request was made to
 System,Plug and Play Events,6422,Windows 10 [Version 1511],A device was enabled.
 System,Plug and Play Events,6423,Windows 10 [Version 1511],The installation of this device is forbidden by system policy
 System,Plug and Play Events,6424,Windows 10 [Version 1511],"The installation of this device was allowed, after having previously been forbidden by policy."
+Windows PowerShell,PowerShell Pipeline,800,Windows 10,"Pipeline execution details for command line"
+Microsoft-Windows-PowerShell/Operational,Executing Pipeline,4103,Windows 10,"Pipeline execution details for command line"
+Microsoft-Windows-PowerShell/Operational,Execute a Remote Command,4104,Windows 10,"Pipeline execution details for command line"

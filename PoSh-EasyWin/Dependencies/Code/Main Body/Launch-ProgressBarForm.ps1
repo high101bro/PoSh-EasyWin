@@ -92,6 +92,7 @@ function Launch-ProgressBarForm {
     }
     $script:ProgressBarSelectionForm.Controls.Add($script:ProgressBarMessageLabel)
 
+    $script:ProgressBarSelectionForm.Topmost = $false
     $script:ProgressBarSelectionForm.ShowDialog()
 }
 

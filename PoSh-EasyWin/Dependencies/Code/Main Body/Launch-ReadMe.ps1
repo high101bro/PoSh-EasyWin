@@ -374,6 +374,9 @@ Tips in order to run PoSh-EasyWin:
             Update the Group Policy locally - note that this will update all policies
                 PS> gpupdate /force
                 PS> Invoke-GPUpdate
+        PowerShell Security - Module and Script Block Logging
+            Computer Configuration > Policies > Administrative Templates > Windows Components > Windows PowerShell > 'Set PowerShell Script Module Logging' to 'Enabled'
+            Computer Configuration > Policies > Administrative Templates > Windows Components > Windows PowerShell > 'Set PowerShell Script Block Logging' to 'Enabled'
     Resources:
         PS> Get-Help Unblock-File
         PS> Get-Help Set-ExecutionPolicy
