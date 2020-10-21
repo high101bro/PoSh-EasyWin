@@ -95,6 +95,16 @@ $Acknowledgement = "About PoSh-EasyWin
         Generate the Graphical User Interface
         Create PowerShell Charts
         Network Scanning
+    The following modules are optional to use:
+        PSWriteHTML
+            PoSh-EasyWin can make use of the PSWriteHTML module to generate dynamic graphs
+            If this third party module is installed, it provides another means to represent data in an intuitive manner using a web browser
+            Though this module has been scanned and reviewed, any third party modules may pose a security risk
+            The PSWriteHTML module files have been packaged with PoSh-EasyWin, but are not being used unless its import
+            This selection is persistent for this tool, but can be modified within the settings directory
+            Resources:
+                https://www.powershellgallery.com/packages/PSWriteHTML
+                https://github.com/EvotecIT/PSWriteHTML
     Capabilities include:
         Multiple Queries to multiple endpoints
             Able to switch treeview between Method and Commands
@@ -252,6 +262,24 @@ $Acknowledgement = "About PoSh-EasyWin
         Tool Tip Help
             Mouse hover over various fields to view helpful data is balloon
             For the most part implemented, some areas are missing
+    Visualization of collected data can be done by:
+        Out-GridView : Built into PowerShell 
+            Data is viewed in a light-weight spreadsheet style popup
+            Supports searching and multiple filters
+        PowerShell Terminal/Shell
+            Data is imported into a shell from collected/saved .xml files
+            Basic process of the data is done to provide simple statistics
+            The `$results variable contains the collected data
+        PowerShell Charts
+            Requires PowerShell v3.0+
+            Data can be viewed for numerous key collection types
+            The chart type can be change and manipulated and earily searched 
+            Able to eaily pivot Out-GridView, shell data, and multi-charts
+        Grid Display via PSWriteHTML
+            Requires PowerShell v5.1+
+            Opens data in web brower to view data process to view as node with links in a grid
+            Able to search for data in a spreadsheet format
+            Can export/save images and data
     Collected data is saved to the localhost in the following formats:
         Comma Separated Values (.csv)
         Extensible Markup Language (.xml)
@@ -607,7 +635,9 @@ if (-not $ReadMe){
         Left = $AcknowledgeTreeView.Left
         Top  = $AcknowledgeTreeView.Top + $AcknowledgeTreeView.Height + ($FormScale * 5)
         AutoSize = $true
-        Add_click = { $UserNoticeAcknowledgementForm.Close() }
+        Add_click = { 
+            $UserNoticeAcknowledgementForm.Close() 
+        }
     }
     $UserNoticeAcknowledgementForm.Controls.Add($UserNoticeAcknowledgementCheckCancelButton)
     FormScaleButtonSettings -Button $UserNoticeAcknowledgementCheckCancelButton

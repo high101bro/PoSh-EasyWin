@@ -1,13 +1,22 @@
 "Name","OperatingSystem","CanonicalName","IPv4Address","MACAddress","Notes"
-"DC01","Windows Server 2012 R2 Standard","/Domain Controllers","10.10.10.1","No MAC Available","No Notes Available"
+"DC01","Windows Server 2012 R2 Standard","/Domain Controllers","10.10.10.1","No MAC Available","[Un-Quarantined] at 10/21/2020 01:02:42
+[Quarantined] at 10/21/2020 01:02:18 -- Accessible from 10.10.10.102
+[Quarantined] at 10/21/2020 01:00:58 -- Accessible from 10.10.10.102
+[query] No Notes Available"
 "WSUS","Windows Server 2012 R2 Datacenter","/Servers/Administrative","10.10.10.23","No MAC Available","No Notes Available"
 "APP","Windows Server 2012 R2 Datacenter","/Servers/Administrative","10.10.10.22","No MAC Available","No Notes Available"
 "DC2","Windows Server 2012 R2 Datacenter","/Domain Controllers","10.10.10.21","No MAC Available","No Notes Available"
-"WIN81-01","Windows 8.1 Pro","/US Branch/Guest","10.10.10.101","No MAC Available","[query] No Notes Available"
-"WIN81-03","Windows 8.1 Pro","/US Branch/Guest","10.10.10.101","No MAC Available","[query] No Notes Available"
-"WIN81-02","Windows 8.1 Pro","/US Branch/Guest","10.10.10.101","No MAC Available","[query] No Notes Available"
-"WIN81-04","Windows 8.1 Pro","/US Branch/Guest","10.10.10.101","No MAC Available","[query] No Notes Available"
-"FILE","Windows Server 2012 R2 Datacenter","/Servers/Business","10.10.10.101","No MAC Available","[query] No Notes Available"
+"WIN81-01","Windows 8.1 Pro","/US Branch/Guest","10.10.10.1","No MAC Available","[Un-Quarantined] at 10/21/2020 01:11:14
+[Quarantined] at 10/21/2020 01:09:25 -- Accessible from 10.10.10.102
+[Un-Quarantined] at 10/21/2020 01:04:35
+[Un-Quarantined] at 10/21/2020 01:02:42
+[Quarantined] at 10/21/2020 01:02:18 -- Accessible from 10.10.10.102
+[Quarantined] at 10/21/2020 01:00:58 -- Accessible from 10.10.10.102
+[query] No Notes Available"
+"WIN81-03","Windows 8.1 Pro","/US Branch/Guest","10.10.10.1","No MAC Available","[query] No Notes Available"
+"WIN81-02","Windows 8.1 Pro","/US Branch/Guest","10.10.10.1","No MAC Available","[query] No Notes Available"
+"WIN81-04","Windows 8.1 Pro","/US Branch/Guest","10.10.10.1","No MAC Available","[query] No Notes Available"
+"FILE","Windows Server 2012 R2 Datacenter","/Servers/Business","10.10.10.1","No MAC Available","[query] No Notes Available"
 "Win81-07","Windows 8.1 Pro","/US Branch/Employee","10.10.10.109","No MAC Available","No Notes Available"
 "Win81-08","Windows 8.1 Pro","/US Branch/Employee","10.10.10.110","No MAC Available","No Notes Available"
 "WIN81-05A","Windows 8.1 Pro","/US Branch/Employee","No IP Available","No MAC Available","No Notes Available"
@@ -15,5 +24,5 @@
 "WIN2019-01","Windows Server 2019 Standard Evaluation","/Servers","10.10.10.115","No MAC Available","No Notes Available"
 "WIN81-09","Windows 8.1 Pro","/US Branch/Employee","10.10.10.111","No MAC Available","No Notes Available"
 "WIN81-06","Windows 8.1 Pro","/US Branch/Employee","No IP Available","No MAC Available","No Notes Available"
-"WIN81-05","Windows 8.1 Pro","/US Branch/Guest","10.10.10.101","No MAC Available","[query] No Notes Available"
+"WIN81-05","Windows 8.1 Pro","/US Branch/Guest","10.10.10.1","No MAC Available","[query] No Notes Available"
 "WINXP-01","Windows XP Professional","/Europe Branch/Remote Support","10.10.10.105","No MAC Available","No Notes Available"

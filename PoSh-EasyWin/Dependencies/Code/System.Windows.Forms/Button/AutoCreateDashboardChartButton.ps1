@@ -248,7 +248,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     CommonButtonSettings -Button $OpenXmlResultsButton
     CommonButtonSettings -Button $OpenCsvResultsButton
 
-    CommonButtonSettings -Button $BuildChartButton
     CommonButtonSettings -Button $AutoCreateDashboardChartButton
     CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
 }

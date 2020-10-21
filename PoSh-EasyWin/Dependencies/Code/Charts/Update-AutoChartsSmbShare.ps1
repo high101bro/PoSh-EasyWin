@@ -119,7 +119,6 @@ Elasped Time:  $($Timecount -replace '-','')"
                     $script:ProgressBarFormProgressBar.Value += 1
                 }
             }
-        #}
     }
 
     if ((Test-Path  "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)") -and -not $AutoChartProtocolSMBRadioButton.checked){

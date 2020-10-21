@@ -313,7 +313,6 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
     $AutoCreateDashboardChartButton.BackColor = 'LightGreen'
     $AutoCreateMultiSeriesChartButton.BackColor = 'LightGreen'
-    $BuildChartButton.BackColor = 'LightGreen'
 
 
     if ($CompileResults -eq $true) {

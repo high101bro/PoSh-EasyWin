@@ -14,7 +14,7 @@ Function Completed-QueryExecution {
     if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
         Generate-NewRollingPassword
-        $ResultsListBox.Items.Insert(1,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Rolled Password For Account: $($script:CredentialManagementPasswordRollingAccountTextBox.text)")
+        $ResultsListBox.Items.Insert(1,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Rolled Password For Account: $($script:PoShEasyWinAccount)")
         $TotalElapsedTimeOrder = @(2,3,4)
     }
     else {$TotalElapsedTimeOrder = @(1,2,3)}

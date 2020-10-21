@@ -49,7 +49,7 @@ $ImportEndpointDataFromCsvButtonAdd_MouseHover = {
     Show-ToolTip -Title "Import From CSV File" -Icon "Info" -Message @"
 +  Imports data from a selected Comma Separated Value file
 +  This file can be easily generated with the following command:
-     - Get-ADComputer -Filter * -Properties Name,OperatingSystem,CanonicalName,IPv4Address,MACAddress,Notes | Export-Csv "Domain Computers.csv"
+     - Get-ADComputer -Filter * -Properties Name,OperatingSystem,CanonicalName,IPv4Address,MACAddress | Export-Csv "Domain Computers.csv"
 +  This file should be formatted with the following headers, though the import script should populate default missing data:
      - Name
      - OperatingSystem

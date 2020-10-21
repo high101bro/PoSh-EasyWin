@@ -1,4 +1,43 @@
 ==================================================
+v5.1.6 BETA - 21 Oct 20
+==================================================
+
+Working on new feature that uses PSWriteHTML to generate graph data
+	PSWriteHTML is a module avaiilable to be imported from the PowerShell Gallery
+		PSWriteHTML will be packaged with PoSh-EasyWin 
+		It will be installed offline and imported automatically with this tool
+	PSWriteHTML is the first external module I'm incorporating
+		That said, there's a lot of code I haven't reviewed
+			- It's currently trusted throughout the community
+			- Virus scan safe
+	Generates and displays the data as a webpage
+		Also saves local copy of the data in an .html file
+	Graph data is represented as nodes with links between them
+	Also contains Built-in view of CSV data (collapsed at the top)
+	Currently have options for the following:
+		Active Directory Computers
+		Active Directory Users & Groups
+		Endpoint Network Connections
+		Endpoint PowerShell Sessions
+		Endpoint Console Logins
+		Endpoint Process Data
+		Endpoint CPU Data
+		Endpoint RAM Data
+		Endpoint Storage Data
+	You can select one or more of the above options at once
+		The charts will be combined
+		Note, the more you select, the longer it takes to load
+		Yeah section will have their own spread sheet within the Webpage (collapsed)
+
+Updated some code for the credential rolling to increase reliability
+
+Removed old and unnecessary files
+	Alternate PoSh-EasyWin Images
+	Old PoSh-ACME .ico and Images
+	Removed Volatility program (15 MBs!!!) omg...
+	Remove Sysinternals Strings.exe -- never ended up using it
+	
+==================================================
 v5.1.5 - 30 Sep 20
 ==================================================
 

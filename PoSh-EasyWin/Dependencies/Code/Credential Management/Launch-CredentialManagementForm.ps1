@@ -124,8 +124,8 @@ function Check-RollingAccountPrerequisites {
 
 
     $PrerequisitesCheckSelectCredentialRollingAccount = $false
-    if ((Test-Path "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt")) {
-        if ( $CredentialManagementSelectCredentialRollingAccountTextBox.text -ne (Get-Content "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt")) {
+    if ((Test-Path "$script:CredentialManagementPath\Administrator Account That Updates The Rolling Credentials.txt")) {
+        if ( $CredentialManagementSelectCredentialRollingAccountTextBox.text -ne (Get-Content "$script:CredentialManagementPath\Administrator Account That Updates The Rolling Credentials.txt")) {
             if ($CredentialManagementSelectCredentialRollingAccountTextBox.text -eq ''){
                 $CredentialManagementSelectCredentialRollingAccountButton.Forecolor = 'Red'
                 $CredentialManagementSelectCredentialRollingAccountButton.Text      = "Select Credentials"
@@ -142,7 +142,7 @@ function Check-RollingAccountPrerequisites {
             $CredentialManagementSelectCredentialRollingAccountButton.Text      = "Credentials Selected"
             $PrerequisitesCheckSelectCredentialRollingAccount = $true
         }
-        if ( (Get-Content "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt").length -eq 0 ) { $PrerequisitesCheckSelectCredentialRollingAccount = $false }
+        if ( (Get-Content "$script:CredentialManagementPath\Administrator Account That Updates The Rolling Credentials.txt").length -eq 0 ) { $PrerequisitesCheckSelectCredentialRollingAccount = $false }
         else { $PrerequisitesCheckSelectCredentialRollingAccount = $true }
     }
     else {
@@ -312,8 +312,6 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
         Checked  = $script:RollCredentialsState
     }
     $script:CredentialManagementPasswordRollingAccountCheckbox.Add_Click({
-        $This.Checked | Set-Content "$PoShHome\Settings\Role Credentials Checkbox.txt"
-
         if ($script:CredentialManagementActiveDirectoryTextBox.text -eq '' `
             -or $script:CredentialManagementPasswordRollingAccountTextBox.text -eq '' `
             -or $script:CredentialManagementPasswordDomainNameTextBox.text -eq '' `
@@ -344,7 +342,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
     # Credential Management Password Rolling Account
     #------------------------------------------------
     $CredentialManagementPasswordRollingAccountLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text     = "Enter the account name that will be used for password rolling after queries and remote connections are executed. This does not create the account, it just changes the account's password. You must coordinate with the administrator to create an account like: `"EasyWin`""
+        Text     = "Enter the account name that will be used for password rolling after queries and remote connections are executed. This does not create the account, it just changes the account's password. You must coordinate with the administrator to create an account like: `"JohnDoe`""
         Location = @{ X = $FormScale * 5
                       Y = $script:CredentialManagementPasswordRollingAccountCheckbox.Location.Y + $script:CredentialManagementPasswordRollingAccountCheckbox.Size.Height + $($FormScale * 5) }
         Size     = @{ Width  = $FormScale * 465
@@ -604,7 +602,7 @@ $CredentialManagementPasswordRollingAccountGroupBox = New-Object System.Windows.
             $CredentialName = $null
             $CredentialName = $($CredentialManagementSelectCredentialsOpenFileDialog.filename).split('\')[-1]
             $CredentialManagementSelectCredentialRollingAccountTextBox.text = $CredentialName
-            $CredentialName | Out-File "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt"
+            $CredentialName | Out-File "$script:CredentialManagementPath\Administrator Account That Updates The Rolling Credentials.txt"
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Credentials:  $CredentialName")
             Check-RollingAccountPrerequisites
@@ -734,9 +732,9 @@ $CredentialManagementForm.Controls.Add($CredentialManagementPasswordRollingAccou
 if ((Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
     $CredentialManagementSelectCredentialsTextBox.text = Get-Content "$script:CredentialManagementPath\Specified Credentials.txt"
 }
-if ((Test-Path "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt")) {
-    $CredentialManagementSelectCredentialRollingAccountTextBox.text = Get-Content "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt"
-    $CredentialRoller = Get-Content "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt"
+if ((Test-Path "$script:CredentialManagementPath\Administrator Account That Updates The Rolling Credentials.txt")) {
+    $CredentialManagementSelectCredentialRollingAccountTextBox.text = Get-Content "$script:CredentialManagementPath\Administrator Account That Updates The Rolling Credentials.txt"
+    $CredentialRoller = Get-Content "$script:CredentialManagementPath\Administrator Account That Updates The Rolling Credentials.txt"
     $script:AdminCredsToRollPassword = Import-CliXml "$script:CredentialManagementPath\$CredentialRoller"
 }
 Check-RollingAccountPrerequisites

@@ -98,8 +98,8 @@ $AutoChartsUpdateChartsOptionsPanel = New-Object System.Windows.Forms.Panel -Pro
                 Height = $FormScale * 15
                 Checked = $false
                 Add_Click = {
-                    if ((Test-Path "$PoShHome\Settings\Domain Controller For Dashboards.txt")){
-                        $script:SelectedDomainController = Get-Content "$PoShHome\Settings\Domain Controller For Dashboards.txt"
+                    if ((Test-Path "$PoShHome\Settings\Domain Controller Selected.txt")){
+                        $script:SelectedDomainController = Get-Content "$PoShHome\Settings\Domain Controller Selected.txt"
                         $AutoChartPullNewDataFromChartsRadioButton.text = "Update From Endpoint:  $script:SelectedDomainController"
                     }
                     else {
@@ -109,8 +109,8 @@ $AutoChartsUpdateChartsOptionsPanel = New-Object System.Windows.Forms.Panel -Pro
                     }
                 }
             }
-            if ((Test-Path "$PoShHome\Settings\Domain Controller For Dashboards.txt")){
-                $script:SelectedDomainController = Get-Content "$PoShHome\Settings\Domain Controller For Dashboards.txt"
+            if ((Test-Path "$PoShHome\Settings\Domain Controller Selected.txt")){
+                $script:SelectedDomainController = Get-Content "$PoShHome\Settings\Domain Controller Selected.txt"
                 $AutoChartPullNewDataFromChartsRadioButton.text = "Update From Endpoint:  $script:SelectedDomainController"
                 $AutoChartPullNewDataFromChartsRadioButton.checked = $true
             }
@@ -139,7 +139,7 @@ $AutoChartsUpdateChartsOptionsPanel = New-Object System.Windows.Forms.Panel -Pro
                         switch ($VerifyServerSelection){
                             'Yes' {
                                 $script:SelectedDomainController = $script:ComputerList
-                                $script:SelectedDomainController | Set-Content "$PoShHome\Settings\Domain Controller For Dashboards.txt" -Force
+                                $script:SelectedDomainController | Set-Content "$PoShHome\Settings\Domain Controller Selected.txt" -Force
                                 $AutoChartPullNewDataFromChartsRadioButton.text = "Update From Endpoint:  $script:SelectedDomainController"
                             }
                             'No'  {

@@ -6,12 +6,14 @@ function Compile-CsvFiles {
     Remove-Item -Path "$LocationToSaveCompiledCSV" -Force
     Start-Sleep -Milliseconds 250
 
-    $CompiledCSVs = $null
-    Get-ChildItem "$LocationOfCSVsToCompile" | foreach {
-        if ((Get-Content $PSItem).Length -eq 0) {
-            Remove-Item $PSItem
+    $CompiledCSVs = @()
+    Get-ChildItem "$LocationOfCSVsToCompile" | ForEach-Object {
+        if ((Get-Content $_).Length -eq 0) {
+            # Removes any files that don't contain data
+            Remove-Item $_
         }
         else {
+
             $CompiledCSVs +=  Import-Csv -Path $_
         }
     }

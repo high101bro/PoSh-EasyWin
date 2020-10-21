@@ -19,6 +19,7 @@ public class PInvoke {
     $FormOriginalHeight = 660
     $FormScale = 1
 
+    
     $ResolutionCheckForm = New-Object System.Windows.Forms.Form -Property @{
         Text          = "PoSh-EasyWin - Form Scaling   [$([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)]"
         StartPosition = "CenterScreen"

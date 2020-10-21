@@ -4,7 +4,7 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v.5.1.5                                                        |
+|  Version       |  v.5.1.6 Beta                                                   |
 |  Author        |  Daniel Komnick (high101bro)                                    |
 |  Email         |  high101bro@gmail.com                                           |
 |  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
@@ -13,7 +13,7 @@
 |  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe              |
 |                |  etl2pcapng.exe, WinPmem.exe                                    |
 |                |                                                                 |
-|  Updated       |  30 Sep 2020                                                    |
+|  Updated       |  21 Oct 2020                                                    |
 |  Created       |  21 Aug 2018                                                    |
 
 ***
@@ -29,6 +29,13 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 5. the ability to effortlessly connect to an endpoint via a Remote Desktop, PSSession, PSExec, or explore Event Logs. 
 6. a method to analyze data/results from numerous systems natively without external 3rd party applications.
 
+***
+***
+### New Graph Feature (Beta Release)
+
+| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph02.jpg) | 
+
+New Beta Feature (Work in Progress) - Currently refining code to best display data. Also, looking into other data that is useful to visualize in graphs.
 ***
 ***
 ### Executing Queries

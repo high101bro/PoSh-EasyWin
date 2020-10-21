@@ -19,9 +19,13 @@ function Get-ProcessTree {
         $CommandLine     = $Process.CommandLine
         $WorkingSetSize  = $Process.WorkingSetSize
         $CreationDate    = $([Management.ManagementDateTimeConverter]::ToDateTime($Process.CreationDate))
-        $NetConns        = $NetConnections[$Process.ProcessId]
         $Process         = Get-Process -Id $ProcessID -ComputerName $computerName
-        $AuthenticodeSignature = Get-AuthenticodeSignature $Process.Path
+        try {
+            $AuthenticodeSignature = Get-AuthenticodeSignature $Process.Path
+        }
+        catch {
+            $AuthenticodeSignature = ''
+        }
         $Process `
         | Add-Member NoteProperty ProcessNameIndented "$indent$($process.Name)" -PassThru `
         | Add-Member NoteProperty ProcessId $ProcessId -PassThru -Force `
@@ -30,7 +34,7 @@ function Get-ProcessTree {
         | Add-Member NoteProperty ProcessName $Process.Name -PassThru -Force `
         | Add-Member NoteProperty ParentProcessName $((Get-Process -Id $ParentProcessId -ErrorAction SilentlyContinue).name) -PassThru -Force `
         | Add-Member NoteProperty WorkingSetSize $WorkingSetSize -PassThru -Force `
-        | Add-Member NoteProperty CreationDate $CreationDate -PassThru -Force `
+        | Add-Member NoteProperty CreationDate $CreationDate -PassThru -Force
 
         $ProcessByParent.Item($ProcessID) `
         | ? { $_ } `
@@ -41,6 +45,6 @@ function Get-ProcessTree {
     | ? { $_.ProcessId -ne 0 -and ($_.ProcessId -eq $_.ParentProcessId -or $deadParents -contains $_.ParentProcessId) } `
     | % { Write-ProcessTree $_ }
 }
-Get-ProcessTree -Verbose | select  @{name="PSComputerName";expression={$env:COMPUTERNAME}}, Level, ProcessId, ProcessNameIndented, ParentPID, ParentProcessName, CreationDate, WorkingSetSize, ProcessName, Path, Name
+Get-ProcessTree -Verbose | Select-Object  @{name="PSComputerName";expression={$env:COMPUTERNAME}}, Level, ProcessId, ProcessNameIndented, ParentPID, ParentProcessName, CreationDate, WorkingSetSize, ProcessName, Path, Name
 #Get-ProcessTree -Verbose | select Level, ProcessId, ProcessNameIndented, ParentPID, CreationDate, WorkingSetSize, CommandLine, NetworkConnections, ProcessName | Ft -AutoSize
 

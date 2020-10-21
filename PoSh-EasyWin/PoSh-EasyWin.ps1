@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.5.1.5
+    Version        : v.5.1.6 Beta
 
     Requirements   : PowerShell v3+ for PowerShell Charts
                    : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
@@ -29,7 +29,7 @@
                      etl2pcapng.exe, WinPmem.exe
                      wKillcx is a small command-line utility to close any TCP connection under Windows XP/Vista/Seven as well as Windows Server 2003/2008. The source code (assembly language) is included with the binary.
 
-    Updated        : 30 Sep 2020
+    Updated        : 21 Oct 2020
     Created        : 21 Aug 2018
 
     Author         : Daniel Komnick (high101bro)
@@ -253,6 +253,7 @@ $ErrorActionPreference = "SilentlyContinue"
 # Useful if multiple instances of PoSh-EasyWin are launched and you want to use the Abort/Reload or Exit Tool buttons on the corrent instance
 $InitialScriptLoadTime = Get-Date
 
+
 # Location PoSh-EasyWin will save files
 $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -parent $MyInvocation.MyCommand.Definition
     # Creates settings directory
@@ -331,7 +332,6 @@ else { $script:Credential = $null }
 # Creates Shortcut for PoSh-EasyWin on Desktop
 $FileToShortCut      = $($myinvocation.mycommand.definition)
 $ShortcutDestination = "C:\Users\$env:USERNAME\Desktop\PoSh-EasyWin.lnk"
-
 if (-not (Test-Path $ShortcutDestination)) {
     $WScriptShell = New-Object -ComObject WScript.Shell
     $Shortcut = $WScriptShell.CreateShortcut($ShortcutDestination)
@@ -402,26 +402,51 @@ else {
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "===================================================================================================="
 }
 
+
 # These are the common settings for buttons in a function
 . "$Dependencies\Code\Main Body\CommonButtonSettings.ps1"
 
 
 # Scales the PoSh-EasyWin GUI as desired by the user
 . "$Dependencies\Code\Main Body\Launch-FormScaleGUI.ps1"
-
 if (-not (Test-Path "$PoShSettings\Form Scaling Modifier.txt")){
     Launch-FormScaleGUI
     if ($script:ResolutionSetOkay) {$null}
     else {exit}
     $FormScale = $script:ResolutionCheckScalingTrackBar.Value / 10
 }
-else { $FormScale = [decimal](Get-Content "$PoShSettings\Form Scaling Modifier.txt") }
+else { 
+    $FormScale = [decimal](Get-Content "$PoShSettings\Form Scaling Modifier.txt") 
+}
 
 
 # Displays essential info about the tool, best practies, etc - opens immedately during first time launch, and can be found within the readme tab
 . "$Dependencies\Code\Main Body\Launch-ReadMe.ps1"
 if (-not (Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) { Launch-ReadMe }
 
+
+# Check for, and prompt to install the PSWriteHTML module
+if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt") -and -not (Test-Path "$PoShHome\Settings\PSWriteHTML Module Install.txt")) {
+    if (-not (Get-Module -ListAvailable -Name PSWriteHTML)) {
+        $InstallPSWriteHTML = [System.Windows.Forms.MessageBox]::Show("PoSh-EasyWin can make use of the PSWriteHTML module to generate dynamic graphs. If this third party module is installed, it provides another means to represent data in an intuitive manner using a web browser. Though this module has been scanned and reviewed, any third party modules may pose a security risk. The PSWriteHTML module files have been packaged with PoSh-EasyWin, but are not being used unless its import. More information can be located at the following:
+    https://www.powershellgallery.com/packages/PSWriteHTML
+    https://github.com/EvotecIT/PSWriteHTML
+
+This selection is persistent for this tool, but can be modified within the settings directory. Do you want to import the PSWriteHTML module?","Install PSWriteHTML Module",'YesNo',"Info")
+        switch ($InstallPSWriteHTML) {
+            'Yes' {
+                Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Opted to import the PSWriteHTML module"
+                'Import PSWriteHTML: Yes' | Set-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt"
+            }
+            'No' { 
+                'Import PSWriteHTML: No' | Set-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt"
+             }
+        }
+    }
+}
+if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
+    Import-Module -Name "$Dependencies\Modules\PSWriteHTML\0.0.110\PSWriteHTML.psm1" -Force
+}
 
 # Progress Bar Load Screen Code
 . "$Dependencies\Code\Main Body\Launch-ProgressBarForm.ps1"
@@ -466,14 +491,6 @@ $ScriptBlockForGuiLoadAndProgressBar = {
 # The Launch-ProgressBarForm.ps1 is topmost upon loading to ensure it's displayed intially, but is then able to be move unpon
 $ResolutionCheckForm.topmost = $false
 
-if (Test-Path "$PoShHome\Settings\Role Credentials Checkbox.txt") {
-    # The follow value is used to update the $script:CredentialManagementPasswordRollingAccountCheckbox.Checked
-    # This variable also maintains the state of Rolling Credentials
-    if ((Get-Content "$PoShHome\Settings\Role Credentials Checkbox.txt") -match 'true') {$script:RollCredentialsState = $true}
-    else {$script:RollCredentialsState = $false}
-}
-else {$script:RollCredentialsState = $False}
-$script:AdminCredsToRollPasswordState = $false
 
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
@@ -4834,26 +4851,27 @@ $ResultsSectionLabel = New-Object System.Windows.Forms.Label -Property @{
 $MainCenterMainTab.Controls.Add($ResultsSectionLabel)
 
 
-. "$Dependencies\Code\System.Windows.Forms\Button\BuildChartButton.ps1"
-$BuildChartButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Build Charts"
+. "$Dependencies\Code\System.Windows.Forms\Button\PSWriteHTMLButton.ps1"
+$PSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
+    Text     = "Graph Data"
     Location = @{ X = $ResultsSectionLabel.Location.X
                   Y = $ResultsSectionLabel.Location.Y + $ResultsSectionLabel.Size.Height }
     Size     = @{ Width  = $FormScale * 115
                   Height = $FormScale * 22 }
-    Add_Click      = $BuildChartButtonAdd_Click
-    Add_MouseHover = $BuildChartButtonAdd_MouseHover
+    Add_Click      = $PSWriteHTMLButtonAdd_Click
+    Add_MouseHover = $PSWriteHTMLButtonAdd_MouseHover
 }
-$MainCenterMainTab.Controls.Add($BuildChartButton)
-CommonButtonSettings -Button $BuildChartButton
+$MainCenterMainTab.Controls.Add($PSWriteHTMLButton)
+CommonButtonSettings -Button $PSWriteHTMLButton
+#if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'No') { $PSWriteHTMLButton.enabled = $false }
 
 
 . "$Dependencies\Code\Charts\Generate-AutoChartsCommand.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\AutoCreateMultiSeriesChartButton.ps1"
 $AutoCreateMultiSeriesChartButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Multi-Series Charts"
-    Location = @{ X = $BuildChartButton.Location.X + $BuildChartButton.Size.Width + $($FormScale * 5)
-                  Y = $BuildChartButton.Location.Y }
+    Location = @{ X = $PSWriteHTMLButton.Location.X + $PSWriteHTMLButton.Size.Width + $($FormScale * 5)
+                  Y = $PSWriteHTMLButton.Location.Y }
     Size     = @{ Width  = $FormScale * 115
                   Height = $FormScale * 22 }
     Add_Click = $AutoCreateMultiSeriesChartButtonAdd_Click
@@ -4902,7 +4920,7 @@ CommonButtonSettings -Button $AutoCreateDashboardChartButton
 . "$Dependencies\Code\System.Windows.Forms\Button\RetrieveFilesButton.ps1"
 $RetrieveFilesButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Retrieve Files"
-    Location = @{ X = $BuildChartButton.Location.X
+    Location = @{ X = $PSWriteHTMLButton.Location.X
                   Y = $AutoCreateMultiSeriesChartButton.Location.Y + $AutoCreateMultiSeriesChartButton.Size.Height + $($FormScale * 5) }
     Size     = @{ Width  = $FormScale * 115
                   Height = $FormScale * 22 }
@@ -5445,7 +5463,7 @@ $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     HideSelection     = $false
     #not working #AfterSelect       = {( 1 | ogv )}
     ImageList         = $ComputerTreeViewImageList
-    ImageIndex        = -1
+    ImageIndex        = 1
 }
 $script:ComputerTreeView.Sort()
 $PoShEasyWin.Controls.Add($script:ComputerTreeView)

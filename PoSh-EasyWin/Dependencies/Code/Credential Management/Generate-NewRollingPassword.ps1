@@ -15,46 +15,44 @@ abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
 "@
 
     $script:CredentialManagementGeneratedRollingPasswordTextBox.text = $GeneratedPassword
-    $SecurePassword         = ConvertTo-SecureString $GeneratedPassword -AsPlainText -Force
-    $PoShEasyWinAccount     = $script:CredentialManagementPasswordRollingAccountTextBox.text
-    $PoShEasyWinDomainName  = $script:CredentialManagementPasswordDomainNameTextBox.text
+    $SecurePassword = ConvertTo-SecureString $GeneratedPassword -AsPlainText -Force
+    
+    if ($script:CredentialManagementPasswordRollingAccountTextBox.text) {
+        $script:PoShEasyWinAccount = $script:CredentialManagementPasswordRollingAccountTextBox.text
+    }
+    if ($script:CredentialManagementPasswordDomainNameTextBox.text) {
+        $script:PoShEasyWinDomainName = $script:CredentialManagementPasswordDomainNameTextBox.text
+        if ($script:PoShEasyWinDomainName -ne '') {
+            $script:PoShEasyWinDomainNameAndAccount = "$($script:PoShEasyWinAccount)@$($script:PoShEasyWinDomainName)"
+        }
+        else {
+            $script:PoShEasyWinDomainNameAndAccount = "$script:PoShEasyWinAccount"
+        }
+    }
+    if ($script:CredentialManagementPasswordDomainNameTextBox.text) {
+        $script:ActiveDirectoryServer = $script:CredentialManagementActiveDirectoryTextBox.text
+    }
 
-    if ($PoShEasyWinDomainName -ne '') {
-        $PoShEasyWinDomainNameAndAccount = "$($PoShEasyWinDomainName)\$($PoShEasyWinAccount)"
-    }
-    else {
-        $PoShEasyWinDomainNameAndAccount = $PoShEasyWinAccount
-    }
+
     $script:credential = $null
-    $script:Credential = New-Object System.Management.Automation.PSCredential("$PoShEasyWinDomainNameAndAccount",$SecurePassword)
+    $script:Credential = New-Object System.Management.Automation.PSCredential($script:PoShEasyWinDomainNameAndAccount,$SecurePassword)
+
     # Rolls the PoSh-EasyWin Account Credential
-    $ActiveDirectoryServer = $script:CredentialManagementActiveDirectoryTextBox.text
 
-    if ($script:CredentialManagementPasswordRollingAccountCheckbox.checked) {
-        $CredentialRoller = Get-Content "$script:CredentialManagementPath\Specified Credentials To Roll Credentials.txt"
-        $script:AdminCredsToRollPassword = Import-CliXml "$script:CredentialManagementPath\$CredentialRoller"
-        Invoke-Command -ComputerName $ActiveDirectoryServer -Credential $script:AdminCredsToRollPassword -ScriptBlock {
-            param(
-                $PoShEasyWinAccount,
-                $SecurePassword
-            )
-            Set-ADAccountPassword -Identity $PoShEasyWinAccount -Reset -NewPassword $SecurePassword
-        } -ArgumentList @($PoShEasyWinAccount,$SecurePassword)
-    }
-    else {
-        Invoke-Command -ComputerName $ActiveDirectoryServer -ScriptBlock {
-            param(
-                $PoShEasyWinDomainNameAndAccount,
-                $SecurePassword
-            )
-            Set-ADAccountPassword -Identity $PoShEasyWinDomainNameAndAccount -Reset -NewPassword $SecurePassword
-        } -ArgumentList @($PoShEasyWinDomainNameAndAccount,$SecurePassword)
-    }
+    $CredentialRoller = Get-Content "$script:CredentialManagementPath\Administrator Account That Updates The Rolling Credentials.txt"
+    $script:AdminCredsToRollPassword = Import-CliXml "$script:CredentialManagementPath\$CredentialRoller"
+    Invoke-Command -ComputerName $script:ActiveDirectoryServer -Credential $script:AdminCredsToRollPassword -ScriptBlock {
+        param(
+            $PoShEasyWinAccount,
+            $SecurePassword
+        )
+        Set-ADAccountPassword -Identity $PoShEasyWinAccount -Reset -NewPassword $SecurePassword
+    } -ArgumentList @($script:PoShEasyWinAccount,$SecurePassword)
 
-    $ResultsListBox.Items.Insert(1,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Rolled Password For Account: $($script:CredentialManagementPasswordRollingAccountTextBox.text)")
+    $ResultsListBox.Items.Insert(1,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Rolled Password For Account: $($script:PoShEasyWinAccount)")
     $PoShEasyWin.Refresh()
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Generated Secure Password ($NumberOfCharacters Random Characters) and Rolled Credentials"
-    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message " - Invoke-Command -ComputerName $ActiveDirectoryServer -ScriptBlock { param($PoShEasyWinDomainNameAndAccount,$SecurePassword) Set-ADAccountPassword -Identity $PoShEasyWinDomainNameAndAccount -Reset -NewPassword $SecurePassword } -ArgumentList @($PoShEasyWinDomainNameAndAccount,$SecurePassword)"
+    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message " - Invoke-Command -ComputerName $script:ActiveDirectoryServer -ScriptBlock { param($script:PoShEasyWinDomainNameAndAccount,$SecurePassword) Set-ADAccountPassword -Identity $script:PoShEasyWinDomainNameAndAccount -Reset -NewPassword $SecurePassword } -ArgumentList @($script:PoShEasyWinDomainNameAndAccount,$SecurePassword)"
 
 
 
@@ -62,16 +60,17 @@ abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
     # The Export-Clixml cmdlet encrypts credential objects by using the Windows Data Protection API.
     # The encryption ensures that only your user account on only that computer can decrypt the contents of the
     # credential object. The exported CLIXML file can't be used on a different computer or by a different user.
-    if ($PoShEasyWinDomainName -ne '') {
-        $PoShEasyWinDomainNameAndAccount = "$($PoShEasyWinDomainName)-$($PoShEasyWinAccount)"
+    if ($script:PoShEasyWinDomainName -ne '') {
+        $script:PoShEasyWinDomainNameAndAccount = "$($script:PoShEasyWinAccount)@$($script:PoShEasyWinDomainName)"
     }
     else {
-        $PoShEasyWinDomainNameAndAccount = $PoShEasyWinAccount
+        $script:PoShEasyWinDomainNameAndAccount = $script:PoShEasyWinAccount
     }
 
     $DateTime = "{0:yyyy-MM-dd @ HHmm.ss}" -f (Get-Date)
-    Move-Item -Path "$script:CredentialManagementPath\$PoShEasyWinDomainNameAndAccount (*).xml" -Destination "$script:CredentialManagementPath\Rolled Credentials"
-    $CredentialName = "$PoShEasyWinDomainNameAndAccount ($DateTime).xml"
+    Move-Item -Path "$script:CredentialManagementPath\$script:PoShEasyWinDomainNameAndAccount (*).xml" -Destination "$script:CredentialManagementPath\Rolled Credentials"
+    $CredentialName = "$script:PoShEasyWinDomainNameAndAccount ($DateTime).xml"
+
     $script:Credential | Export-Clixml -path "$script:CredentialManagementPath\$CredentialName"
 
     $CredentialManagementSelectCredentialsTextBox.text = $CredentialName
