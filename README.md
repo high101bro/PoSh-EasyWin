@@ -35,7 +35,8 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 
 | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph02.jpg) | 
 
-New Beta Feature (Work in Progress) - Currently refining code to best display data. Also, looking into other data that is useful to visualize in graphs.
+New Beta Feature (Work in Progress) - Currently refining code to best display data. Also, looking into other data that is useful to visualize in graphs. You're able to view data collected from endpoints or from Active Directory and their relationships as well as investigate more details by looking at the accompanying data within the spreadsheets in the browser.
+
 ***
 ***
 ### Executing Queries
