@@ -39,15 +39,17 @@ $PSWriteHTMLButtonAdd_Click = {
         'Endpoint Network Connections',
         'Endpoint Console Logons',
         'Endpoint PowerShell Sessions',
-        'Endpoint Process Data',
-        'Endpoint Storage Data',
+        'Endpoint SMB Server Connections',
+        'Endpoint CPU Data',
         'Endpoint RAM Data',
-        'Endpoint CPU Data'
+        'Endpoint SMB Shares',
+        'Endpoint Storage Data',
+        'Endpoint Process Data'
     )
     foreach ( $Query in $PSWriteHTMLCheckedBoxList ) { $PSWriteHTMLCheckedListBox.Items.Add($Query) }
     $PSWriteHTMLForm.Controls.Add($PSWriteHTMLCheckedListBox)
 
-
+    
     $PSWriteHTMLGraphDataButton = New-Object -TypeName System.Windows.Forms.Button -Property @{
         Text   = "Collect and Graph Data"
         Left   = $FormScale * 5
@@ -395,7 +397,6 @@ $PSWriteHTMLButtonAdd_Click = {
                 | Add-Member NoteProperty 'Level'                  $level                    -PassThru -Force `
                 | Add-Member NoteProperty 'ProcessID'              $ProcessID                -PassThru -Force `
                 | Add-Member NoteProperty 'ProcessName'            $_.Name                   -PassThru -Force `
-                | Add-Member NoteProperty 'ProcessNameIndented'    "$indent$($process.Name)" -PassThru -Force `
                 | Add-Member NoteProperty 'ParentProcessID'        $ParentProcessID          -PassThru -Force `
                 | Add-Member NoteProperty 'ParentProcessName'      $ParentProcessName        -PassThru -Force `
                 | Add-Member NoteProperty 'CreationDate'           $CreationDate             -PassThru -Force `
@@ -426,13 +427,13 @@ $PSWriteHTMLButtonAdd_Click = {
             | ForEach-Object { Write-ProcessTree $_ }
         }
         Get-ProcessTree -Processes $Processes | Select-Object `
-        ProcessName, Level, ProcessNameIndented, ProcessID, ParentProcessName, ParentProcessID, ServiceInfo,`
-        StartTime, Duration, CPU, TotalProcessorTime, `
-        NetworkConnections, NetworkConnectionCount, CommandLine, Path, `
-        WorkingSet, MemoryUsage, `
-        MD5Hash, SignerCertificate, StatusMessage, SignerCompany, Company, Product, ProductVersion, Description, `
-        Modules, ModuleCount, Threads, ThreadCount, Handle, Handles, HandleCount, `
-        Owner, OwnerSID, `
+        ProcessName, Level, ProcessID, ParentProcessName, ParentProcessID, ServiceInfo,
+        StartTime, Duration, CPU, TotalProcessorTime,
+        NetworkConnections, NetworkConnectionCount, CommandLine, Path,
+        WorkingSet, MemoryUsage,
+        MD5Hash, SignerCertificate, StatusMessage, SignerCompany, Company, Product, ProductVersion, Description,
+        Modules, ModuleCount, Threads, ThreadCount, Handle, Handles, HandleCount,
+        Owner, OwnerSID,
         @{n='CollectionType';e={'ProcessData'}}
     }
 
@@ -475,8 +476,8 @@ $PSWriteHTMLButtonAdd_Click = {
             }
             $Connection
         }
-        $NetStat | Select-Object -Property PSComputerName, Protocol, LocalAddress, LocalPort, RemoteAddress, RemotePort, `
-        State, Name, ProcessName, OwningProcess, ProcessId, ParentProcessId, MD5, ExecutablePath, CommandLine, `
+        $NetStat | Select-Object -Property PSComputerName, Protocol, LocalAddress, LocalPort, RemoteAddress, RemotePort,
+        State, Name, ProcessName, OwningProcess, ProcessId, ParentProcessId, MD5, ExecutablePath, CommandLine,
         @{n='CollectionType';e={'NetworkConnections'}}
     }
 
@@ -490,7 +491,7 @@ $PSWriteHTMLButtonAdd_Click = {
     #######################
     $PowerShellSessionsScriptBlock = { 
         Get-WSManInstance -ResourceURI Shell -Enumerate |  `
-        Select-Object @{n='PSComputerName';e={$env:Computername}}, ClientIP, Owner, ProcessId, State, ShellRunTime, ShellInactivity, `
+        Select-Object @{n='PSComputerName';e={$env:Computername}}, ClientIP, Owner, ProcessId, State, ShellRunTime, ShellInactivity,
         @{n='CollectionType';e={'PowerShellSessions'}} 
     }
 
@@ -559,6 +560,42 @@ $PSWriteHTMLButtonAdd_Click = {
             @{n='CollectionType';e={'CPUData'}} 
     }
 
+    
+
+
+    #####################################
+    # SMB Shares - Server Message Block #
+    #####################################
+    $SMBShareScriptBlock = {
+        Get-SMBShare | 
+            Select-Object -Property Name, Scope, Description, Path,
+            @{n='PSComputerName';e={$env:Computername}},
+            @{n='CollectionType';e={'SMBShare'}} 
+        Get-SmbShare | 
+            ForEach-Object {
+                Get-SmbShareAccess -Name $_.Name |
+                Add-Member -MemberType NoteProperty -Name Path -Value $_.Path -PassThru
+            } | 
+            Select-Object -Property Name, Scope, Path, AccountName, AccessControlType, AccessRight,
+            @{n='PSComputerName';e={$env:Computername}},
+            @{n='CollectionType';e={'SMBShareAccess'}} 
+    }
+
+    #################################################
+    # SMB Server Connections - Server Message Block #
+    #################################################    
+    $SMBServerConnectionsScriptBlock = {
+        $ShareDictionary = @{}
+        Get-SmbShare | ForEach-Object {$ShareDictionary[$_.Name] = $_.Path}
+
+        Get-WmiObject Win32_ServerConnection | 
+            Select-Object -Property ComputerName, UserName, ShareName, ActiveTime, NumberOfFiles, NumberOfUsers,
+            @{n='Path';e={$ShareDictionary[$_.ShareName]}},
+            @{n='PSComputerName';e={$env:Computername}},
+            @{n='CollectionType';e={'SMBServerConnections'}} 
+    }
+
+
 
 
 
@@ -624,6 +661,15 @@ $PSWriteHTMLButtonAdd_Click = {
         $EndpointDataCPUData = Invoke-Command -ScriptBlock $CPUDataScriptBlock -Session $PSSession
         $AllGraphData += $EndpointDataCPUData
     }
+    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint SMB Shares') {
+        $EndpointDataSMBShare = Invoke-Command -ScriptBlock $SMBShareScriptBlock -Session $PSSession
+        $AllGraphData += $EndpointDataSMBShare
+    }
+    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint SMB Server Connections') {
+        $EndpointDataSMBServerConnections = Invoke-Command -ScriptBlock $SMBServerConnectionsScriptBlock -Session $PSSession
+        $AllGraphData += $EndpointDataSMBServerConnections
+    }
+    
 
 
 
@@ -646,18 +692,18 @@ $PSWriteHTMLButtonAdd_Click = {
     ##########################################################################################################################
 
     $ActiveDirectoryComputersScriptBlock = { 
-        Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, IPv6Address, MACAddress,`
+        Get-ADComputer -Filter * -Properties Name, OperatingSystem, CanonicalName, IPv4Address, IPv6Address, MACAddress,
         OperatingSystemServicePack, OperatingSystemHotfix, Enabled, LogonCount, LastLogonDate, WhenCreated, WhenChanged, Location, DistinguishedName `
-        | Select-Object Name, OperatingSystem, CanonicalName, IPv4Address, IPv6Address, MACAddress,`
-        OperatingSystemServicePack, OperatingSystemHotfix, Enabled, LogonCount, LastLogonDate, WhenCreated, WhenChanged, Location, DistinguishedName, `
+        | Select-Object Name, OperatingSystem, CanonicalName, IPv4Address, IPv6Address, MACAddress,
+        OperatingSystemServicePack, OperatingSystemHotfix, Enabled, LogonCount, LastLogonDate, WhenCreated, WhenChanged, Location, DistinguishedName,
         @{n='CollectionType';e={'ADComputers'}} 
     } 
     $ActiveDirectoryUsersScriptBlock = { 
-        $ADUsers = Get-ADUser -Filter * -Properties Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, `
+        $ADUsers = Get-ADUser -Filter * -Properties Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount,
         PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, SamAccountName
         
-        $ADUsers | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, `
-        PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, SamAccountName, `
+        $ADUsers | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet,
+        PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, SamAccountName,
         @{n='CollectionType';e={'ADUsers'}}
 
         $ADUserList = $ADUsers | Select-Object -Property SamAccountName, SID
@@ -780,7 +826,7 @@ $PSWriteHTMLButtonAdd_Click = {
 
 
 
-
+    $AllGraphData | Out-GridView -Title 'Select and Filter Out Graph Data' -PassThru -OutVariable AllGraphData
 
 
 
@@ -828,6 +874,16 @@ $PSWriteHTMLButtonAdd_Click = {
             if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint CPU Data') {
                 New-HTMLSection -HeaderText 'CPU Data - Spreadsheet' -CanCollapse -Collapsed {
                     New-HTMLTable -DataTable ($EndpointDataCPUData)
+                }
+            }
+            if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint SMB Shares') {
+                New-HTMLSection -HeaderText 'SMB Share - Spreadsheet' -CanCollapse -Collapsed {
+                    New-HTMLTable -DataTable ($EndpointDataSMBShare)
+                }
+            }
+            if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint SMB Server Connections') {
+                New-HTMLSection -HeaderText 'SMB Server Connections - Spreadsheet' -CanCollapse -Collapsed {
+                    New-HTMLTable -DataTable ($EndpointDataSMBServerConnections)
                 }
             }
             if ($PSWriteHTMLCheckedItemsList -contains 'Active Directory Computers') {
@@ -879,7 +935,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                             -Label  $object.PSComputerName `
                                             -To     $object.LocalAddress `
                                             -Image  "$Dependencies\Images\Computer.jpg" `
-                                            -Size   25 `
+                                            -Size   35 `
                                             -FontSize   20 `
                                             -FontColor  Blue `
                                             -LinkColor  DarkBlue `
@@ -909,11 +965,11 @@ $PSWriteHTMLButtonAdd_Click = {
                                         -ColorBackground  LightSteelBlue `
                                         -LinkColor        Blue `
                                         -ArrowsToEnabled
-                                    if ($object.RemoteAddress -eq $script:PoShEasyWinIPAddress) {
+                                    if ($object.RemoteAddress -ne $script:PoShEasyWinIPAddress)  {
                                         New-DiagramNode `
                                             -Label  "$($object.RemoteAddress):$($object.RemotePort)" `
                                             -To     $object.RemoteAddress `
-                                            -Image  "$Dependencies\Images\favicon.ico" `
+                                            -shape  dot `
                                             -size   10 `
                                             -ColorBorder      Blue `
                                             -ColorBackground  LightSteelBlue `
@@ -923,8 +979,8 @@ $PSWriteHTMLButtonAdd_Click = {
                                     else {
                                         New-DiagramNode `
                                             -Label  "$($object.RemoteAddress):$($object.RemotePort)" `
-                                            -To     $object.RemoteAddress `
-                                            -shape  dot `
+                                            -To     "[$($object.PSComputerName)]`nPoSh-EasyWin`n$($object.RemoteAddress)" `
+                                            -Image  "$Dependencies\Images\favicon.ico" `
                                             -size   10 `
                                             -ColorBorder      Blue `
                                             -ColorBackground  LightSteelBlue `
@@ -946,7 +1002,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                         -Label  $object.PSComputerName `
                                         -To     "[$($Object.PSComputerName)]`n$($object.ProcessName)`nPID:$($object.ProcessID)`n($($object.State))" `
                                         -Image  "$Dependencies\Images\Computer.jpg" `
-                                        -Size   25 `
+                                        -Size   35 `
                                         -FontSize   20 `
                                         -FontColor  Blue `
                                         -LinkColor Orange `
@@ -973,7 +1029,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                             -Label  $object.PSComputerName `
                                             -To     $object.LocalAddress `
                                             -Image  "$Dependencies\Images\Computer.jpg" `
-                                            -Size   25 `
+                                            -Size   35 `
                                             -FontSize   20 `
                                             -FontColor  Blue `
                                             -LinkColor  DarkViolet `
@@ -1033,7 +1089,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                         -Label  $object.PSComputerName `
                                         -To     "[$($object.PSComputerName)]`n$($object.ProcessName)`nPID:$($object.ProcessID)" `
                                         -Image  "$Dependencies\Images\Computer.jpg" `
-                                        -Size   25 `
+                                        -Size   35 `
                                         -FontSize   20 `
                                         -FontColor  Blue `
                                         -LinkColor  Pink `
@@ -1159,27 +1215,28 @@ $PSWriteHTMLButtonAdd_Click = {
                                     -Label  $object.PSComputerName `
                                     -To     "[$($object.PSComputerName)]`nState: $($object.State)`n($($object.LogonTime))" `
                                     -Image  "$Dependencies\Images\Computer.jpg" `
-                                    -Size   25 `
+                                    -Size   35 `
                                     -FontSize   20 `
                                     -FontColor  Blue `
                                     -ArrowsFromEnabled
                                 New-DiagramNode `
                                     -Label  "[$($object.PSComputerName)]`nState: $($object.State)`n($($object.LogonTime))" `
-                                    -To     "[$($object.PSComputerName)]`nConsole Logon`nState: $($object.State)" `
-                                    -Image  "$Dependencies\Images\Clock.jpg" `
-                                    -Size   25 `
-                                    -ArrowsFromEnabled
-                                New-DiagramNode `
-                                    -Label  "[$($object.PSComputerName)]`nConsole Logon`nState: $($object.State)" `
                                     -To     "[$($object.PSComputerName)]`nAccount: $($object.UserName)" `
-                                    -Image  "$Dependencies\Images\Console.jpg" `
-                                    -Size   25 `
+                                    -Image  "$Dependencies\Images\Clock.jpg" `
+                                    -Size   20 `
                                     -ArrowsFromEnabled
                                 New-DiagramNode `
                                     -Label  "[$($object.PSComputerName)]`nAccount: $($object.UserName)" `
+                                    -To     "[$($object.PSComputerName)]`nConsole Logon`nState: $($object.State)" `
                                     -Image  "$Dependencies\Images\User.jpg" `
                                     -Size   20 `
                                     -ArrowsFromEnabled
+                                New-DiagramNode `
+                                    -Label  "[$($object.PSComputerName)]`nConsole Logon`nState: $($object.State)" `
+                                    -Image  "$Dependencies\Images\Console.jpg" `
+                                    -Size   25 `
+                                    -ArrowsFromEnabled
+
                             }
 
 
@@ -1195,7 +1252,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                     -Label  $object.PSComputerName `
                                     -To     "[$($object.PSComputerName)]`nAccount: $($object.Owner)`nPID: $($object.ProcessID)" `
                                     -Image  "$Dependencies\Images\Computer.jpg" `
-                                    -Size   25 `
+                                    -Size   35 `
                                     -FontSize   20 `
                                     -FontColor  Blue `
                                     -LinkColor  Blue `
@@ -1213,7 +1270,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                         -Label  "[$($object.PSComputerName)]`nPowerShell Session`nState: $($object.State)`nPID: $($object.ProcessID)" `
                                         -To     "[$($object.PSComputerName)]`nState: $($object.State)`n($($object.ShellRunTime))" `
                                         -Image  "$Dependencies\Images\PowerShell.jpg" `
-                                        -Size   25 `
+                                        -Size   20 `
                                         -ColorBorder Green `
                                         -LinkColor   Blue `
                                         -ArrowsToEnabled
@@ -1223,7 +1280,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                         -Label  "$($object.State)`nPID: $($object.ProcessID)" `
                                         -To     "[$($object.PSComputerName)]`nState: $($object.State)`n($($object.ShellRunTime))" `
                                         -Image  "$Dependencies\Images\PowerShell.jpg" `
-                                        -Size   25 `
+                                        -Size   20 `
                                         -ColorBorder Orange `
                                         -LinkColor   Blue `
                                         -ArrowsToEnabled
@@ -1233,22 +1290,36 @@ $PSWriteHTMLButtonAdd_Click = {
                                         -Label  "$($object.State)`nPID: $($object.ProcessID)" `
                                         -To     "[$($object.PSComputerName)]`nState: $($object.State)`n($($object.ShellRunTime))" `
                                         -Image  "$Dependencies\Images\PowerShell.jpg" `
-                                        -Size   25 `
+                                        -Size   20 `
                                         -LinkColor  Blue `
                                         -ArrowsToEnabled
                                 }
-                                New-DiagramNode `
-                                    -Label  "[$($object.PSComputerName)]`nState: $($object.State)`n($($object.ShellRunTime))" `
-                                    -To     "$($object.ClientIP)" `
-                                    -Image  "$Dependencies\Images\Clock.jpg" `
-                                    -Size   25 `
-                                    -LinkColor  Blue `
-                                    -ArrowsToEnabled
-
-                                New-DiagramNode `
-                                    -Label  $object.ClientIP `
-                                    -Image  "$Dependencies\Images\NIC.jpg" `
-                                    -Size   20
+                                if ($object.ClientIP -ne $script:PoShEasyWinIPAddress) {
+                                    New-DiagramNode `
+                                        -Label  "[$($object.PSComputerName)]`nState: $($object.State)`n($($object.ShellRunTime))" `
+                                        -To     "$($object.ClientIP)" `
+                                        -Image  "$Dependencies\Images\Clock.jpg" `
+                                        -Size   20 `
+                                        -LinkColor  Blue `
+                                        -ArrowsToEnabled
+                                    New-DiagramNode `
+                                        -Label  $object.ClientIP `
+                                        -Image  "$Dependencies\Images\NIC.jpg" `
+                                        -size   20
+                                }
+                                else {
+                                    New-DiagramNode `
+                                        -Label  "[$($object.PSComputerName)]`nState: $($object.State)`n($($object.ShellRunTime))" `
+                                        -To     "[$($object.PSComputerName)]`nPoSh-EasyWin`n$($object.ClientIP)" `
+                                        -Image  "$Dependencies\Images\Clock.jpg" `
+                                        -Size   20 `
+                                        -LinkColor  Blue `
+                                        -ArrowsToEnabled
+                                    New-DiagramNode `
+                                        -Label  "[$($object.PSComputerName)]`nPoSh-EasyWin`n$($object.ClientIP)" `
+                                        -Image  "$Dependencies\Images\favicon.ico" `
+                                        -Size   20
+                                }   
                             }
 
 
@@ -1304,7 +1375,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                     -Label  $object.PSComputerName `
                                     -To     "[$($object.PSComputerName)]`nDevice ID: $($object.Name)`nType: $($object.DriveTypeName)`nCapacity: $($object.CapacityGB)GB`nFree Space: $($object.FreeSpaceGB)GB" `
                                     -Image  "$Dependencies\Images\Computer.jpg" `
-                                    -Size   25 `
+                                    -Size   35 `
                                     -FontSize   20 `
                                     -LinkColor  Green `
                                     -FontColor  Blue
@@ -1318,7 +1389,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                     New-DiagramNode `
                                         -Label  "[$($object.PSComputerName)]`nDevice ID: $($object.Name)`nType: $($object.DriveTypeName)`nCapacity: $($object.CapacityGB)GB`nFree Space: $($object.FreeSpaceGB)GB" `
                                         -Image  $StorageImage `
-                                        -size   25 `
+                                        -size   20 `
                                         -LinkColor  Green `
                                         -FontColor  Red
                                 }
@@ -1326,7 +1397,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                     New-DiagramNode `
                                         -Label  "[$($object.PSComputerName)]`nDevice ID: $($object.Name)`nType: $($object.DriveTypeName)`nCapacity: $($object.CapacityGB)GB`nFree Space: $($object.FreeSpaceGB)GB" `
                                         -Image  $StorageImage `
-                                        -size   25 `
+                                        -size   20 `
                                         -LinkColor  Green `
                                         -FontColor  LightCoral
                                 }
@@ -1334,7 +1405,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                     New-DiagramNode `
                                         -Label  "[$($object.PSComputerName)]`nDevice ID: $($object.Name)`nType: $($object.DriveTypeName)`nCapacity: $($object.CapacityGB)GB`nFree Space: $($object.FreeSpaceGB)GB" `
                                         -Image  $StorageImage `
-                                        -size   25 `
+                                        -size   20 `
                                         -LinkColor  Green `
                                         -FontColor  DarkOrange
                                 }
@@ -1342,7 +1413,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                     New-DiagramNode `
                                         -Label  "[$($object.PSComputerName)]`nDevice ID: $($object.Name)`nType: $($object.DriveTypeName)`nCapacity: $($object.CapacityGB)GB`nFree Space: $($object.FreeSpaceGB)GB" `
                                         -Image  $StorageImage `
-                                        -size   25 `
+                                        -size   20 `
                                         -LinkColor  Green `
                                         -FontColor  DarkGreen
                                 }
@@ -1354,14 +1425,14 @@ $PSWriteHTMLButtonAdd_Click = {
                                     -Label  $object.PSComputerName `
                                     -To     "[$($object.PSComputerName)]`nBank Label: $($object.BankLabel)`nCapacity: $($object.CapacityGB)GB" `
                                     -Image  "$Dependencies\Images\Computer.jpg" `
-                                    -Size   25 `
+                                    -Size   35 `
                                     -FontSize   20 `
                                     -LinkColor  Green `
                                     -FontColor  Blue
                                 New-DiagramNode `
                                     -Label  "[$($object.PSComputerName)]`nBank Label: $($object.BankLabel)`nCapacity: $($object.CapacityGB)GB" `
                                     -Image  "$Dependencies\Images\RAM.jpg" `
-                                    -size   25 
+                                    -size   20 
                             }
                             ###############################################################
                             if ($object.CollectionType -eq 'CPUData') {
@@ -1370,7 +1441,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                     -Label  $object.PSComputerName `
                                     -To     "[$($object.PSComputerName)]`nCores/Processors: $($object.NumberOfCores)/$($object.NumberOfLogicalProcessors)`nCPU Load: $($object.LoadPercentage)%" `
                                     -Image  "$Dependencies\Images\Computer.jpg" `
-                                    -Size   25 `
+                                    -Size   35 `
                                     -FontSize   20 `
                                     -LinkColor  Green `
                                     -FontColor  Blue
@@ -1378,7 +1449,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                     New-DiagramNode `
                                         -Label  "[$($object.PSComputerName)]`nCores/Processors: $($object.NumberOfCores)/$($object.NumberOfLogicalProcessors)`nCPU Load: $($object.LoadPercentage)%" `
                                         -Image  "$Dependencies\Images\CPU.jpg" `
-                                        -size   25 `
+                                        -size   20 `
                                         -LinkColor  Green `
                                         -FontColor  Red
                                 }
@@ -1394,7 +1465,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                     New-DiagramNode `
                                         -Label  "[$($object.PSComputerName)]`nCores/Processors: $($object.NumberOfCores)/$($object.NumberOfLogicalProcessors)`nCPU Load: $($object.LoadPercentage)%" `
                                         -Image  "$Dependencies\Images\CPU.jpg" `
-                                        -size   25 `
+                                        -size   20 `
                                         -LinkColor  Green `
                                         -Fontcolor  DarkOrange
                                 }
@@ -1414,8 +1485,64 @@ $PSWriteHTMLButtonAdd_Click = {
 
 
 
+                            ###############################################################
+                            if ($object.CollectionType -eq 'SMBShare') {
+                            ###############################################################
+                                New-DiagramNode `
+                                    -Label  $object.PSComputerName `
+                                    -To     "[$($object.PSComputerName)]`n$($object.Name)`n$($object.Path)" `
+                                    -Image  "$Dependencies\Images\Computer.jpg" `
+                                    -Size   35 `
+                                    -FontSize   20 `
+                                    -LinkColor  Green `
+                                    -FontColor  Blue
+                                New-DiagramNode `
+                                    -Label  "[$($object.PSComputerName)]`n$($object.Name)`n$($object.Path)" `
+                                    -Image  "$Dependencies\Images\SMBShare.jpg" `
+                                    -Size   20
+                            }
+                            if ($object.CollectionType -eq 'SMBShareAccess') {
+                                New-DiagramNode `
+                                    -Label  "[$($object.PSComputerName)]`n[$($object.Name)]`n$($object.AccountName)`nControl Type: $([string]($object.AccessControlType))`nRights: $([string]($object.AccessRight))" `
+                                    -To     "[$($object.PSComputerName)]`n$($object.Name)`n$($object.Path)" `
+                                    -shape  dot `
+                                    -Size   10
+                            }
+                            
 
 
+
+
+                            ###############################################################
+                            if ($object.CollectionType -eq 'SMBServerConnections') {
+                            ###############################################################
+                                New-DiagramNode `
+                                    -Label  $object.PSComputerName `
+                                    -To     "[$($object.PSComputerName)]`n$($object.ShareName)`n$($object.Path)" `
+                                    -Image  "$Dependencies\Images\Computer.jpg" `
+                                    -Size   35 `
+                                    -FontSize   20 `
+                                    -LinkColor  Green `
+                                    -FontColor  Blue `
+                                    -ArrowsToEnabled
+                                New-DiagramNode `
+                                    -Label  "[$($object.PSComputerName)]`n$($object.ShareName)`n$($object.Path)" `
+                                    -To     "[$($object.PSComputerName)]`n[$($object.ShareName)]`nAccount: $($object.UserName)`nNumber of Users: $($object.NumberOfUsers)`nNumber of Files: $($object.NumberOfFiles)" `
+                                    -Image  "$Dependencies\Images\SMBShare.jpg" `
+                                    -Size   20 `
+                                    -ArrowsToEnabled
+                                New-DiagramNode `
+                                    -Label  "[$($object.PSComputerName)]`n[$($object.ShareName)]`nAccount: $($object.UserName)`nNumber of Users: $($object.NumberOfUsers)`nNumber of Files: $($object.NumberOfFiles)" `
+                                    -To     $object.ComputerName `
+                                    -Image  "$Dependencies\Images\User.jpg" `
+                                    -Size   20 `
+                                    -ArrowsToEnabled
+                                New-DiagramNode `
+                                    -Label  $object.ComputerName `
+                                    -Image  "$Dependencies\Images\NIC.jpg" `
+                                    -Size   20 `
+                                    -ArrowsToEnabled
+                            }
 
 
 
@@ -1483,7 +1610,7 @@ $PSWriteHTMLButtonAdd_Click = {
                                 New-DiagramNode `
                                     -Label  $object.Name `
                                     -Image  "$Dependencies\Images\Computer.jpg" `
-                                    -size   25
+                                    -size   35
 
                                 if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Network Connections') {
                                     if ($object.Name -in $NetworkConnectionEndpoints -and $object.IPv4Address -ne $script:PoShEasyWinIPAddress) {

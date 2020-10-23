@@ -29,6 +29,10 @@ Working on new feature that uses PSWriteHTML to generate graph data
 		Note, the more you select, the longer it takes to load
 		Yeah section will have their own spread sheet within the Webpage (collapsed)
 
+Added command to get SMB Share Access privileges
+	- Added to endpoint csv command file
+	Get-SmbShare | foreach {Get-SmbShareAccess -Name $_.Name}
+
 Updated some code for the credential rolling to increase reliability
 
 Removed old and unnecessary files
