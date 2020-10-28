@@ -1,7 +1,11 @@
 $CurrentProcessId = [System.Diagnostics.Process]::GetCurrentProcess().Id
+$CollectionDirectory = $script:SystemTrayOpenFolder
+$ScriptLocationPath = "$Dependencies\Cmds & Scripts"
+$EndpointCommandPath = "$Dependencies\Cmds & Scripts\Commands - Endpoint.csv"
+$ActiveDirectoryCommandPath = "$Dependencies\Cmds & Scripts\Commands - Active Directory.csv"
 
 $SystemTrayNotifyIcon = {
-    param($CurrentProcessId,$FormAdminCheck,$EasyWinIcon,$Font,$ThisScript,$InitialScriptLoadTime)
+    param($CollectionDirectory,$ScriptLocationPath,$EndpointCommandPath,$ActiveDirectoryCommandPath,$CurrentProcessId,$FormAdminCheck,$EasyWinIcon,$Font,$ThisScript,$InitialScriptLoadTime)
     Add-Type -AssemblyName System.Windows.Forms
     Add-Type -AssemblyName System.Drawing
 
@@ -12,6 +16,57 @@ $SystemTrayNotifyIcon = {
         ContextMenu = New-Object System.Windows.Forms.ContextMenu
         BalloonTipTitle = 'PoSh-EasyWin'
     }
+
+        $SystemTrayCollectedDataMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
+            Text      = 'Collection Folder'
+            Add_Click = {
+                Start-Process -FilePath $CollectionDirectory
+            }
+        }
+        $PoShEasyWinSystemTrayNotifyIcon.contextMenu.MenuItems.Add($SystemTrayCollectedDataMenuItem)
+
+
+        $SystemTrayEndpointCommandsMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
+            Text      = 'Endpoint Commands'
+            Add_Click = {
+                Invoke-Item $EndpointCommandPath
+                #Import-Csv $EndpointCommandPath | Out-GridView -Title 'Endpoint Commands'
+            }
+        }
+        $SystemTrayEndpointScriptsMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
+            Text      = 'Endpoint Scripts'
+            Add_Click = {
+                Start-Process -FilePath "$ScriptLocationPath\Scripts-Host"
+            }
+        }
+        $SystemTrayActiveDirectoryCommandsMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
+            Text      = 'Active Directory Commands'
+            Add_Click = {
+                Invoke-Item $ActiveDirectoryCommandPath
+                #Import-Csv $ActiveDirectoryCommandPath | Out-GridView -Title 'Active Directory Commands'
+            }
+        }
+        $SystemTrayActiveDirectoryScriptssMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
+            Text      = 'Active Directory Scripts'
+            Add_Click = {
+                Start-Process -FilePath "$ScriptLocationPath\Scripts-AD"
+            }
+        }
+        $SystemTrayOpenFilesAndFoldersMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
+            Text      = 'Commands and Scripts'
+            Add_Click = {
+                Start-Process -FilePath $CollectionDirectory
+            }
+        }
+        
+        $PoShEasyWinSystemTrayNotifyIcon.contextMenu.MenuItems.Add($SystemTrayOpenFilesAndFoldersMenuItem)
+        $SystemTrayOpenFilesAndFoldersMenuItem.MenuItems.Add($SystemTrayEndpointCommandsMenuItem)
+        $SystemTrayOpenFilesAndFoldersMenuItem.MenuItems.Add($SystemTrayEndpointScriptsMenuItem)
+        $SystemTrayOpenFilesAndFoldersMenuItem.MenuItems.Add($SystemTrayActiveDirectoryCommandsMenuItem)
+        $SystemTrayOpenFilesAndFoldersMenuItem.MenuItems.Add($SystemTrayActiveDirectoryScriptssMenuItem)
+
+
+
         $SystemTrayAbortReloadMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
             Text      = 'Abort / Reload'
             Add_Click = {
@@ -84,6 +139,7 @@ $SystemTrayNotifyIcon = {
             }
         }
         $PoShEasyWinSystemTrayNotifyIcon.contextMenu.MenuItems.Add($SystemTrayAbortReloadMenuItem)
+
 
         $CloseTime = 'Close  [' + $InitialScriptLoadTime + ']'
         $SystemTrayCloseToolMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
@@ -170,7 +226,7 @@ $SystemTrayNotifyIcon = {
 }
 
 
-Start-Process -FilePath powershell.exe -ArgumentList  "-WindowStyle Hidden -Command Invoke-Command {$SystemTrayNotifyIcon} -ArgumentList @($CurrentProcessId,[bool]'`$$FormAdminCheck','$EasyWinIcon','$Font',$($ThisScript.trim('&')),'$InitialScriptLoadTime')" -PassThru `
+Start-Process -FilePath powershell.exe -ArgumentList  "-WindowStyle Hidden -Command Invoke-Command {$SystemTrayNotifyIcon} -ArgumentList @('$CollectionDirectory','$ScriptLocationPath','$EndpointCommandPath','$ActiveDirectoryCommandPath',$CurrentProcessId,[bool]'`$$FormAdminCheck','$EasyWinIcon','$Font',$($ThisScript.trim('&')),'$InitialScriptLoadTime')" -PassThru `
 | Select-Object -ExpandProperty Id | Set-Variable FormHelperProcessId
 
 

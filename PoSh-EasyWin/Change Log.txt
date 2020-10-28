@@ -2,6 +2,14 @@
 v5.1.6 BETA - 21 Oct 20
 ==================================================
 
+Added a new links to System Tray Icon
+	- Collection Folder
+	- Commands and scripts
+		- Endpoint Commands
+		- Endpoint scripts
+		- Active Directory Commands
+		- Active Directory Scripts
+
 Working on new feature that uses PSWriteHTML to generate graph data
 	PSWriteHTML is a module avaiilable to be imported from the PowerShell Gallery
 		PSWriteHTML will be packaged with PoSh-EasyWin 

@@ -272,7 +272,9 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
     $OpNotesFile                  = "$PoShHome\OpNotes.txt"
     $OpNotesWriteOnlyFile         = "$PoShHome\OpNotes (Write Only).txt"
 
-    $script:CredentialManagementPath          = "$PoShHome\Credential Management\"
+    $script:CredentialManagementPath = "$PoShHome\Credential Management\"
+
+    $script:SystemTrayOpenFolder     = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)\Collected Data"
 
     # Dependencies
     $Dependencies                             = "$PoShHome\Dependencies"
@@ -445,7 +447,7 @@ This selection is persistent for this tool, but can be modified within the setti
     }
 }
 if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
-    Import-Module -Name "$Dependencies\Modules\PSWriteHTML\0.0.110\PSWriteHTML.psm1" -Force
+    Import-Module -Name "$Dependencies\Modules\PSWriteHTML\0.0.117\PSWriteHTML.psm1" -Force
 }
 
 # Progress Bar Load Screen Code
@@ -4853,7 +4855,7 @@ $MainCenterMainTab.Controls.Add($ResultsSectionLabel)
 
 . "$Dependencies\Code\System.Windows.Forms\Button\PSWriteHTMLButton.ps1"
 $PSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Graph Data"
+    Text     = "Graph Data (BETA)"
     Location = @{ X = $ResultsSectionLabel.Location.X
                   Y = $ResultsSectionLabel.Location.Y + $ResultsSectionLabel.Size.Height }
     Size     = @{ Width  = $FormScale * 115
