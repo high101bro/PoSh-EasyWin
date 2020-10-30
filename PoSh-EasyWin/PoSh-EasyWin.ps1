@@ -274,8 +274,6 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
 
     $script:CredentialManagementPath = "$PoShHome\Credential Management\"
 
-    $script:SystemTrayOpenFolder     = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)\Collected Data"
-
     # Dependencies
     $Dependencies                             = "$PoShHome\Dependencies"
         # Location of Cmds & Scripts
@@ -312,10 +310,13 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
 
     # Name of Collected Data Directory
     $CollectedDataDirectory                   = "$PoShHome\Collected Data"
+        if (-not (Test-Path $CollectedDataDirectory )) {New-Item -ItemType Directory -Path $CollectedDataDirectory -Force}
+        $script:SystemTrayOpenFolder         = $CollectedDataDirectory # = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)\Collected Data"
+
         # Location of separate queries
-        $script:CollectedDataTimeStampDirectory      = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+        $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
         # Location of Uncompiled Results
-        $script:IndividualHostResults         = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
+        $script:IndividualHostResults           = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
 
 
 # Website / URL for Character Art

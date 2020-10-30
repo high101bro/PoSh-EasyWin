@@ -49,7 +49,8 @@ $PSWriteHTMLButtonAdd_Click = {
         'Active Directory Users & Groups',
         'Endpoint Network Connections',
         'Endpoint Process Data',
-        'Endpoint Login Activity (30 Days)'
+        'Endpoint Login Activity (30 Days)',
+        'Endpoint Application Crashes (30 Days)'
     )
 #    'Active Directory Domain Services',
 #    'Endpoint Console Logons',
@@ -685,6 +686,38 @@ $LoginActivityScriptblock = {
 
 
 ####################################################################################################
+# Application Crashes
+####################################################################################################
+$ApplicationCrashesScriptblock = {
+    $ApplicationCrashes = Get-WinEvent -FilterHashtable @{logname = 'Application'; id = 1000; StartTime = (Get-Date).AddMonths(-3)}
+
+    ForEach ($AppCrash in $ApplicationCrashes) {
+        if ($AppCrash.Message -match 'Faulting'){
+                $AppName = ($AppCrash.message.Split("`n") | Where-Object {$_ -match 'Faulting Application Name'}).split(':')[1].trim().split(',')[0].trim()
+                $ModName = ($AppCrash.message.Split("`n") | Where-Object {$_ -match 'Faulting Module Name'}).split(':')[1].trim().split(',')[0].trim()
+                $AppCrash | 
+                    Add-Member -MemberType NoteProperty -Name 'ApplicationName' -Value $AppName -PassThru |
+                    Add-Member -MemberType NoteProperty -Name 'ModuleName' -Value $ModName -PassThru
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+####################################################################################################
 #                                                                                                  #
 # Endpoint Data Collection                                                                         #
 #                                                                                                  #
@@ -711,9 +744,14 @@ elseif ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList
     }
 }
 
-$script:ProgressBarFormProgressBar.Maximum = $PSWriteHTMLCheckedItemsList.count
-$script:ProgressBarFormProgressBar.Value = 0
-$script:ProgressBarSelectionForm.Refresh()
+
+$script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
+$script:ProgressBarEndpointsProgressBar.Value = 0
+$script:ProgressBarEndpointsProgressBar.Refresh()
+
+$script:ProgressBarQueriesProgressBar.Maximum = $PSWriteHTMLCheckedItemsList.count
+$script:ProgressBarQueriesProgressBar.Value = 0
+$script:ProgressBarQueriesProgressBar.Refresh()
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Using WinRM To Collect Data")
 Start-Sleep -Seconds 3
@@ -747,8 +785,8 @@ Start-Sleep -Seconds 3
             $ProcessesModules = $ProcessesModules | Group-Object | Sort-Object count
     
 
-        $script:ProgressBarFormProgressBar.Value += 1
-        $script:ProgressBarSelectionForm.Refresh()
+        $script:ProgressBarQueriesProgressBar.Value += 1
+        $script:ProgressBarQueriesProgressBar.Refresh()
     }
 
 
@@ -770,10 +808,16 @@ Start-Sleep -Seconds 3
         $NetworkConnectionsRemotePublicIPsSum     = $EndpointDataNetworkConnections | Select-Object RemoteAddress, PSComputerName          | Where-Object {$_.RemoteAddress -notmatch '(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^192\.168\.)|(^127\.)|(^::)|0.0.0.0'} | Group-Object RemoteAddress | Sort-Object Count, Name
     
 
-        $script:ProgressBarFormProgressBar.Value += 1
-        $script:ProgressBarSelectionForm.Refresh()    
+        $script:ProgressBarQueriesProgressBar.Value += 1
+        $script:ProgressBarQueriesProgressBar.Refresh()    
     }
    
+    #batman
+    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint PowerShell Sessions') {
+        $EndpointDataPowerShellSessions = Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -Session $PSSession
+
+    }
+
 
     if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Login Activity (30 Days)') {
         $StatusListBox.Items.Clear()
@@ -783,11 +827,48 @@ Start-Sleep -Seconds 3
         $EndpointLoginActivity = Invoke-Command -ScriptBlock $LoginActivityScriptblock -Session $PSSession | 
             Select-Object UserAccount, LogonType, TimeStamp, UserDomain, WorkstationName, SourceNetworkAddress, SourceNetworkPort, Type, LogonInterpretation
 
+        $LogonActivityTimeStampDaySortDay   = $EndpointLoginActivity | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}} | Group-Object TimeStampDay | Sort-Object Name, Count
+        $LogonActivityTimeStampDaySortCount = $EndpointLoginActivity | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}} | Group-Object TimeStampDay | Sort-Object Count, Name
+        $LogonActivityLogonType             = $EndpointLoginActivity | Select-Object LogonType | Group-Object LogonType | Sort-Object Count, Name
+        $LogonActivityWorkstationName       = $EndpointLoginActivity | Select-Object WorkstationName | Where-Object {$_.WorkStationName -ne '' -and $_.WorkStationName -ne '-'} | Group-Object WorkstationName | Sort-Object Count, Name
+        $LogonActivitySourceNetworkAddress  = $EndpointLoginActivity | Select-Object SourceNetworkAddress | Where-Object {$_.SourceNetworkAddress -ne '' -and $_.SourceNetworkAddress -ne '-'} | Group-Object SourceNetworkAddress | Sort-Object Count, Name
+        $LogonActivityLogonType             = $EndpointLoginActivity | Select-Object LogonType | Group-Object LogonType | Sort-Object Count, Name
+        $LogonActivityTimeStampLogonLocalSystem   = $EndpointLoginActivity | Where-Object LogonType -eq LocalSystem | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonInteractive   = $EndpointLoginActivity | Where-Object LogonType -eq Interactive | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        #$LogonActivityTimeStampLogonNetwork       = $EndpointLoginActivity | Where-Object LogonType -eq Network | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonBatch         = $EndpointLoginActivity | Where-Object LogonType -eq Batch | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonService       = $EndpointLoginActivity | Where-Object LogonType -eq Service | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonUnlock        = $EndpointLoginActivity | Where-Object LogonType -eq Unlock | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonNetworkClearText    = $EndpointLoginActivity | Where-Object LogonType -eq NetworkClearText | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonNewCredentials      = $EndpointLoginActivity | Where-Object LogonType -eq NewCredentials | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonRemoteInteractive   = $EndpointLoginActivity | Where-Object LogonType -eq RemoteInteractive | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonCachedInteractive   = $EndpointLoginActivity | Where-Object LogonType -eq CachedInteractive | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonCachedRemoteInteractive   = $EndpointLoginActivity | Where-Object LogonType -eq CachedRemoteInteractive | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+        $LogonActivityTimeStampLogonCachedUnlock              = $EndpointLoginActivity | Where-Object LogonType -eq CachedUnlock | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+    
 
-        $script:ProgressBarFormProgressBar.Value += 1
-        $script:ProgressBarSelectionForm.Refresh()
+        $script:ProgressBarQueriesProgressBar.Value += 1
+        $script:ProgressBarQueriesProgressBar.Refresh()
     }
 
+
+    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Application Crashes (30 Days)') {
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Collecting: Endpoint Application Crashes (30 Days)")
+        
+
+        $EndpointApplicationCrashes = Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -Session $PSSession | 
+            Select-Object MachineName, TimeCreated, ApplicationName, ModuleName, Message, PSComputerName, LogName, ProviderName, Level, RecordId, ProcessId, ThreadId, UserID
+        
+        $ApplicationCrashesPerEndpoint       = $EndpointApplicationCrashes | Select-Object PSComputerName, ApplicationName | Group-Object PSComputerName | Sort-Object Count, Name -Descending
+        $ApplicationCrashesCount             = $EndpointApplicationCrashes | Select-Object PSComputerName, ApplicationName | Group-Object ApplicationName | Sort-Object Count, Name -Descending
+        $ApplicationCrashesTimeCreatedDay    = $EndpointApplicationCrashes | Select-Object @{n='TimeCreatedDay';e={($_.TimeCreated -split ' ')[0]}} | Group-Object TimeCreatedDay | Sort-Object Name, Count
+        $ApplicationCrashesApplicationName   = $EndpointApplicationCrashes | Select-Object PSComputerName, ApplicationName -Unique | Group-Object ApplicationName | Sort-Object Count, Name
+        $ApplicationCrashesModuleName        = $EndpointApplicationCrashes | Select-Object PSComputerName, ModuleName -Unique | Group-Object ModuleName | Sort-Object Count, Name
+
+        $script:ProgressBarQueriesProgressBar.Value += 1
+        $script:ProgressBarQueriesProgressBar.Refresh()
+    }
 
 $PSSession | Remove-PSSession
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$PSSession | Remove-Session"
@@ -1912,27 +1993,20 @@ function Start-PSWriteHTMLLoginActivity {
                 New-HTMLCalendar {
                     foreach ($_ in $EndpointLoginActivity) {
                         New-CalendarEvent -StartDate $_.TimeStamp `
-                        -Title "$($_.PSComputerName) [$($_.UserAccount)] $($_.LogonInterpretation)" `
-                        -Description "$($_.PSComputerName) || Account: $($_.UserAccount) || $($_.LogonInterpretation) || $($_.WorkStationName) || $($_.SourceNetworkAddress)"
+                        -Title "$($_.PSComputerName) [$($_.UserAccount)] $($_.LogonType)" `
+                        -Description "$($_.PSComputerName) || Account: $($_.UserAccount) || $($_.LogonType) || $($_.WorkStationName) || $($_.SourceNetworkAddress)"
                     }
                 } -InitialView dayGridMonth
                 New-HTMLCalendar {
                     foreach ($_ in $EndpointLoginActivity) {
                         New-CalendarEvent -StartDate $_.TimeStamp `
-                        -Title "$($_.PSComputerName) [$($_.UserAccount)] $($_.LogonInterpretation)" `
-                        -Description "$($_.PSComputerName) || Account: $($_.UserAccount) || $($_.LogonInterpretation) || $($_.WorkStationName) || $($_.SourceNetworkAddress)"
+                        -Title "$($_.PSComputerName) [$($_.UserAccount)] $($_.LogonType)" `
+                        -Description "$($_.PSComputerName) || Account: $($_.UserAccount) || $($_.LogonType) || $($_.WorkStationName) || $($_.SourceNetworkAddress)"
                     }
                 } -InitialView timeGridDay
             }
         }
         ###########
-        $LogonActivityTimeStampDaySortDay   = $EndpointLoginActivity | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}} | Group-Object TimeStampDay | Sort-Object Name, Count
-        $LogonActivityTimeStampDaySortCount = $EndpointLoginActivity | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}} | Group-Object TimeStampDay | Sort-Object Count, Name
-        $LogonActivityLogonType             = $EndpointLoginActivity | Select-Object LogonInterpretation | Group-Object LogonInterpretation | Sort-Object Count, Name
-        $LogonActivityWorkstationName       = $EndpointLoginActivity | Select-Object WorkstationName | Where-Object {$_.WorkStationName -ne '' -and $_.WorkStationName -ne '-'} | Group-Object WorkstationName | Sort-Object Count, Name
-        $LogonActivitySourceNetworkAddress  = $EndpointLoginActivity | Select-Object SourceNetworkAddress | Where-Object {$_.SourceNetworkAddress -ne '' -and $_.SourceNetworkAddress -ne '-'} | Group-Object SourceNetworkAddress | Sort-Object Count, Name
-
-
         New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
             New-HTMLSection -HeaderText 'Time Stamp Day Login (Sort By Day)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                 New-HTMLPanel {
@@ -1961,6 +2035,114 @@ function Start-PSWriteHTMLLoginActivity {
                     }
                 }
             }
+            New-HTMLSection -HeaderText 'Local System' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Local System' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonLocalSystem){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Interactive (Logon Via Console)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Interactive (Logon Via Console)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonInteractive){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Network (Network Remote Logon) - Not Created Because of Excessive Logs' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                #New-HTMLPanel {
+                #    New-HTMLChart -Title 'Network(No Chart Produce Because of Excessive Logs)' -Gradient -TitleAlignment left {
+                #        Foreach ($_ in $LogonActivityTimeStampLogonNetwork){
+                #            New-ChartBar -Name $_.Name -Value $_.Count
+                #        }
+                #    }
+                #}
+            }
+            New-HTMLSection -HeaderText 'Batch (Scheduled Task Logon)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Batch (Scheduled Task Logon)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonBatch){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Service (Windows Service Account Logon)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Service (Windows Service Account Logon)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonService){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Unlock (Screen Unlock)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Unlock (Screen Unlock)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonUnlock){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Clear Text (Clear Text Network Logon)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Clear Text (Clear Text Network Logon)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonNetworkClearText){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'New Credentials (Alternate Credentials Other Than Logon)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'New Credentials (Alternate Credentials Other Than Logon)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonNewCredentials){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Remote Interactive (RDP/TS Remote Assistance)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Remote Interactive (RDP/TS Remote Assistance)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonRemoteInteractive){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Cached Interactive (Cached Local Credentials)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Cached Interactive (Cached Local Credentials)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonCachedInteractive){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Remote Interactive (Cached RDP TS RemoteAssistance)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Remote Interactive (Cached RDP TS RemoteAssistance)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonCachedRemoteInteractive){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Cached Unlock (Cached Screen Unlock)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Cached Unlock (Cached Screen Unlock)' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $LogonActivityTimeStampLogonCachedUnlock){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
             New-HTMLSection -HeaderText 'Workstation Name' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                 New-HTMLPanel {
                     New-HTMLChart -Title 'Workstation Name' -Gradient -TitleAlignment left {
@@ -1979,8 +2161,8 @@ function Start-PSWriteHTMLLoginActivity {
                     }
                 }
             }
-        }        
-        <#
+        } 
+    <#
         ###########
         New-HTMLTab -TabName 'Graph & Table' -IconSolid bezier-curve {
             $DataTableIDLoginActivity = Get-Random -Minimum 100000 -Maximum 2000000
@@ -2080,6 +2262,211 @@ function Start-PSWriteHTMLLoginActivity {
 
 
 
+##################################################
+# PSWriteHTML ApplicationCrashe                  #
+##################################################
+function Start-PSWriteHTMLApplicationCrashes {
+
+    New-HTMLTab -Name 'Application Crashes' -IconBrands acquisitions-incorporated {
+        ###########
+        New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
+            New-HTMLSection -HeaderText 'Table Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLTable -DataTable $EndpointApplicationCrashes {
+                    New-TableHeader -Color Blue -Alignment left -Title 'Application Crashes' -FontSize 18
+                } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
+            }
+        }
+        ###########
+        New-HTMLTab -Name 'Pane Search' -IconSolid th {
+            New-HTMLSection -HeaderText 'Pane Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLTable -DataTable $EndpointApplicationCrashes {
+                    New-TableHeader -Color Blue -Alignment left -Title 'Application Crashes' -FontSize 18
+                } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
+            }
+        }
+        ###########
+        New-HTMLTab -Name 'Calendar' -IconRegular calendar-alt  {
+            New-HTMLSection -HeaderText 'Calendar' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLCalendar {
+                    foreach ($_ in $EndpointApplicationCrashes) {
+                        New-CalendarEvent -StartDate $_.TimeCreated `
+                        -Title "$($_.PSComputerName) [$($_.ApplicationName)]" `
+                        -Description "$($_.PSComputerName) || Application: $($_.ApplicationName) || Module: $($_.ModuleName) || Message: $($_.Message)"
+                    }
+                } -InitialView dayGridMonth
+                New-HTMLCalendar {
+                    foreach ($_ in $EndpointApplicationCrashes) {
+                        New-CalendarEvent -StartDate $_.TimeCreated `
+                        -Title "$($_.PSComputerName) [$($_.ApplicationName)]" `
+                        -Description "$($_.PSComputerName) || Application: $($_.ApplicationName) || Module: $($_.ModuleName) || Message: $($_.Message)"
+                    }
+                } -InitialView timeGridDay
+            }
+        }
+        ###########
+        New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
+            New-HTMLSection -HeaderText 'Application Crashes Per Endpoint' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Application Crashes Per Endpoint' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $ApplicationCrashesPerEndpoint){
+                            New-ChartPie -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Application Overall Crash Count' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $ApplicationCrashesCount){
+                            New-ChartPie -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Crashes Per Day' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Crashes Per Day' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $ApplicationCrashesTimeCreatedDay){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Crash Count By Application Name' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Crash Count By Application Name' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $ApplicationCrashesApplicationName){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+            New-HTMLSection -HeaderText 'Crash Count By Module Name' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                New-HTMLPanel {
+                    New-HTMLChart -Title 'Crash Count By Module Name' -Gradient -TitleAlignment left {
+                        Foreach ($_ in $ApplicationCrashesModuleName){
+                            New-ChartBar -Name $_.Name -Value $_.Count
+                        }
+                    }
+                }
+            }
+        } 
+    
+        ###########
+        New-HTMLTab -TabName 'Graph & Table' -IconSolid bezier-curve {
+            $DataTableIDApplicationCrashes = Get-Random -Minimum 100000 -Maximum 2000000
+            New-HTMLSection -HeaderText 'Application Crashes' -CanCollapse {
+                New-HTMLPanel -Width 40% {
+                    New-HTMLTable -DataTable $EndpointApplicationCrashes -DataTableID $DataTableIDApplicationCrashes -SearchRegularExpression  {
+                        New-TableHeader -Color Blue -Alignment left -Title 'Application Crashes' -FontSize 18 
+                    } 
+                }
+                New-HTMLPanel {
+                    
+                    New-HTMLText `
+                        -FontSize 12 `
+                        -FontFamily 'Source Sans Pro' `
+                        -Color Blue `
+                        -Text 'Click On The Computer Icons To Automatically Locate Them Within The Table'
+
+                    New-HTMLDiagram {
+                        New-DiagramEvent -ID $DataTableIDApplicationCrashes -ColumnID 5
+                        New-DiagramOptionsInteraction -Hover $true
+                        New-DiagramOptionsManipulation 
+                        New-DiagramOptionsPhysics -Enabled $true
+                        New-DiagramOptionsLayout `
+                            -RandomSeed 13
+
+                        ###New-DiagramOptionsLayout -RandomSeed 500 -HierarchicalEnabled $true -HierarchicalDirection FromLeftToRight
+                        
+                        New-DiagramOptionsNodes `
+                            -BorderWidth 1 `
+                            -ColorBackground LightSteelBlue `
+                            -ColorHighlightBorder Orange `
+                            -ColorHoverBackground Organe
+                        New-DiagramOptionsLinks `
+                            -Length 500 `
+                            -FontSize 12 `
+                            -ColorHighlight Orange `
+                            -ColorHover Orange
+                        New-DiagramOptionsEdges `
+                            -ColorHighlight Orange `
+                            -ColorHover Orange
+
+                        $CrashedApps = @()
+                        foreach ($object in $EndpointApplicationCrashes) {
+                            New-DiagramNode `
+                                -Label  $object.PSComputerName `
+                                -To     "[$($object.PSComputerName)]`nApplication: $($object.ApplicationName)" `
+                                -Image "$Dependencies\Images\Computer.jpg" `
+                                -size 25 `
+                                -FontColor  Blue `
+                                -LinkColor  Blue
+                            if ("$($object.PSComputerName) : $($object.ApplicationName) : $($object.ModuleName)" -notin $CrashedApps){
+                                $CrashedApps += "$($object.PSComputerName) : $($object.ApplicationName) : $($object.ModuleName)"
+                                New-DiagramNode `
+                                    -Label  "[$($object.PSComputerName)]`nApplication: $($object.ApplicationName)" `
+                                    -To     "[$($object.PSComputerName)]`nModule: $($object.ModuleName)" `
+                                    -shape dot `
+                                    -size 10 `
+                                    -FontColor  Blue `
+                                    -LinkColor  Blue
+                                New-DiagramNode `
+                                    -Label  "[$($object.PSComputerName)]`nModule: $($object.ModuleName)" `
+                                    -shape triangle `
+                                    -size 10 `
+                                    -FontColor  Blue `
+                                    -LinkColor  LightBlue
+                            }
+
+                            <#
+                            New-DiagramNode `
+                                -Label  $object.PSComputerName `
+                                -To     "[$($Object.PSComputerName)]`n$($object.ApplicationName)" `
+                                -Image  "$Dependencies\Images\Computer.jpg" `
+                                -Size   50 `
+                                -FontSize   20 `
+                                -FontColor  Blue `
+                                -LinkColor  Blue `
+                                -ArrowsToEnabled
+                            New-DiagramNode `
+                                -Label  "[$($Object.PSComputerName)]`n$($object.ApplicationName)" `
+                                -To     "[$($Object.PSComputerName)]`n$($object.ModuleName)" `
+                                -shape dot `
+                                -size 10 `
+                                -FontColor  Blue `
+                                -LinkColor  Blue
+                            New-DiagramNode `
+                                -Label  "[$($Object.PSComputerName)]`n$($object.ModuleName)" `
+                                -shape dot `
+                                -size 10 `
+                                -FontColor  Blue `
+                                -LinkColor  Blue
+                            #>
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2109,14 +2496,13 @@ function Start-PSWriteHTMLActiveDirectory {
 
 
 
-
     $Forest = invoke-command -ScriptBlock { Get-ADForest } -Session $PSSession
 
     foreach ($Domain in $Forest.Domains) {       
         New-HTMLTab -TabName "Domain: $Domain" -IconSolid dice -IconColor LightSkyBlue {
 
-            $script:ProgressBarFormProgressBar.Value += 1
-            $script:ProgressBarSelectionForm.Refresh()
+            $script:ProgressBarQueriesProgressBar.Value += 1
+            $script:ProgressBarQueriesProgressBar.Refresh()
 
             ##################################################
             # PSWriteHTML Active Directory Users & Groups    #
@@ -2676,9 +3062,41 @@ function Start-PSWriteHTMLActiveDirectory {
 
 ####################################################################################################
 #                                                                                                  #
-# PSWriteHTML Launcer                                                                              #
+# PSWriteHTML Launcher                                                                             #
 #                                                                                                  #
 ####################################################################################################
+function Individual-PSWriteHTML {
+    param(
+        $Title,
+        $Data
+    )
+    New-HTML -TitleText $Title -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
+        -FilePath "$($script:CollectionSavedDirectoryTextBox.Text)\PoSh-EasyWin $(Get-Date).html" -Show {
+        
+        New-HTMLHeader { 
+            New-HTMLText -Text "Date of this report $(Get-Date)" -Color Blue -Alignment right 
+
+            New-HTMLLogo  -LeftLogoString "$Dependencies\Images\PoSh-EasyWin Image 01.png"
+        }
+
+        New-HTMLTabStyle -SlimTabs -Transition -LinearGradient -SelectorColor DarkBlue -SelectorColorTarget Blue -BorderRadius 25px -BorderBackgroundColor LightBlue
+       
+        Invoke-Command $Data
+
+        New-HTMLFooter { 
+            New-HTMLText `
+                -FontSize 12 `
+                -FontFamily 'Source Sans Pro' `
+                -Color Black `
+                -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided And done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.'
+            New-HTMLText `
+                -Text "https://www.GitHub.com/high101bro/PoSh-EasyWin" `
+                -Color Blue `
+                -Alignment right 
+        }
+    }
+}
+
 if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and (
     ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.count -gt 0) -or 
     ($PSWriteHTMLCheckedItemsList -match 'Active Directory') -and
@@ -2687,130 +3105,25 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and (
 ) {        
     if ($PSWriteHTMLIndividualWebPagesCheckbox.checked) {
         if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Process Data') {
-            New-HTML -TitleText 'Process Daya [PoSh-EasyWin]' -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
-                -FilePath "$($script:CollectionSavedDirectoryTextBox.Text)\PoSh-EasyWin $(Get-Date).html" -Show {
-                
-                New-HTMLHeader { 
-                    New-HTMLText -Text "Date of this report $(Get-Date)" -Color Blue -Alignment right 
-
-                    New-HTMLLogo  -LeftLogoString "$Dependencies\Images\PoSh-EasyWin Image 01.png"
-                }
-
-                New-HTMLTabStyle -SlimTabs -Transition -LinearGradient -SelectorColor DarkBlue -SelectorColorTarget Blue -BorderRadius 25px -BorderBackgroundColor LightBlue
-
-
-                    Start-PSWriteHTMLProcessData
-
-
-                New-HTMLFooter { 
-                    New-HTMLText `
-                        -FontSize 12 `
-                        -FontFamily 'Source Sans Pro' `
-                        -Color Black `
-                        -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided And done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.'
-                    New-HTMLText `
-                        -Text "https://www.GitHub.com/high101bro/PoSh-EasyWin" `
-                        -Color Blue `
-                        -Alignment right 
-                }
-            }
+            Individual-PSWriteHTML -Title 'Process Data' -Data { Start-PSWriteHTMLProcessData }
         }
-
         if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Network Connections') {
-            New-HTML -TitleText 'Network Connections [PoSh-EasyWin]' -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
-                -FilePath "$($script:CollectionSavedDirectoryTextBox.Text)\PoSh-EasyWin $(Get-Date).html" -Show {
-                
-                New-HTMLHeader { 
-                    New-HTMLText -Text "Date of this report $(Get-Date)" -Color Blue -Alignment right 
-
-                    New-HTMLLogo  -LeftLogoString "$Dependencies\Images\PoSh-EasyWin Image 01.png"
-                }
-
-                New-HTMLTabStyle -SlimTabs -Transition -LinearGradient -SelectorColor DarkBlue -SelectorColorTarget Blue -BorderRadius 25px -BorderBackgroundColor LightBlue
-
-
-                    Start-PSWriteHTMLNetworkConnections
-
-
-                New-HTMLFooter { 
-                    New-HTMLText `
-                        -FontSize 12 `
-                        -FontFamily 'Source Sans Pro' `
-                        -Color Black `
-                        -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided And done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.'
-                    New-HTMLText `
-                        -Text "https://www.GitHub.com/high101bro/PoSh-EasyWin" `
-                        -Color Blue `
-                        -Alignment right 
-                }
-            }
+            Individual-PSWriteHTML -Title 'Network Connections' -Data { Start-PSWriteHTMLNetworkConnections }
         }    
-
         if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Login Activity (30 Days)') {
-            New-HTML -TitleText 'Login Activity [PoSh-EasyWin]' -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
-                -FilePath "$($script:CollectionSavedDirectoryTextBox.Text)\PoSh-EasyWin $(Get-Date).html" -Show {
-                
-                New-HTMLHeader { 
-                    New-HTMLText -Text "Date of this report $(Get-Date)" -Color Blue -Alignment right 
-
-                    New-HTMLLogo  -LeftLogoString "$Dependencies\Images\PoSh-EasyWin Image 01.png"
-                }
-
-                New-HTMLTabStyle -SlimTabs -Transition -LinearGradient -SelectorColor DarkBlue -SelectorColorTarget Blue -BorderRadius 25px -BorderBackgroundColor LightBlue
-
-
-                    Start-PSWriteHTMLLoginActivity
-
-
-                New-HTMLFooter { 
-                    New-HTMLText `
-                        -FontSize 12 `
-                        -FontFamily 'Source Sans Pro' `
-                        -Color Black `
-                        -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided And done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.'
-                    New-HTMLText `
-                        -Text "https://www.GitHub.com/high101bro/PoSh-EasyWin" `
-                        -Color Blue `
-                        -Alignment right 
-                }
-            }
+            Individual-PSWriteHTML -Title 'Login Activity' -Data { Start-PSWriteHTMLLoginActivity }
         }
-
-
+        if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Application Crashes (30 Days)'){
+            Individual-PSWriteHTML -Title 'Application Crashes' { Start-PSWriteHTMLApplicationCrashes }
+        }
         if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
-            New-HTML -TitleText 'Active Directory [PoSh-EasyWin]' -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
-                -FilePath "$($script:CollectionSavedDirectoryTextBox.Text)\PoSh-EasyWin $(Get-Date).html" -Show {
-                
-                New-HTMLHeader { 
-                    New-HTMLText -Text "Date of this report $(Get-Date)" -Color Blue -Alignment right 
-
-                    New-HTMLLogo  -LeftLogoString "$Dependencies\Images\PoSh-EasyWin Image 01.png"
-                }
-
-                New-HTMLTabStyle -SlimTabs -Transition -LinearGradient -SelectorColor DarkBlue -SelectorColorTarget Blue -BorderRadius 25px -BorderBackgroundColor LightBlue
-
-
-                    Start-PSWriteHTMLActiveDirectory
-
-
-                New-HTMLFooter { 
-                    New-HTMLText `
-                        -FontSize 12 `
-                        -FontFamily 'Source Sans Pro' `
-                        -Color Black `
-                        -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided And done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.'
-                    New-HTMLText `
-                        -Text "https://www.GitHub.com/high101bro/PoSh-EasyWin" `
-                        -Color Blue `
-                        -Alignment right 
-                }
-            }
+            Individual-PSWriteHTML -Title 'Active Directory' -Data { Start-PSWriteHTMLActiveDirectory }
         }        
     }
 
-    ###
-    # Launches One Compiled Web Page
-    #################################
+    ##################################
+    # Launches One Compiled Web Page #
+    ##################################
     else {
 
         New-HTML -TitleText 'PoSh-EasyWin' -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
@@ -2827,15 +3140,15 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and (
             if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Process Data') {
                 Start-PSWriteHTMLProcessData
             }
-
             if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Network Connections') {
                 Start-PSWriteHTMLNetworkConnections
             }    
-
             if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Login Activity (30 Days)') {
                 Start-PSWriteHTMLLoginActivity
             }
-
+            if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Application Crashes (30 Days)') {
+                Start-PSWriteHTMLApplicationCrashes
+            }
             if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
                 Start-PSWriteHTMLActiveDirectory
             }

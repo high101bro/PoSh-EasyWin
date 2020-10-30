@@ -20,7 +20,7 @@ $SystemTrayNotifyIcon = {
         $SystemTrayCollectedDataMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
             Text      = 'Collection Folder'
             Add_Click = {
-                Start-Process -FilePath $CollectionDirectory
+                Start-Process -FilePath "$CollectionDirectory"
             }
         }
         $PoShEasyWinSystemTrayNotifyIcon.contextMenu.MenuItems.Add($SystemTrayCollectedDataMenuItem)
@@ -54,9 +54,6 @@ $SystemTrayNotifyIcon = {
         }
         $SystemTrayOpenFilesAndFoldersMenuItem = New-Object System.Windows.Forms.MenuItem -Property @{
             Text      = 'Commands and Scripts'
-            Add_Click = {
-                Start-Process -FilePath $CollectionDirectory
-            }
         }
         
         $PoShEasyWinSystemTrayNotifyIcon.contextMenu.MenuItems.Add($SystemTrayOpenFilesAndFoldersMenuItem)

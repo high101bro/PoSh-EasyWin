@@ -1,5 +1,5 @@
 ==================================================
-v5.1.6 BETA - 21 Oct 20
+v5.1.6 BETA - 30 Oct 20
 ==================================================
 
 Added a new links to System Tray Icon
@@ -25,13 +25,14 @@ Working on new feature that uses PSWriteHTML to generate graph data
 	Currently have options for the following:
 		Active Directory Computers
 		Active Directory Users & Groups
+		Endpoint Login Activity
 		Endpoint Network Connections
-		Endpoint PowerShell Sessions
-		Endpoint Console Logins
 		Endpoint Process Data
-		Endpoint CPU Data
-		Endpoint RAM Data
-		Endpoint Storage Data
+		# In-Progress # Endpoint PowerShell Sessions
+		# In-Progress # Endpoint Console Logins
+		# In-Progress # Endpoint CPU Data
+		# In-Progress # Endpoint RAM Data
+		# In-Progress # Endpoint Storage Data
 	You can select one or more of the above options at once
 		The charts will be combined
 		Note, the more you select, the longer it takes to load
