@@ -1,4 +1,4 @@
-$CollectionCommandStartTime = Get-Date
+$ExecutionStartTime = Get-Date
 
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: Event ID Quick Selection")
@@ -48,7 +48,7 @@ foreach ($Query in $script:EventLogQueries) {
         $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Event Logs - $($Query.Name)"
 
 
-        $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName ($($Query.Name))")
+        $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName ($($Query.Name))")
         $PoShEasyWin.Refresh()
 
 
@@ -68,7 +68,7 @@ foreach ($Query in $script:EventLogQueries) {
 
 
         $ResultsListBox.Items.RemoveAt(0)
-        $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName ($($Query.Name))")
+        $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $ExecutionStartTime -End (Get-Date))]  $CollectionName ($($Query.Name))")
         $PoShEasyWin.Refresh()
     }
 }

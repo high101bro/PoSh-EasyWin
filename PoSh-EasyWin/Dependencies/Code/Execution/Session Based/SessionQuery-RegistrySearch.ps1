@@ -3,10 +3,10 @@ elseif ($RegistryValueNameCheckbox.checked) { $CollectionName = "Registry Search
 elseif ($RegistryValueDataCheckbox.checked) { $CollectionName = "Registry Search - Value Data" }
 
 
-$CollectionCommandStartTime = Get-Date
+$ExecutionStartTime = Get-Date
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
-$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
 
 $script:ProgressBarEndpointsProgressBar.Value   = 0
@@ -63,7 +63,7 @@ Invoke-Command -ScriptBlock $QueryRegistryFunction `
 
 
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$QueryRegistryFunction -ArgumentList `$SearchRegistryCommand -Session `$PSSession"
-###$ResultsListBox.Items.Add("$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+###$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
 
 $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force
@@ -71,7 +71,7 @@ $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
 
 
 $ResultsListBox.Items.RemoveAt(0)
-$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $ExecutionStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarQueriesProgressBar.Value   += 1

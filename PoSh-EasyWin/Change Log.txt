@@ -1,6 +1,28 @@
 ==================================================
-v5.1.6 BETA - 30 Oct 20
+v5.1.6 BETA - 7 Nov 20
 ==================================================
+
+Modified 'Open Data In Shell'
+	-Changed the -ExecutionPolicy from Restricted to ByPass
+
+Added a parameter, [switch]MonitorMode, to the Monitor-Jobs function
+	- MonitorMode essentially splits the fucntion in two
+		- If the switch is present, it will monitor jobs using the new individual job tracker
+			- Mainly used with data queries 
+		- If not, it uses the original method where and provides active status on the queries
+			- Mainly used with tasks that require multiple interactions, like with the Sysmon and Procmon features
+	- Added the -MonitorJobs switch to many data queries for individual collection
+
+Change completion message text withing ResultsListBox
+	- Original: 'Finished Collecting Data!'
+	- New:      'Finished Executing Commands'
+
+Commented out Post-MonitorJob function wherever the Monitor-Jobs -MonitorMode was at
+	- this code was a wrapper for Compile-CsvFiles and Compile-XmlFiles
+
+Renamed variables for consistency
+	- There were two variables doing the same thing... Change variable names to maintain consistency
+	- $CollectionCommandStartTime --> $ExecutionStartTime
 
 Added a new links to System Tray Icon
 	- Collection Folder
@@ -37,6 +59,9 @@ Working on new feature that uses PSWriteHTML to generate graph data
 		The charts will be combined
 		Note, the more you select, the longer it takes to load
 		Yeah section will have their own spread sheet within the Webpage (collapsed)
+	Added support for monitor-jobs tab
+		- Data collected to product PSWriteHTML browser pages are started as jobs
+		- Once data has finished being collected, the brower page is automatically launched
 
 Added command to get SMB Share Access privileges
 	- Added to endpoint csv command file

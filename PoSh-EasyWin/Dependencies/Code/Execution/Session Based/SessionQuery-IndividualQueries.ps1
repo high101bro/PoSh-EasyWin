@@ -7,11 +7,11 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $script:ProgressBarEndpointsProgressBar.Value = 0
     $ProgressBarEndpointsCommandLine = 0
 
-    $CollectionCommandStartTime = Get-Date
+    $ExecutionStartTime = Get-Date
     $CollectionName = $Command.Name
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Executing: $CollectionName")
-    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+    $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
     $PoShEasyWin.Refresh()
 
     if ($Command.Type -eq "(WinRM) Script") {
@@ -101,7 +101,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
 
     $ResultsListBox.Items.RemoveAt(0)
-    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+    $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $ExecutionStartTime -End (Get-Date))]  $CollectionName")
     $PoShEasyWin.Refresh()
 
 

@@ -9,7 +9,8 @@ function Open-XmlResultsInShell {
 
     $Command = @"
     Start-Process  'PowerShell' -ArgumentList '-NoExit',
-    '-ExecutionPolicy Restricted',
+    '-ExecutionPolicy Bypass',
+        { `$ErrorActionPreference = 'SilentlyContinue'; },
         { Write-Host ' '; },
 
         { Write-Host -f Yellow 'Generate Property Statistics? For larger files this may take some time: ' -NoNewLine;},
@@ -20,8 +21,8 @@ function Open-XmlResultsInShell {
         { Write-Host ' '; },
 
         { Write-Host -f Yellow "`$Message" -NoNewLine; },
+
         { `$Results = Import-CliXml '$ViewImportResults'; },
-        { `$ErrorActionPreference = 'SilentlyContinue'; },
         { foreach (`$i in (0..(40-(`$Message.length)))) {Write-Host ' '-NoNewLine}; },
         { Write-Host -f Green '  [Complete]'; },
         { Write-Host ' '; },

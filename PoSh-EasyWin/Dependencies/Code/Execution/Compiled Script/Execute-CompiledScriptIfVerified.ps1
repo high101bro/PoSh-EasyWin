@@ -3,9 +3,9 @@ if ($CommandReviewEditVerifyCheckbox.checked){
 
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Compiled Queries To Target Hosts")
-    #$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($TargetComputer)")
+    #$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($TargetComputer)")
 
-    $CollectionCommandStartTime = Get-Date
+    $ExecutionStartTime = Get-Date
     # Clear any PoSh-EasyWin Jobs
     $ClearJobs = Get-Job -Name 'PoSh-EasyWin*'
     $ClearJobs | Stop-Job
@@ -50,10 +50,10 @@ if ($CommandReviewEditVerifyCheckbox.checked){
                     $script:ProgressBarEndpointsProgressBar.Increment(1)
                     Start-Sleep -Milliseconds 250
                     $CollectionCommandEndTime  = Get-Date
-                    $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
+                    $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime
                     #$ResultsListBox.Items.RemoveAt(0)
                     #note: .split(@('--'),'none') allows me to split on "--", which is two characters
-                    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$($CollectionCommandDiffTime)]  Completed: $(($Job.Name).split(@('--'),'none')[-1].trim())")
+                    $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$($CollectionCommandDiffTime)]  Completed: $(($Job.Name).split(@('--'),'none')[-1].trim())")
                 }
             }
             Start-Sleep -Seconds 1

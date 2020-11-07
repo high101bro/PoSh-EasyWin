@@ -1,10 +1,10 @@
 # Executes RPC/DCOM based commands if the RPC Radio Button is Checked
 if ($ExternalProgramsRPCRadioButton.checked) {
     $CollectionName = "Procmon"
-    $CollectionCommandStartTime = Get-Date
+    $ExecutionStartTime = Get-Date
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Query: $CollectionName")
-    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
+    $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
 
     $ProcMonDuration = switch ($script:SysinternalsProcessMonitorTimeComboBox.text) {
@@ -57,7 +57,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
 
     foreach ($TargetComputer in $script:ComputerList) {
-        $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) Collecting $CollectionName - $TargetComputer")
+        $ResultsListBox.Items.Insert(1,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) Collecting $CollectionName - $TargetComputer")
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
@@ -165,9 +165,9 @@ if ($ExternalProgramsRPCRadioButton.checked) {
 
 
         $CollectionCommandEndTime1  = Get-Date
-        $CollectionCommandDiffTime1 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime1
+        $CollectionCommandDiffTime1 = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime1
         $ResultsListBox.Items.RemoveAt(1)
-        $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime1]  $CollectionName - $TargetComputer")
+        $ResultsListBox.Items.Insert(1,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime1]  $CollectionName - $TargetComputer")
     }
 
     if ($SysinternalsProcmonRenameProcessTextBox.text -ne 'Procmon') {
@@ -178,9 +178,9 @@ if ($ExternalProgramsRPCRadioButton.checked) {
     $SysinternalsProcmonButton .BackColor = 'LightGreen'
 
     $CollectionCommandEndTime0  = Get-Date
-    $CollectionCommandDiffTime0 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime0
+    $CollectionCommandDiffTime0 = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime0
     $ResultsListBox.Items.RemoveAt(0)
-    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime0]  $CollectionName")
+    $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime0]  $CollectionName")
 }
 
 # Executes WinRM based commands over PSSessions if the WinRM Radio Button is Checked

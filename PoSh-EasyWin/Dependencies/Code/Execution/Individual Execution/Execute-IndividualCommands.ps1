@@ -1,8 +1,8 @@
 Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
-    $CollectionCommandStartTime = Get-Date
+    $ExecutionStartTime = Get-Date
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Query: $($Command.Name)")
-    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
+    $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($Command.Name)")
 
     $CollectionName = $Command.ExportFileName
     $script:IndividualHostResults = "$script:CollectedDataTimeStampDirectory\Results By Endpoints"
@@ -16,7 +16,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $CollectionSavedDirectory = "$script:IndividualHostResults\$CollectionName"
     }
 
-    $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
+    #$script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
 
     # Each command to each target host is executed on it's own process thread, which utilizes more memory overhead on the localhost [running PoSh-EasyWin] and produces many more network connections to targets [noisier on the network].
     Foreach ($TargetComputer in $script:ComputerList) {
@@ -228,7 +228,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     # Used later below to log the action
                     $CommandString = "$PsExecPath `"\\$TargetComputer`" -AcceptEULA -NoBanner -u `$UserName -p `$Password powershell `"$($Command.Command) | Select-Object * | ConvertTo-Csv -NoType`""
 
-                    $script:ProgressBarEndpointsProgressBar.Value += 1
+                    #$script:ProgressBarEndpointsProgressBar.Value += 1
                 }
                 elseif ($CommandType -eq "(SMB) WMI"){
                     $JobsStarted    = $false
@@ -245,7 +245,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     # Used later below to log the action
                     $CommandString = "$PsExecPath `"\\$TargetComputer`" -AcceptEULA -NoBanner -u `$UserName -p `$Password powershell `"$($Command.Command) | Select-Object * | ConvertTo-Csv -NoType`""
 
-                    $script:ProgressBarEndpointsProgressBar.Value += 1
+                    #$script:ProgressBarEndpointsProgressBar.Value += 1
                 }
                 elseif ($CommandType -eq "(SMB) CMD"){
                     $JobsStarted    = $false
@@ -263,7 +263,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     # Used later below to log the action
                     $CommandString = "$PsExecPath `"\\$TargetComputer`" -AcceptEULA -NoBanner -u `$UserName -p `$Password cmd /c `"$($Command.Command)"
 
-                    $script:ProgressBarEndpointsProgressBar.Value += 1
+                    #$script:ProgressBarEndpointsProgressBar.Value += 1
                     # This executes native windows cmds with PSExec
                     #Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected $UseCredential tasklist'" > c:\ressults.txt
                 }
@@ -291,7 +291,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
     if ( $JobsStarted -eq $true ) {
         # Monitors the progress of the Jobs and provides user status feedback. Jobs will also timeout, which the duration is a configurable
-        Monitor-Jobs -CollectionName $CollectionName
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode
     }
 
     # Increments the overall progress bar
@@ -299,31 +299,28 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $script:ProgressBarQueriesProgressBar.Value = $CompletedCommandQueries
 
     # This allows the Endpoint progress bar to appear completed momentarily
-    $script:ProgressBarEndpointsProgressBar.Maximum = 1; $script:ProgressBarEndpointsProgressBar.Value = 1; Start-Sleep -Milliseconds 250
+    #$script:ProgressBarEndpointsProgressBar.Maximum = 1
+    #$script:ProgressBarEndpointsProgressBar.Value = 1
+    #Start-Sleep -Milliseconds 250
 
     $CollectionCommandEndTime  = Get-Date
-    $CollectionCommandDiffTime = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime
+    $CollectionCommandDiffTime = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime
     $ResultsListBox.Items.RemoveAt(0)
-    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
+    $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
 
-    # Compiles the CSVs into a single file for easier and faster viewing of results
-    $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Compiling CSV Results:  $((($Command.Name) -split ' -- ')[1])")
-    $PoShEasyWin.Refresh()
+#   DEPRECATED
+#    # Compiles the CSVs into a single file for easier and faster viewing of results
+#    $StatusListBox.Items.Clear()
+#    $StatusListBox.Items.Add("Compiling CSV Results:  $((($Command.Name) -split ' -- ')[1])")
+#    $PoShEasyWin.Refresh()
 
     $AutoCreateDashboardChartButton.BackColor = 'LightGreen'
     $AutoCreateMultiSeriesChartButton.BackColor = 'LightGreen'
 
 
     if ($CompileResults -eq $true) {
-        Compile-CsvFiles -LocationOfCSVsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.csv" `
-                         -LocationToSaveCompiledCSV "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
-
-        Compile-XmlFiles -LocationOfXmlsToCompile   "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type)*.xml" `
-                         -LocationToSaveCompiledXml "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).xml"
-
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Compiling CSV Files"
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$($script:CollectionSavedDirectoryTextBox.Text)\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).csv"
+        #Commented out because the above -MonitorMode implementation doesn't save files individually
+        #Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
     }
 
     # Removes any files have are empty

@@ -1,6 +1,6 @@
 #BATMAN######################Query-EventLog -CollectionName $Query.Name -Filter $Query.Filter
 
-$CollectionCommandStartTime = Get-Date
+$ExecutionStartTime = Get-Date
 
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: Event ID Quick Selection")
@@ -55,7 +55,7 @@ if ($EventLogWinRMRadioButton.Checked) {
 
         foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
-                $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
                 Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                         -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -71,8 +71,9 @@ if ($EventLogWinRMRadioButton.Checked) {
                     -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                     -Credential $script:Credential
                 }
-                Monitor-Jobs     -CollectionName $CollectionName
-                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
+                Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+                #Commented out because the above -MonitorMode implementation doesn't save files individually
+                #Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
             }
         }
     }
@@ -80,7 +81,7 @@ if ($EventLogWinRMRadioButton.Checked) {
 
         foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
-                $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
                 Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                         -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -95,8 +96,9 @@ if ($EventLogWinRMRadioButton.Checked) {
                     -ComputerName $TargetComputer `
                     -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
                 }
-                Monitor-Jobs     -CollectionName $CollectionName
-                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
+                Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+                #Commented out because the above -MonitorMode implementation doesn't save files individually
+                #Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
             }
         }
     }
@@ -108,7 +110,7 @@ else {
         foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
                 $CollectionName = "Event Logs - $($Query.Name)"
-                $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
                 Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                         -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -149,8 +151,9 @@ else {
                     -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                     -ArgumentList $Query.Filter, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer,$script:Credential
                 }
-                Monitor-Jobs     -CollectionName $CollectionName
-                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
+                Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+                #Commented out because the above -MonitorMode implementation doesn't save files individually
+                #Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
             }
         }
     }
@@ -158,7 +161,7 @@ else {
         foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
                 $CollectionName = "Event Logs - $($Query.Name)"
-                $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+                $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
                 Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                         -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -198,8 +201,9 @@ else {
                     -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                     -ArgumentList $Query.Filter, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue,$TargetComputer
                 }
-                Monitor-Jobs     -CollectionName $CollectionName
-                Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
+                Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+                #Commented out because the above -MonitorMode implementation doesn't save files individually
+                #Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
             }
         }
     }
