@@ -3621,7 +3621,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
         if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-        script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
+            script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
         }
     }
 

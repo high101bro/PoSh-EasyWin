@@ -30,6 +30,7 @@ if ($MonitorMode) {
 
     $script:AllJobs = Get-Job -Name "PoSh-EasyWin: *"
 
+
     Invoke-Expression "
         # Timer that updates the GUI on interval
         `$script:Timer$JobId = New-Object System.Windows.Forms.Timer -Property @{
@@ -37,7 +38,7 @@ if ($MonitorMode) {
             Interval = 250 #1000 = 1 second
         }
         `$script:Timer$JobId.Start()
-       
+    
 
         `$script:CurrentJobs$JobId = @()
         foreach (`$Job in `$script:AllJobs) {
@@ -48,29 +49,31 @@ if ($MonitorMode) {
         }
 
 
-        if (`"$PSWriteHTML`" -eq 'PSWriteHTMLProcesses') {
-            `$script:JobName$JobId = 'Process Data (Browser)'
-        }
-        elseif (`"$PSWriteHTML`" -eq 'EndpointDataNetworkConnections') {
-            `$script:JobName$JobId = 'Network Connections (Browser)'
-        }
-        elseif (`"$PSWriteHTML`" -eq 'EndpointDataConsoleLogons') {
-            `$script:JobName$JobId = 'Console Logons (Browser)'
-        }
-        elseif (`"$PSWriteHTML`" -eq 'PowerShellSessionsData') {
-            `$script:JobName$JobId = 'PowerShell Sessions (Browser)'
-        }
-        elseif (`"$PSWriteHTML`" -eq 'EndpointApplicationCrashes') {
-            `$script:JobName$JobId = 'Application Crashes (Browser)'
-        }
-        elseif (`"$PSWriteHTML`" -eq 'EndpointLogonActivity') {
-            `$script:JobName$JobId = 'Logon Activity (Browser)'
-        }
-        elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADUsers') {
-            `$script:JobName$JobId = 'Active Directory Users (Browser)'
-        }
-        elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADComputers') {
-            `$script:JobName$JobId = 'Active Directory Computers (Browser)'
+        if (`$PSWriteHTMLSwitch) {
+            if (`"$PSWriteHTML`" -eq 'PSWriteHTMLProcesses') {
+                `$script:JobName$JobId = 'Process Data (Browser)'
+            }
+            elseif (`"$PSWriteHTML`" -eq 'EndpointDataNetworkConnections') {
+                `$script:JobName$JobId = 'Network Connections (Browser)'
+            }
+            elseif (`"$PSWriteHTML`" -eq 'EndpointDataConsoleLogons') {
+                `$script:JobName$JobId = 'Console Logons (Browser)'
+            }
+            elseif (`"$PSWriteHTML`" -eq 'PowerShellSessionsData') {
+                `$script:JobName$JobId = 'PowerShell Sessions (Browser)'
+            }
+            elseif (`"$PSWriteHTML`" -eq 'EndpointApplicationCrashes') {
+                `$script:JobName$JobId = 'Application Crashes (Browser)'
+            }
+            elseif (`"$PSWriteHTML`" -eq 'EndpointLogonActivity') {
+                `$script:JobName$JobId = 'Logon Activity (Browser)'
+            }
+            elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADUsers') {
+                `$script:JobName$JobId = 'Active Directory Users (Browser)'
+            }
+            elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADComputers') {
+                `$script:JobName$JobId = 'Active Directory Computers (Browser)'
+            }
         }
         else {
             `$script:JobName$JobId = `$CollectionName
@@ -84,6 +87,7 @@ if ($MonitorMode) {
         `$script:JobsRowHeight = (`$FormScale * 22)
         `$script:JobsRowGap = (`$FormScale * 5)
         `$script:JobsStartedCount$JobId = `$script:CurrentJobs$JobId.count
+        
 
         #`$TempSaveJobName = `$script:CurrentJobs$JobId[0].Name
         #`$script:JobSaveName$JobId = ((`$TempSaveJobName -replace 'PoSh-EasyWin: ','').split('-')[0..`$(`$TempSaveJobName.split('-').GetUpperBound(0)-2)] -join '-').trim(' -')
@@ -237,7 +241,7 @@ if ($MonitorMode) {
                     
                     `$script:CurrentJobs$JobId = `$null
                     Remove-Variable -Name CurrentJobs$JobId -Scope Script
-                     
+                    
                         
                     # Garbage Collection to free up memory
                     [System.GC]::Collect()                    
@@ -338,7 +342,9 @@ if ($MonitorMode) {
         `$script:PreviousJobFormItemsList += `"Section3MonitorJobKeepDataCheckbox$JobId`"
         `$script:PreviousJobFormItemsList += `"Section3MonitorJobNotifyCheckbox$JobId`"
 
-
+    "
+    if ($PSWriteHTMLSwitch) {
+        Invoke-Expression "
         `$script:Timer$JobId.add_Tick({
             `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
 
@@ -363,34 +369,41 @@ if ($MonitorMode) {
 
                 `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv`" -NoTypeInformation
                 `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml`"
-                
-                
-                `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
+
                 if (`"$PSWriteHTML`" -eq 'PSWriteHTMLProcesses') {
+                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
                 }
                 elseif (`"$PSWriteHTML`" -eq 'EndpointDataNetworkConnections') {
+                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Start-PSWriteHTMLNetworkConnections }
                 }
                 elseif (`"$PSWriteHTML`" -eq 'EndpointDataConsoleLogons') {
+                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Console Logons' -Data { script:Start-PSWriteHTMLConsoleLogons }
                 }
                 elseif (`"$PSWriteHTML`" -eq 'PowerShellSessionsData') {
+                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'PowerShell Sessions' -Data { script:Start-PSWriteHTMLPowerShellSessions }
                 }
                 elseif (`"$PSWriteHTML`" -eq 'XXXXXXXXXXXXXXXXX') {
+                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
 
                 }
                 elseif (`"$PSWriteHTML`" -eq 'EndpointApplicationCrashes') {
+                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Application Crashes' -Data { script:Start-PSWriteHTMLApplicationCrashes }
                 }
                 elseif (`"$PSWriteHTML`" -eq 'EndpointLogonActivity') {
+                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Start-PSWriteHTMLLogonActivity }
                 }
                 elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADUsers') {
+                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
                 }
                 elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADComputers') {
+                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
                 }
 
@@ -409,8 +422,54 @@ if ($MonitorMode) {
                 `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsCompleted$JobId
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
             }
-        })
+        })        
     "
+    }
+    else {
+        Invoke-Expression "
+        `$script:Timer$JobId.add_Tick({
+            `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
+
+            if (`$script:JobsStartedCount$JobId -eq `$script:JobsCompleted$JobId) {
+                `$script:Section3MonitorJobLabel$JobId.text = `"`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))`"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = `"[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId`"
+
+                `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
+                `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
+                `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
+                `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
+                `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
+                `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
+
+                
+                `$script:JobsStartedCount$JobId = -1
+                `$script:JobsTimeCompleted$JobId = Get-Date
+                `$script:Timer$JobId.Stop()
+                `$script:Timer$JobId = `$null
+                Remove-Variable -Name Timer$JobId -Scope script
+
+
+                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv`" -NoTypeInformation
+                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml`"
+
+                
+                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                `$script:Section3MonitorJobProgressBar$JobId.Refresh()
+
+                if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
+                    [System.Windows.Forms.MessageBox]::Show(`"`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)`",'PoSh-EasyWin')
+                }
+            }
+            else {
+                `$script:Section3MonitorJobLabel$JobId.text = `"`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))`"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = `"[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId`"
+
+                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsCompleted$JobId
+                `$script:Section3MonitorJobProgressBar$JobId.Refresh()
+            }
+        })        
+    "        
+    }
 <#
             `$Jobs = Get-Job -Name `"PoSh-EasyWin Job *`"
             `$JobsCompleted = (Get-Job -Name `"PoSh-EasyWin Job *`" | Where-Object {`$_.State -eq 'Completed'}).count

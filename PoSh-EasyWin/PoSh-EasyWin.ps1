@@ -5760,7 +5760,7 @@ $CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.Forms.C
     DropDownStyle = 'DropDownList'
     Add_SelectedIndexChanged = {
         & $CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged
-        $This.Text | Set-Content "$PoShHome\Settings\Script Execution Mode.txt" -Force
+        #$This.Text | Set-Content "$PoShHome\Settings\Script Execution Mode.txt" -Force
     }
 }
 $QueryMethodSelectionList = @(
@@ -7277,12 +7277,11 @@ $ExecuteScriptHandler = {
                 $MessageBox = [System.Windows.Forms.MessageBox]::Show("Multiple WinRM based commands were selected.
 Consider swtiching to 'Session Based' mode.
 Pros:
-   - Faster, especially with multiple queries
-   - Uses less local processor and memory
-   - Requires less network connections
+   - The local processor and memory requirements are less
+   - There are less network connections - not as noisy
 Cons:
-   - The Endpoint Progress Bar is less useful
-   - Some queries or actions show less updates",
+   - The monitor jobs feature won't provide status updates
+   - Some queries or actions will display fewer or no updates",
 "Optimize Performance For Speed",'YesNoCancel','Info')
                 Switch ( $MessageBox ) {
                     'Yes' {

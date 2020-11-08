@@ -31,13 +31,29 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 
 ***
 ***
-### New Graph Feature (Beta Release)
+### Browser View - Searching, Tables, Panels, Charts, and Graphs (Beta Release)
 
-| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph02.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph04.jpg) | 
+| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph02.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph04.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph03-ProcessTree.jpg) | 
 |:----------------------:|:-----------------:|:---------------------:|
-|  Graph w/ Spreadsheet  |  Graph Collapsed  |  Graph Computer Data  |
+|  Graph Node Views  |  Zoomed-in Desciptions  |  Graph & Table Combo  |
+| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Sheet01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Panel01.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Chart01.jpg) | 
+|:----------------------:|:-----------------:|:---------------------:|
+|  Table Search w/ Details  |  Panel Breakout Filtering  |  Pies & Bar Charts   |
 
-New Beta Feature (Work in Progress) - Currently refining code to best display data. Also, looking into other data that is useful to visualize in graphs. You're able to view data collected from endpoints or from Active Directory and their relationships as well as investigate more details by looking at the accompanying data within the spreadsheets in the browser.
+New Beta Feature (Work in Progress) - Currently refining code to best display data. Also, looking into other data that is useful to visualize in graphs. You're able to view data collected from endpoints or from Active Directory and their relationships as well as investigate more details by looking at the accompanying data within the spreadsheets in the browser. This features uses the PSWriteHTML module which can be installed separately, but a specific version has been packaged with PoSh-EasyWin that has been vetted for compatibliity.
+
+***
+***
+### Monitor Jobs Tab (Beta Release)
+
+| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph02.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph04.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph03-ProcessTree.jpg) | 
+|:----------------------:|:-----------------:|:---------------------:|
+|  Graph Node Views  |  Zoomed-in Desciptions  |  Graph & Table Combo  |
+| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/MonitorJobs01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/MonitorJobs02.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Notify02.jpg) | 
+|:----------------------:|:-----------------:|:---------------------:|
+|  Monitor Jobs Compact View  |  Monitor Jobs Maximized View  |  Optional Query Notification   |
+
+There is a new monitor jobs tab that tracks jobs with individual progress bars, while allowing you the freedom to continue using the GUI to conduct other tasks. Each progress bar also has it's own timer to see how long each task has been running or took to compelte. Queries can be cancelled and removed. You're able to click on each to view the data in progress to see what's collected as it's going and afterward completion. After completion, you're able to view the results in a PowerShell terminal, allowing you to easily manipulate the data as you see fit. Data is saved by default, but you're able to choose to not save it before removing. There is an option to select to be notified per each query, which will show a popup while your don't other tasks. There's an option to maximize the panel view to easily see more jobs - plus an auto-max feature.
 
 ***
 ***
