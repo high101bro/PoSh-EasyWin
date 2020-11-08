@@ -1,10 +1,10 @@
 # Executes RPC/DCOM based commands if the RPC Radio Button is Checked
 if ($ExternalProgramsRPCRadioButton.checked) {
     $CollectionName = "Sysmon"
-    $CollectionCommandStartTime = Get-Date
+    $ExecutionStartTime = Get-Date
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Insert(0,"Query: $CollectionName")
-    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
+    $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
     $PoShEasyWin.Refresh()
 
     # This directory is created by the parent script and is used by most other commands, but it's not needed here
@@ -33,7 +33,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
     }
 
     foreach ($TargetComputer in $script:ComputerList) {
-        $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName - $TargetComputer")
+        $ResultsListBox.Items.Insert(1,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName - $TargetComputer")
         $PoShEasyWin.Refresh()
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -101,9 +101,9 @@ if ($ExternalProgramsRPCRadioButton.checked) {
             #Remove-Item "\\$TargetComputer\$AdminShare\$TargetFolder\$Script:SysmonXMLName" -Force
         }
         $CollectionCommandEndTime1  = Get-Date
-        $CollectionCommandDiffTime1 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime1
+        $CollectionCommandDiffTime1 = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime1
         $ResultsListBox.Items.RemoveAt(1)
-        $ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime1]  $CollectionName - $TargetComputer")
+        $ResultsListBox.Items.Insert(1,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime1]  $CollectionName - $TargetComputer")
         $PoShEasyWin.Refresh()
     }
 
@@ -112,9 +112,9 @@ if ($ExternalProgramsRPCRadioButton.checked) {
         Remove-Item "$ExternalPrograms\$($SysinternalsSysmonRenameServiceProcessTextBox.text).exe" -Force
     }
     $CollectionCommandEndTime0  = Get-Date
-    $CollectionCommandDiffTime0 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime0
+    $CollectionCommandDiffTime0 = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime0
     $ResultsListBox.Items.RemoveAt(0)
-    $ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime0]  $CollectionName")
+    $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime0]  $CollectionName")
     $PoShEasyWin.Refresh()
 }
 

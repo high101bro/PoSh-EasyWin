@@ -1,8 +1,8 @@
-$CollectionCommandStartTime = Get-Date
+$ExecutionStartTime = Get-Date
 $CollectionName = "Sysinternals Sysmon Configuration"
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(1,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
 # This directory is created by the parent script and is used by most other commands, but it's not needed here
@@ -197,15 +197,15 @@ while ($true) {
         break
     }
     # Not supported
-    elseif ((Get-Date) -gt ( ($CollectionCommandStartTime).addseconds([int]$script:OptionJobTimeoutSelectionComboBox.text))) {
-        $ResultsListBox.Items.Insert(3,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Timeout: $CollectionName ($([int]$script:OptionJobTimeoutSelectionComboBox.Text) Seconds)")
+    elseif ((Get-Date) -gt ( ($ExecutionStartTime).addseconds([int]$script:OptionJobTimeoutSelectionComboBox.text))) {
+        $ResultsListBox.Items.Insert(3,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Timeout: $CollectionName ($([int]$script:OptionJobTimeoutSelectionComboBox.Text) Seconds)")
         $PoShEasyWin.Refresh()
         break
     }
 }
 
 $ResultsListBox.Items.RemoveAt(1)
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$ResultsListBox.Items.Insert(1,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $ExecutionStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarQueriesProgressBar.Value += 1

@@ -1,9 +1,9 @@
 $CollectionName = "Event Logs - Event ID Manual Entry"
-$CollectionCommandStartTime = Get-Date
+$ExecutionStartTime = Get-Date
 
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
-$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
@@ -176,7 +176,8 @@ foreach ($TargetComputer in $script:ComputerList) {
         }
     }
 }
-Monitor-Jobs     -CollectionName $CollectionName
-Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $CollectionCommandStartTime
+Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+#Commented out because the above -MonitorMode implementation doesn't save files individually
+#Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
 
 

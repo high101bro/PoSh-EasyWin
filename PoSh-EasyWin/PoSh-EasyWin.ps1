@@ -483,6 +483,21 @@ Add-Type -TypeDefinition $code -Language CSharp
 Invoke-Expression "[Loading.Test$id]::Main()"
 
 
+# Timer that updates the GUI on interval
+#$script:Timer = New-Object System.Windows.Forms.Timer -Property @{
+#    Enabled  = $true
+#    Interval = 1000 #1000 = 1 second
+#}
+#$script:Timer.Start()
+
+#$script:timer.add_Tick({write-host $(Get-Date)})
+
+### How to stop the timer... if needed
+#$script:Timer.stop()
+#$PoShEasyWin.Refresh()
+
+
+
 #Start Progress bar form loading
 $ScriptBlockForGuiLoadAndProgressBar = {
 
@@ -497,6 +512,7 @@ $ResolutionCheckForm.topmost = $false
 
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
+
 
 $PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 #[System.Windows.Forms.Application]::EnableVisualStyles()
@@ -1052,7 +1068,6 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
             $CustomQueryScriptBlockGroupBox.controls.add($CustomQueryScriptBlockOverrideCheckBox)
 
 $Section1CommandsTab.controls.add($CustomQueryScriptBlockGroupBox)
-
 
 # Default View
 Initialize-CommandTreeNodes
@@ -5986,16 +6001,20 @@ $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
 
+$MainBottomTabControlOriginalTop    = $ProgressBarQueriesLabel.Location.Y + $ProgressBarQueriesLabel.Size.Height - 2
+$MainBottomTabControlOriginalHeight = $FormScale * 250
+
 $MainBottomTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-    Name     = "Main Tab Window"
-    Location = @{ X = $FormScale * 470
-                  Y = $ProgressBarQueriesLabel.Location.Y + $ProgressBarQueriesLabel.Size.Height - 2 }
-    Size     = @{ Width  = $FormScale * 752
-                  Height = $FormScale * 250 }
-    ShowToolTips  = $True
-    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Name   = "Main Tab Window"
+    Left   = $FormScale * 470
+    Top    = $MainBottomTabControlOriginalTop
+    Width  = $FormScale * 752
+    Height = $MainBottomTabControlOriginalHeight
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ShowToolTips = $True
 }
 $PoShEasyWin.Controls.Add($MainBottomTabControl)
+$MainBottomTabControl.BringToFront()
 
 
 #=======================================================================================================================================================================
@@ -6012,9 +6031,10 @@ $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
 
 $Section3AboutTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text                    = "About"
+    Text = "About"
+    Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_click = { Maximize-MonitorJobsTab }
 }
 $MainBottomTabControl.Controls.Add($Section3AboutTab)
 
@@ -6076,10 +6096,11 @@ $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
 
 $Section3ResultsTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text                    = "Results"
-    Name                    = "Results Tab"
+    Text = "Results"
+    Name = "Results Tab"
+    Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    Font                    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_click = { Maximize-MonitorJobsTab }
 }
 $MainBottomTabControl.Controls.Add($Section3ResultsTab)
 
@@ -6113,6 +6134,216 @@ $ResultsListBox = New-Object System.Windows.Forms.ListBox -Property @{
 $Section3ResultsTab.Controls.Add($ResultsListBox)
 
 
+
+
+
+
+
+
+
+
+#=======================================================================================================================================================================
+#
+#  Parent: Main Form -> Main Bottom TabControl
+#
+#
+#
+#   Monitor Jobs
+#
+#
+#
+#=======================================================================================================================================================================
+
+function Maximize-MonitorJobsTab {
+    $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
+    $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop - 855
+    $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight + 855
+}
+
+function Minimize-MonitorJobsTab {
+    $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
+    $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop
+    $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight    
+}
+
+$script:Section3MonitorJobsTab = New-Object System.Windows.Forms.TabPage -Property @{
+    Text = "Monitor Jobs"
+    Name = "Monitor Jobs Tab"
+    Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    AutoScroll = $true
+    Add_MouseEnter = { 
+        if ($script:Section3MonitorJobsResizeCheckbox.checked -eq $true ) { Maximize-MonitorJobsTab } 
+    }
+    UseVisualStyleBackColor = $True
+}
+$MainBottomTabControl.Controls.Add($script:Section3MonitorJobsTab)
+
+$script:AllJobs = $null
+
+# This list will contain all the job ids executed by PoSh-EasyWin
+# It's populated by the Monitor-Jobs function
+# Used to track which jobs were previously done to separate them from the current onces
+$script:PastJobsIDList = @()
+
+$script:PreviousJobFormItemsList = @()
+$script:MonitorJobsLeftPosition  = ($FormScale * 5)
+$script:MonitorJobsTopPosition   = ($FormScale * 5 + 105)
+
+$script:Section3MonitorJobsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+    Text      = "Monitor Jobs Options"
+    Left      = 0
+    Top       = 0
+    Width     = $FormScale * 730 #>700 <750
+    Height    = $FormScale * 42
+    Font      = New-Object System.Drawing.Font($Font,$($FormScale * 11),1,2,1)
+    ForeColor = 'Blue'
+}
+$script:Section3MonitorJobsTab.Controls.Add($script:Section3MonitorJobsGroupBox)
+
+
+$script:Section3MonitorJobsResizeButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = "^ Maximize Tab"
+    Left      = $FormScale * 5
+    Top       = $FormScale * 15
+    Width     = $FormScale * 116
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font($Font,$($FormScale * 11),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        if ($script:Section3MonitorJobsResizeButton.text -eq     "^ Maximize Tab") { Maximize-MonitorJobsTab }
+        elseif ($script:Section3MonitorJobsResizeButton.text -eq "v Minimize Tab") { Minimize-MonitorJobsTab }
+    }
+}
+$script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobsResizeButton)
+CommonButtonSettings -Button $script:Section3MonitorJobsResizeButton
+
+
+$script:Section3MonitorJobsResizeCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text      = "Auto-Max"
+    Left      = $script:Section3MonitorJobsResizeButton.Left + $script:Section3MonitorJobsResizeButton.Width + ($FormScale * 5)
+    Top       = $script:Section3MonitorJobsResizeButton.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
+    ForeColor = 'Black'
+    Checked   = $false
+}
+$script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobsResizeCheckbox)
+
+
+$script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = 'Remove All'
+    Left      = $FormScale * 575
+    Top       = $script:Section3MonitorJobsResizeButton.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("Courier New",$($FormScale * 8),1,2,1)
+    Add_Click = {
+        $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?",'PoSh-EasyWin','YesNo','Warning')
+        switch ($RemoveAllJobsVerify) {
+            'Yes'{
+                $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop
+                $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight    
+        
+                Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
+                    Invoke-Expression "`$script:Section3MonitorJobsTab.Controls.Remove(`$script:$($_.Name))"
+                }
+        
+                $script:TotalJobsToRemoveCount = (Get-Job -name "PoSh-EasyWin: *" | Where-Object {$_.State -match 'Run'}).count
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Monitor Progress Bars Removed - Stopping $script:TotalJobsToRemoveCount Remainingg Jobs...")
+
+                Get-Job -Name "PoSh-EasyWin: *" | Stop-Job
+                Get-Job -Name "PoSh-EasyWin: *" | Remove-Job -Force
+
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Monitor Progress Bars Removed - Stopping $script:TotalJobsToRemoveCount Remainingg Jobs - Completed")
+        
+                $script:MonitorJobsTopPosition = ($FormScale * 5 + 100)
+            }
+            'No' {
+                continue
+            }
+        }       
+    }
+}
+$script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobRemoveButton)
+CommonButtonSettings -Button $script:Section3MonitorJobRemoveButton
+$script:Section3MonitorJobRemoveButton.ForeColor = 'Red'
+
+
+$script:Section3MonitorJobKeepDataAllCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text      = 'Keep Data'
+    Left      = $script:Section3MonitorJobRemoveButton.Left + $script:Section3MonitorJobRemoveButton.Width + ($FormScale * 5)
+    Top       = $script:Section3MonitorJobsResizeButton.Top
+    Width     = $FormScale * 70
+    Height    = $FormScale * 11
+    Font      = New-Object System.Drawing.Font("Courier New",$($FormScale * 8),1,2,1)
+    ForeColor = 'Black'
+    checked   = $true
+    Add_Click = {
+        if ($script:Section3MonitorJobKeepDataAllCheckbox.checked -eq $true) {
+            $script:Section3MonitorJobKeepDataAllCheckbox.ForeColor = 'Black'
+            Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobKeepDataCheckbox'} | Foreach-Object {
+                Invoke-Expression "`$script:$($_.Name).checked = `$true"
+                Invoke-Expression "`$script:$($_.Name).forecolor = 'black'"
+            }
+        }
+        else {
+            $script:Section3MonitorJobKeepDataAllCheckbox.ForeColor = 'Red'
+            Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobKeepDataCheckbox'} | Foreach-Object {
+                Invoke-Expression "`$script:$($_.Name).checked = `$false"
+                Invoke-Expression "`$script:$($_.Name).forecolor = 'red'"
+            }    
+        } 
+    }
+}
+$script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobKeepDataAllCheckbox)
+
+
+
+$script:Section3MonitorJobNotifyAllCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text      = 'Notify Me'
+    Left      = $script:Section3MonitorJobKeepDataAllCheckbox.Left
+    Top       = $script:Section3MonitorJobKeepDataAllCheckbox.Top + $script:Section3MonitorJobKeepDataAllCheckbox.Height + ($FormScale * 1)
+    Width     = $FormScale * 70
+    Height    = $FormScale * 11
+    Font      = New-Object System.Drawing.Font("Courier New",$($FormScale * 8),1,2,1)
+    ForeColor = 'Black'
+    Checked   = $false
+    Add_Click = {
+        if ($script:Section3MonitorJobNotifyAllCheckbox.checked -eq $true) {
+            $script:Section3MonitorJobNotifyAllCheckbox.ForeColor = 'Blue'
+            Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobNotifyCheckbox'} | Foreach-Object {
+                Invoke-Expression "`$script:$($_.Name).checked = `$true"
+                Invoke-Expression "`$script:$($_.Name).forecolor = 'blue'"
+            }
+        }
+        else {
+            $script:Section3MonitorJobNotifyAllCheckbox.ForeColor = 'Black'
+            Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobNotifyCheckbox'} | Foreach-Object {
+                Invoke-Expression "`$script:$($_.Name).checked = `$false"
+                Invoke-Expression "`$script:$($_.Name).forecolor = 'black'"
+            }    
+        } 
+    }
+}
+$script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobNotifyAllCheckbox)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #=======================================================================================================================================================================
 #
 #  Parent: Main Form -> Main Bottom TabControl
@@ -6131,6 +6362,7 @@ $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     Name = "Host Data Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    Add_click = { Maximize-MonitorJobsTab }
 }
 $MainBottomTabControl.Controls.Add($Section3HostDataTab)
 
@@ -6355,6 +6587,7 @@ $Section3QueryExplorationTabPage = New-Object System.Windows.Forms.TabPage -Prop
     Name = "Query Exploration"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
+    Add_click = { Maximize-MonitorJobsTab }
 }
 $MainBottomTabControl.Controls.Add($Section3QueryExplorationTabPage)
 
@@ -6685,10 +6918,10 @@ CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton
 
 # Compiles the .csv files in the collection directory then saves the combined file to the partent directory
 # The first line (collumn headers) is only copied once from the first file compiled, then skipped for the rest
-. "$Dependencies\Code\Execution\Compile-CsvFiles.ps1"
+#. "$Dependencies\Code\Execution\Compile-CsvFiles.ps1"
 
 # Compiles the .xml files in the collection directory then saves the combined file to the partent directory
-. "$Dependencies\Code\Execution\Compile-XmlFiles.ps1"
+#. "$Dependencies\Code\Execution\Compile-XmlFiles.ps1"
 
 # Removes Duplicate CSV Headers
 . "$Dependencies\Code\Execution\Individual Execution\Remove-DuplicateCsvHeaders.ps1"
@@ -6780,7 +7013,8 @@ $ExecuteScriptHandler = {
     if ($EventLogsStartTimePicker.Checked -xor $EventLogsStopTimePicker.Checked) {
         # This brings specific tabs to the forefront/front view
         $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        #$MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        #$MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
 
         [system.media.systemsounds]::Exclamation.play()
         $StatusListBox.Items.Clear()
@@ -6800,7 +7034,8 @@ $ExecuteScriptHandler = {
                 $MainCenterTabControl.Height = $FormScale * 278
             }
         $MainRightTabControl.SelectedTab  = $Section3ActionTab
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        #$MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        #$MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
         $PoShEasyWin.Refresh()
 
 
@@ -6895,9 +7130,6 @@ $ExecuteScriptHandler = {
         $script:QueryHistory  + $script:CommandsCheckedBoxesSelected | Export-Clixml "$PoShHome\Query History.xml"
         $script:QueryHistory += $script:CommandsCheckedBoxesSelected
 
-
-        # Ensures that there are to lingering jobs in memory
-        Get-Job -Name "PoSh-EasyWin:*" | Remove-Job -Force -ErrorAction SilentlyContinue
 
         #=======================================================================================================================================================================
         #   ___             _  _         _      _                _     _____                          _    _

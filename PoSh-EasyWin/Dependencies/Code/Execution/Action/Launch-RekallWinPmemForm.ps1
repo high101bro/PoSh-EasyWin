@@ -494,7 +494,7 @@ function Launch-RekallWinPmemForm {
 
 function Conduct-RekallWinPmemMemoryCapture {
     $CollectionName = "Memory Capture"
-    $CollectionCommandStartTime = Get-Date
+    $ExecutionStartTime = Get-Date
     Conduct-PreCommandExecution $PoShLocation $CollectedResultsUncompiled $CollectionName
     Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                             -IndividualHostResults $script:IndividualHostResults -CollectionName $CollectionName `
@@ -695,8 +695,8 @@ function Conduct-RekallWinPmemMemoryCapture {
 
         Conduct-PostCommandExecution $CollectionName
         $CollectionCommandEndTime0  = Get-Date
-        $CollectionCommandDiffTime0 = New-TimeSpan -Start $CollectionCommandStartTime -End $CollectionCommandEndTime0
-        $RekallWinPmemStatusMessageTextbox.text = "$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime0]  $CollectionName`r`n" + $RekallWinPmemStatusMessageTextbox.text
+        $CollectionCommandDiffTime0 = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime0
+        $RekallWinPmemStatusMessageTextbox.text = "$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime0]  $CollectionName`r`n" + $RekallWinPmemStatusMessageTextbox.text
 
         $ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Memory Capture Has Finished!")
         $Message = "$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss')) - Memory Capture Has Finished!"

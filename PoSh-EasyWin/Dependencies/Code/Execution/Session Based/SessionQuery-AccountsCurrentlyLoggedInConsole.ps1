@@ -1,9 +1,9 @@
-$CollectionCommandStartTime = Get-Date
+$ExecutionStartTime = Get-Date
 $CollectionName = "Accounts Currently Logged In via Console"
 
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
@@ -84,7 +84,7 @@ Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -Sc
 
 
 $ResultsListBox.Items.RemoveAt(0)
-$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $ExecutionStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()
 
 

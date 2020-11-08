@@ -13,7 +13,7 @@
 |  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe              |
 |                |  etl2pcapng.exe, WinPmem.exe                                    |
 |                |                                                                 |
-|  Updated       |  21 Oct 2020                                                    |
+|  Updated       |  07 Nov 2020                                                    |
 |  Created       |  21 Aug 2018                                                    |
 
 ***

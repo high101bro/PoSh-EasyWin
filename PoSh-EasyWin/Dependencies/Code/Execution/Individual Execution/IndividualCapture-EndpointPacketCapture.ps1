@@ -23,11 +23,11 @@ Defaults:
 	providerFilter = no (specifies whether provider filter is enabled)
 #>
 
-$CollectionCommandStartTime = Get-Date
+$ExecutionStartTime = Get-Date
 $CollectionName = "Endpoint Packet Capture"
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
 New-Item -Type Directory -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\" -ErrorAction SilentlyContinue
@@ -188,7 +188,7 @@ Invoke-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By En
 
 
 $ResultsListBox.Items.RemoveAt(0)
-$ResultsListBox.Items.Insert(0,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$(New-TimeSpan -Start $ExecutionStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarQueriesProgressBar.Value += 1

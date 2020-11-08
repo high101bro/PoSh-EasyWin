@@ -1,8 +1,8 @@
-$CollectionCommandStartTime = Get-Date
+$ExecutionStartTime = Get-Date
 $CollectionName = "Sysinternals Procmon Collection"
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+$ResultsListBox.Items.Insert(1,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[+] Executing Procmon"
 
@@ -235,8 +235,8 @@ else {
                 break
             }
             # Not supported
-            elseif ((Get-Date) -gt ( ($CollectionCommandStartTime).addseconds(([int]$script:OptionJobTimeoutSelectionComboBox.text) + $ProcmonDuration))) {
-                $ResultsListBox.Items.Insert(3,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Timeout: $CollectionName ($([int]$script:OptionJobTimeoutSelectionComboBox.Text) Seconds)")
+            elseif ((Get-Date) -gt ( ($ExecutionStartTime).addseconds(([int]$script:OptionJobTimeoutSelectionComboBox.text) + $ProcmonDuration))) {
+                $ResultsListBox.Items.Insert(3,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      [!] Timeout: $CollectionName ($([int]$script:OptionJobTimeoutSelectionComboBox.Text) Seconds)")
                 $PoShEasyWin.Refresh()
                 break
             }
@@ -246,11 +246,11 @@ else {
 
 # Reconnections to sessions that were disconnected becuase of limited space on endpoints
 if ($DisconnectedPSSessions.Count -gt 0) {
-    $ResultsListBox.Items.Insert(2,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Reconnecting to Disconnected Sessions:")
+    $ResultsListBox.Items.Insert(2,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Reconnecting to Disconnected Sessions:")
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[!] Reconnecting to Disconnected Sessions:"
     foreach ($Session in $DisconnectedPSSessions) {
         $Session | Connect-PSSession
-        $ResultsListBox.Items.Insert(3,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
+        $ResultsListBox.Items.Insert(3,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "    $($Session.ComputerName)"
         $PoShEasyWin.Refresh()
     }
@@ -259,7 +259,7 @@ if ($DisconnectedPSSessions.Count -gt 0) {
 $SysinternalsProcmonButton.BackColor = 'LightGreen'
 
 $ResultsListBox.Items.RemoveAt(1)
-$ResultsListBox.Items.Insert(1,"$(($CollectionCommandStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $CollectionCommandStartTime -End (Get-Date))]  $CollectionName")
+$ResultsListBox.Items.Insert(1,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $ExecutionStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()
 
 $script:ProgressBarQueriesProgressBar.Value += 1
