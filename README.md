@@ -45,8 +45,6 @@ New Beta Feature (Work in Progress) - Currently refining code to best display da
 ***
 ### Monitor Jobs Tab (Beta Release)
 
-| ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph02.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph04.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/Graph03-ProcessTree.jpg) | 
-|:----------------------:|:-----------------:|:---------------------:|
 |  Graph Node Views  |  Zoomed-in Desciptions  |  Graph & Table Combo  |
 | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/MonitorJobs01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/MonitorJobs02.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Notify02.jpg) | 
 |:----------------------:|:-----------------:|:---------------------:|
