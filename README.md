@@ -37,7 +37,6 @@ PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .
 |:----------------------:|:-----------------:|:---------------------:|
 |  Graph Node Views  |  Zoomed-in Desciptions  |  Graph & Table Combo  |
 | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Sheet01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Panel01.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Chart01.jpg) | 
-|:----------------------:|:-----------------:|:---------------------:|
 |  Table Search w/ Details  |  Panel Breakout Filtering  |  Pies & Bar Charts   |
 
 New Beta Feature (Work in Progress) - Currently refining code to best display data. Also, looking into other data that is useful to visualize in graphs. You're able to view data collected from endpoints or from Active Directory and their relationships as well as investigate more details by looking at the accompanying data within the spreadsheets in the browser. This features uses the PSWriteHTML module which can be installed separately, but a specific version has been packaged with PoSh-EasyWin that has been vetted for compatibliity.
