@@ -45,7 +45,6 @@ New Beta Feature (Work in Progress) - Currently refining code to best display da
 ***
 ### Monitor Jobs Tab (Beta Release)
 
-|  Graph Node Views  |  Zoomed-in Desciptions  |  Graph & Table Combo  |
 | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/MonitorJobs01.jpg)  | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/MonitorJobs02.jpg) | ![Alt text](https://github.com/high101bro/PoSh-EasyWin/blob/master/Images/PSWriteHTML-Notify02.jpg) | 
 |:----------------------:|:-----------------:|:---------------------:|
 |  Monitor Jobs Compact View  |  Monitor Jobs Maximized View  |  Optional Query Notification   |
