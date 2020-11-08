@@ -6012,9 +6012,9 @@ $MainBottomTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Height = $MainBottomTabControlOriginalHeight
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ShowToolTips = $True
+    Add_MouseHover = { $this.bringtofront() }
 }
 $PoShEasyWin.Controls.Add($MainBottomTabControl)
-$MainBottomTabControl.BringToFront()
 
 
 #=======================================================================================================================================================================
@@ -6158,12 +6158,14 @@ function Maximize-MonitorJobsTab {
     $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
     $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop - 855
     $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight + 855
+    $MainBottomTabControl.bringtofront()
 }
 
 function Minimize-MonitorJobsTab {
     $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
     $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop
     $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight    
+    $MainBottomTabControl.bringtofront()
 }
 
 $script:Section3MonitorJobsTab = New-Object System.Windows.Forms.TabPage -Property @{
@@ -6173,6 +6175,7 @@ $script:Section3MonitorJobsTab = New-Object System.Windows.Forms.TabPage -Proper
     AutoScroll = $true
     Add_MouseEnter = { 
         if ($script:Section3MonitorJobsResizeCheckbox.checked -eq $true ) { Maximize-MonitorJobsTab } 
+        $MainBottomTabControl.bringtofront()
     }
     UseVisualStyleBackColor = $True
 }

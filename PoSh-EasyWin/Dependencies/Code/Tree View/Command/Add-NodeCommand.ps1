@@ -42,7 +42,8 @@ Encrypted: Yes, HTTP  - message level encryption
 OS:        Win7 / 2008R2+
                 Older Operating Systems with WinRM installed
 Data:      Deserialized Objects
-Pros:      Single Port required
+Pros:      Works With PoSh-EasyWin's Monitor Jobs Feature
+                Single Port required
                 Can establish sessions with endpoints
                 Supports any cmdlet and native commands
 Cons:       Requires WinRM service
@@ -58,7 +59,8 @@ Ports:     135, Random High
 OS:        Windows 2000 and above
 Data:      PowerShell = Deserialized Objects
                 Native CMD = Serialized Data
-Pros:      Works with older Operating Systems
+Pros:      Works With PoSh-EasyWin's Monitor Jobs Feature
+                Works with older Operating Systems
                 Does not require WinRM
 Cons:      Uses random high ports
                 Not firewall friendly
@@ -76,12 +78,14 @@ Data:      Serialized Data (though EasyWin will convert it)
 Pros:      Works with older Operating Systems
                 Access to domained and non-domained hosts
                 Does not require WinRM or RPC
-Cons:      Not natively supported, requires PSExec.exe
+Cons:      Does NOT Work With PoSh-EasyWin's Monitor Jobs Feature
+                Not natively supported, requires PSExec.exe
                 Creates the service: PSEXEC
                 May be blocked via Anti-Virus / Endpoint Security
                 May be blocked via Application White/Black Listing
 "@
-        }        else { $CategoryNode.ToolTipText = "This is the directory name of the commands executed previously at that momemnt." }
+        }
+        else { $CategoryNode.ToolTipText = "This is the directory name of the commands executed previously at that momemnt." }
 
         $CategoryNode.NodeFont   = New-Object System.Drawing.Font("Courier New",$($FormScale * 10),1,1,1)
         $CategoryNode.ForeColor  = [System.Drawing.Color]::FromArgb(0,0,0,0)

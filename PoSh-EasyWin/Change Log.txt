@@ -2,6 +2,13 @@
 v5.1.6 BETA - 7 Nov 20
 ==================================================
 
+Updated Tooltip messagse for command protocols
+	- Noted which protocols work with the monitor jobs feature
+
+Added code for SMB Queries in individual execution mode
+	- Now auto selects the Results tab, rather than staying on the Monitor Jobs Tab
+		- The SMB query uses PSExec, which is not Job friends and has to run serially
+
 Modified 'Open Data In Shell'
 	-Changed the -ExecutionPolicy from Restricted to ByPass
 
@@ -12,12 +19,15 @@ Added a parameter, [switch]MonitorMode, to the Monitor-Jobs function
 		- If not, it uses the original method where and provides active status on the queries
 			- Mainly used with tasks that require multiple interactions, like with the Sysmon and Procmon features
 	- Added the -MonitorJobs switch to many data queries for individual collection
+	- Added a couple ther parameter switches to assist with handling PSWriteHTML
+		- Parameter -PSWriteHTML passes the name of the variable used to contain the data
+		- Parameter -PSWriteHTMLSwitch is a swtich parameter used to select which part of the code to run
 
 Change completion message text withing ResultsListBox
 	- Original: 'Finished Collecting Data!'
 	- New:      'Finished Executing Commands'
 
-Commented out Post-MonitorJob function wherever the Monitor-Jobs -MonitorMode was at
+Commented out Post-MonitorJob function wherever the Monitor-Jobs -MonitorMode was located
 	- this code was a wrapper for Compile-CsvFiles and Compile-XmlFiles
 
 Renamed variables for consistency
@@ -32,48 +42,70 @@ Added a new links to System Tray Icon
 		- Active Directory Commands
 		- Active Directory Scripts
 
-Working on new feature that uses PSWriteHTML to generate graph data
-	PSWriteHTML is a module avaiilable to be imported from the PowerShell Gallery
-		PSWriteHTML will be packaged with PoSh-EasyWin 
-		It will be installed offline and imported automatically with this tool
-	PSWriteHTML is the first external module I'm incorporating
-		That said, there's a lot of code I haven't reviewed
+Update Monitor-Jobs with new features and thread like capabiltiies
+	- New Monitor Jobs Tab
+		- dynamically adds progress bars for started jobs
+		- able to stop/remove jobs
+		- able to view results to see mid-collection results (Out-GridView/Table View)
+		- able to view results (Out-GridView/Table View)
+		- able to select to be notified on each job if desired
+		- automatically saves data, with ability to choose to delete each
+		- change view from compact(minimized) to maximized, also support auto-max with a checkbox
+		- able to view data in PowerShell terminal after collection completion for advanced manipulation
+		- buttons/checkboxes to auto remove all results and auto-check/uncheck boxes
+	- Support for PSWriteHTML brower data collection
+
+Added new feature that uses PSWriteHTML to generate web pages to view data
+	- Data is veiwable in:
+		- Tables (w/ Search Feature)
+		- Panel Search/Filter
+		- Pie and Bar Charts
+		- Graph Node Charts
+	- PSWriteHTML is a module avaiilable to be imported from the PowerShell Gallery
+		- PSWriteHTML will be packaged with PoSh-EasyWin 
+		- It will be installed offline and imported automatically with this tool
+	- PSWriteHTML is the first external module I'm incorporating
+		- That said, there's a lot of code I haven't reviewed
 			- It's currently trusted throughout the community
 			- Virus scan safe
-	Generates and displays the data as a webpage
-		Also saves local copy of the data in an .html file
-	Graph data is represented as nodes with links between them
-	Also contains Built-in view of CSV data (collapsed at the top)
-	Currently have options for the following:
-		Active Directory Computers
-		Active Directory Users & Groups
-		Endpoint Login Activity
-		Endpoint Network Connections
-		Endpoint Process Data
-		# In-Progress # Endpoint PowerShell Sessions
-		# In-Progress # Endpoint Console Logins
-		# In-Progress # Endpoint CPU Data
-		# In-Progress # Endpoint RAM Data
-		# In-Progress # Endpoint Storage Data
-	You can select one or more of the above options at once
-		The charts will be combined
-		Note, the more you select, the longer it takes to load
-		Yeah section will have their own spread sheet within the Webpage (collapsed)
-	Added support for monitor-jobs tab
+	- Generates and displays the data as a webpage
+		- Also saves local copy of the data in an .html file
+	- Graph data is represented as nodes with links between them
+	- Also contains Built-in view of CSV data (collapsed at the top)
+	- Currently have options for the following:
+		- Active Directory Computers
+		- Active Directory Users & Groups
+		- Endpoint Login Activity
+		- Endpoint Network Connections
+		- Endpoint Process Data
+		################# In-Progress # Endpoint PowerShell Sessions
+		################# In-Progress # Endpoint Console Logins
+		################# In-Progress # Endpoint CPU Data
+		################# In-Progress # Endpoint RAM Data
+		################# In-Progress # Endpoint Storage Data
+	- You can select one or more of the above options at once
+		- The charts will be combined
+		- Note, the more you select, the longer it takes to load
+		- Yeah section will have their own spread sheet within the Webpage (collapsed)
+	- Added support for monitor-jobs tab
 		- Data collected to product PSWriteHTML browser pages are started as jobs
 		- Once data has finished being collected, the brower page is automatically launched
 
 Added command to get SMB Share Access privileges
 	- Added to endpoint csv command file
-	Get-SmbShare | foreach {Get-SmbShareAccess -Name $_.Name}
+	- Get-SmbShare | foreach {Get-SmbShareAccess -Name $_.Name}
 
 Updated some code for the credential rolling to increase reliability
 
 Removed old and unnecessary files
-	Alternate PoSh-EasyWin Images
-	Old PoSh-ACME .ico and Images
-	Removed Volatility program (15 MBs!!!) omg...
-	Remove Sysinternals Strings.exe -- never ended up using it
+	- Alternate PoSh-EasyWin Images
+	- Old PoSh-ACME .ico and Images
+	- Removed Volatility program (15 MBs!!!) omg...
+	- Remove Sysinternals Strings.exe -- never ended up using it
+
+Added new GitHub images and readme info
+	- For the Beta Release of the PSWriteHTML brower results
+	- For the Beta Release of the new Monitor Jobs Tab
 	
 ==================================================
 v5.1.5 - 30 Sep 20

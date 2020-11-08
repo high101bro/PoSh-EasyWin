@@ -16,7 +16,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $CollectionSavedDirectory = "$script:IndividualHostResults\$CollectionName"
     }
 
-    #$script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
+    $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
 
     # Each command to each target host is executed on it's own process thread, which utilizes more memory overhead on the localhost [running PoSh-EasyWin] and produces many more network connections to targets [noisier on the network].
     Foreach ($TargetComputer in $script:ComputerList) {
@@ -213,6 +213,9 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
 
                 elseif ($CommandType -eq "(SMB) PoSh"){
+                    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                    $PoShEasyWin.Refresh()
+
                     $JobsStarted    = $false
                     $CompileResults = $true
 
@@ -228,9 +231,12 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     # Used later below to log the action
                     $CommandString = "$PsExecPath `"\\$TargetComputer`" -AcceptEULA -NoBanner -u `$UserName -p `$Password powershell `"$($Command.Command) | Select-Object * | ConvertTo-Csv -NoType`""
 
-                    #$script:ProgressBarEndpointsProgressBar.Value += 1
+                    $script:ProgressBarEndpointsProgressBar.Value += 1
                 }
                 elseif ($CommandType -eq "(SMB) WMI"){
+                    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                    $PoShEasyWin.Refresh()
+
                     $JobsStarted    = $false
                     $CompileResults = $true
 
@@ -245,9 +251,12 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     # Used later below to log the action
                     $CommandString = "$PsExecPath `"\\$TargetComputer`" -AcceptEULA -NoBanner -u `$UserName -p `$Password powershell `"$($Command.Command) | Select-Object * | ConvertTo-Csv -NoType`""
 
-                    #$script:ProgressBarEndpointsProgressBar.Value += 1
+                    $script:ProgressBarEndpointsProgressBar.Value += 1
                 }
                 elseif ($CommandType -eq "(SMB) CMD"){
+                    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                    $PoShEasyWin.Refresh()
+
                     $JobsStarted    = $false
                     $CompileResults = $false
                     "Results not compiled, they are stored within the Individual Results directory." | Out-File "$script:CollectedDataTimeStampDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).txt"
@@ -263,13 +272,10 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     # Used later below to log the action
                     $CommandString = "$PsExecPath `"\\$TargetComputer`" -AcceptEULA -NoBanner -u `$UserName -p `$Password cmd /c `"$($Command.Command)"
 
-                    #$script:ProgressBarEndpointsProgressBar.Value += 1
+                    $script:ProgressBarEndpointsProgressBar.Value += 1
                     # This executes native windows cmds with PSExec
                     #Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected $UseCredential tasklist'" > c:\ressults.txt
                 }
-
-
-
 
                 else {
                     $JobsStarted    = $true
@@ -299,8 +305,8 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $script:ProgressBarQueriesProgressBar.Value = $CompletedCommandQueries
 
     # This allows the Endpoint progress bar to appear completed momentarily
-    #$script:ProgressBarEndpointsProgressBar.Maximum = 1
-    #$script:ProgressBarEndpointsProgressBar.Value = 1
+    $script:ProgressBarEndpointsProgressBar.Maximum = 1
+    $script:ProgressBarEndpointsProgressBar.Value = 1
     #Start-Sleep -Milliseconds 250
 
     $CollectionCommandEndTime  = Get-Date

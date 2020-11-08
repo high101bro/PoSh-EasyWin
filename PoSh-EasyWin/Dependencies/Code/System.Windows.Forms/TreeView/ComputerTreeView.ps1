@@ -3,6 +3,7 @@ $ComputerTreeViewAdd_MouseHover = {
         Width  = $FormScale * 230
         Height = $FormScale * 544
     }
+    $this.bringtofront()
 }
 # Prefer to use MourseHover as it provides better compatability in this case with the scrollbars
 #$ComputerTreeViewAdd_MouseEnter = {
