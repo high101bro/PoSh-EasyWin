@@ -21,13 +21,13 @@ Function Completed-QueryExecution {
 
 
     # Check for and remove empty direcotires
-    $EmtpyDir = "$($script:CollectionSavedDirectoryTextBox.Text)\"
-    do {
-        $Dirs = Get-ChildItem $EmtpyDir -Directory -Recurse `
-        | Where-Object { (Get-ChildItem $_.FullName).count -eq 0 } `
-        | Select-Object -ExpandProperty FullName
-        $Dirs | Foreach-Object { Remove-Item $_ }
-    } while ($Dirs.count -gt 0)
+    #$EmtpyDir = "$($script:CollectionSavedDirectoryTextBox.Text)\"
+    #do {
+    #    $Dirs = Get-ChildItem $EmtpyDir -Directory -Recurse `
+    #    | Where-Object { (Get-ChildItem $_.FullName).count -eq 0 } `
+    #    | Select-Object -ExpandProperty FullName
+    #    $Dirs | Foreach-Object { Remove-Item $_ }
+    #} while ($Dirs.count -gt 0)
 
 
     $StatusListBox.Items.Clear()

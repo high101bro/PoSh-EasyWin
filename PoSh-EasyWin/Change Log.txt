@@ -1,6 +1,23 @@
 ==================================================
-v5.1.6 BETA - 7 Nov 20
+v5.1.6 BETA - 8 Nov 20
 ==================================================
+
+Modified Completed-QueryExeuction.ps1
+	- Commented out the section that searches for and removes empty directories
+	- This section isn't compatible with the new monitor mode, as it deletes the directories before data can be saved to them, causing an errors
+	- This was discovered when trying to make the endpoint pcap capture feature compatible with the new monitor mode
+
+Added Monitor Jobs Tab support for Endpoint Packet captures
+	- Able to view the status of each endpoint packet capture
+	- Each packet capture runs in parallel when using the individual execution method
+	- There's a button that allows you view view the pcap using the default registered program, like WireShark
+		- One button per endpoint`
+	- There's a button that allows you open the packet capture directory
+	- Ability to remove individual pcap files with the remove button
+
+Found bug, updated Endpoint Packet capture code
+	- Code was missing that allowed you to get pcaps without provideing alternate credentials
+	- Added the code that uses the local shells credentials
 
 Updated Tooltip messagse for command protocols
 	- Noted which protocols work with the monitor jobs feature

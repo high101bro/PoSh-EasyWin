@@ -6196,7 +6196,7 @@ $script:Section3MonitorJobsGroupBox = New-Object System.Windows.Forms.GroupBox -
     Text      = "Monitor Jobs Options"
     Left      = 0
     Top       = 0
-    Width     = $FormScale * 730 #>700 <750
+    Width     = $FormScale * 730
     Height    = $FormScale * 42
     Font      = New-Object System.Drawing.Font($Font,$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
@@ -6242,7 +6242,7 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
     Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("Courier New",$($FormScale * 8),1,2,1)
     Add_Click = {
-        $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?",'PoSh-EasyWin','YesNo','Warning')
+        $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?`n`nThis method currently only stops running jobs and removes them from view; it will not delete the files regardless if their 'keep data' box is not checked.",'PoSh-EasyWin','YesNo','Warning')
         switch ($RemoveAllJobsVerify) {
             'Yes'{
                 $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop

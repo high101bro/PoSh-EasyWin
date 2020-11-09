@@ -23,6 +23,9 @@ Defaults:
 	providerFilter = no (specifies whether provider filter is enabled)
 #>
 
+$MainBottomTabControl.SelectedTab = $Section3ResultsTab
+#$MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
+
 $ExecutionStartTime = Get-Date
 $CollectionName = "Endpoint Packet Capture"
 $StatusListBox.Items.Clear()

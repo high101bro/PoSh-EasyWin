@@ -23,6 +23,9 @@ Defaults:
 	providerFilter = no (specifies whether provider filter is enabled)
 #>
 
+#$MainBottomTabControl.SelectedTab = $Section3ResultsTab
+$MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
+
 $ExecutionStartTime = Get-Date
 $CollectionName = "Endpoint Packet Capture"
 $StatusListBox.Items.Clear()
@@ -30,7 +33,8 @@ $StatusListBox.Items.Add("Executing: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 $PoShEasyWin.Refresh()
 
-New-Item -Type Directory -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\" -ErrorAction SilentlyContinue
+New-Item -Type Directory -path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\" -ErrorAction SilentlyContinue
+
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
@@ -46,145 +50,131 @@ $TraceName   = 'NetTrace'
 $EndpointEtlTraceFile = "C:\Windows\Temp\$TraceName.etl" # Remote Host
 $EndpointCabTraceFile = "C:\Windows\Temp\$TraceName.cab"
 $PacketCaptureName    = "Endpoint Packet Capture - $DateTime.pcapng"
-#$OutCsv     = = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\Endpoint Packet Capture-$DateTime.csv"
+#$OutCsv     = = "$($script:CollectionSavedDirectoryTextBox.Text)\Endpoint Packet Capture-$DateTime.csv"
 
 
-$ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
-Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "netsh trace start capture=yes capturetype=$CaptureType report=$Report persistent=no maxsize=$MaxSize overwrite=yes correlation=yes perfMerge=yes traceFile=$EndpointEtlTraceFile"
-Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "netsh trace stop"
-$PoShEasyWin.Refresh()
+#$ResultsListBox.Items.Insert(4,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
+#Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "netsh trace start capture=yes capturetype=$CaptureType report=$Report persistent=no maxsize=$MaxSize overwrite=yes correlation=yes perfMerge=yes traceFile=$EndpointEtlTraceFile"
+#Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "netsh trace stop"
+#$PoShEasyWin.Refresh()
 
 
 foreach ($TargetComputer in $script:ComputerList) {
-    Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints `
+    Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $($script:CollectionSavedDirectoryTextBox.Text) `
                             -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                             -TargetComputer $TargetComputer
     Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { $script:Credential = Get-Credential }
+
+    $LocalEtlFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$TargetComputer - $TraceName.etl"
+    $LocalCabFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$TargetComputer - $TraceName.cab"
+    $OutPcapNG        = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$TargetComputer - $PacketCaptureName"
+
+
+    Start-Job -Name "PoSh-EasyWin: $CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
+        param(
+            $ComputerListProvideCredentialsCheckBox,
+            $script:Credential,
+            $TargetComputer,
+            $CaptureType,
+            $Report,
+            $MaxSize,
+            $CaptureSeconds,
+            $EndpointEtlTraceFile,
+            $EndpointCabTraceFile,
+            $LocalEtlFilePath,
+            $LocalCabFilePath,
+            $etl2pcapng,
+            $OutPcapNG,
+            $OptionPacketKeepEtlCabFilesCheckBox,
+            $script:CollectionSavedDirectoryTextBox,
+            $CollectionName
+        )
+
+
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { $script:Credential = Get-Credential }
+            
+            $Session = New-PSSession -ComputerName $TargetComputer -Credential $script:Credential
+        }
+        else {
+            $Session = New-PSSession -ComputerName $TargetComputer
+        }
+    
+
 
         Invoke-Command -ScriptBlock {
             param(
                 $CaptureType,
                 $Report,
                 $MaxSize,
-                $EndpointEtlTraceFile,
-                $CaptureSeconds
+                $CaptureSeconds,
+                $EndpointEtlTraceFile
             )
             Invoke-Expression "netsh trace start capture=yes capturetype=$CaptureType report=$Report persistent=no maxsize=$MaxSize overwrite=yes correlation=yes perfMerge=yes traceFile=$EndpointEtlTraceFile"
             Start-Sleep -Seconds $CaptureSeconds
             Invoke-Expression 'netsh trace stop' | Out-Null
-        } `
-        -argumentlist @($CaptureType,$Report,$MaxSize,$EndpointEtlTraceFile,$CaptureSeconds) `
-        -ComputerName $TargetComputer `
-        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-        -Credential $script:Credential
-    }
+        } -argumentlist @($CaptureType,$Report,$MaxSize,$CaptureSeconds,$EndpointEtlTraceFile) -Session $Session
+        Start-Sleep -Seconds 1
+
+
+        # Copies up the .etl and .cab files back to the localhost
+        Copy-Item -Path $EndpointEtlTraceFile -Destination $LocalEtlFilePath -FromSession $Session -Force
+        Copy-Item -Path $EndpointCabTraceFile -Destination $LocalCabFilePath -FromSession $Session -Force
+        Start-Sleep -Seconds 1
+
+
+
+        # Cleans up the .etl and .cab files from the endpoint
+        Invoke-Command -ScriptBlock {
+            param(
+                $EndpointEtlTraceFile,
+                $EndpointCabTraceFile
+            )
+            Remove-Item -Path $EndpointEtlTraceFile -Force
+            Remove-Item -Path $EndpointCabTraceFile -Force
+        } -argumentlist @($EndpointEtlTraceFile,$EndpointCabTraceFile) -Session $Session
+
+
+        $Session | Remove-PSSession
+
+
+        # Converts the Event Trace Log (.etl) file to a .pcap file
+        & $etl2pcapng $LocalEtlFilePath $OutPcapNG | Out-Null
+
+        Start-Sleep -Seconds 1
+
+
+        if ( $OptionPacketKeepEtlCabFilesCheckBox.checked -eq $false ) {
+            Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\*.etl" -Force
+            Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\*.cab" -Force
+        }
+        
+
+    } -ArgumentList @($ComputerListProvideCredentialsCheckBox,$script:Credential,$TargetComputer,$CaptureType,$Report,$MaxSize,$CaptureSeconds,$EndpointEtlTraceFile,$EndpointCabTraceFile,$LocalEtlFilePath,$LocalCabFilePath,$etl2pcapng,$OutPcapNG,$OptionPacketKeepEtlCabFilesCheckBox,$script:CollectionSavedDirectoryTextBox,$CollectionName)
+
+
+
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PcapSwitch
 }
+
+
+
+#$FileSize = [math]::round(((Get-Item $OutPcapNG).Length/1mb),2)
 
 # Temporarily changes the job timeout to allow completion of the packet capture
-$JobTimeoutOriginalSetting = $script:OptionJobTimeoutSelectionComboBox.text
-$script:OptionJobTimeoutSelectionComboBox.text = [int]$CaptureSeconds + 60
+#$JobTimeoutOriginalSetting = $script:OptionJobTimeoutSelectionComboBox.text
+#$script:OptionJobTimeoutSelectionComboBox.text = [int]$CaptureSeconds + 60
 
-Monitor-Jobs -CollectionName $CollectionName -NotExportFiles
+
+#Monitor-Jobs -CollectionName $CollectionName -NotExportFiles
+
 
 # Sets the job timeout back to the orginal setting
-$script:OptionJobTimeoutSelectionComboBox.text = $JobTimeoutOriginalSetting
+#$script:OptionJobTimeoutSelectionComboBox.text = $JobTimeoutOriginalSetting
 
 
-foreach ($TargetComputer in $script:ComputerList) {
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        # Attempts to copy the files from the remote hosts
-        $PSSession = New-PSSession -ComputerName $TargetComputer -Credential $script:Credential
-        foreach ($Session in $PSSession){
-            $LocalEtlFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$($Session.ComputerName) - $TraceName.etl"
-            $LocalCabFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$($Session.ComputerName) - $TraceName.cab"
-            $OutPcapNG        = "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\$($Session.ComputerName) - $PacketCaptureName"
-
-
-            try {
-                $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copying data from $($Session.ComputerName)")
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $EndpointEtlTraceFile -Destination $LocalEtlFilePath -FromSession $Session -Force"
-                $PoShEasyWin.Refresh()
-
-                Copy-Item -Path $EndpointEtlTraceFile -Destination $LocalEtlFilePath -FromSession $Session -Force
-                Copy-Item -Path $EndpointCabTraceFile -Destination $LocalCabFilePath -FromSession $Session -Force
-            }
-            catch {
-                # If an error occurs, it will display it
-                $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Copy Error: $($_.Exception)")
-                Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Copy Error: $($_.Exception)"
-                $PoShEasyWin.Refresh()
-                break
-            }
-
-            try {
-                $FileSize = [math]::round(((Get-Item $LocalEtlFilePath).Length/1mb),2)
-                $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Network Trace File is $FileSize MB")
-                $PoShEasyWin.Refresh()
-
-
-                # Uses etl2pcapng.exe to convert the network capture the file format from .etl to .pcapng
-                $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Converting .etl to .pcap")
-                $PoShEasyWin.Refresh()
-                & $etl2pcapng $LocalEtlFilePath $OutPcapNG | Out-Null
-
-
-                $FileSize = [math]::round(((Get-Item $OutPcapNG).Length/1mb),2)
-                $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Pcap File is $FileSize MB")
-                $PoShEasyWin.Refresh()
-            }
-            catch {
-                # If an error occurs, it will display it
-                $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Converting Error: $($_.Exception)")
-                Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Converting Error: $($_.Exception)"
-                $PoShEasyWin.Refresh()
-                break
-            }
-        }
-        $PSSession | Remove-PSSession
-    }
-}
-
-
-$ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Cleaning up Endpoint Packet Capture Files")
-foreach ($TargetComputer in $script:ComputerList) {
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        try {
-            # Attempts to remove the etl and cab files
-            $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      Removed .etl and .cab files from $($TargetComputer)")
-            Create-LogEntry -LogFile $LogFile -TargetComputer "    $($TargetComputer)" -Message "Remove-Item '$EndpointEtlTraceFile' -Force"
-            Create-LogEntry -LogFile $LogFile -TargetComputer "    $($TargetComputer)" -Message "Remove-Item '$EndpointCabTraceFile' -Force"
-            $PoShEasyWin.Refresh()
-
-            Invoke-Command -ScriptBlock {
-                param($EndpointEtlTraceFile,$EndpointCabTraceFile)
-                Remove-Item -Path $EndpointEtlTraceFile -Force
-                Remove-Item -Path $EndpointCabTraceFile -Force
-            } `
-            -ArgumentList @($EndpointEtlTraceFile,$EndpointCabTraceFile) `
-            -ComputerName $TargetComputer `
-            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-            -Credential $script:Credential
-        }
-        catch {
-            # If an error occurs, it will display it
-            $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Clean-up Error: $($_.Exception)")
-            Create-LogEntry -LogFile $LogFile -TargetComputer "[!] Clean-up Error: $($_.Exception)"
-            $PoShEasyWin.Refresh()
-            break
-        }
-    }
-}
-Monitor-Jobs -CollectionName $CollectionName -NotExportFiles
-
-if ( $OptionPacketKeepEtlCabFilesCheckBox.checked -eq $false ) {
-    Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\*.etl" -Force
-    Remove-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\*.cab" -Force
-}
-
-Invoke-Item -Path "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\"
 
 
 $ResultsListBox.Items.RemoveAt(0)
@@ -194,7 +184,6 @@ $PoShEasyWin.Refresh()
 $script:ProgressBarQueriesProgressBar.Value += 1
 $script:ProgressBarEndpointsProgressBar.Value = ($PSSession.ComputerName).Count
 $PoShEasyWin.Refresh()
-Start-Sleep -match 500
 
 
 

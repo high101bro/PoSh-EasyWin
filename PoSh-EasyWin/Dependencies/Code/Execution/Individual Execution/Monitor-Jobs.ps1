@@ -4,6 +4,7 @@ function Monitor-Jobs {
         [String]$SaveProperties,
         [switch]$NotExportFiles,
         [switch]$MonitorMode,
+        [switch]$PcapSwitch,
         [switch]$PSWriteHTMLSwitch,
         $PSWriteHTML
     )
@@ -31,7 +32,7 @@ if ($MonitorMode) {
     $script:AllJobs = Get-Job -Name "PoSh-EasyWin: *"
 
 
-    Invoke-Expression "
+    Invoke-Expression @"
         # Timer that updates the GUI on interval
         `$script:Timer$JobId = New-Object System.Windows.Forms.Timer -Property @{
             Enabled  = `$true
@@ -50,28 +51,28 @@ if ($MonitorMode) {
 
 
         if (`$PSWriteHTMLSwitch) {
-            if (`"$PSWriteHTML`" -eq 'PSWriteHTMLProcesses') {
+            if ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
                 `$script:JobName$JobId = 'Process Data (Browser)'
             }
-            elseif (`"$PSWriteHTML`" -eq 'EndpointDataNetworkConnections') {
+            elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
                 `$script:JobName$JobId = 'Network Connections (Browser)'
             }
-            elseif (`"$PSWriteHTML`" -eq 'EndpointDataConsoleLogons') {
+            elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
                 `$script:JobName$JobId = 'Console Logons (Browser)'
             }
-            elseif (`"$PSWriteHTML`" -eq 'PowerShellSessionsData') {
+            elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
                 `$script:JobName$JobId = 'PowerShell Sessions (Browser)'
             }
-            elseif (`"$PSWriteHTML`" -eq 'EndpointApplicationCrashes') {
+            elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
                 `$script:JobName$JobId = 'Application Crashes (Browser)'
             }
-            elseif (`"$PSWriteHTML`" -eq 'EndpointLogonActivity') {
+            elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
                 `$script:JobName$JobId = 'Logon Activity (Browser)'
             }
-            elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADUsers') {
+            elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
                 `$script:JobName$JobId = 'Active Directory Users (Browser)'
             }
-            elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADComputers') {
+            elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
                 `$script:JobName$JobId = 'Active Directory Computers (Browser)'
             }
         }
@@ -96,13 +97,13 @@ if ($MonitorMode) {
         `$script:Section3MonitorJobPanel$JobId = New-Object System.Windows.Forms.panel -Property @{
             Left      = `$script:MonitorJobsLeftPosition
             Top       = `$script:MonitorJobsTopPosition
-            Width     = `$FormScale * 7115
+            Width     = `$FormScale * 715
             Height    = `$script:JobsRowHeight
         }
     
 
         `$script:Section3MonitorJobLabel$JobId = New-Object System.Windows.Forms.Label -Property @{
-            Text      = `"`$(`$script:JobStartTime$JobId)`n `"
+            Text      = "`$(`$script:JobStartTime$JobId)`n "
             Left      = 0
             Top       = 0
             Width     = `$FormScale * 115
@@ -128,7 +129,7 @@ if ($MonitorMode) {
 
 
         `$script:Section3MonitorJobTransparentLabel$JobId = New-Object System.Windows.Forms.Label -Property @{
-            Text      = `"[0/`$script:JobsStartedCount$JobId] `$script:JobName$JobId`"
+            Text      = "[0/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
             Left      = `$script:Section3MonitorJobLabel$JobId.Left + `$script:Section3MonitorJobLabel$JobId.Width + (`$FormScale * 5)
             Top       = `$script:Section3MonitorJobLabel$JobId.Top - `$(`$FormScale * 1)
             Width     = `$FormScale * 261
@@ -136,136 +137,269 @@ if ($MonitorMode) {
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
             ForeColor = 'Blue'
             BackColor = [System.Drawing.Color]::FromName('Transparent')
-        }        
-
-        `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-            Text      = 'View Progress'
-            Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
-            Top       = `$script:Section3MonitorJobLabel$JobId.Top
-            Width     = `$FormScale * 100
-            Height    = `$script:JobsRowHeight
-            Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
-            Add_click = {
-                if (`$script:Section3MonitorJobViewButton$JobId.BackColor -eq 'LightGreen') {
-                    `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGray'
-                }
-                if ((Test-Path `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv`")) {
-                    Import-Csv `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv`" | Out-GridView -Title `"PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))`"
-                }
-                else {
-                    `$script:CurrentJobs$JobId | Receive-Job -Keep | Out-GridView -Title `"PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))`"
-                }
-            }
         }
+"@
 
-        
-        `$script:Section3MonitorJobTerminalButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-            Text     = 'Terminal'
-            Left     = `$script:Section3MonitorJobViewButton$JobId.Left + `$script:Section3MonitorJobViewButton$JobId.Width + (`$FormScale * 5)
-            Top      = `$script:Section3MonitorJobLabel$JobId.Top
-            Width    = `$FormScale * 75
-            Height   = `$script:JobsRowHeight
-            Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
-            Add_click = {
-                if (`$script:Section3MonitorJobTerminalButton$JobId.BackColor -eq 'LightGreen') {
-                    `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGray'
-                }
-                if ((Test-Path `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml`")) {
-                    Open-XmlResultsInShell -ViewImportResults `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml`" -FileName `"`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml`" -SavePath `$script:CollectionSavedDirectoryTextBox.Text
-                }
-                else {
-                    [System.Windows.Forms.MessageBox]::Show(`"This feature requires you wait until the command has completed.`",'PoSh-EasyWin')
-                }
-            }
-        }
-        
+        if ($PcapSwitch) {
+        Invoke-Expression @"
+            `$script:PcapEndpointName$JobId = `$(`$script:CurrentJobs$JobId[0].name -split ' ')[-2]
+            `$script:PcapJobData$JobId = `$(`$script:CurrentJobs$JobId[0].name -split ' ')[-1]
 
-        `$script:Section3MonitorJobRemoveButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-            Text      = 'Remove'
-            Left      = `$script:Section3MonitorJobTerminalButton$JobId.Left + `$script:Section3MonitorJobTerminalButton$JobId.Width + (`$FormScale * 5)
-            Top       = `$script:Section3MonitorJobLabel$JobId.Top
-            Width     = `$FormScale * 75
-            Height    = `$script:JobsRowHeight
-            Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
-            ForeColor = 'Red'
-            Add_click = {
-                function JobsRemoveFunction$JobId {
-                    if (`$script:Section3MonitorJobKeepDataCheckbox$JobId.Checked -eq `$false) {
-                        Remove-Item `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv`" -Force
-                        Remove-Item `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml`" -Force     
+            `$script:Section3MonitorJobTransparentLabel$JobId.text = = "[0/`$script:JobsStartedCount$JobId] `$script:JobName$JobId (`$script:PcapEndpointName$JobId)"
+
+            `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Open Folder'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top
+                Width     = `$FormScale * 100
+                Height    = `$script:JobsRowHeight
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$script:Section3MonitorJobViewButton$JobId.BackColor -eq 'LightGreen') {
+                        `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGray'
                     }
-
-                    `$script:CurrentJobs$JobId | Stop-Job
-                    `$script:CurrentJobs$JobId | Remove-Job -Force
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\"
+                }
+            }
     
-                    # Moves all form items higher up that are not created before this one
-                    Get-Variable | Where-Object {`$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
-                        if (`$_.Name -notin `$script:PreviousJobFormItemsList$JobId){
-                            `$_.Value.top = `$_.Value.Top - `$script:JobsRowHeight - `$script:JobsRowGap
-                        }
+            
+            `$script:Section3MonitorJobTerminalButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text     = 'View PCap'
+                Left     = `$script:Section3MonitorJobViewButton$JobId.Left + `$script:Section3MonitorJobViewButton$JobId.Width + (`$FormScale * 5)
+                Top      = `$script:Section3MonitorJobLabel$JobId.Top
+                Width    = `$FormScale * 75
+                Height   = `$script:JobsRowHeight
+                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$script:Section3MonitorJobTerminalButton$JobId.BackColor -eq 'LightGreen') {
+                        `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGray'
                     }
-
-
-                    `$script:MonitorJobsTopPosition -= (`$script:Section3MonitorJobPanel$JobId.Height + `$script:JobsRowGap)
-
-                    
-                    `$script:Section3MonitorJobsTab.Controls.Remove(`$script:Section3MonitorJobPanel$JobId)
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobLabel$JobId)
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobProgressBar$JobId)
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobRemoveButton$JobId)
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobViewButton$JobId)
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobTerminalButton$JobId)
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobKeepDataCheckbox$JobId)
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobNotifyCheckbox$JobId)
-                    `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobTransparentLabel$JobId)
-
-                    `$script:Section3MonitorJobPanel$JobId = `$null
-                    Remove-Variable -Name Section3MonitorJobPanel$JobId -Scope Script                    
-                    `$script:Section3MonitorJobLabel$JobId = `$null
-                    Remove-Variable -Name Section3MonitorJobLabel$JobId -Scope Script                    
-                    `$script:Section3MonitorJobProgressBar$JobId = `$null
-                    Remove-Variable -Name Section3MonitorJobProgressBar$JobId -Scope Script                    
-                    `$script:Section3MonitorJobRemoveButton$JobId = `$null
-                    Remove-Variable -Name Section3MonitorJobRemoveButton$JobId -Scope Script
-                    `$script:Section3MonitorJobViewButton$JobId = `$null
-                    Remove-Variable -Name Section3MonitorJobViewButton$JobId -Scope Script                    
-                    `$script:Section3MonitorJobTerminalButton$JobId = `$null
-                    Remove-Variable -Name Section3MonitorJobTerminalButton$JobId -Scope Script
-                    `$script:Section3MonitorJobKeepDataCheckbox$JobId = `$null
-                    Remove-Variable -Name Section3MonitorJobKeepDataCheckbox$JobId -Scope Script
-                    `$script:Section3MonitorJobNotifyCheckbox$JobId = `$null
-                    Remove-Variable -Name Section3MonitorJobNotifyCheckbox$JobId -Scope Script
-                    `$script:Section3MonitorJobTransparentLabel$JobId = `$null
-                    Remove-Variable -Name Section3MonitorJobTransparentLabel$JobId -Scope Script
-
-                    
-                    `$script:CurrentJobs$JobId = `$null
-                    Remove-Variable -Name CurrentJobs$JobId -Scope Script
-                    
-                        
-                    # Garbage Collection to free up memory
-                    [System.GC]::Collect()                    
-                }
-
-                if (`$script:Section3MonitorJobKeepDataCheckbox$JobId.Checked -eq `$false) {
-                    `$RemoveJobVerify$JobId = [System.Windows.Forms.MessageBox]::Show(`"You checked to not keep the saved data.`nAre you sure you want to remove the following:`n        `$(`$script:JobName$JobId)`",'PoSh-EasyWin','YesNo','Warning')
-                    switch (`$RemoveJobVerify$JobId) {
-                        'Yes'{
-                            JobsRemoveFunction$JobId
-                        }
-                        'No' {
-                            continue
-                        }
+                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng")) {
+                        Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng"
                     }
-                }
-                else {
-                    JobsRemoveFunction$JobId
+                    else {
+                        [System.Windows.Forms.MessageBox]::Show("This feature requires you wait until the command has completed.",'PoSh-EasyWin')
+                    }
                 }
             }
+
+
+            `$script:Section3MonitorJobRemoveButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                Text      = 'Remove'
+                Left      = `$script:Section3MonitorJobTerminalButton$JobId.Left + `$script:Section3MonitorJobTerminalButton$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top
+                Width     = `$FormScale * 75
+                Height    = `$script:JobsRowHeight
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                ForeColor = 'Red'
+                Add_click = {
+                    function JobsRemoveFunction$JobId {
+                        if (`$script:Section3MonitorJobKeepDataCheckbox$JobId.Checked -eq `$false) {
+                            Remove-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng" -Force
+                        }
+    
+                        `$script:CurrentJobs$JobId | Stop-Job
+                        `$script:CurrentJobs$JobId | Remove-Job -Force
+        
+                        # Moves all form items higher up that are not created before this one
+                        Get-Variable | Where-Object {`$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
+                            if (`$_.Name -notin `$script:PreviousJobFormItemsList$JobId){
+                                `$_.Value.top = `$_.Value.Top - `$script:JobsRowHeight - `$script:JobsRowGap
+                            }
+                        }
+    
+    
+                        `$script:MonitorJobsTopPosition -= (`$script:Section3MonitorJobPanel$JobId.Height + `$script:JobsRowGap)
+    
+                        
+                        `$script:Section3MonitorJobsTab.Controls.Remove(`$script:Section3MonitorJobPanel$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobLabel$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobProgressBar$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobRemoveButton$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobViewButton$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobTerminalButton$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobKeepDataCheckbox$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobNotifyCheckbox$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobTransparentLabel$JobId)
+    
+                        `$script:Section3MonitorJobPanel$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobPanel$JobId -Scope Script                    
+                        `$script:Section3MonitorJobLabel$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobLabel$JobId -Scope Script                    
+                        `$script:Section3MonitorJobProgressBar$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobProgressBar$JobId -Scope Script                    
+                        `$script:Section3MonitorJobRemoveButton$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobRemoveButton$JobId -Scope Script
+                        `$script:Section3MonitorJobViewButton$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobViewButton$JobId -Scope Script                    
+                        `$script:Section3MonitorJobTerminalButton$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobTerminalButton$JobId -Scope Script
+                        `$script:Section3MonitorJobKeepDataCheckbox$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobKeepDataCheckbox$JobId -Scope Script
+                        `$script:Section3MonitorJobNotifyCheckbox$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobNotifyCheckbox$JobId -Scope Script
+                        `$script:Section3MonitorJobTransparentLabel$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobTransparentLabel$JobId -Scope Script
+    
+                        
+                        `$script:CurrentJobs$JobId = `$null
+                        Remove-Variable -Name CurrentJobs$JobId -Scope Script
+                        
+                            
+                        # Garbage Collection to free up memory
+                        [System.GC]::Collect()                    
+                    }
+    
+                    if (`$script:Section3MonitorJobKeepDataCheckbox$JobId.Checked -eq `$false) {
+                        `$RemoveJobVerify$JobId = [System.Windows.Forms.MessageBox]::Show("You checked to not keep the saved data.`nAre you sure you want to remove the following:`n        `$(`$script:JobName$JobId)",'PoSh-EasyWin','YesNo','Warning')
+                        switch (`$RemoveJobVerify$JobId) {
+                            'Yes'{
+                                JobsRemoveFunction$JobId
+                            }
+                            'No' {
+                                continue
+                            }
+                        }
+                    }
+                    else {
+                        JobsRemoveFunction$JobId
+                    }
+                }
+            }    
+"@    
+        }
+        else {
+    Invoke-Expression @"
+            `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'View Progress'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top
+                Width     = `$FormScale * 100
+                Height    = `$script:JobsRowHeight
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$script:Section3MonitorJobViewButton$JobId.BackColor -eq 'LightGreen') {
+                        `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGray'
+                    }
+                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv")) {
+                        Import-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
+                    }
+                    else {
+                        `$script:CurrentJobs$JobId | Receive-Job -Keep | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
+                    }
+                }
+            }
+    
+            
+            `$script:Section3MonitorJobTerminalButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text     = 'Terminal'
+                Left     = `$script:Section3MonitorJobViewButton$JobId.Left + `$script:Section3MonitorJobViewButton$JobId.Width + (`$FormScale * 5)
+                Top      = `$script:Section3MonitorJobLabel$JobId.Top
+                Width    = `$FormScale * 75
+                Height   = `$script:JobsRowHeight
+                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$script:Section3MonitorJobTerminalButton$JobId.BackColor -eq 'LightGreen') {
+                        `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGray'
+                    }
+                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml")) {
+                        Open-XmlResultsInShell -ViewImportResults "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -FileName "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -SavePath `$script:CollectionSavedDirectoryTextBox.Text
+                    }
+                    else {
+                        [System.Windows.Forms.MessageBox]::Show("This feature requires you wait until the command has completed.",'PoSh-EasyWin')
+                    }
+                }
+            }
+
+
+            `$script:Section3MonitorJobRemoveButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                Text      = 'Remove'
+                Left      = `$script:Section3MonitorJobTerminalButton$JobId.Left + `$script:Section3MonitorJobTerminalButton$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top
+                Width     = `$FormScale * 75
+                Height    = `$script:JobsRowHeight
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                ForeColor = 'Red'
+                Add_click = {
+                    function JobsRemoveFunction$JobId {
+                        if (`$script:Section3MonitorJobKeepDataCheckbox$JobId.Checked -eq `$false) {
+                            Remove-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -Force
+                            Remove-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -Force     
+                        }
+    
+                        `$script:CurrentJobs$JobId | Stop-Job
+                        `$script:CurrentJobs$JobId | Remove-Job -Force
+        
+                        # Moves all form items higher up that are not created before this one
+                        Get-Variable | Where-Object {`$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
+                            if (`$_.Name -notin `$script:PreviousJobFormItemsList$JobId){
+                                `$_.Value.top = `$_.Value.Top - `$script:JobsRowHeight - `$script:JobsRowGap
+                            }
+                        }
+    
+    
+                        `$script:MonitorJobsTopPosition -= (`$script:Section3MonitorJobPanel$JobId.Height + `$script:JobsRowGap)
+    
+                        
+                        `$script:Section3MonitorJobsTab.Controls.Remove(`$script:Section3MonitorJobPanel$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobLabel$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobProgressBar$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobRemoveButton$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobViewButton$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobTerminalButton$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobKeepDataCheckbox$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobNotifyCheckbox$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobTransparentLabel$JobId)
+    
+                        `$script:Section3MonitorJobPanel$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobPanel$JobId -Scope Script                    
+                        `$script:Section3MonitorJobLabel$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobLabel$JobId -Scope Script                    
+                        `$script:Section3MonitorJobProgressBar$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobProgressBar$JobId -Scope Script                    
+                        `$script:Section3MonitorJobRemoveButton$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobRemoveButton$JobId -Scope Script
+                        `$script:Section3MonitorJobViewButton$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobViewButton$JobId -Scope Script                    
+                        `$script:Section3MonitorJobTerminalButton$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobTerminalButton$JobId -Scope Script
+                        `$script:Section3MonitorJobKeepDataCheckbox$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobKeepDataCheckbox$JobId -Scope Script
+                        `$script:Section3MonitorJobNotifyCheckbox$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobNotifyCheckbox$JobId -Scope Script
+                        `$script:Section3MonitorJobTransparentLabel$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobTransparentLabel$JobId -Scope Script
+    
+                        
+                        `$script:CurrentJobs$JobId = `$null
+                        Remove-Variable -Name CurrentJobs$JobId -Scope Script
+                        
+                            
+                        # Garbage Collection to free up memory
+                        [System.GC]::Collect()                    
+                    }
+    
+                    if (`$script:Section3MonitorJobKeepDataCheckbox$JobId.Checked -eq `$false) {
+                        `$RemoveJobVerify$JobId = [System.Windows.Forms.MessageBox]::Show("You checked to not keep the saved data.`nAre you sure you want to remove the following:`n        `$(`$script:JobName$JobId)",'PoSh-EasyWin','YesNo','Warning')
+                        switch (`$RemoveJobVerify$JobId) {
+                            'Yes'{
+                                JobsRemoveFunction$JobId
+                            }
+                            'No' {
+                                continue
+                            }
+                        }
+                    }
+                    else {
+                        JobsRemoveFunction$JobId
+                    }
+                }
+            }    
+"@    
         }
 
-
         
+    Invoke-Expression @"
         `$script:Section3MonitorJobKeepDataCheckbox$JobId = New-Object System.Windows.Forms.Checkbox -Property @{
             Text     = 'Keep Data'
             Left     = `$script:Section3MonitorJobRemoveButton$JobId.Left + `$script:Section3MonitorJobRemoveButton$JobId.Width + (`$FormScale * 5)
@@ -332,25 +466,69 @@ if ($MonitorMode) {
         `$script:MonitorJobsTopPosition += (`$script:Section3MonitorJobPanel$JobId.Height + `$script:JobsRowGap)
 
         # This adds each form item to a list
-        `$script:PreviousJobFormItemsList += `"Section3MonitorJobPanel$JobId`"
-        `$script:PreviousJobFormItemsList += `"Section3MonitorJobLabel$JobId`"
-        `$script:PreviousJobFormItemsList += `"Section3MonitorJobProgressBar$JobId`"
-        `$script:PreviousJobFormItemsList += `"Section3MonitorJobTransparentLabel$JobId`"
-        `$script:PreviousJobFormItemsList += `"Section3MonitorJobRemoveButton$JobId`"
-        `$script:PreviousJobFormItemsList += `"Section3MonitorJobViewButton$JobId`"
-        `$script:PreviousJobFormItemsList += `"Section3MonitorJobTerminalButton$JobId`"
-        `$script:PreviousJobFormItemsList += `"Section3MonitorJobKeepDataCheckbox$JobId`"
-        `$script:PreviousJobFormItemsList += `"Section3MonitorJobNotifyCheckbox$JobId`"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobPanel$JobId"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobLabel$JobId"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobProgressBar$JobId"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobTransparentLabel$JobId"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobRemoveButton$JobId"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobViewButton$JobId"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobTerminalButton$JobId"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobKeepDataCheckbox$JobId"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobNotifyCheckbox$JobId"
 
-    "
-    if ($PSWriteHTMLSwitch) {
-        Invoke-Expression "
+"@
+
+    if ($PcapSwitch){
+        Invoke-Expression @"
         `$script:Timer$JobId.add_Tick({
             `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
 
             if (`$script:JobsStartedCount$JobId -eq `$script:JobsCompleted$JobId) {
-                `$script:Section3MonitorJobLabel$JobId.text = `"`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))`"
-                `$script:Section3MonitorJobTransparentLabel$JobId.Text = `"[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId`"
+                `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
+                `$script:Section3MonitorJobTransparentLabel$JobId.text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId (`$script:PcapEndpointName$JobId)"
+
+                `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
+                `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
+                `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
+                `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
+                `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
+
+                
+                `$script:JobsStartedCount$JobId = -1
+                `$script:JobsTimeCompleted$JobId = Get-Date
+                `$script:Timer$JobId.Stop()
+                `$script:Timer$JobId = `$null
+                Remove-Variable -Name Timer$JobId -Scope script
+
+
+                
+                
+                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                `$script:Section3MonitorJobProgressBar$JobId.Refresh()
+
+                if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
+                    [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin')
+                }
+            }
+            else {
+                `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
+                `$script:Section3MonitorJobTransparentLabel$JobId.text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId (`$script:PcapEndpointName$JobId)"
+
+                
+                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsCompleted$JobId
+                `$script:Section3MonitorJobProgressBar$JobId.Refresh()
+            }
+        })
+"@        
+    }
+    elseif ($PSWriteHTMLSwitch) {
+        Invoke-Expression @"
+        `$script:Timer$JobId.add_Tick({
+            `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
+
+            if (`$script:JobsStartedCount$JobId -eq `$script:JobsCompleted$JobId) {
+                `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
 
                 `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
                 `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
@@ -367,42 +545,43 @@ if ($MonitorMode) {
                 Remove-Variable -Name Timer$JobId -Scope script
 
 
-                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv`" -NoTypeInformation
-                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml`"
+                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
+                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
 
-                if (`"$PSWriteHTML`" -eq 'PSWriteHTMLProcesses') {
+
+                if ("$PSWriteHTML" -eq 'PSWriteHTMLProcesses') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
                 }
-                elseif (`"$PSWriteHTML`" -eq 'EndpointDataNetworkConnections') {
+                elseif ("$PSWriteHTML" -eq 'EndpointDataNetworkConnections') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Start-PSWriteHTMLNetworkConnections }
                 }
-                elseif (`"$PSWriteHTML`" -eq 'EndpointDataConsoleLogons') {
+                elseif ("$PSWriteHTML" -eq 'EndpointDataConsoleLogons') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Console Logons' -Data { script:Start-PSWriteHTMLConsoleLogons }
                 }
-                elseif (`"$PSWriteHTML`" -eq 'PowerShellSessionsData') {
+                elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'PowerShell Sessions' -Data { script:Start-PSWriteHTMLPowerShellSessions }
                 }
-                elseif (`"$PSWriteHTML`" -eq 'XXXXXXXXXXXXXXXXX') {
+                elseif ("$PSWriteHTML" -eq 'XXXXXXXXXXXXXXXXX') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
 
                 }
-                elseif (`"$PSWriteHTML`" -eq 'EndpointApplicationCrashes') {
+                elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Application Crashes' -Data { script:Start-PSWriteHTMLApplicationCrashes }
                 }
-                elseif (`"$PSWriteHTML`" -eq 'EndpointLogonActivity') {
+                elseif ("$PSWriteHTML" -eq 'EndpointLogonActivity') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Start-PSWriteHTMLLogonActivity }
                 }
-                elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADUsers') {
+                elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADUsers') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
                 }
-                elseif (`"$PSWriteHTML`" -eq 'PSWriteHTMLADComputers') {
+                elseif ("$PSWriteHTML" -eq 'PSWriteHTMLADComputers') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
                 }
@@ -412,27 +591,27 @@ if ($MonitorMode) {
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
 
                 if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
-                    [System.Windows.Forms.MessageBox]::Show(`"`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)`",'PoSh-EasyWin')
+                    [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin')
                 }
             }
             else {
-                `$script:Section3MonitorJobLabel$JobId.text = `"`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))`"
-                `$script:Section3MonitorJobTransparentLabel$JobId.Text = `"[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId`"
+                `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
 
                 `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsCompleted$JobId
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
             }
         })        
-    "
+"@
     }
     else {
-        Invoke-Expression "
+        Invoke-Expression @"
         `$script:Timer$JobId.add_Tick({
             `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
 
             if (`$script:JobsStartedCount$JobId -eq `$script:JobsCompleted$JobId) {
-                `$script:Section3MonitorJobLabel$JobId.text = `"`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))`"
-                `$script:Section3MonitorJobTransparentLabel$JobId.Text = `"[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId`"
+                `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
 
                 `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
                 `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
@@ -449,47 +628,27 @@ if ($MonitorMode) {
                 Remove-Variable -Name Timer$JobId -Scope script
 
 
-                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv`" -NoTypeInformation
-                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml `"`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml`"
+                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
+                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
 
                 
                 `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
 
                 if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
-                    [System.Windows.Forms.MessageBox]::Show(`"`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)`",'PoSh-EasyWin')
+                    [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin')
                 }
             }
             else {
-                `$script:Section3MonitorJobLabel$JobId.text = `"`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))`"
-                `$script:Section3MonitorJobTransparentLabel$JobId.Text = `"[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId`"
+                `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
 
                 `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsCompleted$JobId
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
             }
         })        
-    "        
+"@        
     }
-<#
-            `$Jobs = Get-Job -Name `"PoSh-EasyWin Job *`"
-            `$JobsCompleted = (Get-Job -Name `"PoSh-EasyWin Job *`" | Where-Object {`$_.State -eq 'Completed'}).count
-            #`$script:Section3MonitorJobProgressBar$JobId.Value = `$JobsCompleted
-            `$script:Section3MonitorJobProgressBar$JobId.Value += 1
-            `$script:Section3MonitorJobProgressBar$JobId.Refresh()
-            if (`$JobsCompleted -eq `$script:JobsStartedCount$JobId -and `$script:JobCompletionMessageShown$JobId -eq `$false) {
-                `$script:JobCompletionMessageShown$JobId = `$true
-                [System.Windows.Forms.MessageBox]::Show('Job $JobId Complete')
-            }#>
-
-
-
-    # Monitor-Jobs previously was just a mechanism to slow down how fast the script would create jobs.
-    # Remote queries would be started as jobs by sections and would be monitored, and wouldn't proceeded until that section was done
-    # GOAL: New remote queries would be started as jobs
-        # Once the job is started, it will be identifed by its Id
-            # $JobId = Get-Job | Sort-Object Id | Select-Object -Last 1 -ExpandProperty ID
-        # A new progress bar will be created
-            #..........................
 }
 
 
