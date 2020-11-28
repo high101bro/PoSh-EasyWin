@@ -651,37 +651,6 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
                     [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin')
                 }
             }
-            elseif (`$script:CurrentTime$JobId -gt (`$script:CurrentJobs$JobId.PSBeginTime).AddSeconds($script:JobsTimer)) {
-                `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
-                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "TIMED OUT [`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
-
-                `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Red'
-                `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Red'
-                `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightCoral'
-                `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
-                `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
-                `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
-
-                
-                `$script:JobsStartedCount$JobId = -1
-                `$script:JobsTimeCompleted$JobId = Get-Date
-                `$script:Timer$JobId.Stop()
-                `$script:Timer$JobId = `$null
-                Remove-Variable -Name Timer$JobId -Scope script
-
-
-                `$script:CurrentJobs$JobId | Stop-Job
-                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
-                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
-
-                
-                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
-                `$script:Section3MonitorJobProgressBar$JobId.Refresh()
-
-                if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
-                    [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin')
-                }
-            }
             else {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
                 `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"

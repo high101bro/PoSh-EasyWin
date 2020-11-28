@@ -1,0 +1,83 @@
+2020/11/28 13:49:28  ====================================================================================================
+2020/11/28 13:49:28  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 13:50:16  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 13:50:17  ====================================================================================================
+2020/11/28 13:50:31  Opted to import the PSWriteHTML module
+2020/11/28 13:58:28  ====================================================================================================
+2020/11/28 13:58:28  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 13:58:34  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 13:58:35  ====================================================================================================
+2020/11/28 13:59:44   - True
+2020/11/28 13:59:44   - True
+2020/11/28 13:59:55  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 13:59:56  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:01:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:01:29  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:03:37  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:04:03  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:06:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:06:41   - True
+2020/11/28 14:06:42   - True
+2020/11/28 14:06:44  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:06:44  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:09:58  ====================================================================================================
+2020/11/28 14:09:58  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 14:10:03  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 14:10:04  ====================================================================================================
+2020/11/28 14:10:47  ====================================================================================================
+2020/11/28 14:10:47  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 14:10:50  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 14:10:51  ====================================================================================================
+2020/11/28 14:11:36  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:12:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:12:01  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:14:54  ====================================================================================================
+2020/11/28 14:14:54  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 14:14:59  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 14:15:00  ====================================================================================================
+2020/11/28 14:15:39   - True
+2020/11/28 14:15:39   - True
+2020/11/28 14:15:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:15:42  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:17:48  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:18:21  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:18:45  ====================================================================================================
+2020/11/28 14:18:45  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 14:18:49  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 14:18:50  ====================================================================================================
+2020/11/28 14:19:30   - True
+2020/11/28 14:19:31   - True
+2020/11/28 14:19:32  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:19:33  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:23:22  ====================================================================================================
+2020/11/28 14:23:22  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 14:23:31  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 14:23:33  ====================================================================================================
+2020/11/28 14:24:26   - True
+2020/11/28 14:24:27   - True
+2020/11/28 14:24:29  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:24:29  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:26:29  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:26:30  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:36:48  ====================================================================================================
+2020/11/28 14:36:48  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 14:37:08  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 14:37:09  ====================================================================================================
+2020/11/28 14:38:06   - True
+2020/11/28 14:38:07   - True
+2020/11/28 14:38:09  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:38:10  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:39:47  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:39:47  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:41:05  ====================================================================================================
+2020/11/28 14:41:05  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 14:41:08  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 14:41:09  ====================================================================================================
+2020/11/28 14:41:57   - True
+2020/11/28 14:41:57   - True
+2020/11/28 14:41:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:41:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 14:52:35  ====================================================================================================
+2020/11/28 14:52:35  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 14:52:39  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 14:52:40  ====================================================================================================

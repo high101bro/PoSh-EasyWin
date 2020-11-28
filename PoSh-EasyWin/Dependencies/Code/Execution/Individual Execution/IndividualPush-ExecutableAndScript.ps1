@@ -10,7 +10,7 @@ $script:ProgressBarEndpointsProgressBar.Value = 0
 $TargetFolder                 = $script:ExeScriptDestinationDirectoryTextBox.text
 $ExeScriptSelectDirOrFilePath = $script:ExeScriptSelectDirOrFilePath
 $ExeScriptSelectScriptPath    = $script:ExeScriptSelectScriptPath
-
+$AdminShare                   = 'c$'
 
 foreach ($TargetComputer in $script:ComputerList) {
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
@@ -41,14 +41,16 @@ foreach ($TargetComputer in $script:ComputerList) {
 
         try {
             if ($ExeScriptSelectDirRadioButton.checked -eq $true) {
-                Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "$TargetFolder" -Recurse -ToSession $Session -Force -ErrorAction Stop
+                Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "\\$TargetComputer\$AdminShare\$TargetFolder" -Recurse -Force -ErrorAction Stop
+
                 $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination $TargetFolder -Recurse -ToSession $Session -Force -ErrorAction Stop"
+                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "\\$TargetComputer\$AdminShare\$TargetFolder" -Recurse -Force -ErrorAction Stop"
             }
             elseif ($ExeScriptSelectFileRadioButton.checked -eq $true) {
-                Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "$TargetFolder" -ToSession $Session -Force -ErrorAction Stop
+                Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop
+
                 $ResultsListBox.Items.Insert(3,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))      $($Session.ComputerName)")
-                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination $TargetFolder -ToSession $Session -Force -ErrorAction Stop"
+                Create-LogEntry -LogFile $LogFile -TargetComputer "    $($Session.ComputerName)" -Message "Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "\\$TargetComputer\$AdminShare\$TargetFolder" -Force -ErrorAction Stop"
             }
             $PoShEasyWin.Refresh()
 
