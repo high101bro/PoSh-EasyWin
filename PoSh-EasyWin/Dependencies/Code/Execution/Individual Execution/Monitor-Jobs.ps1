@@ -10,6 +10,7 @@ function Monitor-Jobs {
     )
 
 
+
 if ($MonitorMode) {
     $MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
 
@@ -19,9 +20,8 @@ if ($MonitorMode) {
     }
 
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#    # Sets the job timeout value, so they don't run forever
-#    $JobsTimer  = [int]$($script:OptionJobTimeoutSelectionComboBox.Text)
+    # Sets the job timeout value, so they don't run forever
+    $script:JobsTimer  = [int]$($script:OptionJobTimeoutSelectionComboBox.Text)
 
 #write-host "Job Monitor: $(Get-date)"
 
@@ -110,6 +110,11 @@ if ($MonitorMode) {
             Height    = `$script:JobsRowHeight
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
             ForeColor = 'Blue'
+            Add_MouseHover = {
+Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
++ Endpoints Queried:  `$([Math]::Abs(`$script:JobsStartedCount$JobId))
++ Time Out:  `$($script:JobsTimer) seconds"
+            }
         }
 
 
@@ -133,7 +138,7 @@ if ($MonitorMode) {
             Left      = `$script:Section3MonitorJobLabel$JobId.Left + `$script:Section3MonitorJobLabel$JobId.Width + (`$FormScale * 5)
             Top       = `$script:Section3MonitorJobLabel$JobId.Top - `$(`$FormScale * 1)
             Width     = `$FormScale * 261
-            Height    = `$script:JobsRowHeight / 2
+         Height    = `$script:JobsRowHeight / 2
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
             ForeColor = 'Blue'
             BackColor = [System.Drawing.Color]::FromName('Transparent')
@@ -477,8 +482,11 @@ if ($MonitorMode) {
         `$script:PreviousJobFormItemsList += "Section3MonitorJobNotifyCheckbox$JobId"
 
 "@
-
+    ##############################################
+    # Timer code that monitors the jobs by query #
+    ##############################################
     if ($PcapSwitch){
+    # For just Packet Capture
         Invoke-Expression @"
         `$script:Timer$JobId.add_Tick({
             `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
@@ -522,6 +530,7 @@ if ($MonitorMode) {
 "@        
     }
     elseif ($PSWriteHTMLSwitch) {
+    # Just for queries that generate the PSWriteHTML charts
         Invoke-Expression @"
         `$script:Timer$JobId.add_Tick({
             `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
@@ -605,9 +614,12 @@ if ($MonitorMode) {
 "@
     }
     else {
+    # Everything else, all the treeview queries checked and collection tabs.
         Invoke-Expression @"
         `$script:Timer$JobId.add_Tick({
             `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
+
+            `$script:CurrentTime$JobId = Get-Date
 
             if (`$script:JobsStartedCount$JobId -eq `$script:JobsCompleted$JobId) {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
@@ -628,6 +640,37 @@ if ($MonitorMode) {
                 Remove-Variable -Name Timer$JobId -Scope script
 
 
+                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
+                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
+
+                
+                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                `$script:Section3MonitorJobProgressBar$JobId.Refresh()
+
+                if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
+                    [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin')
+                }
+            }
+            elseif (`$script:CurrentTime$JobId -gt (`$script:CurrentJobs$JobId.PSBeginTime).AddSeconds($script:JobsTimer)) {
+                `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "TIMED OUT [`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
+
+                `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Red'
+                `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Red'
+                `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightCoral'
+                `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
+                `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
+                `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
+
+                
+                `$script:JobsStartedCount$JobId = -1
+                `$script:JobsTimeCompleted$JobId = Get-Date
+                `$script:Timer$JobId.Stop()
+                `$script:Timer$JobId = `$null
+                Remove-Variable -Name Timer$JobId -Scope script
+
+
+                `$script:CurrentJobs$JobId | Stop-Job
                 `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
                 `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
 
@@ -701,7 +744,7 @@ if (-not $MonitorMode) {
     $script:ProgressBarFormProgressBar.Value      = 0
 
     # Sets the job timeout value, so they don't run forever
-    $JobsTimer  = [int]$($script:OptionJobTimeoutSelectionComboBox.Text)
+    $script:JobsTimer  = [int]$($script:OptionJobTimeoutSelectionComboBox.Text)
     # This is how often the statistics page updates, be default it is 20 which is 5 Seconds (250 ms x 4)
     $StatisticsUpdateInterval      = (1000 / $SleepMilliSeconds) * $OptionStatisticsUpdateIntervalCombobox.text
     $StatisticsUpdateIntervalCount = 0
@@ -792,11 +835,11 @@ if (-not $MonitorMode) {
                 }
                 $Job | Remove-Job -Force
             }
-            elseif ($CurrentTime -gt ($Job.PSBeginTime).AddSeconds($JobsTimer)) {
+            elseif ($CurrentTime -gt ($Job.PSBeginTime).AddSeconds($script:JobsTimer)) {
                 $TimeStamp = $($CurrentTime).ToString('yyyy/MM/dd HH:mm:ss')
                 $ResultsListBox.Items.insert(5,"$($TimeStamp)   - Job Timed Out: $((($Job | Select-Object -ExpandProperty Name) -split '-')[-1])")
                 $Job | Stop-Job
-                $Job | Receive-Job
+                $Job | Receive-Job -Force
                 $Job | Remove-Job -Force
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message " - Job [TIMED OUT]: `"$($Job.Name)`" - Started at $($Job.PSBeginTime) - Ran for $($CurrentTime - $Job.PSBeginTime)"
                 break

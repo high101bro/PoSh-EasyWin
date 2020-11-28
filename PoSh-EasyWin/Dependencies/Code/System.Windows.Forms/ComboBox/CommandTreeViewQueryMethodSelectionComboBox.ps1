@@ -1,7 +1,7 @@
-$CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged = {
+$script:CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged = {
     $SelectedIndexTemp = $this.SelectedIndex
     if ( ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked -or $script:RpcCommandCount -gt 0 -or $script:SmbCommandCount -gt 0) -and $this.SelectedItem -eq 'Session Based' ) {
-        $MessageBox = [System.Windows.Forms.MessageBox]::Show("The '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' mode does not support the RPC and SMB protocols.`nThe 'Individual Execution' collection mode supports the RPC, SMB, and WinRM protocols - but may be slower and noisier on the network.`n`nDo you want to change to 'Session Based' collection using the WinRM protocol?","Protocol Alert",[System.Windows.Forms.MessageBoxButtons]::OKCancel)
+        $MessageBox = [System.Windows.Forms.MessageBox]::Show("The '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' mode does not support the RPC and SMB protocols.`nThe 'Individual Execution' collection mode supports the RPC, SMB, and WinRM protocols - but may be slower and noisier on the network.`n`nDo you want to change to 'Session Based' collection using the WinRM protocol?","Protocol Alert",[System.Windows.Forms.MessageBoxButtons]::OKCancel)
         switch ($MessageBox){
             "OK" {
                 $StatusListBox.Items.Clear()
@@ -55,7 +55,7 @@ $CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged = {
             "Cancel" {
                 $this.SelectedIndex = 0 #'Individual Execution'
 #                $StatusListBox.Items.Clear()
-#                $StatusListBox.Items.Add("$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem) does not support RPC")
+#                $StatusListBox.Items.Add("$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem) does not support RPC")
              }
         }
 

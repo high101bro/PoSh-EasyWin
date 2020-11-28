@@ -68,7 +68,7 @@ function Conduct-NodeAction {
                 }
                 if ($Category.Text -match '[\[(]rpc[)\]]' ) {
                     $script:RpcCommandCount += 1
-                    if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                         # This brings specific tabs to the forefront/front view
                         $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
                         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
@@ -77,16 +77,16 @@ function Conduct-NodeAction {
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                         #Removed For Testing#$ResultsListBox.Items.Clear()
-                        $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                        $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                         $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                        $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                        $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
                         $EventLogRPCRadioButton.checked         = $true
                         $ExternalProgramsRPCRadioButton.checked = $true
                     }
                 }
                 if ($Category.Text -match '[\[(]smb[)\]]' ) {
                     $script:SmbCommandCount += 1
-                    if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                         # This brings specific tabs to the forefront/front view
                         $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
                         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
@@ -95,9 +95,9 @@ function Conduct-NodeAction {
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                         #Removed For Testing#$ResultsListBox.Items.Clear()
-                        $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                        $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                         $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                        $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                        $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
                     }
                 }
 
@@ -115,7 +115,7 @@ function Conduct-NodeAction {
                     }
                     if ($Entry.Text -match '[\[(]rpc[)\]]') {
                         $script:RpcCommandCount += 1
-                        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                             # This brings specific tabs to the forefront/front view
                             $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
                             $MainBottomTabControl.SelectedTab = $Section3ResultsTab
@@ -124,16 +124,16 @@ function Conduct-NodeAction {
                             $StatusListBox.Items.Clear()
                             $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                             #Removed For Testing#$ResultsListBox.Items.Clear()
-                            $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                            $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                             $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                            $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
                             $EventLogRPCRadioButton.checked         = $true
                             $ExternalProgramsRPCRadioButton.checked = $true
                         }
                     }
                     if ($Entry.Text -match '[\[(]smb[)\]]') {
                         $script:SmbCommandCount += 1
-                        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                             # This brings specific tabs to the forefront/front view
                             $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
                             $MainBottomTabControl.SelectedTab = $Section3ResultsTab
@@ -142,9 +142,9 @@ function Conduct-NodeAction {
                             $StatusListBox.Items.Clear()
                             $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                             #Removed For Testing#$ResultsListBox.Items.Clear()
-                            $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                            $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                             $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                            $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
                         }
                     }
 
@@ -171,7 +171,7 @@ function Conduct-NodeAction {
                         }
                         if ($Entry.Text -match '[\[(]rpc[)\]]') {
                             $script:RpcCommandCount += 1
-                            if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                            if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                                 # This brings specific tabs to the forefront/front view
                                 $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
                                 $MainBottomTabControl.SelectedTab = $Section3ResultsTab
@@ -180,16 +180,16 @@ function Conduct-NodeAction {
                                 $StatusListBox.Items.Clear()
                                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                                 #Removed For Testing#$ResultsListBox.Items.Clear()
-                                $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                                $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                                 $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                                $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                                $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
                                 $EventLogRPCRadioButton.checked         = $true
                                 $ExternalProgramsRPCRadioButton.checked = $true
                             }
                         }
                         if ($Entry.Text -match '[\[(]smb[)\]]') {
                             $script:SmbCommandCount += 1
-                            if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+                            if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                                 # This brings specific tabs to the forefront/front view
                                 $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
                                 $MainBottomTabControl.SelectedTab = $Section3ResultsTab
@@ -198,9 +198,9 @@ function Conduct-NodeAction {
                                 $StatusListBox.Items.Clear()
                                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                                 #Removed For Testing#$ResultsListBox.Items.Clear()
-                                $ResultsListBox.Items.Add("The collection mode '$($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
+                                $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
                                 $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                                $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                                $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
                             }
                         }
 
@@ -398,13 +398,13 @@ function Conduct-NodeAction {
 
     # Updates the color of the button if there is at least one query and endpoint selected
     if ($script:TreeeViewCommandsCount -gt 0 -and $script:TreeeViewComputerListCount -gt 0) {
-        $ComputerListExecuteButton.Enabled   = $true
-        $ComputerListExecuteButton.forecolor = 'Black'
-        $ComputerListExecuteButton.backcolor = 'lightgreen'
+        $script:ComputerListExecuteButton.Enabled   = $true
+        $script:ComputerListExecuteButton.forecolor = 'Black'
+        $script:ComputerListExecuteButton.backcolor = 'lightgreen'
     }
     else {
-        $ComputerListExecuteButton.Enabled   = $false
-        CommonButtonSettings -Button $ComputerListExecuteButton
+        $script:ComputerListExecuteButton.Enabled   = $false
+        CommonButtonSettings -Button $script:ComputerListExecuteButton
     }
     $StatisticsRefreshButton.PerformClick()
 

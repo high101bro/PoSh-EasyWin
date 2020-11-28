@@ -18,9 +18,10 @@
     File Name      : PoSh-EasyWin.ps1
     Version        : v.5.1.6 Beta
 
-    Requirements   : PowerShell v3+ for PowerShell Charts
-                   : WinRM   HTTP  - TCP/5985 Win7+ ( 80 Vista-)
-                             HTTPS - TCP/5986 Win7+ (443 Vista-)
+    Requirements   : PowerShell v3.0 for PowerShell Charts support
+                     PowerShell v5.1 for PSWriteHTML Module support
+                   : WinRM   HTTP  - TCP/5985 Windows 7+ ( 80 Vista-)
+                             HTTPS - TCP/5986 Windows 7+ (443 Vista-)
                              Endpoint Listener - TCP/47001
                    : DCOM    RPC   - TCP/135 and dynamic ports, typically:
                                      TCP 49152-65535 (Windows Vista, Server 2008 and above)
@@ -58,6 +59,9 @@
     Credits:
     Learned a lot and referenced code from sources like Microsoft Technet, PowerShell Gallery, StackOverflow, and a numerous other websites.
     That said, I didn't track all sites and individuals that deserve credit. In the unlikely event you believe you do, please notify me.
+
+    TODO:
+    winrm get winrm/config/winrs
 
     .EXAMPLE
     This will run PoSh-EasyWin.ps1 and provide prompts that will tailor your collection.
@@ -5007,67 +5011,46 @@ $Section2OptionsTab = New-Object System.Windows.Forms.TabPage -Property @{
 $MainCenterTabControl.Controls.Add($Section2OptionsTab)
 
 
-. "$Dependencies\Code\System.Windows.Forms\ComboBox\OptionJobTimeoutSelectionComboBox.ps1"
-$script:OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.Forms.Combobox -Property @{
-    Text   = $JobTimeOutSeconds
-    Left   = $FormScale * 3
-    Top    = $FormScale * 11
-    Width  = $FormScale * 50
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,2,0)
-    AutoCompleteMode = "SuggestAppend"
-    Add_MouseHover   = $script:OptionJobTimeoutSelectionComboBoxAdd_MouseHover
-    Add_SelectedIndexChanged = { $This.Text | Set-Content "$PoShHome\Settings\Job Timeout.txt" -Force }
-}
-$JobTimesAvailable = @(15,30,45,60,120,180,240,300,600)
-ForEach ($Item in $JobTimesAvailable) { $script:OptionJobTimeoutSelectionComboBox.Items.Add($Item) }
-if (Test-Path "$PoShHome\Settings\Job Timeout.txt") { $script:OptionJobTimeoutSelectionComboBox.text = Get-Content "$PoShHome\Settings\Job Timeout.txt" }
-$Section2OptionsTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
-
-
-$OptionJobTimeoutSelectionLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text   = "Job Timeout in Seconds"
-    Left   = $script:OptionJobTimeoutSelectionComboBox.Left + $script:OptionJobTimeoutSelectionComboBox.Width + $($FormScale * 10)
-    Top    = $script:OptionJobTimeoutSelectionComboBox.Top + ($FormScale + 3)
-    Width  = $FormScale * 150
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-}
-$Section2OptionsTab.Controls.Add($OptionJobTimeoutSelectionLabel)
-
-
-. "$Dependencies\Code\System.Windows.Forms\Combobox\OptionStatisticsUpdateIntervalComboBox.ps1"
-$OptionStatisticsUpdateIntervalCombobox = New-Object System.Windows.Forms.Combobox -Property @{
-    Text     = 5
+$OptionTextToSpeachButton = New-Object System.Windows.Forms.Button -Property @{
+    Text     = "Resize PoSh-EasyWin"
     Location = @{ X = $FormScale * 3
-                  Y = $script:OptionJobTimeoutSelectionComboBox.Location.Y + $script:OptionJobTimeoutSelectionComboBox.Size.Height + $($FormScale + 5) }
-    Size     = @{ Width  = $FormScale * 50
-                  Height = $FormScale * 22 }
+                  Y = $FormScale * 3 }
+    Width  = $FormScale * 175
+    Height = $FormScale * $Column3BoxHeight
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseHover = $OptionStatisticsUpdateIntervalComboboxAdd_MouseHover
-    Add_SelectedIndexChanged = { $This.Text | Set-Content "$PoShHome\Settings\Statistics Update Interval.txt" -Force }
+    Add_Click = {
+        Launch-FormScaleGUI -Relaunch
+        If ($script:RelaunchEasyWin){
+            $PoSHEasyWin.Close()
+            Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript
+        }
+    }
 }
-$StatisticsTimesAvailable = @(1,5,10,15,30,45,60)
-ForEach ($Item in $StatisticsTimesAvailable) { $OptionStatisticsUpdateIntervalCombobox.Items.Add($Item) }
-if (Test-Path "$PoShHome\Settings\Statistics Update Interval.txt") { $OptionStatisticsUpdateIntervalCombobox.text = Get-Content "$PoShHome\Settings\Statistics Update Interval.txt" }
-$Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalCombobox)
+# Cmdlet Parameter Option
+if ($AudibleCompletionMessage) {$OptionTextToSpeachCheckBox.Checked = $True}
+$Section2OptionsTab.Controls.Add($OptionTextToSpeachButton)
+CommonButtonSettings -Button $OptionTextToSpeachButton
 
 
-$OptionStatisticsUpdateIntervalLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text     = "Statistics Update Interval"
-    Location = @{ X = $OptionJobTimeoutSelectionLabel.Left
-                  Y = $OptionStatisticsUpdateIntervalCombobox.Location.Y + $($FormScale + 3) }
-    Size     = @{ Width  = $FormScale * 200
-                  Height = $FormScale * 18 }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+$OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "View Read Me"
+    Left   = $OptionTextToSpeachButton.Left + $OptionTextToSpeachButton.Width + ($FormScale * 5)
+    Top    = $OptionTextToSpeachButton.Top
+    Width  = $FormScale * 175
+    Height = $FormScale * $Column3BoxHeight
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_Click = {
+        Launch-ReadMe -ReadMe
+    }
 }
-$Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalLabel)
+$Section2OptionsTab.Controls.Add($OptionViewReadMeButton)
+CommonButtonSettings -Button $OptionViewReadMeButton
 
 
 $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object System.Windows.Forms.Groupbox -Property @{
     Text     = "Search Endpoints for Previously Collected Data"
-    Location = @{ X = $FormScale * 3
-                  Y = $OptionStatisticsUpdateIntervalCombobox.Location.Y + $OptionStatisticsUpdateIntervalCombobox.Size.Height + $($FormScale + 5) }
+    Top      = $OptionTextToSpeachButton.Top + $OptionTextToSpeachButton.Height + $($FormScale * 5)
+    Left     = $FormScale * 3 
     Size     = @{ Width  = $FormScale * 352
                   Height = $FormScale * 100 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
@@ -5146,11 +5129,39 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object S
 $Section2OptionsTab.Controls.Add($OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox)
 
 
+. "$Dependencies\Code\System.Windows.Forms\Combobox\OptionStatisticsUpdateIntervalComboBox.ps1"
+$OptionStatisticsUpdateIntervalCombobox = New-Object System.Windows.Forms.Combobox -Property @{
+    Text = 5
+    Location = @{ X = $FormScale * 3
+                  Y = $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Location.Y + $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Size.Height + $($FormScale + 2) }
+    Size = @{ Width  = $FormScale * 50
+              Height = $FormScale * 22 }
+    Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_MouseHover = $OptionStatisticsUpdateIntervalComboboxAdd_MouseHover
+    Add_SelectedIndexChanged = { $This.Text | Set-Content "$PoShHome\Settings\Statistics Update Interval.txt" -Force }
+}
+$StatisticsTimesAvailable = @(1,5,10,15,30,45,60)
+ForEach ($Item in $StatisticsTimesAvailable) { $OptionStatisticsUpdateIntervalCombobox.Items.Add($Item) }
+if (Test-Path "$PoShHome\Settings\Statistics Update Interval.txt") { $OptionStatisticsUpdateIntervalCombobox.text = Get-Content "$PoShHome\Settings\Statistics Update Interval.txt" }
+$Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalCombobox)
+
+
+$OptionStatisticsUpdateIntervalLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text     = "Statistics Update Interval"
+    Location = @{ X = $OptionStatisticsUpdateIntervalCombobox.Left + $OptionStatisticsUpdateIntervalCombobox.Width + $($FormScale + 5)
+                  Y = $OptionStatisticsUpdateIntervalCombobox.Location.Y + $($FormScale + 3) }
+    Size     = @{ Width  = $FormScale * 200
+                  Height = $FormScale * 18 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalLabel)
+
+
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\OptionGUITopWindowCheckBox.ps1"
 $OptionGUITopWindowCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text     = "GUI always on top"
     Location = @{ X = $FormScale * 3
-                  Y = $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Location.Y + $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Size.Height + $($FormScale + 2) }
+                  Y = $OptionStatisticsUpdateIntervalLabel.Location.Y + $OptionStatisticsUpdateIntervalLabel.Size.Height + $($FormScale + 2) }
     Size     = @{ Width  = $FormScale * 300
                   Height = $FormScale * $Column3BoxHeight }
     Enabled  = $true
@@ -5238,42 +5249,6 @@ $OptionKeepResultsByEndpointsFilesCheckBox = New-Object System.Windows.Forms.Che
 }
 if (Test-Path "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt") { $OptionKeepResultsByEndpointsFilesCheckBox.checked = Get-Content "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt" }
 $Section2OptionsTab.Controls.Add($OptionKeepResultsByEndpointsFilesCheckBox)
-
-
-$OptionTextToSpeachButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Resize PoSh-EasyWin"
-    Left = $FormScale * 3
-    Top  = $OptionKeepResultsByEndpointsFilesCheckBox.Top + $OptionKeepResultsByEndpointsFilesCheckBox.Height
-    Width  = $FormScale * 175
-    Height = $FormScale * $Column3BoxHeight
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = {
-        Launch-FormScaleGUI -Relaunch
-        If ($script:RelaunchEasyWin){
-            $PoSHEasyWin.Close()
-            Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript
-        }
-    }
-}
-# Cmdlet Parameter Option
-if ($AudibleCompletionMessage) {$OptionTextToSpeachCheckBox.Checked = $True}
-$Section2OptionsTab.Controls.Add($OptionTextToSpeachButton)
-CommonButtonSettings -Button $OptionTextToSpeachButton
-
-
-$OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "View Read Me"
-    Left   = $OptionTextToSpeachButton.Left + $OptionTextToSpeachButton.Width + ($FormScale * 5)
-    Top    = $OptionTextToSpeachButton.Top
-    Width  = $FormScale * 175
-    Height = $FormScale * $Column3BoxHeight
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = {
-        Launch-ReadMe -ReadMe
-    }
-}
-$Section2OptionsTab.Controls.Add($OptionViewReadMeButton)
-CommonButtonSettings -Button $OptionViewReadMeButton
 
 
 #=======================================================================================================================================================================
@@ -5750,7 +5725,7 @@ $Column5DownPosition += $Column5DownPositionShift
 
 
 . "$Dependencies\Code\System.Windows.Forms\ComboBox\CommandTreeViewQueryMethodSelectionComboBox.ps1"
-$CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+$script:CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Left   = $FormScale * $Column5RightPosition
     Top    = $FormScale * $Column5DownPosition
     Width  = $FormScale * $Column5BoxWidth
@@ -5759,8 +5734,20 @@ $CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.Forms.C
     ForeColor     = 'Black'
     DropDownStyle = 'DropDownList'
     Add_SelectedIndexChanged = {
-        & $CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged
+        & $script:CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged
         #$This.Text | Set-Content "$PoShHome\Settings\Script Execution Mode.txt" -Force
+
+        if ($this.SelectedItem -eq 'Individual Execution') {
+            $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionLabel)
+            $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
+            $Column5DownPosition += $Column5DownPositionShift
+            $script:ComputerListExecuteButton.Top = $script:OptionJobTimeoutSelectionLabel.Top + $($FormScale * $Column5DownPositionShift)
+        }
+        else {
+            $Section3ActionTab.Controls.Remove($script:OptionJobTimeoutSelectionLabel)
+            $Section3ActionTab.Controls.Remove($script:OptionJobTimeoutSelectionComboBox)
+            $script:ComputerListExecuteButton.Top = $this.Top + $($FormScale * $Column5DownPositionShift)
+        }
     }
 }
 $QueryMethodSelectionList = @(
@@ -5768,27 +5755,58 @@ $QueryMethodSelectionList = @(
     'Session Based'
     #'Compiled Script'
     )
-Foreach ($QueryMethod in $QueryMethodSelectionList) { $CommandTreeViewQueryMethodSelectionComboBox.Items.Add($QueryMethod) }
-if (Test-Path "$PoShHome\Settings\Script Execution Mode.txt") { $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem = Get-Content "$PoShHome\Settings\Script Execution Mode.txt" }
-else { $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 }
-$Section3ActionTab.Controls.Add($CommandTreeViewQueryMethodSelectionComboBox)
+Foreach ($QueryMethod in $QueryMethodSelectionList) { $script:CommandTreeViewQueryMethodSelectionComboBox.Items.Add($QueryMethod) }
+if (Test-Path "$PoShHome\Settings\Script Execution Mode.txt") { $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem = Get-Content "$PoShHome\Settings\Script Execution Mode.txt" }
+else { $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 }
+$Section3ActionTab.Controls.Add($script:CommandTreeViewQueryMethodSelectionComboBox)
 
 $Column5DownPosition += $Column5DownPositionShift + 2
 
 
+$script:OptionJobTimeoutSelectionLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text   = "Job Timeout:"
+    Left   = $FormScale * $Column5RightPosition
+    Top    = $FormScale * $Column5DownPosition
+    Width  = $FormScale * 75
+    Height = $FormScale * $Column5BoxHeight
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionLabel)
+
+
+. "$Dependencies\Code\System.Windows.Forms\ComboBox\OptionJobTimeoutSelectionComboBox.ps1"
+$script:OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.Forms.Combobox -Property @{
+    Text   = $JobTimeOutSeconds
+    Left   = $script:OptionJobTimeoutSelectionLabel.Left + $script:OptionJobTimeoutSelectionLabel.Width + $($FormScale * 5)
+    Top    = $script:OptionJobTimeoutSelectionLabel.Top - $($FormScale * 3)
+    Width  = $FormScale * 45
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,2,0)
+    AutoCompleteMode = "SuggestAppend"
+    Add_MouseHover   = $script:OptionJobTimeoutSelectionComboBoxAdd_MouseHover
+    Add_SelectedIndexChanged = { $This.Text | Set-Content "$PoShHome\Settings\Job Timeout.txt" -Force }
+}
+$JobTimesAvailable = @(15,30,45,60,120,180,240,300,600)
+ForEach ($Item in $JobTimesAvailable) { $script:OptionJobTimeoutSelectionComboBox.Items.Add($Item) }
+if (Test-Path "$PoShHome\Settings\Job Timeout.txt") { $script:OptionJobTimeoutSelectionComboBox.text = Get-Content "$PoShHome\Settings\Job Timeout.txt" }
+$Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
+
+$Column5DownPosition += $Column5DownPositionShift - $($FormScale * 2)
+
+
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListExecuteButton.ps1"
-$ComputerListExecuteButton = New-Object System.Windows.Forms.Button -Property @{
+$script:ComputerListExecuteButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Execute Script"
     Left   = $FormScale * $Column5RightPosition
     Top    = $FormScale * $Column5DownPosition
     Width  = $FormScale * $Column5BoxWidth
     Height = $FormScale * ($Column5BoxHeight * 2) - 10
     Enabled   = $false
-    Add_MouseHover = $ComputerListExecuteButtonAdd_MouseHover
+    Add_MouseHover = $script:ComputerListExecuteButtonAdd_MouseHover
 }
-### $ComputerListExecuteButton.Add_Click($ExecuteScriptHandler) ### Is located lower in the script
-$Section3ActionTab.Controls.Add($ComputerListExecuteButton)
-CommonButtonSettings -Button $ComputerListExecuteButton
+### $script:ComputerListExecuteButton.Add_Click($ExecuteScriptHandler) ### Is located lower in the script
+$Section3ActionTab.Controls.Add($script:ComputerListExecuteButton)
+CommonButtonSettings -Button $script:ComputerListExecuteButton
 
 
 #=======================================================================================================================================================================
@@ -7274,7 +7292,7 @@ $ExecuteScriptHandler = {
 
         if ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked -or $AccountsRPCRadioButton.checked) { $script:RpcCommandCount += 1 }
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and ($script:RpcCommandCount -eq 0 -or $script:SmbCommandCount -eq 0) ) {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and ($script:RpcCommandCount -eq 0 -or $script:SmbCommandCount -eq 0) ) {
 
             if ($script:WinRMCommandCount -gt 1) {
                 $MessageBox = [System.Windows.Forms.MessageBox]::Show("Multiple WinRM based commands were selected.
@@ -7288,9 +7306,9 @@ Cons:
 "Optimize Performance For Speed",'YesNoCancel','Info')
                 Switch ( $MessageBox ) {
                     'Yes' {
-                        $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 1
+                        $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 1
                         Invoke-Command -ScriptBlock $ExecuteScriptHandler
-                        $CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0
+                        $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0
                         break
                     }
                     'No' {
@@ -7319,7 +7337,7 @@ Cons:
         # The secondary progress bar is removed as it cannnot track compile queries
 
 
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Compiled Script' ) {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Compiled Script' ) {
             $ExecutionStartTime = Get-Date
             Generate-ComputerList
 
@@ -7606,7 +7624,7 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
         #=======================================================================================================================================================================
         # A session is established to each endpoint, and queries are executed through it
 
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based' -and $script:RpcCommandCount -eq 0 -and $script:SmbCommandCount -eq 0 ) {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based' -and $script:RpcCommandCount -eq 0 -and $script:SmbCommandCount -eq 0 ) {
             $ExecutionStartTime = Get-Date
             Generate-ComputerList
             Compile-QueryCommands
@@ -7779,7 +7797,7 @@ $script:ProgressBarSelectionForm.Refresh()
 
 # This needs to be here to execute the script
 # Note the Execution button itself is located in the Select Computer section
-$ComputerListExecuteButton.Add_Click($ExecuteScriptHandler)
+$script:ComputerListExecuteButton.Add_Click($ExecuteScriptHandler)
 
 <# --Potential code to deprecate
 # Correct the initial state of the form to prevent the .Net maximized form issue

@@ -1,4 +1,4 @@
-$ComputerListExecuteButtonAdd_MouseHover = {
+$script:ComputerListExecuteButtonAdd_MouseHover = {
     Show-ToolTip -Title "Start Collection" -Icon "Info" -Message @"
 +  Starts the collection process.
 +  All checked commands are executed against all checked hosts.

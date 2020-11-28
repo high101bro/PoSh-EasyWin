@@ -1,4 +1,29 @@
 ==================================================
+v5.1.7 BETA - 28 Nov 20
+==================================================
+
+Notified that the timeout feature isn't working with the monitor jobs tab feature
+	- Added code that checks how long a job has been running, then kills it if it is running too long-
+		- timeout value is user adjustable
+	- Query Timeouts can be set independantly when executed
+	- Timed out queries
+		- The Collection name displayed over the progress bar is pre-fixed with TIMED OUT
+		- The color scheme for the query is turned red
+		- The results are still able to be viewed if any data was collected
+			- Past method would just discard all the results regardless
+			- This way even timed out queries are Useful
+	- Moved timeout setting to within the monitor jobs tab
+
+Rearranged the Options Tab
+	- Moved buttons to the top
+	- Moved Job Timeout to next to the Execute Script button
+
+Job TimeOut Selection
+	- Moved it from the Options Tab to right above the Execute Script Button to remind users to set it easier
+	- The option auto hides/appears depending on if you select Individual Execution
+		- This is to help reduce the chances that users get confused... as it's only used by Individual Exeuction
+
+==================================================
 v5.1.6 BETA - 8 Nov 20
 ==================================================
 

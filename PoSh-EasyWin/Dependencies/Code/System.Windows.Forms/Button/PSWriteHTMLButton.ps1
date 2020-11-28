@@ -37,7 +37,7 @@ $PSWriteHTMLIndividualWebPagesCheckbox = New-Object -TypeName System.Windows.For
     Enabled = $true
 }
 $PSWriteHTMLForm.Controls.Add($PSWriteHTMLIndividualWebPagesCheckbox)    
-if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     $PSWriteHTMLIndividualWebPagesCheckbox.enabled = $false
 }
 
@@ -300,11 +300,11 @@ if ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.cou
 }
 elseif ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.count -gt 0) {
 
-    if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Individual Exeuction")
     }
-    elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+    elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
         $StatusListBox.Items.Clear()
         if ($script:ComputerList.count -eq 1) {$StatusListBox.Items.Add("Establishing a PS Session with 1 Endpoint")}
         else {$StatusListBox.Items.Add("Establishing PS Sessions with $($script:ComputerList.count) Endpoints")}
@@ -1039,7 +1039,7 @@ Start-Sleep -Seconds 3
 
 
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -1061,7 +1061,7 @@ Start-Sleep -Seconds 3
             }
             Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PSWriteHTMLProcesses'
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:PSWriteHTMLProcesses = Invoke-Command -ScriptBlock $ProcessesScriptblock -Session $PSSession |
             Select-Object ProcessID, ProcessName, PSComputerName, ParentProcessName, ParentProcessID, Level,
             ServiceInfo, StartTime, Duration, CPU, TotalProcessorTime,
@@ -1076,7 +1076,7 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
         }
     }
@@ -1740,7 +1740,7 @@ Start-Sleep -Seconds 3
         }
 
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -1762,7 +1762,7 @@ Start-Sleep -Seconds 3
             }
             Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataNetworkConnections'
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:EndpointDataNetworkConnections = Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -Session $PSSession
         }
 
@@ -1771,7 +1771,7 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Start-PSWriteHTMLNetworkConnections }
         }
     }
@@ -1979,7 +1979,7 @@ Start-Sleep -Seconds 3
         }
     
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -2001,7 +2001,7 @@ Start-Sleep -Seconds 3
             }
             Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataConsoleLogons'
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:EndpointDataConsoleLogons = Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -Session $PSSession | 
             Select-Object PSComputerName, UserName, LogonTime, State, IdleTime, SessionName, SessionID
         }
@@ -2011,7 +2011,7 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             script:Individual-PSWriteHTML -Title 'Console Logons' { script:Start-PSWriteHTMLConsoleLogons }
         }        
     }
@@ -2256,7 +2256,7 @@ Start-Sleep -Seconds 3
         }
 
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -2278,7 +2278,7 @@ Start-Sleep -Seconds 3
             }
             Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PowerShellSessionsData'
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:PowerShellSessionsData = Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -Session $PSSession |
             Select-Object PSComputerName, ClientIP, Owner, ProcessId, State, ShellRunTime, ShellInactivity, MemoryUsed, ProfileLoaded, LogonTime, CollectionType
         }
@@ -2288,7 +2288,7 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             script:Individual-PSWriteHTML -Title 'PowerShell Sessions' { script:Start-PSWriteHTMLPowerShellSessions }
         } 
     }
@@ -2482,7 +2482,7 @@ Start-Sleep -Seconds 3
        # }
 
 
-        #if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        #if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
 #            foreach ($TargetComputer in $script:ComputerList) {
 #                if ($ComputerListProvideCredentialsCheckBox.Checked) {
 #                    if (!$script:Credential) { Create-NewCredentials }
@@ -2504,7 +2504,7 @@ Start-Sleep -Seconds 3
 #            }
 #           Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataConsoleLogons'
         #}
-        #elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        #elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
            # $script:EndpointDataConsoleLogons = Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -Session $PSSession
         #}
 
@@ -2513,7 +2513,7 @@ Start-Sleep -Seconds 3
 #        $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-#        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+#        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
 #            script:Individual-PSWriteHTML -Title 'xxxxxxxxxxxx' { script:Start-PSWriteHTMLxxxxxxxxxxxxxxxxxxx }        
 #        }
     }
@@ -2740,7 +2740,7 @@ Start-Sleep -Seconds 3
         }
 
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -2762,7 +2762,7 @@ Start-Sleep -Seconds 3
             }
             Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointApplicationCrashes'
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:EndpointApplicationCrashes = Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -Session $PSSession | 
             Select-Object MachineName, TimeCreated, ApplicationName, ModuleName, Message, PSComputerName, LogName, ProviderName, Level, RecordId, ProcessId, ThreadId, UserID
         }
@@ -2772,7 +2772,7 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             script:Individual-PSWriteHTML -Title 'Application Crashes' { script:Start-PSWriteHTMLApplicationCrashes }
         }
     }
@@ -3186,7 +3186,7 @@ Start-Sleep -Seconds 3
         }
 
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -3208,7 +3208,7 @@ Start-Sleep -Seconds 3
             }
             Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointLogonActivity'
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:EndpointLogonActivity = Invoke-Command -ScriptBlock $LogonActivityScriptblock -Session $PSSession | 
             Select-Object UserAccount, LogonType, TimeStamp, UserDomain, WorkstationName, SourceNetworkAddress, SourceNetworkPort, Type, LogonInterpretation
         }
@@ -3218,7 +3218,7 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Start-PSWriteHTMLLogonActivity }
         }
     }    
@@ -3227,11 +3227,11 @@ Start-Sleep -Seconds 3
 
 
 if ($PSWriteHTMLCheckedItemsList -match 'Endpoint') {
-    if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Completed: Individual Execution")
     }
-    elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+    elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
         $PSSession | Remove-PSSession
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$PSSession | Remove-Session"
         $StatusListBox.Items.Clear()
@@ -3264,11 +3264,11 @@ if ($PSWriteHTMLCheckedItemsList -match 'Endpoint') {
 Generate-ComputerList
 
 if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
-    if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Individual Exeuction")
     }
-    elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+    elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Establishing a PS Session with $script:DomainControllerComputerName")
     
@@ -3556,7 +3556,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             foreach ($TargetComputer in $script:DomainControllerComputerName) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -3603,7 +3603,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
             }
             Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PSWriteHTMLADUsers'
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:PSWriteHTMLForest = invoke-command -ScriptBlock { Get-ADForest } -Session $PSSession
             
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADForest } -Session $PSSession"
@@ -3620,7 +3620,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
         }
     }
@@ -3869,7 +3869,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
         }
 
 
-        if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             foreach ($TargetComputer in $script:DomainControllerComputerName) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -3916,7 +3916,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
             }
             Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PSWriteHTMLADComputers'
         }
-        elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:PSWriteHTMLForest = invoke-command -ScriptBlock { Get-ADForest } -Session $PSSession
 
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADForest } -Session $PSSession"
@@ -3933,7 +3933,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
         }
     }
@@ -3946,11 +3946,11 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 if ($PSWriteHTMLCheckedItemsList -match 'Active Directory') {    
-    if ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Completed: Individual Execution")    
     }
-    elseif ($CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+    elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
         $PSSession | Remove-PSSession
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$PSSession | Remove-Session"
         $StatusListBox.Items.Clear()
@@ -4006,7 +4006,7 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and (
     ##################################
     # Launches One Compiled Web Page #
     ##################################
-    if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $false -and $CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+    if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $false -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
 
         New-HTML -TitleText 'PoSh-EasyWin' -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
             -FilePath "$($script:CollectionSavedDirectoryTextBox.Text)\PoSh-EasyWin $(Get-Date).html" -Show {
