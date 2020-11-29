@@ -14,6 +14,11 @@ Notified that the timeout feature isn't working with the monitor jobs tab featur
 			- This way even timed out queries are Useful
 	- Moved timeout setting to within the monitor jobs tab
 
+Fixed bug where results didn't show the correct endpoint within the results
+	- Added property called ComputerName, rather than using the variable of PSComputerName
+	- Since PSComputerName is an automatic variable/property, I opted to use a new property name to avoid conflicts
+	- Now the ComputerName property is also the first column... yay!
+
 Rearranged the Options Tab
 	- Moved buttons to the top
 	- Moved Job Timeout to next to the Execute Script button
@@ -22,6 +27,10 @@ Job TimeOut Selection
 	- Moved it from the Options Tab to right above the Execute Script Button to remind users to set it easier
 	- The option auto hides/appears depending on if you select Individual Execution
 		- This is to help reduce the chances that users get confused... as it's only used by Individual Exeuction
+
+Renamed some of the GUI
+	- Renmaed execution modes: Individual Execution --> Monitor Jobs
+	- Renamed Tab: Results --> Info
 
 ==================================================
 v5.1.6 BETA - 8 Nov 20

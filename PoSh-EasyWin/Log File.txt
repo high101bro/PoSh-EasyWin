@@ -81,3 +81,900 @@
 2020/11/28 14:52:35  PoSh-EasyWin Started By: SURFACEGO\Dan
 2020/11/28 14:52:39  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
 2020/11/28 14:52:40  ====================================================================================================
+2020/11/28 15:17:19  ====================================================================================================
+2020/11/28 15:17:19  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 15:20:36  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 15:20:37  ====================================================================================================
+2020/11/28 15:21:08  Opted to import the PSWriteHTML module
+2020/11/28 15:57:16  ====================================================================================================
+2020/11/28 15:57:16  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 15:58:09  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 15:58:10  ====================================================================================================
+2020/11/28 15:59:01   - True
+2020/11/28 15:59:01   - True
+2020/11/28 15:59:03  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 15:59:04  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 15:59:55  ====================================================================================================
+2020/11/28 15:59:55  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:00:18  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:00:19  ====================================================================================================
+2020/11/28 16:00:55   - True
+2020/11/28 16:00:55   - True
+2020/11/28 16:00:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:00:58  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:01:44  ====================================================================================================
+2020/11/28 16:01:44  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:01:48  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:01:49  ====================================================================================================
+2020/11/28 16:02:29   - True
+2020/11/28 16:02:29   - True
+2020/11/28 16:02:30  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:02:31  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:07:30  ====================================================================================================
+2020/11/28 16:07:30  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:07:33  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:07:35  ====================================================================================================
+2020/11/28 16:08:23   - True
+2020/11/28 16:08:23   - True
+2020/11/28 16:08:25  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:08:26  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:09:27  ====================================================================================================
+2020/11/28 16:09:27  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:09:30  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:09:31  ====================================================================================================
+2020/11/28 16:10:03   - True
+2020/11/28 16:10:03   - True
+2020/11/28 16:10:05  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:10:06  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:11:19   - True
+2020/11/28 16:11:19   - True
+2020/11/28 16:11:21  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:11:21  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:11:59   - True
+2020/11/28 16:12:01  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:14:10  ====================================================================================================
+2020/11/28 16:14:10  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:14:31  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:14:32  ====================================================================================================
+2020/11/28 16:15:06   - True
+2020/11/28 16:15:07   - True
+2020/11/28 16:15:08  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:15:09  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:18:09  ====================================================================================================
+2020/11/28 16:18:09  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:18:11  PoSh-EasyWin User Agreemennt NOT Accepted By: SURFACEGO\Dan
+2020/11/28 16:18:17  ====================================================================================================
+2020/11/28 16:18:17  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:18:32  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:18:33  ====================================================================================================
+2020/11/28 16:19:31   - True
+2020/11/28 16:19:32   - True
+2020/11/28 16:19:33  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:19:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:21:04  ====================================================================================================
+2020/11/28 16:21:04  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:21:08  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:21:09  ====================================================================================================
+2020/11/28 16:21:56   - True
+2020/11/28 16:21:56   - True
+2020/11/28 16:21:58  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:21:58  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:22:53  ====================================================================================================
+2020/11/28 16:22:53  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:23:00  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:23:01  ====================================================================================================
+2020/11/28 16:23:43   - True
+2020/11/28 16:23:43   - True
+2020/11/28 16:23:45  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:23:46  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:26:52  ====================================================================================================
+2020/11/28 16:26:52  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:26:54  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:26:56  ====================================================================================================
+2020/11/28 16:27:32   - True
+2020/11/28 16:27:32   - True
+2020/11/28 16:27:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:27:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:28:04   - True
+2020/11/28 16:28:06  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:29:17  ====================================================================================================
+2020/11/28 16:29:17  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:29:20  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:29:21  ====================================================================================================
+2020/11/28 16:29:56   - True
+2020/11/28 16:29:57   - True
+2020/11/28 16:29:58  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:29:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:30:24   - True
+2020/11/28 16:30:26  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:33:05  ====================================================================================================
+2020/11/28 16:33:05  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:33:09  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:33:10  ====================================================================================================
+2020/11/28 16:34:03   - True
+2020/11/28 16:34:04  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:34:41   - True
+2020/11/28 16:34:41   - True
+2020/11/28 16:34:43  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:34:43  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:37:34  ====================================================================================================
+2020/11/28 16:37:34  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:37:37  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:37:38  ====================================================================================================
+2020/11/28 16:38:26   - True
+2020/11/28 16:38:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:39:22  ====================================================================================================
+2020/11/28 16:39:22  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:39:25  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:39:26  ====================================================================================================
+2020/11/28 16:40:15   - True
+2020/11/28 16:40:18  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:41:05   - True
+2020/11/28 16:41:05   - True
+2020/11/28 16:41:06  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:41:07  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:42:12  ====================================================================================================
+2020/11/28 16:42:12  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:42:15  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:42:16  ====================================================================================================
+2020/11/28 16:42:48   - True
+2020/11/28 16:42:48   - True
+2020/11/28 16:42:50  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:42:50  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:43:33  ====================================================================================================
+2020/11/28 16:43:33  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:43:55  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:43:56  ====================================================================================================
+2020/11/28 16:44:48   - True
+2020/11/28 16:44:48   - True
+2020/11/28 16:44:50  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:44:50  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:45:22  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:45:22  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:47:13  ====================================================================================================
+2020/11/28 16:47:13  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:47:15  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:47:16  ====================================================================================================
+2020/11/28 16:47:54   - True
+2020/11/28 16:47:54   - True
+2020/11/28 16:47:56  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:47:56  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:49:48  ====================================================================================================
+2020/11/28 16:49:48  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 16:49:52  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 16:49:53  ====================================================================================================
+2020/11/28 16:50:33   - True
+2020/11/28 16:50:33   - True
+2020/11/28 16:50:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 16:50:35  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:00:40  ====================================================================================================
+2020/11/28 17:00:40  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:00:43  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:00:44  ====================================================================================================
+2020/11/28 17:01:27   - True
+2020/11/28 17:01:27   - True
+2020/11/28 17:01:29  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:01:29  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:05:01   - True
+2020/11/28 17:05:04  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:05:49   - True
+2020/11/28 17:05:49   - True
+2020/11/28 17:05:50  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:05:51  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:07:59  ====================================================================================================
+2020/11/28 17:07:59  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:08:13  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:08:14  ====================================================================================================
+2020/11/28 17:08:51   - True
+2020/11/28 17:08:51   - True
+2020/11/28 17:08:53  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:08:54  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:09:35  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:09:35  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:09:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:10:19   - True
+2020/11/28 17:10:19   - True
+2020/11/28 17:10:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:10:21  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:10:48   - True
+2020/11/28 17:10:49  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:11:10  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:11:49   - True
+2020/11/28 17:11:49   - True
+2020/11/28 17:11:50  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:11:52  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:12:24  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:12:24  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:13:05  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:13:06  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:16:43  ====================================================================================================
+2020/11/28 17:16:43  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:16:45  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:16:46  ====================================================================================================
+2020/11/28 17:16:54  ====================================================================================================
+2020/11/28 17:16:54  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:16:56  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:16:57  ====================================================================================================
+2020/11/28 17:17:58   - True
+2020/11/28 17:17:58   - True
+2020/11/28 17:18:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:18:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:18:02  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 17:18:03  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 17:18:04  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:18:04  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 17:20:06  ====================================================================================================
+2020/11/28 17:20:06  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:20:11  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:20:12  ====================================================================================================
+2020/11/28 17:21:13   - True
+2020/11/28 17:21:13   - True
+2020/11/28 17:21:15  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:21:16  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:21:17  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:21:17  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 17:23:08  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:23:08  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:26:09  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:26:10  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:26:10  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:26:12  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 17:29:26   - True
+2020/11/28 17:29:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:29:30  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:32:51  ====================================================================================================
+2020/11/28 17:32:51  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:32:54  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:32:55  ====================================================================================================
+2020/11/28 17:33:38   - True
+2020/11/28 17:33:39   - True
+2020/11/28 17:33:43  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:33:44  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:36:04  ====================================================================================================
+2020/11/28 17:36:04  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:36:05  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:36:07  ====================================================================================================
+2020/11/28 17:36:38   - True
+2020/11/28 17:36:39  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:40:18  ====================================================================================================
+2020/11/28 17:40:18  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:40:20  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:40:21  ====================================================================================================
+2020/11/28 17:40:55   - True
+2020/11/28 17:40:58  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:42:38  Invoke-Command -ScriptBlock { Get-LocalGroupMember -Group administrators } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName,Name, SID, ObjectClass, PrincipalSource
+2020/11/28 17:42:39  Invoke-Command -ScriptBlock { Get-LocalUser } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, Enabled, SID, LastLogon, AccountExpires, PasswordRequired, UserMayChangePassword, PasswordExpires, PasswordLastSet, PasswordChangeableDate, Description, FullName
+2020/11/28 17:42:40  Invoke-Command -ScriptBlock { Get-NetFirewallProfile } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, Enabled, DefaultInboundAction, DefaultOutboundAction, AllowInboundRules, AllowLocalFirewallRules, AllowLocalIPsecRules, AllowUserApps, AllowUserPorts, AllowUnicastResponseToMulticast, NotifyOnListen, EnableStealthModeForIPsec, LogFileName, LogMaxsizeKilobytes, LogAllowed, LogBlocked, LogIgnored, DisabledInterfaceAliases
+2020/11/28 17:42:40  Invoke-Command -ScriptBlock { Get-LocalGroup } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/28 17:42:41  Invoke-Command -ScriptBlock { Get-PSDrive } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, @{Name='Name';Expression={$_.DeviceID}}, DeviceID, DriveType, 
+        @{Name     = 'DriveTypeName'
+        Expression = {
+            if     ($_.DriveType -eq 0) {'Unknown'}
+            elseif ($_.DriveType -eq 1) {'No Root Directory'}
+            elseif ($_.DriveType -eq 2) {'Removeable Disk'}
+            elseif ($_.DriveType -eq 3) {'Local Drive'}
+            elseif ($_.DriveType -eq 4) {'Network Drive'}
+            elseif ($_.DriveType -eq 5) {'Compact Disc'}
+            elseif ($_.DriveType -eq 6) {'RAM Disk'}
+            else                        {'Error: Unknown'}        
+        }}, VolumeName, 
+    @{L='FreeSpaceGB';E={"{0:N2}" -f ($_.FreeSpace /1GB)}},
+    @{L="CapacityGB";E={"{0:N2}" -f ($_.Size/1GB)}}
+2020/11/28 17:42:41  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2020/11/28 17:42:43  Invoke-Command -ScriptBlock { Get-NetIPAddress } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, IPAddress, InterfaceIndex, InterfaceAlias, AddressFamily, Type, PrefixLength, PrefixOrigin, SuffixOrigin, AddressState, ValidLifetime, PreferredLifetime, SkipAsSource, PolicyStore
+2020/11/28 17:42:46  Invoke-Command -ScriptBlock { Get-PnpDevice } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/28 17:42:48  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:42:49  Invoke-Command -ScriptBlock { Get-HotFix } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, @{Name="Name";Expression={$_.HotFixID}}, HotFixID, Description, InstalledBy, @{Name='InstalledOn';Expression={$($_.InstalledOn).tostring("yyyyMMdd")}}, ServicePackInEffect
+2020/11/28 17:42:50  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 17:42:51  Invoke-Command -ScriptBlock { Get-SmbShare } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/28 17:42:52  Invoke-Command -ScriptBlock { Get-ComputerInfo } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/28 17:42:53  Invoke-Command -ScriptBlock { Get-ItemProperty -Path HKLM:\system\CurrentControlSet\Enum\USBSTOR\*\* } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, FriendlyName, Service, @{Name="ContainerID";Expression={"$($_.ContainerID.trim('{}'))"}}, @{Name="HardwareID";Expression={"$($_.HardwareID)"}}
+2020/11/28 17:42:53  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-CrashedApplications.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:54  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-DriverDetails.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:54  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-LoadedDLLs.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:54  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:55  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatUDP.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:55  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:56  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-RegistrySoftware.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:56  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-RegistryStartupCommands.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:57  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-RegistryUSBHistory.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:57  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-RegistryWirelessNetworks.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:58  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:58  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-USBControllerAndDevices.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:42:59  Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Product } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, Vendor, Version, InstallDate, InstallDate2, InstallLocation, InstallSource, PackageName, PackageCache, RegOwner, HelpLink, HelpTelephone, URLInfoAbout, URLUpdateInfo, Language, Description, IdentifyingNumber
+2020/11/28 17:42:59  Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, SID, Enabled, LockedOut, AccountLockoutTime, Created, @{n='WhenCreated';e={($_.created).tostring('yyyyMMdd')}}, Modified, @{n='WhenModified';e={($_.modified).tostring('yyyyMMdd')}}, AccountExpirationDate, LogonWorkStations, LastLogonDate, @{n='WhenLastLogonDate';e={($_.LastLogonDate).tostring('yyyyMMdd')}}, LastBadPasswordAttempt, @{n='WhenLastBadPasswordAttempt';e={($_.LastBadPasswordAttempt).tostring('yyyyMMdd')}}, PasswordLastSet, @{n='WhenPasswordLastSet';e={($_.PasswordLastSet).tostring('yyyyMMdd')}}, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword, SamAccountName, UserPrincipalName, CanonicalName, DistinguishedName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress, ObjectClass, ObjectGUID, dSCorePropagationData,  @{n='LastdSCorePropagationData';e={$_.dSCorePropagationData[0].tostring('yyyyMMdd')}}
+2020/11/28 17:43:00  Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties * } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, SID, Enabled, LockedOut, Created, @{n='WhenCreated';e={[string]($_.created).tostring('yyyyMMdd')}}, Modified, @{n='WhenModified';e={[string]($_.modified).tostring('yyyyMMdd')}}, LastLogonDate, @{n='WhenLastLogonDate';e={[string]($_.LastLogonDate).tostring('yyyyMMdd')}}, LastBadPasswordAttempt, @{n='WhenLastBadPasswordAttempt';e={[string]($_.LastBadPasswordAttempt).tostring('yyyyMMdd')}}, PasswordLastSet, @{n='WhenPasswordLastSet';e={[string]($_.PasswordLastSet).tostring('yyyyMMdd')}}, AccountExpirationDate, @{n='WhenAccountExpirationDate';e={[string]($_.AccountExpirationDate).tostring('yyyyMMdd')}}, dSCorePropagationData,  @{n='LastdSCorePropagationData';e={[string]$_.dSCorePropagationData[0].tostring('yyyyMMdd')}}
+2020/11/28 17:43:00  Invoke-Command -ScriptBlock { Get-ADDomain } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/28 17:43:01  Invoke-Command -ScriptBlock { $StartDate = (Get-Date).AddDays(-7) ; Get-ADObject -Filter 'whenChanged -gt $StartDate' -IncludeDeletedObjects -properties * | Sort-Object WhenCreated } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ObjectClass, WhenCreated, WhenChanged, Deleted, LastLogon, LogonCount, DistinguishedName, ObjectSID
+2020/11/28 17:43:01  Invoke-Command -ScriptBlock { $StartDate = (Get-Date).AddDays(-7) ; Get-ADObject -Filter 'WhenCreated -gt $StartDate' -IncludeDeletedObjects -properties * | Sort-Object WhenCreated } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ObjectClass, WhenCreated, WhenChanged, Deleted, LastLogon, LogonCount, DistinguishedName, ObjectSID
+2020/11/28 17:43:02  Invoke-Command -ScriptBlock { Get-GPO -All } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/28 17:43:02  Invoke-Command -ScriptBlock { Get-AdObject -Filter * } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/28 17:43:03  Invoke-Command -ScriptBlock { Get-ADGroup -Filter * -Properties *} -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, SID, SIDHistory, GroupCategory, GroupScope, @{n="Member"; e={($_.Members -replace "CN=","`nCN=") }}, Members, MemberOf, WhenCreated, WhenChanged, DistinguishedName, Description, ProtectedFromAccidentalDeletion
+2020/11/28 17:43:03  Invoke-Command -ScriptBlock { Get-ADGroup -filter * | Where-Object {-Not ($_ | Get-ADGroupMember)} } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ObjectClass, DistinguishedName, GroupCategory, GroupScope, ObjectGUID, SamAccountName, SID
+2020/11/28 17:43:03  Invoke-Command -ScriptBlock { Get-ADOrganizationalUnit -Filter * } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/28 17:43:04  Invoke-Command -ScriptBlock { Get-ADFineGrainedPasswordPolicy -filter * } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/28 17:43:04  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-AD\Get-ADDomainTrusts.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:43:05  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-AD\Get-ADDomainWideUserLogons.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:43:05  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-AD\Get-ADGroupMembershipByGroups.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:43:06  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-AD\Get-ADGroupMembershipByUsers.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:43:06  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-AD\Get-ADOrganizationalUnitPermissions.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:43:08  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-AD\Get-ADServicePrincipalNames.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:43:08  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-AD\Get-ADSubnetWithinSitesAndServices.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:43:09  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-AD\Get-GroupPolicyLink.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:48:24  ====================================================================================================
+2020/11/28 17:48:24  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:48:28  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:48:29  ====================================================================================================
+2020/11/28 17:49:27   - True
+2020/11/28 17:49:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:49:49  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:50:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:50:35  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 17:51:35  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:51:58  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:52:38   - True
+2020/11/28 17:52:39   - True
+2020/11/28 17:52:40  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:52:40  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/28 17:54:58  ====================================================================================================
+2020/11/28 17:54:58  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 17:55:00  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 17:55:02  ====================================================================================================
+2020/11/28 17:55:44   - True
+2020/11/28 17:55:44   - True
+2020/11/28 17:55:48  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:55:48  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 17:56:18  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:56:19  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 17:57:05  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesTree.ps1' -ComputerName 127.0.0.1
+2020/11/28 17:57:57  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 18:17:37  ====================================================================================================
+2020/11/28 18:17:37  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 18:17:40  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 18:17:41  ====================================================================================================
+2020/11/28 19:03:26  ====================================================================================================
+2020/11/28 19:03:26  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:03:30  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:03:31  ====================================================================================================
+2020/11/28 19:05:08   - True
+2020/11/28 19:05:10  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:06:20  ====================================================================================================
+2020/11/28 19:06:20  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:06:25  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:06:26  ====================================================================================================
+2020/11/28 19:07:24   - True
+2020/11/28 19:07:26  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:08:40  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:10:50  ====================================================================================================
+2020/11/28 19:10:50  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:10:53  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:10:54  ====================================================================================================
+2020/11/28 19:12:14   - True
+2020/11/28 19:12:16  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:16:29  ====================================================================================================
+2020/11/28 19:16:29  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:16:32  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:16:33  ====================================================================================================
+2020/11/28 19:17:46   - True
+2020/11/28 19:17:49  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:19:52  ====================================================================================================
+2020/11/28 19:19:52  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:19:55  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:19:56  ====================================================================================================
+2020/11/28 19:21:08  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:22:37  ====================================================================================================
+2020/11/28 19:22:37  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:23:00  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:23:01  ====================================================================================================
+2020/11/28 19:23:59  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:27:25  ====================================================================================================
+2020/11/28 19:27:25  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:27:28  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:27:29  ====================================================================================================
+2020/11/28 19:29:06   - True
+2020/11/28 19:29:06   - True
+2020/11/28 19:29:08  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:29:08  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- localhost'
+2020/11/28 19:32:33  ====================================================================================================
+2020/11/28 19:32:33  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:32:36  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:32:37  ====================================================================================================
+2020/11/28 19:33:47  ====================================================================================================
+2020/11/28 19:33:47  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:33:57  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:33:59  ====================================================================================================
+2020/11/28 19:35:17   - True
+2020/11/28 19:35:17   - True
+2020/11/28 19:35:42  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:35:42  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- localhost'
+2020/11/28 19:38:12  ====================================================================================================
+2020/11/28 19:38:12  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:38:14  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:38:15  ====================================================================================================
+2020/11/28 19:39:12   - True
+2020/11/28 19:39:14  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:46:03  ====================================================================================================
+2020/11/28 19:46:03  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:46:04  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:46:05  ====================================================================================================
+2020/11/28 19:47:12  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:47:12  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- localhost'
+2020/11/28 19:48:24  ====================================================================================================
+2020/11/28 19:48:24  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:48:28  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:48:30  ====================================================================================================
+2020/11/28 19:49:30   - True
+2020/11/28 19:49:31   - True
+2020/11/28 19:49:33  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:49:33  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- localhost'
+2020/11/28 19:52:43  ====================================================================================================
+2020/11/28 19:52:43  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:52:46  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:52:47  ====================================================================================================
+2020/11/28 19:54:42   - True
+2020/11/28 19:54:44  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 19:59:01  ====================================================================================================
+2020/11/28 19:59:01  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 19:59:30  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 19:59:31  ====================================================================================================
+2020/11/28 20:00:38   - True
+2020/11/28 20:00:41  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:02:12  ====================================================================================================
+2020/11/28 20:02:12  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 20:02:14  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 20:02:15  ====================================================================================================
+2020/11/28 20:03:10   - True
+2020/11/28 20:03:12  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:03:44  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:04:50  ====================================================================================================
+2020/11/28 20:04:50  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 20:04:58  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 20:04:59  ====================================================================================================
+2020/11/28 20:05:52   - True
+2020/11/28 20:05:55  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:10:53  ====================================================================================================
+2020/11/28 20:10:53  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 20:11:00  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 20:11:01  ====================================================================================================
+2020/11/28 20:13:38  ====================================================================================================
+2020/11/28 20:13:38  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 20:13:42  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 20:13:43  ====================================================================================================
+2020/11/28 20:14:32   - True
+2020/11/28 20:14:35  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:15:56  ====================================================================================================
+2020/11/28 20:15:56  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 20:15:59  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 20:16:00  ====================================================================================================
+2020/11/28 20:18:20   - True
+2020/11/28 20:18:22  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:20:39  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:22:47  Attempting to Establish Sessions to 1 Endpoints
+2020/11/28 20:22:47  [!] 127.0.0.1
+2020/11/28 20:22:55  Session Based Collection Started to 1 Endpoints
+2020/11/28 20:22:55  New-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:22:56  [+] Copying the directory 'Sysmon' and its contents to:
+2020/11/28 20:22:56  [!] Copy Error: System.Management.Automation.ItemNotFoundException: Cannot find path 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Sysmon' because it does not exist.
+   at System.Management.Automation.LocationGlobber.ExpandMshGlobPath(String path, Boolean allowNonexistingPaths, PSDriveInfo drive, ContainerCmdletProvider provider, CmdletProviderContext context)
+   at System.Management.Automation.LocationGlobber.ResolveDriveQualifiedPath(String path, CmdletProviderContext context, Boolean allowNonexistingPaths, CmdletProvider& providerInstance)
+   at System.Management.Automation.LocationGlobber.GetGlobbedMonadPathsFromMonadPath(String path, Boolean allowNonexistingPaths, CmdletProviderContext context, CmdletProvider& providerInstance)
+   at System.Management.Automation.LocationGlobber.GetGlobbedProviderPathsFromMonadPath(String path, Boolean allowNonexistingPaths, CmdletProviderContext context, ProviderInfo& provider, CmdletProvider& providerInstance)
+   at System.Management.Automation.SessionStateInternal.CopyItem(String[] paths, String copyPath, Boolean recurse, CopyContainers copyContainers, CmdletProviderContext context)
+   at Microsoft.PowerShell.Commands.CopyItemCommand.ProcessRecord(): 
+2020/11/28 20:22:56  [!] Executing the 'test.ps1' script on:
+2020/11/28 20:23:29      127.0.0.1: Invoke-Command -FilePath C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\test.ps1 -Session [PSSession]WinRM3
+2020/11/28 20:23:30  Remove-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:27:48  ====================================================================================================
+2020/11/28 20:27:48  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 20:27:54  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 20:27:55  ====================================================================================================
+2020/11/28 20:31:24   - True
+2020/11/28 20:31:27  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:33:25  Attempting to Establish Sessions to 1 Endpoints
+2020/11/28 20:33:25  [!] 127.0.0.1
+2020/11/28 20:33:30  Session Based Collection Started to 1 Endpoints
+2020/11/28 20:33:30  New-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:33:31  [+] Copying the directory 'Sysmon' and its contents to:
+2020/11/28 20:33:32      127.0.0.1: Copy-Item -Path C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\User Specified Executable And Script\Sysmon -Destination C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin -Recurse -ToSession [PSSession]WinRM2 -Force -ErrorAction Stop
+2020/11/28 20:33:32  [!] Executing the 'test.ps1' script on:
+2020/11/28 20:34:05      127.0.0.1: Invoke-Command -FilePath C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\test.ps1 -Session [PSSession]WinRM2
+2020/11/28 20:34:06  Remove-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:34:33  Attempting to Establish Sessions to 1 Endpoints
+2020/11/28 20:34:33  [!] 127.0.0.1
+2020/11/28 20:34:44  Session Based Collection Started to 1 Endpoints
+2020/11/28 20:34:44  New-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:34:45  [+] Copying the directory 'Sysmon' and its contents to:
+2020/11/28 20:34:46      127.0.0.1: Copy-Item -Path C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\User Specified Executable And Script\Sysmon -Destination C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin -Recurse -ToSession [PSSession]WinRM3 -Force -ErrorAction Stop
+2020/11/28 20:34:46  [!] Executing the 'test.ps1' script on:
+2020/11/28 20:35:26      127.0.0.1: Invoke-Command -FilePath C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\test.ps1 -Session [PSSession]WinRM3
+2020/11/28 20:35:27  Remove-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:36:05  ====================================================================================================
+2020/11/28 20:36:05  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 20:36:08  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 20:36:09  ====================================================================================================
+2020/11/28 20:37:25   - True
+2020/11/28 20:37:27  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:40:30  Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} -ArgumentList @($ExeScriptSelectScriptPath,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Executable and Script -- 127.0.0.1'
+2020/11/28 20:42:03  Attempting to Establish Sessions to 1 Endpoints
+2020/11/28 20:42:03  [!] 127.0.0.1
+2020/11/28 20:42:06  Session Based Collection Started to 1 Endpoints
+2020/11/28 20:42:06  New-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:42:06  [+] Copying the directory 'Sysmon' and its contents to:
+2020/11/28 20:42:07      127.0.0.1: Copy-Item -Path C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\User Specified Executable And Script\Sysmon -Destination C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin -Recurse -ToSession [PSSession]WinRM3 -Force -ErrorAction Stop
+2020/11/28 20:42:08  [!] Executing the 'test.ps1' script on:
+2020/11/28 20:42:41      127.0.0.1: Invoke-Command -FilePath C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\test.ps1 -Session [PSSession]WinRM3
+2020/11/28 20:42:41  Remove-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:43:52  Attempting to Establish Sessions to 1 Endpoints
+2020/11/28 20:43:52  [!] 127.0.0.1
+2020/11/28 20:44:21  Session Based Collection Started to 1 Endpoints
+2020/11/28 20:44:21  New-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:44:21  [+] Copying the directory 'Sysmon' and its contents to:
+2020/11/28 20:44:23      127.0.0.1: Copy-Item -Path C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\User Specified Executable And Script\Sysmon -Destination C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin -Recurse -ToSession [PSSession]WinRM4 -Force -ErrorAction Stop
+2020/11/28 20:44:23  [!] Executing the 'test.ps1' script on:
+2020/11/28 20:44:56      127.0.0.1: Invoke-Command -FilePath C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\test.ps1 -Session [PSSession]WinRM4
+2020/11/28 20:44:56  Remove-PSSession -ComputerName 127.0.0.1
+2020/11/28 20:46:33   - True
+2020/11/28 20:46:33   - True
+2020/11/28 20:46:35  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 20:46:35  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 20:46:36  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 20:46:37  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/28 20:48:13  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 20:48:13  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 20:48:14  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 20:48:15  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 20:49:02  Attempting to Establish Sessions to 2 Endpoints
+2020/11/28 20:49:04  [!] 127.0.0.1, localhost
+2020/11/28 20:49:41  Session Based Collection Started to 2 Endpoints
+2020/11/28 20:49:41  New-PSSession -ComputerName 127.0.0.1, localhost
+2020/11/28 20:49:52  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description } -argumentlist Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description -Session $PSSession
+2020/11/28 20:54:10  [+] Invoke-Command -ScriptBlock { param(C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1); Invoke-Expression -Command C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1 } -argumentlist C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1 -Session $PSSession
+2020/11/28 20:54:10  Remove-PSSession -ComputerName 127.0.0.1, localhost
+2020/11/28 20:58:17  ====================================================================================================
+2020/11/28 20:58:17  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 20:58:20  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 20:58:21  ====================================================================================================
+2020/11/28 21:08:31   - True
+2020/11/28 21:08:31   - True
+2020/11/28 21:08:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:08:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:08:35  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:08:37  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:08:38  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:08:39  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:08:42  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:08:43  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:13:03  ====================================================================================================
+2020/11/28 21:13:03  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 21:13:09  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 21:13:10  ====================================================================================================
+2020/11/28 21:20:46  ====================================================================================================
+2020/11/28 21:20:46  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 21:20:51  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 21:20:52  ====================================================================================================
+2020/11/28 21:22:30   - True
+2020/11/28 21:22:33  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:22:34  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:23:54  ====================================================================================================
+2020/11/28 21:23:54  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 21:24:33  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 21:24:34  ====================================================================================================
+2020/11/28 21:26:43   - True
+2020/11/28 21:26:43   - True
+2020/11/28 21:26:47  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:26:47  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:26:49  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:26:50  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:26:51  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:26:53  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:26:55  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:26:57  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:31:48  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:31:48  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:31:49  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:31:49  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:31:50  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:31:50  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:31:51  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:31:51  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:32:51  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:32:51  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:32:52  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:32:53  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:32:54  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:32:55  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:32:57  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:32:59  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:38:47  ====================================================================================================
+2020/11/28 21:38:48  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 21:38:54  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 21:38:55  ====================================================================================================
+2020/11/28 21:39:49  Attempting to Establish Sessions to 2 Endpoints
+2020/11/28 21:39:49  [!] 127.0.0.1, localhost
+2020/11/28 21:39:52  Session Based Collection Started to 2 Endpoints
+2020/11/28 21:39:52  New-PSSession -ComputerName 127.0.0.1, localhost
+2020/11/28 21:39:58  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description } -argumentlist Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description -Session $PSSession
+2020/11/28 21:40:05  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-Service } | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-Service } | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle } -argumentlist Invoke-Command -ScriptBlock { Get-Service } | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle -Session $PSSession
+2020/11/28 21:43:28  [+] Invoke-Command -ScriptBlock { param(C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1); Invoke-Expression -Command C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1 } -argumentlist C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1 -Session $PSSession
+2020/11/28 21:43:40  [+] Invoke-Command -ScriptBlock { param(C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1); Invoke-Expression -Command C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1 } -argumentlist C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1 -Session $PSSession
+2020/11/28 21:43:40  Remove-PSSession -ComputerName 127.0.0.1, localhost
+2020/11/28 21:44:40  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:44:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:44:42  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:44:42  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:44:43  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:44:44  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:44:45  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:44:46  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:45:59  ====================================================================================================
+2020/11/28 21:45:59  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 21:46:06  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 21:46:07  ====================================================================================================
+2020/11/28 21:47:12  ====================================================================================================
+2020/11/28 21:47:12  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 21:47:29  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 21:47:30  ====================================================================================================
+2020/11/28 21:48:50  ====================================================================================================
+2020/11/28 21:48:50  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 21:49:01  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 21:49:02  ====================================================================================================
+2020/11/28 21:53:17   - True
+2020/11/28 21:53:17   - True
+2020/11/28 21:53:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:53:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 21:53:21  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:53:21  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 21:53:22  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:53:22  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:53:22  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 21:53:23  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/28 21:53:23  Invoke-Command -ScriptBlock $scriptBlock -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- 127.0.0.1'
+2020/11/28 21:53:23  Invoke-Command -ScriptBlock $scriptBlock -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- localhost'
+2020/11/28 21:53:24  Get-WSManInstance -ComputerName 127.0.0.1 -ResourceURI Shell -Enumerate
+2020/11/28 21:53:25  Get-WSManInstance -ComputerName localhost -ResourceURI Shell -Enumerate
+2020/11/28 21:53:25  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- 127.0.0.1'
+2020/11/28 21:53:25  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue) -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- localhost'
+2020/11/28 21:53:26  127.0.0.1: Event Logs - Event ID Manual Entry
+2020/11/28 21:53:26  localhost: Event Logs - Event ID Manual Entry
+2020/11/28 21:53:26  localhost: Event Logs - Event ID Manual Entry
+2020/11/28 21:53:26  localhost: Event Logs - Application Event Logs
+2020/11/28 21:53:27  localhost: Event Logs - Security Event Logs
+2020/11/28 21:53:27  127.0.0.1: Event Logs - Event IDs To Monitor
+2020/11/28 21:53:27  localhost: Event Logs - Event IDs To Monitor
+2020/11/28 21:53:28  127.0.0.1: Registry Search - Key Name
+2020/11/28 21:53:28  Invoke-Command -ScriptBlock $QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- 127.0.0.1''
+2020/11/28 21:53:28  localhost: Registry Search - Key Name
+2020/11/28 21:53:28  Invoke-Command -ScriptBlock $QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- localhost''
+2020/11/28 21:53:28  127.0.0.1: Directory Listing
+2020/11/28 21:53:28  localhost: Directory Listing
+2020/11/28 21:53:29  127.0.0.1: File Search
+2020/11/28 21:53:29  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2020/11/28 21:53:29  localhost: File Search
+2020/11/28 21:53:29  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: File Search -- localhost'
+2020/11/28 21:53:29  127.0.0.1: Alternate Data Streams
+2020/11/28 21:53:30  localhost: Alternate Data Streams
+2020/11/28 21:53:30  127.0.0.1: Endpoint Packet Capture
+2020/11/28 21:53:31  localhost: Endpoint Packet Capture
+2020/11/28 21:53:32  127.0.0.1: Network Connection - Remote IP Address
+2020/11/28 21:53:32  localhost: Network Connection - Remote IP Address
+2020/11/28 21:53:32  127.0.0.1: Network Connection - Local Port
+2020/11/28 21:53:33  localhost: Network Connection - Local Port
+2020/11/28 21:53:33  127.0.0.1: Network Connection - Process Search
+2020/11/28 21:53:33  localhost: Network Connection - Process Search
+2020/11/28 21:53:34  127.0.0.1: Network Connection - DNS Cache
+2020/11/28 21:53:34  localhost: Network Connection - DNS Cache
+2020/11/28 22:23:50  ====================================================================================================
+2020/11/28 22:23:50  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 22:23:56  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 22:23:58  ====================================================================================================
+2020/11/28 22:25:35   - True
+2020/11/28 22:25:36   - True
+2020/11/28 22:25:39  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 22:25:40  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 22:25:41  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 22:25:42  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/28 22:25:45  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 22:25:47  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/28 22:25:49  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/28 22:25:50  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/28 22:27:08  Attempting to Establish Sessions to 2 Endpoints
+2020/11/28 22:27:09  [!] 127.0.0.1, localhost
+2020/11/28 22:27:14  Session Based Collection Started to 2 Endpoints
+2020/11/28 22:27:14  New-PSSession -ComputerName 127.0.0.1, localhost
+2020/11/28 22:27:25  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description } -argumentlist Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description -Session $PSSession
+2020/11/28 22:27:34  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-Service } | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-Service } | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle } -argumentlist Invoke-Command -ScriptBlock { Get-Service } | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle -Session $PSSession
+2020/11/28 22:27:35  Remove-PSSession -ComputerName 127.0.0.1, localhost
+2020/11/28 22:47:14  Invoke-Command -ScriptBlock $scriptBlock -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- 127.0.0.1'
+2020/11/28 22:47:14  Invoke-Command -ScriptBlock $scriptBlock -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- localhost'
+2020/11/28 22:47:15  Get-WSManInstance -ComputerName 127.0.0.1 -ResourceURI Shell -Enumerate
+2020/11/28 22:47:16  Get-WSManInstance -ComputerName localhost -ResourceURI Shell -Enumerate
+2020/11/28 22:47:46  Invoke-Command -ScriptBlock $scriptBlock -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- 127.0.0.1'
+2020/11/28 22:47:46  Invoke-Command -ScriptBlock $scriptBlock -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- localhost'
+2020/11/28 22:47:47  Get-WSManInstance -ComputerName 127.0.0.1 -ResourceURI Shell -Enumerate
+2020/11/28 22:47:48  Get-WSManInstance -ComputerName localhost -ResourceURI Shell -Enumerate
+2020/11/28 22:47:48  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- 127.0.0.1'
+2020/11/28 22:47:49  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue) -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- localhost'
+2020/11/28 22:49:48  127.0.0.1: Event Logs - Event ID Manual Entry
+2020/11/28 22:49:48  localhost: Event Logs - Event ID Manual Entry
+2020/11/28 22:49:48  localhost: Event Logs - Event ID Manual Entry
+2020/11/28 22:49:49  localhost: Event Logs - Application Event Logs
+2020/11/28 22:49:49  127.0.0.1: Event Logs - Event IDs To Monitor
+2020/11/28 22:49:50  localhost: Event Logs - Event IDs To Monitor
+2020/11/28 22:51:51  127.0.0.1: Registry Search - Key Name
+2020/11/28 22:51:52  Invoke-Command -ScriptBlock $QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- 127.0.0.1''
+2020/11/28 22:51:52  localhost: Registry Search - Key Name
+2020/11/28 22:51:52  Invoke-Command -ScriptBlock $QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- localhost''
+2020/11/28 22:53:23  127.0.0.1: Registry Search - Key Name
+2020/11/28 22:53:23  Invoke-Command -ScriptBlock $QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- 127.0.0.1''
+2020/11/28 22:53:23  localhost: Registry Search - Key Name
+2020/11/28 22:53:23  Invoke-Command -ScriptBlock $QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- localhost''
+2020/11/28 22:55:10  127.0.0.1: Directory Listing
+2020/11/28 22:55:10  localhost: Directory Listing
+2020/11/28 22:55:10  127.0.0.1: File Search
+2020/11/28 22:55:11  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2020/11/28 22:55:11  localhost: File Search
+2020/11/28 22:55:11  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: File Search -- localhost'
+2020/11/28 22:55:45  127.0.0.1: File Search
+2020/11/28 22:55:46  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2020/11/28 22:55:46  localhost: File Search
+2020/11/28 22:55:46  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: File Search -- localhost'
+2020/11/28 22:57:39  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 22:57:39  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:12:52  ====================================================================================================
+2020/11/28 23:12:52  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:12:54  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:12:55  ====================================================================================================
+2020/11/28 23:13:54   - System.Xml.XmlElement
+2020/11/28 23:13:54   - System.Xml.XmlElement
+2020/11/28 23:13:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:13:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:15:43  Attempting to Establish Sessions to 2 Endpoints
+2020/11/28 23:15:43  [!] 127.0.0.1, localhost
+2020/11/28 23:16:00  Session Based Collection Started to 2 Endpoints
+2020/11/28 23:16:00  New-PSSession -ComputerName 127.0.0.1, localhost
+2020/11/28 23:16:06  [+] Invoke-Command -ScriptBlock { param(Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description); Invoke-Expression -Command Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description } -argumentlist Invoke-Command -ScriptBlock { Get-Process } | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description -Session $PSSession
+2020/11/28 23:16:07  Remove-PSSession -ComputerName 127.0.0.1, localhost
+2020/11/28 23:16:59  ====================================================================================================
+2020/11/28 23:17:00  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:17:03  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:17:04  ====================================================================================================
+2020/11/28 23:17:45   - System.Xml.XmlElement
+2020/11/28 23:17:45   - System.Xml.XmlElement
+2020/11/28 23:17:47  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:17:47  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:20:05  ====================================================================================================
+2020/11/28 23:20:05  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:20:08  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:20:09  ====================================================================================================
+2020/11/28 23:25:11  ====================================================================================================
+2020/11/28 23:25:11  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:25:19  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:25:20  ====================================================================================================
+2020/11/28 23:25:57   - System.Xml.XmlElement
+2020/11/28 23:25:58   - System.Xml.XmlElement
+2020/11/28 23:26:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property @{n="PSComputerName";e={$env:COMPUTERNAME}}, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:26:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property @{n="PSComputerName";e={$env:COMPUTERNAME}}, Name, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:33:42  ====================================================================================================
+2020/11/28 23:33:42  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:33:47  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:33:48  ====================================================================================================
+2020/11/28 23:35:10   - System.Xml.XmlElement
+2020/11/28 23:35:10   - System.Xml.XmlElement
+2020/11/28 23:35:12  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:35:13  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:37:05  ====================================================================================================
+2020/11/28 23:37:05  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:37:08  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:37:09  ====================================================================================================
+2020/11/28 23:37:47   - System.Xml.XmlElement
+2020/11/28 23:37:47   - System.Xml.XmlElement
+2020/11/28 23:37:52  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:37:53  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:39:58  ====================================================================================================
+2020/11/28 23:39:58  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:40:01  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:40:02  ====================================================================================================
+2020/11/28 23:40:50   - System.Xml.XmlElement
+2020/11/28 23:40:50   - System.Xml.XmlElement
+2020/11/28 23:40:52  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:40:52  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:45:56  ====================================================================================================
+2020/11/28 23:45:57  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:45:59  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:46:00  ====================================================================================================
+2020/11/28 23:46:42   - System.Xml.XmlElement
+2020/11/28 23:46:42   - System.Xml.XmlElement
+2020/11/28 23:46:45  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:46:46  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:51:21  ====================================================================================================
+2020/11/28 23:51:21  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:51:23  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:51:24  ====================================================================================================
+2020/11/28 23:52:10   - System.Xml.XmlElement
+2020/11/28 23:52:10   - System.Xml.XmlElement
+2020/11/28 23:52:12  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property @{n="PSComputerName";e={$env:ComputerName}}, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:52:13  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property @{n="PSComputerName";e={$env:ComputerName}}, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:56:34  ====================================================================================================
+2020/11/28 23:56:34  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/28 23:56:35  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/28 23:56:36  ====================================================================================================
+2020/11/28 23:57:17   - System.Xml.XmlElement
+2020/11/28 23:57:17   - System.Xml.XmlElement
+2020/11/28 23:57:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/28 23:57:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:02:34  ====================================================================================================
+2020/11/29 00:02:34  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/29 00:02:36  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/29 00:02:37  ====================================================================================================
+2020/11/29 00:03:20   - System.Xml.XmlElement
+2020/11/29 00:03:20   - System.Xml.XmlElement
+2020/11/29 00:03:22  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/29 00:03:22  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/29 00:11:02  ====================================================================================================
+2020/11/29 00:11:03  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/29 00:11:06  PoSh-EasyWin User Agreemennt NOT Accepted By: SURFACEGO\Dan
+2020/11/29 00:11:11  ====================================================================================================
+2020/11/29 00:11:11  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/29 00:13:04  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/29 00:13:05  ====================================================================================================
+2020/11/29 00:14:27   - System.Xml.XmlElement
+2020/11/29 00:14:27   - System.Xml.XmlElement
+2020/11/29 00:14:30  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:14:31  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:17:28  ====================================================================================================
+2020/11/29 00:17:29  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/29 00:17:36  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/29 00:17:37  ====================================================================================================
+2020/11/29 00:18:17   - System.Xml.XmlElement
+2020/11/29 00:18:17   - System.Xml.XmlElement
+2020/11/29 00:18:19  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:18:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:23:31  ====================================================================================================
+2020/11/29 00:23:31  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/29 00:23:33  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/29 00:23:34  ====================================================================================================
+2020/11/29 00:24:18   - System.Xml.XmlElement
+2020/11/29 00:24:18   - System.Xml.XmlElement
+2020/11/29 00:24:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:24:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:28:04  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2020/11/29 00:28:04  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName localhost | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2020/11/29 00:28:05  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:28:05  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:28:06  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/29 00:28:06  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/29 00:28:07  Invoke-Command -ScriptBlock { Get-ComputerInfo } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/29 00:28:07  Invoke-Command -ScriptBlock { Get-ComputerInfo } -ComputerName localhost | Select-Object -Property PSComputerName, *
+2020/11/29 00:28:08  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/29 00:28:08  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/29 00:28:09  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/29 00:28:10  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/29 00:32:58  ====================================================================================================
+2020/11/29 00:32:58  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/29 00:33:01  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/29 00:33:02  ====================================================================================================
+2020/11/29 00:33:52   - System.Xml.XmlElement
+2020/11/29 00:33:52   - System.Xml.XmlElement
+2020/11/29 00:33:55  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2020/11/29 00:33:56  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName localhost | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2020/11/29 00:33:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:33:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName localhost | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2020/11/29 00:33:59  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/29 00:34:00  Invoke-Command -ScriptBlock { Get-Service } -ComputerName localhost | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2020/11/29 00:34:01  Invoke-Command -ScriptBlock { Get-ComputerInfo } -ComputerName 127.0.0.1 | Select-Object -Property PSComputerName, *
+2020/11/29 00:34:02  Invoke-Command -ScriptBlock { Get-ComputerInfo } -ComputerName localhost | Select-Object -Property PSComputerName, *
+2020/11/29 00:34:03  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/29 00:34:05  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName localhost
+2020/11/29 00:34:06  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName 127.0.0.1
+2020/11/29 00:34:06  Invoke-Command -FilePath 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName localhost
+2020/11/29 00:36:35  Invoke-Command -ScriptBlock $scriptBlock -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- 127.0.0.1'
+2020/11/29 00:36:35  Invoke-Command -ScriptBlock $scriptBlock -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- localhost'
+2020/11/29 00:36:37  Get-WSManInstance -ComputerName 127.0.0.1 -ResourceURI Shell -Enumerate
+2020/11/29 00:36:38  Get-WSManInstance -ComputerName localhost -ResourceURI Shell -Enumerate
+2020/11/29 00:36:39  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue) -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- 127.0.0.1'
+2020/11/29 00:36:39  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue) -ComputerName localhost -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- localhost'
+2020/11/29 00:43:16  ====================================================================================================
+2020/11/29 00:43:16  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/11/29 00:43:18  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/11/29 00:43:19  ====================================================================================================
+2020/11/29 00:43:32  Opted to import the PSWriteHTML module

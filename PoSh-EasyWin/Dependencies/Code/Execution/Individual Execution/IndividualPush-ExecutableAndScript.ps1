@@ -7,11 +7,53 @@ $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
-$TargetFolder                 = $script:ExeScriptDestinationDirectoryTextBox.text
+$TargetFolder                 = [string]($script:ExeScriptDestinationDirectoryTextBox.text).substring(3)
 $ExeScriptSelectDirOrFilePath = $script:ExeScriptSelectDirOrFilePath
 $ExeScriptSelectScriptPath    = $script:ExeScriptSelectScriptPath
 $AdminShare                   = 'c$'
 
+function Conduct-ExecutableAndScript {
+    param($ExeScriptSelectScript,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder)
+    
+    if ($ExeScriptScriptOnlyCheckbox.checked -eq $false) {
+        if ($ExeScriptSelectDirRadioButton.checked -eq $true) {
+            Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "\\$TargetComputer\$AdminShare\$TargetFolder" -Recurse -Force
+        }
+        elseif ($ExeScriptSelectFileRadioButton.checked -eq $true) {
+            Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "\\$TargetComputer\$AdminShare\$TargetFolder" -Force
+        }
+    }
+
+    Invoke-Expression $ExeScriptSelectScript
+}
+
+
+foreach ($TargetComputer in $script:ComputerList) {
+    if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if (!$script:Credential) { Create-NewCredentials }
+
+        $ExeScriptSelectScript = Get-Content $ExeScriptSelectScriptPath
+        Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} `
+        -ArgumentList @($ExeScriptSelectScript,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) `
+        -ComputerName $TargetComputer `
+        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+        -Credential $script:Credential
+
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScriptPath,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+    }
+    else {
+        $ExeScriptSelectScript = Get-Content $ExeScriptSelectScriptPath
+        Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} `
+        -ArgumentList @($ExeScriptSelectScript,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) `
+        -ComputerName $TargetComputer `
+        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
+
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScriptPath,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
+    }
+}
+Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+
+<# DEPRECATED
 foreach ($TargetComputer in $script:ComputerList) {
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }
@@ -91,7 +133,7 @@ foreach ($TargetComputer in $script:ComputerList) {
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[+] Removing Session with $TargetComputer"
     $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  [!] Removing Session with $TargetComputer")
 }
-
+DEPRECATED #>
 $ResultsListBox.Items.RemoveAt(1)
 $ResultsListBox.Items.Insert(1,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  [$(New-TimeSpan -Start $ExecutionStartTime -End (Get-Date))]  $CollectionName")
 $PoShEasyWin.Refresh()

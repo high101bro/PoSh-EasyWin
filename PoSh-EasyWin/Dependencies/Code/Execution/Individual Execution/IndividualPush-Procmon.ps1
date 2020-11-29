@@ -175,7 +175,7 @@ if ($ExternalProgramsRPCRadioButton.checked) {
         Remove-Item "$ExternalPrograms\$($SysinternalsProcmonRenameProcessTextBox.text).exe" -Force
     }
 
-    $SysinternalsProcmonButton .BackColor = 'LightGreen'
+    $SysinternalsProcmonButton.BackColor = 'LightGreen'
 
     $CollectionCommandEndTime0  = Get-Date
     $CollectionCommandDiffTime0 = New-TimeSpan -Start $ExecutionStartTime -End $CollectionCommandEndTime0

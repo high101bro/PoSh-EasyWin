@@ -37,7 +37,7 @@ $PSWriteHTMLIndividualWebPagesCheckbox = New-Object -TypeName System.Windows.For
     Enabled = $true
 }
 $PSWriteHTMLForm.Controls.Add($PSWriteHTMLIndividualWebPagesCheckbox)    
-if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
     $PSWriteHTMLIndividualWebPagesCheckbox.enabled = $false
 }
 
@@ -300,7 +300,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.cou
 }
 elseif ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.count -gt 0) {
 
-    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Individual Exeuction")
     }
@@ -1039,7 +1039,7 @@ Start-Sleep -Seconds 3
 
 
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -1740,7 +1740,7 @@ Start-Sleep -Seconds 3
         }
 
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -1979,7 +1979,7 @@ Start-Sleep -Seconds 3
         }
     
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -2256,7 +2256,7 @@ Start-Sleep -Seconds 3
         }
 
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -2482,7 +2482,7 @@ Start-Sleep -Seconds 3
        # }
 
 
-        #if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        #if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
 #            foreach ($TargetComputer in $script:ComputerList) {
 #                if ($ComputerListProvideCredentialsCheckBox.Checked) {
 #                    if (!$script:Credential) { Create-NewCredentials }
@@ -2740,7 +2740,7 @@ Start-Sleep -Seconds 3
         }
 
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -3186,7 +3186,7 @@ Start-Sleep -Seconds 3
         }
 
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -3227,7 +3227,7 @@ Start-Sleep -Seconds 3
 
 
 if ($PSWriteHTMLCheckedItemsList -match 'Endpoint') {
-    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Completed: Individual Execution")
     }
@@ -3264,7 +3264,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Endpoint') {
 Generate-ComputerList
 
 if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
-    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Individual Exeuction")
     }
@@ -3556,7 +3556,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             foreach ($TargetComputer in $script:DomainControllerComputerName) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -3869,7 +3869,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
         }
 
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             foreach ($TargetComputer in $script:DomainControllerComputerName) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
@@ -3946,7 +3946,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 if ($PSWriteHTMLCheckedItemsList -match 'Active Directory') {    
-    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Completed: Individual Execution")    
     }

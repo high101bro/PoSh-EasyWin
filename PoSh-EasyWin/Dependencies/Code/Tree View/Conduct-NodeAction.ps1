@@ -78,8 +78,8 @@ function Conduct-NodeAction {
                         $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                         #Removed For Testing#$ResultsListBox.Items.Clear()
                         $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                        $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                        $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                        $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                        $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
                         $EventLogRPCRadioButton.checked         = $true
                         $ExternalProgramsRPCRadioButton.checked = $true
                     }
@@ -96,8 +96,8 @@ function Conduct-NodeAction {
                         $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                         #Removed For Testing#$ResultsListBox.Items.Clear()
                         $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                        $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                        $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                        $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                        $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
                     }
                 }
 
@@ -125,8 +125,8 @@ function Conduct-NodeAction {
                             $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                             #Removed For Testing#$ResultsListBox.Items.Clear()
                             $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                            $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                            $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
                             $EventLogRPCRadioButton.checked         = $true
                             $ExternalProgramsRPCRadioButton.checked = $true
                         }
@@ -143,8 +143,8 @@ function Conduct-NodeAction {
                             $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                             #Removed For Testing#$ResultsListBox.Items.Clear()
                             $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                            $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                            $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
                         }
                     }
 
@@ -181,8 +181,8 @@ function Conduct-NodeAction {
                                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                                 #Removed For Testing#$ResultsListBox.Items.Clear()
                                 $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                                $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                                $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                                $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                                $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
                                 $EventLogRPCRadioButton.checked         = $true
                                 $ExternalProgramsRPCRadioButton.checked = $true
                             }
@@ -199,8 +199,8 @@ function Conduct-NodeAction {
                                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")
                                 #Removed For Testing#$ResultsListBox.Items.Clear()
                                 $ResultsListBox.Items.Add("The collection mode '$($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem)' does not support the RPC and SMB protocols and has been changed to")
-                                $ResultsListBox.Items.Add("'Individual Execution' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
-                                $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Individual Execution'
+                                $ResultsListBox.Items.Add("'Monitor Jobs' which supports RPC, SMB, and WinRM - but may be slower and noisier on the network.")
+                                $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 0 #'Monitor Jobs'
                             }
                         }
 

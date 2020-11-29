@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.5.1.6 Beta
+    Version        : v.5.1.7 Beta
 
     Requirements   : PowerShell v3.0 for PowerShell Charts support
                      PowerShell v5.1 for PSWriteHTML Module support
@@ -30,7 +30,7 @@
                      etl2pcapng.exe, WinPmem.exe
                      wKillcx is a small command-line utility to close any TCP connection under Windows XP/Vista/Seven as well as Windows Server 2003/2008. The source code (assembly language) is included with the binary.
 
-    Updated        : 21 Oct 2020
+    Updated        : 28 Nov 2020
     Created        : 21 Aug 2018
 
     Author         : Daniel Komnick (high101bro)
@@ -327,7 +327,7 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
 # http://patorjk.com/software/taag/#p=display&h=1&f=Standard&t=Script%20%20%20Execution
 
 
-# Keeps track of the number of RPC protocol commands selected, if the value is ever greater than one, it'll set the collection mode to 'Individual Execution'
+# Keeps track of the number of RPC protocol commands selected, if the value is ever greater than one, it'll set the collection mode to 'Monitor Jobs'
 $script:RpcCommandCount = 0
 
 # If the credential parameter is provided, it will use those credentials throughout the script and for queries unless otherwise selected
@@ -5728,7 +5728,7 @@ $Column5DownPosition += $Column5DownPositionShift
 $script:CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Left   = $FormScale * $Column5RightPosition
     Top    = $FormScale * $Column5DownPosition
-    Width  = $FormScale * $Column5BoxWidth
+    Width  = ($FormScale * $Column5BoxWidth + 1)
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor     = 'Black'
@@ -5737,7 +5737,7 @@ $script:CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.
         & $script:CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged
         #$This.Text | Set-Content "$PoShHome\Settings\Script Execution Mode.txt" -Force
 
-        if ($this.SelectedItem -eq 'Individual Execution') {
+        if ($this.SelectedItem -eq 'Monitor Jobs') {
             $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionLabel)
             $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
             $Column5DownPosition += $Column5DownPositionShift
@@ -5751,7 +5751,7 @@ $script:CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.
     }
 }
 $QueryMethodSelectionList = @(
-    'Individual Execution',
+    'Monitor Jobs',
     'Session Based'
     #'Compiled Script'
     )
@@ -5767,7 +5767,7 @@ $script:OptionJobTimeoutSelectionLabel = New-Object System.Windows.Forms.Label -
     Text   = "Job Timeout:"
     Left   = $FormScale * $Column5RightPosition
     Top    = $FormScale * $Column5DownPosition
-    Width  = $FormScale * 75
+    Width  = $FormScale * 70
     Height = $FormScale * $Column5BoxHeight
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
@@ -5779,7 +5779,7 @@ $script:OptionJobTimeoutSelectionComboBox = New-Object -TypeName System.Windows.
     Text   = $JobTimeOutSeconds
     Left   = $script:OptionJobTimeoutSelectionLabel.Left + $script:OptionJobTimeoutSelectionLabel.Width + $($FormScale * 5)
     Top    = $script:OptionJobTimeoutSelectionLabel.Top - $($FormScale * 3)
-    Width  = $FormScale * 45
+    Width  = $FormScale * 50
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,2,0)
     AutoCompleteMode = "SuggestAppend"
@@ -6114,7 +6114,7 @@ $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
 
 $Section3ResultsTab = New-Object System.Windows.Forms.TabPage -Property @{
-    Text = "Results"
+    Text = "Info" #"Results"
     Name = "Results Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
@@ -6208,7 +6208,7 @@ $script:PastJobsIDList = @()
 
 $script:PreviousJobFormItemsList = @()
 $script:MonitorJobsLeftPosition  = ($FormScale * 5)
-$script:MonitorJobsTopPosition   = ($FormScale * 5 + 105)
+$script:MonitorJobsTopPosition   = ($FormScale * 5 + 42)
 
 $script:Section3MonitorJobsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text      = "Monitor Jobs Options"
@@ -6280,7 +6280,7 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Monitor Progress Bars Removed - Stopping $script:TotalJobsToRemoveCount Remainingg Jobs - Completed")
         
-                $script:MonitorJobsTopPosition = ($FormScale * 5 + 100)
+                $script:MonitorJobsTopPosition = ($FormScale * 5 + 42)
             }
             'No' {
                 continue
@@ -7189,7 +7189,7 @@ $ExecuteScriptHandler = {
                 }
                 if ($script:WinRMCommandCount -gt 0 ) {
                     if (Verify-Action -Title "WinRM Check" -Question "Connecting Account:  $Username`n`nConduct a WinRM Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
-                        Check-Connection -CheckType "SMB Port Check" -MessageTrue "WinRM is Available" -MessageFalse "WinRM is Unavailable"
+                        Check-Connection -CheckType "WinRM Check" -MessageTrue "WinRM is Available" -MessageFalse "WinRM is Unavailable"
                         Generate-ComputerList
                     }
                 }
@@ -7290,9 +7290,14 @@ $ExecuteScriptHandler = {
             Completed-QueryExecution
         }
 
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' ) {
+            Conduct-IndividualExecution
+        }
+
+<# DEPRECATED
         if ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked -or $AccountsRPCRadioButton.checked) { $script:RpcCommandCount += 1 }
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and ($script:RpcCommandCount -eq 0 -or $script:SmbCommandCount -eq 0) ) {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' -and ($script:RpcCommandCount -eq 0 -or $script:SmbCommandCount -eq 0) ) {
 
             if ($script:WinRMCommandCount -gt 1) {
                 $MessageBox = [System.Windows.Forms.MessageBox]::Show("Multiple WinRM based commands were selected.
@@ -7301,9 +7306,10 @@ Pros:
    - The local processor and memory requirements are less
    - There are less network connections - not as noisy
 Cons:
+   - Timeout feature is not available 
    - The monitor jobs feature won't provide status updates
    - Some queries or actions will display fewer or no updates",
-"Optimize Performance For Speed",'YesNoCancel','Info')
+"Change to Session Based Collection",'YesNoCancel','Info')
                 Switch ( $MessageBox ) {
                     'Yes' {
                         $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedIndex = 1
@@ -7322,6 +7328,9 @@ Cons:
             }
             else { Conduct-IndividualExecution }
         }
+DEPRECATED #>
+
+
         #=======================================================================================================================================================================
         #    ____                          _  _            _     ____               _         _       _____                          _    _
         #   / ___| ___   _ __ ___   _ __  (_)| |  ___   __| |   / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __
@@ -7625,6 +7634,8 @@ Invoke-Command -ComputerName `$TargetComputer -ScriptBlock {
         # A session is established to each endpoint, and queries are executed through it
 
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based' -and $script:RpcCommandCount -eq 0 -and $script:SmbCommandCount -eq 0 ) {
+            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
             $ExecutionStartTime = Get-Date
             Generate-ComputerList
             Compile-QueryCommands

@@ -20,9 +20,6 @@ if ($MonitorMode) {
     }
 
 
-    # Sets the job timeout value, so they don't run forever
-    $script:JobsTimer  = [int]$($script:OptionJobTimeoutSelectionComboBox.Text)
-
 #write-host "Job Monitor: $(Get-date)"
 
     $JobId = Get-Random -Minimum 100009 -Maximum 999999
@@ -80,6 +77,8 @@ if ($MonitorMode) {
             `$script:JobName$JobId = `$CollectionName
         }
 
+        # Sets the job timeout value, so they don't run forever
+        `$script:JobsTimer$JobId  = [int]`$(`$script:OptionJobTimeoutSelectionComboBox.Text)
 
         `$script:JobStartTime$JobId = Get-Date
         `$script:JobStartTimeFileFriendly$JobId = `$(`$script:JobStartTime$JobId).ToString('yyyy-MM-dd HH.mm.ss')
@@ -113,7 +112,7 @@ if ($MonitorMode) {
             Add_MouseHover = {
 Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
 + Endpoints Queried:  `$([Math]::Abs(`$script:JobsStartedCount$JobId))
-+ Time Out:  `$($script:JobsTimer) seconds"
++ Time Out:  `$(`$script:JobsTimer$JobId) seconds"
             }
         }
 
@@ -290,7 +289,14 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
                         Import-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
                     }
                     else {
-                        `$script:CurrentJobs$JobId | Receive-Job -Keep | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
+                        `$script:CurrentJobsWithComputerName$JobId = @()
+                        foreach (`$Job in `$script:CurrentJobs$JobId) {
+                            `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
+                        }
+                        `$script:CurrentJobsWithComputerName$JobId | Out-GridView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
+
+                        `$script:CurrentJobsWithComputerName$JobId = `$null
+                        Remove-Variable -Name CurrentJobsWithComputerName$JobId -Scope script
                     }
                 }
             }
@@ -621,6 +627,7 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
 
             `$script:CurrentTime$JobId = Get-Date
 
+
             if (`$script:JobsStartedCount$JobId -eq `$script:JobsCompleted$JobId) {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
                 `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
@@ -640,10 +647,16 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
                 Remove-Variable -Name Timer$JobId -Scope script
 
 
-                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
-                `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
+                `$script:CurrentJobsWithComputerName$JobId = @()
+                foreach (`$Job in `$script:CurrentJobs$JobId) {
+                    `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
+                }
 
-                
+                `$script:CurrentJobsWithComputerName$JobId | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
+                `$script:CurrentJobsWithComputerName$JobId | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
+                `$script:CurrentJobsWithComputerName$JobId = `$null
+                Remove-Variable -Name CurrentJobsWithComputerName$JobId -Scope script
+
                 `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
 
@@ -657,6 +670,37 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
 
                 `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsCompleted$JobId
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
+
+                if (`$script:CurrentTime$JobId -gt (`$script:CurrentJobs$JobId.PSBeginTime[0]).AddSeconds(`$script:JobsTimer$JobId) ) {
+                    `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
+                    `$script:Section3MonitorJobTransparentLabel$JobId.Text = "TIMED OUT [`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
+    
+                    `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Red'
+                    `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Red'
+                    `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightCoral'
+                    `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
+                    `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
+                    `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
+    
+                    
+                    `$script:JobsStartedCount$JobId = -1
+                    `$script:JobsTimeCompleted$JobId = Get-Date
+                    `$script:Timer$JobId.Stop()
+                    `$script:Timer$JobId = `$null
+                    Remove-Variable -Name Timer$JobId -Scope script
+    
+    
+                    `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
+                    `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
+    
+                    
+                    `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                    `$script:Section3MonitorJobProgressBar$JobId.Refresh()
+    
+                    if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
+                        [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin')
+                    }                
+                }
             }
         })        
 "@        
