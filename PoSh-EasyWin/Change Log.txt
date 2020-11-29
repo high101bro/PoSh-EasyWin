@@ -32,6 +32,9 @@ Renamed some of the GUI
 	- Renmaed execution modes: Individual Execution --> Monitor Jobs
 	- Renamed Tab: Results --> Info
 
+Removed feaure that prompted use to switch to Session Based execution
+	- This feature is no longer the fastest, but it still is the least noisiest on the network
+
 ==================================================
 v5.1.6 BETA - 8 Nov 20
 ==================================================
