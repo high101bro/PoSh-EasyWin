@@ -7290,7 +7290,9 @@ $ExecuteScriptHandler = {
             Completed-QueryExecution
         }
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' ) {
+        if ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked -or $AccountsRPCRadioButton.checked) { $script:RpcCommandCount += 1 }
+
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             Conduct-IndividualExecution
         }
 

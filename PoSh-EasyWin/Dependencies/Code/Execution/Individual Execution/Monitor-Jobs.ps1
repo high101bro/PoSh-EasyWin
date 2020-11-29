@@ -100,6 +100,17 @@ if ($MonitorMode) {
             Height    = `$script:JobsRowHeight
         }
     
+        `$script:Section3MonitorJobDetailsButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+            text     = '+'
+            Left     = `$FormScale * 1
+            Top      = `$FormScale * 10
+            Width    = `$FormScale * 11
+            Height   = `$FormScale * 11
+            Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
+            Add_click = {
+            }
+        }
+
 
         `$script:Section3MonitorJobLabel$JobId = New-Object System.Windows.Forms.Label -Property @{
             Text      = "`$(`$script:JobStartTime$JobId)`n "
@@ -111,9 +122,38 @@ if ($MonitorMode) {
             ForeColor = 'Blue'
             Add_MouseHover = {
 Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
++ Start Time:  `$(`$script:JobStartTime$JobId)
++ Time Out:  `$(`$script:JobsTimer$JobId) seconds
 + Endpoints Queried:  `$([Math]::Abs(`$script:JobsStartedCount$JobId))
-+ Time Out:  `$(`$script:JobsTimer$JobId) seconds"
-            }
++ Jobs Completed: [`$((`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count)/`$(`$script:CurrentJobs$JobId.count)]
+    `$(
+    `$script:JobsStatusCompleted$JobId = `$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}
+    `$script:JobsStatusCompletedNameList$JobId = @()
+    foreach (`$Job in `$script:JobsStatusCompleted$JobId) {
+        `$script:JobsStatusCompletedNameList$JobId += (`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName
+    }
+    `$script:JobsStatusCompletedNameList$JobId -join ', '
+)
++ Jobs Running: [`$((`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Running'}).count)/`$(`$script:CurrentJobs$JobId.count)]
+    `$(
+    `$script:JobsStatusRunning$JobId = `$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Running'}
+    `$script:JobsStatusRunningNameList$JobId = @()
+    foreach (`$Job in `$script:JobsStatusRunning$JobId) {
+        `$script:JobsStatusRunningNameList$JobId += (`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName
+    }
+    `$script:JobsStatusRunningNameList$JobId -join ', '
+)
++ Jobs Failed: [`$((`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Failed'}).count)/`$(`$script:CurrentJobs$JobId.count)]
+    `$(
+    `$script:JobsStatusFailed$JobId = `$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Failed'}
+    `$script:JobsStatusFailedNameList$JobId = @()
+    foreach (`$Job in `$script:JobsStatusFailed$JobId) {
+        `$script:JobsStatusFailedNameList$JobId += (`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName
+    }
+    `$script:JobsStatusFailedNameList$JobId -join ', '
+)
+"
+}
         }
 
 
@@ -217,6 +257,7 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
     
                         
                         `$script:Section3MonitorJobsTab.Controls.Remove(`$script:Section3MonitorJobPanel$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobDetailsButton$JobId)
                         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobLabel$JobId)
                         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobProgressBar$JobId)
                         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobRemoveButton$JobId)
@@ -229,7 +270,9 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
                         `$script:Section3MonitorJobPanel$JobId = `$null
                         Remove-Variable -Name Section3MonitorJobPanel$JobId -Scope Script                    
                         `$script:Section3MonitorJobLabel$JobId = `$null
-                        Remove-Variable -Name Section3MonitorJobLabel$JobId -Scope Script                    
+                        Remove-Variable -Name Section3MonitorJobLabel$JobId -Scope Script
+                        `$script:Section3MonitorJobDetailsButton$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobDetailsButton$JobId -Scope Script
                         `$script:Section3MonitorJobProgressBar$JobId = `$null
                         Remove-Variable -Name Section3MonitorJobProgressBar$JobId -Scope Script                    
                         `$script:Section3MonitorJobRemoveButton$JobId = `$null
@@ -354,6 +397,7 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
                         
                         `$script:Section3MonitorJobsTab.Controls.Remove(`$script:Section3MonitorJobPanel$JobId)
                         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobLabel$JobId)
+                        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobDetailsButton$JobId)
                         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobProgressBar$JobId)
                         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobRemoveButton$JobId)
                         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobViewButton$JobId)
@@ -363,15 +407,17 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
                         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobTransparentLabel$JobId)
     
                         `$script:Section3MonitorJobPanel$JobId = `$null
-                        Remove-Variable -Name Section3MonitorJobPanel$JobId -Scope Script                    
+                        Remove-Variable -Name Section3MonitorJobPanel$JobId -Scope Script
                         `$script:Section3MonitorJobLabel$JobId = `$null
-                        Remove-Variable -Name Section3MonitorJobLabel$JobId -Scope Script                    
+                        Remove-Variable -Name Section3MonitorJobLabel$JobId -Scope Script
+                        `$script:Section3MonitorJobDetailsButton$JobId = `$null
+                        Remove-Variable -Name Section3MonitorJobDetailsButton$JobId -Scope Script
                         `$script:Section3MonitorJobProgressBar$JobId = `$null
-                        Remove-Variable -Name Section3MonitorJobProgressBar$JobId -Scope Script                    
+                        Remove-Variable -Name Section3MonitorJobProgressBar$JobId -Scope Script
                         `$script:Section3MonitorJobRemoveButton$JobId = `$null
                         Remove-Variable -Name Section3MonitorJobRemoveButton$JobId -Scope Script
                         `$script:Section3MonitorJobViewButton$JobId = `$null
-                        Remove-Variable -Name Section3MonitorJobViewButton$JobId -Scope Script                    
+                        Remove-Variable -Name Section3MonitorJobViewButton$JobId -Scope Script
                         `$script:Section3MonitorJobTerminalButton$JobId = `$null
                         Remove-Variable -Name Section3MonitorJobTerminalButton$JobId -Scope Script
                         `$script:Section3MonitorJobKeepDataCheckbox$JobId = `$null
@@ -456,6 +502,7 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
 
         `$script:Section3MonitorJobsTab.Controls.Add(`$script:Section3MonitorJobPanel$JobId)
         `$script:Section3MonitorJobPanel$JobId.Controls.AddRange(@(
+            `$script:Section3MonitorJobDetailsButton$JobId,
             `$script:Section3MonitorJobLabel$JobId,
             `$script:Section3MonitorJobTransparentLabel$JobId,
             `$script:Section3MonitorJobProgressBar$JobId,
@@ -466,6 +513,8 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
             `$script:Section3MonitorJobNotifyCheckbox$JobId
         ))
 
+        
+        CommonButtonSettings -Button `$script:Section3MonitorJobDetailsButton$JobId
         CommonButtonSettings -Button `$script:Section3MonitorJobViewButton$JobId
         `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightBlue'
         CommonButtonSettings -Button `$script:Section3MonitorJobTerminalButton$JobId
@@ -479,6 +528,7 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
         # This adds each form item to a list
         `$script:PreviousJobFormItemsList += "Section3MonitorJobPanel$JobId"
         `$script:PreviousJobFormItemsList += "Section3MonitorJobLabel$JobId"
+        `$script:PreviousJobFormItemsList += "Section3MonitorJobDetailsButton$JobId"
         `$script:PreviousJobFormItemsList += "Section3MonitorJobProgressBar$JobId"
         `$script:PreviousJobFormItemsList += "Section3MonitorJobTransparentLabel$JobId"
         `$script:PreviousJobFormItemsList += "Section3MonitorJobRemoveButton$JobId"
