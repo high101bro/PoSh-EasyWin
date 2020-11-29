@@ -20,6 +20,6 @@
 "WIN81-06","Windows 8.1 Pro","/US Branch/Employee","No IP Available","No MAC Available",,"No Notes Available"
 "WIN81-05","Windows 8.1 Pro","/US Branch/Guest","10.10.10.113","No MAC Available",,"No Notes Available"
 "WINXP-01","Windows XP Professional","/Europe Branch/Remote Support","10.10.10.105","No MAC Available",,"No Notes Available"
-"192.168.68.122","Manually Added",,"No IP Available","No MAC Available",,"No Notes Available"
+"192.168.68.122","Manually Added",,"No IP Available","No MAC Available","135,139,445,5357","No Notes Available"
 "localhost","Manually Added",,"No IP Available","No MAC Available",,"No Notes Available"
 "127.0.0.1","Manually Added",,"No IP Available","No MAC Available",,"No Notes Available"

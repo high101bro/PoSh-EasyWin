@@ -71,16 +71,6 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Closing = { $This.dispose() }
 }
-
-
-
-
-
-
-
-
-
-
     $ImportFromADWinRMGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
         text      = "Import from Active Directory remotely using WinRM"
         left      = $FormScale * 10

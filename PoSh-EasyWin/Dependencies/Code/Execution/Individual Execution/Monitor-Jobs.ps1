@@ -108,6 +108,308 @@ if ($MonitorMode) {
             Height   = `$FormScale * 11
             Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
             Add_click = {
+                                `$script:MonitorJobsDetailsFrom$JobId = New-Object Windows.Forms.Form -Property @{
+                                    Text          = 'Monitor Jobs Details - `$(`$script:JobName$JobId)'
+                                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
+                                    Width         = `$FormScale * 500
+                                    Height        = `$FormScale * 460
+                                    StartPosition = "CenterScreen"
+                                    Font          = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
+                                    Add_Closing = { 
+                                        Remove-Variable MonitorJobsDetailsFrom$JobId -scope script
+
+                                        Remove-Variable MonitorJobsDetailsCompletedGroupBox$JobId -scope script
+                                        Remove-Variable MonitorJobsDetailsCompletedListBox$JobId -scope script
+                                        Remove-Variable MonitorJobsDetailsCompletedSelectAllButton$JobId -scope script
+                                        Remove-Variable MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId -scope script
+
+                                        Remove-Variable MonitorJobsDetailsRunningGroupBox$JobId -scope script
+                                        Remove-Variable MonitorJobsDetailsRunningListBox$JobId -scope script
+                                        Remove-Variable MonitorJobsDetailsRunningSelectAllButton$JobId -scope script
+                                        Remove-Variable MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId -scope script
+
+                                        Remove-Variable MonitorJobsDetailsFailedGroupBox$JobId -scope script
+                                        Remove-Variable MonitorJobsDetailsFailedListBox$JobId -scope script
+                                        Remove-Variable MonitorJobsDetailsFailedSelectAllButton$JobId -scope script
+                                        Remove-Variable MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId -scope script
+
+                                        `$This.dispose() 
+                                    }
+                                }
+                                
+                                    `$script:MonitorJobsDetailsCompletedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
+                                        text      = "Completed:"
+                                        left      = `$FormScale * 10
+                                        top       = `$FormScale * 10
+                                        Width     = `$FormScale * 150
+                                        Height    = `$FormScale * 402
+                                        Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 12),1,2,1)
+                                        ForeColor = "DarkGreen"
+                                    }
+                                    `$script:MonitorJobsDetailsFrom$JobId.Controls.Add(`$script:MonitorJobsDetailsCompletedGroupBox$JobId)
+                                
+                                        `$script:MonitorJobsDetailsCompletedListBox$JobId = New-Object System.Windows.Forms.ListBox -Property @{
+                                            left      = `$FormScale * 5
+                                            top       = `$FormScale * 20
+                                            Width     = `$FormScale * 140
+                                            Height    = `$FormScale * 300
+                                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
+                                            ForeColor = "Black"
+                                            FormattingEnabled   = `$True
+                                            SelectionMode       = 'MultiExtended'
+                                            ScrollAlwaysVisible = `$True
+                                            AutoSize            = `$false
+                                        }
+                                        `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsCompletedListBox$JobId)
+                                
+                                        `$script:MonitorJobsDetailsCompletedSelectAllButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                                            text      = 'Select All'
+                                            left      = `$FormScale * 5
+                                            top       = `$script:MonitorJobsDetailsCompletedListBox$JobId.Top + `$script:MonitorJobsDetailsCompletedListBox$JobId.Height + (`$FormScale * 5)
+                                            Width     = `$FormScale * 140
+                                            Height    = `$FormScale * 22
+                                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
+                                            ForeColor = "Black"
+                                            Add_Click = {
+                                                for(`$i = 0; `$i -lt `$script:MonitorJobsDetailsCompletedListBox$JobId.Items.Count; `$i++) {
+                                                    `$script:MonitorJobsDetailsCompletedListBox$JobId.SetSelected(`$i, `$true)
+                                                }
+                                            }
+                                        }
+                                        `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsCompletedSelectAllButton$JobId)
+                                
+                                
+                                        `$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                                            text      = "Checkbox The Selected`nIn The`nComputer TreeView"
+                                            left      = `$FormScale * 5
+                                            top       = `$script:MonitorJobsDetailsCompletedSelectAllButton$JobId.Top + `$script:MonitorJobsDetailsCompletedSelectAllButton$JobId.Height + (`$FormScale * 5)
+                                            Width     = `$FormScale * 140
+                                            Height    = `$FormScale * 44
+                                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
+                                            ForeColor = "Black"
+                                            Add_Click = {
+                                                [System.Windows.Forms.TreeNodeCollection]`$AllHostsNode = `$script:ComputerTreeView.Nodes
+                                                foreach (`$root in `$AllHostsNode) { 
+                                                    `$root.Checked = `$false 
+                                                    foreach (`$Category in `$root.Nodes) { 
+                                                        `$Category.Checked = `$false 
+                                                        foreach (`$Entry in `$Category.nodes) { 
+                                                            `$Entry.Checked = `$false 
+                                                        } 
+                                                    } 
+                                                }
+
+                                                foreach (`$Selected in `$script:MonitorJobsDetailsCompletedListBox$JobId.SelectedItems) {
+                                                    foreach (`$root in `$AllHostsNode) { 
+                                                        foreach (`$Category in `$root.Nodes) { 
+                                                            foreach (`$Entry in `$Category.nodes) { 
+                                                                if (`$Entry.Text -eq `$Selected){ 
+                                                                    `$Entry.Checked = `$true 
+                                                                }
+                                                            } 
+                                                        } 
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId)
+                                
+                                
+                                
+                                    `$script:MonitorJobsDetailsRunningGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
+                                        text      = "Running:"
+                                        left      = `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Left + `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Width + (`$FormScale * 5)
+                                        top       = `$FormScale * 10
+                                        Width     = `$FormScale * 150
+                                        Height    = `$FormScale * 402
+                                        Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 12),1,2,1)
+                                        ForeColor = "Blue"
+                                    }
+                                    `$script:MonitorJobsDetailsFrom$JobId.Controls.Add(`$script:MonitorJobsDetailsRunningGroupBox$JobId)
+                                
+                                        `$script:MonitorJobsDetailsRunningListBox$JobId = New-Object System.Windows.Forms.ListBox -Property @{
+                                            left      = `$FormScale * 5
+                                            top       = `$FormScale * 20
+                                            Width     = `$FormScale * 140
+                                            Height    = `$FormScale * 300
+                                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
+                                            ForeColor = "Black"
+                                            FormattingEnabled   = `$True
+                                            SelectionMode       = 'MultiExtended'
+                                            ScrollAlwaysVisible = `$True
+                                            AutoSize            = `$false
+                                        }
+                                        `$script:MonitorJobsDetailsRunningGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsRunningListBox$JobId)
+                                
+                                
+                                        `$script:MonitorJobsDetailsRunningSelectAllButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                                            text      = 'Select All'
+                                            left      = `$FormScale * 5
+                                            top       = `$script:MonitorJobsDetailsRunningListBox$JobId.Top + `$script:MonitorJobsDetailsRunningListBox$JobId.Height + (`$FormScale * 5)
+                                            Width     = `$FormScale * 140
+                                            Height    = `$FormScale * 22
+                                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
+                                            ForeColor = "Black"
+                                            Add_Click = {
+                                                for(`$i = 0; `$i -lt `$script:MonitorJobsDetailsRunningListBox$JobId.Items.Count; `$i++) {
+                                                    `$script:MonitorJobsDetailsRunningListBox$JobId.SetSelected(`$i, `$true)
+                                                }
+                                            }
+                                        }
+                                        `$script:MonitorJobsDetailsRunningGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsRunningSelectAllButton$JobId)
+                                
+                                
+                                        `$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                                            text      = "Checkbox The Selected`nIn The`nComputer TreeView"
+                                            left      = `$FormScale * 5
+                                            top       = `$script:MonitorJobsDetailsRunningSelectAllButton$JobId.Top + `$script:MonitorJobsDetailsRunningSelectAllButton$JobId.Height + (`$FormScale * 5)
+                                            Width     = `$FormScale * 140
+                                            Height    = `$FormScale * 44
+                                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
+                                            ForeColor = "Black"
+                                            Add_Click = {
+                                                [System.Windows.Forms.TreeNodeCollection]`$AllHostsNode = `$script:ComputerTreeView.Nodes
+                                                foreach (`$root in `$AllHostsNode) { 
+                                                    `$root.Checked = `$false 
+                                                    foreach (`$Category in `$root.Nodes) { 
+                                                        `$Category.Checked = `$false 
+                                                        foreach (`$Entry in `$Category.nodes) { 
+                                                            `$Entry.Checked = `$false 
+                                                        } 
+                                                    } 
+                                                }
+                                                
+                                                foreach (`$Selected in `$script:MonitorJobsDetailsRunningListBox$JobId.SelectedItems) {
+                                                    foreach (`$root in `$AllHostsNode) { 
+                                                        foreach (`$Category in `$root.Nodes) { 
+                                                            foreach (`$Entry in `$Category.nodes) { 
+                                                                if (`$Entry.Text -eq `$Selected){ 
+                                                                    `$Entry.Checked = `$true 
+                                                                } 
+                                                            } 
+                                                        } 
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        `$script:MonitorJobsDetailsRunningGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId)
+                                
+                                
+                                
+                                    `$script:MonitorJobsDetailsFailedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
+                                        text      = "Failed:"
+                                        left      = `$script:MonitorJobsDetailsRunningGroupBox$JobId.Left + `$script:MonitorJobsDetailsRunningGroupBox$JobId.Width + (`$FormScale * 5)
+                                        top       = `$FormScale * 10
+                                        Width     = `$FormScale * 150
+                                        Height    = `$FormScale * 402
+                                        Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 12),1,2,1)
+                                        ForeColor = "Red"
+                                    }
+                                    `$script:MonitorJobsDetailsFrom$JobId.Controls.Add(`$script:MonitorJobsDetailsFailedGroupBox$JobId)
+                                
+                                        `$script:MonitorJobsDetailsFailedListBox$JobId = New-Object System.Windows.Forms.ListBox -Property @{
+                                            left      = `$FormScale * 5
+                                            top       = `$FormScale * 20
+                                            Width     = `$FormScale * 140
+                                            Height    = `$FormScale * 300
+                                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
+                                            ForeColor = "Black"
+                                            FormattingEnabled   = `$True
+                                            SelectionMode       = 'MultiExtended'
+                                            ScrollAlwaysVisible = `$True
+                                            AutoSize            = `$false
+                                        }
+                                        `$script:MonitorJobsDetailsFailedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsFailedListBox$JobId)
+                                
+                                
+                                        `$script:MonitorJobsDetailsFailedSelectAllButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                                            text      = 'Select All'
+                                            left      = `$FormScale * 5
+                                            top       = `$script:MonitorJobsDetailsFailedListBox$JobId.Top + `$script:MonitorJobsDetailsFailedListBox$JobId.Height + (`$FormScale * 5)
+                                            Width     = `$FormScale * 140
+                                            Height    = `$FormScale * 22
+                                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
+                                            ForeColor = "Black"
+                                            Add_Click = {
+                                                for(`$i = 0; `$i -lt `$script:MonitorJobsDetailsFailedListBox$JobId.Items.Count; `$i++) {
+                                                    `$script:MonitorJobsDetailsFailedListBoxv$JobId.SetSelected(`$i, `$true)
+                                                }
+                                            }
+                                        }
+                                        `$script:MonitorJobsDetailsFailedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsFailedSelectAllButton$JobId)
+                                
+                                
+                                        `$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                                            text      = "Checkbox The Selected`nIn The`nComputer TreeView"
+                                            left      = `$FormScale * 5
+                                            top       = `$script:MonitorJobsDetailsFailedSelectAllButton$JobId.Top + `$script:MonitorJobsDetailsFailedSelectAllButton$JobId.Height + (`$FormScale * 5)
+                                            Width     = `$FormScale * 140
+                                            Height    = `$FormScale * 44
+                                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 10),0,0,0)
+                                            ForeColor = "Black"
+                                            Add_Click = {
+                                                [System.Windows.Forms.TreeNodeCollection]`$AllHostsNode = `$script:ComputerTreeView.Nodes
+                                                foreach (`$root in `$AllHostsNode) { 
+                                                    `$root.Checked = `$false 
+                                                    foreach (`$Category in `$root.Nodes) { 
+                                                        `$Category.Checked = `$false 
+                                                        foreach (`$Entry in `$Category.nodes) { 
+                                                            `$Entry.Checked = `$false 
+                                                        } 
+                                                    } 
+                                                }
+                                                
+                                                foreach (`$Selected in `$script:MonitorJobsDetailsFailedListBox$JobId.SelectedItems) {
+                                                    foreach (`$root in `$AllHostsNode) { 
+                                                        foreach (`$Category in `$root.Nodes) { 
+                                                            foreach (`$Entry in `$Category.nodes) { 
+                                                                if (`$Entry.Text -eq `$Selected){ 
+                                                                    `$Entry.Checked = `$true 
+                                                                } 
+                                                            } 
+                                                        } 
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        `$script:MonitorJobsDetailsFailedGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId)
+                                
+
+                                        foreach (`$Job in `$(`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'})) {
+                                            `$script:MonitorJobsDetailsCompletedListBox$JobId.Items.Add((`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName)
+                                        }
+                                        `$script:JobsStatusCompletedNameList$JobId -join ', '
+
+
+                                        foreach (`$Job in `$(`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Running'})) {
+                                            `$script:MonitorJobsDetailsRunningListBox$JobId.Items.Add((`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName)
+                                        }
+
+
+                                        foreach (`$Job in `$(`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Failed'})) {
+                                            `$script:MonitorJobsDetailsFailedListBox$JobId.Items.Add((`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName)
+                                        }
+                                  
+
+                                    `$script:MonitorJobsDetailsFrom$JobId.ShowDialog()
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
         }
 
