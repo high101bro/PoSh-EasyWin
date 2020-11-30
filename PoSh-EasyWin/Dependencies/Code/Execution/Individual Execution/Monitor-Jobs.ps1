@@ -109,7 +109,7 @@ if ($MonitorMode) {
             Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
             Add_click = {
                                 `$script:MonitorJobsDetailsFrom$JobId = New-Object Windows.Forms.Form -Property @{
-                                    Text          = 'Monitor Jobs Details - `$(`$script:JobName$JobId)'
+                                    Text          = "Monitor Jobs Details - `$(`$script:JobName$JobId)"
                                     Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
                                     Width         = `$FormScale * 500
                                     Height        = `$FormScale * 460
@@ -138,7 +138,7 @@ if ($MonitorMode) {
                                 }
                                 
                                     `$script:MonitorJobsDetailsCompletedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
-                                        text      = "Completed:"
+                                        text      = "Completed"
                                         left      = `$FormScale * 10
                                         top       = `$FormScale * 10
                                         Width     = `$FormScale * 150
@@ -217,7 +217,7 @@ if ($MonitorMode) {
                                 
                                 
                                     `$script:MonitorJobsDetailsRunningGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
-                                        text      = "Running:"
+                                        text      = "Running"
                                         left      = `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Left + `$script:MonitorJobsDetailsCompletedGroupBox$JobId.Width + (`$FormScale * 5)
                                         top       = `$FormScale * 10
                                         Width     = `$FormScale * 150
@@ -297,7 +297,7 @@ if ($MonitorMode) {
                                 
                                 
                                     `$script:MonitorJobsDetailsFailedGroupBox$JobId = New-Object System.Windows.Forms.GroupBox -Property @{
-                                        text      = "Failed:"
+                                        text      = "Stopped or Failed"
                                         left      = `$script:MonitorJobsDetailsRunningGroupBox$JobId.Left + `$script:MonitorJobsDetailsRunningGroupBox$JobId.Width + (`$FormScale * 5)
                                         top       = `$FormScale * 10
                                         Width     = `$FormScale * 150
@@ -386,7 +386,7 @@ if ($MonitorMode) {
                                         }
 
 
-                                        foreach (`$Job in `$(`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Failed'})) {
+                                        foreach (`$Job in `$(`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Stopped' -or `$_.State -eq 'Failed'})) {
                                             `$script:MonitorJobsDetailsFailedListBox$JobId.Items.Add((`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName)
                                         }
                                   
@@ -422,40 +422,6 @@ if ($MonitorMode) {
             Height    = `$script:JobsRowHeight
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
             ForeColor = 'Blue'
-            Add_MouseHover = {
-Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
-+ Start Time:  `$(`$script:JobStartTime$JobId)
-+ Time Out:  `$(`$script:JobsTimer$JobId) seconds
-+ Endpoints Queried:  `$([Math]::Abs(`$script:JobsStartedCount$JobId))
-+ Jobs Completed: [`$((`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count)/`$(`$script:CurrentJobs$JobId.count)]
-    `$(
-    `$script:JobsStatusCompleted$JobId = `$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}
-    `$script:JobsStatusCompletedNameList$JobId = @()
-    foreach (`$Job in `$script:JobsStatusCompleted$JobId) {
-        `$script:JobsStatusCompletedNameList$JobId += (`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName
-    }
-    `$script:JobsStatusCompletedNameList$JobId -join ', '
-)
-+ Jobs Running: [`$((`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Running'}).count)/`$(`$script:CurrentJobs$JobId.count)]
-    `$(
-    `$script:JobsStatusRunning$JobId = `$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Running'}
-    `$script:JobsStatusRunningNameList$JobId = @()
-    foreach (`$Job in `$script:JobsStatusRunning$JobId) {
-        `$script:JobsStatusRunningNameList$JobId += (`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName
-    }
-    `$script:JobsStatusRunningNameList$JobId -join ', '
-)
-+ Jobs Failed: [`$((`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Failed'}).count)/`$(`$script:CurrentJobs$JobId.count)]
-    `$(
-    `$script:JobsStatusFailed$JobId = `$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Failed'}
-    `$script:JobsStatusFailedNameList$JobId = @()
-    foreach (`$Job in `$script:JobsStatusFailed$JobId) {
-        `$script:JobsStatusFailedNameList$JobId += (`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName
-    }
-    `$script:JobsStatusFailedNameList$JobId -join ', '
-)
-"
-}
         }
 
 
@@ -1044,7 +1010,8 @@ Show-ToolTip -Title "`$script:JobName$JobId" -Icon "Info" -Message "
     
                     `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
                     `$script:CurrentJobs$JobId | Receive-Job -Keep | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
-    
+                    `$script:CurrentJobs$JobId | Stop-Job
+
                     
                     `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
                     `$script:Section3MonitorJobProgressBar$JobId.Refresh()

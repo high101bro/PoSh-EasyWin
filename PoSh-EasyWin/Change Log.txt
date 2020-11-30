@@ -40,7 +40,7 @@ Added small a details button to view the status of jobs
 	- When selected, it opens a form unique to each query and contains three listboxes for:
 		- Completed
 		- Running
-		- Failed
+		- Stopped or Failed
 	- Able to select multiple endpoint names
 		- Includes a select all button
 		- Inlcudes a button to checkbox endpoints in the computer treeview
