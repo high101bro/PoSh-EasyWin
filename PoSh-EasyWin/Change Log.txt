@@ -38,13 +38,17 @@ Removed feaure that prompted use to switch to Session Based execution
 Added small a details button to view the status of jobs
 	- Currently sits on top of the start time/timer
 	- When selected, it opens a form unique to each query and contains three listboxes for:
-		- Completed
 		- Running
-		- Stopped or Failed
+		- Completed
+		- Stopped
+		- Failed
 	- Able to select multiple endpoint names
 		- Includes a select all button
 		- Inlcudes a button to checkbox endpoints in the computer treeview
 			- It will uncheck all other endpoints that are not selected
+	- Added Job Messages section
+		- Timed out (stopped) jobs are displayed here with their datetimes
+		- Failed job messages are populated here
 
 ==================================================
 v5.1.6 BETA - 8 Nov 20
