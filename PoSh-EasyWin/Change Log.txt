@@ -50,6 +50,10 @@ Added small a details button to view the status of jobs
 		- Timed out (stopped) jobs are displayed here with their datetimes
 		- Failed job messages are populated here
 
+Learned a bit about errors, there are essentially two types: 1) terminating and 2) non-terminating
+	- Added -ErrorAction Stop to the Invoke-Commands that are executed within Jobs
+		- This makaes the jobs fail when they are unable to connect to the remote endpoints
+
 ==================================================
 v5.1.6 BETA - 8 Nov 20
 ==================================================

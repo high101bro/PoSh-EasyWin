@@ -24,7 +24,7 @@ function Conduct-ExecutableAndScript {
         }
     }
 
-    Invoke-Expression $ExeScriptSelectScript
+    Invoke-Expression $ExeScriptSelectScript | export-csv 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\test.csv' -NoTypeInformation
 }
 
 
@@ -32,7 +32,7 @@ foreach ($TargetComputer in $script:ComputerList) {
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }
 
-        $ExeScriptSelectScript = Get-Content $ExeScriptSelectScriptPath
+        $ExeScriptSelectScript = Get-Content $ExeScriptSelectScriptPath -Raw
         Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} `
         -ArgumentList @($ExeScriptSelectScript,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) `
         -ComputerName $TargetComputer `

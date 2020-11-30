@@ -930,11 +930,11 @@ if ($MonitorMode) {
     # For just Packet Capture
         Invoke-Expression @"
         `$script:Timer$JobId.add_Tick({
-            `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
+            `$script:JobsNotRunning$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -ne 'Running'}).count
 
-            if (`$script:JobsStartedCount$JobId -eq `$script:JobsCompleted$JobId) {
+            if (`$script:JobsStartedCount$JobId -eq `$script:JobsNotRunning$JobId) {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
-                `$script:Section3MonitorJobTransparentLabel$JobId.text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId (`$script:PcapEndpointName$JobId)"
+                `$script:Section3MonitorJobTransparentLabel$JobId.text = "[`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId (`$script:PcapEndpointName$JobId)"
 
                 `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
                 `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
@@ -961,10 +961,10 @@ if ($MonitorMode) {
             }
             else {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
-                `$script:Section3MonitorJobTransparentLabel$JobId.text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId (`$script:PcapEndpointName$JobId)"
+                `$script:Section3MonitorJobTransparentLabel$JobId.text = "[`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId (`$script:PcapEndpointName$JobId)"
 
                 
-                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsCompleted$JobId
+                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsNotRunning$JobId
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
             }
         })
@@ -974,11 +974,11 @@ if ($MonitorMode) {
     # Just for queries that generate the PSWriteHTML charts
         Invoke-Expression @"
         `$script:Timer$JobId.add_Tick({
-            `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
+            `$script:JobsNotRunning$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -ne 'Running'}).count
 
-            if (`$script:JobsStartedCount$JobId -eq `$script:JobsCompleted$JobId) {
+            if (`$script:JobsStartedCount$JobId -eq `$script:JobsNotRunning$JobId) {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
-                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
 
                 `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
                 `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
@@ -1046,9 +1046,9 @@ if ($MonitorMode) {
             }
             else {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
-                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
 
-                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsCompleted$JobId
+                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsNotRunning$JobId
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
             }
         })        
@@ -1058,14 +1058,14 @@ if ($MonitorMode) {
     # Everything else, all the treeview queries checked and collection tabs.
         Invoke-Expression @"
         `$script:Timer$JobId.add_Tick({
-            `$script:JobsCompleted$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'}).count
+            `$script:JobsNotRunning$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -ne 'Running'}).count
 
             `$script:CurrentTime$JobId = Get-Date
 
 
-            if (`$script:JobsStartedCount$JobId -eq `$script:JobsCompleted$JobId) {
+            if (`$script:JobsStartedCount$JobId -eq `$script:JobsNotRunning$JobId) {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
-                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
 
                 `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
                 `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
@@ -1101,14 +1101,14 @@ if ($MonitorMode) {
             }
             else {
                 `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
-                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
+                `$script:Section3MonitorJobTransparentLabel$JobId.Text = "[`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
 
-                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsCompleted$JobId
+                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:JobsNotRunning$JobId
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
 
                 if (`$script:CurrentTime$JobId -gt (`$script:CurrentJobs$JobId.PSBeginTime[0]).AddSeconds(`$script:JobsTimer$JobId) ) {
                     `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
-                    `$script:Section3MonitorJobTransparentLabel$JobId.Text = "TIMED OUT [`$(`$script:JobsCompleted$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
+                    `$script:Section3MonitorJobTransparentLabel$JobId.Text = "TIMED OUT [`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] `$script:JobName$JobId"
     
                     `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Red'
                     `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Red'

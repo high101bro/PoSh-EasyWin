@@ -30,34 +30,34 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
 
             if ($Command.Type -eq "(WinRM) Script") {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential"
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop"
                 $OutputFileFileType = "csv"
             }
             elseif ($Command.Type -eq "(WinRM) PoSh") {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "csv"
             }
             elseif ($Command.Type -eq "(WinRM) WMI") {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "csv"
             }
             #elseif ($Command.Type -eq "(WinRM) CMD") {
-            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential"
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop"
             #    $OutputFileFileType = "txt"
             #}
 
 
 
             #elseif ($Command.Type -eq "(RPC) PoSh") {
-            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
             #    $OutputFileFileType = "csv"
             #}
             elseif (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Get-WmiObject")) {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "csv"
             }
             #elseif (($Command.Type -eq "(RPC) CMD") -and ($Command.Command -match "Invoke-WmiMethod")) {
-            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential"
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop"
             #    $OutputFileFileType = "txt"
             #}
 
@@ -65,7 +65,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
 
             elseif ($Command.Type -eq "(SMB) PoSh") {
-                $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
 
                 $Username = $script:Credential.UserName
@@ -73,7 +73,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                 $UseCredential = "-u '$Username' -p '$Password'"
             }
             elseif ($Command.Type -eq "(SMB) WMI") {
-                $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
 
                 $Username = $script:Credential.UserName
@@ -81,7 +81,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                 $UseCredential = "-u '$Username' -p '$Password'"
             }
             elseif ($Command.Type -eq "(SMB) CMD") {
-                $CommandString = "$($Command.Command)"
+                $CommandString = "$($Command.Command)" # NO -ErrorAction Stop, these are cmd native commands
                 $OutputFileFileType = "txt"
 
                 $Username = $script:Credential.UserName
@@ -92,34 +92,34 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         # No credentials provided
         else {
             if ($Command.Type -eq "(WinRM) Script") {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop"
                 $OutputFileFileType = "csv"
             }
             elseif ($Command.Type -eq "(WinRM) PoSh") {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "csv"
             }
             elseif ($Command.Type -eq "(WinRM) WMI") {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "csv"
             }
             #elseif ($Command.Type -eq "(WinRM) CMD") {
-            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop"
             #    $OutputFileFileType = "txt"
             #}
 
 
 
             #elseif ($Command.Type -eq "(RPC) PoSh") {
-            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
             #    $OutputFileFileType = "csv"
             #}
             elseif (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Get-WmiObject")) {
-                $CommandString = "$($Command.Command) -ComputerName $TargetComputer | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "csv"
             }
             #elseif (($Command.Type -eq "(RPC) CMD") -and ($Command.Command -match "Invoke-WmiMethod")) {
-            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer"
+            #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop"
             #    $OutputFileFileType = "txt"
             #}
 
@@ -127,15 +127,15 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
 
             elseif ($Command.Type -eq "(SMB) PoSh") {
-                $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
             }
             elseif ($Command.Type -eq "(SMB) WMI") {
-                $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
+                $CommandString = "$($Command.Command) -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
             }
             elseif ($Command.Type -eq "(SMB) CMD") {
-                $CommandString = "$($Command.Command)"
+                $CommandString = "$($Command.Command)" # NO  -ErrorAction Stop, as these are native cmds
                 $OutputFileFileType = "txt"
             }
 
