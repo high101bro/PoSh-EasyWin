@@ -33,7 +33,6 @@ $SingleHostIPAddButtonAdd_Click = {
             $script:SingleHostIPCheckBox.Checked = $false
 
             Populate-ComputerTreeNodeDefaultData
-            AutoSave-HostData
         }
     }
 }

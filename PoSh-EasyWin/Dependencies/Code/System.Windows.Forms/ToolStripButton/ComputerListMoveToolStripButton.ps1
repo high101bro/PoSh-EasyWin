@@ -132,7 +132,6 @@ $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
             }
 
             Remove-EmptyCategory
-            AutoSave-HostData
             Save-HostData
             Update-TreeNodeComputerState -NoMessage
 

@@ -23,32 +23,33 @@ function Conduct-ExecutableAndScript {
             Copy-Item -Path $ExeScriptSelectDirOrFilePath -Destination "\\$TargetComputer\$AdminShare\$TargetFolder" -Force
         }
     }
+    Start-Sleep 1
 
-    Invoke-Expression $ExeScriptSelectScript | export-csv 'C:\Users\Dan\Documents\GitHub\PoSh-EasyWin\PoSh-EasyWin\test.csv' -NoTypeInformation
+    Invoke-Command -ScriptBlock {Invoke-Expression $ExeScriptSelectScript}
 }
 
+
+$ExeScriptSelectScript = Get-Content $ExeScriptSelectScriptPath -Raw
 
 foreach ($TargetComputer in $script:ComputerList) {
     if ($ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }
 
-        $ExeScriptSelectScript = Get-Content $ExeScriptSelectScriptPath -Raw
         Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} `
         -ArgumentList @($ExeScriptSelectScript,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) `
         -ComputerName $TargetComputer `
         -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
         -Credential $script:Credential
 
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScriptPath,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScript,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
     }
     else {
-        $ExeScriptSelectScript = Get-Content $ExeScriptSelectScriptPath
         Invoke-Command -ScriptBlock ${function:Conduct-ExecutableAndScript} `
         -ArgumentList @($ExeScriptSelectScript,$ExeScriptScriptOnlyCheckbox,$ExeScriptSelectDirRadioButton,$ExeScriptSelectFileRadioButton,$ExeScriptSelectDirOrFilePath,$TargetComputer,$AdminShare,$TargetFolder) `
         -ComputerName $TargetComputer `
         -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
 
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScriptPath,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScript,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
     }
 }
 Monitor-Jobs -CollectionName $CollectionName -MonitorMode

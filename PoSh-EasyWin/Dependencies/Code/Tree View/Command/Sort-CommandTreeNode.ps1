@@ -13,7 +13,6 @@ function Sort-CommandTreeNode {
         }
         $script:CommandsTreeView.Nodes.Clear()
         Initialize-CommandTreeNodes
-        AutoSave-HostData
         View-CommandTreeNodeMethod
         Update-TreeNodeCommandState
         Update-QueryHistory
@@ -31,7 +30,6 @@ function Sort-CommandTreeNode {
         }
         $script:CommandsTreeView.Nodes.Clear()
         Initialize-CommandTreeNodes
-        AutoSave-HostData
         View-CommandTreeNodeQuery
         Update-TreeNodeCommandState
         Update-QueryHistory

@@ -270,7 +270,6 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
     $LogFile                      = "$PoShHome\Log File.txt"
     $IPListFile                   = "$PoShHome\iplist.txt"
 
-    $ComputerTreeNodeFileAutoSave = "$PoShHome\Computer List TreeView (Auto-Save).csv"
     $ComputerTreeNodeFileSave     = "$PoShHome\Computer List TreeView (Saved).csv"
 
     $OpNotesFile                  = "$PoShHome\OpNotes.txt"
@@ -805,7 +804,9 @@ $script:HostQueryTreeViewSelected = ""
 
 
 # Imports the Query History and populates the command treenode
-$script:QueryHistory = Import-CliXml "$PoShHome\Query History.xml"
+$QueryHistoryCount = 500
+$script:QueryHistory = Import-CliXml "$PoShHome\Query History.xml" | Select-Object -First $QueryHistoryCount
+
 function Update-QueryHistory {
     foreach ($Command in $script:QueryHistory) {
         $Command | Add-Member -MemberType NoteProperty -Name CategoryName -Value "$($Command.CategoryName)" -Force
@@ -5333,9 +5334,6 @@ $script:ComputerTreeViewData = Import-Csv $ComputerTreeNodeFileSave -ErrorAction
 # Saves the textbox data for Host Data
 . "$Dependencies\Code\Main Body\Save-HostData.ps1"
 
-# Auto saves the textbox data for Host Data, only useful is script freezes for some reason and then the main saved files is removed manually
-. "$Dependencies\Code\Main Body\AutoSave-HostData.ps1"
-
 # Initializes the Computer TreeView section that computer nodes are added to
 # TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
 # These include the root nodes of Search, and various Operating System and OU/CN names
@@ -7377,7 +7375,7 @@ DEPRECATED #>
                     width         = $FormScale * 1025
                     height        = $FormScale * 525
                     StartPosition = "CenterScreen"
-                    Text          = �Collection Script - Review, Edit, and Verify�
+                    Text          = "Collection Script - Review, Edit, and Verify"
                     Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
                     ControlBox    = $true
                     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)

@@ -100,7 +100,6 @@ $ComputerListAddEndpointToolStripButtonAdd_Click = {
     $script:ComputerTreeView.ExpandAll()
     Remove-EmptyCategory
     Populate-ComputerTreeNodeDefaultData
-    AutoSave-HostData
     Save-HostData
     $ComputerTreeNodePopup.ShowDialog()
 }

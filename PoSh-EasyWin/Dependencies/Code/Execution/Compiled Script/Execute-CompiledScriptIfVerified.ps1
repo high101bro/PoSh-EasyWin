@@ -5,12 +5,14 @@ if ($CommandReviewEditVerifyCheckbox.checked){
     $StatusListBox.Items.Add("Compiled Queries To Target Hosts")
     #$ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $($TargetComputer)")
 
+    $CommandName = 'Compiled Script'
+
     $ExecutionStartTime = Get-Date
     # Clear any PoSh-EasyWin Jobs
-    $ClearJobs = Get-Job -Name 'PoSh-EasyWin*'
-    $ClearJobs | Stop-Job
-    $ClearJobs | Receive-Job -Force
-    $ClearJobs | Remove-Job -Force
+#    $ClearJobs = Get-Job -Name 'PoSh-EasyWin*'
+#    $ClearJobs | Stop-Job
+#    $ClearJobs | Receive-Job -Force
+#    $ClearJobs | Remove-Job -Force
 
     # Each command to each target host is executed on it's own process thread, which utilizes more memory overhead on the localhost [running PoSh-EasyWin] and produces many more network connections to targets [noisier on the network].
     Foreach ($TargetComputer in $script:ComputerList) {
@@ -37,7 +39,7 @@ if ($CommandReviewEditVerifyCheckbox.checked){
 
         Start-Sleep -Seconds 1
         # The number of Jobs created by PoSh-EasyWin
-        $PoShEasyWinJobs = Get-Job -Name "PoSh-EasyWin:*"
+        $PoShEasyWinJobs = Get-Job -Name "PoSh-EasyWin: $CommandName*"
         $script:ProgressBarEndpointsProgressBar.minimum   = 0
         $script:ProgressBarEndpointsProgressBar.maximum   = $PoShEasyWinJobs.count
 

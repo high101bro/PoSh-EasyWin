@@ -15,7 +15,6 @@ $CommandsViewMethodRadioButtonAdd_Click = {
     }
     $script:CommandsTreeView.Nodes.Clear()
     Initialize-CommandTreeNodes
-    AutoSave-HostData
     View-CommandTreeNodeMethod
     Update-TreeNodeCommandState
     Update-QueryHistory

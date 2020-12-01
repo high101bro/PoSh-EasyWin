@@ -39,7 +39,7 @@ Added small a details button to view the status of jobs
 	- Currently sits on top of the start time/timer
 	- When selected, it opens a form unique to each query and contains three listboxes for:
 		- Running
-		- Completed
+		- Completeds
 		- Stopped
 		- Failed
 	- Able to select multiple endpoint names
@@ -50,9 +50,19 @@ Added small a details button to view the status of jobs
 		- Timed out (stopped) jobs are displayed here with their datetimes
 		- Failed job messages are populated here
 
+Fixed bug with Execution Script - specifically with Monitor Jobs
+
 Learned a bit about errors, there are essentially two types: 1) terminating and 2) non-terminating
-	- Added -ErrorAction Stop to the Invoke-Commands that are executed within Jobs
+	- Added '-ErrorAction Stop' to the Invoke-Commands that are executed within Jobs
 		- This makaes the jobs fail when they are unable to connect to the remote endpoints
+		- The resulting fail message can be accessed, and is outputed to the 'Job Messages' page
+
+Limited Query History to 500
+	- Future implementation will allow this to be chanagable
+
+Removed the "Auto Save" feature
+	- Never worked as intended, and just wasted cpu cycles
+	- Normal saving has proven very reliable
 
 ==================================================
 v5.1.6 BETA - 8 Nov 20

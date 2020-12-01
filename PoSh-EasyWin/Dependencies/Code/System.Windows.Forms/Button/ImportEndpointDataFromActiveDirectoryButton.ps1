@@ -50,7 +50,6 @@ function Import-EndpointsFromDomain {
     Foreach($Computer in $script:ComputerTreeViewData) { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
     $script:ComputerTreeView.ExpandAll()
     Save-HostData
-    AutoSave-HostData
 }
 
 
@@ -435,7 +434,6 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                     }
                 }
             }
-            AutoSave-HostData
             Save-HostData
             Update-TreeNodeComputerState -NoMessage
 

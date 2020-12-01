@@ -30,7 +30,6 @@ $EnumerationComputerListBoxAddToListButtonAdd_Click = {
     }
     $script:ComputerTreeView.ExpandAll()
     Populate-ComputerTreeNodeDefaultData
-    AutoSave-HostData
     Save-HostData
 }
 
