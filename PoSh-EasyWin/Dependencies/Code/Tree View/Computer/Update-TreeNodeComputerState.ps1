@@ -16,7 +16,7 @@ function Update-TreeNodeComputerState {
             foreach ($Category in $root.Nodes) {
                 foreach ($Entry in $Category.nodes) {
                     $Entry.Collapse()
-                    if ($script:ComputerTreeViewSelected -contains $Entry.text -and $root.text -notmatch 'Query History') {
+                    if ($script:ComputerTreeViewSelected -contains $Entry.text -and $root.text -notmatch 'Custom Group Commands') {
                         $Entry.Checked      = $true
                         $Entry.NodeFont     = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
                         $Entry.ForeColor    = [System.Drawing.Color]::FromArgb(0,0,0,224)

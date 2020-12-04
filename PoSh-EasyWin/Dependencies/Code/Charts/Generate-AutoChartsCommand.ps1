@@ -1211,7 +1211,7 @@ script:Update-MultiSeriesChart
             if ($script:AutoChartCharting.Series["Baseline"].ChartType -eq 'Pie' -or $script:AutoChartCharting.Series["Baseline"].ChartType -eq 'Doughnut') { $script:AutoChartCharting.Series["Baseline"].BorderWidth = 1 }
             else { $script:AutoChartCharting.Series["Baseline"].BorderWidth = 5 }
 
-            #batman
+
             ForEach ($Item in $script:AutoChartsChartTypesAvailable) { $script:AutoChartsChartTypeMostRecentComboBox.Items.Add($Item) }
             ForEach ($Item in $script:AutoChartsChartTypesAvailable) { $script:AutoChartsChartTypePreviousComboBox.Items.Add($Item) }
             ForEach ($Item in $script:AutoChartsChartTypesAvailable) { $script:AutoChartsChartTypeBaselineComboBox.Items.Add($Item) }

@@ -3,7 +3,7 @@ Function Completed-QueryExecution {
 
     # Updates the value of the most recent queried computers
     # Used to ask if you want to conduct rpc,smb,winrm checks again if the currnet computerlist doens't match the history
-    $script:ComputerListHistory         = $script:ComputerList
+    $script:ComputerListHistory = $script:ComputerList
     if ($script:RpcCommandCount   -gt 0) { Set-variable RpcCommandCountHistory   -Scope script -Value $true -Force } else { Set-variable RpcCommandCountHistory   -Scope script -Value $false -Force }
     if ($script:SmbCommandCount   -gt 0) { Set-variable SmbCommandCountHistory   -Scope script -Value $true -Force } else { Set-variable SmbCommandCountHistory   -Scope script -Value $false -Force }
     if ($script:WinRmCommandCount -gt 0) { Set-variable WinRmCommandCountHistory -Scope script -Value $true -Force } else { Set-variable WinRmCommandCountHistory -Scope script -Value $false -Force }

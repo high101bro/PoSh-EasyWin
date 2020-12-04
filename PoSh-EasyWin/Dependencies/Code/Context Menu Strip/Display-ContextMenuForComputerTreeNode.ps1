@@ -26,6 +26,14 @@ function Display-ContextMenuForComputerTreeNode {
     $ComputerListContextMenuStrip.Items.Add('-')
 
 
+#    $ComputerListScreenShotToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+#        Text      = "Screenshot"
+#        ForeColor = 'DarkRed'
+#        Add_CLick = $ComputerListScreenShotButtonAdd_Click
+#    }
+#    $ComputerListContextMenuStrip.Items.Add($ComputerListScreenShotToolStripButton)
+
+
     $ComputerListRemoteDesktopToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "Remote Desktop"
         ForeColor = 'DarkRed'

@@ -1,4 +1,4 @@
-$CommandsViewMethodRadioButtonAdd_Click = {
+$CommandsViewProtocolsUsedRadioButtonAdd_Click = {
     #$StatusListBox.Items.Clear()
     #$StatusListBox.Items.Add("Display And Group By:  Method")
 
@@ -17,10 +17,9 @@ $CommandsViewMethodRadioButtonAdd_Click = {
     Initialize-CommandTreeNodes
     View-CommandTreeNodeMethod
     Update-TreeNodeCommandState
-    Update-QueryHistory
 }
 
-$CommandsViewMethodRadioButtonAdd_MouseHover = {
+$CommandsViewProtocolsUsedRadioButtonAdd_MouseHover = {
     Show-ToolTip -Title "Display by Method Grouping" -Icon "Info" -Message @"
 +  Displays commands grouped by the method they're collected
 +  All commands executed against each host are logged

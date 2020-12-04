@@ -64,6 +64,43 @@ Removed the "Auto Save" feature
 	- Never worked as intended, and just wasted cpu cycles
 	- Normal saving has proven very reliable
 
+Attempted to add remote endpoint screenshot
+	- The code has been writen and is in place, but commented out
+	- To find the code search for 'screenshot'
+		- Code 1: Button located in the computer treeview context menu for selected Endpoints
+		- Code 2: Execution handling located temporarily with the RDP code
+	- Freature works locally, but need to test within range environment
+	- Screenshot files aren't transferred to endpoints, rather sent as code, compiled, executed, then deleted
+	- Issues: 
+		- Endpoints need to have someone logged on
+		- Preliminary tests reveal inconsistency, needs further testing
+		- Currently shelving the feature
+
+Looking into why the tool hangs or goes really sloooooow when 'Execute Script' is clicked/executed
+	- Optimized code by reducing duplicate code
+	- Noticed that whenever you click on the OS or OU/CN radio buttons 
+		- It executes the Update-QueryHistor... oops
+		- oops... ends up slowing everything down becuase it updates the query history without even ever executing the selected commands
+		- removed code
+	- Okay, so whenever the code executes it calls the command treenode to update the query history
+		- This is a issue because this query history treenode continues to get larger and larger as you continue to use the tool
+		- Moreover, the query history is persistent by reading and writing to disk whenever called... 
+			- this is resource intensive and only compounds as you continue to use the tool over time as the history grows
+			- Removeing and re-engineering this feature
+	
+Removed the Update-QueryHistory feature and replacing it with Update-CustomCommandGroup
+	- Queries executed no longer auto-update the query history
+	- Instead you're able to save custom query command groups
+	- Replaced Query History named code and variables with new names
+
+Renamed the following radio buttons
+	- Method to Protocol Used
+	- Commands to Command Names
+	- This just makes more sense... lol
+
+Removed Sort-CommandTreeNode
+	- No longer needed... wasting space
+
 ==================================================
 v5.1.6 BETA - 8 Nov 20
 ==================================================

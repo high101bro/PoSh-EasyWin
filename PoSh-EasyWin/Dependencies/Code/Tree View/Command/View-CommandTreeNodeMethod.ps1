@@ -38,8 +38,10 @@ Function View-CommandTreeNodeMethod {
         if ($Command.Command_SMB_WMI)      { Add-NodeCommand -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-13}{1}" -f "[SMB]", "Windows Management Instrumentation")   -Entry "(SMB) WMI -- $($Command.Name)"      -ToolTip $Command.Command_SMB_WMI }
         if ($Command.Command_SMB_CMD)      { Add-NodeCommand -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-13}{1}" -f "[SMB]", "Native Windows Command")                     -Entry "(SMB) CMD -- $($Command.Name)"      -ToolTip $Command.Command_SMB_CMD }
     }
-    # Adds the selected commands to the Query History Command Nodes
-    foreach ($Command in $script:QueryHistoryCommands) { Add-NodeCommand -RootNode $script:TreeNodePreviouslyExecutedCommands -Category "$($Command.CategoryName)" -Entry "$($Command.Name)" -ToolTip "$($Command.Command)" }
+    # Adds the selected commands to the Custom Group Commands Nodes
+    foreach ($Command in $script:CustomGroupCommandsList) { 
+        Add-NodeCommand -RootNode $script:TreeNodeCustomGroupCommands -Category "$($Command.CategoryName)" -Entry "$($Command.Name)" -ToolTip "$($Command.Command)"
+    }
 }
 
 

@@ -499,8 +499,14 @@ if ($MonitorMode) {
                                         `$script:MonitorJobsDetailsStatusGroupBox$JobId.Controls.Add(`$script:MonitorJobsDetailsStatusRichTextBox$JobId)
                                 
                                     
-                                        foreach (`$Job in `$(`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'})) {
-                                            `$script:MonitorJobsDetailsCompletedListBox$JobId.Items.Add((`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName)
+                                        foreach (`$Job in `$(`$script:CurrentJobs$JobId | Where-Object {`$_.State -eq 'Completed'})) { 
+                                            `$CurrentJobEndpointName = (`$Job | Select-Object @{n='ComputerName';e={`$((`$Job.Name -split ' ')[-1])}}).ComputerName 
+                                            `$Job | Receive-Job -Keep -ErrorVariable JobErrors 
+                                            
+                                            `$script:MonitorJobsDetailsCompletedListBox$JobId.Items.Add(`$CurrentJobEndpointName) 
+                                            foreach (`$JobErr in `$JobErrors){ 
+                                                `$script:MonitorJobsDetailsStatusRichTextBox$JobId.text += "[`$(`$CurrentJobEndpointName)] `$(`$JobErr)`n`n" 
+                                            } 
                                         }
                                         `$script:JobsStatusCompletedNameList$JobId -join ', '
 

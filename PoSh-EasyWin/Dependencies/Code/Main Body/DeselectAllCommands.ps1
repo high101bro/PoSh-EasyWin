@@ -5,7 +5,7 @@ function Deselect-AllCommands {
         $root.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)
         $root.ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
         $root.Collapse()
-        if ($root.text -notmatch 'Query History') { $root.Expand() }
+        if ($root.text -notmatch 'Custom Group Commands') { $root.Expand() }
         foreach ($Category in $root.Nodes) {
             $Category.Checked   = $false
             $Category.NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 10),1,1,1)

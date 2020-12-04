@@ -161,7 +161,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     [System.Threading.Thread]::CurrentThread.Priority = 'High'
                     ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
 
-                    Invoke-Expression -Command $CommandString ##| Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
+                    Invoke-Expression -Command $CommandString
                 } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
             }
             elseif ( $OutputFileFileType -eq "txt" ) {
@@ -314,20 +314,15 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
 
-#   DEPRECATED
-#    # Compiles the CSVs into a single file for easier and faster viewing of results
-#    $StatusListBox.Items.Clear()
-#    $StatusListBox.Items.Add("Compiling CSV Results:  $((($Command.Name) -split ' -- ')[1])")
-#    $PoShEasyWin.Refresh()
 
     $AutoCreateDashboardChartButton.BackColor = 'LightGreen'
     $AutoCreateMultiSeriesChartButton.BackColor = 'LightGreen'
 
 
-    if ($CompileResults -eq $true) {
-        #Commented out because the above -MonitorMode implementation doesn't save files individually
-        #Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
-    }
+    #if ($CompileResults -eq $true) {
+    #    #Commented out because the above -MonitorMode implementation doesn't save files individually
+    #    #Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+    #}
 
     # Removes any files have are empty
     foreach ($file in (Get-ChildItem $script:CollectedDataTimeStampDirectory)) {

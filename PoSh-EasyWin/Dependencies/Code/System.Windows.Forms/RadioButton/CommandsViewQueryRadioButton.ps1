@@ -1,4 +1,4 @@
-$CommandsViewQueryRadioButtonAdd_Click = {
+$CommandsViewCommandNamesRadioButtonAdd_Click = {
     #$StatusListBox.Items.Clear()
     #$StatusListBox.Items.Add("Display And Group By:  Query")
 
@@ -19,10 +19,9 @@ $CommandsViewQueryRadioButtonAdd_Click = {
     Initialize-CommandTreeNodes
     View-CommandTreeNodeQuery
     Update-TreeNodeCommandState
-    Update-QueryHistory
 }
 
-$CommandsViewQueryRadioButtonAdd_MouseHover = {
+$CommandsViewCommandNamesRadioButtonAdd_MouseHover = {
     Show-ToolTip -Title "Display by Command Grouping" -Icon "Info" -Message @"
 +  Displays commands grouped by queries
 +  All commands executed against each host are logged

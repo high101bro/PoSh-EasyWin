@@ -10,7 +10,7 @@ function Add-NodeComputer {
         Name = "$Entry"
         Text = "$Entry"
     }
-
+    <# #batman #TODO work on this
     $MetadataOperatingSystem = New-Object System.Windows.Forms.TreeNode -Property @{
         Name = $($Metadata.OperatingSystem)
         Text = $($Metadata.OperatingSystem)
@@ -48,7 +48,7 @@ function Add-NodeComputer {
     else {
         $newNode.ToolTipText  = "No Data Available"
     }
-
+#>
     If ($RootNode.Nodes.Tag -contains $Category) {
         $EndpointNode = $RootNode.Nodes | Where-Object {$_.Tag -eq $Category}
     }

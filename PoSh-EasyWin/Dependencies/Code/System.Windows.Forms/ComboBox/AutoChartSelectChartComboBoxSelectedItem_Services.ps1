@@ -3023,7 +3023,6 @@ $script:AutoChart06Services.Series["Accounts That Started Services"].Color      
             $script:AutoChart06ServicesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
             $script:AutoChart06ServicesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'StartName' | Sort-Object -Property 'StartName' -Unique
 #            $script:AutoChart05ServicesUniqueDataFields  = $script:AutoChartDataSourceCsv | Where-Object {$_.State -eq 'Running' -or $_.Status -eq 'Running'} | Select-Object -Property 'ProcessName' | Sort-Object -Property 'ProcessName' -Unique
-#batman
             $script:AutoChartsProgressBar.ForeColor = 'Gray'
             $script:AutoChartsProgressBar.Minimum = 0
             $script:AutoChartsProgressBar.Maximum = $script:AutoChart06ServicesUniqueDataFields.count

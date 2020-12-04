@@ -125,10 +125,10 @@ $Acknowledgement = "About PoSh-EasyWin
                         [WinRM] PowerShell Cmdlets
                         [WinRM] PowerShell Scripts
                         [WinRM] Windows Management Instrumentation
-                    3) Query History
+                    3) Custom Group Commands
                         Directory Save Name
-                            *Populates history nodes of comamnds executed
-                        *Able to delete selected history nodes if desired
+                            *Populates custom group commands nodes of comamnds executed
+                        *Able to delete selected nodes if desired
                 Commands - Groups nodes by their Command Names
                     1) Endpoint Commands
                         Processes
@@ -138,10 +138,9 @@ $Acknowledgement = "About PoSh-EasyWin
                         Get-ADUser
                         Get-ADComputer
                         ...etc
-                    3) Query History
+                    3) Custom Group Commands
                         Directory Save Name
-                            *Populates history nodes of comamnds executed
-                        *Able to delete selected history nodes if desired
+                        *Able to delete selected nodes if desired
             Easily update the Command TreeView
                 Endpoints Agnostics
                     $PoShHome\Dependencies\Cmds & Scripts\Commands - Endpoint.csv

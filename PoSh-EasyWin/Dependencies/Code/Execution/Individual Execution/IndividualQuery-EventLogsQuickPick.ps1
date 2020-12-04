@@ -1,4 +1,4 @@
-#BATMAN######################Query-EventLog -CollectionName $Query.Name -Filter $Query.Filter
+# Query-EventLog -CollectionName $Query.Name -Filter $Query.Filter
 
 $ExecutionStartTime = Get-Date
 

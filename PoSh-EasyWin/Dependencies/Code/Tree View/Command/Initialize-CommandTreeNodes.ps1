@@ -14,18 +14,19 @@ function Initialize-CommandTreeNodes {
         NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
     }
-    $script:TreeNodePreviouslyExecutedCommands = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList "3) Query History          " -Property @{
-        Tag       = "Query History"
+    $script:TreeNodeCustomGroupCommands = New-Object -TypeName System.Windows.Forms.TreeNode -ArgumentList "3) Custom Group Commands          " -Property @{
+        Tag       = "Custom Group Commands"
         NodeFont  = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = [System.Drawing.Color]::FromArgb(0,0,0,0)
     }
     $script:TreeNodeCommandSearch.Expand()
     $script:TreeNodeEndpointCommands.Expand()
     $script:TreeNodeActiveDirectoryCommands.Expand()
-    $script:TreeNodePreviouslyExecutedCommands.Collapse()
+    $script:TreeNodeCustomGroupCommands.Expand()
+    #$script:TreeNodeCustomGroupCommands.Collapse()
     $script:CommandsTreeView.Nodes.Clear()
 
-    Update-TreeNodeComputerState
+#    Update-TreeNodeComputerState
 }
 
 
