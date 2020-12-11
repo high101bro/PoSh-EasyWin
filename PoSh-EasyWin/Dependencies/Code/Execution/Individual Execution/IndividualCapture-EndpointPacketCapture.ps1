@@ -155,8 +155,13 @@ foreach ($TargetComputer in $script:ComputerList) {
     } -ArgumentList @($ComputerListProvideCredentialsCheckBox,$script:Credential,$TargetComputer,$CaptureType,$Report,$MaxSize,$CaptureSeconds,$EndpointEtlTraceFile,$EndpointCabTraceFile,$LocalEtlFilePath,$LocalCabFilePath,$etl2pcapng,$OutPcapNG,$OptionPacketKeepEtlCabFilesCheckBox,$script:CollectionSavedDirectoryTextBox,$CollectionName)
 
 
-
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PcapSwitch
+    if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PcapSwitch
+    }
+    elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+        Monitor-Jobs -CollectionName $CollectionName -NotExportFiles
+        Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+    }
 }
 
 
@@ -167,8 +172,6 @@ foreach ($TargetComputer in $script:ComputerList) {
 #$JobTimeoutOriginalSetting = $script:OptionJobTimeoutSelectionComboBox.text
 #$script:OptionJobTimeoutSelectionComboBox.text = [int]$CaptureSeconds + 60
 
-
-#Monitor-Jobs -CollectionName $CollectionName -NotExportFiles
 
 
 # Sets the job timeout back to the orginal setting

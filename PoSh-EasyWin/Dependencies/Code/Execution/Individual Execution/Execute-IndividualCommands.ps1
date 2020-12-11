@@ -45,9 +45,6 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop"
             #    $OutputFileFileType = "txt"
             #}
-
-
-
             #elseif ($Command.Type -eq "(RPC) PoSh") {
             #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
             #    $OutputFileFileType = "csv"
@@ -60,10 +57,6 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -Credential `$script:Credential -ErrorAction Stop"
             #    $OutputFileFileType = "txt"
             #}
-
-
-
-
             elseif ($Command.Type -eq "(SMB) PoSh") {
                 $CommandString = "$($Command.Command) -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
@@ -107,9 +100,6 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop"
             #    $OutputFileFileType = "txt"
             #}
-
-
-
             #elseif ($Command.Type -eq "(RPC) PoSh") {
             #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
             #    $OutputFileFileType = "csv"
@@ -122,10 +112,6 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             #    $CommandString = "$($Command.Command) -ComputerName $TargetComputer -ErrorAction Stop"
             #    $OutputFileFileType = "txt"
             #}
-
-
-
-
             elseif ($Command.Type -eq "(SMB) PoSh") {
                 $CommandString = "$($Command.Command) -ErrorAction Stop | Select-Object -Property $($Command.Properties)"
                 $OutputFileFileType = "txt"
@@ -138,8 +124,6 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                 $CommandString = "$($Command.Command)" # NO  -ErrorAction Stop, as these are native cmds
                 $OutputFileFileType = "txt"
             }
-
-
         }
         $CommandName = $Command.Name
         $CommandType = $Command.Type
@@ -155,6 +139,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
                 $JobsStarted    = $true
                 $CompileResults = $true
+
                 Start-Job -Name "PoSh-EasyWin: $((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)" -ScriptBlock {
                     param($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
                     # Available priority values: Low, BelowNormal, Normal, AboveNormal, High, RealTime
@@ -163,7 +148,22 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
                     Invoke-Expression -Command $CommandString
                 } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
+#>            
             }
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
             elseif ( $OutputFileFileType -eq "txt" ) {
                 $OutputFilePath = "$CollectionSavedDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).txt"
                 Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
@@ -295,11 +295,18 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$(($CommandString).Trim())"
     }
 
+
     if ( $JobsStarted -eq $true ) {
-        # Monitors the progress of the Jobs and provides user status feedback. Jobs will also timeout, which the duration is a configurable
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+        }
+        elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+            Monitor-Jobs -CollectionName $CollectionName
+            Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+        }
     }
 
+    
     # Increments the overall progress bar
     $CompletedCommandQueries++
     $script:ProgressBarQueriesProgressBar.Value = $CompletedCommandQueries
@@ -318,12 +325,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     $AutoCreateDashboardChartButton.BackColor = 'LightGreen'
     $AutoCreateMultiSeriesChartButton.BackColor = 'LightGreen'
 
-
-    #if ($CompileResults -eq $true) {
-    #    #Commented out because the above -MonitorMode implementation doesn't save files individually
-    #    #Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
-    #}
-
+                         
     # Removes any files have are empty
     foreach ($file in (Get-ChildItem $script:CollectedDataTimeStampDirectory)) {
         if ($File.length -eq 0) {

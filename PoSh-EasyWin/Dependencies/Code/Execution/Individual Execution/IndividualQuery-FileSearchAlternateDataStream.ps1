@@ -29,14 +29,18 @@ foreach ($TargetComputer in $script:ComputerList) {
         -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
     }
 }
-#Note... properties selected elsewhere: PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer
-Monitor-Jobs -CollectionName $CollectionName -MonitorMode
-#Monitor-Jobs -CollectionName $CollectionName -SaveProperties @"
-#@('PSComputerName', 'FileName', 'Stream', 'StreamDataSample', 'ZoneId' , 'Length')
-#"@
 
-#Commented out because the above -MonitorMode implementation doesn't save files individually
-#Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+
+if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+}
+elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    Monitor-Jobs -CollectionName $CollectionName -SaveProperties @"
+@('PSComputerName', 'FileName', 'Stream', 'StreamDataSample', 'ZoneId' , 'Length')
+"@
+    Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+}
+
 
 $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton.BackColor = 'LightGreen'
 

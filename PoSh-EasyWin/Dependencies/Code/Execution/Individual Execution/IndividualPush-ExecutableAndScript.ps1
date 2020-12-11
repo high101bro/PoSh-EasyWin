@@ -92,7 +92,16 @@ foreach ($TargetComputer in $script:ComputerList) {
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScript,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
     }
 }
-Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+
+
+if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+}
+elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+    Monitor-Jobs -CollectionName $CollectionName
+    Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+}
+
 
 <# DEPRECATED
 foreach ($TargetComputer in $script:ComputerList) {

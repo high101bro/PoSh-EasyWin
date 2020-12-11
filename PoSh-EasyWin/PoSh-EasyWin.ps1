@@ -16,7 +16,7 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.5.1.7 Beta
+    Version        : v.5.1.8 Beta
 
     Requirements   : PowerShell v3.0 for PowerShell Charts support
                      PowerShell v5.1 for PSWriteHTML Module support
@@ -30,7 +30,7 @@
                      etl2pcapng.exe, WinPmem.exe
                      wKillcx is a small command-line utility to close any TCP connection under Windows XP/Vista/Seven as well as Windows Server 2003/2008. The source code (assembly language) is included with the binary.
 
-    Updated        : 28 Nov 2020
+    Updated        : 11 Dec 2020
     Created        : 21 Aug 2018
 
     Author         : Daniel Komnick (high101bro)
@@ -3069,7 +3069,7 @@ $Section1ActionOnEndpointTab.Controls.Add($ActionsTabKillNetworkConnectionGroupB
 
 
 $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Text   = "Quarantine Endpoints (WinRM) - BETA"
+    Text   = "Quarantine Endpoints (WinRM) - [Alpha Testing]"
     Left   = $FormScale * 5
     Top    = $ActionsTabKillNetworkConnectionGroupBox.Top + $ActionsTabKillNetworkConnectionGroupBox.Height + $($FormScale * 10)
     Width  = $FormScale * 425
@@ -5627,6 +5627,7 @@ $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
 $MainRightTabControl.Controls.Add($Section3ActionTab)
 
 
+<# TODO: Needs more testing
 # Used to verify settings before capturing memory as this can be quite resource exhaustive
 # Contains various checks to ensure that adequate resources are available on the remote and local hosts
 . "$Dependencies\Code\Execution\Action\Launch-RekallWinPmemForm.ps1"
@@ -5649,7 +5650,7 @@ CommonButtonSettings -Button $RekallWinPmemMemoryCaptureButton
 if (Test-Path "$ExternalPrograms\WinPmem\WinPmem.exe") { $Section3ActionTab.Controls.Add($RekallWinPmemMemoryCaptureButton) }
 
 $Column5DownPosition += $Column5DownPositionShift
-
+#>
 
 . "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
 $EventViewerButton = New-Object System.Windows.Forms.Button -Property @{
@@ -5797,6 +5798,7 @@ $script:CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.
 }
 $QueryMethodSelectionList = @(
     'Monitor Jobs',
+    'Individual Execution',
     'Session Based'
     #'Compiled Script'
     )
@@ -6976,10 +6978,10 @@ CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton
 
 # Compiles the .csv files in the collection directory then saves the combined file to the partent directory
 # The first line (collumn headers) is only copied once from the first file compiled, then skipped for the rest
-#. "$Dependencies\Code\Execution\Compile-CsvFiles.ps1"
+. "$Dependencies\Code\Execution\Compile-CsvFiles.ps1"
 
 # Compiles the .xml files in the collection directory then saves the combined file to the partent directory
-#. "$Dependencies\Code\Execution\Compile-XmlFiles.ps1"
+. "$Dependencies\Code\Execution\Compile-XmlFiles.ps1"
 
 # Removes Duplicate CSV Headers
 . "$Dependencies\Code\Execution\Individual Execution\Remove-DuplicateCsvHeaders.ps1"
@@ -7316,7 +7318,7 @@ $ExecuteScriptHandler = {
 
         if ($EventLogRPCRadioButton.checked -or $ExternalProgramsRPCRadioButton.checked -or $AccountsRPCRadioButton.checked) { $script:RpcCommandCount += 1 }
 
-        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' -or $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             Conduct-IndividualExecution
         }
 

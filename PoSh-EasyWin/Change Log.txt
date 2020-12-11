@@ -1,4 +1,24 @@
 ==================================================
+v5.1.8 BETA - 11 Dec 20
+==================================================
+
+Re-added 'Individual Execution' mode
+	- Though the new Monitor Jobs mode is working great
+		- If the user selects too many endpoints and queries it will over tax the localhost
+		- Causing the computer to hang because too many powershell jobs start and comsume too much memory and CPU
+
+Commented out Memory Capture code
+	- The feature still needs futher testing
+
+Identified potential issue with the Quarantine Endpoint feature
+	- The quarantine code works within local lab
+		- The endpoint is quarantined with local firewall rules and only accessable by identified IR host
+	- The quarantine code didn't work in the larger lab online...
+		- Not sure why, may be issues with local and GPO firewall rule conflicts
+		- Added [Alpha] tag to GUI
+		- TODO: fix this
+
+==================================================
 v5.1.7 BETA - 28 Nov 20
 ==================================================
 
@@ -100,6 +120,11 @@ Renamed the following radio buttons
 
 Removed Sort-CommandTreeNode
 	- No longer needed... wasting space
+
+Fixed bug that I introduce when overhauling the Monitor Jobs features
+	- The search for results within processes, services, and network connections was broken due to PSComputerName
+	- Changed PSComputerName to ComputerName in the Search-ComputerTreeNode.ps1 script
+		- This bug was a result from how I was pulling data from Jobs and the use of the PSComputerName automatic variable/parameter
 
 ==================================================
 v5.1.6 BETA - 8 Nov 20
