@@ -1,0 +1,10 @@
+2020/12/11 03:36:51  ====================================================================================================
+2020/12/11 03:36:51  PoSh-EasyWin Started By: SURFACEGO\Dan
+2020/12/11 03:36:55  PoSh-EasyWin User Agreemennt Accepted By: SURFACEGO\Dan
+2020/12/11 03:36:56  ====================================================================================================
+2020/12/11 03:37:32  Opted to import the PSWriteHTML module
+2020/12/11 03:39:44  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2020/12/11 03:39:44  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2020/12/11 03:39:45  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2020/12/11 03:39:45  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2020/12/11 03:50:41  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'

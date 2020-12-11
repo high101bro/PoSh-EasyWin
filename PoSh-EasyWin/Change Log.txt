@@ -18,6 +18,10 @@ Identified potential issue with the Quarantine Endpoint feature
 		- Added [Alpha] tag to GUI
 		- TODO: fix this
 
+Fixed bug with compiled results using SMB/PSExec
+	- The CSV results were not being compliled into a single file
+	- Added Post-MonitorJobs function after collection - this compiles the CSV results
+
 ==================================================
 v5.1.7 BETA - 28 Nov 20
 ==================================================

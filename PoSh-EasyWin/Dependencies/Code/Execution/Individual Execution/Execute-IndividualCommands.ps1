@@ -228,6 +228,8 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     else {Write-Host -f Red "Execution Error"}
                     #note: $($Error[0] | Select-Object -ExpandProperty Exception) does not provide the error from PSExec, rather that of another from within the PowerShell Session
 
+                    Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
+
                     # Used later below to log the action
                     $CommandString = "$PsExecPath `"\\$TargetComputer`" -AcceptEULA -NoBanner -u `$UserName -p `$Password powershell `"$($Command.Command) | Select-Object * | ConvertTo-Csv -NoType`""
 
@@ -247,6 +249,8 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     if ($LASTEXITCODE -eq 0) {Write-Host -f Green "Execution Successful"}
                     else {Write-Host -f Red "Execution Error"}
                     #note: $($Error[0] | Select-Object -ExpandProperty Exception) does not provide the error from PSExec, rather that of another from within the PowerShell Session
+
+                    Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
 
                     # Used later below to log the action
                     $CommandString = "$PsExecPath `"\\$TargetComputer`" -AcceptEULA -NoBanner -u `$UserName -p `$Password powershell `"$($Command.Command) | Select-Object * | ConvertTo-Csv -NoType`""
@@ -268,6 +272,8 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     if ($LASTEXITCODE -eq 0) {Write-Host -f Green "Execution Successful"}
                     else {Write-Host -f Red "Execution Error"}
                     #note: $($Error[0] | Select-Object -ExpandProperty Exception) does not provide the error from PSExec, rather that of another from within the PowerShell Session
+
+                    Post-MonitorJobs -CollectionName $CollectionName -CollectionCommandStartTime $ExecutionStartTime
 
                     # Used later below to log the action
                     $CommandString = "$PsExecPath `"\\$TargetComputer`" -AcceptEULA -NoBanner -u `$UserName -p `$Password cmd /c `"$($Command.Command)"
