@@ -12,44 +12,47 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
-foreach ($TargetComputer in $script:ComputerList) {
-    Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
-                            -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
-                            -TargetComputer $TargetComputer
-    Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
+$script:MonitorJobScriptBlock = {
+    foreach ($TargetComputer in $script:ComputerList) {
+        Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
+                                -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
+                                -TargetComputer $TargetComputer
+        Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
 
-    $FileHashSelection   = $FileSearchSelectFileHashComboBox.Text
-    $DirectoriesToSearch = ($FileSearchFileSearchDirectoryRichTextbox.Text).split("`r`n")
-    $FilesToSearch       = ($FileSearchFileSearchFileRichTextbox.Text).split("`r`n")
-    $MaximumDepth        = $FileSearchFileSearchMaxDepthTextbox.text
+        $FileHashSelection   = $FileSearchSelectFileHashComboBox.Text
+        $DirectoriesToSearch = ($FileSearchFileSearchDirectoryRichTextbox.Text).split("`r`n")
+        $FilesToSearch       = ($FileSearchFileSearchFileRichTextbox.Text).split("`r`n")
+        $MaximumDepth        = $FileSearchFileSearchMaxDepthTextbox.text
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }
+        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
 
-        Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} `
-        -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection) `
-        -ComputerName $TargetComputer `
-        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-        -Credential $script:Credential `
-        | Select-Object PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer, Filehash, FileHashAlgorithm
+            Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} `
+            -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection) `
+            -ComputerName $TargetComputer `
+            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+            -Credential $script:Credential `
+            | Select-Object PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer, Filehash, FileHashAlgorithm
 
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-FileSearch} -ArgumentList @(`$DirectoriesToSearch,`$FilesToSearch,`$MaximumDepth,`$GetChildItemDepth,`$GetFileHash,`$FileHashSelection)  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
-    }
-    else {
-        Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} `
-        -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection) `
-        -ComputerName $TargetComputer `
-        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-        | Select-Object PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer, Filehash, FileHashAlgorithm
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-FileSearch} -ArgumentList @(`$DirectoriesToSearch,`$FilesToSearch,`$MaximumDepth,`$GetChildItemDepth,`$GetFileHash,`$FileHashSelection)  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+        }
+        else {
+            Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} `
+            -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection) `
+            -ComputerName $TargetComputer `
+            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+            | Select-Object PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer, Filehash, FileHashAlgorithm
 
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-FileSearch} -ArgumentList @(`$DirectoriesToSearch,`$FilesToSearch,`$MaximumDepth,`$GetChildItemDepth,`$GetFileHash,`$FileHashSelection)  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:Conduct-FileSearch} -ArgumentList @(`$DirectoriesToSearch,`$FilesToSearch,`$MaximumDepth,`$GetChildItemDepth,`$GetFileHash,`$FileHashSelection)  -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
+        }
     }
 }
+Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

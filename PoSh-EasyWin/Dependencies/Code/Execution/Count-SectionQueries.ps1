@@ -1,6 +1,8 @@
 Function Count-SectionQueries {
     $script:SectionQueryCount = 0
 
+    if ($SmithFileSearchFileSearchCheckbox.checked)                    { $script:SectionQueryCount++ }
+
     if ($CustomQueryScriptBlockCheckBox.checked)                    { $script:SectionQueryCount++ }
     if ($RegistrySearchCheckbox.checked)                            { $script:SectionQueryCount++ }
     if ($FileSearchDirectoryListingCheckbox.Checked)                { $script:SectionQueryCount++ }

@@ -1,4 +1,47 @@
 ==================================================
+v5.1.9 BETA 
+==================================================
+
+Updated the PoSh-EasyWin Loading windows
+	- Increased the updating progress checks point from around 50 to  250
+	- It now includes words/script file names in conjunction with progressbar 
+
+Separated more code into more manageable scripts
+	- moved tab codes into their own .ps1 Files
+	- these files are now "." (dot) sourced and loaded into scope
+
+Adding Montioring feature - aka Agent(less) SMITH
+	- SMITH = System Monitoring & Intel-Driven Threat Hunting
+		- The intent:
+		 	- Configure queries that run constantly
+			- If the query ever returns data, an alert will prompt the analyst
+			- Queries time will be adjustable
+			- Should be able monitor for multiple events at a time
+
+	- Added Monitoring Tab
+		- Added Accounts Tab
+		- Added Event Logs Tab
+		- Added Registry Tab
+		- Added File Search Tab
+		- Added Network Tab
+	- Supported
+		- File & Hash Search
+		- Alternate Data Streams
+		- 
+		- NetworkConnection Remote IP Address
+		- NetworkConnection Remote Port 
+		- NetworkConnection Local Port
+		- NetworkConnection Process
+		- NetworkConnection Search DNS Cache
+	- Unsupported
+		- File Directory Listing
+		- Endpoint Packet Capture <------------------------update buttons!!!!!!!!!!!!!!!!!!!
+		- 
+
+Added 'SHow All Jobs' button to Monitor Jobs tab
+	- Shows all jobs
+
+==================================================
 v5.1.8 BETA - 11 Dec 20
 ==================================================
 

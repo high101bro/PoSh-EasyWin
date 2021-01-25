@@ -156,7 +156,7 @@ foreach ($TargetComputer in $script:ComputerList) {
 
 
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PcapSwitch
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PcapSwitch -DisableReRun
     }
     elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
         Monitor-Jobs -CollectionName $CollectionName -NotExportFiles
