@@ -1,0 +1,13 @@
+Do the connections/ports used make sense?
+--- Should two ephemeral ports be talking
+--- Is a client machine using a well known port (acting like a server)?
+--- Is there an established connection to a suspicious resource (known bad IP, domain name)
+Ephemeral ports are created by the operating system as a temporary client endpoint when establishing IP communications.
+Operating System Default Range 
+BSD                    49152 through 65535 
+FreeBSD                49152 through 65535 
+Linux                  32768 through 61000 
+Solaris                32768 through 65535 
+Windows 5.x and older  1024 through 5000 
+Windows 6.x and newer  49152 through 65535 
+OSX 49152 through      65535 

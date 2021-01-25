@@ -1,0 +1,9 @@
+====================================================================================================
+Directory Service Access
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4662') OR (EventCode='4661'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-directory-service-access
+4662(S, F): An operation was performed on an object.
+4661(S, F): A handle to an object was requested.

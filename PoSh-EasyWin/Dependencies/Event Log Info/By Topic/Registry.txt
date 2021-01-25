@@ -1,0 +1,14 @@
+====================================================================================================
+Registry
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4663') OR (EventCode='4656') OR (EventCode='4658') OR (EventCode='4660') OR (EventCode='4657') OR (EventCode='5039') OR (EventCode='4670'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-registry
+4663(S): An attempt was made to access an object.
+4656(S, F): A handle to an object was requested.
+4658(S): The handle to an object was closed.
+4660(S): An object was deleted.
+4657(S): A registry value was modified.
+5039(-): A registry key was virtualized.
+4670(S): Permissions on an object were changed.

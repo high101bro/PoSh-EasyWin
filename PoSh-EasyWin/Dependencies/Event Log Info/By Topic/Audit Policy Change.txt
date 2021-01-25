@@ -1,0 +1,21 @@
+====================================================================================================
+Audit Policy Change
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4902') OR (EventCode='4907') OR (EventCode='4904') OR (EventCode='4905') OR (EventCode='4715') OR (EventCode='4719') OR (EventCode='4817') OR (EventCode='4902') OR (EventCode='4906') OR (EventCode='4907') OR (EventCode='4908') OR (EventCode='4912') OR (EventCode='4904') OR (EventCode='4905'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-audit-policy-change
+4902(S): The Per-user audit policy table was created.
+4907(S): Auditing settings on object were changed.
+4904(S): An attempt was made to register a security event source.
+4905(S): An attempt was made to unregister a security event source.
+4715(S): The audit policy (SACL) on an object was changed.
+4719(S): System audit policy was changed.
+4817(S): Auditing settings on object were changed.
+4902(S): The Per-user audit policy table was created.
+4906(S): The CrashOnAuditFail value has changed.
+4907(S): Auditing settings on object were changed.
+4908(S): Special Groups Logon table modified.
+4912(S): Per User Audit Policy was changed.
+4904(S): An attempt was made to register a security event source.
+4905(S): An attempt was made to unregister a security event source.

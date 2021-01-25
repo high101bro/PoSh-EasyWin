@@ -1,0 +1,11 @@
+====================================================================================================
+DPAPI Activity
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4692') OR (EventCode='4693') OR (EventCode='4694') OR (EventCode='4695'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-dpapi-activity
+4692(S, F): Backup of data protection master key was attempted.
+4693(S, F): Recovery of data protection master key was attempted.
+4694(S, F): Protection of auditable protected data was attempted.
+4695(S, F): Unprotection of auditable protected data was attempted.

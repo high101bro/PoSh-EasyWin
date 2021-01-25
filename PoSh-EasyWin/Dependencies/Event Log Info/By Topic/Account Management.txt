@@ -1,0 +1,24 @@
+====================================================================================================
+User Account Management
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4720') OR (EventCode='4722') OR (EventCode='4723') OR (EventCode='4724') OR (EventCode='4725') OR (EventCode='4726') OR (EventCode='4738') OR (EventCode='4740') OR (EventCode='4765') OR (EventCode='4766') OR (EventCode='4767') OR (EventCode='4780') OR (EventCode='4781') OR (EventCode='4781') OR (EventCode='4794') OR (EventCode='4798') OR (EventCode='5376') OR (EventCode='5377'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-user-account-management
+4720(S): A user account was created.
+4722(S): A user account was enabled.
+4723(S, F): An attempt was made to change an account's password.
+4724(S, F): An attempt was made to reset an account's password.
+4725(S): A user account was disabled.
+4726(S): A user account was deleted.
+4738(S): A user account was changed.
+4740(S): A user account was locked out.
+4765(S): SID History was added to an account.
+4766(F): An attempt to add SID History to an account failed.
+4767(S): A user account was unlocked.
+4780(S): The ACL was set on accounts which are members of administrators groups.
+4781(S): The name of an account was changed.
+4794(S, F): An attempt was made to set the Directory Services Restore Mode administrator password.
+4798(S): A user's local group membership was enumerated.
+5376(S): Credential Manager credentials were backed up.
+5377(S): Credential Manager credentials were restored from a backup.

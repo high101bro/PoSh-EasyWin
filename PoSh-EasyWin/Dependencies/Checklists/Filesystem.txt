@@ -1,0 +1,6 @@
+A filesystem baseline will reveal what files have changed based on a hash 
+Can be used to detect modification to critical files such as DLLs
+A baseline can also provide information about what files have been created or accessed by reviewing Modification, Access, Change (MAC) times
+Reviewing any new installed software could reveal user activity
+Alternate data streams can be used to identify files downloaded from the internet or could contain malicious data
+Review removable media artifacts for information on devices that have been attached to the system

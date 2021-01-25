@@ -1,0 +1,12 @@
+====================================================================================================
+Account Lockout
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND (EventCode='4625')"
+Similar Commands:
+   Get-WinEvent -FilterHashtable @{LogName="Security"; ID=4744}
+
+   wevtutil qe Security /count:5 /rd:true /format:text /q:"*[System/EventID=4625]"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-account-lockout
+4625(F): An account failed to log on.

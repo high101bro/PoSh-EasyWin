@@ -1,0 +1,14 @@
+Validate loaded libraries as it is early impossible to list all DLLs and investigate each one 
+The path of execution - Most DLLs run from a Windows directory (c:\windows\system32) or in a specific application directory (c:\program files\mcafee) 
+Digital Certificate - Most DLLs are signed, especially the native Windows DLLs 
+--- This is becoming more and more standard with newer OS’s 
+--- If they’re signed, work first on the unsigned 
+--- Even if the DLL is signed…check for non-standard signatures 
+Unique Execution - Look for DLLs being executed as a standalone (rundll32) 
+--- DLLs only used in once place could be suspicious since the whole point of a DLL is to be used by multiple processes 
+Check strings on the file 
+The spelling of the DLL - Malicious DLLs are often randomly generated or deviate slightly from a legitimate DLL (ntd1l.com) 
+Hash - Check it against your white list or other “known good” or check it against other reputation databases (VirusTotal) 
+File Metadata - DLLs contain the same metadata as other executables 
+Sandbox Analysis - The majority of sandboxes support DLL execution 
+DLL Imports and Exports - Check the DLL import and export table to determine what functions are exposed and what it relies on

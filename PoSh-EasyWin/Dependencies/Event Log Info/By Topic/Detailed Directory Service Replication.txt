@@ -1,0 +1,15 @@
+====================================================================================================
+Detailed Directory Service Replication
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4928') OR (EventCode='4929') OR (EventCode='4930') OR (EventCode='4931') OR (EventCode='4934') OR (EventCode='4935') OR (EventCode='4936') OR (EventCode='4937'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-detailed-directory-service-replication
+4928(S, F): An Active Directory replica source naming context was established.
+4929(S, F): An Active Directory replica source naming context was removed.
+4930(S, F): An Active Directory replica source naming context was modified.
+4931(S, F): An Active Directory replica destination naming context was modified.
+4934(S): Attributes of an Active Directory object were replicated.
+4935(F): Replication failure begins.
+4936(S): Replication failure ends.
+4937(S): A lingering object was removed from a replica.

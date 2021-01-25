@@ -1,0 +1,11 @@
+====================================================================================================
+Kernel Object
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4656') OR (EventCode='4658') OR (EventCode='4660') OR (EventCode='4663'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-kernel-object
+4656(S, F): A handle to an object was requested.
+4658(S): The handle to an object was closed.
+4660(S): An object was deleted.
+4663(S): An attempt was made to access an object.

@@ -1,0 +1,12 @@
+====================================================================================================
+Application Generated
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4665') OR (EventCode='4666') OR (EventCode='4667') OR (EventCode='4668'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-application-generated
+4665: An attempt was made to create an application client context.
+4666: An application attempted an operation.
+4667: An application client context was deleted.
+4668: An application was initialized.
+

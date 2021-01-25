@@ -1,0 +1,14 @@
+====================================================================================================
+IPSec Extended Mode
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='4978') OR (EventCode='4979') OR (EventCode='4980') OR (EventCode='4981') OR (EventCode='4982') OR (EventCode='4983') OR (EventCode='4984'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-ipsec-extended-mode
+4978: During Extended Mode negotiation, IPsec received an invalid negotiation packet. If this problem persists, it could indicate a network issue or an attempt to modify or replay this negotiation.
+4979: IPsec Main Mode and Extended Mode security associations were established.
+4980: IPsec Main Mode and Extended Mode security associations were established.
+4981: IPsec Main Mode and Extended Mode security associations were established.
+4982: IPsec Main Mode and Extended Mode security associations were established.
+4983: An IPsec Extended Mode negotiation failed. The corresponding Main Mode security association has been deleted.
+4984: An IPsec Extended Mode negotiation failed. The corresponding Main Mode security association has been deleted.
