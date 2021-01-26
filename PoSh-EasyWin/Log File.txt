@@ -3698,3 +3698,267 @@
 2021/01/25 15:02:58  PoSh-EasyWin Started By: APPLE2540\apple
 2021/01/25 15:03:00  PoSh-EasyWin User Agreemennt Accepted By: APPLE2540\apple
 2021/01/25 15:03:01  ====================================================================================================
+2021/01/25 16:05:48  ====================================================================================================
+2021/01/25 16:05:48  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:05:53  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:05:54  ====================================================================================================
+2021/01/25 16:38:03  ====================================================================================================
+2021/01/25 16:38:03  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:38:06  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:38:07  ====================================================================================================
+2021/01/25 16:38:45  ====================================================================================================
+2021/01/25 16:38:45  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:38:47  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:38:48  ====================================================================================================
+2021/01/25 16:39:38   - 
+2021/01/25 16:39:40  127.0.0.1: File Search
+2021/01/25 16:39:40  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:40:00  127.0.0.1: 
+2021/01/25 16:40:00  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:40:13  127.0.0.1: 
+2021/01/25 16:40:13  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:40:27  127.0.0.1: 
+2021/01/25 16:40:27  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:40:40  127.0.0.1: 
+2021/01/25 16:40:40  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:40:54  127.0.0.1: 
+2021/01/25 16:40:54  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:41:07  127.0.0.1: 
+2021/01/25 16:41:07  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:41:21  127.0.0.1: 
+2021/01/25 16:41:21  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:41:34  127.0.0.1: 
+2021/01/25 16:41:34  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:41:48  127.0.0.1: 
+2021/01/25 16:41:48  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:42:01  127.0.0.1: 
+2021/01/25 16:42:01  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:42:15  127.0.0.1: 
+2021/01/25 16:42:15  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:42:28  127.0.0.1: 
+2021/01/25 16:42:28  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:42:42  127.0.0.1: 
+2021/01/25 16:42:42  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:42:55  127.0.0.1: 
+2021/01/25 16:42:55  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:43:09  127.0.0.1: 
+2021/01/25 16:43:09  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:43:22  127.0.0.1: 
+2021/01/25 16:43:22  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:43:36  127.0.0.1: 
+2021/01/25 16:43:36  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:43:49  127.0.0.1: 
+2021/01/25 16:43:49  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:44:03  127.0.0.1: 
+2021/01/25 16:44:03  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:44:16  127.0.0.1: 
+2021/01/25 16:44:16  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:44:30  127.0.0.1: 
+2021/01/25 16:44:30  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:44:44  127.0.0.1: 
+2021/01/25 16:44:44  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:45:00  127.0.0.1: 
+2021/01/25 16:45:00  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 16:45:10  ====================================================================================================
+2021/01/25 16:45:10  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:45:31  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:45:32  ====================================================================================================
+2021/01/25 16:46:07  127.0.0.1: File Search
+2021/01/25 16:46:08  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:49:12  ====================================================================================================
+2021/01/25 16:49:12  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:49:22  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:49:23  ====================================================================================================
+2021/01/25 16:49:44  127.0.0.1: File Search
+2021/01/25 16:49:44  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:51:48  127.0.0.1: File Search
+2021/01/25 16:51:48  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:52:11  127.0.0.1: File Search
+2021/01/25 16:52:11  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:52:15  127.0.0.1: File Search
+2021/01/25 16:52:15  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:52:22  127.0.0.1: File Search
+2021/01/25 16:52:22  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:52:30  127.0.0.1: File Search
+2021/01/25 16:52:30  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:52:34  127.0.0.1: File Search
+2021/01/25 16:52:34  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:52:39  127.0.0.1: File Search
+2021/01/25 16:52:39  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:53:54  ====================================================================================================
+2021/01/25 16:53:54  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:53:55  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:53:56  ====================================================================================================
+2021/01/25 16:56:54  127.0.0.1: File Search
+2021/01/25 16:56:54  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:57:00  127.0.0.1: File Search
+2021/01/25 16:57:00  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:57:03  127.0.0.1: File Search
+2021/01/25 16:57:03  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:57:08  127.0.0.1: File Search
+2021/01/25 16:57:08  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:57:17  127.0.0.1: File Search
+2021/01/25 16:57:17  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:57:22  127.0.0.1: File Search
+2021/01/25 16:57:22  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:59:00  ====================================================================================================
+2021/01/25 16:59:00  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:59:02  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 16:59:03  ====================================================================================================
+2021/01/25 16:59:24   - 
+2021/01/25 16:59:26  127.0.0.1: File Search
+2021/01/25 16:59:26  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:59:32  127.0.0.1: File Search
+2021/01/25 16:59:32  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:59:35  127.0.0.1: File Search
+2021/01/25 16:59:35  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 16:59:42  127.0.0.1: File Search
+2021/01/25 16:59:42  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:15:08  ====================================================================================================
+2021/01/25 17:15:09  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:15:16  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:15:17  ====================================================================================================
+2021/01/25 17:15:34   - 
+2021/01/25 17:15:35  127.0.0.1: File Search
+2021/01/25 17:15:36  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:16:12  ====================================================================================================
+2021/01/25 17:16:12  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:16:14  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:16:15  ====================================================================================================
+2021/01/25 17:16:55  127.0.0.1: File Search
+2021/01/25 17:16:55  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:17:14  ====================================================================================================
+2021/01/25 17:17:14  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:17:19  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:17:20  ====================================================================================================
+2021/01/25 17:18:07   - 
+2021/01/25 17:18:08  127.0.0.1: File Search
+2021/01/25 17:18:09  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:20:00  ====================================================================================================
+2021/01/25 17:20:00  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:20:02  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:20:03  ====================================================================================================
+2021/01/25 17:20:18  127.0.0.1: File Search
+2021/01/25 17:20:18  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:20:26  127.0.0.1: File Search
+2021/01/25 17:20:26  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:20:29  127.0.0.1: File Search
+2021/01/25 17:20:29  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:20:32  127.0.0.1: File Search
+2021/01/25 17:20:32  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:20:40  127.0.0.1: File Search
+2021/01/25 17:20:40  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:20:44  127.0.0.1: File Search
+2021/01/25 17:20:44  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:20:52  127.0.0.1: File Search
+2021/01/25 17:20:52  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:20:59  127.0.0.1: File Search
+2021/01/25 17:20:59  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:21:04  127.0.0.1: File Search
+2021/01/25 17:21:04  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:22:25  ====================================================================================================
+2021/01/25 17:22:25  PoSh-EasyWin Started By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:22:26  PoSh-EasyWin User Agreemennt Accepted By: DESKTOP-LB4N4PN\Dan
+2021/01/25 17:22:27  ====================================================================================================
+2021/01/25 17:22:45  127.0.0.1: File Search
+2021/01/25 17:22:45  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:22:48  127.0.0.1: File Search
+2021/01/25 17:22:48  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:22:50  127.0.0.1: File Search
+2021/01/25 17:22:50  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:22:52  127.0.0.1: File Search
+2021/01/25 17:22:52  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:22:54  127.0.0.1: File Search
+2021/01/25 17:22:54  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:23:00  127.0.0.1: File Search
+2021/01/25 17:23:00  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:23:07  127.0.0.1: File Search
+2021/01/25 17:23:07  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:23:10  127.0.0.1: File Search
+2021/01/25 17:23:10  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:23:15  127.0.0.1: File Search
+2021/01/25 17:23:15  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:23:20  127.0.0.1: File Search
+2021/01/25 17:23:20  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:23:22  127.0.0.1: File Search
+2021/01/25 17:23:22  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:23:24  127.0.0.1: File Search
+2021/01/25 17:23:24  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:23:31  127.0.0.1: File Search
+2021/01/25 17:23:31  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:23:45  127.0.0.1: File Search
+2021/01/25 17:23:45  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:47:56  127.0.0.1: 
+2021/01/25 17:47:57  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:48:29  127.0.0.1: 
+2021/01/25 17:48:29  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:48:43  127.0.0.1: 
+2021/01/25 17:48:43  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:48:56  127.0.0.1: 
+2021/01/25 17:48:56  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:49:10  127.0.0.1: 
+2021/01/25 17:49:10  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:49:23  127.0.0.1: 
+2021/01/25 17:49:23  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:49:37  127.0.0.1: 
+2021/01/25 17:49:37  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:49:51  127.0.0.1: 
+2021/01/25 17:49:51  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:50:05  127.0.0.1: 
+2021/01/25 17:50:05  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:50:18  127.0.0.1: 
+2021/01/25 17:50:18  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:50:32  127.0.0.1: 
+2021/01/25 17:50:32  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:50:45  127.0.0.1: 
+2021/01/25 17:50:45  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:50:54  127.0.0.1: File Search
+2021/01/25 17:50:54  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:58:11  127.0.0.1: File Search
+2021/01/25 17:58:11  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:58:18  127.0.0.1: 
+2021/01/25 17:58:18  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:20  127.0.0.1: 
+2021/01/25 17:58:20  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:21  127.0.0.1: 
+2021/01/25 17:58:21  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:23  127.0.0.1: 
+2021/01/25 17:58:23  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:25  127.0.0.1: 
+2021/01/25 17:58:25  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:27  127.0.0.1: 
+2021/01/25 17:58:27  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:28  127.0.0.1: 
+2021/01/25 17:58:28  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:30  127.0.0.1: 
+2021/01/25 17:58:30  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:48  127.0.0.1: File Search
+2021/01/25 17:58:48  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin: File Search -- 127.0.0.1'
+2021/01/25 17:58:50  127.0.0.1: 
+2021/01/25 17:58:50  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:52  127.0.0.1: 
+2021/01/25 17:58:52  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:54  127.0.0.1: 
+2021/01/25 17:58:54  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:56  127.0.0.1: 
+2021/01/25 17:58:56  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:57  127.0.0.1: 
+2021/01/25 17:58:57  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:58:59  127.0.0.1: 
+2021/01/25 17:58:59  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:59:01  127.0.0.1: 
+2021/01/25 17:59:01  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:59:03  127.0.0.1: 
+2021/01/25 17:59:03  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:59:05  127.0.0.1: 
+2021/01/25 17:59:05  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:59:06  127.0.0.1: 
+2021/01/25 17:59:06  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:59:08  127.0.0.1: 
+2021/01/25 17:59:08  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:59:10  127.0.0.1: 
+2021/01/25 17:59:10  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:59:12  127.0.0.1: 
+2021/01/25 17:59:12  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'
+2021/01/25 17:59:14  127.0.0.1: 
+2021/01/25 17:59:14  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName 127.0.0.1 -AsJob -JobName 'PoSh-EasyWin:  -- 127.0.0.1'

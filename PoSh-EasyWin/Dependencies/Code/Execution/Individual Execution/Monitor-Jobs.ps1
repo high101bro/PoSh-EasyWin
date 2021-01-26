@@ -51,7 +51,7 @@ if ($MonitorMode) {
         }
 
 
-        `$script:MonitorJobsTopPosition -= (`$script:Section3MonitorJobPanel$JobId.Height + `$script:JobsRowGap)
+        `$script:MonitorJobsTopPosition -= `$script:Section3MonitorJobPanel$JobId.Height + `$script:JobsRowGap
 
         
         `$script:Section3MonitorJobsTab.Controls.Remove(`$script:Section3MonitorJobPanel$JobId)
@@ -171,7 +171,7 @@ if ($MonitorMode) {
         `$script:PreviousJobFormItemsList$JobId = `$script:PreviousJobFormItemsList
         `$script:JobCompletionMessageShown$JobId = `$false
         `$script:JobsRowHeight = (`$FormScale * 47) #(`$FormScale * 22)
-        `$script:JobsRowGap = (`$FormScale * 5)
+        `$script:JobsRowGap = `$FormScale * 5
         `$script:JobsStartedCount$JobId = `$script:CurrentJobs$JobId.count
         
 
@@ -968,7 +968,7 @@ if ($DisableReRun) {
 
         `$PoShEasyWin.Refresh()
 
-        `$script:MonitorJobsTopPosition += (`$script:Section3MonitorJobPanel$JobId.Height + `$script:JobsRowGap)
+        `$script:MonitorJobsTopPosition += `$script:Section3MonitorJobPanel$JobId.Height + `$script:JobsRowGap 
 
         # This adds each form item to a list
         `$script:PreviousJobFormItemsList += "Section3MonitorJobPanel$JobId"

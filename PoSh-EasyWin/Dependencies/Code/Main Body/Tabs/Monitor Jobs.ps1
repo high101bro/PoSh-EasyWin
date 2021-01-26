@@ -33,9 +33,6 @@ $script:AllJobs = $null
 # Used to track which jobs were previously done to separate them from the current onces
 $script:PastJobsIDList = @()
 
-$script:PreviousJobFormItemsList = @()
-$script:MonitorJobsLeftPosition  = ($FormScale * 5)
-$script:MonitorJobsTopPosition   = ($FormScale * 5 + 42)
 
 $script:Section3MonitorJobsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text      = "Monitor Jobs Options"
@@ -47,6 +44,12 @@ $script:Section3MonitorJobsGroupBox = New-Object System.Windows.Forms.GroupBox -
     ForeColor = 'Blue'
 }
 $script:Section3MonitorJobsTab.Controls.Add($script:Section3MonitorJobsGroupBox)
+
+
+# This needs to be below: $script:Section3MonitorJobsGroupBox
+$script:PreviousJobFormItemsList = @()
+$script:MonitorJobsLeftPosition  = $FormScale * 5
+$script:MonitorJobsTopPosition   = $script:Section3MonitorJobsGroupBox.Top + $script:Section3MonitorJobsGroupBox.Height
 
 
 $script:Section3MonitorJobsResizeButton = New-Object System.Windows.Forms.Button -Property @{
@@ -129,7 +132,7 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Monitor Progress Bars Removed - Stopping $script:TotalJobsToRemoveCount Remainingg Jobs - Completed")
 
-        $script:MonitorJobsTopPosition = ($FormScale * 5 + 42)
+        $script:MonitorJobsTopPosition   = $script:Section3MonitorJobsGroupBox.Top + $script:Section3MonitorJobsGroupBox.Height
 <#        
         $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?`n`nThis method currently only stops running jobs and removes them from view; it will not delete the files regardless if their 'keep data' box is not checked.",'PoSh-EasyWin','YesNo','Warning')
         switch ($RemoveAllJobsVerify) {

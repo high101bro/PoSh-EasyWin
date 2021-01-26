@@ -1,0 +1,15 @@
+"ComputerName","PSPath","PSParentPath","PSChildName","PSDrive","PSProvider","PSIsContainer","Mode","VersionInfo","BaseName","Target","LinkType","PSComputerName","RunspaceId","PSShowComputerName","Name","Length","DirectoryName","Directory","IsReadOnly","Exists","FullName","Extension","CreationTime","CreationTimeUtc","LastAccessTime","LastAccessTimeUtc","LastWriteTime","LastWriteTimeUtc","Attributes"
+"127.0.0.1","Microsoft.PowerShell.Core\FileSystem::C:\test.txt","Microsoft.PowerShell.Core\FileSystem::C:\","test.txt","C","Microsoft.PowerShell.Core\FileSystem","False","-a----","File:             C:\test.txt
+InternalName:     
+OriginalFilename: 
+FileVersion:      
+FileDescription:  
+Product:          
+ProductVersion:   
+Debug:            False
+Patched:          False
+PreRelease:       False
+PrivateBuild:     False
+SpecialBuild:     False
+Language:         
+","test","",,"127.0.0.1","496b22c4-c76c-4d02-a378-7c959d1894f7","True","test.txt","16","C:\","C:\","False","True","C:\test.txt",".txt","1/25/2021 5:59:12 PM","1/26/2021 1:59:12 AM","1/25/2021 5:59:12 PM","1/26/2021 1:59:12 AM","1/25/2021 5:59:12 PM","1/26/2021 1:59:12 AM","Archive"

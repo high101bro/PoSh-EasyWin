@@ -1,4 +1,3 @@
-
 <#
     .SYNOPSIS
     PoSh-EasyWin is a primarily a domain-wide host querying tool and provides easy viewing of queried
