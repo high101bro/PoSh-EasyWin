@@ -1,7 +1,0 @@
-File rename when uploaded to target
---- Check metadata, OriginalFileName=
-TimeStomp – modification of the MAC attributes
---- Collect MFT data associated with the file to ensure it matches
---- $Standard_Information Attributes different from $FILE_NAME Attributes =BAD
-Attributes manipulation - +H hidden files
---- By default Windows “dir” won’t show hidden files

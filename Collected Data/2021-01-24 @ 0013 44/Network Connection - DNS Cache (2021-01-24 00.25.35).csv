@@ -1,0 +1,4 @@
+"ComputerName","Entry","Name","Data","Type","Status","Section","TTL","DataLength","PSComputerName","RunspaceId","PSShowComputerName"
+"127.0.0.1","35.250.171.69.in-addr.arpa","35.250.171.69.in-addr.arpa","edge-star-mini-shv-01-any2.facebook.com","12","0","1","1271","8","127.0.0.1","bd14a77d-6d92-46d4-baac-9aaf96815bf0","True"
+"127.0.0.1","www.facebook.com","www.facebook.com","star-mini.c10r.facebook.com","5","0","1","40","8","127.0.0.1","bd14a77d-6d92-46d4-baac-9aaf96815bf0","True"
+"127.0.0.1","www.facebook.com","star-mini.c10r.facebook.com","69.171.250.35","1","0","1","40","4","127.0.0.1","bd14a77d-6d92-46d4-baac-9aaf96815bf0","True"

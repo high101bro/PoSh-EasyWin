@@ -1,0 +1,415 @@
+Category,Subcategory,Event ID,Minimum Windows OS Requirement,Message Summary
+System,Security State Change,4608,"Windows Vista, Windows Server 2008",Windows is starting up.
+System,Security State Change,4609,"Windows Vista, Windows Server 2008",Windows is shutting down.
+System,Security System Extension,4610,"Windows Vista, Windows Server 2008",An authentication package has been loaded by the Local Security Authority.
+System,Security System Extension,4611,"Windows Vista, Windows Server 2008",A trusted logon process has been registered with the Local Security Authority.
+System,System Integrity,4612,"Windows Vista, Windows Server 2008","Internal resources allocated for the queuing of audit messages have been exhausted, leading to the loss of some audits."
+System,Security System Extension,4614,"Windows Vista, Windows Server 2008",A notification package has been loaded by the Security Account Manager.
+System,System Integrity,4615,"Windows Vista, Windows Server 2008",Invalid use of LPC port.
+System,Security State Change,4616,"Windows Vista, Windows Server 2008",The system time was changed.
+System,System Integrity,4618,"Windows Vista, Windows Server 2008",A monitored security event pattern has occurred.
+System,Security State Change,4621,"Windows Vista, Windows Server 2008",Administrator recovered system from CrashOnAuditFail. Users who are not administrators will now be allowed to log on. Some auditable activity might not have been recorded.
+System,Security System Extension,4622,"Windows Vista, Windows Server 2008",A security package has been loaded by the Local Security Authority.
+Logon/Logoff,Logon,4624,"Windows Vista, Windows Server 2008",An account was successfully logged on.
+Logon/Logoff,Logon,4625,"Windows Vista, Windows Server 2008",An account failed to log on.
+Logon/Logoff,Logon,4626,"Windows 8, Windows Server 2012",User/Device claims information.
+Logon/Logoff,Group Membership,4627,Windows 10,Group membership information. 
+Logon/Logoff,Logoff,4634,"Windows Vista, Windows Server 2008",An account was logged off.
+Logon/Logoff,IPsec Main Mode,4646,"Windows Vista, Windows Server 2008",1%
+Logon/Logoff,Logoff,4647,"Windows Vista, Windows Server 2008",User initiated logoff.
+Logon/Logoff,Logon,4648,"Windows Vista, Windows Server 2008",A logon was attempted using explicit credentials.
+Logon/Logoff,Other Logon/Logoff Events,4649,"Windows Vista, Windows Server 2008",A replay attack was detected.
+Logon/Logoff,IPsec Main Mode,4650,"Windows Vista, Windows Server 2008",An IPsec Main Mode security association was established. Extended Mode was not enabled. Certificate authentication was not used.
+Logon/Logoff,IPsec Main Mode,4651,"Windows Vista, Windows Server 2008",An IPsec Main Mode security association was established. Extended Mode was not enabled. A certificate was used for authentication.
+Logon/Logoff,IPsec Main Mode,4652,"Windows Vista, Windows Server 2008",An IPsec Main Mode negotiation failed.
+Logon/Logoff,IPsec Main Mode,4653,"Windows Vista, Windows Server 2008",An IPsec Main Mode negotiation failed.
+Logon/Logoff,IPsec Quick Mode,4654,"Windows Vista, Windows Server 2008",An IPsec Quick Mode negotiation failed.
+Logon/Logoff,IPsec Main Mode,4655,"Windows Vista, Windows Server 2008",An IPsec Main Mode security association ended.
+Object Access,Handle Manipulation,4656,"Windows Vista, Windows Server 2008",A handle to an object was requested.
+Object Access,Registry,4657,"Windows Vista, Windows Server 2008",A registry value was modified.
+Object Access,Handle Manipulation,4658,"Windows Vista, Windows Server 2008",The handle to an object was closed.
+Object Access,SAM,4659,"Windows Vista, Windows Server 2008",A handle to an object was requested with intent to delete.
+Object Access,Kernel,4659,"Windows Vista, Windows Server 2008",A handle to an object was requested with intent to delete.
+Object Access,SAM,4660,"Windows Vista, Windows Server 2008",An object was deleted.
+Object Access,Kernel,4660,"Windows Vista, Windows Server 2008",An object was deleted.
+Object Access,SAM,4661,"Windows Vista, Windows Server 2008",A handle to an object was requested.
+Object Access,Kernel,4661,"Windows Vista, Windows Server 2008",A handle to an object was requested.
+DS Access,Directory Service Access,4662,"Windows Vista, Windows Server 2008",An operation was performed on an object.
+Object Access,SAM,4663,"Windows Vista, Windows Server 2008",An attempt was made to access an object.
+Object Access,Kernel,4663,"Windows Vista, Windows Server 2008",An attempt was made to access an object.
+Object Access,File System,4664,"Windows Vista, Windows Server 2008",An attempt was made to create a hard link.
+Object Access,Application Generated,4665,"Windows Vista, Windows Server 2008",An attempt was made to create an application client context.
+Object Access,Application Generated,4666,"Windows Vista, Windows Server 2008",An application attempted an operation:
+Object Access,Application Generated,4667,"Windows Vista, Windows Server 2008",An application client context was deleted.
+Object Access,Application Generated,4668,"Windows Vista, Windows Server 2008",An application was initialized.
+Policy Change,Subcategory (special),4670,"Windows Vista, Windows Server 2008",Permissions on an object were changed.
+Object Access,Other Object Access Events,4671,"Windows Vista, Windows Server 2008",An application attempted to access a blocked ordinal through the TBS.
+Privilege Use,Sensitive Privilege Use / Non Sensitive Privilege Use,4672,"Windows Vista, Windows Server 2008",Special privileges assigned to new logon.
+Privilege Use,Sensitive Privilege Use / Non Sensitive Privilege Use,4673,"Windows Vista, Windows Server 2008",A privileged service was called.
+Privilege Use,Sensitive Privilege Use / Non Sensitive Privilege Use,4674,"Windows Vista, Windows Server 2008",An operation was attempted on a privileged object.
+Logon/Logoff,Logon,4675,"Windows Vista, Windows Server 2008",SIDs were filtered.
+Detailed Tracking,Process Creation,4688,"Windows Vista, Windows Server 2008",A new process has been created.
+Detailed Tracking,Process Termination,4689,"Windows Vista, Windows Server 2008",A process has exited.
+Object Access,Handle Manipulation,4690,"Windows Vista, Windows Server 2008",An attempt was made to duplicate a handle to an object.
+Object Access,Other Object Access Events,4691,"Windows Vista, Windows Server 2008",Indirect access to an object was requested.
+Detailed Tracking,DPAPI Activity,4692,"Windows Vista, Windows Server 2008",Backup of data protection master key was attempted.
+Detailed Tracking,DPAPI Activity,4693,"Windows Vista, Windows Server 2008",Recovery of data protection master key was attempted.
+Detailed Tracking,DPAPI Activity,4694,"Windows Vista, Windows Server 2008",Protection of auditable protected data was attempted.
+Detailed Tracking,DPAPI Activity,4695,"Windows Vista, Windows Server 2008",Unprotection of auditable protected data was attempted.
+Detailed Tracking,Process Creation,4696,"Windows Vista, Windows Server 2008",A primary token was assigned to process.
+System,Security System Extension,4697,"Windows Vista, Windows Server 2008",A service was installed in the system.
+Object Access,Other Object Access Events,4698,"Windows Vista, Windows Server 2008",A scheduled task was created.
+Object Access,Other Object Access Events,4699,"Windows Vista, Windows Server 2008",A scheduled task was deleted.
+Object Access,Other Object Access Events,4700,"Windows Vista, Windows Server 2008",A scheduled task was enabled.
+Object Access,Other Object Access Events,4701,"Windows Vista, Windows Server 2008",A scheduled task was disabled.
+Object Access,Other Object Access Events,4702,"Windows Vista, Windows Server 2008",A scheduled task was updated.
+Policy Change,Authorization Policy Change,4703,Windows 10,A user right was adjusted.
+Policy Change,Authorization Policy Change,4704,"Windows Vista, Windows Server 2008",A user right was assigned.
+Policy Change,Authorization Policy Change,4705,"Windows Vista, Windows Server 2008",A user right was removed.
+Policy Change,Authorization Policy Change,4706,"Windows Vista, Windows Server 2008",A new trust was created to a domain.
+Policy Change,Authorization Policy Change,4707,"Windows Vista, Windows Server 2008",A trust to a domain was removed.
+Policy Change,Filtering Platform Policy Change,4709,"Windows Vista, Windows Server 2008",IPsec Services was started.
+Policy Change,Filtering Platform Policy Change,4710,"Windows Vista, Windows Server 2008",IPsec Services was disabled.
+Policy Change,Filtering Platform Policy Change,4711,"Windows Vista, Windows Server 2008",###############################################################################################################################################################################################################################################################
+Policy Change,Filtering Platform Policy Change,4712,"Windows Vista, Windows Server 2008",IPsec Services encountered a potentially serious failure.
+Policy Change,Authentication Policy Change,4713,"Windows Vista, Windows Server 2008",Kerberos policy was changed.
+Policy Change,Authorization Policy Change,4714,"Windows Vista, Windows Server 2008",Encrypted data recovery policy was changed.
+Policy Change,Audit Policy Change,4715,"Windows Vista, Windows Server 2008",The audit policy (SACL) on an object was changed.
+Policy Change,Authentication Policy Change,4716,"Windows Vista, Windows Server 2008",Trusted domain information was modified.
+Policy Change,Authentication Policy Change,4717,"Windows Vista, Windows Server 2008",System security access was granted to an account.
+Policy Change,Authentication Policy Change,4718,"Windows Vista, Windows Server 2008",System security access was removed from an account.
+Policy Change,Audit Policy Change,4719,"Windows Vista, Windows Server 2008",System audit policy was changed.
+Account Management,User Account Management,4720,"Windows Vista, Windows Server 2008",A user account was created.
+Account Management,User Account Management,4722,"Windows Vista, Windows Server 2008",A user account was enabled.
+Account Management,User Account Management,4723,"Windows Vista, Windows Server 2008",An attempt was made to change an account's password.
+Account Management,User Account Management,4724,"Windows Vista, Windows Server 2008",An attempt was made to reset an account's password.
+Account Management,User Account Management,4725,"Windows Vista, Windows Server 2008",A user account was disabled.
+Account Management,User Account Management,4726,"Windows Vista, Windows Server 2008",A user account was deleted.
+Account Management,Security Group Management,4727,"Windows Vista, Windows Server 2008",A security-enabled global group was created.
+Account Management,Security Group Management,4728,"Windows Vista, Windows Server 2008",A member was added to a security-enabled global group.
+Account Management,Security Group Management,4729,"Windows Vista, Windows Server 2008",A member was removed from a security-enabled global group.
+Account Management,Security Group Management,4730,"Windows Vista, Windows Server 2008",A security-enabled global group was deleted.
+Account Management,Security Group Management,4731,"Windows Vista, Windows Server 2008",A security-enabled local group was created.
+Account Management,Security Group Management,4732,"Windows Vista, Windows Server 2008",A member was added to a security-enabled local group.
+Account Management,Security Group Management,4733,"Windows Vista, Windows Server 2008",A member was removed from a security-enabled local group.
+Account Management,Security Group Management,4734,"Windows Vista, Windows Server 2008",A security-enabled local group was deleted.
+Account Management,Security Group Management,4735,"Windows Vista, Windows Server 2008",A security-enabled local group was changed.
+Account Management,Security Group Management,4737,"Windows Vista, Windows Server 2008",A security-enabled global group was changed.
+Account Management,User Account Management,4738,"Windows Vista, Windows Server 2008",A user account was changed.
+Policy Change,Authentication Policy Change,4739,"Windows Vista, Windows Server 2008",Domain Policy was changed.
+Account Management,User Account Management,4740,"Windows Vista, Windows Server 2008",A user account was locked out.
+Account Management,Computer Account Management,4742,"Windows Vista, Windows Server 2008",A computer account was changed.
+Account Management,Computer Account Management,4743,"Windows Vista, Windows Server 2008",A computer account was deleted.
+Account Management,Distribution Group Management,4744,"Windows Vista, Windows Server 2008",A security-disabled local group was created.
+Account Management,Distribution Group Management,4745,"Windows Vista, Windows Server 2008",A security-disabled local group was changed.
+Account Management,Distribution Group Management,4746,"Windows Vista, Windows Server 2008",A member was added to a security-disabled local group.
+Account Management,Distribution Group Management,4747,"Windows Vista, Windows Server 2008",A member was removed from a security-disabled local group.
+Account Management,Distribution Group Management,4748,"Windows Vista, Windows Server 2008",A security-disabled local group was deleted.
+Account Management,Distribution Group Management,4749,"Windows Vista, Windows Server 2008",A security-disabled global group was created.
+Account Management,Distribution Group Management,4750,"Windows Vista, Windows Server 2008",A security-disabled global group was changed.
+Account Management,Distribution Group Management,4751,"Windows Vista, Windows Server 2008",A member was added to a security-disabled global group.
+Account Management,Distribution Group Management,4752,"Windows Vista, Windows Server 2008",A member was removed from a security-disabled global group.
+Account Management,Distribution Group Management,4753,"Windows Vista, Windows Server 2008",A security-disabled global group was deleted.
+Account Management,Security Group Management,4754,"Windows Vista, Windows Server 2008",A security-enabled universal group was created.
+Account Management,Security Group Management,4755,"Windows Vista, Windows Server 2008",A security-enabled universal group was changed.
+Account Management,Security Group Management,4756,"Windows Vista, Windows Server 2008",A member was added to a security-enabled universal group.
+Account Management,Security Group Management,4757,"Windows Vista, Windows Server 2008",A member was removed from a security-enabled universal group.
+Account Management,Security Group Management,4758,"Windows Vista, Windows Server 2008",A security-enabled universal group was deleted.
+Account Management,Distribution Group Management,4759,"Windows Vista, Windows Server 2008",A security-disabled universal group was created.
+Account Management,Distribution Group Management,4760,"Windows Vista, Windows Server 2008",A security-disabled universal group was changed.
+Account Management,Distribution Group Management,4761,"Windows Vista, Windows Server 2008",A member was added to a security-disabled universal group.
+Account Management,Distribution Group Management,4762,"Windows Vista, Windows Server 2008",A member was removed from a security-disabled universal group.
+Account Management,Security Group Management,4764,"Windows Vista, Windows Server 2008",A group’s type was changed.
+Account Management,User Account Management,4765,"Windows Vista, Windows Server 2008",SID History was added to an account.
+Account Management,User Account Management,4766,"Windows Vista, Windows Server 2008",An attempt to add SID History to an account failed.
+Account Management,User Account Management,4767,"Windows Vista, Windows Server 2008",A user account was unlocked.
+Account Logon,Kerberos Authentication Service,4768,"Windows Vista, Windows Server 2008",A Kerberos authentication ticket (TGT) was requested.
+Account Logon,Kerberos Service Ticket Operations,4769,"Windows Vista, Windows Server 2008",A Kerberos service ticket was requested.
+Account Logon,Kerberos Service Ticket Operations,4770,"Windows Vista, Windows Server 2008",A Kerberos service ticket was renewed.
+Account Logon,Kerberos Authentication Service,4771,"Windows Vista, Windows Server 2008",Kerberos pre-authentication failed.
+Account Logon,Kerberos Authentication Service,4772,"Windows Vista, Windows Server 2008",A Kerberos authentication ticket request failed.
+Account Logon,Kerberos Authentication Service,4773,"Windows Vista, Windows Server 2008",A Kerberos service ticket request failed.
+Account Logon,Credential Validation,4774,"Windows Vista, Windows Server 2008",An account was mapped for logon.
+Account Logon,Credential Validation,4775,"Windows Vista, Windows Server 2008",An account could not be mapped for logon.
+Account Logon,Credential Validation,4776,"Windows Vista, Windows Server 2008",The domain controller attempted to validate the credentials for an account.
+Account Logon,Credential Validation,4777,"Windows Vista, Windows Server 2008",The domain controller failed to validate the credentials for an account.
+Logon/Logoff,Other Logon/Logoff Events,4778,"Windows Vista, Windows Server 2008",A session was reconnected to a Window Station.
+Logon/Logoff,Other Logon/Logoff Events,4779,"Windows Vista, Windows Server 2008",A session was disconnected from a Window Station.
+Account Management,User Account Management,4780,"Windows Vista, Windows Server 2008",The ACL was set on accounts which are members of administrators groups.
+Account Management,User Account Management,4781,"Windows Vista, Windows Server 2008",The name of an account was changed:
+Account Management,Other Account Management Events,4782,"Windows Vista, Windows Server 2008",The password hash an account was accessed.
+Account Management,Application Group Management,4783,"Windows Vista, Windows Server 2008",A basic application group was created.
+Account Management,Application Group Management,4784,"Windows Vista, Windows Server 2008",A basic application group was changed.
+Account Management,Application Group Management,4785,"Windows Vista, Windows Server 2008",A member was added to a basic application group.
+Account Management,Application Group Management,4786,"Windows Vista, Windows Server 2008",A member was removed from a basic application group.
+Account Management,Application Group Management,4787,"Windows Vista, Windows Server 2008",A non-member was added to a basic application group.
+Account Management,Application Group Management,4788,"Windows Vista, Windows Server 2008",A non-member was removed from a basic application group.
+Account Management,Application Group Management,4789,"Windows Vista, Windows Server 2008",A basic application group was deleted.
+Account Management,Application Group Management,4790,"Windows Vista, Windows Server 2008",An LDAP query group was created.
+Account Management,Application Group Management,4791,"Windows Vista, Windows Server 2008",A basic application group was changed.
+Account Management,Application Group Management,4792,"Windows Vista, Windows Server 2008",An LDAP query group was deleted.
+Account Management,Other Account Management Events,4793,"Windows Vista, Windows Server 2008",The Password Policy Checking API was called.
+Account Management,User Account Management,4794,"Windows Vista, Windows Server 2008",An attempt was made to set the Directory Services Restore Mode.
+Account Management,User Account Management,4797,"Windows 8, Windows Server 2012",An attempt was made to query the existence of a blank password for an account.
+Account Management,User Account Management,4798,Windows 10,A user's local group membership was enumerated. 
+Account Management,Security Group Management,4799,Windows 10,A security-enabled local group membership was enumerated.
+Logon/Logoff,Other Logon/Logoff Events,4800,"Windows Vista, Windows Server 2008",The workstation was locked.
+Logon/Logoff,Other Logon/Logoff Events,4801,"Windows Vista, Windows Server 2008",The workstation was unlocked.
+Logon/Logoff,Other Logon/Logoff Events,4802,"Windows Vista, Windows Server 2008",The screen saver was invoked.
+Logon/Logoff,Other Logon/Logoff Events,4803,"Windows Vista, Windows Server 2008",The screen saver was dismissed.
+System,System Integrity,4816,"Windows Vista, Windows Server 2008",RPC detected an integrity violation while decrypting an incoming message.
+Policy Change,Audit Policy Change,4817,"Windows 7, Windows Server 2008 R2",Auditing settings on an object were changed.
+Object Access,Central Access Policy Staging,4818,"Windows 8, Windows Server 2012",Proposed Central Access Policy does not grant the same access permissions as the current Central Access Policy
+Policy Change,Other Policy Change Events,4819,"Windows 8, Windows Server 2012",Central Access Policies on the machine have been changed.
+Account Logon,Kerberos Authentication Service,4820,"Windows 8, Windows Server 2012",A Kerberos Ticket-granting-ticket (TGT) was denied because the device does not meet the access control restrictions.
+Account Logon,Kerberos Service Ticket Operations,4821,"Windows 8.1, Windows Server 2012 R2","A Kerberos service ticket was denied because the user, device, or both does not meet the access control restrictions."
+Account Logon,Credential Validation,4822,"Windows 8.1, Windows Server 2012 R2",NTLM authentication failed because the account was a member of the Protected User group.
+Account Logon,Credential Validation,4823,"Windows 8.1, Windows Server 2012 R2",NTLM authentication failed because access control restrictions are required.
+Account Logon,Kerberos Authentication Service,4824,"Windows 8.1, Windows Server 2012 R2",Kerberos preauthentication by using DES or RC4 failed because the account was a member of the Protected User group.
+Logon/Logoff,Other Logon/Logoff Events,4825,"Windows Vista SP2, Windows Server 2008 SP2",A user was denied the access to Remote Desktop. 
+Policy Change,Other Policy Change Events,4826,Windows 10,Boot Configuration Data loaded.
+Policy Change,Authentication Policy Change,4864,"Windows Vista, Windows Server 2008",A namespace collision was detected.
+Policy Change,Authentication Policy Change,4865,"Windows Vista, Windows Server 2008",A trusted forest information entry was added.
+Policy Change,Authentication Policy Change,4866,"Windows Vista, Windows Server 2008",A trusted forest information entry was removed.
+Policy Change,Authentication Policy Change,4867,"Windows Vista, Windows Server 2008",A trusted forest information entry was modified.
+Object Access,Certification Services,4868,"Windows Vista, Windows Server 2008",The certificate manager denied a pending certificate request.
+Object Access,Certification Services,4869,"Windows Vista, Windows Server 2008",Certificate Services received a resubmitted certificate request.
+Object Access,Certification Services,4870,"Windows Vista, Windows Server 2008",Certificate Services revoked a certificate.
+Object Access,Certification Services,4871,"Windows Vista, Windows Server 2008",Certificate Services received a request to publish the certificate revocation list (CRL).
+Object Access,Certification Services,4872,"Windows Vista, Windows Server 2008",Certificate Services published the certificate revocation list (CRL).
+Object Access,Certification Services,4873,"Windows Vista, Windows Server 2008",A certificate request extension changed.
+Object Access,Certification Services,4874,"Windows Vista, Windows Server 2008",One or more certificate request attributes changed.
+Object Access,Certification Services,4875,"Windows Vista, Windows Server 2008",Certificate Services received a request to shut down.
+Object Access,Certification Services,4876,"Windows Vista, Windows Server 2008",Certificate Services backup started.
+Object Access,Certification Services,4877,"Windows Vista, Windows Server 2008",Certificate Services backup completed.
+Object Access,Certification Services,4878,"Windows Vista, Windows Server 2008",Certificate Services restore started.
+Object Access,Certification Services,4879,"Windows Vista, Windows Server 2008",Certificate Services restore completed.
+Object Access,Certification Services,4880,"Windows Vista, Windows Server 2008",Certificate Services started.
+Object Access,Certification Services,4881,"Windows Vista, Windows Server 2008",Certificate Services stopped.
+Object Access,Certification Services,4882,"Windows Vista, Windows Server 2008",The security permissions for Certificate Services changed.
+Object Access,Certification Services,4883,"Windows Vista, Windows Server 2008",Certificate Services retrieved an archived key.
+Object Access,Certification Services,4884,"Windows Vista, Windows Server 2008",Certificate Services imported a certificate into its database.
+Object Access,Certification Services,4885,"Windows Vista, Windows Server 2008",The audit filter for Certificate Services changed.
+Object Access,Certification Services,4886,"Windows Vista, Windows Server 2008",Certificate Services received a certificate request.
+Object Access,Certification Services,4887,"Windows Vista, Windows Server 2008",Certificate Services approved a certificate request and issued a certificate.
+Object Access,Certification Services,4888,"Windows Vista, Windows Server 2008",Certificate Services denied a certificate request.
+Object Access,Certification Services,4889,"Windows Vista, Windows Server 2008",Certificate Services set the status of a certificate request to pending.
+Object Access,Certification Services,4890,"Windows Vista, Windows Server 2008",The certificate manager settings for Certificate Services changed.
+Object Access,Certification Services,4891,"Windows Vista, Windows Server 2008",A configuration entry changed in Certificate Services.
+Object Access,Certification Services,4892,"Windows Vista, Windows Server 2008",A property of Certificate Services changed.
+Object Access,Certification Services,4893,"Windows Vista, Windows Server 2008",Certificate Services archived a key.
+Object Access,Certification Services,4894,"Windows Vista, Windows Server 2008",Certificate Services imported and archived a key.
+Object Access,Certification Services,4895,"Windows Vista, Windows Server 2008",Certificate Services published the CA certificate to Active Directory Domain Services.
+Object Access,Certification Services,4896,"Windows Vista, Windows Server 2008",One or more rows have been deleted from the certificate database.
+Object Access,Certification Services,4897,"Windows Vista, Windows Server 2008",Role separation enabled:
+Object Access,Certification Services,4898,"Windows Vista, Windows Server 2008",Certificate Services loaded a template.
+Object Access,Certification Services,4899,"Windows Vista, Windows Server 2008",A Certificate Services template was updated.
+Object Access,Certification Services,4900,"Windows Vista, Windows Server 2008",Certificate Services template security was updated.
+Policy Change,Audit Policy Change,4902,"Windows Vista, Windows Server 2008",The Per-user audit policy table was created.
+Policy Change,Audit Policy Change,4904,"Windows Vista, Windows Server 2008",An attempt was made to register a security event source.
+Policy Change,Audit Policy Change,4905,"Windows Vista, Windows Server 2008",An attempt was made to unregister a security event source.
+Policy Change,Audit Policy Change,4906,"Windows Vista, Windows Server 2008",The CrashOnAuditFail value has changed.
+Policy Change,Audit Policy Change,4907,"Windows Vista, Windows Server 2008",Auditing settings on object were changed.
+Policy Change,Audit Policy Change,4908,"Windows Vista, Windows Server 2008",Special Groups Logon table modified.
+Policy Change,Other Policy Change Events,4909,"Windows Vista, Windows Server 2008",The local policy settings for the TBS were changed.
+Policy Change,Other Policy Change Events,4910,"Windows Vista, Windows Server 2008",The group policy settings for the TBS were changed.
+Policy Change,Authorization Policy Change,4911,"Windows 8, Windows Server 2012",Resource attributes of the object were changed.
+Policy Change,Audit Policy Change,4912,"Windows Vista, Windows Server 2008",Per User Audit Policy was changed.
+Policy Change,Authorization Policy Change,4913,"Windows 8, Windows Server 2012",Central Access Policy on the object was changed.
+DS Access,Detailed Directory Service Replication,4928,"Windows Vista, Windows Server 2008",An Active Directory replica source naming context was established.
+DS Access,Detailed Directory Service Replication,4929,"Windows Vista, Windows Server 2008",An Active Directory replica source naming context was removed.
+DS Access,Detailed Directory Service Replication,4930,"Windows Vista, Windows Server 2008",An Active Directory replica source naming context was modified.
+DS Access,Detailed Directory Service Replication,4931,"Windows Vista, Windows Server 2008",An Active Directory replica destination naming context was modified.
+DS Access,Directory Service Replication,4932,"Windows Vista, Windows Server 2008",Synchronization of a replica of an Active Directory naming context has begun.
+DS Access,Directory Service Replication,4933,"Windows Vista, Windows Server 2008",Synchronization of a replica of an Active Directory naming context has ended.
+DS Access,Detailed Directory Service Replication,4934,"Windows Vista, Windows Server 2008",Attributes of an Active Directory object were replicated.
+DS Access,Detailed Directory Service Replication,4935,"Windows Vista, Windows Server 2008",Replication failure begins.
+DS Access,Detailed Directory Service Replication,4936,"Windows Vista, Windows Server 2008",Replication failure ends.
+DS Access,Detailed Directory Service Replication,4937,"Windows Vista, Windows Server 2008",A lingering object was removed from a replica.
+Policy Change,MPSSVC Rule-Level Policy Change,4944,"Windows Vista, Windows Server 2008",The following policy was active when the Windows Firewall started.
+Policy Change,MPSSVC Rule-Level Policy Change,4945,"Windows Vista, Windows Server 2008",A rule was listed when the Windows Firewall started.
+Policy Change,MPSSVC Rule-Level Policy Change,4946,"Windows Vista, Windows Server 2008",A change has been made to Windows Firewall exception list. A rule was added.
+Policy Change,MPSSVC Rule-Level Policy Change,4947,"Windows Vista, Windows Server 2008",A change has been made to Windows Firewall exception list. A rule was modified.
+Policy Change,MPSSVC Rule-Level Policy Change,4948,"Windows Vista, Windows Server 2008",A change has been made to Windows Firewall exception list. A rule was deleted.
+Policy Change,MPSSVC Rule-Level Policy Change,4949,"Windows Vista, Windows Server 2008",Windows Firewall settings were restored to the default values.
+Policy Change,MPSSVC Rule-Level Policy Change,4950,"Windows Vista, Windows Server 2008",A Windows Firewall setting has changed.
+Policy Change,MPSSVC Rule-Level Policy Change,4951,"Windows Vista, Windows Server 2008",A rule has been ignored because its major version number was not recognized by Windows Firewall.
+Policy Change,MPSSVC Rule-Level Policy Change,4952,"Windows Vista, Windows Server 2008",Parts of a rule have been ignored because its minor version number was not recognized by Windows Firewall. The other parts of the rule will be enforced.
+Policy Change,MPSSVC Rule-Level Policy Change,4953,"Windows Vista, Windows Server 2008",A rule has been ignored by Windows Firewall because it could not parse the rule.
+Policy Change,MPSSVC Rule-Level Policy Change,4954,"Windows Vista, Windows Server 2008",Windows Firewall Group Policy settings have changed. The new settings have been applied.
+Policy Change,MPSSVC Rule-Level Policy Change,4956,"Windows Vista, Windows Server 2008",Windows Firewall has changed the active profile.
+Policy Change,MPSSVC Rule-Level Policy Change,4957,"Windows Vista, Windows Server 2008",Windows Firewall did not apply the following rule:
+Policy Change,MPSSVC Rule-Level Policy Change,4958,"Windows Vista, Windows Server 2008",Windows Firewall did not apply the following rule because the rule referred to items not configured on this computer:
+System,IPsec Driver,4960,"Windows Vista, Windows Server 2008",###############################################################################################################################################################################################################################################################
+System,IPsec Driver,4961,"Windows Vista, Windows Server 2008","IPsec dropped an inbound packet that failed a replay check. If this problem persists, it could indicate a replay attack against this computer."
+System,IPsec Driver,4962,"Windows Vista, Windows Server 2008",IPsec dropped an inbound packet that failed a replay check. The inbound packet had too low a sequence number to ensure it was not a replay.
+System,IPsec Driver,4963,"Windows Vista, Windows Server 2008",IPsec dropped an inbound clear text packet that should have been secured. This is usually due to the remote computer changing its IPsec policy without informing this computer. This could also be a spoofing attack attempt.
+Logon/Logoff,Special Logon,4964,"Windows Vista, Windows Server 2008",Special groups have been assigned to a new logon.
+System,IPsec Driver,4965,"Windows Vista, Windows Server 2008",###############################################################################################################################################################################################################################################################
+Logon/Logoff,IPsec Main Mode,4976,"Windows Vista, Windows Server 2008","During Main Mode negotiation, IPsec received an invalid negotiation packet. If this problem persists, it could indicate a network issue or an attempt to modify or replay this negotiation."
+Logon/Logoff,IPsec Quick Mode,4977,"Windows Vista, Windows Server 2008","During Quick Mode negotiation, IPsec received an invalid negotiation packet. If this problem persists, it could indicate a network issue or an attempt to modify or replay this negotiation."
+Logon/Logoff,IPsec Extended Mode,4978,"Windows Vista, Windows Server 2008","During Extended Mode negotiation, IPsec received an invalid negotiation packet. If this problem persists, it could indicate a network issue or an attempt to modify or replay this negotiation."
+Logon/Logoff,IPsec Extended Mode,4979,"Windows Vista, Windows Server 2008",IPsec Main Mode and Extended Mode security associations were established.
+Logon/Logoff,IPsec Extended Mode,4980,"Windows Vista, Windows Server 2008",IPsec Main Mode and Extended Mode security associations were established.
+Logon/Logoff,IPsec Extended Mode,4981,"Windows Vista, Windows Server 2008",IPsec Main Mode and Extended Mode security associations were established.
+Logon/Logoff,IPsec Extended Mode,4982,"Windows Vista, Windows Server 2008",IPsec Main Mode and Extended Mode security associations were established.
+Logon/Logoff,IPsec Extended Mode,4983,"Windows Vista, Windows Server 2008",An IPsec Extended Mode negotiation failed. The corresponding Main Mode security association has been deleted.
+Logon/Logoff,IPsec Extended Mode,4984,"Windows Vista, Windows Server 2008",An IPsec Extended Mode negotiation failed. The corresponding Main Mode security association has been deleted.
+Object Access,File System,4985,"Windows Vista, Windows Server 2008",The state of a transaction has changed.
+System,Other System Events,5024,"Windows Vista, Windows Server 2008",The Windows Firewall Service has started successfully.
+System,Other System Events,5025,"Windows Vista, Windows Server 2008",The Windows Firewall Service has been stopped.
+System,Other System Events,5027,"Windows Vista, Windows Server 2008",The Windows Firewall Service was unable to retrieve the security policy from the local storage. The service will continue enforcing the current policy.
+System,Other System Events,5028,"Windows Vista, Windows Server 2008",The Windows Firewall Service was unable to parse the new security policy. The service will continue with currently enforced policy.
+System,Other System Events,5029,"Windows Vista, Windows Server 2008",The Windows Firewall Service failed to initialize the driver. The service will continue to enforce the current policy.
+System,Other System Events,5030,"Windows Vista, Windows Server 2008",The Windows Firewall Service failed to start.
+Object Access,Filtering Platform Connection,5031,"Windows Vista, Windows Server 2008",The Windows Firewall Service blocked an application from accepting incoming connections on the network.
+System,Other System Events,5032,"Windows Vista, Windows Server 2008",Windows Firewall was unable to notify the user that it blocked an application from accepting incoming connections on the network.
+System,Other System Events,5033,"Windows Vista, Windows Server 2008",The Windows Firewall Driver has started successfully.
+System,Other System Events,5034,"Windows Vista, Windows Server 2008",The Windows Firewall Driver has been stopped.
+System,Other System Events,5035,"Windows Vista, Windows Server 2008",The Windows Firewall Driver failed to start.
+System,Other System Events,5037,"Windows Vista, Windows Server 2008",The Windows Firewall Driver detected critical runtime error. Terminating.
+System,System Integrity,5038,"Windows Vista, Windows Server 2008",Code integrity determined that the image hash of a file is not valid. The file could be corrupt due to unauthorized modification or the invalid hash could indicate a potential disk device error.
+Object Access,Registry,5039,"Windows Vista, Windows Server 2008",A registry key was virtualized.
+Policy Change,Filtering Platform Policy Change,5040,"Windows Vista, Windows Server 2008",A change has been made to IPsec settings. An Authentication Set was added.
+Policy Change,Filtering Platform Policy Change,5041,"Windows Vista, Windows Server 2008",A change has been made to IPsec settings. An Authentication Set was modified.
+Policy Change,Filtering Platform Policy Change,5042,"Windows Vista, Windows Server 2008",A change has been made to IPsec settings. An Authentication Set was deleted.
+Policy Change,Filtering Platform Policy Change,5043,"Windows Vista, Windows Server 2008",A change has been made to IPsec settings. A Connection Security Rule was added.
+Policy Change,Filtering Platform Policy Change,5044,"Windows Vista, Windows Server 2008",A change has been made to IPsec settings. A Connection Security Rule was modified.
+Policy Change,Filtering Platform Policy Change,5045,"Windows Vista, Windows Server 2008",A change has been made to IPsec settings. A Connection Security Rule was deleted.
+Policy Change,Filtering Platform Policy Change,5046,"Windows Vista, Windows Server 2008",A change has been made to IPsec settings. A Crypto Set was added.
+Policy Change,Filtering Platform Policy Change,5047,"Windows Vista, Windows Server 2008",A change has been made to IPsec settings. A Crypto Set was modified.
+Policy Change,Filtering Platform Policy Change,5048,"Windows Vista, Windows Server 2008",A change has been made to IPsec settings. A Crypto Set was deleted.
+Logon/Logoff,IPsec Main Mode,5049,"Windows Vista, Windows Server 2008",An IPsec Security Association was deleted.
+System,Other System Events,5050,"Windows Vista, Windows Server 2008",An attempt to programmatically disable the Windows Firewall was rejected because this API is not supported on Windows Vista.
+Object Access,File System,5051,"Windows Vista, Windows Server 2008",A file was virtualized.
+System,System Integrity,5056,"Windows Vista, Windows Server 2008",A cryptographic self test was performed.
+System,System Integrity,5057,"Windows Vista, Windows Server 2008",A cryptographic primitive operation failed.
+System,Other System Events,5058,"Windows Vista, Windows Server 2008",Key file operation.
+System,Other System Events,5059,"Windows Vista, Windows Server 2008",Key migration operation.
+System,System Integrity,5060,"Windows Vista, Windows Server 2008",Verification operation failed.
+System,System Integrity,5061,"Windows Vista, Windows Server 2008",Cryptographic operation.
+System,System Integrity,5062,"Windows Vista, Windows Server 2008",A kernel-mode cryptographic self test was performed.
+Policy Change,Other Policy Change Events,5063,"Windows Vista, Windows Server 2008",A cryptographic provider operation was attempted.
+Policy Change,Other Policy Change Events,5064,"Windows Vista, Windows Server 2008",A cryptographic context operation was attempted.
+Policy Change,Other Policy Change Events,5065,"Windows Vista, Windows Server 2008",A cryptographic context modification was attempted.
+Policy Change,Other Policy Change Events,5066,"Windows Vista, Windows Server 2008",A cryptographic function operation was attempted.
+Policy Change,Other Policy Change Events,5067,"Windows Vista, Windows Server 2008",A cryptographic function modification was attempted.
+Policy Change,Other Policy Change Events,5068,"Windows Vista, Windows Server 2008",A cryptographic function provider operation was attempted.
+Policy Change,Other Policy Change Events,5069,"Windows Vista, Windows Server 2008",A cryptographic function property operation was attempted.
+Policy Change,Other Policy Change Events,5070,"Windows Vista, Windows Server 2008",A cryptographic function property modification was attempted.
+System,Other System Events,5071,"Windows 8, Windows Server 2012",Key access denied by Microsoft key distribution service.
+Object Access,Certification Services,5120,"Windows Vista, Windows Server 2008",OCSP Responder Service Started.
+Object Access,Certification Services,5121,"Windows Vista, Windows Server 2008",OCSP Responder Service Stopped.
+Object Access,Certification Services,5122,"Windows Vista, Windows Server 2008",A Configuration entry changed in the OCSP Responder Service.
+Object Access,Certification Services,5123,"Windows Vista, Windows Server 2008",A configuration entry changed in the OCSP Responder Service.
+Object Access,Certification Services,5124,"Windows Vista, Windows Server 2008",A security setting was updated on OCSP Responder Service.
+Object Access,Certification Services,5125,"Windows Vista, Windows Server 2008",A request was submitted to OCSP Responder Service.
+Object Access,Certification Services,5126,"Windows Vista, Windows Server 2008",Signing Certificate was automatically updated by the OCSP Responder Service.
+Object Access,Certification Services,5127,"Windows Vista, Windows Server 2008",The OCSP Revocation Provider successfully updated the revocation information.
+DS Access,Directory Service Changes,5136,"Windows Vista, Windows Server 2008",A directory service object was modified.
+DS Access,Directory Service Changes,5137,"Windows Vista, Windows Server 2008",A directory service object was created.
+DS Access,Directory Service Changes,5138,"Windows Vista, Windows Server 2008",A directory service object was undeleted.
+DS Access,Directory Service Changes,5139,"Windows Vista, Windows Server 2008",A directory service object was moved.
+Object Access,File Share,5140,"Windows Vista, Windows Server 2008",A network share object was accessed.
+DS Access,Directory Service Changes,5141,"Windows Vista SP1, Windows Server 2008",A directory service object was deleted.
+Object Access,File Share,5142,"Windows 7, Windows Server 2008 R2",A network share object was added.
+Object Access,File Share,5143,"Windows 7, Windows Server 2008 R2",A network share object was modified.
+Object Access,File Share,5144,"Windows 7, Windows Server 2008 R2",A network share object was deleted.
+Object Access,Detailed File Share,5145,"Windows 7, Windows Server 2008 R2",A network share object was checked to see whether the client can be granted desired access.
+Object Access,Filtering Platform Packet Drop ,5146,"Windows 8, Windows Server 2012",The Windows Filtering Platform has blocked a packet.
+Object Access,Filtering Platform Packet Drop ,5147,"Windows 8, Windows Server 2012",A more restrictive Windows Filtering Platform filter has blocked a packet.
+Object Access,Other Object Access Events,5148,"Windows 7, Windows Server 2008 R2",The Windows Filtering Platform has detected a DoS attack and entered a defensive mode; packets associated with this attack will be discarded.
+Object Access,Other Object Access Events,5149,"Windows 7, Windows Server 2008 R2",The DoS attack has subsided and normal processing is being resumed.
+Object Access,Filtering Platform Connection,5150,"Windows 7, Windows Server 2008 R2",The Windows Filtering Platform has blocked a packet.
+Object Access,Filtering Platform Connection,5151,"Windows 7, Windows Server 2008 R2",A more restrictive Windows Filtering Platform filter has blocked a packet.
+Object Access,Filtering Platform Packet Drop ,5152,"Windows Vista, Windows Server 2008",The Windows Filtering Platform blocked a packet.
+Object Access,Filtering Platform Packet Drop ,5153,"Windows Vista, Windows Server 2008",A more restrictive Windows Filtering Platform filter has blocked a packet.
+Object Access,Filtering Platform Connection,5154,"Windows Vista, Windows Server 2008",The Windows Filtering Platform has permitted an application or service to listen on a port for incoming connections.
+Object Access,Filtering Platform Connection,5155,"Windows Vista, Windows Server 2008",The Windows Filtering Platform has blocked an application or service from listening on a port for incoming connections.
+Object Access,Filtering Platform Connection,5156,"Windows Vista, Windows Server 2008",The Windows Filtering Platform has allowed a connection.
+Object Access,Filtering Platform Connection,5157,"Windows Vista, Windows Server 2008",The Windows Filtering Platform has blocked a connection.
+Object Access,Filtering Platform Connection,5158,"Windows Vista, Windows Server 2008",The Windows Filtering Platform has permitted a bind to a local port.
+Object Access,Filtering Platform Connection,5159,"Windows Vista, Windows Server 2008",The Windows Filtering Platform has blocked a bind to a local port.
+Object Access,File Share,5168,"Windows 7, Windows Server 2008 R2",Spn check for SMB/SMB2 failed.
+DS Access,Directory Service Access,5169,Windows 10,A directory service object was modified.     
+Account Management,User Account Management,5376,"Windows Vista, Windows Server 2008",Credential Manager credentials were backed up.
+Account Management,User Account Management,5377,"Windows Vista, Windows Server 2008",Credential Manager credentials were restored from a backup.
+Logon/Logoff,Other Logon/Logoff Events,5378,"Windows Vista, Windows Server 2008",The requested credentials delegation was disallowed by policy.
+Policy Change,Filtering Platform Policy Change,5440,"Windows Vista, Windows Server 2008",The following callout was present when the Windows Filtering Platform Base Filtering Engine started.
+Policy Change,Filtering Platform Policy Change,5441,"Windows Vista, Windows Server 2008",The following filter was present when the Windows Filtering Platform Base Filtering Engine started.
+Policy Change,Filtering Platform Policy Change,5442,"Windows Vista, Windows Server 2008",The following provider was present when the Windows Filtering Platform Base Filtering Engine started.
+Policy Change,Filtering Platform Policy Change,5443,"Windows Vista, Windows Server 2008",The following provider context was present when the Windows Filtering Platform Base Filtering Engine started.
+Policy Change,Filtering Platform Policy Change,5444,"Windows Vista, Windows Server 2008",The following sub-layer was present when the Windows Filtering Platform Base Filtering Engine started.
+Policy Change,Filtering Platform Policy Change,5446,"Windows Vista, Windows Server 2008",A Windows Filtering Platform callout has been changed.
+Policy Change,Other Policy Change Events,5447,"Windows Vista, Windows Server 2008",A Windows Filtering Platform filter has been changed.
+Policy Change,Filtering Platform Policy Change,5448,"Windows Vista, Windows Server 2008",A Windows Filtering Platform provider has been changed.
+Policy Change,Filtering Platform Policy Change,5449,"Windows Vista, Windows Server 2008",A Windows Filtering Platform provider context has been changed.
+Policy Change,Filtering Platform Policy Change,5450,"Windows Vista, Windows Server 2008",A Windows Filtering Platform sub-layer has been changed.
+Logon/Logoff,IPsec Quick Mode,5451,"Windows Vista, Windows Server 2008",An IPsec Quick Mode security association was established.
+Logon/Logoff,IPsec Quick Mode,5452,"Windows Vista, Windows Server 2008",An IPsec Quick Mode security association ended.
+Logon/Logoff,IPsec Main Mode,5453,"Windows Vista, Windows Server 2008",An IPsec negotiation with a remote computer failed because the IKE and AuthIP IPsec Keying Modules (IKEEXT) service is not started.
+Policy Change,Filtering Platform Policy Change,5456,"Windows Vista, Windows Server 2008",PAStore Engine applied Active Directory storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5457,"Windows Vista, Windows Server 2008",PAStore Engine failed to apply Active Directory storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5458,"Windows Vista, Windows Server 2008",PAStore Engine applied locally cached copy of Active Directory storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5459,"Windows Vista, Windows Server 2008",PAStore Engine failed to apply locally cached copy of Active Directory storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5460,"Windows Vista, Windows Server 2008",PAStore Engine applied local registry storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5461,"Windows Vista, Windows Server 2008",PAStore Engine failed to apply local registry storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5462,"Windows Vista, Windows Server 2008",PAStore Engine failed to apply some rules of the active IPsec policy on the computer. Use the IP Security Monitor snap-in to diagnose the problem.
+Policy Change,Filtering Platform Policy Change,5463,"Windows Vista, Windows Server 2008",PAStore Engine polled for changes to the active IPsec policy and detected no changes.
+Policy Change,Filtering Platform Policy Change,5464,"Windows Vista, Windows Server 2008","PAStore Engine polled for changes to the active IPsec policy, detected changes, and applied them to IPsec Services."
+Policy Change,Filtering Platform Policy Change,5465,"Windows Vista, Windows Server 2008",PAStore Engine received a control for forced reloading of IPsec policy and processed the control successfully.
+Policy Change,Filtering Platform Policy Change,5466,"Windows Vista, Windows Server 2008",###############################################################################################################################################################################################################################################################
+Policy Change,Filtering Platform Policy Change,5467,"Windows Vista, Windows Server 2008","PAStore Engine polled for changes to the Active Directory IPsec policy, determined that Active Directory can be reached, and found no changes to the policy. The cached copy of the Active Directory IPsec policy is no longer being used."
+Policy Change,Filtering Platform Policy Change,5468,"Windows Vista, Windows Server 2008","PAStore Engine polled for changes to the Active Directory IPsec policy, determined that Active Directory can be reached, found changes to the policy, and applied those changes. The cached copy of the Active Directory IPsec policy is no longer being used."
+Policy Change,Filtering Platform Policy Change,5471,"Windows Vista, Windows Server 2008",PAStore Engine loaded local storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5472,"Windows Vista, Windows Server 2008",PAStore Engine failed to load local storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5473,"Windows Vista, Windows Server 2008",PAStore Engine loaded directory storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5474,"Windows Vista, Windows Server 2008",PAStore Engine failed to load directory storage IPsec policy on the computer.
+Policy Change,Filtering Platform Policy Change,5477,"Windows Vista, Windows Server 2008",PAStore Engine failed to add quick mode filter.
+System,IPsec Driver,5478,"Windows Vista, Windows Server 2008",IPsec Services has started successfully.
+System,IPsec Driver,5479,"Windows Vista, Windows Server 2008",IPsec Services has been shut down successfully. The shutdown of IPsec Services can put the computer at greater risk of network attack or expose the computer to potential security risks.
+System,IPsec Driver,5480,"Windows Vista, Windows Server 2008",###############################################################################################################################################################################################################################################################
+System,IPsec Driver,5483,"Windows Vista, Windows Server 2008",IPsec Services failed to initialize RPC server. IPsec Services could not be started.
+System,IPsec Driver,5484,"Windows Vista, Windows Server 2008",IPsec Services has experienced a critical failure and has been shut down. The shutdown of IPsec Services can put the computer at greater risk of network attack or expose the computer to potential security risks.
+System,IPsec Driver,5485,"Windows Vista, Windows Server 2008",###############################################################################################################################################################################################################################################################
+Logon/Logoff,Other Logon/Logoff Events,5632,"Windows Vista, Windows Server 2008",A request was made to authenticate to a wireless network.
+Logon/Logoff,Other Logon/Logoff Events,5633,"Windows Vista, Windows Server 2008",A request was made to authenticate to a wired network.
+Detailed Tracking,RPC Events,5712,"Windows Vista, Windows Server 2008",A Remote Procedure Call (RPC) was attempted.
+Object Access,Other Object Access Events,5888,"Windows Vista, Windows Server 2008",An object in the COM+ Catalog was modified.
+Object Access,Other Object Access Events,5889,"Windows Vista, Windows Server 2008",An object was deleted from the COM+ Catalog.
+Object Access,Other Object Access Events,5890,"Windows Vista, Windows Server 2008",An object was added to the COM+ Catalog.
+Policy Change,Other Policy Change Events,6144,"Windows Vista, Windows Server 2008",Security policy in the group policy objects has been applied successfully.
+Policy Change,Other Policy Change Events,6145,"Windows Vista, Windows Server 2008",One or more errors occurred while processing security policy in the group policy objects.
+Logon/Logoff,Network Policy Server,6272,"Windows Vista SP1, Windows Server 2008",Network Policy Server granted access to a user.
+Logon/Logoff,Network Policy Server,6273,"Windows Vista SP1, Windows Server 2008",Network Policy Server denied access to a user.
+Logon/Logoff,Network Policy Server,6274,"Windows Vista SP1, Windows Server 2008",Network Policy Server discarded the request for a user.
+Logon/Logoff,Network Policy Server,6275,"Windows Vista SP1, Windows Server 2008",Network Policy Server discarded the accounting request for a user.
+Logon/Logoff,Network Policy Server,6276,"Windows Vista SP1, Windows Server 2008",Network Policy Server quarantined a user.
+Logon/Logoff,Network Policy Server,6277,"Windows Vista SP1, Windows Server 2008",Network Policy Server granted access to a user but put it on probation because the host did not meet the defined health policy.
+Logon/Logoff,Network Policy Server,6278,"Windows Vista SP1, Windows Server 2008",Network Policy Server granted full access to a user because the host met the defined health policy.
+Logon/Logoff,Network Policy Server,6279,"Windows Vista SP1, Windows Server 2008",Network Policy Server locked the user account due to repeated failed authentication attempts.
+Logon/Logoff,Network Policy Server,6280,"Windows Vista SP1, Windows Server 2008",Network Policy Server unlocked the user account.
+System,System Integrity,6281,"Windows 7, Windows Server 2008 R2",Code Integrity determined that the page hashes of an image file are not valid. The file could be improperly signed without page hashes or corrupt due to unauthorized modification. The invalid hashes could indicate a potential disk device error
+System,Other System Events,6400,"Windows 7, Windows Server 2008 R2",BranchCache: Received an incorrectly formatted response while discovering availability of content. 
+System,Other System Events,6401,"Windows 7, Windows Server 2008 R2",BranchCache: Received invalid data from a peer. Data discarded. 
+System,Other System Events,6402,"Windows 7, Windows Server 2008 R2",BranchCache: The message to the hosted cache offering it data is incorrectly formatted. 
+System,Other System Events,6403,"Windows 7, Windows Server 2008 R2",BranchCache: The hosted cache sent an incorrectly formatted response to the client.
+System,Other System Events,6404,"Windows 7, Windows Server 2008 R2",BranchCache: Hosted cache could not be authenticated using the provisioned SSL certificate. 
+System,Other System Events,6405,"Windows 7, Windows Server 2008 R2",BranchCache: %2 instance(s) of event id %1 occurred.
+System,Other System Events,6406,"Windows 7, Windows Server 2008 R2",%1 registered to Windows Firewall to control filtering for the following: %2
+System,Other System Events,6407,"Windows 7, Windows Server 2008 R2",1%
+System,Other System Events,6408,"Windows 7, Windows Server 2008 R2",Registered product %1 failed and Windows Firewall is now controlling the filtering for %2
+System,Other System Events,6409,"Windows 8.1, Windows Server 2012 R2",BranchCache: A service connection point object could not be parsed.
+System,System Integrity,6410,"Windows 8.1, Windows Server 2012 R2",Code integrity determined that a file does not meet the security requirements to load into a process.
+System,Plug and Play Events,6416,Windows 10,A new external device was recognized by the System
+System,System Integrity,6417,Windows 10 [Version 1511],The FIPS mode crypto selftests succeeded.
+System,System Integrity,6418,Windows 10 [Version 1511],The FIPS mode crypto selftests failed.
+System,Plug and Play Events,6419,Windows 10 [Version 1511],A request was made to disable a device
+System,Plug and Play Events,6420,Windows 10 [Version 1511],A device was disabled.
+System,Plug and Play Events,6421,Windows 10 [Version 1511],A request was made to enable a device.
+System,Plug and Play Events,6422,Windows 10 [Version 1511],A device was enabled.
+System,Plug and Play Events,6423,Windows 10 [Version 1511],The installation of this device is forbidden by system policy
+System,Plug and Play Events,6424,Windows 10 [Version 1511],"The installation of this device was allowed, after having previously been forbidden by policy."
+Windows PowerShell,PowerShell Pipeline,800,Windows 10,"Pipeline execution details for command line"
+Microsoft-Windows-PowerShell/Operational,Executing Pipeline,4103,Windows 10,"Pipeline execution details for command line"
+Microsoft-Windows-PowerShell/Operational,Execute a Remote Command,4104,Windows 10,"Pipeline execution details for command line"

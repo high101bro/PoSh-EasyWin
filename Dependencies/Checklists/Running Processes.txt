@@ -1,0 +1,59 @@
+Services, system subsystems, and applications rely on processes 
+--- Are the binaries properly signed? 
+--- Do they have handles to unexpected system resources? 
+--- Does it have network access that make sense? 
+--- Is the associative software installed on the host/target (McAfee process running...McAfee needs to be installed) --- 
+Stand-alone services may have their own binaries
+Some services are started by DLLs within svchost.exe 
+--- DLL hosting processes. i.e. rundll32.exe 
+--- Services that automatically start could be used for persistence
+Drivers can be loaded by processes 
+--- Some vendors will use their own folders 
+--- Not all installed drivers are loaded
+Privileges must be checked on each process 
+Are multiple instances expected? 
+--- LSASS.EXE 
+--- CSRSS.EXE 
+Historical differentials can show what has changed over a period of time
+Parent / child relationship 
+What user account the process is running under 
+Is the spelling correct (check metadata as well)? 
+The path of execution 
+--- c:\windows\system32\svchost.exe 
+--- c:\windows\svchost.exe 
+Command line parameters 
+Processes executing scripts 
+Start time 
+Whitelisted Hashes (Gold Images) 
+Automated Reputation Analysis (Virus Total) 
+Most scientifically, does it pass the eye test? 
+--- Randomly generated filenames and directories
+Windows 5.x
+--- System Process (pid 4) 
+--- smss.exe (Session Manager) 
+--- csrss.exe (Windows Subsystem) 
+--- winlogon.exe (Logon Process) 
+--- services.exe (Service Control Manager) 
+--- multiple svchost.exe’s 
+--- lsass.exe (Local Security Authentication Server) 
+--- explorer.exe  (Orphaned)
+Windows 6.x
+--- System Process (pid 4) 
+--- smss.exe (Master instance) 
+--- csrss.exe (Orphaned - One per session) 
+--- wininit.exe (Orphaned) 
+--- services.exe 
+--- multiple svchost.exe’s 
+--- lsass.exe 
+--- lsm.exe 
+--- winlogon.exe (Orphaned) 
+--- explorer.exe  (Orphaned as always)
+
+
+
+
+
+
+
+
+
