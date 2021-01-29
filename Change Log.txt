@@ -1,0 +1,112 @@
+==================================================
+v3.3.2
+==================================================
+
+Changed tool name from PoSh-ACME to PoSh-EasyWin
+
+Created 'PoSh-ACME-Archive' respository
+	- Intent is to store past commits online for reference and troubleshooting
+	- The PoSh-ACME repository will now only contain the most recent release
+
+Started Making Change Log... should have done this a long time ago
+	- Attempting to retroactively create/update it
+
+Added Credential Management
+	- Elimiates need to constantly enter credentials over and over again when connecting to hosts
+	- Able to save/import credentials locally
+		- Selected credentials are used to query remote endpoints
+		- Encrypted with Windows Data Protection API
+		- Decryption restricted to the user and computer that created them
+			- Able to view decypted credentials locally
+	 	- Supports any number of credentials
+	- Able to automatically roll credentials
+		- The specified credentials will be automatically changed after every query
+		- Two credentials are required:
+			- One to query endpoints (this one gets rolled)
+			- One to change the rolled credentials within Active Directory
+		- Rolled credentials are automatically generated
+			- Password Length consists of 250 random characters
+			- Passowrd character set: abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890 
+			- Able to manually roll credentials too
+	- Credentials are able to be used with
+		- All remote queries and searches
+			- Able to be automaticaly rolled
+		- Remote Desktop
+			- TO DO: Add auto credential rolling, currently have to manually do so
+		- PS Session (remote CLI)
+			- TO DO: Add auto credential rolling, currently have to manually do so
+		- PSEXEC
+			- TO DO: Add auto credential rolling, currently have to manually do so
+
+Added the abiltiy to retrieve any number of files from any number of hosts
+	- You first need to query for files using the 'File Search' section
+		- Then click on the 'Retrieve Files' button and select one of the csv files
+		- Select any number of files to download
+	- Retrieved files are zipped on the target enpoint
+		- to the C:\windows\temp directory
+		- then copied back using WinRM (a single session for multiple files on each endpoint)
+			- TO DO: Added WinRM copy function (rather than RPC) to the sysinternals section
+	- Files are stored locally as a compressed/zipped files
+		- Each file retrieved has metadata collected on it from the endpoint
+			- File Properties (extended)
+			- File Hashes of individual files (MD5, SHA1, SHA256, SHA512)
+				- No hashes if downloading a directory recursively
+			- Authenticode Signature Information of individual files (extended)
+		- This metadata is saved within the compressed file as 'file details.txt'
+	- This establishes a PSSession to each endpoint for the duration of the file copies
+		- automatically closes each PSSessions after the last file is copied from each endpoint
+	- Button is called 'Retireve Files' and is located in the Main Tab Section beneath 'Analyst Options'
+	- Reorganized the buttons in the Main Tab section
+
+Updated Query History Command Nodes
+	- Added Persistence
+		- Automatically saves previous queries
+		- Previous query history is auto-loaded upon startup
+	- Able to delete query history nodes
+		- Checkbox the query history node then click on the 'Remove Query History' button that appears
+		- Auto saves afterwards
+
+Added Regex Examples button to the Registry querying section
+
+Updated the Charts section and fixed some issues
+	- TO DO: Added more charts!
+	- TO DO: Have the Build Charts section able to create persistent charts/dashboards
+
+Optimized various sections of code
+	- Further segmented code from massive single script to imported code sections
+
+Fixed random Bugs
+
+==================================================
+v3.3.1
+==================================================
+
+Added Registry Querying
+	- Query for any number of registry paths for key names, value names, and value data
+	- Supports regex and recursive search
+
+Added Copyright License
+	- Reference https://www.gnu.org/licenses/
+	- The Copyright acknowledgement now display upon every startup
+		- This servers as a constant annoyance to notify users
+		- And... this is kind of a work around for a resizing issue 	
+			- Identified when testing on newer systems when opening results with Out-GridView
+			- I can't seem to troubleshoot an exact fix, but others online have had this issue too
+	- Attempting to site online references and give credtit to where credit is due
+
+Removed the Memory Collection button
+	- Not many users have reported using it
+	- TO DO: Refine it and add support for reading the memory dump locally
+
+Added button to reload compile code section
+	- Identified an issue where the data was importing weirdly on newer systems
+	- Data is read-in two different ways buy clicking a button
+
+Identifed/fixed issue with the Event Log querying
+	- WinRM mode was only returning results for queries on the local host, issue was not present with RPC mode
+
+Optimized various sections of code
+	- Segmented code from massive single script to imported code sections
+
+Fixed random Bugs
+	 

@@ -1,0 +1,16 @@
+====================================================================================================
+Network Policy Server
+====================================================================================================
+Base Command Ran:
+   Get-WmiObject Win32_NTLogEvent -Filter "(logfile='Security') AND ((EventCode='6272') OR (EventCode='6273') OR (EventCode='6274') OR (EventCode='6275') OR (EventCode='6276') OR (EventCode='6277') OR (EventCode='6278') OR (EventCode='6279') OR (EventCode='6280'))"
+====================================================================================================
+https://docs.microsoft.com/en-us/windows/security/threat-protection/auditing/audit-network-policy-server
+6272: Network Policy Server granted access to a user.
+6273: Network Policy Server denied access to a user.
+6274: Network Policy Server discarded the request for a user.
+6275: Network Policy Server discarded the accounting request for a user.
+6276: Network Policy Server quarantined a user.
+6277: Network Policy Server granted access to a user but put it on probation because the host did not meet the defined health policy.
+6278: Network Policy Server granted full access to a user because the host met the defined health policy.
+6279: Network Policy Server locked the user account due to repeated failed authentication attempts.
+6280: Network Policy Server unlocked the user account.

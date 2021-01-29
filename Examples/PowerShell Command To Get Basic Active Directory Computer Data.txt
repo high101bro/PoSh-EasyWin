@@ -1,0 +1,13 @@
+# The PowerShell command below can be provided to a domain administrator to obtain computers within Active Directory
+# Although PoSh-ACME can pull hosts easily from within the GUI, this command is useful when access is limited or you want it early
+# All active directory computers (servers and hosts) are save them as a CSV file.
+# The results allow endpoints within PoSh-AMCE to be viewed/sorted by their Organizational Units and/or Operating Systems.
+# The $DomainController variable should be replace with the domain controllers hostname
+# The CSV file is saved to the same directory that the command is executed within
+# The contents of the file can be imported into PoSh-ACME using the "Import from .CSV" button, any duplicate hostnames will not be addded
+# You can also just rename the csv file to "Computer List TreeView (Saved).csv" if it is your initial import
+
+
+# The command:
+$DomainController = 'localhost'
+Invoke-Command -ComputerName $DomainController -ScriptBlock { Get-ADComputer -Filter * -Properties "Name","OperatingSystem","CanonicalName","IPv4Address","MACAddress","Notes" } | Export-Csv -Path "Domain Computers.csv" -NoTypeInformation

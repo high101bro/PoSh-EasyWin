@@ -1,0 +1,23 @@
+taskhost.exe / taskhostex.exe / taskhostw.exe
+
+Image Path:
+	%SystemRoot%\System32\taskhost.exe
+
+Parent Process:
+	services.exe
+
+Child Processes:
+
+Number of Instances:
+	One or more
+
+User Account:
+	Multiple taskhost.exe processes are normal. One or more may be owned by logged-on users and/or by local service accounts.
+
+Start Time:
+	Start times vary greatly
+
+
+Description:
+	The generic host process for Windows Tasks. This process was renamed to taskhostex.exe for Windows 8 and then to taskhostw.exe for Windows 10. Upon initialization, taskhost.exe runs a continuous loop listening for trigger events Example trigger events that can initiate a task include a defined schedule, user logon, system startup, idle CPU time, a Windows log event, workstation lock, or workstation unlock.
+There are mote than 70 tasks preconfigured on a default installation of Windows 7 Enterprise (though many are disabled). For example, defrag.exe is scheduled to run against all volumes every Wednesday at 1:00 am. Another default task backs up the core registry hive files every 10 days. All executable files (DLLs & EXEs) used by the default Windows 7/8 scheduled tasks are signed by Microsoft.
