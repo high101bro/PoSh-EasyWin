@@ -2,6 +2,10 @@
 v5.1.9 BETA 
 ==================================================
 
+Fixed alignment issue within the Monitor Jobs Tab under the following condition:
+	- The first initial job
+	- Removing all jobs
+
 Restructured folder directory
 
 Updated the PoSh-EasyWin Loading windows
@@ -12,14 +16,18 @@ Separated more code into more manageable scripts
 	- moved tab codes into their own .ps1 Files
 	- these files are now "." (dot) sourced and loaded into scope
 
-Adding Montioring feature - aka Agent(less) SMITH
+Adding Montioring feature - aka Agent(less) SMITH		
 	- SMITH = System Monitoring & Intel-Driven Threat Hunting
 		- The intent:
 		 	- Configure queries that run constantly
 			- If the query ever returns data, an alert will prompt the analyst
 			- Queries time will be adjustable
 			- Should be able monitor for multiple events at a time
-
+	- Removed temp tab for Monitoring
+		- This tab was going to be a separate tab that housed SMITH specific queries
+		- Opted to instead add a monitoring checkbox next to each query
+			- They're unique to each query
+			- Queries that are not supported will have the monitor checkbox disabled
 	- Added Monitoring Tab
 		- Added Accounts Tab
 		- Added Event Logs Tab
@@ -27,16 +35,16 @@ Adding Montioring feature - aka Agent(less) SMITH
 		- Added File Search Tab
 		- Added Network Tab
 	- Supported
-		- File & Hash Search
-		- Alternate Data Streams
-		- 
+		- File & Hash Search [verified working]
+		- Alternate Data Streams [verified working]
 		- NetworkConnection Remote IP Address
 		- NetworkConnection Remote Port 
 		- NetworkConnection Local Port
 		- NetworkConnection Process
 		- NetworkConnection Search DNS Cache
+		- Registry Search
 	- Unsupported
-		- File Directory Listing
+		- File Directory Listing [verified disabled]
 		- Endpoint Packet Capture <------------------------update buttons!!!!!!!!!!!!!!!!!!!
 		- 
 

@@ -33,67 +33,70 @@ Invoke-Command -ScriptBlock {
 
 
 <# Version 3 #>
-$scriptBlock = {
-    ## Find all sessions matching the specified username
-    $quser = quser | Where-Object {$_ -notmatch 'SESSIONNAME'}
+$script:MonitorJobScriptBlock = {
+    $CommandScriptBlock = {
+        ## Find all sessions matching the specified username
+        $quser = quser | Where-Object {$_ -notmatch 'SESSIONNAME'}
 
-    $sessions = ($quser -split "`r`n").trim()
+        $sessions = ($quser -split "`r`n").trim()
 
-    foreach ($session in $sessions) {
-        try {
-            # This checks if the value is an integer, if it is then it'll TRY, if it errors then it'll CATCH
-            [int]($session -split '  +')[2] | Out-Null
+        foreach ($session in $sessions) {
+            try {
+                # This checks if the value is an integer, if it is then it'll TRY, if it errors then it'll CATCH
+                [int]($session -split '  +')[2] | Out-Null
 
-            [PSCustomObject]@{
-                PSComputerName = $env:COMPUTERNAME
-                UserName       = ($session -split '  +')[0].TrimStart('>')
-                SessionName    = ($session -split '  +')[1]
-                SessionID      = ($session -split '  +')[2]
-                State          = ($session -split '  +')[3]
-                IdleTime       = ($session -split '  +')[4]
-                LogonTime      = ($session -split '  +')[5]
+                [PSCustomObject]@{
+                    PSComputerName = $env:COMPUTERNAME
+                    UserName       = ($session -split '  +')[0].TrimStart('>')
+                    SessionName    = ($session -split '  +')[1]
+                    SessionID      = ($session -split '  +')[2]
+                    State          = ($session -split '  +')[3]
+                    IdleTime       = ($session -split '  +')[4]
+                    LogonTime      = ($session -split '  +')[5]
+                }
+            }
+            catch {
+                [PSCustomObject]@{
+                    PSComputerName = $env:COMPUTERNAME
+                    UserName       = ($session -split '  +')[0].TrimStart('>')
+                    SessionName    = ''
+                    SessionID      = ($session -split '  +')[1]
+                    State          = ($session -split '  +')[2]
+                    IdleTime       = ($session -split '  +')[3]
+                    LogonTime      = ($session -split '  +')[4]
+                }
             }
         }
-        catch {
-            [PSCustomObject]@{
-                PSComputerName = $env:COMPUTERNAME
-                UserName       = ($session -split '  +')[0].TrimStart('>')
-                SessionName    = ''
-                SessionID      = ($session -split '  +')[1]
-                State          = ($session -split '  +')[2]
-                IdleTime       = ($session -split '  +')[3]
-                LogonTime      = ($session -split '  +')[4]
-            }
+    }
+
+
+    foreach ($TargetComputer in $script:ComputerList) {
+        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
+
+            Invoke-Command -ScriptBlock $CommandScriptBlock `
+            -ComputerName $TargetComputer `
+            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+            -Credential $script:Credential `
+            | Select-Object PSComputerName, *
+
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$CommandScriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
+        }
+        else {
+            Invoke-Command -ScriptBlock $CommandScriptBlock `
+            -ComputerName $TargetComputer `
+            -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+            | Select-Object PSComputerName, *
+
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$CommandScriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
         }
     }
 }
-
-
-foreach ($TargetComputer in $script:ComputerList) {
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }
-
-        Invoke-Command -ScriptBlock $scriptBlock `
-        -ComputerName $TargetComputer `
-        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-        -Credential $script:Credential `
-        | Select-Object PSComputerName, *
-
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$scriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
-    }
-    else {
-        Invoke-Command -ScriptBlock $scriptBlock `
-        -ComputerName $TargetComputer `
-        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-        | Select-Object PSComputerName, *
-
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$scriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
-    }
-}
+Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

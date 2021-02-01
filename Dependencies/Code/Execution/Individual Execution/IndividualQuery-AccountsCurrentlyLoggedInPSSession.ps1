@@ -9,34 +9,37 @@ $PoShEasyWin.Refresh()
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
 
-foreach ($TargetComputer in $script:ComputerList) {
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
-        if (!$script:Credential) { Create-NewCredentials }
+$script:MonitorJobScriptBlock = {
+    foreach ($TargetComputer in $script:ComputerList) {
+        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
 
-        Start-Job -ScriptBlock {
-            param($TargetComputer,$script:Credential)
-            Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate -Credential $script:Credential | Select-Object *
-        } `
-        -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-        -ArgumentList @($TargetComputer,$script:Credential)
+            Start-Job -ScriptBlock {
+                param($TargetComputer,$script:Credential)
+                Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate -Credential $script:Credential | Select-Object *
+            } `
+            -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+            -ArgumentList @($TargetComputer,$script:Credential)
 
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate -Credential $script:Credential"
-    }
-    else {
-        Start-Job -ScriptBlock {
-            param($TargetComputer)
-            Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate
-        } `
-        -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-        -ArgumentList @($TargetComputer,$null)
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate -Credential $script:Credential"
+        }
+        else {
+            Start-Job -ScriptBlock {
+                param($TargetComputer)
+                Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate
+            } `
+            -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
+            -ArgumentList @($TargetComputer,$null)
 
-        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate"
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Get-WSManInstance -ComputerName $TargetComputer -ResourceURI Shell -Enumerate"
+        }
     }
 }
+Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

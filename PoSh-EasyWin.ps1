@@ -689,10 +689,6 @@ $TextBoxHeight        = 536
 Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Collections.ps1"
 . "$Dependencies\Code\Main Body\Tabs\Collections.ps1"
 
-# Monitoring Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Monitoring.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Monitoring.ps1"
-
 # Interactions Tab
 Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
 . "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"

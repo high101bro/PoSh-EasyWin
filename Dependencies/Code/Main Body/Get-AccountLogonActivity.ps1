@@ -2,7 +2,7 @@ Function Get-AccountLogonActivity {
     Param (
         [datetime]$StartTime,
         [datetime]$EndTime
-    )
+    )s
     function LogonTypes {
         param($number)
         switch ($number) {

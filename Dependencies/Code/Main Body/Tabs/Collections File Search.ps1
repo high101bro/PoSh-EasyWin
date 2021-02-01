@@ -126,20 +126,6 @@ $FileSearchFileSearchCheckbox = New-Object System.Windows.Forms.CheckBox -Proper
 $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
 
 
-$FileSearchFileSearchMonitorCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Monitor"
-    Left   = $FormScale * 3
-    Top    = $FileSearchFileSearchCheckbox.Top + $FileSearchFileSearchCheckbox.Height + $($FormScale * 1)
-    Width  = $FormScale * 230
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    ForeColor = 'Green'
-    #Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
-    checked = $true
-}
-$Section1FileSearchTab.Controls.Add($FileSearchFileSearchMonitorCheckbox)
-
-
         $FileSearchFileSearchMaxDepthLabel = New-Object System.Windows.Forms.Label -Property @{
             Text   = "Recursive Depth"
             Left   = $FileSearchFileSearchCheckbox.Width + $($FormScale * 52)
