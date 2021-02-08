@@ -50,12 +50,13 @@ Function Get-AccountLogonActivity {
         $FilterHashTable['EndTime'] = $EndTime
     }
 
+    $AccountActivityTextboxtext = $AccountActivityTextbox.lines | Where-Object {$_ -ne ''}
+
     Get-WinEvent -FilterHashtable $FilterHashTable `
     | Set-Variable GetAccountActivity -Force
 
-    $AccountActivityTextboxtext = $AccountActivityTextbox.lines | Where-Object {$_ -ne ''}
-    if (($AccountActivityTextboxtext.count -gt 0) -and -not ($AccountActivityTextboxtext -eq 'Default is All Accounts')) {
-        $GetAccountActivity | ForEach-Object {
+    if ($AccountActivityTextboxtext.count -ge 1 -and $AccountActivityTextboxtext -notmatch 'Default is All Accounts') {
+        $ObtainedAccountActivity = $GetAccountActivity | ForEach-Object {
             [pscustomobject]@{
                 TimeStamp            = $_.TimeCreated
                 UserAccount          = $_.Properties.Value[5]
@@ -67,24 +68,9 @@ Function Get-AccountLogonActivity {
                 SourceNetworkAddress = $_.Properties.Value[18]
                 SourceNetworkPort    = $_.Properties.Value[19]
             }
-        } | Set-Variable ObtainedAccountActivity
+        }
         ForEach ($AccountName in $AccountActivityTextboxtext) {
             $ObtainedAccountActivity | Where-Object {$_.UserAccount -match $AccountName} | Sort-Object TimeStamp
-        }
-    }
-    else {
-        $GetAccountActivity | ForEach-Object {
-            [pscustomobject]@{
-                TimeStamp            = $_.TimeCreated
-                UserAccount          = $_.Properties.Value[5]
-                UserDomain           = $_.Properties.Value[6]
-                Type                 = $_.Properties.Value[8]
-                LogonType            = "$(LogonTypes -number $($_.Properties.Value[8]))"
-                LogonInterpretation  = "$(LogonInterpretation -number $($_.Properties.Value[8]))"
-                WorkstationName      = $_.Properties.Value[11]
-                SourceNetworkAddress = $_.Properties.Value[18]
-                SourceNetworkPort    = $_.Properties.Value[19]
-            }
         }
     }
 }

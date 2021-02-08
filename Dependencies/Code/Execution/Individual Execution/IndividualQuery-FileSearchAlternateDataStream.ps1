@@ -17,14 +17,14 @@ $script:MonitorJobScriptBlock = {
 
         if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
             if (!$script:Credential) { Create-NewCredentials }
-            Invoke-Command -ScriptBlock ${function:Get-AlternateDataStream} `
+            Invoke-Command -ScriptBlock ${function:Search-AlternateDataStream} `
             -ArgumentList @($DirectoriesToSearch,$MaximumDepth) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             -Credential $script:Credential
         }
         else {
-            Invoke-Command -ScriptBlock ${function:Get-AlternateDataStream} `
+            Invoke-Command -ScriptBlock ${function:Search-AlternateDataStream} `
             -ArgumentList @($DirectoriesToSearch,$MaximumDepth) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
@@ -35,8 +35,9 @@ Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -SmithFlag 'RetrieveADS'
 }
+
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName -SaveProperties @"
 @('PSComputerName', 'FileName', 'Stream', 'StreamDataSample', 'ZoneId' , 'Length')

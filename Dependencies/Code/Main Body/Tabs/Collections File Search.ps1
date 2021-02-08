@@ -225,8 +225,8 @@ $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
         $Section1FileSearchTab.Controls.Add($FileSearchFileSearchFileRichTextbox)
 
 
-Update-FormProgress "$Dependencies\Code\Main Body\Get-AlternateDataStream.ps1"
-. "$Dependencies\Code\Main Body\Get-AlternateDataStream.ps1"
+Update-FormProgress "$Dependencies\Code\Main Body\Search-AlternateDataStream.ps1"
+. "$Dependencies\Code\Main Body\Search-AlternateDataStream.ps1"
 $FileSearchAlternateDataStreamCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Alternate Data Stream Search (WinRM)"
     Left   = $FormScale * 3
@@ -294,8 +294,9 @@ $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
 
         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\FileSearchAlternateDataStreamDirectoryExtractStreamDataButton.ps1"
         . "$Dependencies\Code\System.Windows.Forms\Button\FileSearchAlternateDataStreamDirectoryExtractStreamDataButton.ps1"
+        . "$Dependencies\Code\Main Body\Get-RemoteAlternateDataStream.ps1"
         $FileSearchAlternateDataStreamDirectoryExtractStreamDataButton = New-Object System.Windows.Forms.Button -Property @{
-            Text   = 'Retrieve & Extract Stream Data'
+            Text   = 'Retrieve and Extract Stream Data'
             Left   = $FileSearchAlternateDataStreamDirectoryRichTextbox.Left + $FileSearchAlternateDataStreamDirectoryRichTextbox.Width - $($FormScale * 200 - 1)
             Top    = $FileSearchAlternateDataStreamDirectoryRichTextbox.Top + $FileSearchAlternateDataStreamDirectoryRichTextbox.Height + $($FormScale * 5)
             Width  = $FormScale * 200

@@ -12,7 +12,7 @@ $DirectoriesToSearch = $FileSearchAlternateDataStreamDirectoryRichTextbox.Lines
 $MaximumDepth        = $FileSearchAlternateDataStreamMaxDepthTextbox.text
 
 
-Invoke-Command -ScriptBlock ${function:Get-AlternateDataStream} `
+Invoke-Command -ScriptBlock ${function:Search-AlternateDataStream} `
 -ArgumentList @($DirectoriesToSearch,$MaximumDepth) `
 -Session $PSSession `
 | Set-Variable SessionData

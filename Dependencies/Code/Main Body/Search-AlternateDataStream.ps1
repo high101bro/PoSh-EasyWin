@@ -1,4 +1,4 @@
-function Get-AlternateDataStream {
+function Search-AlternateDataStream {
     param($DirectoriesToSearch,$MaximumDepth)
     if ([int]$MaximumDepth -gt 0) {
         #Invoke-Expression $GetChildItemDepth
@@ -29,6 +29,7 @@ function Get-AlternateDataStream {
     else {
         $AllFiles = Get-ChildItem -Path $DirectoriesToSearch -Force -ErrorAction SilentlyContinue
     }
+
     $AdsFound = $AllFiles | ForEach-Object { Get-Item $_.FullName -Force -Stream * -ErrorAction SilentlyContinue } | Where-Object stream -ne ':$DATA'
     foreach ($Ads in $AdsFound) {
         $AdsData = Get-Content -Path "$($Ads.FileName)" -Stream "$($Ads.Stream)"

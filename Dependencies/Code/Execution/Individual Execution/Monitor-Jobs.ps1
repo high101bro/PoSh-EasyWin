@@ -6,6 +6,7 @@ function Monitor-Jobs {
         [switch]$MonitorMode,
         [switch]$SMITH,
         $SmithScript,
+        $SmithFlag,
         [switch]$AutoReRun,
         [int]$RestartTime = $($script:OptionMonitorJobsDefaultRestartTimeCombobox.text),
         [switch]$DisableReRun,
@@ -91,8 +92,11 @@ if ($MonitorMode) {
         Remove-Variable -Name CurrentTime$JobId -Scope Script
         Remove-Variable -Name JobsTimeCompleted$JobId -Scope Script
         Remove-Variable -Name Timer$JobId -Scope Script
-        Remove-Variable -Name JobName$JobId -Scope Script
+        Remove-Variable -Name SelectedFilesToDownload$JobId -scope Script
         
+        # This variable is required to pass along the job name to various sections
+        #Remove-Variable -Name JobName$JobId -Scope Script
+
         # This variable is required for the auto re-run feature
         #Remove-Variable -Name RestartTime$JobId -Scope Script
 
@@ -180,14 +184,14 @@ if ($MonitorMode) {
             Left      = `$script:MonitorJobsLeftPosition
             Top       = `$script:MonitorJobsTopPosition
             Width     = `$FormScale * 715
-            Height    = `$script:JobsRowHeight            
+            Height    = `$script:JobsRowHeight + (`$FormScale * 4)
         }
     
 
         `$script:Section3MonitorJobLabel$JobId = New-Object System.Windows.Forms.Label -Property @{
             Text      = "`$(`$script:JobStartTime$JobId)`n "
             Left      = 0
-            Top       = `$FormScale * 2
+            Top       = `$FormScale * 5
             Width     = `$FormScale * 115
             Height    = `$FormScale * 22
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
@@ -197,8 +201,8 @@ if ($MonitorMode) {
 
         `$script:Section3MonitorJobProgressBar$JobId = New-Object System.Windows.Forms.ProgressBar -Property @{
             Left      = `$script:Section3MonitorJobLabel$JobId.Left
-            Top       =  (`$FormScale * 22) + (`$FormScale * 5) -(`$FormScale * 2)
-            Width     = `$FormScale * 380 #261
+            Top       =  (`$FormScale * 22) + (`$FormScale * 8)
+            Width     = `$FormScale * 379 #261
             Height    = `$FormScale * 22
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
             Value     = 0
@@ -212,7 +216,7 @@ if ($MonitorMode) {
         `$script:Section3MonitorJobTransparentLabel$JobId = New-Object System.Windows.Forms.Label -Property @{
             Text      = "Endpoint Count:  0 / `$script:JobsStartedCount$JobId `n`$script:JobName$JobId"
             Left      = `$script:Section3MonitorJobLabel$JobId.Left + `$script:Section3MonitorJobLabel$JobId.Width + (`$FormScale * 5)
-            Top       = `$script:Section3MonitorJobLabel$JobId.Top - `$(`$FormScale * 1)
+            Top       = `$script:Section3MonitorJobLabel$JobId.Top
             Width     = `$FormScale * 261
             Height    = (`$script:JobsRowHeight / 2) - `$(`$FormScale * 2)
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
@@ -236,8 +240,8 @@ if ($MonitorMode) {
                 Height    = `$script:JobsRowHeight
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
-                    if (`$script:Section3MonitorJobViewButton$JobId.BackColor -eq 'LightGreen') {
-                        `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGray'
+                    if (`$This.BackColor -eq 'LightGreen') {
+                        `$This.BackColor = 'LightGray'
                     }
                     Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\"
                 }
@@ -252,8 +256,8 @@ if ($MonitorMode) {
                 Height   = `$script:JobsRowHeight
                 Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
-                    if (`$script:Section3MonitorJobTerminalButton$JobId.BackColor -eq 'LightGreen') {
-                        `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGray'
+                    if (`$This.BackColor -eq 'LightGreen') {
+                        `$This.BackColor = 'LightGray'
                     }
                     if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng")) {
                         Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng"
@@ -348,8 +352,8 @@ if ($MonitorMode) {
                 Height   = `$FormScale * 21
                 Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
-                    if (`$script:Section3MonitorJobTerminalButton$JobId.BackColor -eq 'LightGreen') {
-                        `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGray'
+                    if (`$This.BackColor -eq 'LightGreen') {
+                        `$This.BackColor = 'LightGray'
                     }
                     if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml")) {
                         `$script:JobXMLResults$JobId = Import-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -ErrorAction SilentlyContinue
@@ -805,8 +809,62 @@ if ($MonitorMode) {
                                         `$script:MonitorJobsDetailsFrom$JobId.ShowDialog()
                 }
             }
+"@
 
-
+            if ($SmithFlag -eq 'RetrieveFile') {
+            Invoke-Expression @"
+            `$script:Section3MonitorJobCommandButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text     = 'Get File'
+                Left     = `$script:Section3MonitorJobDetailsButton$JobId.Left
+                Top      = `$script:Section3MonitorJobDetailsButton$JobId.Top + `$script:Section3MonitorJobDetailsButton$JobId.Height + (`$FormScale * 5)
+                Width    = `$FormScale * 75
+                Height   = `$FormScale * 21
+                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
+                Add_click = {
+                    if (`$This.BackColor -eq 'LightGreen') {
+                        `$This.BackColor = 'LightGray'
+                    }
+                    # Checks to see if there are any results
+                    `$script:CurrentJobsWithComputerName$JobId = @()
+                    foreach (`$Job in `$script:CurrentJobs$JobId) {
+                        `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
+                    }
+                    if ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 ) {
+                        `$script:SelectedFilesToDownload$JobId = `$script:CurrentJobsWithComputerName$JobId | Select-Object ComputerName, Name, FullName, CreationTime, LastAccessTime, LastWriteTime, Length, Attributes, VersionInfo, * -ErrorAction SilentlyContinue | Out-GridView -Title 'Get Files' -PassThru
+                        Get-RemoteFile -Files `$script:SelectedFilesToDownload$JobId
+                    }
+                }
+            }
+"@
+            }
+            elseif ($SmithFlag -eq 'RetrieveADS') {
+            Invoke-Expression @"
+            `$script:Section3MonitorJobCommandButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text     = 'Get ADS'
+                Left     = `$script:Section3MonitorJobDetailsButton$JobId.Left
+                Top      = `$script:Section3MonitorJobDetailsButton$JobId.Top + `$script:Section3MonitorJobDetailsButton$JobId.Height + (`$FormScale * 5)
+                Width    = `$FormScale * 75
+                Height   = `$FormScale * 21
+                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
+                Add_click = {
+                    if (`$This.BackColor -eq 'LightGreen') {
+                        `$This.BackColor = 'LightGray'
+                    }
+                    # Checks to see if there are any results
+                    `$script:CurrentJobsWithComputerName$JobId = @()
+                    foreach (`$Job in `$script:CurrentJobs$JobId) {
+                        `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
+                    }
+                    if ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 ) {
+                        `$script:SelectedFilesToDownload$JobId = `$script:CurrentJobsWithComputerName$JobId | Select-Object ComputerName, Name, FullName, CreationTime, LastAccessTime, LastWriteTime, Length, Attributes, VersionInfo, * -ErrorAction SilentlyContinue | Out-GridView -Title 'Get Alternate Data Stream' -PassThru
+                        Get-RemoteAlternateDataStream -Files `$script:SelectedFilesToDownload$JobId
+                    }
+                }
+            }
+"@
+            }                
+            else {
+            Invoke-Expression @"
             `$script:Section3MonitorJobCommandButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text     = 'Command'
                 Left     = `$script:Section3MonitorJobDetailsButton$JobId.Left
@@ -848,8 +906,11 @@ if ($MonitorMode) {
                     `$script:Section3MonitorJobViewCommandForm$JobId.ShowDialog()
                 }
             }
-            
+"@
+            }
 
+
+        Invoke-Expression @"
             `$script:Section3MonitorJobRemoveButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 Text      = 'Remove'
                 Left      = `$script:Section3MonitorJobDetailsButton$JobId.Left + `$script:Section3MonitorJobDetailsButton$JobId.Width + (`$FormScale * 5)
@@ -949,7 +1010,7 @@ if ($MonitorMode) {
                     `$script:Section3MonitorJobViewOptionsForm$JobId.ShowDialog()
                 }
             }
-"@    
+"@
         }
 
         
@@ -961,7 +1022,8 @@ if ($MonitorMode) {
             Width    = `$FormScale * 70
             Height   = `$script:JobsRowHeight / 3
             Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
-            Checked  = `$true
+            ForeColor = 'Black'
+            Checked   = `$true
             add_click = {
                 if (`$script:Section3MonitorJobKeepDataCheckbox$JobId.checked -eq `$false) {
                     `$script:Section3MonitorJobKeepDataAllCheckbox.checked = `$false
@@ -973,7 +1035,10 @@ if ($MonitorMode) {
                 }
             }
         }
-
+        if ( `$script:Section3MonitorJobKeepDataAllCheckbox.checked ) {
+            `$script:Section3MonitorJobKeepDataCheckbox$JobId.checked = `$true
+            `$script:Section3MonitorJobKeepDataCheckbox$JobId.ForeColor = 'Black'
+        }
 
         `$script:Section3MonitorJobContinuousCheckbox$JobId = New-Object System.Windows.Forms.Checkbox -Property @{
             Text     = 'Monitor'
@@ -984,30 +1049,90 @@ if ($MonitorMode) {
             Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
             Checked  = `$false
             Forecolor = 'black'
-            Add_click = {
-                `$script:RestartTime$JobId = `$script:Section3MonitorJobViewOptionsRichTextBox$JobId.text
-                if ( `$script:SMITHRunning$JobId -eq `$false -and `$this.checked) {
-                    script:Remove-JobsFunction$JobId
-
-                    # Restarts the query, by starting a new job
-                    #`$script:SmithScript$JobId | ogv 'Restart Script 1'
-                    
-                    Invoke-Command -ScriptBlock `$script:SmithScript$JobId
-                    Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId
-
-                    # Cleanup
-                    Remove-Variable -Name  "SmithScript$JobId" -Scope script
-                }
-    
-                if (`$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$false) {
-                    `$script:Section3MonitorJobContinuousCheckbox$JobId.forecolor = 'black'
-                }
-                else {
-                    `$script:Section3MonitorJobContinuousCheckbox$JobId.forecolor = 'blue'
-                }
-            }
         }
 "@
+if ($SmithFlag -eq 'RetrieveFile') {
+    Invoke-Expression @"
+    `$script:SmithFlagRetrieveFile$JobId = `$true
+    `$script:Section3MonitorJobContinuousCheckbox$JobId.Add_click({
+        `$script:RestartTime$JobId = `$script:Section3MonitorJobViewOptionsRichTextBox$JobId.text
+        if ( `$script:SMITHRunning$JobId -eq `$false -and `$this.checked) {
+            script:Remove-JobsFunction$JobId
+
+            # Restarts the query, by starting a new job
+            #`$script:SmithScript$JobId | ogv 'Restart Script 1'
+            
+            Invoke-Command -ScriptBlock `$script:SmithScript$JobId
+            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile'
+            
+            # Cleanup
+            Remove-Variable -Name  "SmithScript$JobId" -Scope script
+        }
+
+        if (`$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$false) {
+            `$script:Section3MonitorJobContinuousCheckbox$JobId.forecolor = 'black'
+        }
+        else {
+            `$script:Section3MonitorJobContinuousCheckbox$JobId.forecolor = 'blue'
+        }
+    })
+"@
+}
+elseif ($SmithFlag -eq 'RetrieveADS') {
+    Invoke-Expression @"
+    `$script:SmithFlagRetrieveADS$JobId = `$true
+    `$script:Section3MonitorJobContinuousCheckbox$JobId.Add_click({
+        `$script:RestartTime$JobId = `$script:Section3MonitorJobViewOptionsRichTextBox$JobId.text
+        if ( `$script:SMITHRunning$JobId -eq `$false -and `$this.checked) {
+            script:Remove-JobsFunction$JobId
+
+            # Restarts the query, by starting a new job
+            #`$script:SmithScript$JobId | ogv 'Restart Script 1'
+            
+            Invoke-Command -ScriptBlock `$script:SmithScript$JobId
+            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveADS'
+            
+            # Cleanup
+            Remove-Variable -Name  "SmithScript$JobId" -Scope script
+        }
+
+        if (`$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$false) {
+            `$script:Section3MonitorJobContinuousCheckbox$JobId.forecolor = 'black'
+        }
+        else {
+            `$script:Section3MonitorJobContinuousCheckbox$JobId.forecolor = 'blue'
+        }
+    })
+"@
+}
+else {
+    Invoke-Expression @"
+    `$script:Section3MonitorJobContinuousCheckbox$JobId.Add_click({
+        `$script:RestartTime$JobId = `$script:Section3MonitorJobViewOptionsRichTextBox$JobId.text
+        if ( `$script:SMITHRunning$JobId -eq `$false -and `$this.checked) {
+            script:Remove-JobsFunction$JobId
+
+            # Restarts the query, by starting a new job
+            #`$script:SmithScript$JobId | ogv 'Restart Script 1'
+            
+            Invoke-Command -ScriptBlock `$script:SmithScript$JobId
+            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId
+            
+            # Cleanup
+            Remove-Variable -Name  "SmithScript$JobId" -Scope script
+        }
+
+        if (`$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$false) {
+            `$script:Section3MonitorJobContinuousCheckbox$JobId.forecolor = 'black'
+        }
+        else {
+            `$script:Section3MonitorJobContinuousCheckbox$JobId.forecolor = 'blue'
+        }
+    })
+"@
+}
+
+
 if ($AutoReRun) {
     Invoke-Expression @"
             `$script:Section3MonitorJobContinuousCheckbox$JobId.checked = `$true
@@ -1228,6 +1353,8 @@ if ($DisableReRun) {
                 if (`$script:JobsStartedCount$JobId -eq `$script:JobsNotRunning$JobId) {
                     # When the jobs are done
 
+                    `$script:JobtTime
+
                     # Checks to see if there are any results
                     `$script:CurrentJobsWithComputerName$JobId = @()
                     foreach (`$Job in `$script:CurrentJobs$JobId) {
@@ -1257,11 +1384,19 @@ if ($DisableReRun) {
 
                         `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
                         `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
-                        `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'Cyan' #'LightGreen'
+                        `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
                         `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
+
                         if ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 ) {
                             `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
                             `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
+                            if ( `$script:SmithFlagRetrieveFile$JobId ) {
+                                `$script:Section3MonitorJobCommandButton$JobId.BackColor = 'LightGreen'
+                            }
+                            elseif ( `$script:SmithFlagRetrieveADS$JobId ) {
+                                `$script:Section3MonitorJobCommandButton$JobId.Backcolor = 'LightGreen'
+                            }
+    
                         }
                         else {
                             `$script:Section3MonitorJobViewButton$JobId.ForeColor = 'Red'
@@ -1294,9 +1429,17 @@ if ($DisableReRun) {
 
                             # Restarts the query, by starting a new job
                             #"`$script:SmithScript$JobId" | ogv 'Restart Script'
+#batman
                             Invoke-Command -ScriptBlock `$script:SmithScript$JobId
-                            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId
-
+                            if ( `$script:SmithFlagRetrieveFile$JobId ) {
+                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile'
+                            }
+                            elseif ( `$script:SmithFlagRetrieveADS$JobId ) {
+                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile'
+                            }
+                            else {
+                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId
+                            }
                             Remove-Variable -Name  "SmithScript$JobId" -Scope script
 
                             # Cleanup
@@ -1307,6 +1450,14 @@ if ($DisableReRun) {
                     }
                     elseif ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 -and `$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$true ) {
                         script:Get-JobsCollectedData$JobId
+
+                        if ( `$script:SmithFlagRetrieveFile$JobId ) {
+                            `$script:Section3MonitorJobCommandButton$JobId.BackColor = 'LightGreen'
+                        }
+                        elseif ( `$script:SmithFlagRetrieveADS$JobId ) {
+                            `$script:Section3MonitorJobCommandButton$JobId.Backcolor = 'LightGreen'
+                        }
+
                         [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nAgentless SMITH has something to report.`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin - Agentless SMITH')
                     }
                     elseif ( `$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$false ) {

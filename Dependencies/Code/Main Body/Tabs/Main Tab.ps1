@@ -237,6 +237,7 @@ CommonButtonSettings -Button $AutoCreateDashboardChartButton
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\RetrieveFilesButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\RetrieveFilesButton.ps1"
+. "$Dependencies\Code\Main Body\Get-RemoteFile.ps1"
 $RetrieveFilesButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "Retrieve Files"
     Location = @{ X = $PSWriteHTMLButton.Location.X

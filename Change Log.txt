@@ -37,9 +37,9 @@ Adding Montioring feature - aka Agent(less) SMITH
 	- Supported
 		- File & Hash Search [verified working]
 		- Alternate Data Streams [verified working]
-		- NetworkConnection Remote IP Address
-		- NetworkConnection Remote Port 
-		- NetworkConnection Local Port
+		- NetworkConnection Remote IP Address [verified working]
+		- NetworkConnection Remote Port  [verified working]
+		- NetworkConnection Local Port [verified working]
 		- NetworkConnection Process
 		- NetworkConnection Search DNS Cache
 		- Registry Search
@@ -50,6 +50,12 @@ Adding Montioring feature - aka Agent(less) SMITH
 
 Added 'SHow All Jobs' button to Monitor Jobs tab
 	- Shows all jobs
+
+Adding feature to make it easier to retrieve files from endpoints
+	- Moved code into a Get-RemoteFile.ps1 script/function
+	- Added feature to click 'Get File' from within Monitor Jobs Tab
+	- Same thing for Alternate Data Streams
+	
 
 ==================================================
 v5.1.8 BETA - 11 Dec 20

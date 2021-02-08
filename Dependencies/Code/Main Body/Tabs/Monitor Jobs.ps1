@@ -130,27 +130,6 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
             [System.Windows.Forms.MessageBox]::Show("None of the jobs will be removed if any of them are being monitored. Uncheck any of the Monitor checkboxes to use this feature or remove them individually.","PoSh-EasyWin")
         }
         else {
-            #Get-Job -Name "PoSh-EasyWin:*" | Stop-Job -PassThru | Remove-Job -Force
-            Get-Job -Name "PoSh-EasyWin:*" | Remove-Job -Force
-            Get-Job -Name "PoSh-EasyWin:*" | Stop-Job -PassThru | Receive-Job -Force | Remove-Job -Force
-
-            $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop
-            $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight    
-
-            Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
-                Invoke-Expression "`$script:Section3MonitorJobsTab.Controls.Remove(`$script:$($_.Name))"
-            }
-
-            $script:TotalJobsToRemoveCount = (Get-Job -Name "PoSh-EasyWin: *" | Where-Object {$_.State -match 'Run'}).count
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Monitor Progress Bars Removed - Stopping $script:TotalJobsToRemoveCount Remainingg Jobs...")
-
-
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Monitor Progress Bars Removed - Stopping $script:TotalJobsToRemoveCount Remainingg Jobs - Completed")
-
-            $script:MonitorJobsTopPosition   = $script:Section3MonitorJobsGroupBox.Top + $script:Section3MonitorJobsGroupBox.Height
-    <#        
             $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?`n`nThis method currently only stops running jobs and removes them from view; it will not delete the files regardless if their 'keep data' box is not checked.",'PoSh-EasyWin','YesNo','Warning')
             switch ($RemoveAllJobsVerify) {
                 'Yes'{
@@ -165,19 +144,18 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
                     $StatusListBox.Items.Clear()
                     $StatusListBox.Items.Add("Monitor Progress Bars Removed - Stopping $script:TotalJobsToRemoveCount Remainingg Jobs...")
 
-                    #Get-Job -Name "PoSh-EasyWin:*" | Stop-Job -PassThru | Remove-Job -Force
                     Get-Job -Name "PoSh-EasyWin:*" | Remove-Job -Force
-
+                    Get-Job -Name "PoSh-EasyWin:*" | Stop-Job -PassThru | Receive-Job -Force | Remove-Job -Force
+                
                     $StatusListBox.Items.Clear()
                     $StatusListBox.Items.Add("Monitor Progress Bars Removed - Stopping $script:TotalJobsToRemoveCount Remainingg Jobs - Completed")
             
-                    $script:MonitorJobsTopPosition = ($FormScale * 5 + 42)
+                    $script:MonitorJobsTopPosition   = $script:Section3MonitorJobsGroupBox.Top + $script:Section3MonitorJobsGroupBox.Height
                 }
                 'No' {
                     continue
                 }
             }
-        #>   
         }
     }
 }
@@ -193,8 +171,8 @@ $script:Section3MonitorJobKeepDataAllCheckbox = New-Object System.Windows.Forms.
     Width     = $FormScale * 70
     Height    = $FormScale * 11
     Font      = New-Object System.Drawing.Font("Courier New",$($FormScale * 8),1,2,1)
-    ForeColor = 'Black'
-    checked   = $true
+    ForeColor = 'Red'
+    checked   = $false
     Add_Click = {
         if ($script:Section3MonitorJobKeepDataAllCheckbox.checked -eq $true) {
             $script:Section3MonitorJobKeepDataAllCheckbox.ForeColor = 'Black'
