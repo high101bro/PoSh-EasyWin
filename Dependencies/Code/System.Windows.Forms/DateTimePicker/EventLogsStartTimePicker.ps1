@@ -1,10 +1,10 @@
-$EventLogsStartTimePickerAdd_Click = {
-    if ($EventLogsStopTimePicker.checked -eq $false) {
-        $EventLogsStopTimePicker.checked = $true
+$script:EventLogsStartTimePickerAdd_Click = {
+    if ($script:EventLogsStopTimePicker.checked -eq $false) {
+        $script:EventLogsStopTimePicker.checked = $true
     }
 }
 
-$EventLogsStartTimePickerAdd_MouseHover = {
+$script:EventLogsStartTimePickerAdd_MouseHover = {
     Show-ToolTip -Title "DateTime - Starting" -Icon "Info" -Message @"
 +  Select the starting datetime to filter Event Logs
 +  This can be used with the Max Collection field

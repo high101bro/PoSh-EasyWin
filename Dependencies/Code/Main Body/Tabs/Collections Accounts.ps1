@@ -166,7 +166,7 @@ $Section1AccountsTab.Controls.Add($AccountsOptionsGroupBox)
 
 
 $AccountsCurrentlyLoggedInConsoleCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Accounts Logged In via Console"
+    Text   = "Accounts Logged In via Console (Currently)"
     Left   = $FormScale * 7
     Top    = $AccountsOptionsGroupBox.Top + $AccountsOptionsGroupBox.Height + $($FormScale * 10)
     Width  = $FormScale * 325
@@ -197,7 +197,7 @@ CommonButtonSettings -Button $AccountsCurrentlyLoggedInInfoButton
 
 
 $AccountsCurrentlyLoggedInPSSessionCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Accounts Logged In via PowerShell Session"
+    Text   = "Accounts Logged In via PowerShell Session (Currently)"
     Left   = $FormScale * 7
     Top    = $AccountsCurrentlyLoggedInConsoleCheckbox.Top + $AccountsCurrentlyLoggedInConsoleCheckbox.Height + $($FormScale * 10)
     Width  = $FormScale * 350
@@ -225,7 +225,7 @@ $Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInPSSessionLabel)
 Update-FormProgress "$Dependencies\Code\Main Body\Get-AccountLogonActivity.ps1"
 . "$Dependencies\Code\Main Body\Get-AccountLogonActivity.ps1"
 $AccountActivityCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Account Logon Activity"
+    Text   = "Account Logon Activity (Select Datetime Range)"
     Left   = $FormScale * 7
     Top    = $AccountsCurrentlyLoggedInPSSessionLabel.Top + $AccountsCurrentlyLoggedInPSSessionLabel.Height + $($FormScale * 10)
     Width  = $FormScale * 410

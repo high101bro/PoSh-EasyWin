@@ -16,7 +16,7 @@ function Query-EventLog {
 
 
     function Compiled-EventLogCommand {
-        param($EventLogsMaximumCollectionTextBox,$EventLogsStartTimePicker,$EventLogsStopTimePicker,$Filter)
+        param($script:EventLogsMaximumCollectionTextBox,$script:EventLogsStartTimePicker,$script:EventLogsStopTimePicker,$Filter)
 
         # Builds the Event Log Query Command
         $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
@@ -24,16 +24,16 @@ function Query-EventLog {
 
 
         # Code to set the amount of data to return
-        if ($EventLogsMaximumCollectionTextBox.Text -eq $null -or $EventLogsMaximumCollectionTextBox.Text -eq '' -or $EventLogsMaximumCollectionTextBox.Text -eq 0) {
+        if ($script:EventLogsMaximumCollectionTextBox.Text -eq $null -or $script:EventLogsMaximumCollectionTextBox.Text -eq '' -or $script:EventLogsMaximumCollectionTextBox.Text -eq 0) {
             $EventLogQueryMax = $null
         }
-        else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBox.Text)" }
+        else { $EventLogQueryMax = "-First $($script:EventLogsMaximumCollectionTextBox.Text)" }
 
 
         # Code to include calendar start/end datetimes if checked
-        if ( $EventLogsStartTimePicker.Checked -and $EventLogsStopTimePicker.Checked ) {
+        if ( $script:EventLogsStartTimePicker.Checked -and $script:EventLogsStopTimePicker.Checked ) {
             $EventLogQueryFilter = @"
--Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePicker.Value)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePicker.Value)))'))"
+-Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:EventLogsStartTimePicker.Value)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:EventLogsStopTimePicker.Value)))'))"
 "@
         }
         else { $EventLogQueryFilter = "-Filter `"$Filter`""}
@@ -72,7 +72,7 @@ function Query-EventLog {
                 if (!$script:Credential) { Create-NewCredentials }
 
                 Invoke-Command -ScriptBlock ${function:Compiled-EventLogCommand} `
-                -ArgumentList @($EventLogsMaximumCollectionTextBox,$EventLogsStartTimePicker,$EventLogsStopTimePicker,$Filter) `
+                -ArgumentList @($script:EventLogsMaximumCollectionTextBox,$script:EventLogsStartTimePicker,$script:EventLogsStopTimePicker,$Filter) `
                 -ComputerName $TargetComputer `
                 -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
                 -Credential $script:Credential
@@ -91,7 +91,7 @@ function Query-EventLog {
             }
             else {
                 Invoke-Command -ScriptBlock ${function:Compiled-EventLogCommand} `
-                -ArgumentList @($EventLogsMaximumCollectionTextBox,$EventLogsStartTimePicker,$EventLogsStopTimePicker,$Filter) `
+                -ArgumentList @($script:EventLogsMaximumCollectionTextBox,$script:EventLogsStartTimePicker,$script:EventLogsStopTimePicker,$Filter) `
                 -ComputerName $TargetComputer `
                 -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
 

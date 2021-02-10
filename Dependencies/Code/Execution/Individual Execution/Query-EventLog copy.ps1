@@ -16,11 +16,11 @@ function Query-EventLog {
         # Builds the Event Log Query Command
         $EventLogQueryCommand  = "Get-WmiObject -Class Win32_NTLogEvent"
         $EventLogQueryComputer = "-ComputerName $TargetComputer"
-        if ($EventLogsMaximumCollectionTextBox.Text -eq $null -or $EventLogsMaximumCollectionTextBox.Text -eq '' -or $EventLogsMaximumCollectionTextBox.Text -eq 0) { $EventLogQueryMax = $null}
-        else { $EventLogQueryMax = "-First $($EventLogsMaximumCollectionTextBox.Text)" }
-        if ( $EventLogsStartTimePicker.Checked -and $EventLogsStopTimePicker.Checked ) {
+        if ($script:EventLogsMaximumCollectionTextBox.Text -eq $null -or $script:EventLogsMaximumCollectionTextBox.Text -eq '' -or $script:EventLogsMaximumCollectionTextBox.Text -eq 0) { $EventLogQueryMax = $null}
+        else { $EventLogQueryMax = "-First $($script:EventLogsMaximumCollectionTextBox.Text)" }
+        if ( $script:EventLogsStartTimePicker.Checked -and $script:EventLogsStopTimePicker.Checked ) {
             $EventLogQueryFilter = @"
--Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePicker.Value)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStopTimePicker.Value)))'))"
+-Filter "($Filter and (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:EventLogsStartTimePicker.Value)))') and (TimeGenerated<='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:EventLogsStopTimePicker.Value)))'))"
 "@
         }
         else { $EventLogQueryFilter = "-Filter `"$Filter`""}

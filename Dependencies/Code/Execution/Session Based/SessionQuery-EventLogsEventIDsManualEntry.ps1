@@ -51,11 +51,11 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
 $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName"
 
 $EventLogsEventIDsManualEntryTextboxText = $EventLogsEventIDsManualEntryTextbox.Lines
-$EventLogsMaximumCollectionTextBoxText   = $EventLogsMaximumCollectionTextBox.Lines
-$EventLogsStartTimePickerChecked         = $EventLogsStartTimePicker.Checked
-$EventLogsStopTimePickerChecked          = $EventLogsStopTimePicker.Checked
-$EventLogsStartTimePickerValue           = $EventLogsStartTimePicker.Value
-$EventLogsStopTimePickerValue            = $EventLogsStopTimePicker.Value
+$EventLogsMaximumCollectionTextBoxText   = $script:EventLogsMaximumCollectionTextBox.Lines
+$EventLogsStartTimePickerChecked         = $script:EventLogsStartTimePicker.Checked
+$EventLogsStopTimePickerChecked          = $script:EventLogsStopTimePicker.Checked
+$EventLogsStartTimePickerValue           = $script:EventLogsStartTimePicker.Value
+$EventLogsStopTimePickerValue            = $script:EventLogsStopTimePicker.Value
 
 #Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} -ArgumentList $EventLogsEventIDsManualEntryTextboxText, $EventLogsMaximumCollectionTextBoxText, $EventLogsStartTimePickerChecked, $EventLogsStopTimePickerChecked, $EventLogsStartTimePickerValue, $EventLogsStopTimePickerValue -Session $PSSession | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
 Invoke-Command -ScriptBlock ${function:Query-EventLogLogsEventIDsManualEntrySessionBased} `

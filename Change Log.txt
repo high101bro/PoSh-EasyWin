@@ -35,16 +35,22 @@ Adding Montioring feature - aka Agent(less) SMITH
 		- Added File Search Tab
 		- Added Network Tab
 	- Supported
-		- File & Hash Search [verified working]
-		- Alternate Data Streams [verified working]
+		- Accounts Logged in via Console [verified working]
+		- Accounts Logged in via PowerShell Session [verified working]
+		- Account Logon Activity [verified working]
+		- File Search - File & Hash Search [verified working]
+		- File Search - Alternate Data Streams [verified working]
 		- NetworkConnection Remote IP Address [verified working]
 		- NetworkConnection Remote Port  [verified working]
 		- NetworkConnection Local Port [verified working]
-		- NetworkConnection Process
-		- NetworkConnection Search DNS Cache
-		- Registry Search
+		- NetworkConnection Process [verified working]
+		- NetworkConnection Search DNS Cache [verified working]
+		- Registry Search <---------------------------test again
 	- Unsupported
-		- File Directory Listing [verified disabled]
+		- Event IDs Manual Entry [verified disabled]
+		- Event IDs Quick Selection [verified disabled]
+		- Event IDs to Monitor [verified disabled]
+		- File Search - Directory Listing [verified disabled]
 		- Endpoint Packet Capture <------------------------update buttons!!!!!!!!!!!!!!!!!!!
 		- 
 
@@ -56,6 +62,13 @@ Adding feature to make it easier to retrieve files from endpoints
 	- Added feature to click 'Get File' from within Monitor Jobs Tab
 	- Same thing for Alternate Data Streams
 	
+Accounts Tab
+	- Fixed issue where Account Activity Activity did not filter on accounts entered
+	- updated labs to with Currently and Datetime range
+
+Event Logs Tab
+	- Fixed issue where Event Log Quick Pick didn't start individual monitor jobs
+
 
 ==================================================
 v5.1.8 BETA - 11 Dec 20

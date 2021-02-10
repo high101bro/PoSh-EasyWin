@@ -83,11 +83,17 @@ $PSWriteHTMLGraphDataButton = New-Object -TypeName System.Windows.Forms.Button -
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = { 
         if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
-            $script:PSWriteHTMLFormOkay = $true
-            $PSWriteHTMLForm.Close()
+            Generate-ComputerList
+            if ($script:ComputerList.count -eq 0) {
+                [System.Windows.Forms.MessageBox]::Show("Checkbox at least one endpoint to collect data from.",'PoSh-EasyWin')
+            }
+            else {
+                $script:PSWriteHTMLFormOkay = $true
+                $PSWriteHTMLForm.Close()    
+            }
         }
         else {
-            [System.Windows.Forms.MessageBox]::Show("Checkbox at least one to collect and graph data.")
+            [System.Windows.Forms.MessageBox]::Show("Checkbox at least one to collect and graph data.",'PoSh-EasyWin')
         }
     }
 }
@@ -124,9 +130,9 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
         MaximizeBox     = $false
         MinimizeBox     = $true
         AutoScroll      = $True
-
         Add_Closing = { $This.dispose() }
     }
+
 
     $script:PoShEasyWinIPToExcludeLabel = New-Object System.Windows.Forms.Label -Property @{
         Text   = "Enter PoSh-EasyWin's IP. This will place it as an icon within various graphs for easy recognition, like network connections."
@@ -137,6 +143,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
     $script:PSWriteHTMLSupportForm.Controls.Add($script:PoShEasyWinIPToExcludeLabel)
+
 
     $script:PoShEasyWinIPToExcludeTextbox = New-Object System.Windows.Forms.TextBox -Property @{
         Text   = "<Enter PoSh-EasyWin's IP>"
@@ -162,6 +169,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
     }
     $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLSupportOkayLabel)
 
+
     $script:PSWriteHTMLSupportOkayTextBox = New-Object System.Windows.Forms.TextBox -Property @{
         Text   = "<Enter the Domain Controller's hostname/IP>"
         Left   = $script:PSWriteHTMLSupportOkayLabel.Left
@@ -174,6 +182,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
     if ((Test-Path "$PoShHome\Settings\Domain Controller Selected.txt")){
         $script:PSWriteHTMLSupportOkayTextBox.text = Get-Content "$PoShHome\Settings\Domain Controller Selected.txt"
     }
+
 
     $script:PSWriteHTMLSupportOkay = $False
     $PSWriteHTMLSupportOkayButton = New-Object System.Windows.Forms.Button -Property @{
@@ -294,11 +303,7 @@ function script:Individual-PSWriteHTML {
 ####################################################################################################
 Generate-ComputerList
 
-if ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.count -eq 0){
-    [system.media.systemsounds]::Exclamation.play()
-    [system.windows.forms.messagebox]::Show("Select one or more endpoints.")
-}
-elseif ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.count -gt 0) {
+if ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.count -gt 0) {
 
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         $StatusListBox.Items.Clear()
@@ -1077,7 +1082,9 @@ Start-Sleep -Seconds 3
 
 
         if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
+            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+                script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
+            }
         }
     }
 
@@ -1772,7 +1779,9 @@ Start-Sleep -Seconds 3
 
 
         if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Start-PSWriteHTMLNetworkConnections }
+            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+                script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Start-PSWriteHTMLNetworkConnections }
+            }
         }
     }
    
@@ -2011,7 +2020,9 @@ Start-Sleep -Seconds 3
 
 
         if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            script:Individual-PSWriteHTML -Title 'Console Logons' { script:Start-PSWriteHTMLConsoleLogons }
+            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+                script:Individual-PSWriteHTML -Title 'Console Logons' { script:Start-PSWriteHTMLConsoleLogons }
+            }
         }        
     }
 
@@ -2288,7 +2299,9 @@ Start-Sleep -Seconds 3
 
 
         if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            script:Individual-PSWriteHTML -Title 'PowerShell Sessions' { script:Start-PSWriteHTMLPowerShellSessions }
+            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+                script:Individual-PSWriteHTML -Title 'PowerShell Sessions' { script:Start-PSWriteHTMLPowerShellSessions }
+            }
         } 
     }
 
@@ -2513,7 +2526,9 @@ Start-Sleep -Seconds 3
 
 
 #        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-#            script:Individual-PSWriteHTML -Title 'xxxxxxxxxxxx' { script:Start-PSWriteHTMLxxxxxxxxxxxxxxxxxxx }        
+#           if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+#                script:Individual-PSWriteHTML -Title 'xxxxxxxxxxxx' { script:Start-PSWriteHTMLxxxxxxxxxxxxxxxxxxx }        
+#           }
 #        }
     }
 
@@ -2772,7 +2787,9 @@ Start-Sleep -Seconds 3
 
 
         if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            script:Individual-PSWriteHTML -Title 'Application Crashes' { script:Start-PSWriteHTMLApplicationCrashes }
+            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+                script:Individual-PSWriteHTML -Title 'Application Crashes' { script:Start-PSWriteHTMLApplicationCrashes }
+            }
         }
     }
 
@@ -3218,7 +3235,9 @@ Start-Sleep -Seconds 3
 
 
         if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Start-PSWriteHTMLLogonActivity }
+            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+                script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Start-PSWriteHTMLLogonActivity }
+            }
         }
     }    
 
@@ -3620,7 +3639,9 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
         if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
+            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+                script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
+            }
         }
     }
 
@@ -3933,7 +3954,9 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
         if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
+            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+                script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
+            }
         }
     }
 

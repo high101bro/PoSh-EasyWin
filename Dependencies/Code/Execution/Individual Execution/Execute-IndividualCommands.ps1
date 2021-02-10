@@ -138,7 +138,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     ## $OutputFilePath = "$CollectionSavedDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer).csv"
                     ## Remove-Item -Path $OutputFilePath -Force -ErrorAction SilentlyContinue
 
-                    $JobsStarted    = $true
+                    $script:JobsStarted    = $true
                     $CompileResults = $true
 
                     Start-Job -Name "PoSh-EasyWin: $((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)" -ScriptBlock {
@@ -171,7 +171,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
 
                     #if ($CommandType -eq "(WinRM) CMD") {
-                    #    $JobsStarted    = $true
+                    #    $script:JobsStarted    = $true
                     #    $CompileResults = $true
                     #    Start-Job -Name "PoSh-EasyWin: $((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)" -ScriptBlock {
                     #        param($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
@@ -193,7 +193,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
 
                     if (($CommandType -eq "(RPC) WMI") -and ($CommandString -match "Invoke-WmiMethod") ) {
-                        $JobsStarted    = $true
+                        $script:JobsStarted    = $true
                         $CompileResults = $true
                         Start-Job -Name "PoSh-EasyWin: $((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)" -ScriptBlock {
                             param($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
@@ -217,7 +217,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
                         $PoShEasyWin.Refresh()
 
-                        $JobsStarted    = $false
+                        $script:JobsStarted    = $false
                         $CompileResults = $true
 
                         $Username = $script:Credential.UserName
@@ -240,7 +240,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
                         $PoShEasyWin.Refresh()
 
-                        $JobsStarted    = $false
+                        $script:JobsStarted    = $false
                         $CompileResults = $true
 
                         $Username = $script:Credential.UserName
@@ -262,7 +262,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         $MainBottomTabControl.SelectedTab = $Section3ResultsTab
                         $PoShEasyWin.Refresh()
 
-                        $JobsStarted    = $false
+                        $script:JobsStarted    = $false
                         $CompileResults = $false
                         "Results not compiled, they are stored within the Individual Results directory." | Out-File "$script:CollectedDataTimeStampDirectory\$((($Command.Name) -split ' -- ')[1]) - $($Command.Type).txt"
 
@@ -285,7 +285,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     }
 
                     else {
-                        $JobsStarted    = $true
+                        $script:JobsStarted    = $true
                         $CompileResults = $true
                         Start-Job -Name "PoSh-EasyWin: $((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)" -ScriptBlock {
                             param($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
@@ -304,10 +304,10 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     }
     Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
-
-    if ( $JobsStarted -eq $true ) {
+    #$script:JobsStarted is used to track if jobs are being used ($true), jobs don't start when using psexec ($false)
+    if ( $script:JobsStarted -eq $true ) {
         if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-#            Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+            #Monitor-Jobs -CollectionName $CollectionName -MonitorMode
             Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {

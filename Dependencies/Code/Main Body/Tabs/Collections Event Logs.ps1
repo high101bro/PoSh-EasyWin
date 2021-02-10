@@ -91,7 +91,7 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\EventLogsMaximumCollectionTextBox.ps1"
             . "$Dependencies\Code\System.Windows.Forms\TextBox\EventLogsMaximumCollectionTextBox.ps1"
-            $EventLogsMaximumCollectionTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+            $script:EventLogsMaximumCollectionTextBox = New-Object System.Windows.Forms.TextBox -Property @{
                 Text   = 100
                 Left   = $EventLogsMaximumCollectionLabel.Left + $EventLogsMaximumCollectionLabel.Width
                 Top    = $EventLogsMaximumCollectionLabel.Top - $($FormScale * 3)
@@ -99,7 +99,7 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 Enabled  = $True
-                Add_MouseHover = $EventLogsMaximumCollectionTextBoxAdd_MouseHover
+                Add_MouseHover = $script:EventLogsMaximumCollectionTextBoxAdd_MouseHover
             }
 
 
@@ -116,7 +116,7 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\DateTimePicker\EventLogsStartTimePicker.ps1"
             . "$Dependencies\Code\System.Windows.Forms\DateTimePicker\EventLogsStartTimePicker.ps1"
-            $EventLogsStartTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
+            $script:EventLogsStartTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
                 Left         = $EventLogsDatetimeStartLabel.Left + $EventLogsDatetimeStartLabel.Width
                 Top          = $EventLogProtocolRadioButtonLabel.Top + $EventLogProtocolRadioButtonLabel.Height
                 Width        = $FormScale * 250
@@ -132,13 +132,13 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 #MinDate      = (Get-Date -Month 1 -Day 1 -Year 2000).DateTime
                 #MaxDate      = (Get-Date).DateTime
                 Value         = (Get-Date).AddDays(-1).DateTime
-                Add_Click      = $EventLogsStartTimePickerAdd_Click
-                Add_MouseHover = $EventLogsStartTimePickerAdd_MouseHover
+                Add_Click      = $script:EventLogsStartTimePickerAdd_Click
+                Add_MouseHover = $script:EventLogsStartTimePickerAdd_MouseHover
             }
             # Wednesday, June 5, 2019 10:27:40 PM
             # $TimePicker.Value
             # 20190605162740.383143-240
-            # [System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePicker.Value))
+            # [System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:EventLogsStartTimePicker.Value))
 
 
             $EventLogsDatetimeStopLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -154,10 +154,10 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\DateTimePicker\EventLogsStopTimePicker.ps1"
             . "$Dependencies\Code\System.Windows.Forms\DateTimePicker\EventLogsStopTimePicker.ps1"
-            $EventLogsStopTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
+            $script:EventLogsStopTimePicker = New-Object System.Windows.Forms.DateTimePicker -Property @{
                 Left         = $EventLogsDatetimeStopLabel.Left + $EventLogsDatetimeStopLabel.Width
                 Top          = $EventLogsDatetimeStartLabel.Top + $EventLogsDatetimeStartLabel.Height - $($FormScale * 5)
-                Width        = $EventLogsStartTimePicker.Width
+                Width        = $script:EventLogsStartTimePicker.Width
                 Height       = $FormScale * 100
                 Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Format       = [windows.forms.datetimepickerFormat]::custom
@@ -169,9 +169,9 @@ $EventLogsOptionsGroupBox = New-Object System.Windows.Forms.GroupBox -Property @
                 AutoSize     = $true
                 #MinDate      = (Get-Date -Month 1 -Day 1 -Year 2000).DateTime
                 #MaxDate      = (Get-Date).DateTime
-                Add_MouseHover = $EventLogsStartTimePickerAdd_MouseHover
+                Add_MouseHover = $script:EventLogsStartTimePickerAdd_MouseHover
             }
-            $EventLogsOptionsGroupBox.Controls.AddRange(@($EventLogProtocolRadioButtonLabel,$EventLogRPCRadioButton,$EventLogWinRMRadioButton,$EventLogsDatetimeStartLabel,$EventLogsStartTimePicker,$EventLogsDatetimeStopLabel,$EventLogsStopTimePicker,$EventLogsMaximumCollectionLabel,$EventLogsMaximumCollectionTextBox))
+            $EventLogsOptionsGroupBox.Controls.AddRange(@($EventLogProtocolRadioButtonLabel,$EventLogRPCRadioButton,$EventLogWinRMRadioButton,$EventLogsDatetimeStartLabel,$script:EventLogsStartTimePicker,$EventLogsDatetimeStopLabel,$script:EventLogsStopTimePicker,$EventLogsMaximumCollectionLabel,$script:EventLogsMaximumCollectionTextBox))
 $Section1EventLogsTab.Controls.Add($EventLogsOptionsGroupBox)
 
 

@@ -32,7 +32,7 @@ $EventLogRPCRadioButtonAdd_Click = {
 $EventLogRPCRadioButtonAdd_MouseHover = {
     Show-ToolTip -Title "RPC" -Icon "Info" -Message @"
 +  Get-WmiObject -Class Win32_NTLogEvent -Filter "(((EventCode='4624') OR (EventCode='4634')) and `
- (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($EventLogsStartTimePicker.Value)))') and (TimeGenerated<='20190314180030.000000-300'))"
+ (TimeGenerated>='$([System.Management.ManagementDateTimeConverter]::ToDmtfDateTime(($script:EventLogsStartTimePicker.Value)))') and (TimeGenerated<='20190314180030.000000-300'))"
 "@
 }
 

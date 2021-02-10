@@ -150,7 +150,7 @@ $MainCenterMainTab.Controls.Add($ResultsSectionLabel)
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\PSWriteHTMLButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\PSWriteHTMLButton.ps1"
 $PSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Graph Data (BETA)"
+    Text     = "Graph Data [Beta]"
     Location = @{ X = $ResultsSectionLabel.Location.X
                   Y = $ResultsSectionLabel.Location.Y + $ResultsSectionLabel.Size.Height }
     Size     = @{ Width  = $FormScale * 115

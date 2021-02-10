@@ -6,11 +6,11 @@ $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
-$EventLogsMaximumCollectionTextBoxText   = $EventLogsMaximumCollectionTextBox.Text
-$EventLogsStartTimePickerChecked         = $EventLogsStartTimePicker.Checked
-$EventLogsStopTimePickerChecked          = $EventLogsStopTimePicker.Checked
-$EventLogsStartTimePickerValue           = $EventLogsStartTimePicker.Value
-$EventLogsStopTimePickerValue            = $EventLogsStopTimePicker.Value
+$EventLogsMaximumCollectionTextBoxText   = $script:EventLogsMaximumCollectionTextBox.Text
+$EventLogsStartTimePickerChecked         = $script:EventLogsStartTimePicker.Checked
+$EventLogsStopTimePickerChecked          = $script:EventLogsStopTimePicker.Checked
+$EventLogsStartTimePickerValue           = $script:EventLogsStartTimePicker.Value
+$EventLogsStopTimePickerValue            = $script:EventLogsStopTimePicker.Value
 
 function Query-EventLogLogsEventIDsManualEntrySessionBased {
     param(

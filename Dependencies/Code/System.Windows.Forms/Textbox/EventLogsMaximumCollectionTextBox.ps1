@@ -1,4 +1,4 @@
-$EventLogsMaximumCollectionTextBoxAdd_MouseHover = {
+$script:EventLogsMaximumCollectionTextBoxAdd_MouseHover = {
     Show-ToolTip -Title "Max Collection" -Icon "Info" -Message @"
 +  Enter the maximum number of Event Logs to return
 +  This can be used with the datatime picker

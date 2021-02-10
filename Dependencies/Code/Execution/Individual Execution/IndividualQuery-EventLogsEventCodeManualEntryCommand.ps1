@@ -8,11 +8,11 @@ $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
 $EventLogsEventIDsManualEntryTextboxText = $EventLogsEventIDsManualEntryTextbox.Lines
-$EventLogsMaximumCollectionTextBoxText   = $EventLogsMaximumCollectionTextBox.Lines
-$EventLogsStartTimePickerChecked         = $EventLogsStartTimePicker.Checked
-$EventLogsStopTimePickerChecked          = $EventLogsStopTimePicker.Checked
-$EventLogsStartTimePickerValue           = $EventLogsStartTimePicker.Value
-$EventLogsStopTimePickerValue            = $EventLogsStopTimePicker.Value
+$EventLogsMaximumCollectionTextBoxText   = $script:EventLogsMaximumCollectionTextBox.Lines
+$EventLogsStartTimePickerChecked         = $script:EventLogsStartTimePicker.Checked
+$EventLogsStopTimePickerChecked          = $script:EventLogsStopTimePicker.Checked
+$EventLogsStartTimePickerValue           = $script:EventLogsStartTimePicker.Value
+$EventLogsStopTimePickerValue            = $script:EventLogsStopTimePicker.Value
 
 function Query-EventLogLogsEventIDsManualEntrySessionBased {
     param(

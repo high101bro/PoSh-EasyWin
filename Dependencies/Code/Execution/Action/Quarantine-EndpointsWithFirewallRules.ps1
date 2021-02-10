@@ -38,7 +38,7 @@ function Quarantine-EndpointsWithFirewallRules {
     if ($script:ComputerList.count -eq 0){
         [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints.','Error: No Endpoints Selected')
     }
-    elseif ($ActionsTabCopyEndpointFirewallRulesRadioButton.checked -and $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.text -eq "Enter IP, Range, or Subnet"){
+    elseif ($ActionsTabCopyEndpointFirewallRulesRadioButton.checked -and $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.text -eq "Enter IP, Range, or Subnet"){
         [System.Windows.MessageBox]::Show("Make sure you enter a valid IP, Range, or Subnet.
 
 NOTE: Mouse hover over the textbox for a list of references.
@@ -54,7 +54,7 @@ $($script:ComputerList -join ', ')
 
 These endpoints will only be accessable from the following:
 
-$($ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.text)
+$($script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.text)
 
 CAUTION! If you make a bad entry, you may cause the endpoints to become inaccessible over the network.",'Backup and Quarantine','YesNo')
         }
@@ -98,7 +98,7 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                 if ($Session) {
                     $ResultsListBox.Items.Insert(1,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  Conducting actions on: $Computer")
                     if ($CopyEndpointFirewallRulesToLocalhost) {
-                        $ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText = $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.Text
+                        $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText = $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.Text
                         $CancelQuarantine = $false
 
                         if (Test-Path "$OutputFirewallRulesDirectory\$Computer - Firewall Rules.wfw"){
@@ -215,11 +215,11 @@ CAUTION! If you make a bad entry, you may cause the endpoints to become inaccess
                                 $EndpointFirewallArray = @($EndpointFirewallProfiles, $EndpointFirewallRules)
                                 return $EndpointFirewallArray
                             }
-                            Invoke-Command -ScriptBlock $ScriptBlockQuarantine -ArgumentList @($ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText,$null) -Session $Session
-                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message 'Invoke-Command -ScriptBlock $ScriptBlockQuarantine -ArgumentList @($ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText,$null) -Session $Session'
+                            Invoke-Command -ScriptBlock $ScriptBlockQuarantine -ArgumentList @($script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText,$null) -Session $Session
+                            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message 'Invoke-Command -ScriptBlock $ScriptBlockQuarantine -ArgumentList @($script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText,$null) -Session $Session'
                             $ResultsListBox.Items.Insert(2,"$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  - Applying Quarantine firewall rules")
 
-                            Tag-QuarantineMessage -Computer $Computer -Message "[Quarantined] at $(Get-Date) -- Accessible from $ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText`n"
+                            Tag-QuarantineMessage -Computer $Computer -Message "[Quarantined] at $(Get-Date) -- Accessible from $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextboxText`n"
                         }
                     }
 

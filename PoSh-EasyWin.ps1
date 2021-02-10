@@ -1180,7 +1180,7 @@ $ExecuteScriptHandler = {
     # Counts the section queries and assigns value to the $script:SectionQueryCount variable
     Count-SectionQueries
 
-    if ($EventLogsStartTimePicker.Checked -xor $EventLogsStopTimePicker.Checked) {
+    if ($script:EventLogsStartTimePicker.Checked -xor $script:EventLogsStopTimePicker.Checked) {
         # This brings specific tabs to the forefront/front view
         $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
         #$MainBottomTabControl.SelectedTab = $Section3ResultsTab

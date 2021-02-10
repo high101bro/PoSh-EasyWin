@@ -1,8 +1,9 @@
 Function Get-AccountLogonActivity {
     Param (
         [datetime]$StartTime,
-        [datetime]$EndTime
-    )s
+        [datetime]$EndTime,
+        $AccountActivityTextboxtext
+    )
     function LogonTypes {
         param($number)
         switch ($number) {
@@ -50,8 +51,6 @@ Function Get-AccountLogonActivity {
         $FilterHashTable['EndTime'] = $EndTime
     }
 
-    $AccountActivityTextboxtext = $AccountActivityTextbox.lines | Where-Object {$_ -ne ''}
-
     Get-WinEvent -FilterHashtable $FilterHashTable `
     | Set-Variable GetAccountActivity -Force
 
@@ -73,5 +72,22 @@ Function Get-AccountLogonActivity {
             $ObtainedAccountActivity | Where-Object {$_.UserAccount -match $AccountName} | Sort-Object TimeStamp
         }
     }
+    elseif ($AccountActivityTextboxtext.count -eq 1 -and $AccountActivityTextboxtext -match 'Default is All Accounts') {
+        $ObtainedAccountActivity = $GetAccountActivity | ForEach-Object {
+            [pscustomobject]@{
+                TimeStamp            = $_.TimeCreated
+                UserAccount          = $_.Properties.Value[5]
+                UserDomain           = $_.Properties.Value[6]
+                Type                 = $_.Properties.Value[8]
+                LogonType            = "$(LogonTypes -number $($_.Properties.Value[8]))"
+                LogonInterpretation  = "$(LogonInterpretation -number $($_.Properties.Value[8]))"
+                WorkstationName      = $_.Properties.Value[11]
+                SourceNetworkAddress = $_.Properties.Value[18]
+                SourceNetworkPort    = $_.Properties.Value[19]
+            }
+        }
+        $ObtainedAccountActivity | Sort-Object TimeStamp
+    }
+
 }
 

@@ -284,7 +284,7 @@ $Section1ActionOnEndpointTab.Controls.Add($ActionsTabKillNetworkConnectionGroupB
 
 
 $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Text   = "Quarantine Endpoints (WinRM) - [Alpha Testing]"
+    Text   = "Quarantine Endpoints (WinRM) - [Beta]"
     Left   = $FormScale * 5
     Top    = $ActionsTabKillNetworkConnectionGroupBox.Top + $ActionsTabKillNetworkConnectionGroupBox.Height + $($FormScale * 10)
     Width  = $FormScale * 425
@@ -305,7 +305,7 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Textbox\ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.ps1"
             . "$Dependencies\Code\System.Windows.Forms\Textbox\ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.ps1"
-            $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox = New-Object System.Windows.Forms.Textbox -Property @{
+            $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox = New-Object System.Windows.Forms.Textbox -Property @{
                 Text   = "Enter IP, Range, or Subnet"
                 Left   = $FormScale * 268
                 Top    = $ActionsTabQuarantineEndpointLabel.Top
@@ -313,11 +313,11 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor      = 'Black'
-                Add_MouseEnter = $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseEnter
-                Add_MouseLeave = $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseLeave
-                Add_MouseHover = $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseHover
+                Add_MouseEnter = $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseEnter
+                Add_MouseLeave = $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseLeave
+                Add_MouseHover = $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseHover
             }
-            $ActionsTabQuarantineEndpointGroupBox.Controls.Add($ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox)
+            $ActionsTabQuarantineEndpointGroupBox.Controls.Add($script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox)
 
 
             $ActionsTabCopyEndpointFirewallRulesRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
@@ -331,7 +331,7 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
                 Checked   = $true
                 Add_Click = {
                     If ($this.checked){
-                        $ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.Enabled = $true
+                        $script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.Enabled = $true
                         $ActionsTabQuarantineEndpointsButton.text = "Backup and Quarantine"
                     }
                 }
@@ -348,7 +348,7 @@ $ActionsTabQuarantineEndpointGroupBox = New-Object System.Windows.Forms.GroupBox
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = 'Black'
                 Add_CLick = {
-                    If ($this.checked){$ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.Enabled = $false}
+                    If ($this.checked){$script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox.Enabled = $false}
                     $ActionsTabQuarantineEndpointsButton.text = "Restore and Un-Quarantine"
                 }
             }

@@ -1,4 +1,4 @@
-$EventLogsStartTimePickerAdd_MouseHover = {
+$script:EventLogsStartTimePickerAdd_MouseHover = {
     Show-ToolTip -Title "DateTime - Ending" -Icon "Info" -Message @"
 +  Select the ending datetime to filter Event Logs
 +  This can be used with the Max Collection field

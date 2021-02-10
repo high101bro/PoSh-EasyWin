@@ -10,11 +10,11 @@ $script:ProgressBarEndpointsProgressBar.Value = 0
 $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName"
 
 $EventLogsEventIDsToMonitorCheckListBoxCheckedItems = $EventLogsEventIDsToMonitorCheckListBox.CheckedItems
-$EventLogsMaximumCollectionTextBoxText = $EventLogsMaximumCollectionTextBox.Text
-$EventLogsStartTimePickerChecked       = $EventLogsStartTimePicker.Checked
-$EventLogsStopTimePickerChecked        = $EventLogsStopTimePicker.Checked
-$EventLogsStartTimePickerValue         = $EventLogsStartTimePicker.Value
-$EventLogsStopTimePickerValue          = $EventLogsStopTimePicker.Value
+$EventLogsMaximumCollectionTextBoxText = $script:EventLogsMaximumCollectionTextBox.Text
+$EventLogsStartTimePickerChecked       = $script:EventLogsStartTimePicker.Checked
+$EventLogsStopTimePickerChecked        = $script:EventLogsStopTimePicker.Checked
+$EventLogsStartTimePickerValue         = $script:EventLogsStartTimePicker.Value
+$EventLogsStopTimePickerValue          = $script:EventLogsStopTimePicker.Value
 
 
 Invoke-Command -ScriptBlock {

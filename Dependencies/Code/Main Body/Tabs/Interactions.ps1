@@ -24,13 +24,13 @@ $MainLeftSection1InteractionsTabTabControl = New-Object System.Windows.Forms.Tab
 $Section1InteractionsTab.Controls.Add($MainLeftSection1InteractionsTabTabControl)
 
 
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions\Interactions Multi-Endpoint Actions.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Interactions\Interactions Multi-Endpoint Actions.ps1"
+Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions Multi-Endpoint Actions.ps1"
+. "$Dependencies\Code\Main Body\Tabs\Interactions Multi-Endpoint Actions.ps1"
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()
 
 
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions\Interactions Executables.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Interactions\Interactions Executables.ps1"
+Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions Executables.ps1"
+. "$Dependencies\Code\Main Body\Tabs\Interactions Executables.ps1"
 $script:ProgressBarFormProgressBar.Value += 1
 $script:ProgressBarSelectionForm.Refresh()

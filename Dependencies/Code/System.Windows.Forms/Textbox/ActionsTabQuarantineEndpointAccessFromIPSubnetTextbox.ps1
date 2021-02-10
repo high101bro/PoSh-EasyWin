@@ -1,16 +1,16 @@
-$ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseEnter = {
+$script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseEnter = {
     if ($this.text -eq "Enter IP, Range, or Subnet") {
         $this.text = ""
     }
 }
 
-$ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseLeave = {
+$script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseLeave = {
     if ($this.text -eq "") {
         $this.text = "Enter IP, Range, or Subnet"
     }
 }
 
-$ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseHover = {
+$script:ActionsTabQuarantineEndpointAccessFromIPSubnetTextbox_MouseHover = {
     Show-ToolTip -Title "Access Endpoints from IP or Subnet" -Icon "Info" -Message @"
 +  This textbox identifies the host(s) that can access the quarantined endpoint(s).
 +  CAUTION! If there's an error in the entry, the endpoint(s) may become completely inaccessible over the network.
