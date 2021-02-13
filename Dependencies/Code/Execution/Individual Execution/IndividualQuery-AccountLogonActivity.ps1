@@ -11,9 +11,9 @@ $script:ProgressBarEndpointsProgressBar.Value = 0
 $AccountsStartTimePickerValue = $AccountsStartTimePicker.Value
 $AccountsStopTimePickerValue  = $AccountsStopTimePicker.Value
 
+$AccountActivityTextboxtext = $AccountActivityTextbox.lines | Where-Object {$_ -ne ''}
 
 $script:MonitorJobScriptBlock = {
-    $AccountActivityTextboxtext = $AccountActivityTextbox.lines | Where-Object {$_ -ne ''}
 
     foreach ($TargetComputer in $script:ComputerList) {
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
@@ -39,9 +39,51 @@ $script:MonitorJobScriptBlock = {
 }
 Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
+$EndpointString = ''
+foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+$SearchString = ''
+foreach ($item in $AccountActivityTextboxtext) {$SearchString += "$item`n" }
+
+$InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$CollectionName
+
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+===========================================================================
+Event Start DateTime:
+===========================================================================
+$AccountsStartTimePickerValue
+
+===========================================================================
+Event End DateTime:
+===========================================================================
+$AccountsStopTimePickerValue
+
+===========================================================================
+Accounts:
+===========================================================================
+$SearchString
+
+"@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

@@ -51,9 +51,51 @@ $script:MonitorJobScriptBlock = {
 }
 Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
+$EndpointString = ''
+foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+$SearchString = ''
+foreach ($item in $FilesToSearch) {$SearchString += "$item`n" }
+
+$InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$CollectionName
+
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+===========================================================================
+Selection Type:
+===========================================================================
+$FileHashSelection
+
+===========================================================================
+Directories To Search:
+===========================================================================
+$DirectoryPath
+
+===========================================================================
+Files to Search:
+===========================================================================
+$($SearchString.trim())
+
+"@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -SmithFlag 'RetrieveFile'
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -SmithFlag 'RetrieveFile' -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

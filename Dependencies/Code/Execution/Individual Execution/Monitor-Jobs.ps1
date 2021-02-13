@@ -10,6 +10,7 @@ function Monitor-Jobs {
         [switch]$AutoReRun,
         [int]$RestartTime = $($script:OptionMonitorJobsDefaultRestartTimeCombobox.text),
         [switch]$DisableReRun,
+        $InputValues,
         [switch]$PcapSwitch,
         [switch]$PSWriteHTMLSwitch,
         $PSWriteHTML
@@ -112,6 +113,7 @@ if ($MonitorMode) {
         Invoke-Expression @"
         `$script:SmithScript$JobId = `$SmithScript
         `$script:RestartTime$JobId = `$RestartTime
+        `$script:InputValues$JobId = `$InputValues
 "@
     }
 
@@ -465,7 +467,7 @@ if ($MonitorMode) {
                                     
                                     
                                             `$script:MonitorJobsDetailsRunningSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                                                text      = "Checkbox The Selected`nIn The`nComputer TreeView"
+                                                text      = "Computer TreeView:`nCheckbox The Above`nSelected Endpoints"
                                                 left      = `$FormScale * 5
                                                 top       = `$script:MonitorJobsDetailsRunningSelectAllButton$JobId.Top + `$script:MonitorJobsDetailsRunningSelectAllButton$JobId.Height + (`$FormScale * 5)
                                                 Width     = `$FormScale * 140
@@ -546,7 +548,7 @@ if ($MonitorMode) {
         
                                         
                                                 `$script:MonitorJobsDetailsCompletedSelectedForTreeNodeLButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                                                    text      = "Checkbox The Selected`nIn The`nComputer TreeView"
+                                                    text      = "Computer TreeView:`nCheckbox The Above`nSelected Endpoints"
                                                     left      = `$FormScale * 5
                                                     top       = `$script:MonitorJobsDetailsCompletedSelectAllButton$JobId.Top + `$script:MonitorJobsDetailsCompletedSelectAllButton$JobId.Height + (`$FormScale * 5)
                                                     Width     = `$FormScale * 140
@@ -628,7 +630,7 @@ if ($MonitorMode) {
     
                                             
                                             `$script:MonitorJobsDetailsStoppedSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                                                text      = "Checkbox The Selected`nIn The`nComputer TreeView"
+                                                text      = "Computer TreeView:`nCheckbox The Above`nSelected Endpoints"
                                                 left      = `$FormScale * 5
                                                 top       = `$script:MonitorJobsDetailsStoppedSelectAllButton$JobId.Top + `$script:MonitorJobsDetailsStoppedSelectAllButton$JobId.Height + (`$FormScale * 5)
                                                 Width     = `$FormScale * 140
@@ -710,7 +712,7 @@ if ($MonitorMode) {
     
                                         
                                                 `$script:MonitorJobsDetailsFailedSelectedForTreeNodeButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                                                    text      = "Checkbox The Selected`nIn The`nComputer TreeView"
+                                                    text      = "Computer TreeView:`nCheckbox The Above`nSelected Endpoints"
                                                     left      = `$FormScale * 5
                                                     top       = `$script:MonitorJobsDetailsFailedSelectAllButton$JobId.Top + `$script:MonitorJobsDetailsFailedSelectAllButton$JobId.Height + (`$FormScale * 5)
                                                     Width     = `$FormScale * 140
@@ -866,7 +868,7 @@ if ($MonitorMode) {
             else {
             Invoke-Expression @"
             `$script:Section3MonitorJobCommandButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text     = 'Command'
+                text     = 'Details'
                 Left     = `$script:Section3MonitorJobDetailsButton$JobId.Left
                 Top      = `$script:Section3MonitorJobDetailsButton$JobId.Top + `$script:Section3MonitorJobDetailsButton$JobId.Height + (`$FormScale * 5)
                 Width    = `$FormScale * 75
@@ -889,7 +891,7 @@ if ($MonitorMode) {
                     }
 
                         `$script:Section3MonitorJobViewCommandRichTextBox$JobId = New-Object System.Windows.Forms.RichTextBox -Property @{
-                            text      = `$(`$script:CurrentJobs$JobId.command)
+                            text      =  `$(`$script:InputValues$JobId)  #`$(`$script:CurrentJobs$JobId.command)
                             left      = `$FormScale * 10
                             top       = `$FormScale * 10
                             Width     = `$FormScale * 635
@@ -1063,7 +1065,7 @@ if ($SmithFlag -eq 'RetrieveFile') {
             #`$script:SmithScript$JobId | ogv 'Restart Script 1'
             
             Invoke-Command -ScriptBlock `$script:SmithScript$JobId
-            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile'
+            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
             
             # Cleanup
             Remove-Variable -Name  "SmithScript$JobId" -Scope script
@@ -1090,7 +1092,7 @@ elseif ($SmithFlag -eq 'RetrieveADS') {
             #`$script:SmithScript$JobId | ogv 'Restart Script 1'
             
             Invoke-Command -ScriptBlock `$script:SmithScript$JobId
-            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveADS'
+            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveADS' -InputValues `$script:InputValues$JobId
             
             # Cleanup
             Remove-Variable -Name  "SmithScript$JobId" -Scope script
@@ -1116,7 +1118,7 @@ else {
             #`$script:SmithScript$JobId | ogv 'Restart Script 1'
             
             Invoke-Command -ScriptBlock `$script:SmithScript$JobId
-            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId
+            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
             
             # Cleanup
             Remove-Variable -Name  "SmithScript$JobId" -Scope script
@@ -1429,7 +1431,7 @@ if ($DisableReRun) {
 
                             # Restarts the query, by starting a new job
                             #"`$script:SmithScript$JobId" | ogv 'Restart Script'
-#batman
+
                             Invoke-Command -ScriptBlock `$script:SmithScript$JobId
                             if ( `$script:SmithFlagRetrieveFile$JobId ) {
                                 Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile'
@@ -1438,7 +1440,7 @@ if ($DisableReRun) {
                                 Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile'
                             }
                             else {
-                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId
+                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
                             }
                             Remove-Variable -Name  "SmithScript$JobId" -Scope script
 

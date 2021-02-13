@@ -33,9 +33,46 @@ $script:MonitorJobScriptBlock = {
 }
 Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
+$EndpointString = ''
+foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+$SearchString = ''
+foreach ($item in $DirectoriesToSearch) {$SearchString += "$item`n" }
+
+$InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$CollectionName
+
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+===========================================================================
+Maximum Depth:
+===========================================================================
+$MaximumDepth
+
+===========================================================================
+Directories To Search:
+===========================================================================
+$($SearchString.trim())
+
+"@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -SmithFlag 'RetrieveADS'
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -SmithFlag 'RetrieveADS' -InputValues $InputValues
 }
 
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {

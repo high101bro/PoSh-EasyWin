@@ -94,9 +94,34 @@ $script:MonitorJobScriptBlock = {
 }
 Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
+$EndpointString = ''
+foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+
+$InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$CollectionName
+
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+"@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

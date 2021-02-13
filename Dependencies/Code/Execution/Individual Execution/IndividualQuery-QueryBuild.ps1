@@ -40,9 +40,41 @@ foreach ($TargetComputer in $script:ComputerList) {
     }
 }
 
+$EndpointString = ''
+foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+$SearchString = ''
+#foreach ($item in $NetworkConnectionSearchDNSCache) {$SearchString += "$item`n" }
+
+$InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$CollectionName
+
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+===========================================================================
+UNDER DEVELOPMENT
+===========================================================================
+$($SearchString.trim())
+
+"@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

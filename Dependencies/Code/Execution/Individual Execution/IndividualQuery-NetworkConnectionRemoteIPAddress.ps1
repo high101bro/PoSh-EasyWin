@@ -4,6 +4,7 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
+$NetworkConnectionSearchRemoteIPAddress = $NetworkConnectionSearchRemoteIPAddressRichTextbox.Lines
 
 $script:MonitorJobScriptBlock = {
     foreach ($TargetComputer in $script:ComputerList) {
@@ -28,10 +29,6 @@ $script:MonitorJobScriptBlock = {
             $QueryCredential      = $null
         }
 
-        $NetworkConnectionSearchRemoteIPAddress = $NetworkConnectionSearchRemoteIPAddressRichTextbox.Lines
-        #$NetworkConnectionSearchRemoteIPAddress = @()
-        #foreach ($IP in $($NetworkConnectionSearchRemoteIPAddressRichTextbox.Text).split("`r`n")){ $NetworkConnectionSearchRemoteIPAddress += $IP }
-
 
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
@@ -54,9 +51,41 @@ $script:MonitorJobScriptBlock = {
 }
 Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
+$EndpointString = ''
+foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+$SearchString = ''
+foreach ($item in $NetworkConnectionSearchRemoteIPAddress) {$SearchString += "$item`n" }
+
+$InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$CollectionName
+
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+===========================================================================
+Remote IP Address:
+===========================================================================
+$($SearchString.trim())
+
+"@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

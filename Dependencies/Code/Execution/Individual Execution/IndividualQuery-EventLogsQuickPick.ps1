@@ -44,8 +44,54 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
 
 
 
+function String-InputValues {
+    param($InputValue)
+    $EndpointString = ''
+    foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
 
+    $script:InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+Event ID Quick Selection
 
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+===========================================================================
+Start Time:  [$EventLogsStartTimePickerChecked]
+===========================================================================
+$EventLogsStartTimePickerValue
+
+===========================================================================
+End Time:  [$EventLogsStopTimePickerChecked]
+===========================================================================
+$EventLogsStopTimePickerValue
+
+===========================================================================
+Maximum Logs
+===========================================================================
+$EventLogsMaximumCollectionTextBoxText
+
+===========================================================================
+Event Logs:
+===========================================================================
+$InputValue
+
+"@
+}
 
 
 
@@ -53,7 +99,7 @@ if ($EventLogWinRMRadioButton.Checked) {
     if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
         if (!$script:Credential) { Create-NewCredentials }
 
-        foreach ($Query in $script:EventLogQueries) {        
+        foreach ($Query in $script:EventLogQueries) {
             if ($EventLogsQuickPickSelectionCheckedlistbox.CheckedItems -match $Query.Name) {
                 $script:CollectionName = "Event Logs - $($Query.Name)"
 
@@ -75,8 +121,10 @@ if ($EventLogWinRMRadioButton.Checked) {
                 }
                 Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
+                String-InputValues -InputValue "$($Query.Name)"
+
                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -DisableReRun
+                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -DisableReRun -InputValues $script:InputValues
                 }
                 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
                     Monitor-Jobs -CollectionName $script:CollectionName
@@ -107,8 +155,10 @@ if ($EventLogWinRMRadioButton.Checked) {
                 }
                 Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
+                String-InputValues -InputValue "$($Query.Name)"
+
                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -DisableReRun
+                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -DisableReRun -InputValues $script:InputValues
                 }
                 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
                     Monitor-Jobs -CollectionName $script:CollectionName
@@ -171,9 +221,10 @@ else {
                 }
                 Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
+                String-InputValues -InputValue "$($Query.Name)"
 
                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -DisableReRun
+                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -DisableReRun -InputValues $script:InputValues
                 }
                 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
                     Monitor-Jobs -CollectionName $script:CollectionName
@@ -231,9 +282,10 @@ else {
                 }
                 Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
+                String-InputValues -InputValue "$($Query.Name)"
 
                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -DisableReRun
+                    Monitor-Jobs -CollectionName $script:CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -DisableReRun -InputValues $script:InputValues
                 }
                 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
                     Monitor-Jobs -CollectionName $script:CollectionName

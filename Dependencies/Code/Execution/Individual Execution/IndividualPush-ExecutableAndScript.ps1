@@ -93,9 +93,49 @@ foreach ($TargetComputer in $script:ComputerList) {
     }
 }
 
+$EndpointString = ''
+foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
+
+$InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$CollectionName
+
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+===========================================================================
+Target Folder:
+===========================================================================
+$TargetFolder
+
+===========================================================================
+Directory / File Path
+===========================================================================
+$ExeScriptSelectDirOrFilePath
+
+===========================================================================
+Script Path:
+===========================================================================
+$ExeScriptSelectScriptPath
+
+"@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

@@ -154,9 +154,35 @@ foreach ($TargetComputer in $script:ComputerList) {
 
     } -ArgumentList @($ComputerListProvideCredentialsCheckBox,$script:Credential,$TargetComputer,$CaptureType,$Report,$MaxSize,$CaptureSeconds,$EndpointEtlTraceFile,$EndpointCabTraceFile,$LocalEtlFilePath,$LocalCabFilePath,$etl2pcapng,$OutPcapNG,$OptionPacketKeepEtlCabFilesCheckBox,$script:CollectionSavedDirectoryTextBox,$CollectionName)
 
+    $InputValues = @"
+===========================================================================
+Collection Name:
+===========================================================================
+$CollectionName
 
+===========================================================================
+Execution Time:
+===========================================================================
+$ExecutionStartTime
+
+===========================================================================
+Credentials:
+===========================================================================
+$($script:Credential.UserName)
+
+===========================================================================
+Endpoints:
+===========================================================================
+$($EndpointString.trim())
+
+===========================================================================
+Command:
+===========================================================================
+"netsh trace start capture=yes capturetype=$CaptureType report=$Report persistent=no maxsize=$MaxSize overwrite=yes correlation=yes perfMerge=yes traceFile=$EndpointEtlTraceFile"
+
+"@
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PcapSwitch -DisableReRun
+        Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PcapSwitch -DisableReRun -InputValues $InputValues
     }
     elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
         Monitor-Jobs -CollectionName $CollectionName -NotExportFiles
