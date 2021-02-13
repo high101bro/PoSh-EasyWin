@@ -54,8 +54,8 @@ Function Completed-QueryExecution {
 
     Execute-TextToSpeach
 
-    $OpenCsvResultsButton.BackColor = 'LightGreen'
-    $OpenXmlResultsButton.BackColor = 'LightGreen'
+    #$OpenCsvResultsButton.BackColor = 'LightGreen'
+    #$OpenXmlResultsButton.BackColor = 'LightGreen'
 
     #Deselect-AllComputers
     Deselect-AllCommands

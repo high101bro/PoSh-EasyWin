@@ -48,7 +48,7 @@ if ($MonitorMode) {
         # Moves all form items higher up that are not created before this one
         Get-Variable | Where-Object {`$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
             if (`$_.Name -notin `$script:PreviousJobFormItemsList$JobId){
-                `$_.Value.top = `$_.Value.Top - `$script:JobsRowHeight - `$script:JobsRowGap
+                `$_.Value.top = `$_.Value.Top - `$script:JobsRowHeight - `$script:JobsRowGap - (`$FormScale * 4)
             }
         }
 
