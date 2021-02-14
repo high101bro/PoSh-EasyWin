@@ -52,7 +52,7 @@ Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
 $SearchString1 = ''
-foreach ($item in $FilesToSearch) {$SearchString1 += "$item`n" }
+foreach ($item in $DirectoriesToSearch) {$SearchString1 += "$item`n" }
 $SearchString2 = ''
 foreach ($item in $FilesToSearch) {$SearchString2 += "$item`n" }
 

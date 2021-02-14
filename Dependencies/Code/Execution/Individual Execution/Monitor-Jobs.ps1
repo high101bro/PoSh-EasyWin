@@ -1386,7 +1386,8 @@ if ($DisableReRun) {
                         `$script:CurrentJobsWithComputerName$JobId | Select-Object * | Export-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -NoTypeInformation
                         `$script:CurrentJobsWithComputerName$JobId | Select-Object * | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
 
-                        `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                        `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
+                        `$script:Section3MonitorJobProgressBar$JobId.Value = 1
                         `$script:Section3MonitorJobProgressBar$JobId.Refresh()
 
                         if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
