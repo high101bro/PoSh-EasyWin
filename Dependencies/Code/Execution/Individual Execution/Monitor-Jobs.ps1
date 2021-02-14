@@ -1229,17 +1229,16 @@ if ($DisableReRun) {
                 `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
 
                 
-                `$script:JobsStartedCount$JobId = -1
+                #`$script:JobsStartedCount$JobId = -1
                 `$script:JobsTimeCompleted$JobId = Get-Date
                 `$script:Timer$JobId.Stop()
                 
                 `$script:Timer$JobId = `$null
                 Remove-Variable -Name Timer$JobId -Scope script
 
-
                 
-                
-                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
+                `$script:Section3MonitorJobProgressBar$JobId.Value = 1
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
 
                 if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
@@ -1275,7 +1274,7 @@ if ($DisableReRun) {
                 `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
 
                 
-                `$script:JobsStartedCount$JobId = -1
+                #`$script:JobsStartedCount$JobId = -1
                 `$script:JobsTimeCompleted$JobId = Get-Date
                 `$script:Timer$JobId.Stop()
                 
@@ -1325,7 +1324,8 @@ if ($DisableReRun) {
                 }
 
                 
-                `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
+                `$script:Section3MonitorJobProgressBar$JobId.Value = 1
                 `$script:Section3MonitorJobProgressBar$JobId.Refresh()
 
                 if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
@@ -1374,7 +1374,7 @@ if ($DisableReRun) {
                     }
 
                     function script:Get-JobsCollectedData$JobId {
-                        `$script:JobsStartedCount$JobId = -1
+                        #`$script:JobsStartedCount$JobId = -1
                         `$script:JobsTimeCompleted$JobId = Get-Date
                         `$script:Timer$JobId.Stop()
                         `$script:Timer$JobId = `$null
@@ -1419,12 +1419,16 @@ if ($DisableReRun) {
                         
                         # Displays how long until the code is executed again
                         if ( `$script:CurrentTime$JobId -lt `$script:JobStopTime$JobId.AddSeconds(`$script:RestartTime$JobId) ) {
+                            `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
+                            `$script:Section3MonitorJobProgressBar$JobId.Value = 1
+                            `$script:Section3MonitorJobProgressBar$JobId.Refresh()
+    
                             `$script:RestartTimeCountdown$JobId = (`$script:JobStopTime$JobId.AddSeconds(`$script:RestartTime$JobId) - `$script:CurrentTime$JobId).TotalSeconds
                             `$script:Section3MonitorJobTransparentLabel$JobId.Text = "Endpoint Count: [`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] -- Restarts: [`$([Math]::Truncate(`$script:RestartTimeCountdown$JobId))] `n`$script:JobName$JobId"
                         }
                         # Executes the code again when the timer runs out
                         else {
-                            `$script:JobsStartedCount$JobId = -1
+                            #`$script:JobsStartedCount$JobId = -1
                             `$script:JobsTimeCompleted$JobId = Get-Date
                             `$script:Timer$JobId.Stop()
                             `$script:Timer$JobId = `$null
@@ -1437,10 +1441,10 @@ if ($DisableReRun) {
 
                             Invoke-Command -ScriptBlock `$script:SmithScript$JobId
                             if ( `$script:SmithFlagRetrieveFile$JobId ) {
-                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile'
+                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
                             }
                             elseif ( `$script:SmithFlagRetrieveADS$JobId ) {
-                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile'
+                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
                             }
                             else {
                                 Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
@@ -1488,7 +1492,7 @@ if ($DisableReRun) {
                         `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'Orange' #'LightGreen'
         
 
-                        `$script:JobsStartedCount$JobId = -1
+                        #`$script:JobsStartedCount$JobId = -1
                         `$script:JobsTimeCompleted$JobId = Get-Date
                         `$script:Timer$JobId.Stop()
                         `$script:Timer$JobId = `$null
@@ -1499,7 +1503,8 @@ if ($DisableReRun) {
                         `$script:CurrentJobs$JobId | Receive-Job -Keep | Select-Object * | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
                         `$script:CurrentJobs$JobId | Stop-Job
                         
-                        `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                        `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
+                        `$script:Section3MonitorJobProgressBar$JobId.Value = 1
                         `$script:Section3MonitorJobProgressBar$JobId.Refresh()
         
                         if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
@@ -1531,7 +1536,7 @@ if ($DisableReRun) {
                     `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
 
                     
-                    `$script:JobsStartedCount$JobId = -1
+                    #`$script:JobsStartedCount$JobId = -1
                     `$script:JobsTimeCompleted$JobId = Get-Date
                     `$script:Timer$JobId.Stop()
                     
@@ -1549,7 +1554,8 @@ if ($DisableReRun) {
                     `$script:CurrentJobsWithComputerName$JobId = `$null
                     Remove-Variable -Name CurrentJobsWithComputerName$JobId -Scope script
 
-                    `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                    `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
+                    `$script:Section3MonitorJobProgressBar$JobId.Value = 1
                     `$script:Section3MonitorJobProgressBar$JobId.Refresh()
 
                     if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
@@ -1575,7 +1581,7 @@ if ($DisableReRun) {
                         `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
         
                         
-                        `$script:JobsStartedCount$JobId = -1
+                        #`$script:JobsStartedCount$JobId = -1
                         `$script:JobsTimeCompleted$JobId = Get-Date
                         `$script:Timer$JobId.Stop()
                         
@@ -1588,7 +1594,8 @@ if ($DisableReRun) {
                         `$script:CurrentJobs$JobId | Stop-Job
 
                         
-                        `$script:Section3MonitorJobProgressBar$JobId.Value = `$script:Section3MonitorJobProgressBar$JobId.Maximum
+                        `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
+                        `$script:Section3MonitorJobProgressBar$JobId.Value = 1
                         `$script:Section3MonitorJobProgressBar$JobId.Refresh()
         
                         if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
