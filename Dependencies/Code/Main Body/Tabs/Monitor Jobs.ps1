@@ -171,7 +171,7 @@ $script:Section3MonitorJobKeepDataAllCheckbox = New-Object System.Windows.Forms.
     Width     = $FormScale * 70
     Height    = $FormScale * 11
     Font      = New-Object System.Drawing.Font("Courier New",$($FormScale * 8),1,2,1)
-    ForeColor = 'Red'
+    ForeColor = 'Black'
     checked   = $false
     Add_Click = {
         if ($script:Section3MonitorJobKeepDataAllCheckbox.checked -eq $true) {

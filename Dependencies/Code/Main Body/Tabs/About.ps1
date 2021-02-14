@@ -3,7 +3,7 @@ $Section3AboutTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "About"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    Add_click = { Maximize-MonitorJobsTab }
+    Add_click = { Minimize-MonitorJobsTab }
 }
 $MainBottomTabControl.Controls.Add($Section3AboutTab)
 

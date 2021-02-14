@@ -4,7 +4,7 @@ $Section3QueryExplorationTabPage = New-Object System.Windows.Forms.TabPage -Prop
     Name = "Query Exploration"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    Add_click = { Maximize-MonitorJobsTab }
+    Add_click = { Minimize-MonitorJobsTab }
 }
 $MainBottomTabControl.Controls.Add($Section3QueryExplorationTabPage)
 

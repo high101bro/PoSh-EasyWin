@@ -4,7 +4,7 @@ $Section3ResultsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Name = "Results Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    Add_click = { Maximize-MonitorJobsTab }
+    Add_click = { Minimize-MonitorJobsTab }
 }
 $MainBottomTabControl.Controls.Add($Section3ResultsTab)
 

@@ -304,7 +304,60 @@ if ($MonitorMode) {
 "@    
         }
         else {
-    Invoke-Expression @"
+            if ($SmithFlag -eq 'RetrieveFile') {
+            Invoke-Expression @"
+            `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Get File'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 2)
+                Width     = `$FormScale * 100
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -eq 'LightGreen') {
+                        `$This.BackColor = 'LightGray'
+                    }
+                    # Checks to see if there are any results
+                    `$script:CurrentJobsWithComputerName$JobId = @()
+                    foreach (`$Job in `$script:CurrentJobs$JobId) {
+                        `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
+                    }
+                    if ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 ) {
+                        `$script:SelectedFilesToDownload$JobId = `$script:CurrentJobsWithComputerName$JobId | Select-Object ComputerName, Name, FullName, CreationTime, LastAccessTime, LastWriteTime, Length, Attributes, VersionInfo, * -ErrorAction SilentlyContinue | Out-GridView -Title 'Get Files' -PassThru
+                        Get-RemoteFile -Files `$script:SelectedFilesToDownload$JobId
+                    }
+                }
+            }
+"@
+            }
+            elseif ($SmithFlag -eq 'RetrieveADS') {
+            Invoke-Expression @"
+            `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Get ADS'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 2)
+                Width     = `$FormScale * 100
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -eq 'LightGreen') {
+                        `$This.BackColor = 'LightGray'
+                    }
+                    # Checks to see if there are any results
+                    `$script:CurrentJobsWithComputerName$JobId = @()
+                    foreach (`$Job in `$script:CurrentJobs$JobId) {
+                        `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
+                    }
+                    if ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 ) {
+                        `$script:SelectedFilesToDownload$JobId = `$script:CurrentJobsWithComputerName$JobId | Select-Object ComputerName, Name, FullName, CreationTime, LastAccessTime, LastWriteTime, Length, Attributes, VersionInfo, * -ErrorAction SilentlyContinue | Out-GridView -Title 'Get Alternate Data Stream' -PassThru
+                        Get-RemoteAlternateDataStream -Files `$script:SelectedFilesToDownload$JobId
+                    }
+                }
+            }
+"@
+            }                
+            else {
+            Invoke-Expression @"
             `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text      = 'View Progress'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
@@ -344,8 +397,11 @@ if ($MonitorMode) {
                     }
                 }
             }
+"@
+        }
     
-            
+    
+        Invoke-Expression @"            
             `$script:Section3MonitorJobTerminalButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text     = 'Terminal'
                 Left     = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
@@ -811,62 +867,7 @@ if ($MonitorMode) {
                                         `$script:MonitorJobsDetailsFrom$JobId.ShowDialog()
                 }
             }
-"@
 
-            if ($SmithFlag -eq 'RetrieveFile') {
-            Invoke-Expression @"
-            `$script:Section3MonitorJobCommandButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text     = 'Get File'
-                Left     = `$script:Section3MonitorJobDetailsButton$JobId.Left
-                Top      = `$script:Section3MonitorJobDetailsButton$JobId.Top + `$script:Section3MonitorJobDetailsButton$JobId.Height + (`$FormScale * 5)
-                Width    = `$FormScale * 75
-                Height   = `$FormScale * 21
-                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
-                Add_click = {
-                    if (`$This.BackColor -eq 'LightGreen') {
-                        `$This.BackColor = 'LightGray'
-                    }
-                    # Checks to see if there are any results
-                    `$script:CurrentJobsWithComputerName$JobId = @()
-                    foreach (`$Job in `$script:CurrentJobs$JobId) {
-                        `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
-                    }
-                    if ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 ) {
-                        `$script:SelectedFilesToDownload$JobId = `$script:CurrentJobsWithComputerName$JobId | Select-Object ComputerName, Name, FullName, CreationTime, LastAccessTime, LastWriteTime, Length, Attributes, VersionInfo, * -ErrorAction SilentlyContinue | Out-GridView -Title 'Get Files' -PassThru
-                        Get-RemoteFile -Files `$script:SelectedFilesToDownload$JobId
-                    }
-                }
-            }
-"@
-            }
-            elseif ($SmithFlag -eq 'RetrieveADS') {
-            Invoke-Expression @"
-            `$script:Section3MonitorJobCommandButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text     = 'Get ADS'
-                Left     = `$script:Section3MonitorJobDetailsButton$JobId.Left
-                Top      = `$script:Section3MonitorJobDetailsButton$JobId.Top + `$script:Section3MonitorJobDetailsButton$JobId.Height + (`$FormScale * 5)
-                Width    = `$FormScale * 75
-                Height   = `$FormScale * 21
-                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
-                Add_click = {
-                    if (`$This.BackColor -eq 'LightGreen') {
-                        `$This.BackColor = 'LightGray'
-                    }
-                    # Checks to see if there are any results
-                    `$script:CurrentJobsWithComputerName$JobId = @()
-                    foreach (`$Job in `$script:CurrentJobs$JobId) {
-                        `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
-                    }
-                    if ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 ) {
-                        `$script:SelectedFilesToDownload$JobId = `$script:CurrentJobsWithComputerName$JobId | Select-Object ComputerName, Name, FullName, CreationTime, LastAccessTime, LastWriteTime, Length, Attributes, VersionInfo, * -ErrorAction SilentlyContinue | Out-GridView -Title 'Get Alternate Data Stream' -PassThru
-                        Get-RemoteAlternateDataStream -Files `$script:SelectedFilesToDownload$JobId
-                    }
-                }
-            }
-"@
-            }                
-            else {
-            Invoke-Expression @"
             `$script:Section3MonitorJobCommandButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text     = 'Details'
                 Left     = `$script:Section3MonitorJobDetailsButton$JobId.Left
@@ -908,11 +909,8 @@ if ($MonitorMode) {
                     `$script:Section3MonitorJobViewCommandForm$JobId.ShowDialog()
                 }
             }
-"@
-            }
 
 
-        Invoke-Expression @"
             `$script:Section3MonitorJobRemoveButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 Text      = 'Remove'
                 Left      = `$script:Section3MonitorJobDetailsButton$JobId.Left + `$script:Section3MonitorJobDetailsButton$JobId.Width + (`$FormScale * 5)
@@ -1346,17 +1344,29 @@ if ($DisableReRun) {
     }
     else {
         if ($SMITH) {
+            if ($SmithFlag -ne 'RetrieveFile' -and $SmithFlag -ne 'RetrieveADS') {
             Invoke-Expression @"
+            `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
+"@
+            }
+
+            Invoke-Expression @"
+            `$script:JobStopTime$JobId = `$null
+            `$script:JobComplete$JobId = `$false
+
             `$script:Timer$JobId.add_Tick({
                 `$script:JobsNotRunning$JobId = (`$script:CurrentJobs$JobId | Where-Object {`$_.State -ne 'Running'}).count
 
                 `$script:CurrentTime$JobId = Get-Date
-                
+    
                 if (`$script:JobsStartedCount$JobId -eq `$script:JobsNotRunning$JobId) {
                     # When the jobs are done
 
-                    `$script:JobtTime
-
+                    if (`$script:JobComplete$JobId -eq `$false){
+                        `$script:JobComplete$JobId = `$true
+                        `$script:JobStopTime$JobId = Get-Date
+                    }
+    
                     # Checks to see if there are any results
                     `$script:CurrentJobsWithComputerName$JobId = @()
                     foreach (`$Job in `$script:CurrentJobs$JobId) {
@@ -1387,18 +1397,10 @@ if ($DisableReRun) {
                         `$script:Section3MonitorJobLabel$JobId.ForeColor = 'Black'
                         `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
                         `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
-                        `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
 
                         if ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 ) {
                             `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
-                            `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
-                            if ( `$script:SmithFlagRetrieveFile$JobId ) {
-                                `$script:Section3MonitorJobCommandButton$JobId.BackColor = 'LightGreen'
-                            }
-                            elseif ( `$script:SmithFlagRetrieveADS$JobId ) {
-                                `$script:Section3MonitorJobCommandButton$JobId.Backcolor = 'LightGreen'
-                            }
-    
+                            `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'    
                         }
                         else {
                             `$script:Section3MonitorJobViewButton$JobId.ForeColor = 'Red'
@@ -1415,8 +1417,8 @@ if ($DisableReRun) {
                     if ( `$script:CurrentJobsWithComputerName$JobId.count -eq 0 -and `$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$true ) {
                         
                         # Displays how long until the code is executed again
-                        if ( `$script:CurrentTime$JobId -lt `$script:JobStartTime$JobId.AddSeconds(`$script:RestartTime$JobId) ) {
-                            `$script:RestartTimeCountdown$JobId = (`$script:JobStartTime$JobId.AddSeconds(`$script:RestartTime$JobId) - `$script:CurrentTime$JobId).TotalSeconds
+                        if ( `$script:CurrentTime$JobId -lt `$script:JobStopTime$JobId.AddSeconds(`$script:RestartTime$JobId) ) {
+                            `$script:RestartTimeCountdown$JobId = (`$script:JobStopTime$JobId.AddSeconds(`$script:RestartTime$JobId) - `$script:CurrentTime$JobId).TotalSeconds
                             `$script:Section3MonitorJobTransparentLabel$JobId.Text = "Endpoint Count: [`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] -- Restarts: [`$([Math]::Truncate(`$script:RestartTimeCountdown$JobId))] `n`$script:JobName$JobId"
                         }
                         # Executes the code again when the timer runs out
@@ -1452,13 +1454,6 @@ if ($DisableReRun) {
                     }
                     elseif ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 -and `$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$true ) {
                         script:Get-JobsCollectedData$JobId
-
-                        if ( `$script:SmithFlagRetrieveFile$JobId ) {
-                            `$script:Section3MonitorJobCommandButton$JobId.BackColor = 'LightGreen'
-                        }
-                        elseif ( `$script:SmithFlagRetrieveADS$JobId ) {
-                            `$script:Section3MonitorJobCommandButton$JobId.Backcolor = 'LightGreen'
-                        }
 
                         [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nAgentless SMITH has something to report.`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin - Agentless SMITH')
                     }

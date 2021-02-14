@@ -1291,26 +1291,6 @@ $ExecuteScriptHandler = {
         $ExecutionStartTime = Get-Date
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if ($SmithAccountsCurrentlyLoggedInConsoleCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountsCurrentlyLoggedInConsole.ps1" }
 if ($SmithAccountsCurrentlyLoggedInPSSessionCheckbox.checked) {  }
 if ($SmithAccountActivityCheckbox.checked) {  }
@@ -1335,30 +1315,6 @@ if ($SmithRegistrySearchRecursiveCheckbox.checked) {  }
 if ($SmithRegistryKeyNameCheckbox.checked) {  }
 if ($SmithRegistryValueNameCheckbox.checked) {  }
 if ($SmithRegistryValueDataCheckbox.checked) {  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         #=======================================================================================================================================================================
@@ -1499,6 +1455,8 @@ if ($SmithRegistryValueDataCheckbox.checked) {  }
             # Pushes user Specified Files and Custom Script to the endpoints
             # The script has to manage all the particulars with the executable; execution, results retrieval, cleanup, etc.
             if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-ExecutableAndScript.ps1" }
+
+            Maximize-MonitorJobsTab
 
             Completed-QueryExecution
         }
