@@ -5,15 +5,15 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
+$DirectoriesToSearch = $FileSearchAlternateDataStreamDirectoryRichTextbox.Lines
+$MaximumDepth        = $FileSearchAlternateDataStreamMaxDepthTextbox.text
+
 $script:MonitorJobScriptBlock = {
     foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
-
-        $DirectoriesToSearch = $FileSearchAlternateDataStreamDirectoryRichTextbox.Lines
-        $MaximumDepth        = $FileSearchAlternateDataStreamMaxDepthTextbox.text
 
         if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
             if (!$script:Credential) { Create-NewCredentials }

@@ -5,6 +5,8 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
+$DirectoryPath = $FileSearchDirectoryListingTextbox.Text
+$MaximumDepth  = $FileSearchDirectoryListingMaxDepthTextbox.text
 
 $script:MonitorJobScriptBlock = {
     foreach ($TargetComputer in $script:ComputerList) {
@@ -12,9 +14,6 @@ $script:MonitorJobScriptBlock = {
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
-
-        $DirectoryPath = $FileSearchDirectoryListingTextbox.Text
-        $MaximumDepth  = $FileSearchDirectoryListingMaxDepthTextbox.text
 
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { $script:Credential = Get-Credential }

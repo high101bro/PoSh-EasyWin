@@ -1456,8 +1456,9 @@ if ($SmithRegistryValueDataCheckbox.checked) {  }
             # The script has to manage all the particulars with the executable; execution, results retrieval, cleanup, etc.
             if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-ExecutableAndScript.ps1" }
 
+            Start-Sleep -Seconds 1
             Maximize-MonitorJobsTab
-
+            $PoShEasyWin.Refresh()
             Completed-QueryExecution
         }
 

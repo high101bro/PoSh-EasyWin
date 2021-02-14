@@ -12,6 +12,10 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
+$FileHashSelection   = $FileSearchSelectFileHashComboBox.Text
+$DirectoriesToSearch = ($FileSearchFileSearchDirectoryRichTextbox.Text).split("`r`n")
+$FilesToSearch       = ($FileSearchFileSearchFileRichTextbox.Text).split("`r`n")
+$MaximumDepth        = $FileSearchFileSearchMaxDepthTextbox.text
 
 $script:MonitorJobScriptBlock = {
     foreach ($TargetComputer in $script:ComputerList) {
@@ -19,12 +23,6 @@ $script:MonitorJobScriptBlock = {
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
-
-
-        $FileHashSelection   = $FileSearchSelectFileHashComboBox.Text
-        $DirectoriesToSearch = ($FileSearchFileSearchDirectoryRichTextbox.Text).split("`r`n")
-        $FilesToSearch       = ($FileSearchFileSearchFileRichTextbox.Text).split("`r`n")
-        $MaximumDepth        = $FileSearchFileSearchMaxDepthTextbox.text
 
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
@@ -53,8 +51,10 @@ Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
-$SearchString = ''
-foreach ($item in $FilesToSearch) {$SearchString += "$item`n" }
+$SearchString1 = ''
+foreach ($item in $FilesToSearch) {$SearchString1 += "$item`n" }
+$SearchString2 = ''
+foreach ($item in $FilesToSearch) {$SearchString2 += "$item`n" }
 
 $InputValues = @"
 ===========================================================================
@@ -85,12 +85,12 @@ $FileHashSelection
 ===========================================================================
 Directories To Search:
 ===========================================================================
-$DirectoryPath
+$($SearchString1.trim())
 
 ===========================================================================
 Files to Search:
 ===========================================================================
-$($SearchString.trim())
+$($SearchString2.trim())
 
 "@
 
