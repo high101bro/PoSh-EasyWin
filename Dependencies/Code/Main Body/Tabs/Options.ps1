@@ -89,7 +89,10 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object S
                 Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Search - Processes Checkbox.txt" -Force }
             }
-            if (Test-Path "$PoShHome\Settings\Search - Processes Checkbox.txt") { $OptionSearchProcessesCheckBox.Checked = Get-Content "$PoShHome\Settings\Search - Processes Checkbox.txt" }
+            if (Test-Path "$PoShHome\Settings\Search - Processes Checkbox.txt") { 
+                if ((Get-Content "$PoShHome\Settings\Search - Processes Checkbox.txt") -eq 'True'){$OptionSearchProcessesCheckBox.checked = $true}
+                else {$OptionSearchProcessesCheckBox.checked = $false}
+            }
             $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchProcessesCheckBox)
 
 
@@ -102,9 +105,12 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object S
                 Enabled = $true
                 Checked = $False
                 Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_Click = { $This.Text | Set-Content "$PoShHome\Settings\Search - Services Checkbox.txt" -Force }
+                Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Search - Services Checkbox.txt" -Force }
             }
-            if (Test-Path "$PoShHome\Settings\Search - Services Checkbox.txt") { $OptionSearchServicesCheckBox.Checked = Get-Content "$PoShHome\Settings\Search - Services Checkbox.txt" }
+            if (Test-Path "$PoShHome\Settings\Search - Services Checkbox.txt") { 
+                if ((Get-Content "$PoShHome\Settings\Search - Services Checkbox.txt") -eq 'True'){$OptionSearchServicesCheckBox.checked = $true}
+                else {$OptionSearchServicesCheckBox.checked = $false}
+            }
             $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchServicesCheckBox)
 
 
@@ -117,9 +123,12 @@ $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object S
                 Enabled = $true
                 Checked = $False
                 Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_Click = { $This.Text | Set-Content "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt" -Force }
+                Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt" -Force }
             }
-            if (Test-Path "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt") { $OptionSearchNetworkTCPConnectionsCheckBox.Checked = Get-Content "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt" }
+            if (Test-Path "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt") { 
+                if ((Get-Content "$PoShHome\Settings\Search - Network TCP Connections Checkbox.txt") -eq 'True'){$OptionSearchNetworkTCPConnectionsCheckBox.checked = $true}
+                else {$OptionSearchNetworkTCPConnectionsCheckBox.checked = $false}
+            }
             $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Controls.Add($OptionSearchNetworkTCPConnectionsCheckBox)
 $Section2OptionsTab.Controls.Add($OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox)
 
@@ -179,74 +188,106 @@ $OptionStatisticsUpdateIntervalLabel = New-Object System.Windows.Forms.Label -Pr
 $Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalLabel)
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\CheckBox\OptionGUITopWindowCheckBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\CheckBox\OptionGUITopWindowCheckBox.ps1"
-$OptionGUITopWindowCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-    Text    = "GUI always on top"
-    Left    = $FormScale * 3
-    Top     = $OptionStatisticsUpdateIntervalLabel.Top + $OptionStatisticsUpdateIntervalLabel.Height + $($FormScale + 2)
-    Width   = $FormScale * 300
-    Height  = $FormScale * $Column3BoxHeight
-    Enabled = $true
-    Checked = $false
-    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = $OptionGUITopWindowCheckBoxAdd_Click
-}
-if (Test-Path "$PoShHome\Settings\GUI Top Most Window.txt") { $OptionGUITopWindowCheckBox.checked = Get-Content "$PoShHome\Settings\GUI Top Most Window.txt" }
-$Section2OptionsTab.Controls.Add( $OptionGUITopWindowCheckBox )
-
-
 Load-Code "$Dependencies\Code\System.Windows.Forms\Checkbox\OptionsAutoSaveChartsAsImages.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Checkbox\OptionsAutoSaveChartsAsImages.ps1"
 $OptionsAutoSaveChartsAsImages = New-Object System.Windows.Forms.Checkbox -Property @{
     Text    = "Autosave Charts As Images"
     Left    = $FormScale * 3
-    Top     = $OptionGUITopWindowCheckBox.Top + $OptionGUITopWindowCheckBox.Height
-    Width   = $FormScale * 300
+    Top     = $OptionStatisticsUpdateIntervalLabel.Top + $OptionStatisticsUpdateIntervalLabel.Height
+    Width   = $FormScale * 225
     Height  = $FormScale * $Column3BoxHeight
     Enabled = $true
     Checked = $false
     Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click      = $OptionsAutoSaveChartsAsImagesAdd_Click
+    Add_Click = {
+        $This.Checked | Set-Content "$PoShHome\Settings\Auto Save Charts As Images.txt" -Force
+
+        if (-not $(Test-Path -Path $AutosavedChartsDirectory)) {
+            New-Item -Type Directory -Path $AutosavedChartsDirectory -Force
+        }
+    }
     Add_MouseHover = $OptionsAutoSaveChartsAsImagesAdd_MouseHover
 }
-if (Test-Path "$PoShHome\Settings\Auto Save Charts As Images.txt") { $OptionsAutoSaveChartsAsImages.Checked = Get-Content "$PoShHome\Settings\Auto Save Charts As Images.txt" }
+if (Test-Path "$PoShHome\Settings\Auto Save Charts As Images.txt") { 
+    if ((Get-Content "$PoShHome\Settings\Auto Save Charts As Images.txt") -eq 'True'){$OptionsAutoSaveChartsAsImages.checked = $true}
+    else {$OptionsAutoSaveChartsAsImages.checked = $false}
+}
 $Section2OptionsTab.Controls.Add( $OptionsAutoSaveChartsAsImages )
 
 
-$OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-    Text    = "Show ToolTip"
-    Left    = $FormScale * 3
-    Top     = $OptionsAutoSaveChartsAsImages.Top + $OptionsAutoSaveChartsAsImages.Height
-    Width   = $FormScale * 200
-    Height  = $FormScale * $Column3BoxHeight
-    Enabled = $true
-    Checked = $True
-    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Show Tool Tip.txt" -Force }
-}
-if (Test-Path "$PoShHome\Settings\Show Tool Tip.txt") { $OptionShowToolTipCheckBox.Checked = Get-Content "$PoShHome\Settings\Show Tool Tip.txt" }
-$Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
+                $OptionGUITopWindowCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+                    Text    = "GUI always on top"
+                    Left    = $OptionsAutoSaveChartsAsImages.Left + $OptionsAutoSaveChartsAsImages.Width
+                    Top     = $OptionsAutoSaveChartsAsImages.Top
+                    Width   = $FormScale * 200
+                    Height  = $FormScale * $Column3BoxHeight
+                    Enabled = $true
+                    Checked = $false
+                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Add_Click = {
+                        $This.checked | Set-Content "$PoShHome\Settings\GUI Top Most Window.txt" -Force
+
+                        # Option to toggle if the Windows is not the top most
+                        if   ( $OptionGUITopWindowCheckBox.checked ) {
+                            $PoShEasyWin.Topmost = $true
+                        }
+                        else {
+                            $PoShEasyWin.Topmost = $false
+                        }                    
+                    }
+                }
+                if (Test-Path "$PoShHome\Settings\GUI Top Most Window.txt") { 
+                    if ((Get-Content "$PoShHome\Settings\GUI Top Most Window.txt") -eq 'True'){
+                        $OptionGUITopWindowCheckBox.checked = $true
+                        $PoShEasyWin.Topmost = $true
+                    }
+                    else {
+                        $OptionGUITopWindowCheckBox.checked = $false
+                        $PoShEasyWin.Topmost = $false
+                    }
+                }
+                $Section2OptionsTab.Controls.Add( $OptionGUITopWindowCheckBox )
 
 
 $OptionTextToSpeachCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text    = "Audible Completion Message"
     Left    = $FormScale * 3
-    Top     = $OptionShowToolTipCheckBox.Top + $OptionShowToolTipCheckBox.Height
-    Width   = $FormScale * 200
+    Top     = $OptionsAutoSaveChartsAsImages.Top + $OptionsAutoSaveChartsAsImages.Height
+    Width   = $FormScale * 225
     Height  = $FormScale * $Column3BoxHeight
     Enabled = $true
     Checked = $false
     Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Audible Completion Message.txt" -Force }
 }
-if (Test-Path "$PoShHome\Settings\Audible Completion Message.txt") { $OptionTextToSpeachCheckBox.checked = Get-Content "$PoShHome\Settings\Audible Completion Message.txt" }
+if (Test-Path "$PoShHome\Settings\Audible Completion Message.txt") { 
+    if ((Get-Content "$PoShHome\Settings\Audible Completion Message.txt") -eq 'True'){$OptionTextToSpeachCheckBox.checked = $true}
+    else {$OptionTextToSpeachCheckBox.checked = $false}
+}
 if ($AudibleCompletionMessage) {$OptionTextToSpeachCheckBox.Checked = $True}
 $Section2OptionsTab.Controls.Add($OptionTextToSpeachCheckBox)
 
 
+                $OptionShowToolTipCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+                    Text    = "Show ToolTip"
+                    Left    = $OptionTextToSpeachCheckBox.Left + $OptionTextToSpeachCheckBox.Width
+                    Top     = $OptionTextToSpeachCheckBox.Top
+                    Width   = $FormScale * 200
+                    Height  = $FormScale * $Column3BoxHeight
+                    Enabled = $true
+                    Checked = $True
+                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Show Tool Tip.txt" -Force }
+                }
+                if (Test-Path "$PoShHome\Settings\Show Tool Tip.txt") { 
+                    if ((Get-Content "$PoShHome\Settings\Show Tool Tip.txt") -eq 'True'){$OptionShowToolTipCheckBox.checked = $true}
+                    else {$OptionShowToolTipCheckBox.checked = $false}
+                }
+                $Section2OptionsTab.Controls.Add($OptionShowToolTipCheckBox)
+
+
 $OptionPacketKeepEtlCabFilesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-    Text    = "Packet Captures - Keep .etc & .cab files"
+    Text    = "Packet Captures - Keep .etc and .cab files"
     Left    = $FormScale * 3
     Top     = $OptionTextToSpeachCheckBox.Top + $OptionTextToSpeachCheckBox.Height
     Width   = $FormScale * 250
@@ -256,7 +297,10 @@ $OptionPacketKeepEtlCabFilesCheckBox = New-Object System.Windows.Forms.Checkbox 
     Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Packet Captures - Keep etl and cab files.txt" -Force }
 }
-if (Test-Path "$PoShHome\Settings\Packet Captures - Keep etl and cab files.txt") { $OptionPacketKeepEtlCabFilesCheckBox.checked = Get-Content "$PoShHome\Settings\Packet Captures - Keep etl and cab files.txt" }
+if (Test-Path "$PoShHome\Settings\Packet Captures - Keep etl and cab files.txt") { 
+    if ((Get-Content "$PoShHome\Settings\Packet Captures - Keep etl and cab files.txt") -eq 'True'){$OptionPacketKeepEtlCabFilesCheckBox.checked = $true}
+    else {$OptionPacketKeepEtlCabFilesCheckBox.checked = $false}
+}
 $Section2OptionsTab.Controls.Add($OptionPacketKeepEtlCabFilesCheckBox)
 
 
@@ -267,9 +311,32 @@ $OptionKeepResultsByEndpointsFilesCheckBox = New-Object System.Windows.Forms.Che
     Width   = $FormScale * 300
     Height  = $FormScale * $Column3BoxHeight
     Enabled = $true
-    Checked = $true
+    Checked = $false
     Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt" -Force }
 }
-if (Test-Path "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt") { $OptionKeepResultsByEndpointsFilesCheckBox.checked = Get-Content "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt" }
+if (Test-Path "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt") { 
+    if ((Get-Content "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt") -eq 'True'){$OptionKeepResultsByEndpointsFilesCheckBox.checked = $true}
+    else {$OptionKeepResultsByEndpointsFilesCheckBox.checked = $false}
+}
 $Section2OptionsTab.Controls.Add($OptionKeepResultsByEndpointsFilesCheckBox)
+
+
+$OptionSaveCliXmlDataCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+    Text    = "Save XML Data - Object Data Used For Terminals"
+    Left    = $FormScale * 3
+    Top     = $OptionKeepResultsByEndpointsFilesCheckBox.Top + $OptionKeepResultsByEndpointsFilesCheckBox.Height
+    Width   = $FormScale * 300
+    Height  = $FormScale * $Column3BoxHeight
+    Enabled = $true
+    Checked = $false
+    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Save XML Data - Object Data Used For Terminals.txt" -Force }
+}
+if (Test-Path "$PoShHome\Settings\Save XML Data - Object Data Used For Terminals.txt") { 
+    if ((Get-Content "$PoShHome\Settings\Save XML Data - Object Data Used For Terminals.txt") -eq 'True'){$OptionSaveCliXmlDataCheckBox.checked = $true}
+    else {$OptionSaveCliXmlDataCheckBox.checked = $false}
+}
+$Section2OptionsTab.Controls.Add($OptionSaveCliXmlDataCheckBox)
+
+
