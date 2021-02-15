@@ -56,13 +56,13 @@ if ($RegistryValueDataCheckbox.checked) {
 }
 
 
-Invoke-Command -ScriptBlock $QueryRegistryFunction `
+Invoke-Command -ScriptBlock $script:QueryRegistryFunction `
 -ArgumentList $SearchRegistryCommand `
 -Session $PSSession `
 | Set-Variable SessionData
 
 
-Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$QueryRegistryFunction -ArgumentList `$SearchRegistryCommand -Session `$PSSession"
+Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$script:QueryRegistryFunction -ArgumentList `$SearchRegistryCommand -Session `$PSSession"
 ###$ResultsListBox.Items.Add("$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
 
 

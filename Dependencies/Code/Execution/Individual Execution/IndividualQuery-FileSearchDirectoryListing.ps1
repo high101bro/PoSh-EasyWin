@@ -8,7 +8,14 @@ $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:
 $DirectoryPath = $FileSearchDirectoryListingTextbox.Text
 $MaximumDepth  = $FileSearchDirectoryListingMaxDepthTextbox.text
 
-$script:MonitorJobScriptBlock = {
+
+function MonitorJobScriptBlock {
+    param(
+        $ExecutionStartTime,
+        $CollectionName,
+        $DirectoryPath,
+        $MaximumDepth
+    )
     foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -71,7 +78,7 @@ $script:MonitorJobScriptBlock = {
         }
     }
 }
-Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$DirectoryPath,$MaximumDepth)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -112,7 +119,7 @@ $($SearchString.trim())
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -SmithFlag 'RetrieveFile' -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$DirectoryPath,$MaximumDepth) -SmithFlag 'RetrieveFile' -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

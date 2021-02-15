@@ -17,13 +17,21 @@ $DirectoriesToSearch = ($FileSearchFileSearchDirectoryRichTextbox.Text).split("`
 $FilesToSearch       = ($FileSearchFileSearchFileRichTextbox.Text).split("`r`n")
 $MaximumDepth        = $FileSearchFileSearchMaxDepthTextbox.text
 
-$script:MonitorJobScriptBlock = {
+function MonitorJobScriptBlock {
+    param(
+        $ExecutionStartTime,
+        $CollectionName,
+        $FileHashSelection,
+        $DirectoriesToSearch,
+        $FilesToSearch,
+        $MaximumDepth
+    )
     foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
-
+        
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
 
@@ -47,7 +55,8 @@ $script:MonitorJobScriptBlock = {
         }
     }
 }
-Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
+
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$FileHashSelection,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -95,7 +104,7 @@ $($SearchString2.trim())
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -SmithFlag 'RetrieveFile' -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$FileHashSelection,$DirectoriesToSearch,$FilesToSearch,$MaximumDepth) -SmithFlag 'RetrieveFile' -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

@@ -8,8 +8,11 @@ $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
-
-$script:MonitorJobScriptBlock = {
+function MonitorJobScriptBlock {
+    param(        
+        $ExecutionStartTime,
+        $CollectionName
+    )
     foreach ($TargetComputer in $script:ComputerList) {
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
@@ -35,7 +38,7 @@ $script:MonitorJobScriptBlock = {
         }
     }
 }
-Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -64,7 +67,7 @@ $($EndpointString.trim())
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName) -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

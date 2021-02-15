@@ -16,6 +16,10 @@ $EventLogsStopTimePickerValue            = $script:EventLogsStopTimePicker.Value
 
 function Query-EventLogLogsEventIDsManualEntrySessionBased {
     param(
+        $script:ComputerList,
+        $script:Credential,
+        $ExecutionStartTime,
+        $CollectionName,
         $EventLogsEventIDsManualEntryTextboxText,
         $EventLogsMaximumCollectionTextBoxText,
         $EventLogsStartTimePickerChecked,
@@ -55,7 +59,19 @@ function Query-EventLogLogsEventIDsManualEntrySessionBased {
 }
 
 
-$script:MonitorJobScriptBlock = {
+function MonitorJobScriptBlock {
+    param(
+        $script:ComputerList,
+        $script:Credential,
+        $ExecutionStartTime,
+        $CollectionName,
+        $EventLogsEventIDsManualEntryTextboxText,
+        $EventLogsMaximumCollectionTextBoxText,
+        $EventLogsStartTimePickerChecked,
+        $EventLogsStopTimePickerChecked,
+        $EventLogsStartTimePickerValue,
+        $EventLogsStopTimePickerValue
+    )
     foreach ($TargetComputer in $script:ComputerList) {
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -178,7 +194,7 @@ $script:MonitorJobScriptBlock = {
         }
     }
 }
-Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -229,7 +245,7 @@ $SearchString
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -DisableReRun -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$script:Credential,$ExecutionStartTime,$CollectionName,$EventLogsEventIDsManualEntryTextboxText,$EventLogsMaximumCollectionTextBoxText,$EventLogsStartTimePickerChecked,$EventLogsStopTimePickerChecked,$EventLogsStartTimePickerValue,$EventLogsStopTimePickerValue) -DisableReRun -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

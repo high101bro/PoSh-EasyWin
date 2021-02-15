@@ -4,9 +4,15 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
-$NetworkConnectionSearchDNSCache = $NetworkConnectionSearchDNSCacheRichTextbox.Lines
+#$NetworkConnectionSearchDNSCache = $NetworkConnectionSearchDNSCacheRichTextbox.Lines
+$NetworkConnectionSearchDNSCache = ($NetworkConnectionSearchDNSCacheRichTextbox.Text).split("`r`n")
 
-$script:MonitorJobScriptBlock = {
+function MonitorJobScriptBlock {
+    param(
+        $ExecutionStartTime,
+        $CollectionName,
+        $NetworkConnectionSearchDNSCache
+    )
     foreach ($TargetComputer in $script:ComputerList) {
         param(
             $script:CollectedDataTimeStampDirectory,
@@ -49,7 +55,7 @@ $script:MonitorJobScriptBlock = {
         }
     }
 }
-Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchDNSCache)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -85,7 +91,7 @@ $($SearchString.trim())
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchDNSCache) -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

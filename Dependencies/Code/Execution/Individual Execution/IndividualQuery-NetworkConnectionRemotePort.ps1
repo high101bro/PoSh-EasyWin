@@ -4,9 +4,14 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
-$NetworkConnectionSearchRemotePort = $NetworkConnectionSearchRemotePortRichTextbox.Lines
-
-$script:MonitorJobScriptBlock = {
+#$NetworkConnectionSearchRemotePort = $NetworkConnectionSearchRemotePortRichTextbox.Lines
+$NetworkConnectionSearchRemotePort = ($NetworkConnectionSearchRemotePortRichTextbox.Text).split("`r`n")
+function MonitorJobScriptBlock {
+    param(
+        $ExecutionStartTime,
+        $CollectionName,
+        $NetworkConnectionSearchRemotePort
+    )
     foreach ($TargetComputer in $script:ComputerList) {
         param(
             $script:CollectedDataTimeStampDirectory,
@@ -49,7 +54,7 @@ $script:MonitorJobScriptBlock = {
         }
     }
 }
-Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchRemotePort)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -85,7 +90,7 @@ $($SearchString.trim())
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchRemotePort) -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

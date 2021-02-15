@@ -18,8 +18,15 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
     $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
 
-    $script:MonitorJobScriptBlock = {
-        # Each command to each target host is executed on it's own process thread, which utilizes more memory overhead on the localhost [running PoSh-EasyWin] and produces many more network connections to targets [noisier on the network].
+
+    function MonitorJobScriptBlock {
+        param(
+            $script:ComputerList,
+            $ExecutionStartTime,
+            $CollectionName,
+            $CollectionSavedDirectory
+        )
+            # Each command to each target host is executed on it's own process thread, which utilizes more memory overhead on the localhost [running PoSh-EasyWin] and produces many more network connections to targets [noisier on the network].
         Foreach ($TargetComputer in $script:ComputerList) {
             # Checks for the type of command selected and assembles the command to be executed
             $OutputFileFileType = ""
@@ -321,7 +328,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "$(($CommandString).Trim())"
         }
     }
-    Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
+    Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory)
 
     $EndpointString = ''
     foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -358,7 +365,7 @@ $script:commandstring
     if ( $script:JobsStarted -eq $true ) {
         if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
             #Monitor-Jobs -CollectionName $CollectionName -MonitorMode
-            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -InputValues $InputValues
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($script:ComputerList,$ExecutionStartTime,$CollectionName,$CollectionSavedDirectory) -InputValues $InputValues -DisableReRun
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
             Monitor-Jobs -CollectionName $CollectionName

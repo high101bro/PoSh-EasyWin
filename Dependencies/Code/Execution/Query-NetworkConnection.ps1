@@ -1,9 +1,9 @@
 function Query-NetworkConnection {
     param(
-        [string[]]$IP          = $null,
-        [string[]]$RemotePort  = $null,
-        [string[]]$LocalPort   = $null,
-        [string[]]$ProcessName = $null
+        $IP          = $null,
+        $RemotePort  = $null,
+        $LocalPort   = $null,
+        $ProcessName = $null
     )
 
     if ([bool]((Get-Command Get-NetTCPConnection).ParameterSets | Select-Object -ExpandProperty Parameters | Where-Object Name -match OwningProcess)) {
@@ -91,14 +91,10 @@ function Query-NetworkConnection {
     $ConnectionsFound = @()
 
     foreach ($Conn in $Connections) {
-        if     ($IP)          { foreach ($DestIP in $IP)            { if (($Conn.RemoteAddress  -eq $DestIP)   -and ($DestIP   -ne '')) { CollectionNetworkData } } }
+        if     ($IP)          { foreach ($DestIP   in $IP)          { if (($Conn.RemoteAddress  -eq $DestIP)   -and ($DestIP   -ne '')) { CollectionNetworkData } } }
         elseif ($RemotePort)  { foreach ($DestPort in $RemotePort)  { if (($Conn.RemotePort     -eq $DestPort) -and ($DestPort -ne '')) { CollectionNetworkData } } }
-        elseif ($LocalPort)   { foreach ($SrcPort in $LocalPort)    { if (($Conn.LocalPort      -eq $SrcPort)  -and ($SrcPort  -ne '')) { CollectionNetworkData } } }
+        elseif ($LocalPort)   { foreach ($SrcPort  in $LocalPort)   { if (($Conn.LocalPort      -eq $SrcPort)  -and ($SrcPort  -ne '')) { CollectionNetworkData } } }
         elseif ($ProcessName) { foreach ($ProcName in $ProcessName) { if (($conn.ProcessName -match $ProcName) -and ($ProcName -ne '')) { CollectionNetworkData } } }
     }
     return $ConnectionsFound
-
 }
-
-
-

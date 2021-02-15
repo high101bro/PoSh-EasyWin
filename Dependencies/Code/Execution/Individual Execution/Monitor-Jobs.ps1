@@ -6,6 +6,7 @@ function Monitor-Jobs {
         [switch]$MonitorMode,
         [switch]$SMITH,
         $SmithScript,
+        $ArgumentList,
         $SmithFlag,
         [switch]$AutoReRun,
         [int]$RestartTime = $($script:OptionMonitorJobsDefaultRestartTimeCombobox.text),
@@ -15,7 +16,6 @@ function Monitor-Jobs {
         [switch]$PSWriteHTMLSwitch,
         $PSWriteHTML
     )
-
 if ($MonitorMode) {
     if (-not $AutoReRun) {
         $MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
@@ -111,9 +111,10 @@ if ($MonitorMode) {
 #"$SmithScript" | ogv
     if ($SMITH) {
         Invoke-Expression @"
-        `$script:SmithScript$JobId = `$SmithScript
-        `$script:RestartTime$JobId = `$RestartTime
-        `$script:InputValues$JobId = `$InputValues
+        `$script:SmithScript$JobId  = `$SmithScript
+        `$script:RestartTime$JobId  = `$RestartTime
+        `$script:InputValues$JobId  = `$InputValues
+        `$script:ArgumentList$JobId = `$ArgumentList 
 "@
     }
 
@@ -1062,8 +1063,8 @@ if ($SmithFlag -eq 'RetrieveFile') {
             # Restarts the query, by starting a new job
             #`$script:SmithScript$JobId | ogv 'Restart Script 1'
             
-            Invoke-Command -ScriptBlock `$script:SmithScript$JobId
-            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
+            Invoke-Command -ScriptBlock `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId
+            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
             
             # Cleanup
             Remove-Variable -Name  "SmithScript$JobId" -Scope script
@@ -1089,8 +1090,8 @@ elseif ($SmithFlag -eq 'RetrieveADS') {
             # Restarts the query, by starting a new job
             #`$script:SmithScript$JobId | ogv 'Restart Script 1'
             
-            Invoke-Command -ScriptBlock `$script:SmithScript$JobId
-            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveADS' -InputValues `$script:InputValues$JobId
+            Invoke-Command -ScriptBlock `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId
+            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveADS' -InputValues `$script:InputValues$JobId
             
             # Cleanup
             Remove-Variable -Name  "SmithScript$JobId" -Scope script
@@ -1115,8 +1116,8 @@ else {
             # Restarts the query, by starting a new job
             #`$script:SmithScript$JobId | ogv 'Restart Script 1'
             
-            Invoke-Command -ScriptBlock `$script:SmithScript$JobId
-            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
+            Invoke-Command -ScriptBlock `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId
+            Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
             
             # Cleanup
             Remove-Variable -Name  "SmithScript$JobId" -Scope script
@@ -1229,7 +1230,6 @@ if ($DisableReRun) {
                 `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
 
                 
-                #`$script:JobsStartedCount$JobId = -1
                 `$script:JobsTimeCompleted$JobId = Get-Date
                 `$script:Timer$JobId.Stop()
                 
@@ -1274,7 +1274,6 @@ if ($DisableReRun) {
                 `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
 
                 
-                #`$script:JobsStartedCount$JobId = -1
                 `$script:JobsTimeCompleted$JobId = Get-Date
                 `$script:Timer$JobId.Stop()
                 
@@ -1374,7 +1373,6 @@ if ($DisableReRun) {
                     }
 
                     function script:Get-JobsCollectedData$JobId {
-                        #`$script:JobsStartedCount$JobId = -1
                         `$script:JobsTimeCompleted$JobId = Get-Date
                         `$script:Timer$JobId.Stop()
                         `$script:Timer$JobId = `$null
@@ -1428,7 +1426,6 @@ if ($DisableReRun) {
                         }
                         # Executes the code again when the timer runs out
                         else {
-                            #`$script:JobsStartedCount$JobId = -1
                             `$script:JobsTimeCompleted$JobId = Get-Date
                             `$script:Timer$JobId.Stop()
                             `$script:Timer$JobId = `$null
@@ -1439,15 +1436,15 @@ if ($DisableReRun) {
                             # Restarts the query, by starting a new job
                             #"`$script:SmithScript$JobId" | ogv 'Restart Script'
 
-                            Invoke-Command -ScriptBlock `$script:SmithScript$JobId
+                            Invoke-Command -ScriptBlock `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId
                             if ( `$script:SmithFlagRetrieveFile$JobId ) {
-                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
+                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
                             }
                             elseif ( `$script:SmithFlagRetrieveADS$JobId ) {
-                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
+                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -SmithFlag 'RetrieveFile' -InputValues `$script:InputValues$JobId
                             }
                             else {
-                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
+                                Monitor-Jobs -CollectionName `$script:JobName$JobId -MonitorMode -SMITH -SMITHscript `$script:SmithScript$JobId -ArgumentList `$script:ArgumentList$JobId -AutoReRun -RestartTime `$script:RestartTime$JobId -InputValues `$script:InputValues$JobId
                             }
                             Remove-Variable -Name  "SmithScript$JobId" -Scope script
 
@@ -1492,7 +1489,11 @@ if ($DisableReRun) {
                         `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'Orange' #'LightGreen'
         
 
-                        #`$script:JobsStartedCount$JobId = -1
+                        `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
+                        `$script:Section3MonitorJobProgressBar$JobId.Value = 1
+                        `$script:Section3MonitorJobProgressBar$JobId.Refresh()
+
+
                         `$script:JobsTimeCompleted$JobId = Get-Date
                         `$script:Timer$JobId.Stop()
                         `$script:Timer$JobId = `$null
@@ -1503,9 +1504,6 @@ if ($DisableReRun) {
                         `$script:CurrentJobs$JobId | Receive-Job -Keep | Select-Object * | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
                         `$script:CurrentJobs$JobId | Stop-Job
                         
-                        `$script:Section3MonitorJobProgressBar$JobId.Maximum = 1
-                        `$script:Section3MonitorJobProgressBar$JobId.Value = 1
-                        `$script:Section3MonitorJobProgressBar$JobId.Refresh()
         
                         if (`$script:Section3MonitorJobNotifyCheckbox$JobId.checked -eq `$true){
                             [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin')
@@ -1536,7 +1534,6 @@ if ($DisableReRun) {
                     `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
 
                     
-                    #`$script:JobsStartedCount$JobId = -1
                     `$script:JobsTimeCompleted$JobId = Get-Date
                     `$script:Timer$JobId.Stop()
                     
@@ -1581,7 +1578,6 @@ if ($DisableReRun) {
                         `$script:Section3MonitorJobTerminalButton$JobId.BackColor = 'LightGreen'
         
                         
-                        #`$script:JobsStartedCount$JobId = -1
                         `$script:JobsTimeCompleted$JobId = Get-Date
                         `$script:Timer$JobId.Stop()
                         

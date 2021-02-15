@@ -10,10 +10,16 @@ $script:ProgressBarEndpointsProgressBar.Value = 0
 
 $AccountsStartTimePickerValue = $AccountsStartTimePicker.Value
 $AccountsStopTimePickerValue  = $AccountsStopTimePicker.Value
-
 $AccountActivityTextboxtext = $AccountActivityTextbox.lines | Where-Object {$_ -ne ''}
 
-$script:MonitorJobScriptBlock = {
+function MonitorJobScriptBlock {
+    param(
+        $ExecutionStartTime,
+        $CollectionName,
+        $AccountsStartTimePickerValue,
+        $AccountsStopTimePickerValue,
+        $AccountActivityTextboxtext        
+    )
 
     foreach ($TargetComputer in $script:ComputerList) {
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
@@ -37,7 +43,7 @@ $script:MonitorJobScriptBlock = {
         }
     }
 }
-Invoke-Command -ScriptBlock $script:MonitorJobScriptBlock
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -83,7 +89,7 @@ $SearchString
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript $script:MonitorJobScriptBlock -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

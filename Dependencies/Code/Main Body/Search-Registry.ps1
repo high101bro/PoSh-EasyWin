@@ -1,16 +1,16 @@
-$QueryRegistryFunction = {
+$script:QueryRegistryFunction = {
     function Search-Registry {
         [CmdletBinding()]
         param(
             [Parameter(Mandatory, Position=0, ValueFromPipelineByPropertyName)]
             [Alias("PsPath")]
             # Registry path to search
-            [string[]] $Path,
+            $Path,
             # Specifies whether or not all subkeys should also be searched
             [switch] $Recurse,
             [Parameter(ParameterSetName="SingleSearchString", Mandatory)]
             # A regular expression that will be checked against key names, value names, and value data (depending on the specified switches)
-            [string[]] $SearchRegex,
+            $SearchRegex,
             [Parameter(ParameterSetName="SingleSearchString")]
             # When the -SearchRegex parameter is used, this switch means that key names will be tested (if none of the three switches are used, keys will be tested)
             [switch] $KeyName,
