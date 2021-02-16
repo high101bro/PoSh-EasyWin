@@ -1270,6 +1270,9 @@ $ExecuteScriptHandler = {
         if ($NetworkConnectionSearchLocalPortCheckbox.checked)          { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($NetworkConnectionSearchProcessCheckbox.checked)            { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($NetworkConnectionSearchDNSCacheCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkConnectionSearchCommandLineCheckbox.checked)        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkConnectionSearchFullPathCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+    
 
         if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsSysmonCheckbox.Checked)                        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsAutorunsCheckbox.Checked)                      { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
@@ -1289,32 +1292,6 @@ $ExecuteScriptHandler = {
         # This is Execution Start Time is just a catch all
         # Each script/code within the execution modes should set this before they run
         $ExecutionStartTime = Get-Date
-
-
-if ($SmithAccountsCurrentlyLoggedInConsoleCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountsCurrentlyLoggedInConsole.ps1" }
-if ($SmithAccountsCurrentlyLoggedInPSSessionCheckbox.checked) {  }
-if ($SmithAccountActivityCheckbox.checked) {  }
-
-if ($SmithEventLogsEventIDsManualEntryCheckbox.checked) {  }
-if ($SmithEventLogsQuickPickSelectionCheckbox.checked) {  }
-if ($SmithEventLogsEventIDsToMonitorCheckbox.checked) {  }
-
-#if ($SmithFileSearchDirectoryListingCheckbox.checked) {  }
-if ($SmithFileSearchFileSearchCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchFileSearch.ps1" }
-if ($SmithFileSearchAlternateDataStreamCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchAlternateDataStream.ps1" }
-
-if ($SmithNetworkEndpointPacketCaptureCheckBox.checked) {  }
-if ($SmithNetworkConnectionSearchRemoteIPAddressCheckbox.checked) {  }
-if ($SmithNetworkConnectionSearchRemotePortCheckbox.checked) {  }
-if ($SmithNetworkConnectionSearchLocalPortCheckbox.checked) {  }
-if ($SmithNetworkConnectionSearchProcessCheckbox.checked) {  }
-if ($SmithNetworkConnectionSearchDNSCacheCheckbox.checked) {  }
-
-if ($SmithRegistrySearchCheckbox.checked) {  }
-if ($SmithRegistrySearchRecursiveCheckbox.checked) {  }
-if ($SmithRegistryKeyNameCheckbox.checked) {  }
-if ($SmithRegistryValueNameCheckbox.checked) {  }
-if ($SmithRegistryValueDataCheckbox.checked) {  }
 
 
         #=======================================================================================================================================================================
