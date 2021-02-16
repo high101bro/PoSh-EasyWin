@@ -258,16 +258,19 @@ $Section1CommandsTab.Controls.Add($CommandsTreeviewGroupCommandsButton)
 CommonButtonSettings -Button $CommandsTreeviewGroupCommandsButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeviewDeselectAllButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\CommandsTreeviewDeselectAllButton.ps1"
 $CommandsTreeviewDeselectAllButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = 'Deselect All'
     Left   = $CommandsTreeviewGroupCommandsButton.Left + $CommandsTreeviewGroupCommandsButton.Width + ($FormScale * 5)
     Top    = $FormScale * 45
     Width  = $FormScale * 84
     Height = $FormScale * 22
-    Add_Click      = $CommandsTreeviewDeselectAllButtonAdd_Click
-    Add_MouseHover = $CommandsTreeviewDeselectAllButtonAdd_MouseHover
+    Add_Click      = { Deselect-AllCommands }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Deselect All" -Icon "Info" -Message @"
++  Unchecks all commands checked within this view.
++  Commands and queries in other Tabs must be manually unchecked.
+"@        
+    }
 }
 $Section1CommandsTab.Controls.Add($CommandsTreeviewDeselectAllButton)
 CommonButtonSettings -Button $CommandsTreeviewDeselectAllButton

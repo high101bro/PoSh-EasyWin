@@ -173,7 +173,10 @@ $AccountsCurrentlyLoggedInConsoleCheckbox  = New-Object System.Windows.Forms.Che
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click = { 
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
 }
 $Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInConsoleCheckbox)
 
@@ -204,7 +207,10 @@ $AccountsCurrentlyLoggedInPSSessionCheckbox  = New-Object System.Windows.Forms.C
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click = { 
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
 }
 $Section1AccountsTab.Controls.Add($AccountsCurrentlyLoggedInPSSessionCheckbox)
 
@@ -232,7 +238,10 @@ $AccountActivityCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click = { 
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
 }
 $Section1AccountsTab.Controls.Add($AccountActivityCheckbox)
 

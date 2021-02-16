@@ -440,7 +440,9 @@ if ($MonitorMode) {
                     [System.GC]::Collect()
                 }
             }
-
+            if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) {
+                `$script:Section3MonitorJobTerminalButton$JobId.Text = 'Terminal [N/A]'
+            }
 
             `$script:Section3MonitorJobDetailsButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text     = 'Status'

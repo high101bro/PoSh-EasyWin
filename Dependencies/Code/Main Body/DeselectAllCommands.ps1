@@ -19,33 +19,63 @@ function Deselect-AllCommands {
         }
     }
 
-    $CustomQueryScriptBlockCheckBox.checked                    = $false
-    $RegistrySearchCheckbox.checked                            = $false
-    $RegistrySearchRecursiveCheckbox.checked                   = $false
-    $RegistryKeyNameCheckbox.checked                           = $false
-    $RegistryValueNameCheckbox.checked                         = $false
-    $RegistryValueDataCheckbox.checked                         = $false
-    $AccountsCurrentlyLoggedInConsoleCheckbox.checked          = $false
-    $AccountsCurrentlyLoggedInPSSessionCheckbox.checked        = $false
-    $AccountActivityCheckbox.checked                           = $false
-    $EventLogsEventIDsManualEntryCheckbox.checked              = $false
-    $EventLogsQuickPickSelectionCheckbox.checked               = $false
-    $EventLogsEventIDsToMonitorCheckbox.checked                = $false
-    $FileSearchDirectoryListingCheckbox.checked                = $false
-    $FileSearchFileSearchCheckbox.checked                      = $false
-    $FileSearchAlternateDataStreamCheckbox.checked             = $false
-    $NetworkEndpointPacketCaptureCheckBox.checked              = $false
-    $NetworkConnectionSearchRemoteIPAddressCheckbox.checked    = $false
-    $NetworkConnectionSearchRemotePortCheckbox.checked         = $false
-    $NetworkConnectionSearchLocalPortCheckbox.checked          = $false
-    $NetworkConnectionSearchProcessCheckbox.checked            = $false
-    $NetworkConnectionSearchDNSCacheCheckbox.checked           = $false
-    $SysinternalsSysmonCheckbox.checked                        = $false
-    $SysinternalsAutorunsCheckbox.checked                      = $false
-    $SysinternalsProcessMonitorCheckbox.checked                = $false
-    $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked = $false
+    $CustomQueryScriptBlockCheckBox.checked                      = $false
+    $RegistrySearchCheckbox.checked                              = $false
+    $RegistrySearchRecursiveCheckbox.checked                     = $false
+    $RegistryKeyNameCheckbox.checked                             = $false
+    $RegistryValueNameCheckbox.checked                           = $false
+    $RegistryValueDataCheckbox.checked                           = $false
+    $AccountsCurrentlyLoggedInConsoleCheckbox.checked            = $false
+    $AccountsCurrentlyLoggedInPSSessionCheckbox.checked          = $false
+    $AccountActivityCheckbox.checked                             = $false
+    $EventLogsEventIDsManualEntryCheckbox.checked                = $false
+    $EventLogsQuickPickSelectionCheckbox.checked                 = $false
+    $EventLogsEventIDsToMonitorCheckbox.checked                  = $false
+    $FileSearchDirectoryListingCheckbox.checked                  = $false
+    $FileSearchFileSearchCheckbox.checked                        = $false
+    $FileSearchAlternateDataStreamCheckbox.checked               = $false
+    $NetworkEndpointPacketCaptureCheckBox.checked                = $false
+    $NetworkConnectionSearchRemoteIPAddressCheckbox.checked      = $false
+    $NetworkConnectionSearchRemotePortCheckbox.checked           = $false
+    $NetworkConnectionSearchLocalPortCheckbox.checked            = $false
+    $NetworkConnectionSearchProcessCheckbox.checked              = $false
+    $NetworkConnectionSearchDNSCacheCheckbox.checked             = $false
+    $NetworkConnectionSearchCommandLineCheckbox.checked          = $false
+    $NetworkConnectionSearchFullPathCheckbox.checked             = $false
+    $SysinternalsSysmonCheckbox.checked                          = $false
+    $SysinternalsAutorunsCheckbox.checked                        = $false
+    $SysinternalsProcessMonitorCheckbox.checked                  = $false
+    $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked   = $false
 
-    Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+    $CustomQueryScriptBlockCheckBox.ForeColor                    = 'Blue'
+    $RegistrySearchCheckbox.ForeColor                            = 'Blue'
+    $RegistrySearchRecursiveCheckbox.ForeColor                   = 'Blue'
+    $RegistryKeyNameCheckbox.ForeColor                           = 'Blue'
+    $RegistryValueNameCheckbox.ForeColor                         = 'Blue'
+    $RegistryValueDataCheckbox.ForeColor                         = 'Blue'
+    $AccountsCurrentlyLoggedInConsoleCheckbox.ForeColor          = 'Blue'
+    $AccountsCurrentlyLoggedInPSSessionCheckbox.ForeColor        = 'Blue'
+    $AccountActivityCheckbox.ForeColor                           = 'Blue'
+    $EventLogsEventIDsManualEntryCheckbox.ForeColor              = 'Blue'
+    $EventLogsQuickPickSelectionCheckbox.ForeColor               = 'Blue'
+    $EventLogsEventIDsToMonitorCheckbox.ForeColor                = 'Blue'
+    $FileSearchDirectoryListingCheckbox.ForeColor                = 'Blue'
+    $FileSearchFileSearchCheckbox.ForeColor                      = 'Blue'
+    $FileSearchAlternateDataStreamCheckbox.ForeColor             = 'Blue'
+    $NetworkEndpointPacketCaptureCheckBox.ForeColor              = 'Blue'
+    $NetworkConnectionSearchRemoteIPAddressCheckbox.ForeColor    = 'Blue'
+    $NetworkConnectionSearchRemotePortCheckbox.ForeColor         = 'Blue'
+    $NetworkConnectionSearchLocalPortCheckbox.ForeColor          = 'Blue'
+    $NetworkConnectionSearchProcessCheckbox.ForeColor            = 'Blue'
+    $NetworkConnectionSearchDNSCacheCheckbox.ForeColor           = 'Blue'
+    $NetworkConnectionSearchCommandLineCheckbox.ForeColor        = 'Blue'
+    $NetworkConnectionSearchFullPathCheckbox.ForeColor           = 'Blue'
+    $SysinternalsSysmonCheckbox.ForeColor                        = 'Blue'
+    $SysinternalsAutorunsCheckbox.ForeColor                      = 'Blue'
+    $SysinternalsProcessMonitorCheckbox.ForeColor                = 'Blue'
+    $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.ForeColor = 'Blue'
+
+Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
 }
 
 

@@ -27,7 +27,10 @@ $FileSearchDirectoryListingCheckbox = New-Object System.Windows.Forms.CheckBox -
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click = { 
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
 }
 $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
 
@@ -121,7 +124,10 @@ $FileSearchFileSearchCheckbox = New-Object System.Windows.Forms.CheckBox -Proper
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click = { 
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
 }
 $Section1FileSearchTab.Controls.Add($FileSearchFileSearchCheckbox)
 
@@ -235,7 +241,10 @@ $FileSearchAlternateDataStreamCheckbox = New-Object System.Windows.Forms.CheckBo
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
-    Add_Click = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click = { 
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
 }
 $Section1FileSearchTab.Controls.Add($FileSearchAlternateDataStreamCheckbox)
 
