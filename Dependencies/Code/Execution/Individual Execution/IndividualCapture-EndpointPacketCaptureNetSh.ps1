@@ -308,8 +308,32 @@ New-Item -Type Directory -path "$($script:CollectionSavedDirectoryTextBox.Text)\
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
-[int]$MaxSize        = $NetworkEndpointPacketCaptureMaxSizeTextBox.text
+#$NetworkEndpointPcapCaptureSourceIPCheckbox
+#$NetworkEndpointPacketCaptureSourceIPRichTextBox
+#$NetworkEndpointPcapCaptureSourceMACCheckbox
+#$NetworkEndpointPacketCaptureSourceIPRichTextBox
+#$NetworkEndpointPcapCaptureDestinationIPCheckbox
+#$NetworkEndpointPacketCaptureDestinationIPRichTextBox
+#$NetworkEndpointPcapCaptureDestinationMACCheckbox
+#$NetworkEndpointPacketCaptureDestinationMACRichTextBox
+#$NetworkEndpointPcapCaptureDurationLabel
 [int]$CaptureSeconds = $NetworkEndpointPacketCaptureDurationTextBox.text
+#$NetworkEndpointPcapCaptureMaxSizeLabel
+[int]$MaxSize        = $NetworkEndpointPacketCaptureMaxSizeTextBox.text
+#$NetworkEndpointPcapCaptureEtherTypeCheckbox
+#$NetworkEndpointPacketCaptureEtherTypeComboBox
+#$NetworkEndpointPcapCaptureProtocolCheckbox
+#$NetworkEndpointPacketCaptureProtocolComboBox
+#$NetworkEndpointPcapCaptureCaptureTypeCheckbox
+#$NetworkEndpointPacketCaptureCaptureTypeComboBox
+
+
+
+
+
+
+
+
 $CaptureType = 'physical'
 $Report      = 'Yes'
 $etl2pcapng  = "$Dependencies\Executables\Packet Capture\etl2pcapng\x64\etl2pcapng.exe"
@@ -422,7 +446,25 @@ foreach ($TargetComputer in $script:ComputerList) {
         }
         
 
-    } -ArgumentList @($ComputerListProvideCredentialsCheckBox,$script:Credential,$TargetComputer,$CaptureType,$Report,$MaxSize,$CaptureSeconds,$EndpointEtlTraceFile,$EndpointCabTraceFile,$LocalEtlFilePath,$LocalCabFilePath,$etl2pcapng,$OutPcapNG,$OptionPacketKeepEtlCabFilesCheckBox,$script:CollectionSavedDirectoryTextBox,$CollectionName)
+    } -ArgumentList @(
+        $ComputerListProvideCredentialsCheckBox,
+        $script:Credential,
+        $TargetComputer,
+        $CaptureType,
+        $Report,
+        $MaxSize,
+        $CaptureSeconds,
+        $EndpointEtlTraceFile,
+        $EndpointCabTraceFile,
+        $LocalEtlFilePath,
+        $LocalCabFilePath,
+        $etl2pcapng,
+        $OutPcapNG,
+        $OptionPacketKeepEtlCabFilesCheckBox,
+        $script:CollectionSavedDirectoryTextBox,
+        $CollectionName
+    )
+
 
     $InputValues = @"
 ===========================================================================
