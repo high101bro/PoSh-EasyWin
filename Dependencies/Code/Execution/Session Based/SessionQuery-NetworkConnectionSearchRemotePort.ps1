@@ -7,6 +7,9 @@ $PoShEasyWin.Refresh()
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
+if ($NetworkConnectionRegexCheckbox.checked){ $NetworkConnectionRegex = $True }
+else { $NetworkConnectionRegex = $False }
+
 $NetworkConnectionSearchRemotePort = $NetworkConnectionSearchRemotePortRichTextbox.Lines
 #$NetworkConnectionSearchRemotePort = ($NetworkConnectionSearchRemotePortRichTextbox.Text).split("`r`n")
 #$NetworkConnectionSearchRemotePort = $NetworkConnectionSearchRemotePort | Where $_ -ne ''
@@ -15,7 +18,7 @@ $OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Network Conne
 
 #Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} -argumentlist $null,$NetworkConnectionSearchRemotePort,$null -Session $PSSession | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
 Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
--ArgumentList @($null,$NetworkConnectionSearchRemotePort,$null,$null) `
+-ArgumentList @($null,$NetworkConnectionSearchRemotePort,$null,$null,$null,$null,$NetworkConnectionRegex) `
 -Session $PSSession `
 | Set-Variable SessionData
 $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force

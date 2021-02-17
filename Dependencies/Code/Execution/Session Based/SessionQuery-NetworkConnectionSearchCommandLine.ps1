@@ -1,5 +1,5 @@
 $ExecutionStartTime = Get-Date
-$CollectionName = "Network Connection - Search DNS Cache"
+$CollectionName = "Network Connection - Execution Full Path"
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Executing: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss'))  $CollectionName")
@@ -10,14 +10,15 @@ $script:ProgressBarEndpointsProgressBar.Value = 0
 if ($NetworkConnectionRegexCheckbox.checked){ $NetworkConnectionRegex = $True }
 else { $NetworkConnectionRegex = $False }
 
-$NetworkConnectionSearchDNSCache = $NetworkConnectionSearchDNSCacheRichTextbox.Lines
-#$NetworkConnectionSearchDNSCache = ($NetworkConnectionSearchDNSCacheRichTextbox.Text).split("`r`n")
-#$NetworkConnectionSearchDNSCache = $NetworkConnectionSearchDNSCache | Where $_ -ne ''
+$NetworkConnectionSearchCommandLine = $NetworkConnectionSearchCommandLineRichTextbox.Lines
+#$NetworkConnectionSearchCommandLine = ($NetworkConnectionSearchCommandLineRichTextbox.Text).split("`r`n")
+#$NetworkConnectionSearchCommandLine = $NetworkConnectionSearchCommandLineRichTextbox | Where $_ -ne ''
 
-$OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Network Connection - DNS Cache"
+$OutputFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\Network Connection - Remote IP Address"
 
-Invoke-Command -ScriptBlock ${function:Get-DNSCache} `
--Argumentlist @($NetworkConnectionSearchDNSCache,$NetworkConnectionRegex) `
+#Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} -argumentlist $NetworkConnectionSearchCommandLine,$null,$null -Session $PSSession | Export-Csv -Path $OutputFilePath -NoTypeInformation -Force
+Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
+-ArgumentList @($NetworkConnectionSearchCommandLine,$null,$null,$null,$null,$null,$NetworkConnectionRegex) `
 -Session $PSSession `
 | Set-Variable SessionData
 $SessionData | Export-Csv    -Path "$OutputFilePath.csv" -NoTypeInformation -Force

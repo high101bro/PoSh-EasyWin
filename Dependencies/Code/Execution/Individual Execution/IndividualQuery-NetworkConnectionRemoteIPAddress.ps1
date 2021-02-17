@@ -4,6 +4,9 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
+if ($NetworkConnectionRegexCheckbox.checked){ $NetworkConnectionRegex = $True }
+else { $NetworkConnectionRegex = $False }
+
 #$NetworkConnectionSearchRemoteIPAddress = $NetworkConnectionSearchRemoteIPAddressRichTextbox.Lines
 $NetworkConnectionSearchRemoteIPAddress = ($NetworkConnectionSearchRemoteIPAddressRichTextbox.Text).split("`r`n")
 
@@ -11,7 +14,8 @@ function MonitorJobScriptBlock {
     param(
         $ExecutionStartTime,
         $CollectionName,
-        $NetworkConnectionSearchRemoteIPAddress
+        $NetworkConnectionSearchRemoteIPAddress,
+        $NetworkConnectionRegex
     )
 
     foreach ($TargetComputer in $script:ComputerList) {
@@ -35,7 +39,7 @@ function MonitorJobScriptBlock {
             if (!$script:Credential) { Create-NewCredentials }
 
             Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-            -ArgumentList @($NetworkConnectionSearchRemoteIPAddress,$null,$null,$null) `
+            -ArgumentList @($NetworkConnectionSearchRemoteIPAddress,$null,$null,$null,$null,$null,$NetworkConnectionRegex) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             -Credential $script:Credential `
@@ -43,14 +47,14 @@ function MonitorJobScriptBlock {
         }
         else {
             Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-            -ArgumentList @($NetworkConnectionSearchRemoteIPAddress,$null,$null,$null) `
+            -ArgumentList @($NetworkConnectionSearchRemoteIPAddress,$null,$null,$null,$null,$null,$NetworkConnectionRegex) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             | Select-Object PSComputerName, *
         }
     }
 }
-Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchRemoteIPAddress)
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchRemoteIPAddress,$NetworkConnectionRegex)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -77,6 +81,11 @@ $($script:Credential.UserName)
 Endpoints:
 ===========================================================================
 $($EndpointString.trim())
+
+===========================================================================
+Regular Expression:
+===========================================================================
+$NetworkConnectionRegex
 
 ===========================================================================
 Remote IP Address:

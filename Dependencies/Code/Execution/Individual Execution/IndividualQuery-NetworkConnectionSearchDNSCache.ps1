@@ -4,6 +4,9 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
+if ($NetworkConnectionRegexCheckbox.checked){ $NetworkConnectionRegex = $True }
+else { $NetworkConnectionRegex = $False }
+
 #$NetworkConnectionSearchDNSCache = $NetworkConnectionSearchDNSCacheRichTextbox.Lines
 $NetworkConnectionSearchDNSCache = ($NetworkConnectionSearchDNSCacheRichTextbox.Text).split("`r`n")
 
@@ -11,14 +14,16 @@ function MonitorJobScriptBlock {
     param(
         $ExecutionStartTime,
         $CollectionName,
-        $NetworkConnectionSearchDNSCache
+        $NetworkConnectionSearchDNSCache,
+        $NetworkConnectionRegex
     )
     foreach ($TargetComputer in $script:ComputerList) {
         param(
             $script:CollectedDataTimeStampDirectory,
             $script:IndividualHostResults,
             $CollectionName,
-            $TargetComputer
+            $TargetComputer,
+            $NetworkConnectionRegex
         )
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
@@ -40,7 +45,7 @@ function MonitorJobScriptBlock {
             if (!$script:Credential) { Create-NewCredentials }
 
             Invoke-Command -ScriptBlock ${function:Get-DNSCache} `
-            -Argumentlist @($NetworkConnectionSearchDNSCache,$null) `
+            -Argumentlist @($NetworkConnectionSearchDNSCache,$NetworkConnectionRegex) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             -Credential $script:Credential `
@@ -48,14 +53,14 @@ function MonitorJobScriptBlock {
         }
         else {
             Invoke-Command -ScriptBlock ${function:Get-DNSCache} `
-            -Argumentlist @($NetworkConnectionSearchDNSCache,$null) `
+            -Argumentlist @($NetworkConnectionSearchDNSCache,$NetworkConnectionRegex) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             | Select-Object PSComputerName, Mode, Length, Name, Extension, Attributes, FullName, CreationTime, LastWriteTime, LastAccessTime, BaseName, Directory, PSIsContainer, Filehash, FileHashAlgorithm
         }
     }
 }
-Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchDNSCache)
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchDNSCache,$NetworkConnectionRegex)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
@@ -82,6 +87,11 @@ $($script:Credential.UserName)
 Endpoints:
 ===========================================================================
 $($EndpointString.trim())
+
+===========================================================================
+Regular Expression:
+===========================================================================
+$NetworkConnectionRegex
 
 ===========================================================================
 DNS Cache Search Terms:

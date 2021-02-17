@@ -41,7 +41,7 @@ function Deselect-AllCommands {
     $NetworkConnectionSearchProcessCheckbox.checked              = $false
     $NetworkConnectionSearchDNSCacheCheckbox.checked             = $false
     $NetworkConnectionSearchCommandLineCheckbox.checked          = $false
-    $NetworkConnectionSearchFullPathCheckbox.checked             = $false
+    $NetworkConnectionSearchExecutablePathCheckbox.checked       = $false
     $SysinternalsSysmonCheckbox.checked                          = $false
     $SysinternalsAutorunsCheckbox.checked                        = $false
     $SysinternalsProcessMonitorCheckbox.checked                  = $false
@@ -69,7 +69,7 @@ function Deselect-AllCommands {
     $NetworkConnectionSearchProcessCheckbox.ForeColor            = 'Blue'
     $NetworkConnectionSearchDNSCacheCheckbox.ForeColor           = 'Blue'
     $NetworkConnectionSearchCommandLineCheckbox.ForeColor        = 'Blue'
-    $NetworkConnectionSearchFullPathCheckbox.ForeColor           = 'Blue'
+    $NetworkConnectionSearchExecutablePathCheckbox.ForeColor     = 'Blue'
     $SysinternalsSysmonCheckbox.ForeColor                        = 'Blue'
     $SysinternalsAutorunsCheckbox.ForeColor                      = 'Blue'
     $SysinternalsProcessMonitorCheckbox.ForeColor                = 'Blue'

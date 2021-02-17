@@ -1271,7 +1271,7 @@ $ExecuteScriptHandler = {
         if ($NetworkConnectionSearchProcessCheckbox.checked)            { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($NetworkConnectionSearchDNSCacheCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
         if ($NetworkConnectionSearchCommandLineCheckbox.checked)        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
-        if ($NetworkConnectionSearchFullPathCheckbox.checked)           { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
+        if ($NetworkConnectionSearchExecutablePathCheckbox.checked)     { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
     
 
         if ($ExternalProgramsWinRMRadioButton.checked -and $SysinternalsSysmonCheckbox.Checked)                        { $CountCommandQueries++ ; $script:WinRMCommandCount++ }
@@ -1389,7 +1389,7 @@ $ExecuteScriptHandler = {
 
             # Endpoint Packet Capture
             # Conducts a packet capture on the endpoints using netsh
-            if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCapture.ps1" }
+            if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCaptureNetSh.ps1" }
 
             # Network Connection Search Remote IP Address
             # Checks network connections for remote ip addresses and only returns those that match
@@ -1411,6 +1411,14 @@ $ExecuteScriptHandler = {
             # Checks dns cache for the provided search terms and only returns those that match
             if ($NetworkConnectionSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchDNSCache.ps1" }
 
+            # Network Connection Search Command Line
+            # Checks network connection for command line arguments and only returns those that match
+            if ($NetworkConnectionSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchCommandLine.ps1" }
+
+            # Network Connection Search Execution Full Path
+            # Checks network connection for those with execution full paths and only returns those that match
+            if ($NetworkConnectionSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchExecutablePath.ps1" }
+    
             # Sysmon
             # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
             # If sysmon is already installed, it will update the config .xml file instead
@@ -1584,6 +1592,14 @@ $ExecuteScriptHandler = {
                 # Network Connection Search DNS Check
                 # Checks dns cache for the provided search terms and only returns those that match
                 if ($NetworkConnectionSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchDNSCache.ps1" }
+
+                # Network Connection Search Command Line
+                # Checks network connection for command line arguments and only returns those that match
+                if ($NetworkConnectionSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchCommandLine.ps1" }
+
+                # Network Connection Search Execution Full Path
+                # Checks network connection for those with execution full paths and only returns those that match
+                if ($NetworkConnectionSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-NetworkConnectionSearchExecutablePath.ps1" }
 
                 # Sysmon
                 # Pushes Sysmon to remote hosts and configure it with the selected config .xml file

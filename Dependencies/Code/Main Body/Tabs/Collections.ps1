@@ -55,3 +55,9 @@ Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Collections File Search.p
 # Such as local/remote IPs and ports, processes that start connnections, and dns cache
 Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Collections Network.ps1"
 . "$Dependencies\Code\Main Body\Tabs\Collections Network.ps1"
+
+
+# This tab contains fields specific to packet capturing
+# Feilds for the legacy netsh trace and the upcoming native Win10 Packet Capture
+Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Collections Packet Capture.ps1"
+. "$Dependencies\Code\Main Body\Tabs\Collections Packet Capture.ps1"

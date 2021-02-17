@@ -1,4 +1,4 @@
-$CollectionName = "Network Connection - Process Search"
+$CollectionName = "Network Connection - Command Line"
 $ExecutionStartTime = Get-Date
 $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
@@ -7,23 +7,18 @@ $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:
 if ($NetworkConnectionRegexCheckbox.checked){ $NetworkConnectionRegex = $True }
 else { $NetworkConnectionRegex = $False }
 
-#$NetworkConnectionSearchProcess = $NetworkConnectionSearchProcessRichTextbox.Lines
-$NetworkConnectionSearchProcess = ($NetworkConnectionSearchProcessRichTextbox.Text).split("`r`n")
+#$NetworkConnectionSearchCommandLine = $NetworkConnectionSearchCommandLineRichTextbox.Lines
+$NetworkConnectionSearchCommandLine = ($NetworkConnectionSearchCommandLineRichTextbox.Text).split("`r`n")
 
 function MonitorJobScriptBlock {
     param(
         $ExecutionStartTime,
         $CollectionName,
-        $NetworkConnectionSearchProcess
+        $NetworkConnectionSearchCommandLine,
+        $NetworkConnectionRegex
     )
+
     foreach ($TargetComputer in $script:ComputerList) {
-        param(
-            $script:CollectedDataTimeStampDirectory,
-            $script:IndividualHostResults,
-            $CollectionName,
-            $TargetComputer,
-            $NetworkConnectionRegex
-        )
         Conduct-PreCommandCheck -CollectedDataTimeStampDirectory $script:CollectedDataTimeStampDirectory `
                                 -IndividualHostResults "$script:IndividualHostResults" -CollectionName $CollectionName `
                                 -TargetComputer $TargetComputer
@@ -44,7 +39,7 @@ function MonitorJobScriptBlock {
             if (!$script:Credential) { Create-NewCredentials }
 
             Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-            -ArgumentList @($null,$null,$null,$NetworkConnectionSearchProcess,$null,$null,$NetworkConnectionRegex) `
+            -ArgumentList @($null,$null,$null,$null,$NetworkConnectionSearchCommandLine,$null,$NetworkConnectionRegex) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             -Credential $script:Credential `
@@ -52,19 +47,19 @@ function MonitorJobScriptBlock {
         }
         else {
             Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-            -ArgumentList @($null,$null,$null,$NetworkConnectionSearchProcess,$null,$null,$NetworkConnectionRegex) `
+            -ArgumentList @($null,$null,$null,$null,$NetworkConnectionSearchCommandLine,$null,$NetworkConnectionRegex) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             | Select-Object PSComputerName, *
         }
     }
 }
-Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchProcess,$NetworkConnectionRegex)
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchCommandLine,$NetworkConnectionRegex)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}
 $SearchString = ''
-foreach ($item in $NetworkConnectionSearchProcess) {$SearchString += "$item`n" }
+foreach ($item in $NetworkConnectionSearchCommandLine) {$SearchString += "$item`n" }
 
 $InputValues = @"
 ===========================================================================
@@ -93,14 +88,14 @@ Regular Expression:
 $NetworkConnectionRegex
 
 ===========================================================================
-Process:
+Remote IP Address:
 ===========================================================================
 $($SearchString.trim())
 
 "@
 
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchProcess) -InputValues $InputValues
+    Monitor-Jobs -CollectionName $CollectionName -MonitorMode -SMITH -SmithScript ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchCommandLine) -InputValues $InputValues
 }
 elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
     Monitor-Jobs -CollectionName $CollectionName

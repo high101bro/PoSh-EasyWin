@@ -10,80 +10,62 @@ $Section1NetworkConnectionsSearchTab = New-Object System.Windows.Forms.TabPage -
 }
 $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
 
-        $NetworkEndpointPacketCaptureCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
-            Text   = "Endpoint Packet Capture"
-            Left   = $FormScale * 3
-            TOp    = $Section1NetworkConnectionsSearchTab.Top + $Section1NetworkConnectionsSearchTab.Height + $($FormScale * 5)
-            Width  = $FormScale * 175
-            Height = $FormScale * 22
-            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-            ForeColor = 'Blue'
-            Add_Click = { 
-                Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
-                if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+
+$NetworkConnectionsSearchGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+    Text   = "Collection Options"
+    Left   = $FormScale * 3
+    Top    = $FormScale * 5
+    Width  = $FormScale * 435
+    Height = $FormScale * 50
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = "Blue"
+}
+
+            $NetworkConnectionRegexCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+                Text   = "Use Regular Expression. Note: The backslash is the escape character, ex: c:\\Windows\\System32"
+                Left   = $FormScale * 7
+                Top    = $FormScale * 18
+                Width  = $FormScale * 280 #430
+                Height = $FormScale * 25
+                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ForeColor = "Black"
+                Checked = $false
             }
-        }
-        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPacketCaptureCheckBox)
+            $NetworkConnectionsSearchGroupBox.Controls.Add($NetworkConnectionRegexCheckbox)
 
 
-        $NetworkEndpointPcapCaptureDurationLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = "Duration (Secs)"
-            Left   = $NetworkEndpointPacketCaptureCheckBox.Left + $NetworkEndpointPacketCaptureCheckBox.Width + $($FormScale * 12)
-            Top    = $NetworkEndpointPacketCaptureCheckBox.Top + $($FormScale * 5)
-            Width  = $FormScale * 88
-            Height = $FormScale * 22
-            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        }
-        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPcapCaptureDurationLabel)
-
-
-        $NetworkEndpointPacketCaptureDurationTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-            Text   = "60"
-            Left   = $NetworkEndpointPcapCaptureDurationLabel.Left + $NetworkEndpointPcapCaptureDurationLabel.Width
-            Top    = $NetworkEndpointPcapCaptureDurationLabel.Top - $($FormScale * 2)
-            Width  = $FormScale * 30
-            Height = $FormScale * 22
-            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        }
-        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPacketCaptureDurationTextBox)
-
-
-        $NetworkEndpointPcapCaptureMaxSizeLabel = New-Object System.Windows.Forms.Label -Property @{
-            Text   = "Max (MB)"
-            Left   = $NetworkEndpointPacketCaptureDurationTextBox.Left + $NetworkEndpointPacketCaptureDurationTextBox.Width + $($FormScale * 35)
-            Top    = $NetworkEndpointPacketCaptureDurationTextBox.Top + $($FormScale * 2)
-            Width  = $FormScale * 60
-            Height = $FormScale * 22
-            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        }
-        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPcapCaptureMaxSizeLabel)
-
-
-        $NetworkEndpointPacketCaptureMaxSizeTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-            Text   = "50"
-            Left   = $NetworkEndpointPcapCaptureMaxSizeLabel.Left + $NetworkEndpointPcapCaptureMaxSizeLabel.Width
-            Top    = $NetworkEndpointPcapCaptureMaxSizeLabel.Top - $($FormScale * 2)
-            Width  = $FormScale * 30
-            Height = $FormScale * 22
-            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        }
-        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkEndpointPacketCaptureMaxSizeTextBox)
-
-
-        $NetworkConnectionSearchRemoteIPAddressCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-            Text   = "Remote IP (WinRM)"
-            Left   = $FormScale * 3
-            Top    = $NetworkEndpointPacketCaptureCheckBox.Top + $NetworkEndpointPacketCaptureCheckBox.Height + $($FormScale * 10)
-            Width  = $FormScale * 180
-            Height = $FormScale * 22
-            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-            ForeColor = 'Blue'
-            Add_Click = { 
-                Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
-                if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+            $SupportsRegexButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = "Regex Examples"
+                Left   = $NetworkConnectionRegexCheckbox.Left + $NetworkConnectionRegexCheckbox.Width + $($FormScale * 28)
+                Top    = $NetworkConnectionRegexCheckbox.Top
+                Width  = $FormScale * 115
+                Height = $FormScale * 22
+                Add_Click = { Import-Csv "$Dependencies\Reference RegEx Examples.csv" | Out-GridView }
             }
-        }
-        $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemoteIPAddressCheckbox)
+            $NetworkConnectionsSearchGroupBox.Controls.Add($SupportsRegexButton)
+            CommonButtonSettings -Button $SupportsRegexButton
+$Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionsSearchGroupBox)
+
+
+
+
+
+
+
+$NetworkConnectionSearchRemoteIPAddressCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Remote IP (WinRM)"
+    Left   = $FormScale * 3
+    Top    = $NetworkConnectionsSearchGroupBox.Top + $NetworkConnectionsSearchGroupBox.Height + $($FormScale * 10)
+    Width  = $FormScale * 180
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = { 
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchRemoteIPAddressCheckbox)
 
 
         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\NetworkConnectionSearchRemoteIPAddressSelectionButton.ps1"
@@ -221,8 +203,25 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalP
         $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchLocalPortRichTextbox)
 
 
-$NetworkConnectionSearchProcessCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Process Name (WinRM)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$NetworkConnectionSearchCommandLineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Command Line (WinRM)"
     Left   = $FormScale * 3
     Top    = $NetworkConnectionSearchRemoteIPAddressRichTextbox.Top + $NetworkConnectionSearchRemoteIPAddressRichTextbox.Height + $($FormScale * 5)
     Width  = $FormScale * 210 #430
@@ -234,18 +233,95 @@ $NetworkConnectionSearchProcessCheckbox = New-Object System.Windows.Forms.CheckB
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
-$Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProcessCheckbox)
+$Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchCommandLineCheckbox)
 
-            $NetworkConnectionSearchProcessLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text   = "Connections created by a process."
+
+            $NetworkConnectionSearchCommandLineRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
+                Lines  = "Enter Command; One Per Line"
                 Left   = $FormScale * 3
-                Top    = $NetworkConnectionSearchProcessCheckbox.Top + $NetworkConnectionSearchProcessCheckbox.Height + $($FormScale * 3)
+                Top    = $NetworkConnectionSearchCommandLineCheckbox.Top + $NetworkConnectionSearchCommandLineCheckbox.Height + $($FormScale * 5)
                 Width  = $FormScale * 210 #430
-                Height = $FormScale * 22
-                ForeColor = "Black"
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Height = $FormScale * 100
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                MultiLine  = $True
+                ScrollBars = "Vertical"
+                WordWrap   = $True
+                ShortcutsEnabled = $true
+                #Add_MouseHover   = $NetworkConnectionSearchCommandLineRichTextboxAdd_MouseHover
+                Add_MouseEnter   = { if ($this.text -eq "Enter Command; One Per Line"){ $this.text = "" } }
+                Add_MouseLeave   = { if ($this.text -eq "") { $this.text = "Enter Command; One Per Line" } }
             }
-            $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProcessLabel)
+            $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchCommandLineRichTextbox)
+
+
+$NetworkConnectionSearchExecutablePathCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Executable Path (WinRM)"
+    Left   = $NetworkConnectionSearchCommandLineRichTextbox.Left + $NetworkConnectionSearchCommandLineRichTextbox.Width + $($FormScale * 5)
+    Top    = $NetworkConnectionSearchCommandLineCheckbox.Top
+    Width  = $FormScale * 210 #430
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchExecutablePathCheckbox)
+
+
+            $NetworkConnectionSearchExecutablePathTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
+                Lines  = "Enter full paths; One Per Line"
+                Left   = $NetworkConnectionSearchExecutablePathCheckbox.Left
+                Top    = $NetworkConnectionSearchExecutablePathCheckbox.Top + $NetworkConnectionSearchExecutablePathCheckbox.Height + $($FormScale * 5)
+                Width  = $FormScale * 210 #430
+                Height = $FormScale * 100
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                MultiLine  = $True
+                ScrollBars = "Vertical"
+                WordWrap   = $True
+                ShortcutsEnabled = $true
+                Add_MouseEnter   = { if ($this.text -eq "Enter full paths; One Per Line"){ $this.text = "" } }
+                Add_MouseLeave   = { if ($this.text -eq "") { $this.text = "Enter full paths; One Per Line" } }
+                #Add_MouseHover = $NetworkConnectionSearchExecutablePathTextboxAdd_MouseHover
+            }
+            $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchExecutablePathTextbox)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$NetworkConnectionSearchProcessCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text   = "Process Name (WinRM)"
+    Left   = $FormScale * 3
+    Top    = $NetworkConnectionSearchCommandLineRichTextbox.Top + $NetworkConnectionSearchCommandLineRichTextbox.Height + $($FormScale * 5)
+    Width  = $FormScale * 210 #430
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
+    }
+}
+$Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProcessCheckbox)
 
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\NetworkConnectionSearchProcessRichTextbox.ps1"
@@ -253,7 +329,7 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchProces
             $NetworkConnectionSearchProcessRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
                 Lines  = "Enter Process Names; One Per Line"
                 Left   = $FormScale * 3
-                Top    = $NetworkConnectionSearchProcessLabel.Top + $NetworkConnectionSearchProcessLabel.Height + $($FormScale * 5)
+                Top    = $NetworkConnectionSearchProcessCheckbox.Top + $NetworkConnectionSearchProcessCheckbox.Height + $($FormScale * 5)
                 Width  = $FormScale * 210 #430
                 Height = $FormScale * 100
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -285,22 +361,11 @@ $NetworkConnectionSearchDNSCacheCheckbox = New-Object System.Windows.Forms.Check
 }
 $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCacheCheckbox)
 
-            $NetworkConnectionSearchDNSCacheLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text   = "DNS Cache Entries (Volatile)."
-                Left   = $NetworkConnectionSearchDNSCacheCheckbox.Left
-                Top    = $NetworkConnectionSearchDNSCacheCheckbox.Top + $NetworkConnectionSearchDNSCacheCheckbox.Height + $($FormScale * 3)
-                Width  = $FormScale * 210 #430
-                Height = $FormScale * 22
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                ForeColor = "Black"
-            }
-            $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCacheLabel)
-
 
             $NetworkConnectionSearchDNSCacheRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
                 Lines  = "Enter DNS query info or IP addresses; One Per Line"
                 Left   = $NetworkConnectionSearchDNSCacheCheckbox.Left
-                Top    = $NetworkConnectionSearchDNSCacheLabel.Top + $NetworkConnectionSearchDNSCacheLabel.Height + $($FormScale * 5)
+                Top    = $NetworkConnectionSearchDNSCacheCheckbox.Top + $NetworkConnectionSearchDNSCacheCheckbox.Height + $($FormScale * 5)
                 Width  = $FormScale * 210 #430
                 Height = $FormScale * 100
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -323,100 +388,3 @@ $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCac
                 }
             }
             $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchDNSCacheRichTextbox)
-
-
-$NetworkConnectionSearchCommandLineCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Command Line (WinRM)"
-    Left   = $FormScale * 3
-    Top    = $NetworkConnectionSearchProcessRichTextbox.Top + $NetworkConnectionSearchProcessRichTextbox.Height + $($FormScale * 5)
-    Width  = $FormScale * 210 #430
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-    ForeColor = 'Blue'
-    Add_Click = {
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
-        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-    }
-}
-$Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchCommandLineCheckbox)
-
-            $NetworkConnectionSearchCommandLineLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text   = "Connections with these commands."
-                Left   = $FormScale * 3
-                Top    = $NetworkConnectionSearchCommandLineCheckbox.Top + $NetworkConnectionSearchCommandLineCheckbox.Height + $($FormScale * 3)
-                Width  = $FormScale * 210 #430
-                Height = $FormScale * 22
-                ForeColor = "Black"
-                Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            }
-            $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchCommandLineLabel)
-
-
-            $NetworkConnectionSearchCommandLineRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-                Lines  = "Enter Command; One Per Line"
-                Left   = $FormScale * 3
-                Top    = $NetworkConnectionSearchCommandLineLabel.Top + $NetworkConnectionSearchCommandLineLabel.Height + $($FormScale * 5)
-                Width  = $FormScale * 210 #430
-                Height = $FormScale * 100
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                MultiLine  = $True
-                ScrollBars = "Vertical"
-                WordWrap   = $True
-                ShortcutsEnabled = $true
-                #Add_MouseHover   = $NetworkConnectionSearchCommandLineRichTextboxAdd_MouseHover
-                Add_MouseEnter   = { if ($this.text -eq "Enter Command; One Per Line"){ $this.text = "" } }
-                Add_MouseLeave   = { if ($this.text -eq "") { $this.text = "Enter Command; One Per Line" } }
-            }
-            $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchCommandLineRichTextbox)
-
-
-$NetworkConnectionSearchFullPathCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text   = "Full Path of Executable (WinRM)"
-    Left   = $NetworkConnectionSearchCommandLineRichTextbox.Left + $NetworkConnectionSearchCommandLineRichTextbox.Width + $($FormScale * 5)
-    Top    = $NetworkConnectionSearchCommandLineCheckbox.Top
-    Width  = $FormScale * 210 #430
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-    ForeColor = 'Blue'
-    Add_Click = {
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
-        if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
-    }
-}
-$Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchFullPathCheckbox)
-
-            $NetworkConnectionSearchFullPathLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text   = "Connections with the following full paths."
-                Left   = $NetworkConnectionSearchFullPathCheckbox.Left
-                Top    = $NetworkConnectionSearchFullPathCheckbox.Top + $NetworkConnectionSearchFullPathCheckbox.Height + $($FormScale * 3)
-                Width  = $FormScale * 210 #430
-                Height = $FormScale * 22
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                ForeColor = "Black"
-            }
-            $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchFullPathLabel)
-
-
-            $NetworkConnectionSearchFullPathTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
-                Lines  = "Enter full paths; One Per Line"
-                Left   = $NetworkConnectionSearchFullPathCheckbox.Left
-                Top    = $NetworkConnectionSearchFullPathLabel.Top + $NetworkConnectionSearchFullPathLabel.Height + $($FormScale * 5)
-                Width  = $FormScale * 210 #430
-                Height = $FormScale * 100
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                MultiLine  = $True
-                ScrollBars = "Vertical"
-                WordWrap   = $True
-                ShortcutsEnabled = $true
-                Add_MouseEnter   = { if ($this.text -eq "Enter full paths; One Per Line"){ $this.text = "" } }
-                Add_MouseLeave   = { if ($this.text -eq "") { $this.text = "Enter full paths; One Per Line" } }
-                #Add_MouseHover = $NetworkConnectionSearchFullPathTextboxAdd_MouseHover
-            }
-            $Section1NetworkConnectionsSearchTab.Controls.Add($NetworkConnectionSearchFullPathTextbox)
-
-
-
-
-
-
-

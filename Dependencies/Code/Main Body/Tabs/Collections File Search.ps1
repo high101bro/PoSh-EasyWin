@@ -72,30 +72,6 @@ $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingCheckbox)
         $Section1FileSearchTab.Controls.Add($FileSearchDirectoryListingLabel)
 
 
-        Update-FormProgress "$Dependencies\Code\Main Body\Search-DirectoryTreeview.ps1"
-        . "$Dependencies\Code\Main Body\Search-DirectoryTreeview.ps1"
-        $FileSearchSearchResultsButton = New-Object System.Windows.Forms.Button -Property @{
-            Text   = "Search Results"
-            Left   = $FileSearchDirectoryListingLabel.Left + $FileSearchDirectoryListingLabel.Width
-            Top    = $FileSearchDirectoryListingLabel.Top
-            Width  = $FormScale * 100
-            Height = $FormScale * 22
-            Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            ForeColor = "Black"
-            Add_Click = {
-                $FilSearchViewResultsOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
-                    Title = "Open Directory Files"
-                    Filter = "CSV (*.csv)| *.csv|XML (*.xml)| *.xml|All files (*.*)|*.*"
-                    InitialDirectory = $ExecAndScriptDir
-                }
-                $FilSearchViewResultsOpenFileDialog.ShowDialog()
-                Search-DirectoryTreeView -Input $(Import-Csv $FilSearchViewResultsOpenFileDialog.FileName | ForEach-Object {$_.FullName.Trim("\")} )
-            }
-        }
-        $Section1FileSearchTab.Controls.Add($FileSearchSearchResultsButton)
-        CommonButtonSettings -Button $FileSearchSearchResultsButton
-
-
         Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\FileSearchDirectoryListingTextbox.ps1"
         . "$Dependencies\Code\System.Windows.Forms\TextBox\FileSearchDirectoryListingTextbox.ps1"
         $FileSearchDirectoryListingTextbox = New-Object System.Windows.Forms.TextBox -Property @{

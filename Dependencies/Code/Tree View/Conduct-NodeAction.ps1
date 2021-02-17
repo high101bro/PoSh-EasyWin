@@ -386,6 +386,8 @@ function Conduct-NodeAction {
         if ($NetworkConnectionSearchLocalPortCheckbox.checked)          { $script:TreeeViewCommandsCount++ }
         if ($NetworkConnectionSearchProcessCheckbox.checked)            { $script:TreeeViewCommandsCount++ }
         if ($NetworkConnectionSearchDNSCacheCheckbox.checked)           { $script:TreeeViewCommandsCount++ }
+        if ($NetworkConnectionSearchCommandLineCheckbox.checked)        { $script:TreeeViewCommandsCount++ }
+        if ($NetworkConnectionSearchExecutablePathCheckbox.checked)     { $script:TreeeViewCommandsCount++ }
         if ($FileSearchDirectoryListingCheckbox.Checked)                { $script:TreeeViewCommandsCount++ }
         if ($FileSearchFileSearchCheckbox.Checked)                      { $script:TreeeViewCommandsCount++ }
         if ($FileSearchAlternateDataStreamCheckbox.Checked)             { $script:TreeeViewCommandsCount++ }

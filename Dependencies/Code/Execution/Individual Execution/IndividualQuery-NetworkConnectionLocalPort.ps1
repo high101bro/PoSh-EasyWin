@@ -4,14 +4,17 @@ $StatusListBox.Items.Clear()
 $StatusListBox.Items.Add("Query: $CollectionName")
 $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) $CollectionName")
 
-$NetworkConnectionSearchLocalPort = $NetworkConnectionSearchLocalPortRichTextbox.Lines
+if ($NetworkConnectionRegexCheckbox.checked){ $NetworkConnectionRegex = $True }
+else { $NetworkConnectionRegex = $False }
 
+$NetworkConnectionSearchLocalPort = $NetworkConnectionSearchLocalPortRichTextbox.Lines
 
 function MonitorJobScriptBlock {
     param(
         $ExecutionStartTime,
         $CollectionName,
-        $NetworkConnectionSearchLocalPort
+        $NetworkConnectionSearchLocalPort,
+        $NetworkConnectionRegex
     )
     foreach ($TargetComputer in $script:ComputerList) {
         param(
@@ -30,7 +33,7 @@ function MonitorJobScriptBlock {
             if (!$script:Credential) { Create-NewCredentials }
 
             Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-            -ArgumentList @($null,$null,$NetworkConnectionSearchLocalPort,$null) `
+            -ArgumentList @($null,$null,$NetworkConnectionSearchLocalPort,$null,$null,$null,$NetworkConnectionRegex) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             -Credential $script:Credential `
@@ -38,14 +41,14 @@ function MonitorJobScriptBlock {
         }
         else {
             Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-            -ArgumentList @($null,$null,$NetworkConnectionSearchLocalPort,$null) `
+            -ArgumentList @($null,$null,$NetworkConnectionSearchLocalPort,$null,$null,$null,$NetworkConnectionRegex) `
             -ComputerName $TargetComputer `
             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
             | Select-Object PSComputerName, *
         }
     }
 }
-Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchLocalPort)
+Invoke-Command -ScriptBlock ${function:MonitorJobScriptBlock} -ArgumentList @($ExecutionStartTime,$CollectionName,$NetworkConnectionSearchLocalPort,$NetworkConnectionRegex)
 
 $EndpointString = ''
 foreach ($item in $script:ComputerList) {$EndpointString += "$item`n"}

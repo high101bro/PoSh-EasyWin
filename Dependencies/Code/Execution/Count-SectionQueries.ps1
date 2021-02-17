@@ -21,6 +21,8 @@ Function Count-SectionQueries {
     if ($NetworkConnectionSearchLocalPortCheckbox.checked)          { $script:SectionQueryCount++ }
     if ($NetworkConnectionSearchProcessCheckbox.checked)            { $script:SectionQueryCount++ }
     if ($NetworkConnectionSearchDNSCacheCheckbox.checked)           { $script:SectionQueryCount++ }
+    if ($NetworkConnectionSearchCommandLineCheckbox.checked)        { $script:SectionQueryCount++ }
+    if ($NetworkConnectionSearchExecutablePathCheckbox.checked)     { $script:SectionQueryCount++ }
 
     if ($EventLogsQuickPickSelectionCheckbox.Checked) {
         foreach ($Query in $script:EventLogQueries) {
