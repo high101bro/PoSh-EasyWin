@@ -1362,7 +1362,7 @@ $ExecuteScriptHandler = {
                 }
             }
 
-            if (Verify-Action -Title "Query Verification" -Question "Connecting Account:`n$Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerList -join ', ')) {
+            if (Verify-Action -Title "Execution Verification" -Question "Connecting Account:`n$Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerList -join ', ')) {
             
                 $PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
                 $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
@@ -1527,7 +1527,7 @@ $ExecuteScriptHandler = {
             $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
             New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
 
-            if (Verify-Action -Title "Query Verification" -Question "Connecting Account:  $Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerList -join ', ')) {
+            if (Verify-Action -Title "Execution Verification" -Question "Connecting Account:  $Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerList -join ', ')) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
                     $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential | Sort-Object ComputerName

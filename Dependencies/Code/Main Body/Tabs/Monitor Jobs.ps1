@@ -21,10 +21,6 @@ $script:Section3MonitorJobsTab = New-Object System.Windows.Forms.TabPage -Proper
     Name = "Monitor Jobs Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     AutoScroll = $true
-    Add_MouseEnter = { 
-        if ($script:Section3MonitorJobsResizeCheckbox.checked -eq $true ) { Maximize-MonitorJobsTab } 
-        $MainBottomTabControl.bringtofront()
-    }
     UseVisualStyleBackColor = $True
 }
 $MainBottomTabControl.Controls.Add($script:Section3MonitorJobsTab)
