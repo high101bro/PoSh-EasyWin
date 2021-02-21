@@ -37,8 +37,8 @@ New-Item -Type Directory -Path "$script:CollectedDataTimeStampDirectory\$Collect
 
 $script:ProgressBarEndpointsProgressBar.Value = 0
 
-[int]$MaxSize        = $NetworkEndpointPacketCaptureMaxSizeTextBox.text
-[int]$CaptureSeconds = $NetworkEndpointPacketCaptureDurationTextBox.text
+[int]$MaxSize        = $NetworkEndpointPacketCaptureMaxSizeComboBox.text
+[int]$CaptureSeconds = $NetworkEndpointPacketCaptureDurationComboBox.text
 $CaptureType = 'physical'
 $Report      = 'Yes'
 $etl2pcapng  = "$Dependencies\Executables\Packet Capture\etl2pcapng\x64\etl2pcapng.exe"

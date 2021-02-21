@@ -133,14 +133,14 @@ function Check-Connection {
         }
 
         # Popup windows requesting user action
-        [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic")
-        $verify = [Microsoft.VisualBasic.Interaction]::MsgBox(`
-            "Do you want to uncheck unresponsive hosts?", `
-            #'YesNoCancel,Question', `
-            'YesNo,Question', `
-            "PoSh-EasyWin")
-        switch ($verify) {
-            'Yes'{
+        #[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.VisualBasic")
+        #$verify = [Microsoft.VisualBasic.Interaction]::MsgBox(`
+        #    "Do you want to uncheck unresponsive hosts?", `
+        #    #'YesNoCancel,Question', `
+        #    'YesNo,Question', `
+        #    "PoSh-EasyWin")
+        #switch ($verify) {
+        #    'Yes'{
                 [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
                 foreach ($root in $AllHostsNode) {
                     $root.Checked = $False
@@ -163,10 +163,10 @@ function Check-Connection {
                         }
                     }
                 }
-            }
-            'No'     {continue}
-            #'Cancel' {exit}
-        }
+        #    }
+        #    'No'     {continue}
+        #    #'Cancel' {exit}
+        #}
         $ResultsListBox.Items.Insert(0,"")
         $ResultsListBox.Items.Insert(0,"Finished Testing Connections")
     }

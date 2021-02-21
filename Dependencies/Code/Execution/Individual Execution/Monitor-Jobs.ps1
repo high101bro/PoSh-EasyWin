@@ -107,15 +107,20 @@ if ($MonitorMode) {
         # Garbage Collection to free up memory
         [System.GC]::Collect()                    
     }
+
+    `$script:SmithScript$JobId  = `$SmithScript
+    `$script:RestartTime$JobId  = `$RestartTime
+    `$script:InputValues$JobId  = `$InputValues
+    `$script:ArgumentList$JobId = `$ArgumentList 
 "@
-    if ($SMITH) {
-        Invoke-Expression @"
-        `$script:SmithScript$JobId  = `$SmithScript
-        `$script:RestartTime$JobId  = `$RestartTime
-        `$script:InputValues$JobId  = `$InputValues
-        `$script:ArgumentList$JobId = `$ArgumentList 
-"@
-    }
+#    if ($SMITH) {
+#        Invoke-Expression @"
+#        `$script:SmithScript$JobId  = `$SmithScript
+#        `$script:RestartTime$JobId  = `$RestartTime
+#        `$script:InputValues$JobId  = `$InputValues
+#        `$script:ArgumentList$JobId = `$ArgumentList 
+#"@
+#    }
 
     Invoke-Expression @"
             
@@ -204,7 +209,7 @@ if ($MonitorMode) {
         `$script:Section3MonitorJobProgressBar$JobId = New-Object System.Windows.Forms.ProgressBar -Property @{
             Left      = `$script:Section3MonitorJobLabel$JobId.Left
             Top       =  (`$FormScale * 22) + (`$FormScale * 8)
-            Width     = `$FormScale * 379 #261
+            Width     = `$FormScale * 381 #261
             Height    = `$FormScale * 22
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
             Value     = 0
@@ -234,29 +239,14 @@ if ($MonitorMode) {
 
             `$script:Section3MonitorJobTransparentLabel$JobId.text = "Endpoint Count:  0 / `$script:JobsStartedCount$JobId `n`$script:JobName$JobId (`$script:PcapEndpointName$JobId)"
 
-            `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text      = 'Open Folder'
-                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
-                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 2)
-                Width     = `$FormScale * 100
-                Height    = `$script:JobsRowHeight
-                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
-                Add_click = {
-                    if (`$This.BackColor -ne 'LightGray') {
-                        `$This.BackColor = 'LightGray'
-                    }
-                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\"
-                }
-            }
-    
-            
+
             `$script:Section3MonitorJobTerminalButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text     = 'View PCap'
-                Left     = `$script:Section3MonitorJobViewButton$JobId.Left + `$script:Section3MonitorJobViewButton$JobId.Width + (`$FormScale * 5)
-                Top      = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 2)
-                Width    = `$FormScale * 75
-                Height   = `$script:JobsRowHeight
-                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                text      = 'View PCap'
+                Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
+                Width     = `$FormScale * 100
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
@@ -271,10 +261,70 @@ if ($MonitorMode) {
             }
 
 
+            `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text      = 'Open Folder'
+                Left      = `$script:Section3MonitorJobTerminalButton$JobId.Left
+                Top       = `$script:Section3MonitorJobTerminalButton$JobId.Top + `$script:Section3MonitorJobTerminalButton$JobId.Height + (`$FormScale * 5)
+                Width     = `$FormScale * 100
+                Height    = `$FormScale * 21
+                Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\"
+                }
+            }
+    
+
+
+            `$script:Section3MonitorJobCommandButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text     = 'Details'
+                Left     = `$script:Section3MonitorJobTerminalButton$JobId.Left + `$script:Section3MonitorJobTerminalButton$JobId.Width + (`$FormScale * 5)
+                Top      = `$script:Section3MonitorJobTerminalButton$JobId.Top
+                Width    = `$FormScale * 75
+                Height   = `$script:JobsRowHeight
+                    Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
+                Add_click = {
+                    `$script:Section3MonitorJobViewCommandForm$JobId = New-Object Windows.Forms.Form -Property @{
+                        Text          = "View Command - `$(`$script:JobName$JobId)"
+                        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
+                        Width         = `$FormScale * 670
+                        Height        = `$FormScale * 600
+                        StartPosition = "CenterScreen"
+                        Font          = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
+                        Add_Closing = { 
+                            Remove-Variable Section3MonitorJobViewCommandForm$JobId -scope script
+
+                            Remove-Variable Section3MonitorJobViewCommandRichTextBox$JobId -scope script
+                            `$This.dispose() 
+                        }
+                    }
+
+                        `$script:Section3MonitorJobViewCommandRichTextBox$JobId = New-Object System.Windows.Forms.RichTextBox -Property @{
+                            text      =  `$(`$script:InputValues$JobId)  #`$(`$script:CurrentJobs$JobId.command)
+                            left      = `$FormScale * 10
+                            top       = `$FormScale * 10
+                            Width     = `$FormScale * 635
+                            Height    = `$FormScale * 545
+                            Font      = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
+                            ForeColor = "Black"
+                            #MultiLine  = `$True
+                            #ScrollBars = "Vertical"
+                            WordWrap   = `$True
+                            ShortcutsEnabled = `$true                
+                        }
+                        `$script:Section3MonitorJobViewCommandForm$JobId.Controls.Add(`$script:Section3MonitorJobViewCommandRichTextBox$JobId)
+
+                    `$script:Section3MonitorJobViewCommandForm$JobId.ShowDialog()
+                }
+            }        
+
+
             `$script:Section3MonitorJobRemoveButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 Text      = 'Remove'
-                Left      = `$script:Section3MonitorJobTerminalButton$JobId.Left + `$script:Section3MonitorJobTerminalButton$JobId.Width + (`$FormScale * 5)
-                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 2)
+                Left      = `$script:Section3MonitorJobCommandButton$JobId.Left + `$script:Section3MonitorJobCommandButton$JobId.Width + (`$FormScale * 5)
+                Top       = `$script:Section3MonitorJobCommandButton$JobId.Top
                 Width     = `$FormScale * 75
                 Height    = `$script:JobsRowHeight
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
@@ -309,7 +359,7 @@ if ($MonitorMode) {
             `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text      = 'Get File'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
-                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 2)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
                 Width     = `$FormScale * 100
                 Height    = `$FormScale * 21
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
@@ -341,7 +391,7 @@ if ($MonitorMode) {
             `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text      = 'Get ADS'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
-                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 2)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
                 Width     = `$FormScale * 100
                 Height    = `$FormScale * 21
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
@@ -373,7 +423,7 @@ if ($MonitorMode) {
             `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text      = 'View Progress'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
-                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 2)
+                Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
                 Width     = `$FormScale * 100
                 Height    = `$FormScale * 21
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
@@ -447,7 +497,7 @@ if ($MonitorMode) {
             `$script:Section3MonitorJobDetailsButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text     = 'Status'
                 Left     = `$script:Section3MonitorJobViewButton$JobId.Left + `$script:Section3MonitorJobViewButton$JobId.Width + (`$FormScale * 5)
-                Top      = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 2)
+                Top      = `$script:Section3MonitorJobViewButton$JobId.Top
                 Width    = `$FormScale * 75
                 Height   = `$FormScale * 21
                 Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
@@ -1472,6 +1522,7 @@ if ($DisableReRun) {
                     elseif ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 -and `$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$true ) {
                         script:Get-JobsCollectedData$JobId
 
+                        `$script:Section3MonitorJobContinuousCheckbox$JobId.checked = `$false
                         [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nAgentless SMITH has something to report.`n`nTime Completed:`n     `$(`$script:JobsTimeCompleted$JobId)",'PoSh-EasyWin - Agentless SMITH')
                     }
                     elseif ( `$script:Section3MonitorJobContinuousCheckbox$JobId.checked -eq `$false ) {

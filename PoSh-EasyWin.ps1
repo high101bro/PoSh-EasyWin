@@ -729,7 +729,7 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TabControl\Section2
 $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Left   = $FormScale * 470
     Top    = $FormScale * 5
-    Width  = $FormScale *  370
+    Width  = $FormScale * 370
     Height = $FormScale * 278 
     SelectedIndex  = 0
     ShowToolTips   = $True
@@ -1024,6 +1024,24 @@ Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Manage.ps1"
 $MainBottomTabControlOriginalTop    = $ProgressBarQueriesLabel.Location.Y + $ProgressBarQueriesLabel.Size.Height - 2
 $MainBottomTabControlOriginalHeight = $FormScale * 250
 
+
+$MainBottomTabControlResizeButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "v Minimize Tab"
+    Left   = $FormScale * 349
+    Top    = 0
+    Width  = $FormScale * 116
+    Height = $FormScale * 20
+    Font   = New-Object System.Drawing.Font($Font,$($FormScale * 11),1,2,1)
+    ForeColor = 'Blue'
+    Add_Click = {
+        if ($this.text -eq     "^ Maximize Tab") { Maximize-MonitorJobsTab }
+        elseif ($this.text -eq "v Minimize Tab") { Minimize-MonitorJobsTab }
+    }
+}
+#$PoShEasyWin.Controls.Add($MainBottomTabControlResizeButton)
+CommonButtonSettings -Button $MainBottomTabControlResizeButton
+
+
 $MainBottomTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Name   = "Main Tab Window"
     Left   = $FormScale * 470
@@ -1035,6 +1053,9 @@ $MainBottomTabControl = New-Object System.Windows.Forms.TabControl -Property @{
     Add_MouseHover = { $this.bringtofront() }
 }
 $PoShEasyWin.Controls.Add($MainBottomTabControl)
+
+
+
 
 # About Tab
 Update-FormProgress "$Dependencies\Code\Main Body\Tabs\About.ps1"
@@ -1317,134 +1338,145 @@ $ExecuteScriptHandler = {
             # Compares the computerlist against the previous computerlist queried (generated when previous query is completed )
             # If the computerlists changed, it will prompt you to do connections tests and generate a new computerlist if endpoints fail
             if ((Compare-Object -ReferenceObject $script:ComputerList -DifferenceObject $script:ComputerListHistory) -or `
-                   !(([bool]($script:RpcCommandCount   -gt 0) -eq [bool]$script:RpcCommandCountHistory) -and `
-                     ([bool]($script:SmbCommandCount   -gt 0) -eq [bool]$script:SmbCommandCountHistory) -and `
-                     ([bool]($script:WinRmCommandCount -gt 0) -eq [bool]$script:WinRmCommandCountHistory))
+                !(([bool]($script:RpcCommandCount   -gt 0) -eq [bool]$script:RpcCommandCountHistory) -and `
+                    ([bool]($script:SmbCommandCount   -gt 0) -eq [bool]$script:SmbCommandCountHistory) -and `
+                    ([bool]($script:WinRmCommandCount -gt 0) -eq [bool]$script:WinRmCommandCountHistory))
             ) {
                 if ($script:RpcCommandCount -gt 0 ) {
-                    if (Verify-Action -Title "RPC Port Check" -Question "Connecting Account:  $Username`n`nConduct a RPC Port Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+                    if (Verify-Action -Title "RPC Port Check" -Question "Conduct a RPC Port Check to remove unresponsive endpoints?`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
                         Check-Connection -CheckType "RPC Port Check" -MessageTrue "RPC Port 135 is Open" -MessageFalse "RPC Port 135 is Closed"
                         Generate-ComputerList
                     }
                 }
                 if ($script:SmbCommandCount -gt 0 ) {
-                    if (Verify-Action -Title "SMB Port Check" -Question "Connecting Account:  $Username`n`nConduct a SMB Port Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+                    if (Verify-Action -Title "SMB Port Check" -Question "Conduct a SMB Port Check to remove unresponsive endpoints?`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
                         Check-Connection -CheckType "SMB Port Check" -MessageTrue "SMB Port 445 is Open" -MessageFalse "SMB Port 445 is Closed"
                         Generate-ComputerList
                     }
                 }
                 if ($script:WinRMCommandCount -gt 0 ) {
-                    if (Verify-Action -Title "WinRM Check" -Question "Connecting Account:  $Username`n`nConduct a WinRM Check to remove unresponsive endpoints?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
+                    if (Verify-Action -Title "WinRM Check" -Question "Conduct a WinRM Check to remove unresponsive endpoints?`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
                         Check-Connection -CheckType "WinRM Check" -MessageTrue "WinRM is Available" -MessageFalse "WinRM is Unavailable"
                         Generate-ComputerList
                     }
                 }
             }
-            $PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
-            $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
-            $PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)
-            $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
 
-            $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
-            New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
+            if (Verify-Action -Title "Query Verification" -Question "Connecting Account:`n$Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerList -join ', ')) {
+            
+                $PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
+                $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
+                $PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)
+                $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
 
-            # This executes each selected command from the Commands' TreeView
-            if ($script:CommandsCheckedBoxesSelected.count -gt 0) { . "$Dependencies\Code\Execution\Individual Execution\Execute-IndividualCommands.ps1" }
+                $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
+                New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
 
-            # Query Build
-            if ($CustomQueryScriptBlockCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-QueryBuild.ps1" }
+                # This executes each selected command from the Commands' TreeView
+                if ($script:CommandsCheckedBoxesSelected.count -gt 0) { . "$Dependencies\Code\Execution\Individual Execution\Execute-IndividualCommands.ps1" }
 
-            # Accounts Currently Logged In Console
-            if ($AccountsCurrentlyLoggedInConsoleCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountsCurrentlyLoggedInConsole.ps1" }
+                # Query Build
+                if ($CustomQueryScriptBlockCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-QueryBuild.ps1" }
 
-            # Accounts Currently Logged In PSSession
-            if ($AccountsCurrentlyLoggedInPSSessionCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountsCurrentlyLoggedInPSSession.ps1" }
+                # Accounts Currently Logged In Console
+                if ($AccountsCurrentlyLoggedInConsoleCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountsCurrentlyLoggedInConsole.ps1" }
 
-            # Account Logon Activity
-            if ($AccountActivityCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountLogonActivity.ps1" }
+                # Accounts Currently Logged In PSSession
+                if ($AccountsCurrentlyLoggedInPSSessionCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountsCurrentlyLoggedInPSSession.ps1" }
 
-            # Event Logs Event IDs Manual Entry
-            if ($EventLogsEventIDsManualEntryCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsEventCodeManualEntryCommand.ps1" }
+                # Account Logon Activity
+                if ($AccountActivityCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-AccountLogonActivity.ps1" }
 
-            # Event Logs Event IDs Quick Pick Selection
-            if ($EventLogsQuickPickSelectionCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsQuickPick.ps1" }
+                # Event Logs Event IDs Manual Entry
+                if ($EventLogsEventIDsManualEntryCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsEventCodeManualEntryCommand.ps1" }
 
-            # Event Logs Event IDs To Monitor
-            if ($EventLogsEventIDsToMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsEventIDsToMonitor.ps1" }
+                # Event Logs Event IDs Quick Pick Selection
+                if ($EventLogsQuickPickSelectionCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsQuickPick.ps1" }
 
-            # Registry Search
-            if ($RegistrySearchCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-RegistrySearch.ps1" }
+                # Event Logs Event IDs To Monitor
+                if ($EventLogsEventIDsToMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-EventLogsEventIDsToMonitor.ps1" }
 
-            # Directory Listing
-            # Combines the inputs from the various GUI fields to query for directory listings
-            if ($FileSearchDirectoryListingCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchDirectoryListing.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+                # Registry Search
+                if ($RegistrySearchCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-RegistrySearch.ps1" }
 
-            # File Search
-            # Combines the inputs from the various GUI fields to query for filenames and/or file hashes
-            if ($FileSearchFileSearchCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchFileSearch.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+                # Directory Listing
+                # Combines the inputs from the various GUI fields to query for directory listings
+                if ($FileSearchDirectoryListingCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchDirectoryListing.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
 
-            # Alternate Data Streams
-            # Combines the inputs from the various GUI fields to query for Alternate Data Streams
-            if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchAlternateDataStream.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+                # File Search
+                # Combines the inputs from the various GUI fields to query for filenames and/or file hashes
+                if ($FileSearchFileSearchCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchFileSearch.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
 
-            # Endpoint Packet Capture
-            # Conducts a packet capture on the endpoints using netsh
-            if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCaptureNetSh.ps1" }
+                # Alternate Data Streams
+                # Combines the inputs from the various GUI fields to query for Alternate Data Streams
+                if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchAlternateDataStream.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
 
-            # Network Connection Search Remote IP Address
-            # Checks network connections for remote ip addresses and only returns those that match
-            if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionRemoteIPAddress.ps1" }
+                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+                    [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support Packet Capture, use either Monitor Jobs or Session Based mode.","Incompatible Mode",'Ok',"Info")
+                }
+                else {
+                    # Endpoint Packet Capture
+                    # Conducts a packet capture on the endpoints using netsh
+                    if ($NetworkEndpointPacketCaptureCheckBox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualCapture-EndpointPacketCaptureNetSh.ps1" }
+                }
 
-            # Network Connection Search Remote Port
-            # Checks network connections for remote ports and only returns those that match
-            if ($NetworkConnectionSearchRemotePortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionRemotePort.ps1" }
+                # Network Connection Search Remote IP Address
+                # Checks network connections for remote ip addresses and only returns those that match
+                if ($NetworkConnectionSearchRemoteIPAddressCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionRemoteIPAddress.ps1" }
 
-            # Network Connection Search Local Port
-            # Checks network connections for remote ports and only returns those that match
-            if ($NetworkConnectionSearchLocalPortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionLocalPort.ps1" }
+                # Network Connection Search Remote Port
+                # Checks network connections for remote ports and only returns those that match
+                if ($NetworkConnectionSearchRemotePortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionRemotePort.ps1" }
 
-            # Network Connection Search Remote Process
-            # Checks network connections for those started by a specified process name and only returns those that match
-            if ($NetworkConnectionSearchProcessCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionProcess.ps1" }
+                # Network Connection Search Local Port
+                # Checks network connections for remote ports and only returns those that match
+                if ($NetworkConnectionSearchLocalPortCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionLocalPort.ps1" }
 
-            # Network Connection Search DNS Cache
-            # Checks dns cache for the provided search terms and only returns those that match
-            if ($NetworkConnectionSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchDNSCache.ps1" }
+                # Network Connection Search Remote Process
+                # Checks network connections for those started by a specified process name and only returns those that match
+                if ($NetworkConnectionSearchProcessCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionProcess.ps1" }
 
-            # Network Connection Search Command Line
-            # Checks network connection for command line arguments and only returns those that match
-            if ($NetworkConnectionSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchCommandLine.ps1" }
+                # Network Connection Search DNS Cache
+                # Checks dns cache for the provided search terms and only returns those that match
+                if ($NetworkConnectionSearchDNSCacheCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchDNSCache.ps1" }
 
-            # Network Connection Search Execution Full Path
-            # Checks network connection for those with execution full paths and only returns those that match
-            if ($NetworkConnectionSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchExecutablePath.ps1" }
-    
-            # Sysmon
-            # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
-            # If sysmon is already installed, it will update the config .xml file instead
-            # Symon and its supporting files are removed afterwards
-            if ($SysinternalsSysmonCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Sysmon.ps1" }
+                # Network Connection Search Command Line
+                # Checks network connection for command line arguments and only returns those that match
+                if ($NetworkConnectionSearchCommandLineCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchCommandLine.ps1" }
 
-            # Autoruns
-            # Pushes Autoruns to remote hosts and pulls back the autoruns results to be opened locally
-            # Autoruns and its supporting files are removed afterwards
-            if ($SysinternalsAutorunsCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Autoruns.ps1" }
+                # Network Connection Search Execution Full Path
+                # Checks network connection for those with execution full paths and only returns those that match
+                if ($NetworkConnectionSearchExecutablePathCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-NetworkConnectionSearchExecutablePath.ps1" }
+        
+                # Sysmon
+                # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
+                # If sysmon is already installed, it will update the config .xml file instead
+                # Symon and its supporting files are removed afterwards
+                if ($SysinternalsSysmonCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Sysmon.ps1" }
 
-            # Procmon
-            # Pushes Process Monitor to remote hosts and pulls back the procmon results to be opened locally
-            # Diskspace is calculated on local and target hosts to determine if there's a risk
-            # Process Monitor and its supporting files are removed afterwards
-            if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Procmon.ps1" }
+                # Autoruns
+                # Pushes Autoruns to remote hosts and pulls back the autoruns results to be opened locally
+                # Autoruns and its supporting files are removed afterwards
+                if ($SysinternalsAutorunsCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Autoruns.ps1" }
 
-            # User Specified Files and Custom Script
-            # Pushes user Specified Files and Custom Script to the endpoints
-            # The script has to manage all the particulars with the executable; execution, results retrieval, cleanup, etc.
-            if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-ExecutableAndScript.ps1" }
+                # Procmon
+                # Pushes Process Monitor to remote hosts and pulls back the procmon results to be opened locally
+                # Diskspace is calculated on local and target hosts to determine if there's a risk
+                # Process Monitor and its supporting files are removed afterwards
+                if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Procmon.ps1" }
 
-            Start-Sleep -Seconds 1
-            Maximize-MonitorJobsTab
-            $PoShEasyWin.Refresh()
-            Completed-QueryExecution
+                # User Specified Files and Custom Script
+                # Pushes user Specified Files and Custom Script to the endpoints
+                # The script has to manage all the particulars with the executable; execution, results retrieval, cleanup, etc.
+                if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-ExecutableAndScript.ps1" }
+
+                Start-Sleep -Seconds 1
+                if ($script:Section3MonitorJobsResizeCheckbox.checked){
+                    Maximize-MonitorJobsTab
+                }
+                $PoShEasyWin.Refresh()
+                Completed-QueryExecution
+            }
         }
 
 
@@ -1495,7 +1527,7 @@ $ExecuteScriptHandler = {
             $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
             New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
 
-            if (Verify-Action -Title "Session Query Verification" -Question "Connecting Account:  $Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:" -Computer $($script:ComputerList -join ', ')) {
+            if (Verify-Action -Title "Query Verification" -Question "Connecting Account:  $Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerList -join ', ')) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
                     $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential | Sort-Object ComputerName

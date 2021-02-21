@@ -4,6 +4,8 @@ function Maximize-MonitorJobsTab {
     $MainBottomTabControl.Top    = $MainCenterTabControl.Top
     $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight + $MainCenterTabControl.Height + ($FormScale * 63)
     $MainBottomTabControl.bringtofront()
+    $PoShEasyWin.Controls.Add($MainBottomTabControlResizeButton)
+    $MainBottomTabControlResizeButton.bringtofront()
 }
 
 function Minimize-MonitorJobsTab {
@@ -11,6 +13,7 @@ function Minimize-MonitorJobsTab {
     $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop
     $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight    
     $MainBottomTabControl.bringtofront()
+    $PoShEasyWin.Controls.Remove($MainBottomTabControlResizeButton)
 }
 
 $script:Section3MonitorJobsTab = New-Object System.Windows.Forms.TabPage -Property @{

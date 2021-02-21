@@ -16,7 +16,7 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
     Left   = $FormScale * 3
     Top    = $FormScale * 5
     Width  = $FormScale * 435
-    Height = $FormScale * 205
+    Height = $FormScale * 65
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
 }
 
@@ -34,7 +34,7 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
         }
         $Section1PacketCaptureTab.Controls.Add($NetworkEndpointPacketCaptureCheckBox)
 
-
+<#
             $NetworkEndpointPcapCaptureSourceIPCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
                 Text   = "Source IP Address:"
                 Left   = $FormScale * 7
@@ -74,7 +74,7 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
             $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureSourceMACCheckbox)
 
 
-                    $NetworkEndpointPacketCaptureSourceIPRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+                    $NetworkEndpointPacketCaptureSourceMACRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
                         Text   = "00-00-00-00-00-00`nFF-FF-FF-FF-FF-FF"
                         Left   = $NetworkEndpointPcapCaptureSourceMACCheckbox.Left
                         Top    = $NetworkEndpointPcapCaptureSourceMACCheckbox.Top + $NetworkEndpointPcapCaptureSourceMACCheckbox.Height
@@ -86,7 +86,7 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
                         ScrollBars = 'Vertical'
                         ShortcutsEnabled = $true
                     }
-                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureSourceIPRichTextBox)
+                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureSourceMACRichTextBox)
 
 
 
@@ -142,13 +142,15 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
                         ShortcutsEnabled = $true
                     }
                     $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureDestinationMACRichTextBox)
-
+#>
 
             $NetworkEndpointPcapCaptureDurationLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text   = "Seconds:"
-                Left   = $NetworkEndpointPcapCaptureDestinationIPCheckbox.Left + $NetworkEndpointPcapCaptureDestinationIPCheckbox.Width + $($FormScale * 10) 
-                Top    = $NetworkEndpointPcapCaptureDestinationIPCheckbox.Top 
-                Width  = $FormScale * 60
+                Text   = "Duration (secs):"
+                Left   = $FormScale * 7
+                Top    = $FormScale * 20
+#                Left   = $NetworkEndpointPcapCaptureDestinationIPCheckbox.Left + $NetworkEndpointPcapCaptureDestinationIPCheckbox.Width + $($FormScale * 10) 
+#                Top    = $NetworkEndpointPcapCaptureDestinationIPCheckbox.Top 
+                Width  = $FormScale * 90
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = 'Black'
@@ -156,22 +158,30 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
             $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureDurationLabel)
 
 
-                    $NetworkEndpointPacketCaptureDurationTextBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                        Text   = "60"
+                    $NetworkEndpointPacketCaptureDurationComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                        Text   = "15 seconds"
                         Left   = $NetworkEndpointPcapCaptureDurationLabel.Left
                         Top    = $NetworkEndpointPcapCaptureDurationLabel.Top + $NetworkEndpointPcapCaptureDurationLabel.Height
-                        Width  = $FormScale * 60
+                        Width  = $FormScale * 90
                         Height = $FormScale * 22
                         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                         ForeColor = 'Black'
                     }
-                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureDurationTextBox)
-                    $NetworkEndpointPacketCaptureDurationTextBox.Items.Add("15")
-                    $NetworkEndpointPacketCaptureDurationTextBox.Items.Add("30")
-                    $NetworkEndpointPacketCaptureDurationTextBox.Items.Add("60")
-                    $NetworkEndpointPacketCaptureDurationTextBox.Items.Add("120")
-                    $NetworkEndpointPacketCaptureDurationTextBox.Items.Add("300")
-                    $NetworkEndpointPacketCaptureDurationTextBox.Items.Add("600")
+                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureDurationComboBox)
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("15 seconds")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("30 seconds")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("60 seconds")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("2  minutes")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("5  minutes")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("10 minutes")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("15 minutes")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("30 minutes")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("60 minutes")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("2  hours")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("3  hours")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("6  hours")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("9  hours")
+                    $NetworkEndpointPacketCaptureDurationComboBox.Items.Add("12 hours")
 
 
             $NetworkEndpointPcapCaptureMaxSizeLabel = New-Object System.Windows.Forms.Label -Property @{
@@ -186,117 +196,42 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
             $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureMaxSizeLabel)
 
 
-                    $NetworkEndpointPacketCaptureMaxSizeTextBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                    $NetworkEndpointPacketCaptureMaxSizeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
                         Text   = "50"
                         Left   = $NetworkEndpointPcapCaptureMaxSizeLabel.Left
                         Top    = $NetworkEndpointPcapCaptureMaxSizeLabel.Top + $NetworkEndpointPcapCaptureMaxSizeLabel.Height
-                        Width  = $FormScale * 55
+                        Width  = $FormScale * 60
                         Height = $FormScale * 22
                         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                         ForeColor = 'Black'
                     }
-                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureMaxSizeTextBox)
-                    $NetworkEndpointPacketCaptureMaxSizeTextBox.Items.Add("10")
-                    $NetworkEndpointPacketCaptureMaxSizeTextBox.Items.Add("25")
-                    $NetworkEndpointPacketCaptureMaxSizeTextBox.Items.Add("50")
-                    $NetworkEndpointPacketCaptureMaxSizeTextBox.Items.Add("100")
-                    $NetworkEndpointPacketCaptureMaxSizeTextBox.Items.Add("250")
-                    $NetworkEndpointPacketCaptureMaxSizeTextBox.Items.Add("500")
-                    $NetworkEndpointPacketCaptureMaxSizeTextBox.Items.Add("1000")
+                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureMaxSizeComboBox)
+                    $NetworkEndpointPacketCaptureMaxSizeComboBox.Items.Add("10")
+                    $NetworkEndpointPacketCaptureMaxSizeComboBox.Items.Add("25")
+                    $NetworkEndpointPacketCaptureMaxSizeComboBox.Items.Add("50")
+                    $NetworkEndpointPacketCaptureMaxSizeComboBox.Items.Add("100")
+                    $NetworkEndpointPacketCaptureMaxSizeComboBox.Items.Add("250")
+                    $NetworkEndpointPacketCaptureMaxSizeComboBox.Items.Add("500")
+                    $NetworkEndpointPacketCaptureMaxSizeComboBox.Items.Add("1000")
 
 
-            $NetworkEndpointPcapCaptureEtherTypeCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-                Text   = "Ether Type:"
-                Left   = $NetworkEndpointPacketCaptureDurationTextBox.Left 
-                Top    = $NetworkEndpointPacketCaptureDurationTextBox.Top + $NetworkEndpointPacketCaptureDurationTextBox.Height + $($FormScale * 10)
-                Width  = $FormScale * 125
-                Height = $FormScale * 22
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                ForeColor = 'Black'
-            }
-            $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureEtherTypeCheckbox)
-
-
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                        Left   = $NetworkEndpointPcapCaptureEtherTypeCheckbox.Left
-                        Top    = $NetworkEndpointPcapCaptureEtherTypeCheckbox.Top + $NetworkEndpointPcapCaptureEtherTypeCheckbox.Height
-                        Width  = $FormScale * 125
-                        Height = $FormScale * 50
-                        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        ForeColor = 'Black'
-                    }
-                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureEtherTypeComboBox)
-                    #$NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("IPv4")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("IPv6")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("(IPv4,IPv6)")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("NOT(IPv4)")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("NOT(IPv6)")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("NOT(IPv4,IPv6)")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("0x0800")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("NOT(0x0800)")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("0x86DD")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("NOT(0x86DD)")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("0x0806")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("NOT(0x0806)")
-                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("Type in your own")
-
-
-            $NetworkEndpointPcapCaptureProtocolCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-                Text   = "Protocol:"
-                Left   = $NetworkEndpointPcapCaptureDestinationMACCheckbox.Left + $NetworkEndpointPcapCaptureDestinationMACCheckbox.Width + $($FormScale * 10)
-                Top    = $NetworkEndpointPcapCaptureDestinationMACCheckbox.Top 
-                Width  = $FormScale * 125
-                Height = $FormScale * 22
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                ForeColor = 'Black'
-            }
-            $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureProtocolCheckbox)
-
-
-                    $NetworkEndpointPacketCaptureProtocolComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                        Left   = $NetworkEndpointPcapCaptureProtocolCheckbox.Left
-                        Top    = $NetworkEndpointPcapCaptureProtocolCheckbox.Top + $NetworkEndpointPcapCaptureProtocolCheckbox.Height
-                        Width  = $FormScale * 125
-                        Height = $FormScale * 50
-                        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                        ForeColor = 'Black'
-                    }
-                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureProtocolComboBox)
-                    #$NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("TCP")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("UDP")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("ICMP")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("NOT(TCP)")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("NOT(UDP)")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("NOT(ICMP)")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("(TCP,UDP)")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("NOT(TCP,UDP)")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("1")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("6")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("17")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("(1,6,17)")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("NOT(1,6,17)")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("(1-17)")
-                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("Type in your own")        
-                    
-
-            $NetworkEndpointPcapCaptureCaptureTypeCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+            $NetworkEndpointPcapCaptureCaptureTypeLabel = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Capture Type:"
-                Left   = $NetworkEndpointPacketCaptureProtocolComboBox.Left
-                Top    = $NetworkEndpointPacketCaptureProtocolComboBox.Top  + $NetworkEndpointPacketCaptureProtocolComboBox.Height + $($FormScale * 10) 
-                Width  = $FormScale * 125
+                Left   = $NetworkEndpointPcapCaptureMaxSizeLabel.Left + $NetworkEndpointPcapCaptureMaxSizeLabel.Width + $($FormScale * 10) 
+                Top    = $NetworkEndpointPcapCaptureMaxSizeLabel.Top
+                Width  = $FormScale * 80
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = 'Black'
             }
-            $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureCaptureTypeCheckbox)
+            $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureCaptureTypeLabel)
 
 
                     $NetworkEndpointPacketCaptureCaptureTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                        Left   = $NetworkEndpointPcapCaptureCaptureTypeCheckbox.Left
-                        Top    = $NetworkEndpointPcapCaptureCaptureTypeCheckbox.Top + $NetworkEndpointPcapCaptureCaptureTypeCheckbox.Height
-                        Width  = $FormScale * 125
+                        Text   = "physical"
+                        Left   = $NetworkEndpointPcapCaptureCaptureTypeLabel.Left
+                        Top    = $NetworkEndpointPcapCaptureCaptureTypeLabel.Top + $NetworkEndpointPcapCaptureCaptureTypeLabel.Height
+                        Width  = $FormScale * 80
                         Height = $FormScale * 50
                         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                         ForeColor = 'Black'
@@ -305,6 +240,87 @@ $NetworkEndpointPacketCaptureNetshTraceGroupBox = New-Object System.Windows.Form
                     $NetworkEndpointPacketCaptureCaptureTypeComboBox.Items.Add("physical")
                     $NetworkEndpointPacketCaptureCaptureTypeComboBox.Items.Add("vmswitch")
                     $NetworkEndpointPacketCaptureCaptureTypeComboBox.Items.Add("both")
+
+
+            $NetworkEndpointPcapCaptureEtherTypeLabel = New-Object System.Windows.Forms.Label -Property @{
+                Text   = "Ether Type:"
+                Left   = $NetworkEndpointPcapCaptureCaptureTypeLabel.Left + $NetworkEndpointPcapCaptureCaptureTypeLabel.Width + $($FormScale * 10) 
+                Top    = $NetworkEndpointPcapCaptureCaptureTypeLabel.Top
+                Width  = $FormScale * 75
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ForeColor = 'Black'
+            }
+            $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureEtherTypeLabel)
+
+
+                    $NetworkEndpointPacketCaptureEtherTypeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                        Text   = 'No Filter'
+                        Left   = $NetworkEndpointPcapCaptureEtherTypeLabel.Left
+                        Top    = $NetworkEndpointPcapCaptureEtherTypeLabel.Top + $NetworkEndpointPcapCaptureEtherTypeLabel.Height
+                        Width  = $FormScale * 75
+                        Height = $FormScale * 50
+                        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        ForeColor = 'Black'
+                    }
+                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureEtherTypeComboBox)
+                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("No Filter")
+                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("IPv4")
+                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("IPv6")
+                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("0x0800")
+                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("0x86DD")
+                    $NetworkEndpointPacketCaptureEtherTypeComboBox.Items.Add("0x0806")
+
+
+            $NetworkEndpointPcapCaptureProtocolButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = "ref"
+                Left   = $NetworkEndpointPcapCaptureEtherTypeLabel.Left + $NetworkEndpointPcapCaptureEtherTypeLabel.Width + $($FormScale * 10) + $($FormScale * 53) 
+                Top    = $NetworkEndpointPcapCaptureEtherTypeLabel.Top - $($FormScale * 3)
+                Width  = $FormScale * 22
+                Height = $FormScale * 20
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 9),0,0,0)
+                ForeColor = 'Black'
+                Add_click = {
+                    Import-Csv -Path "$Dependencies\Protocol Numbers.csv" | Out-GridView -Title "PoSh-EasyWin - IANA Protocol Numbers"
+                }
+            }
+            $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureProtocolButton)
+            CommonButtonSettings -Button $NetworkEndpointPcapCaptureProtocolButton
+
+
+            $NetworkEndpointPcapCaptureProtocolLabel = New-Object System.Windows.Forms.Label -Property @{
+                Text   = "Protocol:"
+                Left   = $NetworkEndpointPcapCaptureEtherTypeLabel.Left + $NetworkEndpointPcapCaptureEtherTypeLabel.Width + $($FormScale * 10) 
+                Top    = $NetworkEndpointPcapCaptureEtherTypeLabel.Top
+                Width  = $FormScale * 75
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ForeColor = 'Black'
+            }
+            $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPcapCaptureProtocolLabel)
+
+
+                    $NetworkEndpointPacketCaptureProtocolComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                        Text   = 'No Filter'
+                        Left   = $NetworkEndpointPcapCaptureProtocolLabel.Left
+                        Top    = $NetworkEndpointPcapCaptureProtocolLabel.Top + $NetworkEndpointPcapCaptureProtocolLabel.Height
+                        Width  = $FormScale * 75
+                        Height = $FormScale * 50
+                        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        ForeColor = 'Black'
+                    }
+                    $NetworkEndpointPacketCaptureNetshTraceGroupBox.Controls.Add($NetworkEndpointPacketCaptureProtocolComboBox)
+                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("No Filter")
+                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("TCP")
+                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("UDP")
+                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("ICMP")
+                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("1")
+                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("6")
+                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("17")
+                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("(1,6,17)")
+                    $NetworkEndpointPacketCaptureProtocolComboBox.Items.Add("Type in your own")        
+                    
+
                     
 <#
             $NetworkEndpointPcapCaptureSeverityLevelCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
