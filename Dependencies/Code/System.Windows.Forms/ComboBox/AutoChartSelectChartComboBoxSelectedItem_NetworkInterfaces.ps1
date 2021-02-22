@@ -1401,8 +1401,9 @@ $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Color   
                 $AutoChart03NetworkInterfacesComputer         = @()
                 $AutoChart03NetworkInterfacesYResults         = @()
                 $script:AutoChart03NetworkInterfacesOverallDataResults = @()
-
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv4'} | Sort-Object ComputerName) ) {
+                $IPv4RegexPattern = "^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$"
+                #foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv4'} | Sort-Object ComputerName) ) {
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.IPAddress -match $IPv4RegexPattern} | Sort-Object ComputerName) ) {
                     if ( $AutoChart03NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart03NetworkInterfacesCurrentComputer  = $Line.ComputerName ; $AutoChart03NetworkInterfacesCheckIfFirstLine = $true }
                     if ( $AutoChart03NetworkInterfacesCheckIfFirstLine -eq $true ) {
                         if ( $Line.ComputerName -eq $AutoChart03NetworkInterfacesCurrentComputer ) {
@@ -1934,7 +1935,9 @@ $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Color   
                 $AutoChart04NetworkInterfacesYResults         = @()
                 $script:AutoChart04NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv6'} | Sort-Object ComputerName) ) {
+                $IPv4RegexPattern = "^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$"
+                #foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv6'} | Sort-Object ComputerName) ) {
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.IPAddress -notmatch $IPv4RegexPattern} | Sort-Object ComputerName) ) {
                     if ( $AutoChart04NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart04NetworkInterfacesCurrentComputer  = $Line.ComputerName ; $AutoChart04NetworkInterfacesCheckIfFirstLine = $true }
                     if ( $AutoChart04NetworkInterfacesCheckIfFirstLine -eq $true ) {
                         if ( $Line.ComputerName -eq $AutoChart04NetworkInterfacesCurrentComputer ) {

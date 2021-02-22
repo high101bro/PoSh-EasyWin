@@ -250,7 +250,7 @@ $CommandsTreeviewGroupCommandsButton = New-Object System.Windows.Forms.Button -P
     Width  = $FormScale * 110
     Height = $FormScale * 22
     Add_Click      = {
-        [System.Windows.Forms.MessageBox]::Show("Currently, the group command node name will use the 'Results Folder' name of:`n`n`t$($script:CollectionSavedDirectoryTextBox.Text | Split-Path -Leaf)`n`nYou can delete the groups by checkboxing the node and selecting Remove Command Group Button when it appears.",'PoSh-EasyWin Group Commands')
+        [System.Windows.Forms.MessageBox]::Show("Currently, the group node name will use the 'Results Folder' name of:`n`n`t$($script:CollectionSavedDirectoryTextBox.Text | Split-Path -Leaf)`n`nYou can delete the groups by checkboxing the node and selecting Remove Command Group Button when it appears.",'PoSh-EasyWin Group Commands')
         Update-CustomCommandGroup
     }
 }

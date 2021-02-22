@@ -27,7 +27,7 @@ $script:AutoChartsProgressBar.Update()
 $script:AutoChart01StartupsCSVFileMatch = @()
 foreach ($CollectionDir in $script:ListOfCollectedDataDirectories) {
     $CSVFiles = (Get-ChildItem -Path $CollectionDir | Where-Object Extension -eq '.csv').FullName
-    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'StartupCommand') { $script:AutoChart01StartupsCSVFileMatch += $CSVFile } }
+    foreach ($CSVFile in $CSVFiles) { if ($CSVFile -match 'Startup') { $script:AutoChart01StartupsCSVFileMatch += $CSVFile } }
 }
 $script:AutoChartCSVFileMostRecentCollection = $script:AutoChart01StartupsCSVFileMatch | Select-Object -Last 1
 $script:AutoChartDataSourceCsv = $null
