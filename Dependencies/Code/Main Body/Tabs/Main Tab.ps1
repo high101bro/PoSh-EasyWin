@@ -160,7 +160,11 @@ $PSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
 }
 $MainCenterMainTab.Controls.Add($PSWriteHTMLButton)
 CommonButtonSettings -Button $PSWriteHTMLButton
-#if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'No') { $PSWriteHTMLButton.enabled = $false }
+if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'No') { $PSWriteHTMLButton.enabled = $false }
+if (-not (Test-Path -Path "$Dependencies\Modules\PSWriteHTML")) {
+    $PSWriteHTMLButton.enabled = $false
+    $PSWriteHTMLButton.Text = "Graph Data [N/A]"
+}
 
 
 Update-FormProgress "$Dependencies\Code\Charts\Generate-AutoChartsCommand.ps1"

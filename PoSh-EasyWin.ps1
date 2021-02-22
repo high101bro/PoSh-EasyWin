@@ -449,8 +449,10 @@ This selection is persistent for this tool, but can be modified within the setti
         }
     }
 }
-if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
-    Import-Module -Name "$Dependencies\Modules\PSWriteHTML\0.0.117\PSWriteHTML.psm1" -Force
+if (Test-Path -Path "$Dependencies\Modules\PSWriteHTML"){
+    if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
+        Import-Module -Name "$Dependencies\Modules\PSWriteHTML\0.0.117\PSWriteHTML.psm1" -Force
+    }
 }
 
 # Progress Bar Load Screen Code
@@ -1032,7 +1034,8 @@ $MainBottomTabControlResizeButton = New-Object System.Windows.Forms.Button -Prop
     Width  = $FormScale * 116
     Height = $FormScale * 20
     Font   = New-Object System.Drawing.Font($Font,$($FormScale * 11),1,2,1)
-    ForeColor = 'Blue'
+    ForeColor = 'Black'
+    BackColor = 'LightCoral'
     Add_Click = {
         if ($this.text -eq     "^ Maximize Tab") { Maximize-MonitorJobsTab }
         elseif ($this.text -eq "v Minimize Tab") { Minimize-MonitorJobsTab }
