@@ -76,7 +76,7 @@ $script:Section3MonitorJobsResizeCheckbox = New-Object System.Windows.Forms.Chec
     Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
     ForeColor = 'Black'
-    Checked   = $false
+    Checked   = $true
 }
 $script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobsResizeCheckbox)
 
