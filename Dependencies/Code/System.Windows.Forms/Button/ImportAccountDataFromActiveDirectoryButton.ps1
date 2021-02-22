@@ -79,7 +79,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Add_Click = {
                 Create-ComputerNodeCheckBoxArray
                 if ($ImportFromADWinRMManuallEntryTextBox.Text -ne '<Enter a hostname/IP>' -and $ImportFromADWinRMManuallEntryTextBox.Text -ne '' -and $ImportFromADWinRMAutoCheckBox.checked -eq $false ) {
-                    if (Verify-Action -Title "Verification: Active Directory Import" -Question "Import Active Directory account information from the following?" -Computer $ImportFromADWinRMManuallEntryTextBox.text) {
+                    if (Verify-Action -Title "Verification: Active Directory Import" -Question "Credentials Used:`n$($script:Credential.UserName)`n`nImport Active Directory account information from the following?" -Computer $ImportFromADWinRMManuallEntryTextBox.text) {
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Importing Hosts From Active Directory")
 

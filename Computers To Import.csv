@@ -1,0 +1,12 @@
+Name,OperatingSystem,CanonicalName,IPv4Address,MACAddress,Notes
+WIN10-01,Windows 10 Pro,/Not Domained,10.10.10.101,No MAC Available,Should Throw A Duplicate Notification
+WIN10-05,Windows 10 Pro,/Not Domained,10.10.10.105,No MAC Available,[Not Domained]
+WIN10-11,Windows 10 Pro,/Not Domained,10.10.10.111,No MAC Available,[Not Domained]
+WIN10-12,Windows 10 Pro,/Not Domained,10.10.10.112,No MAC Available,[Not Domained]
+WIN10-13,Windows 10 Pro,/Not Domained,10.10.10.113,No MAC Available,[Not Domained]
+WIN10-14,Windows 10 Pro,/Not Domained,10.10.10.114,No MAC Available,[Not Domained]
+WIN10-15,Windows 10 Pro,/Not Domained,10.10.10.115,No MAC Available,[Not Domained]
+WINXP-02,Windows XP Pro,/Rogue Host,,No MAC Available,[Not Domained]
+WINXP-03,Windows XP Pro,/Rogue Host,,No MAC Available,[Not Domained]
+WINXP-04,Windows XP Pro,/Rogue Host,,No MAC Available,[Not Domained]
+WINXP-05,Windows XP Pro,/Rogue Host,,No MAC Available,[Not Domained]

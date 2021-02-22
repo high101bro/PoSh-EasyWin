@@ -9,8 +9,7 @@ function Import-EndpointsFromDomain {
         # Checks if data already exists
         if ($script:ComputerTreeViewData.Name -contains $Computer.Name) {
             Message-HostAlreadyExists -Message "Importing Hosts:  Warning" -Computer $Computer.Name -ResultsListBoxMessage
-            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address
-            Update
+            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address            
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
@@ -138,7 +137,14 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Add_Click = {
                 Create-ComputerNodeCheckBoxArray
                 if ($ImportFromADWinRMManuallEntryTextBox.Text -ne '<Enter a hostname/IP>' -and $ImportFromADWinRMManuallEntryTextBox.Text -ne '' -and $ImportFromADWinRMAutoCheckBox.checked -eq $false ) {
-                    if (Verify-Action -Title "Verification: Active Directory Import" -Question "Import Active Directory hosts from the following?" -Computer $ImportFromADWinRMManuallEntryTextBox.text) {
+                    if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                        $CredentialsUsed = $script:Credential.UserName
+                    }
+                    else {
+                        $CredentialsUsed =  $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)
+                    }
+                    
+                    if (Verify-Action -Title "Verification: Active Directory Import" -Question "Credentials Used:`n$($CredentialsUsed)`n`nImport Active Directory hosts from the following?" -Computer $ImportFromADWinRMManuallEntryTextBox.text) {
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Importing Hosts From Active Directory")
 
@@ -378,7 +384,8 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                     }
 
                     $CurrentDomain = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().Name
-                    #Removed For Testing#$ResultsListBox.Items.Clear()
+                    #Removed For Testing#
+                    $ResultsListBox.Items.Clear()
                     foreach ($Computer in $script:ComputerList) {
                         if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
                             if ($script:ComputerTreeViewData.Name -contains $computer) {

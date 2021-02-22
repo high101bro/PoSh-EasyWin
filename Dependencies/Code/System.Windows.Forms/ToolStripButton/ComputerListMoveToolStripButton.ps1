@@ -137,7 +137,7 @@ $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
 
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Moved $($script:ComputerTreeNodeToMove.Count) Endpoints")
-            #Removed For Testing#$ResultsListBox.Items.Clear()
+            $ResultsListBox.Items.Clear()
             $ResultsListBox.Items.Add("The following hostnames/IPs have been moved to $($ComputerTreeNodePopupMoveComboBox.SelectedItem):")
         }
         else { ComputerNodeSelectedLessThanOne -Message 'Move Selection' }

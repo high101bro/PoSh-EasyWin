@@ -10,7 +10,8 @@ $ImportEndpointDataFromTxtButtonAdd_Click = {
     $ComputerTreeNodeImportTxt = Get-Content $($ComputerTreeNodeImportTxtOpenFileDialog.filename)
 
     $StatusListBox.Items.Clear()
-    #Removed For Testing#$ResultsListBox.Items.Clear()
+    #Removed For Testing#
+    $ResultsListBox.Items.Clear()
 
     foreach ($Computer in $($ComputerTreeNodeImportTxt | Where-Object {$_ -ne ''}) ) {
         # Checks if the data already exists

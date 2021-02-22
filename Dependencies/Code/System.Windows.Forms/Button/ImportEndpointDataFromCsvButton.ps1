@@ -12,7 +12,8 @@ $ImportEndpointDataFromCsvButtonAdd_Click = {
     $ComputerTreeNodeImportCsv = Import-Csv $($ComputerTreeNodeImportCsvOpenFileDialog.filename) | Select-Object -Property Name, IPv4Address, MACAddress, OperatingSystem, CanonicalName | Sort-Object -Property CanonicalName
 
     $StatusListBox.Items.Clear()
-    #Removed For Testing#$ResultsListBox.Items.Clear()
+    #Removed For Testing#
+    $ResultsListBox.Items.Clear()
 
     # Imports data
     foreach ($Computer in $ComputerTreeNodeImportCsv) {
