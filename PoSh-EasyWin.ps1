@@ -1452,18 +1452,37 @@ $ExecuteScriptHandler = {
                 # Pushes Sysmon to remote hosts and configure it with the selected config .xml file
                 # If sysmon is already installed, it will update the config .xml file instead
                 # Symon and its supporting files are removed afterwards
-                if ($SysinternalsSysmonCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Sysmon.ps1" }
+
+                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+                    [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support Sysmon, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
+                }
+                elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+                    [System.Windows.Forms.MessageBox]::Show("The Monitor Jobs mode does not support Sysmon, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
+                }
+                #if ($SysinternalsSysmonCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Sysmon.ps1" }
 
                 # Autoruns
                 # Pushes Autoruns to remote hosts and pulls back the autoruns results to be opened locally
                 # Autoruns and its supporting files are removed afterwards
-                if ($SysinternalsAutorunsCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Autoruns.ps1" }
+                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+                    [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support AutoRuns, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
+                }
+                elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+                    [System.Windows.Forms.MessageBox]::Show("The Monitor Jobs mode does not support AutoRuns, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
+                }
+                #if ($SysinternalsAutorunsCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Autoruns.ps1" }
 
                 # Procmon
                 # Pushes Process Monitor to remote hosts and pulls back the procmon results to be opened locally
                 # Diskspace is calculated on local and target hosts to determine if there's a risk
                 # Process Monitor and its supporting files are removed afterwards
-                if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Procmon.ps1" }
+                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+                    [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support Procmon, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
+                }
+                elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+                    [System.Windows.Forms.MessageBox]::Show("The Monitor Jobs mode does not support Procmon, you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
+                }
+                #if ($SysinternalsProcessMonitorCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-Procmon.ps1" }
 
                 # User Specified Files and Custom Script
                 # Pushes user Specified Files and Custom Script to the endpoints
