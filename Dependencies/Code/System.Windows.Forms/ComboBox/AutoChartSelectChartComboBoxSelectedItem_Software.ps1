@@ -178,7 +178,7 @@ $AutoChartPullNewDataButton.Add_Click({
     # First Radio Button
     #====================
     if ($AutoChartPullNewDataFromChartsRadioButton.checked){
-        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+        $ChartComputerList = $script:AutoChartDataSourceCsv.ComputerName | Sort-Object -Unique
 
         if ($ChartComputerList.count -eq 0) {
             [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-EasyWin')
@@ -319,7 +319,7 @@ $script:AutoChart01Software.Series["Software Names"].ChartType         = 'Column
 $script:AutoChart01Software.Series["Software Names"].Color             = 'Red'
 
         function Generate-AutoChart01 {
-            $script:AutoChart01SoftwareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart01SoftwareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart01SoftwareUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' | Sort-Object -Property 'Name' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
@@ -334,7 +334,7 @@ $script:AutoChart01Software.Series["Software Names"].Color             = 'Red'
                 $script:AutoChart01SoftwareTitle.ForeColor = 'Black'
                 $script:AutoChart01SoftwareTitle.Text = "Software Names"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart01SoftwareOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -344,7 +344,7 @@ $script:AutoChart01Software.Series["Software Names"].Color             = 'Red'
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.Name) -eq $DataField.Name) {
                             $Count += 1
-                            if ( $script:AutoChart01SoftwareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01SoftwareCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart01SoftwareCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart01SoftwareCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart01SoftwareUniqueCount = $script:AutoChart01SoftwareCsvComputers.Count
@@ -556,12 +556,12 @@ $script:AutoChart01SoftwareManipulationPanel.Controls.Add($script:AutoChart01Sof
 #=====================================
 function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart01SoftwareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart01SoftwareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01SoftwareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart01SoftwareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart01SoftwareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart01SoftwareImportCsvPosResults) { $script:AutoChart01SoftwareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01SoftwareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01SoftwareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart01SoftwareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -697,7 +697,7 @@ $AutoChart01ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart01SoftwareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Software" -QueryTabName "Software Names" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Software" -QueryTabName "Software Names" -PropertyX "Name" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01ExpandChartButton
 $script:AutoChart01SoftwareManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
@@ -833,7 +833,7 @@ $script:AutoChart02Software.Series["Software Count Per Host"].ChartType         
 $script:AutoChart02Software.Series["Software Count Per Host"].Color             = 'Blue'
 
         function Generate-AutoChart02 {
-            $script:AutoChart02SoftwareCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart02SoftwareCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart02SoftwareUniqueDataFields = ($script:AutoChartDataSourceCsv).Name | Sort-Object -Property 'Name'
 
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
@@ -853,17 +853,17 @@ $script:AutoChart02Software.Series["Software Count Per Host"].Color             
                 $AutoChart02YResults         = @()
                 $script:AutoChart02SoftwareOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object ComputerName) ) {
+                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.ComputerName ; $AutoChart02CheckIfFirstLine = $true }
                     if ( $AutoChart02CheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart02YResults += $Line.Name ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
-                            $AutoChart02CurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart02CurrentComputer ) {
+                            $AutoChart02CurrentComputer = $Line.ComputerName
                             $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
                                 Computer     = $AutoChart02Computer
@@ -874,7 +874,7 @@ $script:AutoChart02Software.Series["Software Count Per Host"].Color             
                             $AutoChart02Computer     = @()
                             if ( $AutoChart02YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart02YResults += $Line.Name ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
                     }
@@ -1083,12 +1083,12 @@ $script:AutoChart02SoftwareManipulationPanel.Controls.Add($script:AutoChart02Sof
 #=====================================
 function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart02SoftwareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02SoftwareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02SoftwareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02SoftwareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart02SoftwareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02SoftwareImportCsvPosResults) { $script:AutoChart02SoftwareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02SoftwareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02SoftwareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart02SoftwareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1224,7 +1224,7 @@ $AutoChart02ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart02SoftwareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Software" -QueryTabName "Software Count Per Host" -PropertyX "PSComputerName" -PropertyY "Name" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Software" -QueryTabName "Software Count Per Host" -PropertyX "ComputerName" -PropertyY "Name" }
 }
 CommonButtonSettings -Button $AutoChart02ExpandChartButton
 $script:AutoChart02SoftwareManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
@@ -1357,7 +1357,7 @@ $script:AutoChart03Software.Series["Software Vendor"].ChartType         = 'Colum
 $script:AutoChart03Software.Series["Software Vendor"].Color             = 'Green'
 
         function Generate-AutoChart03 {
-            $script:AutoChart03SoftwareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart03SoftwareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart03SoftwareUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'Vendor' | Sort-Object -Property 'Vendor' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Green'
@@ -1372,7 +1372,7 @@ $script:AutoChart03Software.Series["Software Vendor"].Color             = 'Green
                 $script:AutoChart03SoftwareTitle.ForeColor = 'Black'
                 $script:AutoChart03SoftwareTitle.Text = "Software Vendor"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart03SoftwareOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -1382,7 +1382,7 @@ $script:AutoChart03Software.Series["Software Vendor"].Color             = 'Green
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.Vendor -eq $DataField.Vendor) {
                             $Count += 1
-                            if ( $script:AutoChart03SoftwareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03SoftwareCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart03SoftwareCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart03SoftwareCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart03SoftwareUniqueCount = $script:AutoChart03SoftwareCsvComputers.Count
@@ -1591,12 +1591,12 @@ $script:AutoChart03SoftwareManipulationPanel.Controls.Add($script:AutoChart03Sof
 #=====================================
 function script:InvestigateDifference-AutoChart03 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart03SoftwareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Vendor' -eq $($script:AutoChart03SoftwareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03SoftwareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Vendor' -eq $($script:AutoChart03SoftwareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart03SoftwareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart03SoftwareImportCsvPosResults) { $script:AutoChart03SoftwareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart03SoftwareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03SoftwareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart03SoftwareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1732,7 +1732,7 @@ $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart03SoftwareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Software" -QueryTabName "Software Vendor" -PropertyX "Vendor" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Software" -QueryTabName "Software Vendor" -PropertyX "Vendor" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart03ExpandChartButton
 $script:AutoChart03SoftwareManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
@@ -1866,7 +1866,7 @@ $script:AutoChart04Software.Series["Install Dates"].ChartType         = 'Column'
 $script:AutoChart04Software.Series["Install Dates"].Color             = 'Orange'
 
         function Generate-AutoChart04 {
-            $script:AutoChart04SoftwareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart04SoftwareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart04SoftwareUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'InstallDate' | Sort-Object -Property 'InstallDate' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Orange'
@@ -1881,7 +1881,7 @@ $script:AutoChart04Software.Series["Install Dates"].Color             = 'Orange'
                 $script:AutoChart04SoftwareTitle.ForeColor = 'Black'
                 $script:AutoChart04SoftwareTitle.Text = "Install Dates"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart04SoftwareOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -1891,7 +1891,7 @@ $script:AutoChart04Software.Series["Install Dates"].Color             = 'Orange'
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.InstallDate) -eq $DataField.InstallDate) {
                             $Count += 1
-                            if ( $script:AutoChart04SoftwareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04SoftwareCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart04SoftwareCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart04SoftwareCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart04SoftwareUniqueCount = $script:AutoChart04SoftwareCsvComputers.Count
@@ -2100,12 +2100,12 @@ $script:AutoChart04SoftwareManipulationPanel.Controls.Add($script:AutoChart04Sof
 #=====================================
 function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart04SoftwareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'InstallDate' -eq $($script:AutoChart04SoftwareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04SoftwareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'InstallDate' -eq $($script:AutoChart04SoftwareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart04SoftwareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart04SoftwareImportCsvPosResults) { $script:AutoChart04SoftwareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart04SoftwareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04SoftwareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart04SoftwareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2241,7 +2241,7 @@ $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart04SoftwareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Software" -QueryTabName "Install Dates" -PropertyX "InstallDate" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Software" -QueryTabName "Install Dates" -PropertyX "InstallDate" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart04ExpandChartButton
 $script:AutoChart04SoftwareManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)

@@ -174,7 +174,7 @@ $AutoChartPullNewDataButton.Add_Click({
     # First Radio Button
     #====================
     if ($AutoChartPullNewDataFromChartsRadioButton.checked){
-        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+        $ChartComputerList = $script:AutoChartDataSourceCsv.ComputerName | Sort-Object -Unique
 
         if ($ChartComputerList.count -eq 0) {
             [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-EasyWin')
@@ -320,7 +320,7 @@ $script:AutoChart01NetworkConnections.Series["IPv4 Ports Listening"].ChartType  
 $script:AutoChart01NetworkConnections.Series["IPv4 Ports Listening"].Color             = 'Red'
 
 function Generate-AutoChart01NetworkConnections {
-            $script:AutoChart01NetworkConnectionsCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart01NetworkConnectionsCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             #$script:AutoChart01NetworkConnectionsUniqueDataFields  = $script:AutoChartDataSourceCsv| Select-Object -ExpandProperty 'LocalAddress' #| Sort-Object -Property 'LocalAddress' -Unique
 
             $script:AutoChart01NetworkConnectionsUniqueDataFields  = $script:AutoChartDataSourceCsv `
@@ -348,7 +348,7 @@ function Generate-AutoChart01NetworkConnections {
                 $script:AutoChart01NetworkConnectionsTitle.ForeColor = 'Black'
                 $script:AutoChart01NetworkConnectionsTitle.Text = "IPv4 Ports Listening"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart01NetworkConnectionsOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -361,7 +361,7 @@ function Generate-AutoChart01NetworkConnections {
                             $Line.LocalPort -eq (($DataField.LocalAddressPort).split(':')[1])
                             ) {
                             $Count += 1
-                            if ( $script:AutoChart01NetworkConnectionsCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01NetworkConnectionsCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart01NetworkConnectionsCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart01NetworkConnectionsCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart01NetworkConnectionsDataResults = New-Object PSObject -Property @{
@@ -570,12 +570,12 @@ $script:AutoChart01NetworkConnectionsManipulationPanel.Controls.Add($script:Auto
 #=====================================
 function script:InvestigateDifference-AutoChart01NetworkConnections {
     # List of Positive Endpoints that positively match
-    $script:AutoChart01NetworkConnectionsImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'LocalAddressPort' -eq $($script:AutoChart01NetworkConnectionsInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01NetworkConnectionsImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'LocalAddressPort' -eq $($script:AutoChart01NetworkConnectionsInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart01NetworkConnectionsInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart01NetworkConnectionsImportCsvPosResults) { $script:AutoChart01NetworkConnectionsInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01NetworkConnectionsImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01NetworkConnectionsImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart01NetworkConnectionsImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -711,7 +711,7 @@ $AutoChart01NetworkConnectionsExpandChartButton = New-Object System.Windows.Form
                   Y = $script:AutoChart01NetworkConnectionsCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPv4 Ports Listening" -PropertyX "LocalAddressPort" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPv4 Ports Listening" -PropertyX "LocalAddressPort" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01NetworkConnectionsExpandChartButton
 $script:AutoChart01NetworkConnectionsManipulationPanel.Controls.Add($AutoChart01NetworkConnectionsExpandChartButton)
@@ -872,7 +872,7 @@ $script:AutoChart02NetworkConnections.Series["Connections to Private Network End
 $script:AutoChart02NetworkConnections.Series["Connections to Private Network Endpoints"].Color             = 'Blue'
 
 function Generate-AutoChart02NetworkConnections {
-            $script:AutoChart02NetworkConnectionsCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart02NetworkConnectionsCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             #$script:AutoChart02NetworkConnectionsUniqueDataFields  = $script:AutoChartDataSourceCsv| Select-Object -ExpandProperty 'LocalAddress' #| Sort-Object -Property 'LocalAddress' -Unique
 
             $LocalNetworkArray = @(10,172.16,172.17,172.18,172.19,172.20,172.21,172.22,172.23,172.24,172.25,172.26,172.27,172.28,172.29,172.30,172.31,192.168)
@@ -901,7 +901,7 @@ function Generate-AutoChart02NetworkConnections {
                 $script:AutoChart02NetworkConnectionsTitle.ForeColor = 'Black'
                 $script:AutoChart02NetworkConnectionsTitle.Text = "Connections to Private Network Endpoints"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart02NetworkConnectionsOverallDataResults = @()
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
                 foreach ($DataField in $script:AutoChart02NetworkConnectionsUniqueDataFields) {
@@ -910,7 +910,7 @@ function Generate-AutoChart02NetworkConnections {
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.RemoteAddress -eq $DataField.RemoteAddress) {
                             $Count += 1
-                            if ( $script:AutoChart02NetworkConnectionsCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart02NetworkConnectionsCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart02NetworkConnectionsCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart02NetworkConnectionsCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart02NetworkConnectionsDataResults = New-Object PSObject -Property @{
@@ -1119,12 +1119,12 @@ $script:AutoChart02NetworkConnectionsManipulationPanel.Controls.Add($script:Auto
 #=====================================
 function script:InvestigateDifference-AutoChart02NetworkConnections {
     # List of Positive Endpoints that positively match
-    $script:AutoChart02NetworkConnectionsImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'RemoteAddress' -eq $($script:AutoChart02NetworkConnectionsInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02NetworkConnectionsImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'RemoteAddress' -eq $($script:AutoChart02NetworkConnectionsInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart02NetworkConnectionsInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02NetworkConnectionsImportCsvPosResults) { $script:AutoChart02NetworkConnectionsInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02NetworkConnectionsImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02NetworkConnectionsImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart02NetworkConnectionsImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1260,7 +1260,7 @@ $AutoChart02NetworkConnectionsExpandChartButton = New-Object System.Windows.Form
                   Y = $script:AutoChart02NetworkConnectionsCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Connections to Private Network Endpoints" -PropertyX "RemoteAddress" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Connections to Private Network Endpoints" -PropertyX "RemoteAddress" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart02NetworkConnectionsExpandChartButton
 $script:AutoChart02NetworkConnectionsManipulationPanel.Controls.Add($AutoChart02NetworkConnectionsExpandChartButton)

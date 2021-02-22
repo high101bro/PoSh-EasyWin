@@ -190,7 +190,7 @@ $AutoChartPullNewDataButton.Add_Click({
     # First Radio Button
     #====================
     if ($AutoChartPullNewDataFromChartsRadioButton.checked){
-        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+        $ChartComputerList = $script:AutoChartDataSourceCsv.ComputerName | Sort-Object -Unique
 
         if ($ChartComputerList.count -eq 0) {
             [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-EasyWin')
@@ -345,7 +345,7 @@ $script:AutoChart01DeepBlue.Series["Application Name"].Color             = 'Red'
 
 
             function Generate-AutoChart01DeepBlue {
-                $script:AutoChart01DeepBlueCsvFileHosts     = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+                $script:AutoChart01DeepBlueCsvFileHosts     = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
                 $script:AutoChart01DeepBlueUniqueDataFields = $script:AutoChartDataSourceCsv `
                 | Select-Object -Property Message | Sort-Object Message -Unique
 
@@ -361,7 +361,7 @@ $script:AutoChart01DeepBlue.Series["Application Name"].Color             = 'Red'
                     $script:AutoChart01DeepBlueTitle.ForeColor = 'Black'
                     $script:AutoChart01DeepBlueTitle.Text = "Potentials Findings By Event Type"
 
-                    # If the Second field/Y Axis equals PSComputername, it counts it
+                    # If the Second field/Y Axis equals ComputerName, it counts it
                     $script:AutoChart01DeepBlueOverallDataResults = @()
 
                     # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -371,7 +371,7 @@ $script:AutoChart01DeepBlue.Series["Application Name"].Color             = 'Red'
                         foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                             if ( $Line.Message -eq $DataField.Message) {
                                 $Count += 1
-                                if ( $script:AutoChart01DeepBlueCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01DeepBlueCsvComputers += $($Line.PSComputerName) }
+                                if ( $script:AutoChart01DeepBlueCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart01DeepBlueCsvComputers += $($Line.ComputerName) }
                             }
                         }
                         $script:AutoChart01DeepBlueUniqueCount = $script:AutoChart01DeepBlueCsvComputers.Count
@@ -581,12 +581,12 @@ $script:AutoChart01DeepBlueManipulationPanel.Controls.Add($script:AutoChart01Dee
 #=====================================
 function script:InvestigateDifference-AutoChart01DeepBlue {
     # List of Positive Endpoints that positively match
-    $script:AutoChart01DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$_.Message -eq $($script:AutoChart01DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$_.Message -eq $($script:AutoChart01DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart01DeepBlueInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart01DeepBlueImportCsvPosResults) { $script:AutoChart01DeepBlueInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01DeepBlueImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01DeepBlueImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart01DeepBlueImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -722,7 +722,7 @@ $AutoChart01DeepBlueExpandChartButton = New-Object System.Windows.Forms.Button -
                   Y = $script:AutoChart01DeepBlueCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Name" -QueryTabName "Application Name" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Name" -QueryTabName "Application Name" -PropertyX "Name" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01DeepBlueExpandChartButton
 $script:AutoChart01DeepBlueManipulationPanel.Controls.Add($AutoChart01DeepBlueExpandChartButton)
@@ -883,7 +883,7 @@ $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].ChartType         = 
 $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Color             = 'Blue'
 
     function Generate-AutoChart02DeepBlue {
-            $script:AutoChart02DeepBlueCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart02DeepBlueCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart02DeepBlueUniqueDataFields  = $script:AutoChartDataSourceCsv `
             | Select-Object -Property Message | Sort-Object Message -Unique
 
@@ -904,18 +904,18 @@ $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Color             = 
                 $AutoChart02YResults         = @()
                 $script:AutoChart02DeepBlueOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object ComputerName) ) {
                     $LineName = $Line.Message
-                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
+                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.ComputerName ; $AutoChart02CheckIfFirstLine = $true }
                     if ( $AutoChart02CheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $LineName ) {
                                 if ( $LineName -ne "" ) { $AutoChart02YResults += $LineName ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
-                            $AutoChart02CurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart02CurrentComputer ) {
+                            $AutoChart02CurrentComputer = $Line.ComputerName
                             $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
                                 Computer     = $AutoChart02Computer
@@ -926,7 +926,7 @@ $script:AutoChart02DeepBlue.Series["Findings Per Endpoint"].Color             = 
                             $AutoChart02Computer     = @()
                             if ( $AutoChart02YResults -notcontains $LineName ) {
                                 if ( $LineName -ne "" ) { $AutoChart02YResults += $LineName ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
                     }
@@ -1133,12 +1133,12 @@ $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($script:AutoChart02Dee
 #=====================================
 function script:InvestigateDifference-AutoChart02DeepBlue {
     # List of Positive Endpoints that positively match
-    $script:AutoChart02DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$_.Message -eq $($script:AutoChart02DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02DeepBlueImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$_.Message -eq $($script:AutoChart02DeepBlueInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart02DeepBlueInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02DeepBlueImportCsvPosResults) { $script:AutoChart02DeepBlueInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02DeepBlueImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02DeepBlueImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart02DeepBlueImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1274,7 +1274,7 @@ $AutoChart02DeepBlueExpandChartButton = New-Object System.Windows.Forms.Button -
                   Y = $script:AutoChart02DeepBlueCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Name" -QueryTabName "Findings Per Endpoint" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Name" -QueryTabName "Findings Per Endpoint" -PropertyX "Name" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart02DeepBlueExpandChartButton
 $script:AutoChart02DeepBlueManipulationPanel.Controls.Add($AutoChart02DeepBlueExpandChartButton)

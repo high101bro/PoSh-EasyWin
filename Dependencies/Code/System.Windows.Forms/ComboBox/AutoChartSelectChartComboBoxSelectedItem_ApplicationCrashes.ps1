@@ -174,7 +174,7 @@ $AutoChartPullNewDataButton.Add_Click({
     # First Radio Button
     #====================
     if ($AutoChartPullNewDataFromChartsRadioButton.checked){
-        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+        $ChartComputerList = $script:AutoChartDataSourceCsv.ComputerName | Sort-Object -Unique
 
         if ($ChartComputerList.count -eq 0) {
             [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-EasyWin')
@@ -321,7 +321,7 @@ $script:AutoChart01ApplicationCrashes.Series["Application Name"].Color          
 
 
             function Generate-AutoChart01ApplicationCrashes {
-                $script:AutoChart01ApplicationCrashesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+                $script:AutoChart01ApplicationCrashesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
                 $script:AutoChart01ApplicationCrashesUniqueDataFields  = $script:AutoChartDataSourceCsv `
                 | Select-Object -Property @{n='Name';e={$_.Message.split(':')[1].split(',')[0].trim() } } | Sort-Object Name -Unique
 
@@ -337,7 +337,7 @@ $script:AutoChart01ApplicationCrashes.Series["Application Name"].Color          
                     $script:AutoChart01ApplicationCrashesTitle.ForeColor = 'Black'
                     $script:AutoChart01ApplicationCrashesTitle.Text = "Unique Application Crashes"
 
-                    # If the Second field/Y Axis equals PSComputername, it counts it
+                    # If the Second field/Y Axis equals ComputerName, it counts it
                     $script:AutoChart01ApplicationCrashesOverallDataResults = @()
 
                     # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -347,7 +347,7 @@ $script:AutoChart01ApplicationCrashes.Series["Application Name"].Color          
                         foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                             if ( $( $Line.Message.split(':')[1].split(',')[0].trim() ) -eq $DataField.Name) {
                                 $Count += 1
-                                if ( $script:AutoChart01ApplicationCrashesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01ApplicationCrashesCsvComputers += $($Line.PSComputerName) }
+                                if ( $script:AutoChart01ApplicationCrashesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart01ApplicationCrashesCsvComputers += $($Line.ComputerName) }
                             }
                         }
                         $script:AutoChart01ApplicationCrashesUniqueCount = $script:AutoChart01ApplicationCrashesCsvComputers.Count
@@ -562,12 +562,12 @@ $script:AutoChart01ApplicationCrashesManipulationPanel.Controls.Add($script:Auto
 #=====================================
 function script:InvestigateDifference-AutoChart01ApplicationCrashes {
     # List of Positive Endpoints that positively match
-    $script:AutoChart01ApplicationCrashesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$($_.Message.split(':')[1].split(',')[0].trim()) -eq $($script:AutoChart01ApplicationCrashesInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01ApplicationCrashesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$($_.Message.split(':')[1].split(',')[0].trim()) -eq $($script:AutoChart01ApplicationCrashesInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart01ApplicationCrashesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart01ApplicationCrashesImportCsvPosResults) { $script:AutoChart01ApplicationCrashesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01ApplicationCrashesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01ApplicationCrashesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart01ApplicationCrashesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -703,7 +703,7 @@ $AutoChart01ApplicationCrashesExpandChartButton = New-Object System.Windows.Form
                   Y = $script:AutoChart01ApplicationCrashesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Crashes" -QueryTabName "Application Name" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Crashes" -QueryTabName "Application Name" -PropertyX "Name" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01ApplicationCrashesExpandChartButton
 $script:AutoChart01ApplicationCrashesManipulationPanel.Controls.Add($AutoChart01ApplicationCrashesExpandChartButton)
@@ -863,7 +863,7 @@ $script:AutoChart02ApplicationCrashes.Series["Application Crashes Per Endpoint"]
 $script:AutoChart02ApplicationCrashes.Series["Application Crashes Per Endpoint"].Color             = 'Blue'
 
     function Generate-AutoChart02ApplicationCrashes {
-            $script:AutoChart02ApplicationCrashesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart02ApplicationCrashesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart02ApplicationCrashesUniqueDataFields  = $script:AutoChartDataSourceCsv `
             | Select-Object -Property @{n='Name';e={$_.Message.split(':')[1].split(',')[0].trim() } } | Sort-Object Name -Unique
 
@@ -884,18 +884,18 @@ $script:AutoChart02ApplicationCrashes.Series["Application Crashes Per Endpoint"]
                 $AutoChart02YResults         = @()
                 $script:AutoChart02ApplicationCrashesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object ComputerName) ) {
                     $LineName = $Line.Message.split(':')[1].split(',')[0].trim()
-                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
+                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.ComputerName ; $AutoChart02CheckIfFirstLine = $true }
                     if ( $AutoChart02CheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $LineName ) {
                                 if ( $LineName -ne "" ) { $AutoChart02YResults += $LineName ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
-                            $AutoChart02CurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart02CurrentComputer ) {
+                            $AutoChart02CurrentComputer = $Line.ComputerName
                             $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
                                 Computer     = $AutoChart02Computer
@@ -906,7 +906,7 @@ $script:AutoChart02ApplicationCrashes.Series["Application Crashes Per Endpoint"]
                             $AutoChart02Computer     = @()
                             if ( $AutoChart02YResults -notcontains $LineName ) {
                                 if ( $LineName -ne "" ) { $AutoChart02YResults += $LineName ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
                     }
@@ -1113,12 +1113,12 @@ $script:AutoChart02ApplicationCrashesManipulationPanel.Controls.Add($script:Auto
 #=====================================
 function script:InvestigateDifference-AutoChart02ApplicationCrashes {
     # List of Positive Endpoints that positively match
-    $script:AutoChart02ApplicationCrashesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$($_.Message.split(':')[1].split(',')[0].trim()) -eq $($script:AutoChart02ApplicationCrashesInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02ApplicationCrashesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object {$($_.Message.split(':')[1].split(',')[0].trim()) -eq $($script:AutoChart02ApplicationCrashesInvestDiffDropDownComboBox.Text)} | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart02ApplicationCrashesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02ApplicationCrashesImportCsvPosResults) { $script:AutoChart02ApplicationCrashesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02ApplicationCrashesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02ApplicationCrashesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart02ApplicationCrashesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1254,7 +1254,7 @@ $AutoChart02ApplicationCrashesExpandChartButton = New-Object System.Windows.Form
                   Y = $script:AutoChart02ApplicationCrashesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Crashes" -QueryTabName "Application Crashes Per Endpoint" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Application Crashes" -QueryTabName "Application Crashes Per Endpoint" -PropertyX "Name" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart02ApplicationCrashesExpandChartButton
 $script:AutoChart02ApplicationCrashesManipulationPanel.Controls.Add($AutoChart02ApplicationCrashesExpandChartButton)

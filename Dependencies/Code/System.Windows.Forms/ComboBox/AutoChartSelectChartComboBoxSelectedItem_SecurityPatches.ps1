@@ -177,7 +177,7 @@ $AutoChartPullNewDataButton.Add_Click({
     # First Radio Button
     #====================
     if ($AutoChartPullNewDataFromChartsRadioButton.checked){
-        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+        $ChartComputerList = $script:AutoChartDataSourceCsv.ComputerName | Sort-Object -Unique
 
         if ($ChartComputerList.count -eq 0) {
             [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-EasyWin')
@@ -322,7 +322,7 @@ $script:AutoChart01SecurityPatches.Series["Security Patches"].ChartType         
 $script:AutoChart01SecurityPatches.Series["Security Patches"].Color             = 'Red'
 
         function Generate-AutoChart01 {
-            $script:AutoChart01SecurityPatchesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart01SecurityPatchesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart01SecurityPatchesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'HotFixID' | Sort-Object -Property 'HotFixID' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
@@ -337,7 +337,7 @@ $script:AutoChart01SecurityPatches.Series["Security Patches"].Color             
                 $script:AutoChart01SecurityPatchesTitle.ForeColor = 'Black'
                 $script:AutoChart01SecurityPatchesTitle.Text = "Security Patches"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart01SecurityPatchesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -347,7 +347,7 @@ $script:AutoChart01SecurityPatches.Series["Security Patches"].Color             
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.HotFixID) -eq $DataField.HotFixID) {
                             $Count += 1
-                            if ( $script:AutoChart01SecurityPatchesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01SecurityPatchesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart01SecurityPatchesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart01SecurityPatchesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart01SecurityPatchesUniqueCount = $script:AutoChart01SecurityPatchesCsvComputers.Count
@@ -559,12 +559,12 @@ $script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($script:AutoCha
 #=====================================
 function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart01SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'HotFixID' -eq $($script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'HotFixID' -eq $($script:AutoChart01SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart01SecurityPatchesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart01SecurityPatchesImportCsvPosResults) { $script:AutoChart01SecurityPatchesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart01SecurityPatchesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -700,7 +700,7 @@ $AutoChart01ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart01SecurityPatchesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Security Patches" -PropertyX "HotFixID" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Security Patches" -PropertyX "HotFixID" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01ExpandChartButton
 $script:AutoChart01SecurityPatchesManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
@@ -836,7 +836,7 @@ $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].ChartType
 $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Color             = 'Blue'
 
         function Generate-AutoChart02 {
-            $script:AutoChart02SecurityPatchesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart02SecurityPatchesCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart02SecurityPatchesUniqueDataFields = ($script:AutoChartDataSourceCsv).HotFixID | Sort-Object -Property 'HotFixID'
 
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
@@ -856,17 +856,17 @@ $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Color    
                 $AutoChart02YResults         = @()
                 $script:AutoChart02SecurityPatchesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object ComputerName) ) {
+                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.ComputerName ; $AutoChart02CheckIfFirstLine = $true }
                     if ( $AutoChart02CheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $Line.HotFixID ) {
                                 if ( $Line.HotFixID -ne "" ) { $AutoChart02YResults += $Line.HotFixID ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
-                            $AutoChart02CurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart02CurrentComputer ) {
+                            $AutoChart02CurrentComputer = $Line.ComputerName
                             $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
                                 Computer     = $AutoChart02Computer
@@ -877,7 +877,7 @@ $script:AutoChart02SecurityPatches.Series["Security Patches Per Host"].Color    
                             $AutoChart02Computer     = @()
                             if ( $AutoChart02YResults -notcontains $Line.HotFixID ) {
                                 if ( $Line.HotFixID -ne "" ) { $AutoChart02YResults += $Line.HotFixID ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
                     }
@@ -1086,12 +1086,12 @@ $script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($script:AutoCha
 #=====================================
 function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart02SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart02SecurityPatchesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02SecurityPatchesImportCsvPosResults) { $script:AutoChart02SecurityPatchesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart02SecurityPatchesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1227,7 +1227,7 @@ $AutoChart02ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart02SecurityPatchesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Security Patches Per Host" -PropertyX "PSComputerName" -PropertyY "HotFixID" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Security Patches Per Host" -PropertyX "ComputerName" -PropertyY "HotFixID" }
 }
 CommonButtonSettings -Button $AutoChart02ExpandChartButton
 $script:AutoChart02SecurityPatchesManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
@@ -1360,7 +1360,7 @@ $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].ChartType   
 $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Color             = 'Green'
 
         function Generate-AutoChart03 {
-            $script:AutoChart03SecurityPatchesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart03SecurityPatchesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart03SecurityPatchesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'ServicePackInEffect' | Sort-Object -Property 'ServicePackInEffect' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Green'
@@ -1375,7 +1375,7 @@ $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Color       
                 $script:AutoChart03SecurityPatchesTitle.ForeColor = 'Black'
                 $script:AutoChart03SecurityPatchesTitle.Text = "Service Pack In Effect"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart03SecurityPatchesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -1385,7 +1385,7 @@ $script:AutoChart03SecurityPatches.Series["Service Pack In Effect"].Color       
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.ServicePackInEffect -eq $DataField.ServicePackInEffect) {
                             $Count += 1
-                            if ( $script:AutoChart03SecurityPatchesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03SecurityPatchesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart03SecurityPatchesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart03SecurityPatchesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart03SecurityPatchesUniqueCount = $script:AutoChart03SecurityPatchesCsvComputers.Count
@@ -1594,12 +1594,12 @@ $script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($script:AutoCha
 #=====================================
 function script:InvestigateDifference-AutoChart03 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart03SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ServicePackInEffect' -eq $($script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ServicePackInEffect' -eq $($script:AutoChart03SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart03SecurityPatchesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart03SecurityPatchesImportCsvPosResults) { $script:AutoChart03SecurityPatchesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart03SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart03SecurityPatchesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1735,7 +1735,7 @@ $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart03SecurityPatchesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Service Pack In Effect" -PropertyX "ServicePackInEffect" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Service Pack In Effect" -PropertyX "ServicePackInEffect" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart03ExpandChartButton
 $script:AutoChart03SecurityPatchesManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
@@ -1869,7 +1869,7 @@ $script:AutoChart04SecurityPatches.Series["Install Date"].ChartType         = 'B
 $script:AutoChart04SecurityPatches.Series["Install Date"].Color             = 'Orange'
 
         function Generate-AutoChart04 {
-            $script:AutoChart04SecurityPatchesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart04SecurityPatchesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart04SecurityPatchesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'InstalledOn' | Sort-Object -Property 'InstalledOn' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Orange'
@@ -1884,7 +1884,7 @@ $script:AutoChart04SecurityPatches.Series["Install Date"].Color             = 'O
                 $script:AutoChart04SecurityPatchesTitle.ForeColor = 'Black'
                 $script:AutoChart04SecurityPatchesTitle.Text = "Install Date"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart04SecurityPatchesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -1894,7 +1894,7 @@ $script:AutoChart04SecurityPatches.Series["Install Date"].Color             = 'O
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.InstalledOn) -eq $DataField.InstalledOn) {
                             $Count += 1
-                            if ( $script:AutoChart04SecurityPatchesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04SecurityPatchesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart04SecurityPatchesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart04SecurityPatchesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart04SecurityPatchesUniqueCount = $script:AutoChart04SecurityPatchesCsvComputers.Count
@@ -2103,12 +2103,12 @@ $script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($script:AutoCha
 #=====================================
 function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart04SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'InstalledOn' -eq $($script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04SecurityPatchesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'InstalledOn' -eq $($script:AutoChart04SecurityPatchesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart04SecurityPatchesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart04SecurityPatchesImportCsvPosResults) { $script:AutoChart04SecurityPatchesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart04SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04SecurityPatchesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart04SecurityPatchesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2244,7 +2244,7 @@ $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart04SecurityPatchesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Install Date" -PropertyX "InstalledOn" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Security Patches" -QueryTabName "Install Date" -PropertyX "InstalledOn" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart04ExpandChartButton
 $script:AutoChart04SecurityPatchesManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)

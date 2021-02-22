@@ -189,7 +189,7 @@ $AutoChartPullNewDataButton.Add_Click({
     # First Radio Button
     #====================
     if ($AutoChartPullNewDataFromChartsRadioButton.checked){
-        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+        $ChartComputerList = $script:AutoChartDataSourceCsv.ComputerName | Sort-Object -Unique
 
         if ($ChartComputerList.count -eq 0) {
             [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-ACME')
@@ -335,7 +335,7 @@ $script:AutoChart01Processes.Series["Unique Processes"].ChartType         = 'Col
 $script:AutoChart01Processes.Series["Unique Processes"].Color             = 'Red'
 
         function Generate-AutoChart01 {
-            $script:AutoChart01ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart01ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart01ProcessesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' | Sort-Object -Property 'Name' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
@@ -350,7 +350,7 @@ $script:AutoChart01Processes.Series["Unique Processes"].Color             = 'Red
                 $script:AutoChart01ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart01ProcessesTitle.Text = "Unique Processes"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart01ProcessesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -360,7 +360,7 @@ $script:AutoChart01Processes.Series["Unique Processes"].Color             = 'Red
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.Name -eq $DataField.Name) {
                             $Count += 1
-                            if ( $script:AutoChart01ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01ProcessesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart01ProcessesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart01ProcessesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart01ProcessesDataResults = New-Object PSObject -Property @{
@@ -576,12 +576,12 @@ $script:AutoChart01ProcessesManipulationPanel.Controls.Add($script:AutoChart01Pr
 #=====================================
 function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart01ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart01ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart01ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart01ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart01ProcessesImportCsvPosResults) { $script:AutoChart01ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart01ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -717,7 +717,7 @@ $AutoChart01ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart01ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Unique Processes" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Unique Processes" -PropertyX "Name" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01ExpandChartButton
 $script:AutoChart01ProcessesManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
@@ -876,7 +876,7 @@ $script:AutoChart02Processes.Series["Processes Per Host"].ChartType         = 'D
 $script:AutoChart02Processes.Series["Processes Per Host"].Color             = 'Blue'
 
         function Generate-AutoChart02 {
-            $script:AutoChart02ProcessesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart02ProcessesCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart02ProcessesUniqueDataFields = ($script:AutoChartDataSourceCsv).ProcessID | Sort-Object -Property 'ProcessID'
 
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
@@ -896,17 +896,17 @@ $script:AutoChart02Processes.Series["Processes Per Host"].Color             = 'B
                 $AutoChart02YResults         = @()
                 $script:AutoChart02ProcessesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object ComputerName) ) {
+                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.ComputerName ; $AutoChart02CheckIfFirstLine = $true }
                     if ( $AutoChart02CheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $Line.ProcessID ) {
                                 if ( $Line.ProcessID -ne "" ) { $AutoChart02YResults += $Line.ProcessID ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
-                            $AutoChart02CurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart02CurrentComputer ) {
+                            $AutoChart02CurrentComputer = $Line.ComputerName
                             $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
                                 Computer     = $AutoChart02Computer
@@ -917,7 +917,7 @@ $script:AutoChart02Processes.Series["Processes Per Host"].Color             = 'B
                             $AutoChart02Computer     = @()
                             if ( $AutoChart02YResults -notcontains $Line.ProcessID ) {
                                 if ( $Line.ProcessID -ne "" ) { $AutoChart02YResults += $Line.ProcessID ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
                     }
@@ -1126,12 +1126,12 @@ $script:AutoChart02ProcessesManipulationPanel.Controls.Add($script:AutoChart02Pr
 #=====================================
 function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart02ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart02ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02ProcessesImportCsvPosResults) { $script:AutoChart02ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart02ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1267,7 +1267,7 @@ $AutoChart02ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart02ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Processes per Endpoint" -PropertyX "PSComputerName" -PropertyY "ProcessID" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Processes per Endpoint" -PropertyX "ComputerName" -PropertyY "ProcessID" }
 }
 CommonButtonSettings -Button $AutoChart02ExpandChartButton
 $script:AutoChart02ProcessesManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
@@ -1421,7 +1421,7 @@ $script:AutoChart03Processes.Series["Process Company"].ChartType         = 'Colu
 $script:AutoChart03Processes.Series["Process Company"].Color             = 'Green'
 
         function Generate-AutoChart03 {
-            $script:AutoChart03ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart03ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart03ProcessesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'Company' | Sort-Object -Property 'Company' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Green'
@@ -1436,7 +1436,7 @@ $script:AutoChart03Processes.Series["Process Company"].Color             = 'Gree
                 $script:AutoChart03ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart03ProcessesTitle.Text = "Process Company"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart03ProcessesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -1446,7 +1446,7 @@ $script:AutoChart03Processes.Series["Process Company"].Color             = 'Gree
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.Company -eq $DataField.Company) {
                             $Count += 1
-                            if ( $script:AutoChart03ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03ProcessesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart03ProcessesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart03ProcessesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart03ProcessesUniqueCount = $script:AutoChart03ProcessesCsvComputers.Count
@@ -1655,12 +1655,12 @@ $script:AutoChart03ProcessesManipulationPanel.Controls.Add($script:AutoChart03Pr
 #=====================================
 function script:InvestigateDifference-AutoChart03 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart03ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Company' -eq $($script:AutoChart03ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Company' -eq $($script:AutoChart03ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart03ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart03ProcessesImportCsvPosResults) { $script:AutoChart03ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart03ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart03ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1796,7 +1796,7 @@ $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart03ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process Company" -PropertyX "Company" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process Company" -PropertyX "Company" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart03ExpandChartButton
 $script:AutoChart03ProcessesManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
@@ -1951,7 +1951,7 @@ $script:AutoChart04Processes.Series["Process Product"].ChartType         = 'Colu
 $script:AutoChart04Processes.Series["Process Product"].Color             = 'Orange'
 
         function Generate-AutoChart04 {
-            $script:AutoChart04ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart04ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart04ProcessesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'Product' | Sort-Object -Property 'Product' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Orange'
@@ -1966,7 +1966,7 @@ $script:AutoChart04Processes.Series["Process Product"].Color             = 'Oran
                 $script:AutoChart04ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart04ProcessesTitle.Text = "Process Product"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart04ProcessesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -1976,7 +1976,7 @@ $script:AutoChart04Processes.Series["Process Product"].Color             = 'Oran
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.Product) -eq $DataField.Product) {
                             $Count += 1
-                            if ( $script:AutoChart04ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04ProcessesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart04ProcessesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart04ProcessesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart04ProcessesUniqueCount = $script:AutoChart04ProcessesCsvComputers.Count
@@ -2185,12 +2185,12 @@ $script:AutoChart04ProcessesManipulationPanel.Controls.Add($script:AutoChart04Pr
 #=====================================
 function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart04ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Product' -eq $($script:AutoChart04ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Product' -eq $($script:AutoChart04ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart04ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart04ProcessesImportCsvPosResults) { $script:AutoChart04ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart04ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart04ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2326,7 +2326,7 @@ $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart04ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process Product" -PropertyX "Product" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process Product" -PropertyX "Product" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart04ExpandChartButton
 $script:AutoChart04ProcessesManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)
@@ -2479,7 +2479,7 @@ $script:AutoChart05Processes.Series["Processes with Network Activity"].ChartType
 $script:AutoChart05Processes.Series["Processes with Network Activity"].Color             = 'Brown'
 
         function Generate-AutoChart05 {
-            $script:AutoChart05ProcessesCsvFileHosts       = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart05ProcessesCsvFileHosts       = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart05ProcessesUniqueDataFields   = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' | Sort-Object -Property 'Name' -Unique
             $script:AutoChart05ProcessesProcesses = $script:AutoChart05ProcessesUniqueDataFields | Select-Object -Property 'Processes'
 
@@ -2495,7 +2495,7 @@ $script:AutoChart05Processes.Series["Processes with Network Activity"].Color    
                 $script:AutoChart05ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart05ProcessesTitle.Text = "Processes with Network Activity"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart05ProcessesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -2505,7 +2505,7 @@ $script:AutoChart05Processes.Series["Processes with Network Activity"].Color    
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.Name -eq $DataField.Name -and $Line.NetworkConnectionCount -gt 0) {
                             $Count += 1
-                            if ( $script:AutoChart05ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart05ProcessesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart05ProcessesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart05ProcessesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     if ($Count -gt 0) {
@@ -2718,12 +2718,12 @@ $script:AutoChart05ProcessesManipulationPanel.Controls.Add($script:AutoChart05Pr
 #=====================================
 function script:InvestigateDifference-AutoChart05 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart05ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart05ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart05ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart05ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart05ProcessesImportCsvPosResults) { $script:AutoChart05ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart05ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart05ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2859,7 +2859,7 @@ $AutoChart05ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart05ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Processes With Network Activity" -PropertyX "Processes" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Processes With Network Activity" -PropertyX "Processes" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart05ExpandChartButton
 $script:AutoChart05ProcessesManipulationPanel.Controls.Add($AutoChart05ExpandChartButton)
@@ -3012,7 +3012,7 @@ $script:AutoChart06Processes.Series["Process MD5 Hash"].ChartType         = 'Col
 $script:AutoChart06Processes.Series["Process MD5 Hash"].Color             = 'Gray'
 
         function Generate-AutoChart06 {
-            $script:AutoChart06ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart06ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart06ProcessesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'MD5Hash' | Sort-Object -Property 'MD5Hash' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Gray'
@@ -3027,7 +3027,7 @@ $script:AutoChart06Processes.Series["Process MD5 Hash"].Color             = 'Gra
                 $script:AutoChart06ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart06ProcessesTitle.Text = "Process MD5 Hash"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart06ProcessesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -3037,7 +3037,7 @@ $script:AutoChart06Processes.Series["Process MD5 Hash"].Color             = 'Gra
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.MD5Hash) -eq $DataField.MD5Hash) {
                             $Count += 1
-                            if ( $script:AutoChart06ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart06ProcessesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart06ProcessesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart06ProcessesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart06ProcessesUniqueCount = $script:AutoChart06ProcessesCsvComputers.Count
@@ -3246,12 +3246,12 @@ $script:AutoChart06ProcessesManipulationPanel.Controls.Add($script:AutoChart06Pr
 #=====================================
 function script:InvestigateDifference-AutoChart06 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart06ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'MD5Hash' -eq $($script:AutoChart06ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'MD5Hash' -eq $($script:AutoChart06ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart06ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart06ProcessesImportCsvPosResults) { $script:AutoChart06ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart06ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart06ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -3387,7 +3387,7 @@ $AutoChart06ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart06ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process MD5 Hashes" -PropertyX "MD5Hash" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process MD5 Hashes" -PropertyX "MD5Hash" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart06ExpandChartButton
 $script:AutoChart06ProcessesManipulationPanel.Controls.Add($AutoChart06ExpandChartButton)
@@ -3542,7 +3542,7 @@ $script:AutoChart07Processes.Series["Signer Certificate"].ChartType         = 'C
 $script:AutoChart07Processes.Series["Signer Certificate"].Color             = 'SlateBLue'
 
         function Generate-AutoChart07 {
-            $script:AutoChart07ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart07ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart07ProcessesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'SignerCertificate' | Sort-Object -Property 'SignerCertificate' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'SlateBlue'
@@ -3557,7 +3557,7 @@ $script:AutoChart07Processes.Series["Signer Certificate"].Color             = 'S
                 $script:AutoChart07ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart07ProcessesTitle.Text = "Signer Certificate"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart07ProcessesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -3567,7 +3567,7 @@ $script:AutoChart07Processes.Series["Signer Certificate"].Color             = 'S
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.SignerCertificate) -eq $DataField.SignerCertificate) {
                             $Count += 1
-                            if ( $script:AutoChart07ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart07ProcessesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart07ProcessesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart07ProcessesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart07ProcessesUniqueCount = $script:AutoChart07ProcessesCsvComputers.Count
@@ -3776,12 +3776,12 @@ $script:AutoChart07ProcessesManipulationPanel.Controls.Add($script:AutoChart07Pr
 #=====================================
 function script:InvestigateDifference-AutoChart07 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart07ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'SignerCertificate' -eq $($script:AutoChart07ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart07ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'SignerCertificate' -eq $($script:AutoChart07ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart07ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart07ProcessesImportCsvPosResults) { $script:AutoChart07ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart07ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart07ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart07ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -3917,7 +3917,7 @@ $AutoChart07ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart07ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process Signer Certificate" -PropertyX "SignerCertificate" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process Signer Certificate" -PropertyX "SignerCertificate" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart07ExpandChartButton
 $script:AutoChart07ProcessesManipulationPanel.Controls.Add($AutoChart07ExpandChartButton)
@@ -4073,7 +4073,7 @@ $script:AutoChart08Processes.Series["Signer Company"].ChartType         = 'Colum
 $script:AutoChart08Processes.Series["Signer Company"].Color             = 'Purple'
 
         function Generate-AutoChart08 {
-            $script:AutoChart08ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart08ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart08ProcessesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'SignerCompany' | Sort-Object -Property 'SignerCompany' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Purple'
@@ -4088,7 +4088,7 @@ $script:AutoChart08Processes.Series["Signer Company"].Color             = 'Purpl
                 $script:AutoChart08ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart08ProcessesTitle.Text = "Signer Company"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart08ProcessesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -4098,7 +4098,7 @@ $script:AutoChart08Processes.Series["Signer Company"].Color             = 'Purpl
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.SignerCompany) -eq $DataField.SignerCompany) {
                             $Count += 1
-                            if ( $script:AutoChart08ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart08ProcessesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart08ProcessesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart08ProcessesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart08ProcessesUniqueCount = $script:AutoChart08ProcessesCsvComputers.Count
@@ -4308,12 +4308,12 @@ $script:AutoChart08ProcessesManipulationPanel.Controls.Add($script:AutoChart08Pr
 #=====================================
 function script:InvestigateDifference-AutoChart08 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart08ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'SignerCompany' -eq $($script:AutoChart08ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart08ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'SignerCompany' -eq $($script:AutoChart08ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart08ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart08ProcessesImportCsvPosResults) { $script:AutoChart08ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart08ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart08ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart08ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -4449,7 +4449,7 @@ $AutoChart08ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart08ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Processes Signer Company" -PropertyX "SignerCompany" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Processes Signer Company" -PropertyX "SignerCompany" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart08ExpandChartButton
 $script:AutoChart08ProcessesManipulationPanel.Controls.Add($AutoChart08ExpandChartButton)
@@ -4605,7 +4605,7 @@ $script:AutoChart09Processes.Series["Process Path"].ChartType         = 'Column'
 $script:AutoChart09Processes.Series["Process Path"].Color             = 'Yellow'
 
         function Generate-AutoChart09 {
-            $script:AutoChart09ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart09ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart09ProcessesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'Path' | Sort-Object -Property 'Path' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Yellow'
@@ -4620,7 +4620,7 @@ $script:AutoChart09Processes.Series["Process Path"].Color             = 'Yellow'
                 $script:AutoChart09ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart09ProcessesTitle.Text = "Process Path"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart09ProcessesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -4630,7 +4630,7 @@ $script:AutoChart09Processes.Series["Process Path"].Color             = 'Yellow'
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.Path) -eq $DataField.Path) {
                             $Count += 1
-                            if ( $script:AutoChart09ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart09ProcessesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart09ProcessesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart09ProcessesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart09ProcessesUniqueCount = $script:AutoChart09ProcessesCsvComputers.Count
@@ -4840,12 +4840,12 @@ $script:AutoChart09ProcessesManipulationPanel.Controls.Add($script:AutoChart09Pr
 #=====================================
 function script:InvestigateDifference-AutoChart09 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart09ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Path' -eq $($script:AutoChart09ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart09ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Path' -eq $($script:AutoChart09ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart09ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart09ProcessesImportCsvPosResults) { $script:AutoChart09ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart09ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart09ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart09ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -4981,7 +4981,7 @@ $AutoChart09ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart09ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process Paths" -PropertyX "Path" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Process Paths" -PropertyX "Path" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart09ExpandChartButton
 $script:AutoChart09ProcessesManipulationPanel.Controls.Add($AutoChart09ExpandChartButton)
@@ -5137,7 +5137,7 @@ $script:AutoChart10Processes.Series["Services Started By Processes"].ChartType  
 $script:AutoChart10Processes.Series["Services Started By Processes"].Color             = 'Red'
 
         function Generate-AutoChart10 {
-            $script:AutoChart10ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart10ProcessesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart10ProcessesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'ServiceInfo' | Sort-Object -Property 'ServiceInfo' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
@@ -5152,7 +5152,7 @@ $script:AutoChart10Processes.Series["Services Started By Processes"].Color      
                 $script:AutoChart10ProcessesTitle.ForeColor = 'Black'
                 $script:AutoChart10ProcessesTitle.Text = "Services Started By Processes"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart10ProcessesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -5162,7 +5162,7 @@ $script:AutoChart10Processes.Series["Services Started By Processes"].Color      
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.ServiceInfo) -eq $DataField.ServiceInfo) {
                             $Count += 1
-                            if ( $script:AutoChart10ProcessesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart10ProcessesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart10ProcessesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart10ProcessesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart10ProcessesUniqueCount = $script:AutoChart10ProcessesCsvComputers.Count
@@ -5372,12 +5372,12 @@ $script:AutoChart10ProcessesManipulationPanel.Controls.Add($script:AutoChart10Pr
 #=====================================
 function script:InvestigateDifference-AutoChart10 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart10ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ServiceInfo' -eq $($script:AutoChart10ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart10ProcessesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'ServiceInfo' -eq $($script:AutoChart10ProcessesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart10ProcessesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart10ProcessesImportCsvPosResults) { $script:AutoChart10ProcessesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart10ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart10ProcessesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart10ProcessesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -5513,7 +5513,7 @@ $AutoChart10ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart10ProcessesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Services Started By Processes" -PropertyX "ServiceInfo" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Processes" -QueryTabName "Services Started By Processes" -PropertyX "ServiceInfo" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart10ExpandChartButton
 $script:AutoChart10ProcessesManipulationPanel.Controls.Add($AutoChart10ExpandChartButton)

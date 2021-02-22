@@ -189,7 +189,7 @@ $AutoChartPullNewDataButton.Add_Click({
     # First Radio Button
     #====================
     if ($AutoChartPullNewDataFromChartsRadioButton.checked){
-        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+        $ChartComputerList = $script:AutoChartDataSourceCsv.ComputerName | Sort-Object -Unique
 
         if ($ChartComputerList.count -eq 0) {
             [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-EasyWin')
@@ -339,7 +339,7 @@ $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].ChartType        
 $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Color             = 'Red'
 
         function Generate-AutoChart01NetworkInterfaces {
-            $script:AutoChart01NetworkInterfacesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart01NetworkInterfacesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart01NetworkInterfacesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'InterfaceAlias' | Sort-Object -Property 'InterfaceAlias' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
@@ -354,7 +354,7 @@ $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Color            
                 $script:AutoChart01NetworkInterfacesTitle.ForeColor = 'Black'
                 $script:AutoChart01NetworkInterfacesTitle.Text = "Interface Alias"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart01NetworkInterfacesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -364,7 +364,7 @@ $script:AutoChart01NetworkInterfaces.Series["Interface Alias"].Color            
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.InterfaceAlias) -eq $DataField.InterfaceAlias) {
                             $Count += 1
-                            if ( $script:AutoChart01NetworkInterfacesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01NetworkInterfacesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart01NetworkInterfacesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart01NetworkInterfacesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart01NetworkInterfacesUniqueCount = $script:AutoChart01NetworkInterfacesCsvComputers.Count
@@ -576,12 +576,12 @@ $script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart01NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart01NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'InterfaceAlias' -eq $($script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'InterfaceAlias' -eq $($script:AutoChart01NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart01NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart01NetworkInterfacesImportCsvPosResults) { $script:AutoChart01NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart01NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -717,7 +717,7 @@ $AutoChart01NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart01NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Interface Alias" -PropertyX "InterfaceAlias" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Interface Alias" -PropertyX "InterfaceAlias" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01NetworkInterfacesExpandChartButton
 $script:AutoChart01NetworkInterfacesManipulationPanel.Controls.Add($AutoChart01NetworkInterfacesExpandChartButton)
@@ -853,7 +853,7 @@ $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Char
 $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Color             = 'Blue'
 
         function Generate-AutoChart02NetworkInterfaces {
-            $script:AutoChart02NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart02NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart02NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
@@ -873,17 +873,17 @@ $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Colo
                 $AutoChart02NetworkInterfacesYResults         = @()
                 $script:AutoChart02NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart02NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart02NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart02NetworkInterfacesCheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object ComputerName) ) {
+                    if ( $AutoChart02NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart02NetworkInterfacesCurrentComputer  = $Line.ComputerName ; $AutoChart02NetworkInterfacesCheckIfFirstLine = $true }
                     if ( $AutoChart02NetworkInterfacesCheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart02NetworkInterfacesCurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart02NetworkInterfacesCurrentComputer ) {
                             if ( $AutoChart02NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart02NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart02NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart02NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart02NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart02NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart02NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02NetworkInterfacesCurrentComputer ) {
-                            $AutoChart02NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart02NetworkInterfacesCurrentComputer ) {
+                            $AutoChart02NetworkInterfacesCurrentComputer = $Line.ComputerName
                             $AutoChart02NetworkInterfacesYDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02NetworkInterfacesResultsCount
                                 Computer     = $AutoChart02NetworkInterfacesComputer
@@ -894,7 +894,7 @@ $script:AutoChart02NetworkInterfaces.Series["Interfaces with IPs Per Host"].Colo
                             $AutoChart02NetworkInterfacesComputer     = @()
                             if ( $AutoChart02NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart02NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart02NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart02NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart02NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart02NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart02NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
                     }
@@ -1103,12 +1103,12 @@ $script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart02NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart02NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart02NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02NetworkInterfacesImportCsvPosResults) { $script:AutoChart02NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart02NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1244,7 +1244,7 @@ $AutoChart02NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart02NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Interfaces with IPs Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Interfaces with IPs Per Host" -PropertyX "ComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart02NetworkInterfacesExpandChartButton
 $script:AutoChart02NetworkInterfacesManipulationPanel.Controls.Add($AutoChart02NetworkInterfacesExpandChartButton)
@@ -1382,7 +1382,7 @@ $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].ChartTyp
 $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Color             = 'Green'
 
         function Generate-AutoChart03NetworkInterfaces {
-            $script:AutoChart03NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart03NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart03NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Green'
@@ -1402,17 +1402,17 @@ $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Color   
                 $AutoChart03NetworkInterfacesYResults         = @()
                 $script:AutoChart03NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv4'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart03NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart03NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart03NetworkInterfacesCheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv4'} | Sort-Object ComputerName) ) {
+                    if ( $AutoChart03NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart03NetworkInterfacesCurrentComputer  = $Line.ComputerName ; $AutoChart03NetworkInterfacesCheckIfFirstLine = $true }
                     if ( $AutoChart03NetworkInterfacesCheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart03NetworkInterfacesCurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart03NetworkInterfacesCurrentComputer ) {
                             if ( $AutoChart03NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart03NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart03NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart03NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart03NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart03NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart03NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart03NetworkInterfacesCurrentComputer ) {
-                            $AutoChart03NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart03NetworkInterfacesCurrentComputer ) {
+                            $AutoChart03NetworkInterfacesCurrentComputer = $Line.ComputerName
                             $AutoChart03NetworkInterfacesYDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart03NetworkInterfacesResultsCount
                                 Computer     = $AutoChart03NetworkInterfacesComputer
@@ -1423,7 +1423,7 @@ $script:AutoChart03NetworkInterfaces.Series["IPv4 Interfaces Per Host"].Color   
                             $AutoChart03NetworkInterfacesComputer     = @()
                             if ( $AutoChart03NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart03NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart03NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart03NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart03NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart03NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart03NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
                     }
@@ -1632,12 +1632,12 @@ $script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart03NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart03NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart03NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart03NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart03NetworkInterfacesImportCsvPosResults) { $script:AutoChart03NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart03NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart03NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1773,7 +1773,7 @@ $AutoChart03NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart03NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPv4 Interfaces Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPv4 Interfaces Per Host" -PropertyX "ComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart03NetworkInterfacesExpandChartButton
 $script:AutoChart03NetworkInterfacesManipulationPanel.Controls.Add($AutoChart03NetworkInterfacesExpandChartButton)
@@ -1914,7 +1914,7 @@ $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].ChartTyp
 $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Color             = 'orange'
 
         function Generate-AutoChart04NetworkInterfaces {
-            $script:AutoChart04NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart04NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart04NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'orange'
@@ -1934,17 +1934,17 @@ $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Color   
                 $AutoChart04NetworkInterfacesYResults         = @()
                 $script:AutoChart04NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv6'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart04NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart04NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart04NetworkInterfacesCheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.AddressFamily -eq 'IPv6'} | Sort-Object ComputerName) ) {
+                    if ( $AutoChart04NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart04NetworkInterfacesCurrentComputer  = $Line.ComputerName ; $AutoChart04NetworkInterfacesCheckIfFirstLine = $true }
                     if ( $AutoChart04NetworkInterfacesCheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart04NetworkInterfacesCurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart04NetworkInterfacesCurrentComputer ) {
                             if ( $AutoChart04NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart04NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart04NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart04NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart04NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart04NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart04NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart04NetworkInterfacesCurrentComputer ) {
-                            $AutoChart04NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart04NetworkInterfacesCurrentComputer ) {
+                            $AutoChart04NetworkInterfacesCurrentComputer = $Line.ComputerName
                             $AutoChart04NetworkInterfacesYDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart04NetworkInterfacesResultsCount
                                 Computer     = $AutoChart04NetworkInterfacesComputer
@@ -1955,7 +1955,7 @@ $script:AutoChart04NetworkInterfaces.Series["IPv6 Interfaces Per Host"].Color   
                             $AutoChart04NetworkInterfacesComputer     = @()
                             if ( $AutoChart04NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart04NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart04NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart04NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart04NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart04NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart04NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
                     }
@@ -2164,12 +2164,12 @@ $script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart04NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart04NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart04NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart04NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart04NetworkInterfacesImportCsvPosResults) { $script:AutoChart04NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart04NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart04NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2305,7 +2305,7 @@ $AutoChart04NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart04NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPv6 Interfaces Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPv6 Interfaces Per Host" -PropertyX "ComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart04NetworkInterfacesExpandChartButton
 $script:AutoChart04NetworkInterfacesManipulationPanel.Controls.Add($AutoChart04NetworkInterfacesExpandChartButton)
@@ -2445,7 +2445,7 @@ $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].ChartType  
 $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Color             = 'Brown'
 
         function Generate-AutoChart05NetworkInterfaces {
-            $script:AutoChart05NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart05NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart05NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Brown'
@@ -2465,17 +2465,17 @@ $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Color      
                 $AutoChart05NetworkInterfacesYResults         = @()
                 $script:AutoChart05NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'Manual'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart05NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart05NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart05NetworkInterfacesCheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'Manual'} | Sort-Object ComputerName) ) {
+                    if ( $AutoChart05NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart05NetworkInterfacesCurrentComputer  = $Line.ComputerName ; $AutoChart05NetworkInterfacesCheckIfFirstLine = $true }
                     if ( $AutoChart05NetworkInterfacesCheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart05NetworkInterfacesCurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart05NetworkInterfacesCurrentComputer ) {
                             if ( $AutoChart05NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart05NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart05NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart05NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart05NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart05NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart05NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart05NetworkInterfacesCurrentComputer ) {
-                            $AutoChart05NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart05NetworkInterfacesCurrentComputer ) {
+                            $AutoChart05NetworkInterfacesCurrentComputer = $Line.ComputerName
                             $AutoChart05NetworkInterfacesYDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart05NetworkInterfacesResultsCount
                                 Computer     = $AutoChart05NetworkInterfacesComputer
@@ -2486,7 +2486,7 @@ $script:AutoChart05NetworkInterfaces.Series["IPs (Manual) Per Host"].Color      
                             $AutoChart05NetworkInterfacesComputer     = @()
                             if ( $AutoChart05NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart05NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart05NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart05NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart05NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart05NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart05NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
                     }
@@ -2695,12 +2695,12 @@ $script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart05NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart05NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart05NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart05NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart05NetworkInterfacesImportCsvPosResults) { $script:AutoChart05NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart05NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart05NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2836,7 +2836,7 @@ $AutoChart05NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart05NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (Manual) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (Manual) Per Host" -PropertyX "ComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart05NetworkInterfacesExpandChartButton
 $script:AutoChart05NetworkInterfacesManipulationPanel.Controls.Add($AutoChart05NetworkInterfacesExpandChartButton)
@@ -2974,7 +2974,7 @@ $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].ChartType    
 $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Color             = 'Gray'
 
         function Generate-AutoChart06NetworkInterfaces {
-            $script:AutoChart06NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart06NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart06NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Gray'
@@ -2994,17 +2994,17 @@ $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Color        
                 $AutoChart06NetworkInterfacesYResults         = @()
                 $script:AutoChart06NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'DHCP'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart06NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart06NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart06NetworkInterfacesCheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'DHCP'} | Sort-Object ComputerName) ) {
+                    if ( $AutoChart06NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart06NetworkInterfacesCurrentComputer  = $Line.ComputerName ; $AutoChart06NetworkInterfacesCheckIfFirstLine = $true }
                     if ( $AutoChart06NetworkInterfacesCheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart06NetworkInterfacesCurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart06NetworkInterfacesCurrentComputer ) {
                             if ( $AutoChart06NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart06NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart06NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart06NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart06NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart06NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart06NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart06NetworkInterfacesCurrentComputer ) {
-                            $AutoChart06NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart06NetworkInterfacesCurrentComputer ) {
+                            $AutoChart06NetworkInterfacesCurrentComputer = $Line.ComputerName
                             $AutoChart06NetworkInterfacesYDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart06NetworkInterfacesResultsCount
                                 Computer     = $AutoChart06NetworkInterfacesComputer
@@ -3015,7 +3015,7 @@ $script:AutoChart06NetworkInterfaces.Series["IPs (DHCP) Per Host"].Color        
                             $AutoChart06NetworkInterfacesComputer     = @()
                             if ( $AutoChart06NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart06NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart06NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart06NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart06NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart06NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart06NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
                     }
@@ -3224,12 +3224,12 @@ $script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart06NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart06NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart06NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart06NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart06NetworkInterfacesImportCsvPosResults) { $script:AutoChart06NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart06NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart06NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -3365,7 +3365,7 @@ $AutoChart06NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart06NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (DHCP) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (DHCP) Per Host" -PropertyX "ComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart06NetworkInterfacesExpandChartButton
 $script:AutoChart06NetworkInterfacesManipulationPanel.Controls.Add($AutoChart06NetworkInterfacesExpandChartButton)
@@ -3499,7 +3499,7 @@ $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].ChartTy
 $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Color             = 'SlateBLue'
 
         function Generate-AutoChart07NetworkInterfaces {
-            $script:AutoChart07NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart07NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart07NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'SlateBLue'
@@ -3519,17 +3519,17 @@ $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Color  
                 $AutoChart07NetworkInterfacesYResults         = @()
                 $script:AutoChart07NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'WellKnown'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart07NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart07NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart07NetworkInterfacesCheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'WellKnown'} | Sort-Object ComputerName) ) {
+                    if ( $AutoChart07NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart07NetworkInterfacesCurrentComputer  = $Line.ComputerName ; $AutoChart07NetworkInterfacesCheckIfFirstLine = $true }
                     if ( $AutoChart07NetworkInterfacesCheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart07NetworkInterfacesCurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart07NetworkInterfacesCurrentComputer ) {
                             if ( $AutoChart07NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart07NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart07NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart07NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart07NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart07NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart07NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart07NetworkInterfacesCurrentComputer ) {
-                            $AutoChart07NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart07NetworkInterfacesCurrentComputer ) {
+                            $AutoChart07NetworkInterfacesCurrentComputer = $Line.ComputerName
                             $AutoChart07NetworkInterfacesYDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart07NetworkInterfacesResultsCount
                                 Computer     = $AutoChart07NetworkInterfacesComputer
@@ -3540,7 +3540,7 @@ $script:AutoChart07NetworkInterfaces.Series["IPs (Well Known) Per Host"].Color  
                             $AutoChart07NetworkInterfacesComputer     = @()
                             if ( $AutoChart07NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart07NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart07NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart07NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart07NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart07NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart07NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
                     }
@@ -3749,12 +3749,12 @@ $script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart07NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart07NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart07NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart07NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart07NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart07NetworkInterfacesImportCsvPosResults) { $script:AutoChart07NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart07NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart07NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart07NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -3890,7 +3890,7 @@ $AutoChart07NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart07NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (Well Known) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (Well Known) Per Host" -PropertyX "ComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart07NetworkInterfacesExpandChartButton
 $script:AutoChart07NetworkInterfacesManipulationPanel.Controls.Add($AutoChart07NetworkInterfacesExpandChartButton)
@@ -4029,7 +4029,7 @@ $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host
 $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host"].Color             = 'Purple'
 
         function Generate-AutoChart08NetworkInterfaces {
-            $script:AutoChart08NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart08NetworkInterfacesCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart08NetworkInterfacesUniqueDataFields = ($script:AutoChartDataSourceCsv).IPAddress | Sort-Object -Property 'IPAddress'
 
             $script:AutoChartsProgressBar.ForeColor = 'Purple'
@@ -4049,17 +4049,17 @@ $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host
                 $AutoChart08NetworkInterfacesYResults         = @()
                 $script:AutoChart08NetworkInterfacesOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'RouterAdvertisement'} | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart08NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart08NetworkInterfacesCurrentComputer  = $Line.PSComputerName ; $AutoChart08NetworkInterfacesCheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.PrefixOrigin -eq 'RouterAdvertisement'} | Sort-Object ComputerName) ) {
+                    if ( $AutoChart08NetworkInterfacesCheckIfFirstLine -eq $false ) { $AutoChart08NetworkInterfacesCurrentComputer  = $Line.ComputerName ; $AutoChart08NetworkInterfacesCheckIfFirstLine = $true }
                     if ( $AutoChart08NetworkInterfacesCheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart08NetworkInterfacesCurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart08NetworkInterfacesCurrentComputer ) {
                             if ( $AutoChart08NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart08NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart08NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart08NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart08NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart08NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart08NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart08NetworkInterfacesCurrentComputer ) {
-                            $AutoChart08NetworkInterfacesCurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart08NetworkInterfacesCurrentComputer ) {
+                            $AutoChart08NetworkInterfacesCurrentComputer = $Line.ComputerName
                             $AutoChart08NetworkInterfacesYDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart08NetworkInterfacesResultsCount
                                 Computer     = $AutoChart08NetworkInterfacesComputer
@@ -4070,7 +4070,7 @@ $script:AutoChart08NetworkInterfaces.Series["IPs (Router Advertisement) Per Host
                             $AutoChart08NetworkInterfacesComputer     = @()
                             if ( $AutoChart08NetworkInterfacesYResults -notcontains $Line.IPAddress ) {
                                 if ( $Line.IPAddress -ne "" ) { $AutoChart08NetworkInterfacesYResults += $Line.IPAddress ; $AutoChart08NetworkInterfacesResultsCount += 1 }
-                                if ( $AutoChart08NetworkInterfacesComputer -notcontains $Line.PSComputerName ) { $AutoChart08NetworkInterfacesComputer = $Line.PSComputerName }
+                                if ( $AutoChart08NetworkInterfacesComputer -notcontains $Line.ComputerName ) { $AutoChart08NetworkInterfacesComputer = $Line.ComputerName }
                             }
                         }
                     }
@@ -4279,12 +4279,12 @@ $script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart08NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart08NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart08NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart08NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart08NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart08NetworkInterfacesImportCsvPosResults) { $script:AutoChart08NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart08NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart08NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart08NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -4420,7 +4420,7 @@ $AutoChart08NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart08NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (Router Advertisement) Per Host" -PropertyX "PSComputerName" -PropertyY "IPAddress" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "IPs (Router Advertisement) Per Host" -PropertyX "ComputerName" -PropertyY "IPAddress" }
 }
 CommonButtonSettings -Button $AutoChart08NetworkInterfacesExpandChartButton
 $script:AutoChart08NetworkInterfacesManipulationPanel.Controls.Add($AutoChart08NetworkInterfacesExpandChartButton)
@@ -4560,7 +4560,7 @@ $script:AutoChart09NetworkInterfaces.Series["Address State"].ChartType         =
 $script:AutoChart09NetworkInterfaces.Series["Address State"].Color             = 'Yellow'
 
         function Generate-AutoChart09NetworkInterfaces {
-            $script:AutoChart09NetworkInterfacesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart09NetworkInterfacesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart09NetworkInterfacesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'AddressState' | Sort-Object -Property 'AddressState' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Yellow'
@@ -4575,7 +4575,7 @@ $script:AutoChart09NetworkInterfaces.Series["Address State"].Color             =
                 $script:AutoChart09NetworkInterfacesTitle.ForeColor = 'Black'
                 $script:AutoChart09NetworkInterfacesTitle.Text = "Address State"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart09NetworkInterfacesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -4585,7 +4585,7 @@ $script:AutoChart09NetworkInterfaces.Series["Address State"].Color             =
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.AddressState) -eq $DataField.AddressState) {
                             $Count += 1
-                            if ( $script:AutoChart09NetworkInterfacesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart09NetworkInterfacesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart09NetworkInterfacesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart09NetworkInterfacesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart09NetworkInterfacesUniqueCount = $script:AutoChart09NetworkInterfacesCsvComputers.Count
@@ -4795,12 +4795,12 @@ $script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart09NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart09NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'AddressState' -eq $($script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart09NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'AddressState' -eq $($script:AutoChart09NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart09NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart09NetworkInterfacesImportCsvPosResults) { $script:AutoChart09NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart09NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart09NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart09NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -4936,7 +4936,7 @@ $AutoChart09NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart09NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Address States" -PropertyX "AddressState" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Address States" -PropertyX "AddressState" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart09NetworkInterfacesExpandChartButton
 $script:AutoChart09NetworkInterfacesManipulationPanel.Controls.Add($AutoChart09NetworkInterfacesExpandChartButton)
@@ -5071,7 +5071,7 @@ $script:AutoChart10NetworkInterfaces.Series["Address Family"].ChartType         
 $script:AutoChart10NetworkInterfaces.Series["Address Family"].Color             = 'Red'
 
         function Generate-AutoChart10NetworkInterfaces {
-            $script:AutoChart10NetworkInterfacesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart10NetworkInterfacesCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart10NetworkInterfacesUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'AddressFamily' | Sort-Object -Property 'AddressFamily' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
@@ -5086,7 +5086,7 @@ $script:AutoChart10NetworkInterfaces.Series["Address Family"].Color             
                 $script:AutoChart10NetworkInterfacesTitle.ForeColor = 'Black'
                 $script:AutoChart10NetworkInterfacesTitle.Text = "Address Family"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart10NetworkInterfacesOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -5096,7 +5096,7 @@ $script:AutoChart10NetworkInterfaces.Series["Address Family"].Color             
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.AddressFamily) -eq $DataField.AddressFamily) {
                             $Count += 1
-                            if ( $script:AutoChart10NetworkInterfacesCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart10NetworkInterfacesCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart10NetworkInterfacesCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart10NetworkInterfacesCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart10NetworkInterfacesUniqueCount = $script:AutoChart10NetworkInterfacesCsvComputers.Count
@@ -5306,12 +5306,12 @@ $script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($script:AutoC
 #=====================================
 function script:InvestigateDifference-AutoChart10NetworkInterfaces {
     # List of Positive Endpoints that positively match
-    $script:AutoChart10NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'AddressFamily' -eq $($script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart10NetworkInterfacesImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'AddressFamily' -eq $($script:AutoChart10NetworkInterfacesInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart10NetworkInterfacesInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart10NetworkInterfacesImportCsvPosResults) { $script:AutoChart10NetworkInterfacesInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart10NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart10NetworkInterfacesImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart10NetworkInterfacesImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -5447,7 +5447,7 @@ $AutoChart10NetworkInterfacesExpandChartButton = New-Object System.Windows.Forms
                   Y = $script:AutoChart10NetworkInterfacesCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Address Family" -PropertyX "AddressFamily" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "Network Settings" -QueryTabName "Address Family" -PropertyX "AddressFamily" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart10NetworkInterfacesExpandChartButton
 $script:AutoChart10NetworkInterfacesManipulationPanel.Controls.Add($AutoChart10NetworkInterfacesExpandChartButton)

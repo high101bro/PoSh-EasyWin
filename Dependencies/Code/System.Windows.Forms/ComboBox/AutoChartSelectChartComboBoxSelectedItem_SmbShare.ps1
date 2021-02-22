@@ -183,7 +183,7 @@ $AutoChartPullNewDataButton.Add_Click({
     # First Radio Button
     #====================
     if ($AutoChartPullNewDataFromChartsRadioButton.checked){
-        $ChartComputerList = $script:AutoChartDataSourceCsv.PSComputerName | Sort-Object -Unique
+        $ChartComputerList = $script:AutoChartDataSourceCsv.ComputerName | Sort-Object -Unique
 
         if ($ChartComputerList.count -eq 0) {
             [System.Windows.MessageBox]::Show('There are no endpoints available within the charts.','PoSh-EasyWin')
@@ -329,7 +329,7 @@ $script:AutoChart01SmbShare.Series["Share Names"].ChartType         = 'Column'
 $script:AutoChart01SmbShare.Series["Share Names"].Color             = 'Red'
 
         function Generate-AutoChart01 {
-            $script:AutoChart01SmbShareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart01SmbShareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart01SmbShareUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'Name' | Sort-Object -Property 'Name' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Red'
@@ -344,7 +344,7 @@ $script:AutoChart01SmbShare.Series["Share Names"].Color             = 'Red'
                 $script:AutoChart01SmbShareTitle.ForeColor = 'Black'
                 $script:AutoChart01SmbShareTitle.Text = "Share Names"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart01SmbShareOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -354,7 +354,7 @@ $script:AutoChart01SmbShare.Series["Share Names"].Color             = 'Red'
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.Name) -eq $DataField.Name) {
                             $Count += 1
-                            if ( $script:AutoChart01SmbShareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart01SmbShareCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart01SmbShareCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart01SmbShareCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart01SmbShareUniqueCount = $script:AutoChart01SmbShareCsvComputers.Count
@@ -566,12 +566,12 @@ $script:AutoChart01SmbShareManipulationPanel.Controls.Add($script:AutoChart01Smb
 #=====================================
 function script:InvestigateDifference-AutoChart01 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart01SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart01SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart01SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart01SmbShareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart01SmbShareImportCsvPosResults) { $script:AutoChart01SmbShareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart01SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart01SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart01SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -707,7 +707,7 @@ $AutoChart01ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart01SmbShareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Share Names" -PropertyX "Name" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Share Names" -PropertyX "Name" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart01ExpandChartButton
 $script:AutoChart01SmbShareManipulationPanel.Controls.Add($AutoChart01ExpandChartButton)
@@ -843,7 +843,7 @@ $script:AutoChart02SmbShare.Series["Shares Per Host"].ChartType         = 'Dough
 $script:AutoChart02SmbShare.Series["Shares Per Host"].Color             = 'Blue'
 
         function Generate-AutoChart02 {
-            $script:AutoChart02SmbShareCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart02SmbShareCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart02SmbShareUniqueDataFields = ($script:AutoChartDataSourceCsv).Name | Sort-Object -Property 'Name'
 
             $script:AutoChartsProgressBar.ForeColor = 'Blue'
@@ -863,17 +863,17 @@ $script:AutoChart02SmbShare.Series["Shares Per Host"].Color             = 'Blue'
                 $AutoChart02YResults         = @()
                 $script:AutoChart02SmbShareOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object PSComputerName) ) {
-                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.PSComputerName ; $AutoChart02CheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Sort-Object ComputerName) ) {
+                    if ( $AutoChart02CheckIfFirstLine -eq $false ) { $AutoChart02CurrentComputer  = $Line.ComputerName ; $AutoChart02CheckIfFirstLine = $true }
                     if ( $AutoChart02CheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart02CurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart02CurrentComputer ) {
                             if ( $AutoChart02YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart02YResults += $Line.Name ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart02CurrentComputer ) {
-                            $AutoChart02CurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart02CurrentComputer ) {
+                            $AutoChart02CurrentComputer = $Line.ComputerName
                             $AutoChart02YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart02ResultsCount
                                 Computer     = $AutoChart02Computer
@@ -884,7 +884,7 @@ $script:AutoChart02SmbShare.Series["Shares Per Host"].Color             = 'Blue'
                             $AutoChart02Computer     = @()
                             if ( $AutoChart02YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart02YResults += $Line.Name ; $AutoChart02ResultsCount += 1 }
-                                if ( $AutoChart02Computer -notcontains $Line.PSComputerName ) { $AutoChart02Computer = $Line.PSComputerName }
+                                if ( $AutoChart02Computer -notcontains $Line.ComputerName ) { $AutoChart02Computer = $Line.ComputerName }
                             }
                         }
                     }
@@ -1093,12 +1093,12 @@ $script:AutoChart02SmbShareManipulationPanel.Controls.Add($script:AutoChart02Smb
 #=====================================
 function script:InvestigateDifference-AutoChart02 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart02SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart02SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart02SmbShareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart02SmbShareImportCsvPosResults) { $script:AutoChart02SmbShareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart02SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart02SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart02SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1234,7 +1234,7 @@ $AutoChart02ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart02SmbShareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Shares Per Host" -PropertyX "PSComputerName" -PropertyY "Name" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Shares Per Host" -PropertyX "ComputerName" -PropertyY "Name" }
 }
 CommonButtonSettings -Button $AutoChart02ExpandChartButton
 $script:AutoChart02SmbShareManipulationPanel.Controls.Add($AutoChart02ExpandChartButton)
@@ -1372,7 +1372,7 @@ $script:AutoChart03SmbShare.Series["Share Paths"].ChartType         = 'Column'
 $script:AutoChart03SmbShare.Series["Share Paths"].Color             = 'Green'
 
         function Generate-AutoChart03 {
-            $script:AutoChart03SmbShareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart03SmbShareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart03SmbShareUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'Path' | Sort-Object -Property 'Path' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Green'
@@ -1387,7 +1387,7 @@ $script:AutoChart03SmbShare.Series["Share Paths"].Color             = 'Green'
                 $script:AutoChart03SmbShareTitle.ForeColor = 'Black'
                 $script:AutoChart03SmbShareTitle.Text = "Share Paths"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart03SmbShareOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -1397,7 +1397,7 @@ $script:AutoChart03SmbShare.Series["Share Paths"].Color             = 'Green'
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($Line.Path -eq $DataField.Path) {
                             $Count += 1
-                            if ( $script:AutoChart03SmbShareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart03SmbShareCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart03SmbShareCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart03SmbShareCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart03SmbShareUniqueCount = $script:AutoChart03SmbShareCsvComputers.Count
@@ -1606,12 +1606,12 @@ $script:AutoChart03SmbShareManipulationPanel.Controls.Add($script:AutoChart03Smb
 #=====================================
 function script:InvestigateDifference-AutoChart03 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart03SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Path' -eq $($script:AutoChart03SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Path' -eq $($script:AutoChart03SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart03SmbShareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart03SmbShareImportCsvPosResults) { $script:AutoChart03SmbShareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart03SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart03SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart03SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -1747,7 +1747,7 @@ $AutoChart03ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart03SmbShareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Share Paths" -PropertyX "Path" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Share Paths" -PropertyX "Path" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart03ExpandChartButton
 $script:AutoChart03SmbShareManipulationPanel.Controls.Add($AutoChart03ExpandChartButton)
@@ -1888,7 +1888,7 @@ $script:AutoChart04SmbShare.Series["Current Users"].ChartType         = 'Column'
 $script:AutoChart04SmbShare.Series["Current Users"].Color             = 'Orange'
 
         function Generate-AutoChart04 {
-            $script:AutoChart04SmbShareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+            $script:AutoChart04SmbShareCsvFileHosts      = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
             $script:AutoChart04SmbShareUniqueDataFields  = $script:AutoChartDataSourceCsv | Select-Object -Property 'CurrentUsers' | Sort-Object -Property 'CurrentUsers' -Unique
 
             $script:AutoChartsProgressBar.ForeColor = 'Orange'
@@ -1903,7 +1903,7 @@ $script:AutoChart04SmbShare.Series["Current Users"].Color             = 'Orange'
                 $script:AutoChart04SmbShareTitle.ForeColor = 'Black'
                 $script:AutoChart04SmbShareTitle.Text = "Number of Current Users Accessing Shares On Endpoints"
 
-                # If the Second field/Y Axis equals PSComputername, it counts it
+                # If the Second field/Y Axis equals ComputerName, it counts it
                 $script:AutoChart04SmbShareOverallDataResults = @()
 
                 # Generates and Counts the data - Counts the number of times that any given property possess a given value
@@ -1913,7 +1913,7 @@ $script:AutoChart04SmbShare.Series["Current Users"].Color             = 'Orange'
                     foreach ( $Line in $script:AutoChartDataSourceCsv ) {
                         if ($($Line.CurrentUsers) -eq $DataField.CurrentUsers) {
                             $Count += 1
-                            if ( $script:AutoChart04SmbShareCsvComputers -notcontains $($Line.PSComputerName) ) { $script:AutoChart04SmbShareCsvComputers += $($Line.PSComputerName) }
+                            if ( $script:AutoChart04SmbShareCsvComputers -notcontains $($Line.ComputerName) ) { $script:AutoChart04SmbShareCsvComputers += $($Line.ComputerName) }
                         }
                     }
                     $script:AutoChart04SmbShareUniqueCount = $script:AutoChart04SmbShareCsvComputers.Count
@@ -2122,12 +2122,12 @@ $script:AutoChart04SmbShareManipulationPanel.Controls.Add($script:AutoChart04Smb
 #=====================================
 function script:InvestigateDifference-AutoChart04 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart04SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'CurrentUsers' -eq $($script:AutoChart04SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'CurrentUsers' -eq $($script:AutoChart04SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart04SmbShareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart04SmbShareImportCsvPosResults) { $script:AutoChart04SmbShareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart04SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart04SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart04SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2263,7 +2263,7 @@ $AutoChart04ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart04SmbShareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Current Users" -PropertyX "CurrentUsers" -PropertyY "PSComputerName" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Current Users" -PropertyX "CurrentUsers" -PropertyY "ComputerName" }
 }
 CommonButtonSettings -Button $AutoChart04ExpandChartButton
 $script:AutoChart04SmbShareManipulationPanel.Controls.Add($AutoChart04ExpandChartButton)
@@ -2402,7 +2402,7 @@ $script:AutoChart05SmbShare.Series["Unencrypted Shares"].ChartType         = 'Co
 $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Color             = 'Brown'
 
         function Generate-AutoChart05 {
-            $script:AutoChart05SmbShareCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart05SmbShareCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart05SmbShareUniqueDataFields = ($script:AutoChartDataSourceCsv).Name | Sort-Object -Property 'Name'
 
             $script:AutoChartsProgressBar.ForeColor = 'Brown'
@@ -2422,17 +2422,17 @@ $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Color             = 'Br
                 $AutoChart05YResults         = @()
                 $script:AutoChart05SmbShareOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.EncryptData -eq $false}| Sort-Object PSComputerName) ) {
-                    if ( $AutoChart05CheckIfFirstLine -eq $false ) { $AutoChart05CurrentComputer  = $Line.PSComputerName ; $AutoChart05CheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.EncryptData -eq $false}| Sort-Object ComputerName) ) {
+                    if ( $AutoChart05CheckIfFirstLine -eq $false ) { $AutoChart05CurrentComputer  = $Line.ComputerName ; $AutoChart05CheckIfFirstLine = $true }
                     if ( $AutoChart05CheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart05CurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart05CurrentComputer ) {
                             if ( $AutoChart05YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart05YResults += $Line.Name ; $AutoChart05ResultsCount += 1 }
-                                if ( $AutoChart05Computer -notcontains $Line.PSComputerName ) { $AutoChart05Computer = $Line.PSComputerName }
+                                if ( $AutoChart05Computer -notcontains $Line.ComputerName ) { $AutoChart05Computer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart05CurrentComputer ) {
-                            $AutoChart05CurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart05CurrentComputer ) {
+                            $AutoChart05CurrentComputer = $Line.ComputerName
                             $AutoChart05YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart05ResultsCount
                                 Computer     = $AutoChart05Computer
@@ -2443,7 +2443,7 @@ $script:AutoChart05SmbShare.Series["Unencrypted Shares"].Color             = 'Br
                             $AutoChart05Computer     = @()
                             if ( $AutoChart05YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart05YResults += $Line.Name ; $AutoChart05ResultsCount += 1 }
-                                if ( $AutoChart05Computer -notcontains $Line.PSComputerName ) { $AutoChart05Computer = $Line.PSComputerName }
+                                if ( $AutoChart05Computer -notcontains $Line.ComputerName ) { $AutoChart05Computer = $Line.ComputerName }
                             }
                         }
                     }
@@ -2652,12 +2652,12 @@ $script:AutoChart05SmbShareManipulationPanel.Controls.Add($script:AutoChart05Smb
 #=====================================
 function script:InvestigateDifference-AutoChart05 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart05SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart05SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart05SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart05SmbShareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart05SmbShareImportCsvPosResults) { $script:AutoChart05SmbShareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart05SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart05SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart05SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -2793,7 +2793,7 @@ $AutoChart05ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart05SmbShareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Unencrypted Shares" -PropertyX "PSComputerName" -PropertyY "Name" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Unencrypted Shares" -PropertyX "ComputerName" -PropertyY "Name" }
 }
 CommonButtonSettings -Button $AutoChart05ExpandChartButton
 $script:AutoChart05SmbShareManipulationPanel.Controls.Add($AutoChart05ExpandChartButton)
@@ -2932,7 +2932,7 @@ $script:AutoChart06SmbShare.Series["Encrypted Shares"].ChartType         = 'Colu
 $script:AutoChart06SmbShare.Series["Encrypted Shares"].Color             = 'Brown'
 
         function Generate-AutoChart06 {
-            $script:AutoChart06SmbShareCsvFileHosts     = ($script:AutoChartDataSourceCsv).PSComputerName | Sort-Object -Unique
+            $script:AutoChart06SmbShareCsvFileHosts     = ($script:AutoChartDataSourceCsv).ComputerName | Sort-Object -Unique
             $script:AutoChart06SmbShareUniqueDataFields = ($script:AutoChartDataSourceCsv).Name | Sort-Object -Property 'Name'
 
             $script:AutoChartsProgressBar.ForeColor = 'Brown'
@@ -2952,17 +2952,17 @@ $script:AutoChart06SmbShare.Series["Encrypted Shares"].Color             = 'Brow
                 $AutoChart06YResults         = @()
                 $script:AutoChart06SmbShareOverallDataResults = @()
 
-                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.EncryptData -eq $true}| Sort-Object PSComputerName) ) {
-                    if ( $AutoChart06CheckIfFirstLine -eq $false ) { $AutoChart06CurrentComputer  = $Line.PSComputerName ; $AutoChart06CheckIfFirstLine = $true }
+                foreach ( $Line in $($script:AutoChartDataSourceCsv | Where-Object {$_.EncryptData -eq $true}| Sort-Object ComputerName) ) {
+                    if ( $AutoChart06CheckIfFirstLine -eq $false ) { $AutoChart06CurrentComputer  = $Line.ComputerName ; $AutoChart06CheckIfFirstLine = $true }
                     if ( $AutoChart06CheckIfFirstLine -eq $true ) {
-                        if ( $Line.PSComputerName -eq $AutoChart06CurrentComputer ) {
+                        if ( $Line.ComputerName -eq $AutoChart06CurrentComputer ) {
                             if ( $AutoChart06YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart06YResults += $Line.Name ; $AutoChart06ResultsCount += 1 }
-                                if ( $AutoChart06Computer -notcontains $Line.PSComputerName ) { $AutoChart06Computer = $Line.PSComputerName }
+                                if ( $AutoChart06Computer -notcontains $Line.ComputerName ) { $AutoChart06Computer = $Line.ComputerName }
                             }
                         }
-                        elseif ( $Line.PSComputerName -ne $AutoChart06CurrentComputer ) {
-                            $AutoChart06CurrentComputer = $Line.PSComputerName
+                        elseif ( $Line.ComputerName -ne $AutoChart06CurrentComputer ) {
+                            $AutoChart06CurrentComputer = $Line.ComputerName
                             $AutoChart06YDataResults    = New-Object PSObject -Property @{
                                 ResultsCount = $AutoChart06ResultsCount
                                 Computer     = $AutoChart06Computer
@@ -2973,7 +2973,7 @@ $script:AutoChart06SmbShare.Series["Encrypted Shares"].Color             = 'Brow
                             $AutoChart06Computer     = @()
                             if ( $AutoChart06YResults -notcontains $Line.Name ) {
                                 if ( $Line.Name -ne "" ) { $AutoChart06YResults += $Line.Name ; $AutoChart06ResultsCount += 1 }
-                                if ( $AutoChart06Computer -notcontains $Line.PSComputerName ) { $AutoChart06Computer = $Line.PSComputerName }
+                                if ( $AutoChart06Computer -notcontains $Line.ComputerName ) { $AutoChart06Computer = $Line.ComputerName }
                             }
                         }
                     }
@@ -3182,12 +3182,12 @@ $script:AutoChart06SmbShareManipulationPanel.Controls.Add($script:AutoChart06Smb
 #=====================================
 function script:InvestigateDifference-AutoChart06 {
     # List of Positive Endpoints that positively match
-    $script:AutoChart06SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart06SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06SmbShareImportCsvPosResults = $script:AutoChartDataSourceCsv | Where-Object 'Name' -eq $($script:AutoChart06SmbShareInvestDiffDropDownComboBox.Text) | Select-Object -ExpandProperty 'ComputerName' -Unique
     $script:AutoChart06SmbShareInvestDiffPosResultsTextBox.Text = ''
     ForEach ($Endpoint in $script:AutoChart06SmbShareImportCsvPosResults) { $script:AutoChart06SmbShareInvestDiffPosResultsTextBox.Text += "$Endpoint`r`n" }
 
     # List of all endpoints within the csv file
-    $script:AutoChart06SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'PSComputerName' -Unique
+    $script:AutoChart06SmbShareImportCsvAll = $script:AutoChartDataSourceCsv | Select-Object -ExpandProperty 'ComputerName' -Unique
 
     $script:AutoChart06SmbShareImportCsvNegResults = @()
     # Creates a list of Endpoints with Negative Results
@@ -3323,7 +3323,7 @@ $AutoChart06ExpandChartButton = New-Object System.Windows.Forms.Button -Property
                   Y = $script:AutoChart06SmbShareCheckDiffButton.Location.Y }
     Size   = @{ Width  = $FormScale * 100
                 Height = $FormScale * 23 }
-    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Encrypted Shares" -PropertyX "PSComputerName" -PropertyY "Name" }
+    Add_Click  = { Generate-AutoChartsCommand -FilePath $script:AutoChartDataSourceCsvFileName -QueryName "SMB Shares" -QueryTabName "Encrypted Shares" -PropertyX "ComputerName" -PropertyY "Name" }
 }
 CommonButtonSettings -Button $AutoChart06ExpandChartButton
 $script:AutoChart06SmbShareManipulationPanel.Controls.Add($AutoChart06ExpandChartButton)
