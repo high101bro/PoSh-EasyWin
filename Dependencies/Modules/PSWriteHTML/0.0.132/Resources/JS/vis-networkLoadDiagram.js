@@ -27,7 +27,6 @@
                 }, 500);
             });
         }
-
     } else {
         network = loadDiagram(container, data, options, id, loader);
     }
@@ -57,7 +56,4 @@ function loadDiagram(container, data, options, id, loader) {
         });
     }
     return network;
-    //window.addEventListener("load", () => {
-    //    loadDiagramDiagram();
-    //});
 }

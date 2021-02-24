@@ -1,0 +1,39 @@
+﻿table.simplify {
+    border-collapse: collapse;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 5px;
+}
+
+table.simplify td {
+    border-width: 1px;
+    padding: 4px;
+    text-align: left;
+    border-top: 1px solid #ddd;
+}
+
+table.simplify thead th {
+    text-align: center;
+    font-weight: bold;
+    padding: 4px 17px;
+    border-bottom: 1px solid #111;
+    background-color: white;
+    color: black;
+}
+
+table.simplify tfoot th {
+    text-align: center;
+    font-weight: bold;
+    padding: 4px 17px;
+    border-top: 1px solid #111;
+    background-color: white;
+    color: black;
+}
+
+table.simplify tr:nth-of-type(odd) {
+    background-color: #F6F6F5;
+}
+
+table.simplify tr:nth-of-type(even) {
+    background-color: white;
+}

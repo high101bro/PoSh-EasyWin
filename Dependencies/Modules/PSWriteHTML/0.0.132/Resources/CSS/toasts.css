@@ -6,7 +6,7 @@
     top: 0px;
     position: relative;
     box-shadow: 1px 7px 14px -5px rgba(0, 0, 0, 0.2);
-    margin: 10px 10px 10px 10px;
+    margin: 5px;
 }
 
 .toastBorderLeft {
@@ -53,7 +53,6 @@
     font-weight: 700;
     margin-top: 0;
     margin-bottom: 8px;
-    font-family: "Raleway", sans-serif;
     font-size: 16px !important;
 }
 
@@ -62,6 +61,5 @@
     margin-top: 0;
     margin-bottom: 0;
     color: #878787;
-    font-family: "Raleway", sans-serif;
     font-size: 14px !important;
 }

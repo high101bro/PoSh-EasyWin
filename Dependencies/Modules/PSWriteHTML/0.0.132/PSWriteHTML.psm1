@@ -945,8 +945,8 @@ function New-ChartInternalAxisX {
     param(
         [System.Collections.IDictionary] $Options,
         [string] $TitleText,
-        [int] $Min,
-        [int] $Max,
+        [Int64] $Min,
+        [Int64] $Max,
         [ValidateSet('datetime', 'category', 'numeric')][string] $Type = 'category',
         [Array] $Names
     )
@@ -958,10 +958,10 @@ function New-ChartInternalAxisX {
         $Options.xaxis.title = @{ }
         $Options.xaxis.title.text = $TitleText
     }
-    if ($MinValue -gt 0) {
+    if ($Min -gt 0) {
         $Options.xaxis.min = $Min
     }
-    if ($MinValue -gt 0) {
+    if ($Max -gt 0) {
         $Options.xaxis.max = $Max
     }
     if ($Type -ne '') {
@@ -1184,6 +1184,7 @@ function New-ChartInternalColors {
 }
 Register-ArgumentCompleter -CommandName New-ChartInternalColors -ParameterName Colors -ScriptBlock $Script:ScriptBlockColors
 function New-ChartInternalDataLabels {
+    [cmdletBinding()]
     param(
         [System.Collections.IDictionary] $Options,
         [bool] $DataLabelsEnabled = $true,
@@ -1949,8 +1950,11 @@ function New-ChartInternalTimeLine {
         [string] $SubTitle,
         [int] $FontSizeTitle = 24,
         [int] $FontSizeSubtitle = 14,
-        [Array] $Data
+        [Array] $Data,
+        [Int64] $Min,
+        [Int64] $Max
     )
+
     if ($Data.Count -eq 0) {
         Write-Warning 'New-ChartInternalTimeLine - Data Empty'
     }
@@ -1995,9 +1999,6 @@ function New-ChartInternalTimeLine {
                 hideOverflowingLabels = $false
             }
         }
-    }
-    $Options.xaxis = @{
-        type = 'datetime'
     }
 
     $Options.series = @(
@@ -2056,6 +2057,24 @@ function New-ChartInternalToolbar {
         }
         autoSelected = $AutoSelected
     }
+}
+function New-ChartInternalToolTip {
+    [CmdletBinding()]
+    param(
+        [System.Collections.IDictionary] $Options,
+        [bool] $Enabled,
+        [System.Collections.IDictionary] $y,
+        [System.Collections.IDictionary] $x
+
+    )
+
+    if (-not $Options.tooltip) {
+        $Options.tooltip = @{}
+    }
+    $Options.tooltip.enabled = $Enabled
+    $Options.tooltip.x = $x
+    $Options.tooltip.y = $y
+
 }
 function New-ChartInternalZoom {
     [CmdletBinding()]
@@ -2487,11 +2506,34 @@ function New-HTMLChartTimeLine {
 
         [System.Collections.IDictionary] $GridOptions,
         [System.Collections.IDictionary] $Toolbar,
-        [System.Collections.IDictionary] $Theme
+        [System.Collections.IDictionary] $Theme,
 
+        [System.Collections.IDictionary] $ChartAxisX,
+        [System.Collections.IDictionary] $ChartAxisY,
+
+        [System.Collections.IDictionary] $ChartToolTip,
+        [System.Collections.IDictionary] $DataLabel
     )
+    $Options = [ordered] @{}
 
-    $Options = [ordered] @{ }
+    if ($ChartAxisX) {
+        $ChartAxisX.type = "datetime"
+        New-ChartInternalAxisX -Options $Options @ChartAxisX
+    } else {
+        $ChartAxisX = @{
+            Type = "datetime"
+        }
+        New-ChartInternalAxisX -Options $Options @ChartAxisX
+    }
+    if ($ChartAxisY) {
+        New-ChartInternalAxisY -Options $Options @ChartAxisY
+    }
+    if ($ChartToolTip) {
+        New-ChartInternalToolTip -Options $Options @ChartToolTip
+    }
+    if ($DataLabel) {
+        $Options.dataLabels = $DataLabel
+    }
 
     New-ChartInternalTimeLine -Options $Options -Color $Color -Title $TitleText -SubTitle $SubTitleText -FontSizeTitle $FontSizeTitle -FontSizeSubtitle $FontSizeSubtitle -Data $Data
 
@@ -4165,6 +4207,25 @@ function Add-ConfigurationCSS {
         }
     }
 }
+function Convert-FontToBinary {
+    [CmdLetBinding()]
+    param(
+        [string[]] $Content,
+        [string] $Search,
+        [string] $ReplacePath,
+        [string] $FileType
+    )
+    if ($Content -like "*$Search*") {
+        if ($PSEdition -eq 'Core') {
+            $ImageContent = Get-Content -AsByteStream -LiteralPath $ReplacePath
+        } else {
+            $ImageContent = Get-Content -LiteralPath $ReplacePath -Encoding Byte
+        }
+        $Replace = "data:application/$FileType;charset=utf-8;base64," + [Convert]::ToBase64String($ImageContent)
+        $Content = $Content.Replace($Search, $Replace)
+    }
+    $Content
+}
 function ConvertFrom-Color {
     [alias('Convert-FromColor')]
     [CmdletBinding()]
@@ -4218,29 +4279,6 @@ function ConvertFrom-Rotate {
                 $Rotate
             }
         }
-    }
-}
-function ConvertFrom-Size {
-    [cmdletBinding()]
-    param(
-        [alias('TextSize', 'FontSize')][object] $Size
-    )
-    if ($Size -is [int]) {
-        if ($Size) {
-            "$($Size)px"
-        }
-    } elseif ($Size -is [string]) {
-        if ($Size) {
-            $IntSize = 0
-            $Conversion = [int]::TryParse($Size, [ref] $IntSize)
-            if ($Conversion) {
-                "$($Size)px"
-            } else {
-                $Size
-            }
-        }
-    } else {
-        $Size
     }
 }
 function Convert-Image {
@@ -4333,6 +4371,29 @@ function Convert-StyleContent1 {
         }
     }    
 }
+function ConvertFrom-Size {
+    [cmdletBinding()]
+    param(
+        [alias('TextSize', 'FontSize')][object] $Size
+    )
+    if ($Size -is [int]) {
+        if ($Size) {
+            "$($Size)px"
+        }
+    } elseif ($Size -is [string]) {
+        if ($Size) {
+            $IntSize = 0
+            $Conversion = [int]::TryParse($Size, [ref] $IntSize)
+            if ($Conversion) {
+                "$($Size)px"
+            } else {
+                $Size
+            }
+        }
+    } else {
+        $Size
+    }
+}
 function ConvertTo-HTMLStyle {
     [CmdletBinding()]
     param(
@@ -4418,6 +4479,32 @@ function ConvertTo-LimitedCSS {
     ) -join "`n"
     $CSS
 }
+function ConvertTo-Size {
+    [cmdletBinding()]
+    param(
+        [alias('TextSize', 'FontSize')][object] $Size
+    )
+    $Point = $false
+    if ($Size -is [int]) {
+        $Size
+    } elseif ($Size -is [string]) {
+        $IntSize = 0
+        if ($Size -like '*px') {
+            $Size = $Size -replace 'px'
+        } elseif ($Size -like '*pt') {
+            $Size = $Size -replace 'pt'
+            $Point = $true # 1.3333333333333333
+        }
+        $Conversion = [int]::TryParse($Size, [ref] $IntSize)
+        if ($Conversion) {
+            if ($Point) {
+                $IntSize * 1.3333333333333333
+            } else {
+                $IntSize
+            }
+        }
+    }
+}
 function Get-ConfigurationCSS {
     [cmdletBinding()]
     param(
@@ -4429,10 +4516,10 @@ function Get-ConfigurationCSS {
 function Get-FeaturesInUse {
     <#
     .SYNOPSIS
-    Short description
+    Defines which features will be used within HTML and in which order
 
     .DESCRIPTION
-    Long description
+    Defines which features will be used within HTML and in which order
 
     .PARAMETER PriorityFeatures
     Define priority features - important for ordering when CSS or JS has to be processed in certain order
@@ -4440,16 +4527,35 @@ function Get-FeaturesInUse {
     .EXAMPLE
     Get-FeaturesInUse -PriorityFeatures 'Jquery', 'DataTables', 'Tabs', 'Test'
 
+    .EXAMPLE
+    Get-FeaturesInUse -PriorityFeatures 'Jquery', 'DataTables', 'Tabs', 'Test' -Email
+
     .NOTES
     General notes
     #>
 
     [CmdletBinding()]
     param(
-        [string[]] $PriorityFeatures
+        [string[]] $PriorityFeatures,
+        [switch] $Email
     )
     [Array] $Features = foreach ($Key in $Script:HTMLSchema.Features.Keys) {
         if ($Script:HTMLSchema.Features[$Key]) {
+            $Key
+        }
+    }
+    # This checks whether the features are for email or for normal HTML and allows or dissalows further processing
+    [Array] $Features = foreach ($Key in $Features) {
+        if ($Script:CurrentConfiguration['Features'][$Key]) {
+            if ($Email) {
+                if ($Script:CurrentConfiguration['Features'][$Key]['Email'] -ne $true) {
+                    continue
+                }
+            } else {
+                if ($Script:CurrentConfiguration['Features'][$Key]['Default'] -ne $true) {
+                    continue
+                }
+            }
             $Key
         }
     }
@@ -4590,33 +4696,64 @@ function Get-Resources {
         [switch] $Online,
         [switch] $NoScript,
         [ValidateSet('Header', 'Footer', 'HeaderAlways', 'FooterAlways')][string] $Location,
-        [string[]] $Features
+        [string[]] $Features,
+        [switch] $AddComment
     )
     Process {
         foreach ($Feature in $Features) {
-
-            Write-Verbose "Get-Resources - Location: $Location - Feature: $Feature Online: $Online"
+            Write-Verbose "Get-Resources - Location: $Location - Feature: $Feature Online: $Online AddComment: $($AddComment.IsPresent)"
             if ($Online) {
-                Add-HTMLStyle -Placement Inline -Link $Script:CurrentConfiguration.Features.$Feature.$Location.'CssLink' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment
+                Add-HTMLStyle -Placement Inline -Link $Script:CurrentConfiguration.Features.$Feature.$Location.'CssLink' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -AddComment:$AddComment
             } else {
-                $CSSOutput = Add-HTMLStyle -Placement Inline -FilePath $Script:CurrentConfiguration.Features.$Feature.$Location.'Css' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -Replace $Script:CurrentConfiguration.Features.$Feature.CustomActionsReplace
-                Convert-StyleContent -CSS $CSSOutput -ImagesPath "$PSScriptRoot\Resources\Images\DataTables" -SearchPath "../images/"
-                $CSSOutput = Add-HTMLStyle -Placement Inline -CssInline $Script:CurrentConfiguration.Features.$Feature.$Location.'CssInline' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -Replace $Script:CurrentConfiguration.Features.$Feature.CustomActionsReplace
-                Convert-StyleContent -CSS $CSSOutput -ImagesPath "$PSScriptRoot\Resources\Images\DataTables" -SearchPath "../images/"
+                $CSSOutput = Add-HTMLStyle -Placement Inline -FilePath $Script:CurrentConfiguration.Features.$Feature.$Location.'Css' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -Replace $Script:CurrentConfiguration.Features.$Feature.CustomActionsReplace -AddComment:$AddComment
+                $Data = Convert-StyleContent -CSS $CSSOutput -ImagesPath "$PSScriptRoot\Resources\Images\DataTables" -SearchPath "../images/"
+                if ($Data) {
+                    $Data
+                }
+                # CssInLine is should always be processed
+                # But since Get-Resources is executed in both times we only add it to Offline section
+                $CSSOutput = Add-HTMLStyle -Placement Inline -CssInline $Script:CurrentConfiguration.Features.$Feature.$Location.'CssInline' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -Replace $Script:CurrentConfiguration.Features.$Feature.CustomActionsReplace -AddComment:$AddComment
+                $Data = Convert-StyleContent -CSS $CSSOutput -ImagesPath "$PSScriptRoot\Resources\Images\DataTables" -SearchPath "../images/"
+                if ($Data) {
+                    $Data
+                }
             }
             if ($Online) {
-                Add-HTMLScript -Placement Inline -Link $Script:CurrentConfiguration.Features.$Feature.$Location.'JsLink' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment
+                $Data = Add-HTMLScript -Placement Inline -Link $Script:CurrentConfiguration.Features.$Feature.$Location.'JsLink' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -AddComment:$AddComment
+                if ($Data) {
+                    $Data
+                }
             } else {
-                Add-HTMLScript -Placement Inline -FilePath $Script:CurrentConfiguration.Features.$Feature.$Location.'Js' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -ReplaceData $Script:CurrentConfiguration.Features.$Feature.CustomActionsReplace
+                $Data = Add-HTMLScript -Placement Inline -FilePath $Script:CurrentConfiguration.Features.$Feature.$Location.'Js' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -ReplaceData $Script:CurrentConfiguration.Features.$Feature.CustomActionsReplace -AddComment:$AddComment
+                if ($Data) {
+                    $Data
+                }
+                $Data = Add-HTMLScript -Placement Inline -Content $Script:CurrentConfiguration.Features.$Feature.$Location.'JsInLine' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -AddComment:$AddComment
+                if ($Data) {
+                    $Data
+                }
             }
 
             if ($NoScript) {
                 [Array] $Output = @(
                     if ($Online) {
-                        Add-HTMLStyle -Placement Inline -Link $Script:CurrentConfiguration.Features.$Feature.$Location.'CssLinkNoScript' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment
+                        Add-HTMLStyle -Placement Inline -Link $Script:CurrentConfiguration.Features.$Feature.$Location.'CssLinkNoScript' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -AddComment:$AddComment
                     } else {
-                        $CSSOutput = Add-HTMLStyle -Placement Inline -FilePath $Script:CurrentConfiguration.Features.$Feature.$Location.'CssNoScript' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -ReplaceData $Script:CurrentConfiguration.Features.$Feature.CustomActionsReplace
-                        Convert-StyleContent -CSS $CSSOutput -ImagesPath "$PSScriptRoot\Resources\Images\DataTables" -SearchPath "../images/"
+                        $CSSOutput = Add-HTMLStyle -Placement Inline -FilePath $Script:CurrentConfiguration.Features.$Feature.$Location.'CssNoScript' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -ReplaceData $Script:CurrentConfiguration.Features.$Feature.CustomActionsReplace -AddComment:$AddComment
+                        if ($CSSOutput) {
+                            $Data = Convert-StyleContent -CSS $CSSOutput -ImagesPath "$PSScriptRoot\Resources\Images\DataTables" -SearchPath "../images/"
+                            if ($Data) {
+                                $Data
+                            }
+                        }
+                        # CssInLine is should always be processed
+                        $CSSOutput = Add-HTMLStyle -Placement Inline -CssInline $Script:CurrentConfiguration.Features.$Feature.$Location.'CssInlineNoScript' -ResourceComment $Script:CurrentConfiguration.Features.$Feature.Comment -Replace $Script:CurrentConfiguration.Features.$Feature.CustomActionsReplace -AddComment:$AddComment
+                        if ($CSSOutput) {
+                            $Data = Convert-StyleContent -CSS $CSSOutput -ImagesPath "$PSScriptRoot\Resources\Images\DataTables" -SearchPath "../images/"
+                            if ($Data) {
+                                $Data
+                            }
+                        }
                     }
                 )
                 if (($Output.Count -gt 0) -and ($null -ne $Output[0])) {
@@ -4692,20 +4829,27 @@ function New-DiagramInternalEvent {
 function New-HTMLCustomCSS {
     [CmdletBinding()]
     param(
-        [System.Collections.IDictionary] $CSS
+        [System.Collections.IDictionary] $CSS,
+        [switch] $AddComment
     )
-    foreach ($Key in $CSS.Keys) {
-        "<!-- CSS $Key AUTOGENERATED on DEMAND START -->"
+
+    $Output = foreach ($Key in $CSS.Keys) {
+        if ($AddComment) { "<!-- CSS $Key AUTOGENERATED on DEMAND START -->" }
         if ($CSS[$Key]) {
-            if ($CSS[$Key] -notlike "*<style *") {
-                New-HTMLTag -Tag 'style' -Attributes @{ type = 'text/css' } {
-                    $CSS[$Key]
-                } -NewLine
-            } else {
-                $CSS[$Key]
-            }
+            #if ($CSS[$Key] -notlike "*<style *") {
+
+            $CSS[$Key]
+
+            #} else {
+            #    $CSS[$Key]
+            #}
         }
-        "<!-- CSS $Key AUTOGENERATED on DEMAND END -->"
+        if ($AddComment) { "<!-- CSS $Key AUTOGENERATED on DEMAND END -->" }
+    }
+    if ($Output) {
+        New-HTMLTag -Tag 'style' -Attributes @{ type = 'text/css' } {
+            $Output
+        } -NewLine
     }
 }
 function New-HTMLCustomJS {
@@ -4716,7 +4860,7 @@ function New-HTMLCustomJS {
     foreach ($Key in $JS.Keys) {
         "<!-- JS $Key AUTOGENERATED on DEMAND START -->"
         if ($JS[$Key]) {
-            if ($JS[$Key] -notlike "*<script *") {
+            if ($JS[$Key] -notlike "*<script*") {
                 New-HTMLTag -Tag 'script' {
                     $JS[$Key]
                 } -NewLine
@@ -4780,7 +4924,11 @@ function New-InternalDiagram {
     $Script:HTMLSchema.Features.Moment = $true
     $Script:HTMLSchema.Features.VisNetworkLoad = $true
     $Script:HTMLSchema.Features.EscapeRegex = $true
-
+    # We need to disable loader if physics is disabled, as it doesn't give us anything
+    # and it prevents loading
+    if ($Options.physics -and $Options.physics.enabled -eq $false) {
+        $DisableLoader = $true
+    }
     if (-not $DisableLoader) {
         $Script:HTMLSchema.Features.VisNetworkLoadingBar = $true
     }
@@ -4788,7 +4936,7 @@ function New-InternalDiagram {
     #$Script:HTMLSchema.Features.VisNetworkClustering = $true
 
 
-    [string] $ID = "Diagram" + (Get-RandomStringName -Size 8)
+    [string] $ID = "Diagram-" + (Get-RandomStringName -Size 8)
 
     $Style = [ordered] @{
         position = 'relative'
@@ -4806,11 +4954,11 @@ function New-InternalDiagram {
     }
 
     $AttributesInside = [ordered] @{
-        class = 'diagram'
+        class = 'diagram diagramObject'
         style = @{
             position = 'absolute'
         }
-        id    = $ID
+        id    = "$ID"
     }
 
     if (-not $DisableLoader) {
@@ -4925,6 +5073,7 @@ function New-InternalDiagram {
         $DisableLoaderString = (-not $DisableLoader).ToString().ToLower()
         $IconsAvailableString = $IconsAvailable.IsPresent.ToString().ToLower()
         "var network = loadDiagramWithFonts(container, data, options, '$ID', $DisableLoaderString , $IconsAvailableString);"
+        "diagramTracker['$ID'] = network;"
         "$PreparedEvents"
 
     } -NewLine
@@ -5001,7 +5150,7 @@ function New-TableServerSide {
             data = $DataTable
         }
 
-        $Data | ConvertTo-JsonLiteral -Depth 0 `
+        $Data | ConvertTo-JsonLiteral -Depth 1 `
             -NumberAsString:$Script:HTMLSchema['TableOptions']['DataStoreOptions'].NumberAsString `
             -BoolAsString:$Script:HTMLSchema['TableOptions']['DataStoreOptions'].BoolAsString `
             -DateTimeFormat $Script:HTMLSchema['TableOptions']['DataStoreOptions'].DateTimeFormat | Out-File -FilePath $FilePath
@@ -5009,8 +5158,9 @@ function New-TableServerSide {
     } else {
         # there is possibility for array without column names, not sure if it's worth the time
     }
-    $Options['columns'] = foreach ($Property in $HeaderNames) {
-        @{ data = $Property }
+    [Array] $Options['columns'] = foreach ($Property in $HeaderNames) {
+        #@{ data = $Property }
+        @{ data = $Property.Replace('.', '\.') }
     }
     $Options['deferRender'] = $true
 }
@@ -5020,53 +5170,83 @@ $Script:Configuration = [ordered] @{
             HeaderAlways = @{
                 CssInline = [ordered] @{}
             }
+            Default      = $true
+            Email        = $false
+        }
+        Fonts                   = @{
+            Comment      = 'Default fonts'
+            HeaderAlways = @{
+                #CssLink = 'https://fonts.googleapis.com/css?family=Roboto|Hammersmith+One|Questrial|Oswald'
+                #CssLink = 'https://fonts.googleapis.com/css?family=Roboto'
+                CssLink = 'https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap'
+            }
+            Default      = $true
+            Email        = $false
+        }
+        FontsAwesome            = @{
+            Comment = 'Default fonts icons'
+            Header  = @{
+                CssLink = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css'
+                Css     = "$PSScriptRoot\Resources\CSS\fontsAwesome.css"
+            }
+            Other   = @{
+                Link = 'https://use.fontawesome.com/releases/v5.15.1/svgs/'
+            }
+            Default = $true
+            Email   = $false
         }
         Main                    = [ordered]@{
             HeaderAlways = [ordered]@{
                 CssInline = [ordered]@{
-                    'body'           = [ordered]@{
-                        'font-family' = 'Roboto Condensed, Helvetica Neue, sans-serif'
+                    'body'  = [ordered]@{
+                        # https://fonts.google.com/analytics
+                        # https://web3canvas.com/best-fonts-for-web-designers/
+                        #   font-family: "Raleway", sans-serif;
+                        #'font-family' = 'Roboto Condensed, Helvetica Neue, sans-serif'
+                        'font-family' = "'Roboto Condensed', sans-serif"
                         'font-size'   = '8pt'
-                        'margin'      = '0';
+                        'margin'      = '0px'
                     }
-                    'input'          = @{
+                    'input' = @{
                         'font-size' = '8pt'
                     }
-                    'table'          = @{
-                        #'font-size' = '8pt'
-                    }
-                    '.defaultHeader' = [ordered]@{
-                        'padding'     = '5px'
-                        'margin'      = '0px 0px 0px 0px'
-                        'font-weight' = 'bold'
-                    }
-                    '.defaultFooter' = [ordered]@{
-                        'padding-right' = '5em'
-                        'text-align'    = 'right'
-                    }
-                    '.container'     = [ordered]@{
-                        'padding' = '2px 16px'
-                    }
-                    '.header'        = [ordered]@{
-                        'background-color' = '#616a6b'
-                        'color'            = '#f7f9f9'
-                    }
-                    'hr'             = [ordered]@{
-                        'height'           = '4px'
-                        'background-color' = '#6Cf'
-                        'border'           = '0px'
-                        'width'            = '100%'
-                    }
-                    '.card:hover'    = [ordered]@{
-                        'box-shadow' = '0 8px 16px 0 rgba(0, 0, 0, 0.2)'
-                    }
-                    '.col'           = [ordered]@{
-                        'padding' = '20px'
-                        'margin'  = '1%'
-                        'flex'    = '1'
-                    }
+                    #'table'          = @{
+                    #'font-size' = '8pt'
+                    #}
+                    #'.defaultHeader' = [ordered]@{
+                    #    'padding'     = '5px'
+                    #    'margin'      = '0px 0px 0px 0px'
+                    #    'font-weight' = 'bold'
+                    #}
+                    #'.defaultFooter' = [ordered]@{
+                    #    'padding-right' = '5em'
+                    #    'text-align'    = 'right'
+                    #}
+                    #'.container'     = [ordered]@{
+                    #    'padding' = '2px 16px'
+                    #}
+                    #'.header'        = [ordered]@{
+                    #    'background-color' = '#616a6b'
+                    #    'color'            = '#f7f9f9'
+                    #}
+                    #'hr'    = [ordered]@{
+                    #    'height'           = '4px'
+                    #    'background-color' = '#6Cf'
+                    #    'border'           = '0px'
+                    #    'width'            = '100%'
+                    #}
+                    #'.card:hover' = [ordered]@{
+                    #    'box-shadow' = '0 8px 16px 0 rgba(0, 0, 0, 0.2)'
+                    #}
+                    #'.col'        = [ordered]@{
+                    #    'padding' = '20px'
+                    #    'margin'  = '1%'
+                    #    'flex'    = '1'
+                    #}
                 }
             }
+            Default      = $true
+            Email        = $false
         }
         MainFlex                = [ordered] @{
             HeaderAlways = [ordered] @{
@@ -5096,7 +5276,10 @@ $Script:Configuration = [ordered] @{
                     }
                 }
             }
+            Default      = $true
+            Email        = $false
         }
+        <# Doesn't seem to be in use
         MainLink                = [ordered]@{
             HeaderAlways = [ordered] @{
                 CssInline = [ordered]@{
@@ -5124,35 +5307,38 @@ $Script:Configuration = [ordered] @{
                 }
             }
         }
+        #>
         MainImage               = [ordered]@{
             HeaderAlways = [ordered] @{
                 CssInline = [ordered]@{
-                    '.logos'     = [ordered]@{
+                    '.legacyLogo'      = [ordered]@{
                         'display' = 'flex'
                     }
-                    '.leftLogo'  = [ordered]@{
+                    '.legacyLeftLogo'  = [ordered]@{
                         'flex-basis'     = '100%'
                         'border'         = '0px'
                         'padding-left'   = '0px'
                         'vertical-align' = 'middle'
                     }
-                    '.rightLogo' = [ordered]@{
+                    '.legacyRightLogo' = [ordered]@{
                         'flex-basis'     = '100%'
                         'border'         = '0px'
                         'padding-right'  = '5em'
                         'text-align'     = 'right'
                         'vertical-align' = 'middle'
                     }
-                    'img'        = [ordered]@{
+                    '.legacyImg'       = [ordered]@{
                         'border-radius' = '5px 5px 0 0'
                     }
                 }
             }
+            Default      = $true
+            Email        = $false
         }
+        <#
         Default                 = @{
             Comment      = 'Always Required Default Visual Settings'
             HeaderAlways = @{
-                Css       = "$PSScriptRoot\Resources\CSS\default.css"
                 CssInline = [ordered] @{
                     # Workaround for IE 11
                     '@media all and (-ms-high-contrast:active)' = @{
@@ -5184,7 +5370,54 @@ $Script:Configuration = [ordered] @{
                     '.defaultSectionText'                       = [ordered] @{
                         "text-align" = 'center'
                     }
+                    #'.defaultSectionContent'                    = [ordered] @{
+                    #'padding-top'   = '5px'
+                    #'padding-right' = '5px'
+                    #'padding-left'  = '5px'
+                    #'padding' = '5px'
+                    #}
                     '.defaultPanel'                             = [ordered] @{
+                        'box-shadow'    = '0 4px 8px 0 rgba(0, 0, 0, 0.2)'
+                        'transition'    = '0.3s'
+                        'border-radius' = '5px'
+                        'margin'        = '5px'
+                    }
+                    #'.defaultText'                              = [ordered] @{
+                    #    'margin' = '5px'
+                    #}
+                }
+                # We want email to have no margins
+                # CssInlineNoScript = @{
+                #     '.defaultText' = [ordered] @{
+                #         'margin' = '0px !important'
+                #    }
+                # }
+            }
+        }
+        #>
+        DefaultImage            = @{
+            Comment      = 'Image Style'
+            HeaderAlways = @{
+                CssInline = [ordered] @{
+                    '.logo' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                }
+                # We want email to have no margins
+                #CssInlineNoScript = @{
+                #    '.logo' = [ordered] @{
+                #        'margin' = '0px !important'
+                #    }
+                #}
+            }
+            Default      = $true
+            Email        = $true
+        }
+        DefaultPanel            = @{
+            Comment      = 'Panel Style'
+            HeaderAlways = @{
+                CssInline = [ordered] @{
+                    '.defaultPanel' = [ordered] @{
                         'box-shadow'    = '0 4px 8px 0 rgba(0, 0, 0, 0.2)'
                         'transition'    = '0.3s'
                         'border-radius' = '5px'
@@ -5192,18 +5425,166 @@ $Script:Configuration = [ordered] @{
                     }
                 }
             }
+            Default      = $true
+            Email        = $false
         }
+        DefaultSection          = @{
+            Comment      = 'Section Style'
+            HeaderAlways = @{
+                CssInline = [ordered] @{
+                    # Workaround for IE 11
+                    '@media all and (-ms-high-contrast:active)' = @{
+                        '.defaultSection' = @{
+                            'display' = 'flex'
+                        }
+                    }
+                    '.defaultSection'                           = [ordered] @{
+                        #'display'        = 'flex' # added to allow diagram to resize properly
+                        'flex-direction' = 'column' # added to allow diagram to resize properly
+                        #'flex-direction' = 'default' # added to allow diagram to resize properly
+                        'border'         = '1px solid #bbbbbb'
+                        'padding-bottom' = '0px'
+                        'margin'         = '5px'
+                        'width'          = 'calc(100% - 10px)'
+                        'box-shadow'     = '0 4px 8px 0 rgba(0, 0, 0, 0.2)'
+                        'transition'     = '0.3s'
+                        'border-radius'  = '5px'
+                    }
+                    '.defaultSectionHead'                       = [ordered] @{
+                        'display'          = 'flex'
+                        'justify-content'  = 'center'
+                        'padding'          = '5px'
+                        'margin'           = '0px 0px 0px 0px'
+                        'font-weight'      = 'bold'
+                        "background-color" = ConvertFrom-Color -Color "DeepSkyBlue"
+                        'color'            = ConvertFrom-Color -Color "White"
+                    }
+                    #'.defaultSectionContent'                    = [ordered] @{
+                    #'padding-top'   = '5px'
+                    #'padding-right' = '5px'
+                    #'padding-left'  = '5px'
+                    #'padding' = '5px'
+                    #}
+                }
+            }
+            Default      = $true
+            Email        = $false
+        }
+        <#
         DefaultHeadings         = @{
             Comment      = 'Always Required Default Headings'
             HeaderAlways = @{
                 Css = "$PSScriptRoot\Resources\CSS\headings.css"
             }
         }
+        #>
+        DefaultHeadings         = @{
+            Comment      = 'Heading Style'
+            HeaderAlways = @{
+                CssInline = [ordered] @{
+                    'h1' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                    'h2' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                    'h3' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                    'h4' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                    'h5' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                    'h6' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                }
+                # We want email to have no margins
+                # CssInlineNoScript = @{
+                # 'h1' = [ordered] @{
+                # 'margin' = '0px !important'
+                # }
+                # 'h2' = [ordered] @{
+                # 'margin' = '0px !important'
+                # }
+                # 'h3' = [ordered] @{
+                # 'margin' = '0px !important'
+                # }
+                # 'h4' = [ordered] @{
+                # 'margin' = '0px !important'
+                # }
+                # 'h5' = [ordered] @{
+                # 'margin' = '0px !important'
+                # }
+                # 'h6' = [ordered] @{
+                # 'margin' = '0px !important'
+                # }
+                # }
+            }
+            Default      = $true
+            Email        = $true
+        }
+        DefaultText             = @{
+            Comment      = 'Text Style'
+            HeaderAlways = @{
+                CssInline = [ordered] @{
+                    '.defaultText' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                }
+                # We want email to have no margins
+                #CssInlineNoScript = @{
+                #    '.defaultText' = [ordered] @{
+                #        'margin' = '0px !important'
+                #        #'background' = 'red'
+                #    }
+                #}
+            }
+            Default      = $true
+            Email        = $true
+        }
         Accordion               = @{
             Comment      = 'Accordion'
             HeaderAlways = @{
                 Css = "$PSScriptRoot\Resources\CSS\accordion-1.css"
             }
+            Default      = $true
+            Email        = $false
+        }
+        AccordionFAQ            = @{
+            Comment      = 'Accordion FAQ'
+            Header       = @{
+                CssLink = 'https://unpkg.com/accordion-js@3.0.0/dist/accordion.min.css'
+                Css     = "$PSScriptRoot\Resources\CSS\accordion.min.css"
+                JsLink  = 'https://unpkg.com/accordion-js@3.0.0/dist/accordion.min.js'
+                JS      = "$PSScriptRoot\Resources\JS\accordion.min.js"
+            }
+            HeaderAlways = @{
+                CssInline = @{
+                    '.accordion-container' = @{
+                        margin  = '5px'
+                        padding = '0px'
+                        color   = '#4d5974'
+
+                    }
+                    '.ac'                  = @{
+                        # 'border-style' = 'none'
+                    }
+                    '.ac-header'           = @{
+                        #border = 'none' # '1px solid #03b5d2'
+                        #'border-style' = 'none'
+                    }
+                    '.ac-panel'            = @{
+                        #border = 'none'
+                        #'border-style' = 'none'
+
+                    }
+                }
+            }
+            Default      = $true
+            Email        = $false
         }
         CodeBlocks              = @{
             Comment      = 'EnlighterJS CodeBlocks'
@@ -5229,6 +5610,8 @@ $Script:Configuration = [ordered] @{
             FooterAlways = @{
                 JS = "$PSScriptRoot\Resources\JS\enlighterjs-footer.js"
             }
+            Default      = $true
+            Email        = $false
         }
         CodeBlocksHighlight     = @{
             # future / possible use case # https://highlightjs.org/static/demo/
@@ -5239,16 +5622,18 @@ $Script:Configuration = [ordered] @{
                 JsLink  = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.2/highlight.min.js'
                 JS      = "$PSScriptRoot\Resources\JS\highlight.min.js"
             }
+            Default = $true
+            Email   = $false
         }
         ChartsApex              = @{
-            Comment      = 'Apex Charts'
-            Header       = @{
+            Comment = 'Apex Charts'
+            Header  = @{
                 JsLink = @(
                     'https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js' # If you need to make it work with IE11, you need to include these polyfills before including ApexCharts
                     'https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20180112/classList.min.js' # If you need to make it work with IE11, you need to include these polyfills before including ApexCharts
                     'https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn@1.0.0/findIndex.min.js' # You will need this only if you require timeline/rangebar charts
                     #'https://unpkg.com/canvg@3.0.4/lib/umd.js' # You will need this only if you require PNG download of your charts
-                    'https://cdn.jsdelivr.net/npm/apexcharts@3.22/dist/apexcharts.min.js'
+                    'https://cdn.jsdelivr.net/npm/apexcharts@3.22.0/dist/apexcharts.min.js'
                 )
                 JS     = @(
                     "$PSScriptRoot\Resources\JS\polyfill.min.js"
@@ -5258,33 +5643,71 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\apexcharts.min.js"
                 )
             }
-            HeaderAlways = @{
-                #Css = "$PSScriptRoot\Resources\CSS\apexcharts.css"
-            }
+            Default = $true
+            Email   = $false
         }
         ChartsOrg               = [ordered] @{
             Comment      = 'OrgChart'
             Header       = @{
-                CssLink = 'https://cdnjs.cloudflare.com/ajax/libs/orgchart/2.1.3/css/jquery.orgchart.min.css'
+                CssLink = 'https://cdnjs.cloudflare.com/ajax/libs/orgchart/2.1.10/css/jquery.orgchart.min.css'
                 Css     = "$PSScriptRoot\Resources\CSS\jquery.orgchart.min.css"
-                JsLink  = 'https://cdnjs.cloudflare.com/ajax/libs/orgchart/2.1.3/js/jquery.orgchart.min.js'
+                JsLink  = 'https://cdnjs.cloudflare.com/ajax/libs/orgchart/2.1.10/js/jquery.orgchart.min.js'
                 Js      = "$PSScriptRoot\Resources\JS\jquery.orgchart.min.js"
             }
             HeaderAlways = [ordered] @{
                 CssInline = [ordered] @{
-                    '.orgChart'      = @{
-                        #'font-family'   = 'Arial'
-                        'height'        = '420px'
-                        'border'        = '2px dashed #aaa'
-                        'border-radius' = '5px'
-                        #'overflow'      = 'auto'
+
+                    '.orgchartWrapper' = @{
+                        'min-height'    = '420px'
+                        'border'        = '1px dashed #aaa'
+                        'border-radius' = '0px'
                         'text-align'    = 'center'
+                        'margin'        = '5px'
+                        #background      = '#fff';
+
+                        'display'       = 'flex'
+                        'flex-basis'    = '100%'
+                        'overflow'      = 'hidden'
                     }
-                    ".oc-export-btn" = @{
-                        'flex-basis' = '100%'
+
+                    '.orgchart'        = @{
+                        'background-image' = 'none'
+                        'min-height'       = '420px'
+                        'border'           = '1px dashed #aaa'
+                        #'border-radius' = '0px'
+                        #'text-align'    = 'center'
+                        #'margin'        = '5px'
+                        'flex-basis'       = '100%'
                     }
+                    #".oc-export-btn"   = @{
+                    #    'flex-basis' = '100%'
+                    #}
+                    <#
+                    '.orgchart .lines .topLine'   = @{
+                        'border-top-width' = '2px'
+                        'border-top-style' = 'solid'
+                        'border-top-color' = 'blue'
+                    }
+                    '.orgchart .lines .rightLine' = @{
+                        'border-right-width' = '1px'
+                        'border-right-style' = 'solid'
+                        'border-right-color' = 'blue'
+                    }
+                    '.orgchart .lines .leftLine'  = @{
+                        'border-left-width' = '1px'
+                        'border-left-style' = 'solid'
+                        'border-left-color' = 'blue'
+                    }
+                    '.orgchart .lines .downLine'  = @{
+                        'background-color' = 'blue'
+                    }
+                    #>
                 }
             }
+            Default      = $true
+            Email        = $false
+            SourceCodes  = 'https://github.com/dabeng/OrgChart'
+            Demo         = 'https://codepen.io/collection/AWxGVb/', 'https://dabeng.github.io/OrgChart/'
         }
         ChartsOrgExportPDF      = @{
             Comment = 'OrgChartExport'
@@ -5292,6 +5715,8 @@ $Script:Configuration = [ordered] @{
                 JsLink = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js'
                 Js     = "$PSScriptRoot\Resources\JS\jspdf.min.js"
             }
+            Default = $true
+            Email   = $false
         }
         ChartsOrgExportPNG      = @{
             Comment = 'OrgChartExport'
@@ -5299,9 +5724,11 @@ $Script:Configuration = [ordered] @{
                 JsLink = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js'
                 Js     = "$PSScriptRoot\Resources\JS\html2canvas.min.js"
             }
+            Default = $true
+            Email   = $false
         }
         ChartsXkcd              = @{
-            Header = @{
+            Header  = @{
                 JsLink = @(
                     'https://cdn.jsdelivr.net/npm/chart.xkcd@1.1.12/dist/chart.xkcd.min.js'
                 )
@@ -5309,6 +5736,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\chart.xkcd.min.js"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         ES6Promise              = @{
             Comment = 'ES6Promise'
@@ -5317,6 +5746,8 @@ $Script:Configuration = [ordered] @{
                 Js     = "$PSScriptRoot\Resources\JS\es6-promise.auto.min.js"
 
             }
+            Default = $true
+            Email   = $false
         }
         Jquery                  = @{
             Comment = 'Jquery'
@@ -5324,61 +5755,76 @@ $Script:Configuration = [ordered] @{
                 JsLink = 'https://code.jquery.com/jquery-3.5.1.min.js'
                 Js     = "$PSScriptRoot\Resources\JS\jquery.min.js"
             }
+            Default = $true
+            Email   = $false
         }
         DataTables              = @{
             Comment      = 'DataTables'
             HeaderAlways = @{
                 CssInline   = @{
                     #/* Added to make sure plus logo fits in */
-                    td                       = @{
-                        'height' = '27px'
+                    'td'                               = @{
+                        'height' = '14px'
                     }
                     #/* Button in Table - giving it some colors */
+                    <#
                     'td.sorting_1::before'   = @{
-                        'background' = '#007bff !important'
+                        'background-color' = '#007bff !important'
                     }
                     'td::before'             = @{
-                        'background' = '#007bff !important'
+                        'background-color' = '#007bff !important'
+                    }
+                    #>
+                    'td::before, td.sorting_1::before' = @{
+                        'background-color' = '#007bff !important'
                     }
                     # /* giving some spaces between tables being to close */
-                    'div.dataTables_wrapper' = @{
-                        'padding' = '10px 10px 10px 10px'
+                    'div.dataTables_wrapper'           = @{
+                        #    'padding' = '10px 10px 10px 10px'
+                        'margin' = '5px';
                     }
-                    'button.dt-button'       = @{
+                    'button.dt-button'                 = @{
                         #'font-size'     = '8pt !important'
                         'color'         = 'blue !important'
                         'border-radius' = '5px'
                         'line-height'   = '1 !important'
                     }
                     #/* Filtering at the bottom */
-                    'tfoot input'            = @{
+                    'tfoot input'                      = @{
                         'width'      = '100%'
                         'padding'    = '-3px'
                         'box-sizing' = 'border-box'
-                        #'font-size'  = '15pt'
                     }
                     #/* Filtering at the top */
-                    'thead input'            = @{
+                    'thead input'                      = @{
                         'width'      = '100%'
                         'padding'    = '-3px'
                         'box-sizing' = 'border-box'
-                        #'font-size'  = '15pt'
                     }
-                    'table'                  = @{
-                        #'font-size' = '8pt'
-                    }
-                    'th'                     = @{
-                        #'font-size' = '8pt'
-                    }
-                    '.dataTables_info'       = @{
-                        #/* lower left */
-                        #'font-size' = '8pt'
-                    }
-                    '.dataTables_filter'     = @{
-                        #'font-size' = '8pt'
-                    }
+                    #'tr:nth-of-type(odd)'  = @{
+                    #'background-color' = '#F6F6F5'
+                    #'background-color' = 'green'
+                    #}
+
+                    # 'tr:nth-of-type(even)' = @{
+                    #    'background-color' = 'yellow'
+                    #}
+                    #'table'                  = @{
+                    #'font-size' = '8pt'
+                    #}
+                    #'th'                     = @{
+                    #'font-size' = '8pt'
+                    #}
+                    #'.dataTables_info'       = @{
+                    #/* lower left */
+                    #'font-size' = '8pt'
+                    #}
+                    #'.dataTables_filter'     = @{
+                    #'font-size' = '8pt'
+                    #}
                 }         #= "$PSScriptRoot\Resources\CSS\datatables.css"
                 CssNoscript = "$PSScriptRoot\Resources\CSS\datatables.noscript.css"
+                #JsInLine    = "var dataTablesInitializationTracker = {};"
             }
             Header       = @{
                 CssLink = @(
@@ -5400,6 +5846,60 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\datetime-moment.js"
                 )
             }
+            Default      = $true
+            Email        = $false
+        }
+        DataTablesEmail         = @{
+            Comment      = 'DataTables for use in Email'
+            HeaderAlways = @{
+                #Css = "$PSScriptRoot\Resources\CSS\datatables.noscript.css"
+                CssInline = @{
+                    'table'          = @{
+                        'border-collapse' = 'collapse'
+                        'box-sizing'      = 'border-box'
+                        'width'           = '100%'
+                    }
+                    'table td'       = @{
+                        'border-width' = '1px'
+                        'padding'      = '4px'
+                        'text-align'   = 'left'
+                        #'border-top'   = '1px solid #ddd'
+                        'border'       = '1px solid black'
+                    }
+                    'table thead th' = @{
+                        #'color'= 'white';
+                        'text-align'       = 'center';
+                        'font-weight'      = 'bold';
+                        'padding'          = '4px 17px';
+                        #'border-bottom'    = '1px solid #111'
+                        'background-color' = 'white'
+                        'color'            = 'black'
+                        'border'           = '1px solid black'
+                    }
+                    'table tfoot th' = @{
+                        #'color'= 'white'
+                        'text-align'       = 'center'
+                        'font-weight'      = 'bold'
+                        'padding'          = '4px 17px'
+                        #'border-top'       = '1px solid #111'
+                        'background-color' = 'white'
+                        'color'            = 'black'
+                        'border'           = '1px solid black'
+                    }
+                    # not needed as not visible in Email anyways
+                    #'table tr:nth-of-type(odd)'  = @{
+                    #    'background-color' = '#F6F6F5'
+                    #}
+                    #'table tr:nth-of-type(even)' = @{
+                    #    'background-color' = 'white'
+                    #}
+                    #'table td, table th'         = @{
+                    #    'border' = '1px solid black'
+                    #}
+                }
+            }
+            Default      = $false
+            Email        = $true
         }
         DataTablesAutoFill      = @{
             Comment = 'DataTables AutoFill Features'
@@ -5417,6 +5917,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.autoFill.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesButtons       = @{
             Comment = 'DataTables Buttons Features'
@@ -5434,6 +5936,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\datatables.buttons.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
 
         DataTablesButtonsHTML5  = @{
@@ -5446,6 +5950,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\datatables.buttons.html5.min.js"
                 )
             }
+            Default = $true
+            Email   = $false
         }
 
         DataTablesButtonsPrint  = @{
@@ -5458,6 +5964,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\datatables.buttons.print.min.js"
                 )
             }
+            Default = $true
+            Email   = $false
         }
 
         DataTablesButtonsPDF    = @{
@@ -5472,6 +5980,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\vfs_fonts.js"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesButtonsExcel  = @{
             Comment = 'DataTables Excel Features'
@@ -5483,6 +5993,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\jszip.min.js"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesColReorder    = @{
             Comment = 'DataTables ColReorder Features'
@@ -5500,6 +6012,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.colReorder.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesFixedColumn   = @{
             Comment = 'DataTables Fixed Column Features'
@@ -5517,10 +6031,15 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.fixedColumns.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesFixedHeader   = @{
-            Comment = 'DataTables Fixed Header Features'
-            Header  = @{
+            Comment      = 'DataTables Fixed Header Features'
+            HeaderAlways = @{
+                JsInLine = "var dataTablesFixedTracker = {};"
+            }
+            Header       = @{
                 JsLink  = @(
                     "https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"
                 )
@@ -5534,6 +6053,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.fixedHeader.min.css"
                 )
             }
+            Default      = $true
+            Email        = $false
         }
         DataTablesKeyTable      = @{
             Comment = 'DataTables KeyTable Features'
@@ -5551,6 +6072,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.keyTable.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesResponsive    = @{
             Comment = 'DataTables Responsive Features'
@@ -5568,6 +6091,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.responsive.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesRowGrouping   = @{
             Comment = 'DataTables RowGrouping Features'
@@ -5585,6 +6110,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.rowGroup.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesRowReorder    = @{
             Comment = 'DataTables RowReorder Features'
@@ -5602,6 +6129,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.rowReorder.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesScroller      = @{
             Comment = 'DataTables Scroller Features'
@@ -5619,6 +6148,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.scroller.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesSearchBuilder = @{
             Comment = 'DataTables SearchBuilder'
@@ -5626,6 +6157,8 @@ $Script:Configuration = [ordered] @{
                 JsLink = "https://cdn.datatables.net/searchbuilder/1.0.0/js/dataTables.searchBuilder.min.js"
                 JS     = "$PSScriptRoot\Resources\JS\dataTables.searchBuilder.min.j"
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesSearchFade    = @{
             Comment      = 'DataTables SearchFade'
@@ -5640,6 +6173,8 @@ $Script:Configuration = [ordered] @{
                 JsLink = "https://cdn.datatables.net/plug-ins/preview/searchFade/dataTables.searchFade.min.js"
                 JS     = "$PSScriptRoot\Resources\JS\datatables.SearchFade.min.js"
             }
+            Default      = $true
+            Email        = $false
         }
         DataTablesSearchPanes   = @{
             Comment = 'DataTables Search Panes Features'
@@ -5657,12 +6192,16 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\CSS\dataTables.searchPanes.min.css"
                 )
             }
+            Default = $true
+            Email   = $false
         }
         DataTablesSimplify      = @{
             Comment      = 'DataTables (not really) - Simplified'
             HeaderAlways = @{
                 Css = "$PSScriptRoot\Resources\CSS\datatables.simplify.css"
             }
+            Default      = $true
+            Email        = $true
         }
         D3Mitch                 = @{
             Comment      = 'D3Mitch Feature'
@@ -5679,28 +6218,19 @@ $Script:Configuration = [ordered] @{
             HeaderAlways = @{
                 Css = "$PSScriptRoot\Resources\CSS\hierarchicalTree.css"
             }
-        }
-        Fonts                   = @{
-            Comment      = 'Default fonts'
-            HeaderAlways = @{
-                CssLink = 'https://fonts.googleapis.com/css?family=Roboto|Hammersmith+One|Questrial|Oswald'
-            }
-        }
-        FontsAwesome            = @{
-            Comment      = 'Default fonts icons'
-            HeaderAlways = @{
-                CssLink = 'https://use.fontawesome.com/releases/v5.14.0/css/all.css'
-                Css     = "$PSScriptRoot\Resources\CSS\all.css"
-            }
-            Other        = @{
-                Link = 'https://use.fontawesome.com/releases/v5.14.0/svgs/'
-            }
+            Default      = $true
+            Email        = $false
         }
         FullCalendar            = @{
             Comment      = 'FullCalendar Basic'
             HeaderAlways = @{
-                Css = "$PSScriptRoot\Resources\CSS\calendar.css"
-                Js  = "$PSScriptRoot\Resources\JS\fullCalendarTracker.js"
+                CssInline = @{
+                    '.calendarFullCalendar' = @{
+                        'flex-basis' = '100%'
+                        'margin'     = '5px'
+                    }
+                }
+                JsInLine  = "var calendarTracker = {};"
             }
             Header       = @{
                 JSLink  = 'https://cdn.jsdelivr.net/npm/fullcalendar@5.1.0/main.min.js'
@@ -5708,6 +6238,10 @@ $Script:Configuration = [ordered] @{
                 Css     = "$PSScriptRoot\Resources\CSS\fullCalendar.css"
                 JS      = "$PSScriptRoot\Resources\JS\fullCalendar.js"
             }
+            Default      = $true
+            Email        = $false
+            License      = 'MIT'
+            SourceCodes  = 'https://github.com/fullcalendar/fullcalendar'
         }
         HideSection             = [ordered] @{
             Comment      = 'Hide Section Code'
@@ -5723,15 +6257,26 @@ $Script:Configuration = [ordered] @{
                     }
                 }
             }
+            Default      = $true
+            Email        = $false
         }
         EscapeRegex             = @{
             Comment      = 'Allows EscapeRegex for diagrams and table events'
             FooterAlways = @{
                 JS = "$PSScriptRoot\Resources\JS\escapeRegex.js"
             }
+            Default      = $true
+            Email        = $false
         }
         FancyTree               = @{
-            Header = @{
+            HeaderAlways = @{
+                CssInline = @{
+                    '.fancyTree' = @{
+                        'margin' = '5px'
+                    }
+                }
+            }
+            Header       = @{
                 JSLink  = @(
                     'https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.33.0/jquery.fancytree-all-deps.min.js'
                 )
@@ -5739,6 +6284,10 @@ $Script:Configuration = [ordered] @{
                     'https://cdn.jsdelivr.net/npm/jquery.fancytree@2.33/dist/skin-win8/ui.fancytree.min.css'
                 )
             }
+            Default      = $true
+            Email        = $false
+            License      = 'MIT'
+            SourceCodes  = 'https://github.com/mar10/fancytree'
         }
         JustGage                = @{
             Comment     = 'Just Gage Library'
@@ -5753,6 +6302,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\justgage.min.js"
                 )
             }
+            Default     = $true
+            Email       = $false
             License     = 'MIT'
             SourceCodes = 'https://github.com/toorshia/justgage'
         }
@@ -5781,6 +6332,8 @@ $Script:Configuration = [ordered] @{
                 #JSLink = 'https://unpkg.com/moment@2.27.0/moment.js'
                 JS     = "$PSScriptRoot\Resources\JS\moment.min.js"
             }
+            Default = $true
+            Email   = $false
         }
 
         Navigation              = @{
@@ -5789,14 +6342,8 @@ $Script:Configuration = [ordered] @{
                 Css = "$PSScriptRoot\Resources\CSS\nav.css"
                 Js  = "$PSScriptRoot\Resources\JS\nav.js"
             }
-            <#
-            Header       = @{
-                JSLink  = 'https://cdn.jsdelivr.net/npm/fullcalendar@5.1.0/main.min.js'
-                CssLink = 'https://cdn.jsdelivr.net/npm/fullcalendar@5.1.0/main.min.css'
-                Css     = "$PSScriptRoot\Resources\CSS\fullCalendar.css"
-                JS      = "$PSScriptRoot\Resources\JS\fullCalendar.js"
-            }
-            #>
+            Default      = $true
+            Email        = $false
         }
         NavigationMenu          = @{
             Comment      = 'Navigation'
@@ -5806,6 +6353,26 @@ $Script:Configuration = [ordered] @{
             FooterAlways = @{
                 Js = "$PSScriptRoot\Resources\JS\jquery.jside.menu.js"
             }
+            Default      = $true
+            Email        = $false
+        }
+        NavigationMultilevel    = @{
+            Comment      = 'Navigation Multilevel'
+            HeaderAlways = @{
+                Css = "$PSScriptRoot\Resources\CSS\jquery.multilevelpushmenu_grey.css"
+            }
+            Header       = @{
+                CssLink = 'https://cdn.jsdelivr.net/gh/adgsm/multi-level-push-menu/jquery.multilevelpushmenu.min.css'
+                Css     = "$PSScriptRoot\Resources\CSS\jquery.multilevelpushmenu.min.css"
+            }
+            Footer       = @{
+                Js     = "$PSScriptRoot\Resources\JS\jquery.multilevelpushmenu.min.js"
+                JSLink = 'https://cdn.jsdelivr.net/gh/adgsm/multi-level-push-menu/jquery.multilevelpushmenu.min.js'
+            }
+            SourceCodes  = 'https://github.com/adgsm/multi-level-push-menu'
+            License      = 'MIT'
+            Default      = $true
+            Email        = $false
         }
         Popper                  = @{
             Comment      = 'Popper and Tooltip for FullCalendar'
@@ -5822,12 +6389,16 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\tooltip.js"
                 )
             }
+            Default      = $true
+            Email        = $false
         }
         RedrawObjects           = @{
             Comment      = 'Allows redrawObjects for collapsed sections and changing tabs'
             FooterAlways = @{
                 JS = "$PSScriptRoot\Resources\JS\redrawObjects.js"
             }
+            Default      = $true
+            Email        = $false
         }
         Tabbis                  = @{
             Comment      = 'Elastic Tabbis'
@@ -5878,6 +6449,8 @@ $Script:Configuration = [ordered] @{
                     "$PSScriptRoot\Resources\JS\tabbisAdditional.js"
                 )
             }
+            Default      = $true
+            Email        = $false
         }
         TabsInline              = @{
             # http://techlaboratory.net/jquery-smarttab
@@ -5888,33 +6461,47 @@ $Script:Configuration = [ordered] @{
                 CssLink = "https://cdn.jsdelivr.net/npm/jquery-smarttab@3/dist/css/smart_tab_all.min.css"
                 Css     = "$PSScriptRoot\Resources\CSS\jquery.smartTab.min.css"
             }
+            Default = $true
+            Email   = $false
         }
         TimeLine                = @{
             Comment      = 'Timeline Simple'
             HeaderAlways = @{
                 Css = "$PSScriptRoot\Resources\CSS\timeline-simple.css"
             }
+            Default      = $true
+            Email        = $false
         }
         Toasts                  = @{
             Comment      = 'Toasts Looking Messages'
             HeaderAlways = @{
                 Css = "$PSScriptRoot\Resources\CSS\Toasts.css"
             }
+            Default      = $true
+            Email        = $false
         }
         StatusButtonical        = @{
             Comment      = 'Status Buttonical'
             HeaderAlways = @{
                 Css = "$PSScriptRoot\Resources\CSS\status.css"
             }
+            Default      = $true
+            Email        = $false
         }
         VisData                 = [ordered]@{
-            Header = @{
-                JsLink = 'https://unpkg.com/vis-data@7.1.0/peer/umd/vis-data.min.js'
+            Header  = @{
+                # https://unpkg.com/vis-data@latest/peer/umd/vis-data.min.js
+                JsLink = 'https://unpkg.com/vis-data@7.1.1/peer/umd/vis-data.min.js'
                 Js     = "$PSScriptRoot\Resources\JS\vis-data.min.js"
             }
+            Default = $true
+            Email   = $false
         }
         VisNetwork              = [ordered]@{
             Comment      = 'VIS Network Dynamic, browser based visualization libraries'
+            Demos        = @(
+                'https://visjs.github.io/vis-network/examples/'
+            )
             HeaderAlways = @{
                 CssInline = [ordered]@{
                     '.diagram'           = [ordered]@{
@@ -5927,29 +6514,41 @@ $Script:Configuration = [ordered] @{
                         'outline' = 'none'
                     }
                 }
+                JsInLine  = "var diagramTracker = {};"
             }
             Header       = @{
-                JsLink = 'https://unpkg.com/vis-network@8.4.1/peer/umd/vis-network.min.js'
+                # https://unpkg.com/vis-network@latest/peer/umd/vis-network.min.js
+                # https://unpkg.com/vis-network/styles/vis-network.min.css
+                JsLink = 'https://unpkg.com/vis-network@8.5.5/peer/umd/vis-network.min.js'
                 Js     = "$PSScriptRoot\Resources\JS\vis-network.min.js"
             }
+            Default      = $true
+            Email        = $false
+            SourceCodes  = 'https://github.com/visjs'
         }
         VisNetworkClustering    = [ordered] @{
             Comment      = 'VIS Network Clustering'
             FooterAlways = @{
                 JS = "$PSScriptRoot\Resources\JS\vis-networkFunctions.js"
             }
+            Default      = $true
+            Email        = $false
         }
         VisNetworkLoadingBar    = [ordered]@{
             Comment      = 'VIS Network Loading Bar'
             HeaderAlways = @{
                 Css = "$PSScriptRoot\Resources\CSS\vis-network.loadingbar.css"
             }
+            Default      = $true
+            Email        = $false
         }
         VisNetworkLoad          = [ordered] @{
             Comment      = 'VIS Network Load'
             HeaderAlways = @{
                 JS = "$PSScriptRoot\Resources\JS\vis-networkLoadDiagram.js"
             }
+            Default      = $true
+            Email        = $false
         }
         <#
         VisNetworkStandalone   = [ordered]@{
@@ -5987,23 +6586,54 @@ $Script:Configuration = [ordered] @{
                 }
             }
             Header       = @{
+                # https://unpkg.com/vis-timeline@latest/peer/umd/vis-timeline-graph2d.min.js
                 JsLink  = 'https://unpkg.com/vis-timeline@7.4.2/peer/umd/vis-timeline-graph2d.min.js'
                 Js      = "$PSScriptRoot\Resources\JS\vis-timeline-graph2d.min.js"
                 Css     = "$PSScriptRoot\Resources\CSS\vis-timeline-graph2d.min.css"
                 CssLink = 'https://unpkg.com/vis-timeline@7.4.2/styles/vis-timeline-graph2d.min.css'
             }
+            Default      = $true
+            Email        = $false
+        }
+        QR                      = [ordered] @{
+            Comment      = 'QR Code'
+            Demos        = 'https://www.easyproject.cn/easyqrcodejs/tryit.html'
+            HeaderAlways = @{
+                CssInline = @{
+                    '.qrcode' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                }
+            }
+            Header       = @{
+                JSLink = 'https://cdn.jsdelivr.net/npm/easyqrcodejs@4.3.0/dist/easy.qrcode.min.js'
+                Js     = "$PSScriptRoot\Resources\JS\easy.qrcode.min.js"
+            }
+            Default      = $true
+            Email        = $false
+            License      = 'MIT'
+            SourceCodes  = 'https://github.com/ushelp/EasyQRCodeJS'
         }
         Wizard                  = [ordered] @{
-            Comment     = 'Wizard'
-            Demos       = 'http://techlaboratory.net/jquery-smartwizard'
-            Header      = @{
-                JsLink  = 'https://cdn.jsdelivr.net/npm/smartwizard@5/dist/js/jquery.smartWizard.min.js'
+            Comment      = 'Wizard'
+            Demos        = 'http://techlaboratory.net/jquery-smartwizard'
+            Header       = @{
+                JsLink  = 'https://cdn.jsdelivr.net/npm/smartwizard@5.1.1/dist/js/jquery.smartWizard.min.js'
                 Js      = "$PSScriptRoot\Resources\JS\jquery.smartWizard.min.js"
-                CssLink = "https://cdn.jsdelivr.net/npm/smartwizard@5/dist/css/smart_wizard_all.min.css"
+                CssLink = "https://cdn.jsdelivr.net/npm/smartwizard@5.1.1/dist/css/smart_wizard_all.min.css"
                 Css     = "$PSScriptRoot\Resources\CSS\jquery.smartWizard.min.css"
             }
-            License     = 'MIT'
-            SourceCodes = 'https://github.com/techlab/jquery-smartwizard'
+            HeaderAlways = @{
+                CssInline = @{
+                    '.defaultWizard' = [ordered] @{
+                        'margin' = '5px'
+                    }
+                }
+            }
+            Default      = $true
+            Email        = $false
+            License      = 'MIT'
+            SourceCodes  = 'https://github.com/techlab/jquery-smartwizard'
         }
     }
 }
@@ -6035,10 +6665,9 @@ function Save-Resource {
 }
 
 #$Script:CurrentConfiguration = Copy-Dictionary -Dictionary $Script:Configuration
-
 <# Refreshes libraries
 $Keys = $Script:Configuration.Features.Keys
-$Keys = 'DataTables', 'VisNetwork', 'VisTimeline', 'Moment', 'FontsAwesome', 'Jquery', 'DataTablesSearchFade', 'Popper', 'ChartsApex'
+$Keys = 'DataTables', 'VisNetwork', 'VisTimeline', 'Moment', 'Jquery', 'DataTablesSearchFade', 'Popper', 'ChartsApex'
 $Keys = 'ChartsApex'
 $Keys = 'ChartsOrg', 'ChartsOrgExportPDF', 'ChartsOrgExportPNG'
 $Keys = $Script:Configuration.Features.Keys | Where-Object { $_ -like 'DataTable*' }
@@ -6048,6 +6677,8 @@ $Keys = @(
     'DataTablesButtonsPDF', 'DataTablesButtonsExcel', 'DataTablesColReorder', 'DataTablesFixedColumn', 'DataTablesFixedHeader', 'DataTablesKeyTable',
     'DataTablesRowReorder', 'DataTablesRowGrouping', 'DataTablesResponsive', 'DataTablesScroller', 'DataTablesSearchPanes'
 )
+$Keys = 'AccordionFAQ'
+$Keys = 'ChartsApex', 'VisNetwork', 'VisTimeline', 'VisData'
 foreach ($Key in $Keys) {
     if ($($Script:Configuration).Features.$Key.Header.JsLink -and $($Script:Configuration).Features.$Key.Header.Js) {
         Save-Resource -ResourceLinks $($Script:Configuration).Features.$Key.Header.JsLink -Type 'JS' -Target $($Script:Configuration).Features.$Key.Header.Js
@@ -6057,24 +6688,41 @@ foreach ($Key in $Keys) {
     }
 }
 #>
-<#
-Save-Resource -ResourceLinks $($Script:Configuration).Features.DataTables.Header.JsLink -Type 'JS' -Target $($Script:Configuration).Features.DataTables.Header.Js
-Save-Resource -ResourceLinks $($Script:Configuration).Features.DataTables.Header.CssLink -Type 'CSS' -Target $($Script:Configuration).Features.DataTables.Header.Css
-Save-Resource -ResourceLinks $($Script:Configuration).Features.VisNetwork.Header.JsLink -Type 'JS' -Target $($Script:Configuration).Features.VisNetwork.Header.Js
-Save-Resource -ResourceLinks $($Script:Configuration).Features.VisData.Header.JsLink -Type 'JS' -Target $($Script:Configuration).Features.VisData.Header.Js
-Save-Resource -ResourceLinks $($Script:Configuration).Features.VisTimeline.Header.JsLink -Type 'JS' -Target $($Script:Configuration).Features.VisTimeline.Header.Js
-Save-Resource -ResourceLinks $($Script:Configuration).Features.VisTimeline.Header.CssLink -Type 'CSS' -Target $($Script:Configuration).Features.VisTimeline.Header.Css
-Save-Resource -ResourceLinks $($Script:Configuration).Features.Moment.Header.JSLink -Type 'JS' -Target $($Script:Configuration).Features.Moment.Header.Js
-Save-Resource -ResourceLinks $($Script:Configuration).Features.FontsAwesome.HeaderAlways.CssLink -Type 'CSS' -Target $($Script:Configuration).Features.FontsAwesome.HeaderAlways.Css
-Save-Resource -ResourceLinks $($Script:Configuration).Features.Jquery.Header.JsLink -Type 'JS' -Target $($Script:Configuration).Features.Jquery.Header.Js
+
+
+
+<# read https://css-tricks.com/understanding-web-fonts-getting/ to undderstand
+# Builds Fonts Awasome for Offline Use
+# remeber to remove types from original file
+# ttf / svg / eot / eot
+$FontReplacePath = 'C:\Support\GitHub\PSWriteHTML\Ignore\fontawesome-free-5.15.1-web\webfonts'
+$FontPath = 'C:\Support\GitHub\PSWriteHTML\Ignore\fontawesome-free-5.15.1-web\css\all-modified.min.css'
+#$FontPath = 'C:\Support\GitHub\PSWriteHTML\Ignore\fontawesome-free-5.15.1-web\css\all-modified.css'
+$TargetPath = "$PSScriptRoot\Resources\CSS\fontsAwesome.css"
+
+Optimize-CSS -File 'C:\Support\GitHub\PSWriteHTML\Ignore\fontawesome-free-5.15.1-web\css\all-modified.css' -OutputFile 'C:\Support\GitHub\PSWriteHTML\Ignore\fontawesome-free-5.15.1-web\css\all-modified.min.css'
+Copy-Item -Path $FontPath -Destination $TargetPath
+
+$Content = Get-Content -Raw -Path $PSScriptRoot\Resources\CSS\fontsAwesome.css
+#$Content = Convert-FontToBinary -FileType 'font-eot' -Search '../webfonts/fa-solid-900.eot' -ReplacePath "$FontReplacePath\fa-solid-900.eot" -Content $Content
+$Content = Convert-FontToBinary -FileType 'font-woff2' -Search '../webfonts/fa-solid-900.woff2' -ReplacePath "$FontReplacePath\fa-solid-900.woff2" -Content $Content
+$Content = Convert-FontToBinary -FileType 'font-woff' -Search '../webfonts/fa-solid-900.woff' -ReplacePath "$FontReplacePath\fa-solid-900.woff" -Content $Content
+#$Content = Convert-FontToBinary -FileType 'font-ttf' -Search '../webfonts/fa-solid-900.ttf' -ReplacePath "$FontReplacePath\fa-solid-900.ttf" -Content $Content
+#$Content = Convert-FontToBinary -FileType 'font-svg' -Search '../webfonts/fa-solid-900.svg' -ReplacePath "$FontReplacePath\fa-solid-900.svg" -Content $Content
+#
+#$Content = Convert-FontToBinary -FileType 'font-eot' -Search '../webfonts/fa-brands-400.eot' -ReplacePath "$FontReplacePath\fa-brands-400.eot" -Content $Content
+$Content = Convert-FontToBinary -FileType 'font-woff2' -Search '../webfonts/fa-brands-400.woff2' -ReplacePath "$FontReplacePath\fa-brands-400.woff2" -Content $Content
+$Content = Convert-FontToBinary -FileType 'font-woff' -Search '../webfonts/fa-brands-400.woff' -ReplacePath "$FontReplacePath\fa-brands-400.woff" -Content $Content
+#$Content = Convert-FontToBinary -FileType 'font-ttf' -Search '../webfonts/fa-brands-400.ttf' -ReplacePath "$FontReplacePath\fa-brands-400.ttf" -Content $Content
+#$Content = Convert-FontToBinary -FileType 'font-svg' -Search '../webfonts/fa-brands-400.svg' -ReplacePath "$FontReplacePath\fa-brands-400.svg" -Content $Content
+#
+#$Content = Convert-FontToBinary -FileType 'font-eot' -Search '../webfonts/fa-regular-400.eot' -ReplacePath "$FontReplacePath\fa-regular-400.eot" -Content $Content
+$Content = Convert-FontToBinary -FileType 'font-woff2' -Search '../webfonts/fa-regular-400.woff2' -ReplacePath "$FontReplacePath\fa-regular-400.woff2" -Content $Content
+$Content = Convert-FontToBinary -FileType 'font-woff' -Search '../webfonts/fa-regular-400.woff' -ReplacePath "$FontReplacePath\fa-regular-400.woff" -Content $Content
+#$Content = Convert-FontToBinary -FileType 'font-ttf' -Search '../webfonts/fa-regular-400.ttf' -ReplacePath "$FontReplacePath\fa-regular-400.ttf" -Content $Content
+#$Content = Convert-FontToBinary -FileType 'font-svg' -Search '../webfonts/fa-regular-400.svg' -ReplacePath "$FontReplacePath\fa-regular-400.svg" -Content $Content
+Out-File -Encoding utf8 -FilePath $PSScriptRoot\Resources\CSS\fontsAwesome.css -InputObject $Content
 #>
-
-
-#Save-Resource -ResourceLinks $($Script:Configuration).Features.ChartsApex.Header.JsLink -Type 'JS'
-#Save-Resource -ResourceLinks $($Script:Configuration).Features.ChartsApex.Header.CssLink -Type 'CSS'
-
-#Save-Resource -ResourceLinks $($Script:Configuration).Features.JustGage.Header.JsLink -Type 'JS' -Target $($Script:Configuration).Features.JustGage.Header.Js -Verbose
-#Save-Resource -ResourceLinks $($Script:Configuration).Features.JustGage.Header.CssLink -Type 'CSS' -Target $($Script:Configuration).Features.JustGage.Header.Css -Verbose
 # Another way to access
 # https://use.fontawesome.com/releases/v5.11.2/svgs/brands/accessible-icon.svg
 # https://github.com/FortAwesome/Font-Awesome/blob/master/UPGRADING.md
@@ -7817,37 +8465,45 @@ function Add-HTMLScript {
         [string[]] $Link,
         [string[]] $Content,
         [string[]] $FilePath,
-        [Parameter(DontShow)][System.Collections.IDictionary] $ReplaceData
+        [Parameter(DontShow)][System.Collections.IDictionary] $ReplaceData,
+        [switch] $AddComments,
+        [switch] $SkipTags
     )
     if (-not $ResourceComment) {
         $ResourceComment = "ResourceJS-$(Get-RandomStringName -Size 8 -LettersOnly)"
     }
     $Output = @(
-        "<!-- JS $ResourceComment START -->"
         # Content from File(s)
         foreach ($File in $FilePath) {
             if ($File -ne '') {
                 if (Test-Path -LiteralPath $File) {
-                    New-HTMLTag -Tag 'script' -Attributes @{ type = 'text/javascript' } {
-                        # Replaces stuff based on $Script:CurrentConfiguration CustomActionReplace Entry
-                        $FileContent = Get-Content -LiteralPath $File -Raw
-                        if ($null -ne $ReplaceData) {
-                            foreach ($_ in $ReplaceData.Keys) {
-                                $FileContent = $FileContent -replace $_, $ReplaceData[$_]
-                            }
+                    # Replaces stuff based on $Script:CurrentConfiguration CustomActionReplace Entry
+                    # Not really used anymore
+                    $FileContent = Get-Content -LiteralPath $File -Raw
+                    if ($null -ne $ReplaceData) {
+                        foreach ($_ in $ReplaceData.Keys) {
+                            $FileContent = $FileContent -replace $_, $ReplaceData[$_]
                         }
+                    }
+                    if ($SkipTags) {
                         $FileContent
-                    } -NewLine
-                } else {
-                    return
+                    } else {
+                        New-HTMLTag -Tag 'script' -Attributes @{ type = 'text/javascript' } {
+                            $FileContent
+                        } -NewLine
+                    }
                 }
             }
         }
         # Content from string
         if ($Content) {
-            New-HTMLTag -Tag 'script' -Attributes @{ type = 'text/javascript' } {
+            if ($SkipTags) {
                 $Content
-            } -NewLine
+            } else {
+                New-HTMLTag -Tag 'script' -Attributes @{ type = 'text/javascript' } {
+                    $Content
+                } -NewLine
+            }
         }
         # Content from link
         foreach ($L in $Link) {
@@ -7857,9 +8513,15 @@ function Add-HTMLScript {
                 return
             }
         }
-        "<!-- JS $ResourceComment END -->"
     )
-    if ($Output.Count -gt 2) {
+    if ($Output) {
+        if ($AddComment) {
+            $Output = @(
+                "<!-- JS $ResourceComment START -->"
+                $Output
+                "<!-- JS $ResourceComment END -->"
+            )
+        }
         # Outputs only if more than comments
         if ($Placement -eq 'Footer') {
             $Script:HTMLSchema.CustomFooterJS[$ResourceComment] = $Output
@@ -7880,52 +8542,70 @@ function Add-HTMLStyle {
         [string[]] $Content,
         [string[]] $FilePath,
         [alias('CssInline')][System.Collections.IDictionary] $Css,
-        [Parameter(DontShow)][System.Collections.IDictionary] $ReplaceData
+        [Parameter(DontShow)][System.Collections.IDictionary] $ReplaceData,
+        [switch] $AddComment,
+        [ValidateSet('dns-prefetch', 'preconnect', 'preload')][string] $RelType = 'preload',
+        [switch] $SkipTags
     )
     if (-not $ResourceComment) {
         $ResourceComment = "ResourceCSS-$(Get-RandomStringName -Size 8 -LettersOnly)"
     }
     $Output = @(
-        "<!-- CSS $ResourceComment START -->"
         # Content from files
         foreach ($File in $FilePath) {
             if ($File -ne '') {
                 if (Test-Path -LiteralPath $File) {
-                    New-HTMLTag -Tag 'style' -Attributes @{ type = 'text/css' } {
-                        Write-Verbose "Add-HTMLStyle - Reading file from $File"
-                        # Replaces stuff based on $Script:CurrentConfiguration CustomActionReplace Entry
-                        $FileContent = Get-Content -LiteralPath $File -Raw
-                        if ($null -ne $ReplaceData) {
-                            foreach ($_ in $ReplaceData.Keys) {
-                                $FileContent = $FileContent -replace $_, $ReplaceData[$_]
-                            }
+                    Write-Verbose "Add-HTMLStyle - Reading file from $File"
+                    # Replaces stuff based on $Script:CurrentConfiguration CustomActionReplace Entry
+                    $FileContent = Get-Content -LiteralPath $File -Raw
+                    if ($null -ne $ReplaceData) {
+                        foreach ($_ in $ReplaceData.Keys) {
+                            $FileContent = $FileContent -replace $_, $ReplaceData[$_]
                         }
-                        $FileContent -replace '@charset "UTF-8";'
-                    } -NewLine
+                    }
+                    $FileContent = $FileContent -replace '@charset "UTF-8";'
+                    # Put with tags or without them
+                    if ($SkipTags) {
+                        $FileContent
+                    } else {
+                        New-HTMLTag -Tag 'style' -Attributes @{ type = 'text/css' } {
+                            $FileContent
+                        } -NewLine
+                    }
                 }
             }
         }
         # Content from string
         if ($Content) {
-            New-HTMLTag -Tag 'style' -Attributes @{ type = 'text/css' } {
-                Write-Verbose "Add-HTMLStyle - Reading file from $File"
+            Write-Verbose "Add-HTMLStyle - Adding style from Content"
+            if ($SkipTags) {
                 $Content
-            } -NewLine
+            } else {
+                New-HTMLTag -Tag 'style' -Attributes @{ type = 'text/css' } {
+                    $Content
+                } -NewLine
+            }
         }
         # Content from Link
         foreach ($L in $Link) {
             if ($L -ne '') {
                 Write-Verbose "Add-HTMLStyle - Adding link $L"
-                New-HTMLTag -Tag 'link' -Attributes @{ rel = "stylesheet"; type = "text/css"; href = $L } -SelfClosing -NewLine
+                New-HTMLTag -Tag 'link' -Attributes @{ rel = "stylesheet preload prefetch"; type = "text/css"; href = $L; as = 'style' } -SelfClosing -NewLine
             }
         }
         # Content from Hashtable
         if ($Css) {
-            ConvertTo-CascadingStyleSheets -Css $Css -WithTags
+            ConvertTo-CascadingStyleSheets -Css $Css -WithTags:(-not $SkipTags.IsPresent) #:$false
         }
-        "<!-- CSS $ResourceComment END -->"
     )
-    if ($Output.Count -gt 2) {
+    if ($Output) {
+        if ($AddComment) {
+            $Output = @(
+                "<!-- CSS $ResourceComment START -->"
+                $Output
+                "<!-- CSS $ResourceComment END -->"
+            )
+        }
         # Outputs only if more than comments
         if ($Placement -eq 'Footer') {
             $Script:HTMLSchema.CustomFooterCSS[$ResourceComment] = $Output
@@ -8047,11 +8727,10 @@ function Email {
         [switch] $OutputHTML,
         [switch] $WhatIf
     )
-    if ($Online) {
-        $Script:EmailOnline = $true
-    } else {
-        $Script:EmailOnline = $false
-    }
+    $Script:EmailSchema = [ordered]@{}
+    $Script:EmailSchema['AttachSelf'] = $AttachSelf.IsPresent
+    $Script:EmailSchema['Online'] = $Online.IsPresent
+
     $StartTime = [System.Diagnostics.Stopwatch]::StartNew()
     $ServerParameters = [ordered] @{
         From                  = $From
@@ -8107,6 +8786,7 @@ function Email {
                 $ServerParameters.PasswordFromFile = $Parameter.PasswordFromFile
                 $ServerParameters.PasswordAsSecure = $Parameter.PasswordAsSecure
                 $ServerParameters.EnableSSL = $Parameter.SSL
+                $ServerParameters.UseDefaultCredentials = $Parameter.UseDefaultCredentials
             }
             HeaderAttachment {
                 foreach ($Attachment in  $Parameter.FilePath) {
@@ -8120,10 +8800,17 @@ function Email {
                 $ServerParameters.Priority = $Parameter.Priority
             }
             Default {
-                $Body = $Parameter
+                $OutputBody = $Parameter
             }
         }
     }
+    if ($OutputBody -is [System.Collections.IDictionary]) {
+        $Body = $OutputBody.Body
+        $AttachSelfBody = $OutputBody.AttachSelfBody
+    } else {
+        $Body = $OutputBody
+    }
+
     if ($FilePath) {
         # Saving HTML to file
         $SavedPath = Save-HTML -FilePath $FilePath -HTML $Body -Suppress $false
@@ -8143,7 +8830,7 @@ function Email {
             $Saved = $SavedPath
         } else {
             # we save it to temp file or attachselfname
-            $Saved = Save-HTML -FilePath $TempFilePath -HTML $Body -Suppress $false
+            $Saved = Save-HTML -FilePath $TempFilePath -HTML $AttachSelfBody -Suppress $false
         }
         if ($Saved) {
             $Attachments.Add($Saved)
@@ -8158,7 +8845,7 @@ function Email {
 
     $EndTime = Stop-TimeLog -Time $StartTime -Option OneLiner
     Write-Verbose "Email - Time to send: $EndTime"
-    $Script:EmailOnline = $false
+    $Script:EmailSchema = $null
 }
 
 function EmailAttachment {
@@ -8188,6 +8875,7 @@ function EmailBody {
         [Parameter(Mandatory = $false, Position = 0)][ScriptBlock] $EmailBody,
         [string] $Color,
         [string] $BackGroundColor,
+        [string] $LineHeight,
         [alias('Size')][object] $FontSize,
         [ValidateSet('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900')][string] $FontWeight,
         [ValidateSet('normal', 'italic', 'oblique')][string] $FontStyle,
@@ -8197,7 +8885,9 @@ function EmailBody {
         [ValidateSet('none', 'line-through', 'overline', 'underline')][string] $TextDecoration,
         [ValidateSet('uppercase', 'lowercase', 'capitalize')][string] $TextTransform,
         [ValidateSet('rtl')][string] $Direction,
-        [switch] $Online
+        [switch] $Online,
+        [switch] $Format,
+        [switch] $Minify
     )
 
     $newHTMLSplat = @{}
@@ -8234,15 +8924,7 @@ function EmailBody {
     if ($FontWeight) {
         $newHTMLSplat.FontWeight = $FontWeight
     }
-    <#
-    [bool] $SpanRequired = $false
-    foreach ($Entry in $newHTMLSplat.GetEnumerator()) {
-        if (($Entry.Value | Measure-Object).Count -gt 0) {
-            $SpanRequired = $true
-            break
-        }
-    }
-    #>
+    $newHTMLSplat.LineHeight = $LineHeight
     if ($newHTMLSplat.Count -gt 0) {
         $SpanRequired = $true
     } else {
@@ -8251,7 +8933,7 @@ function EmailBody {
     # This is used if Email is used and someone would set Online switch there.
     # Since we moved New-HTML here - we need to do some workaround
     if (-not $Online) {
-        if ($Script:EmailOnline) {
+        if ($Script:EmailSchema -and $Script:EmailSchema['Online']) {
             $HTMLOnline = $true
         } else {
             $HTMLOnline = $false
@@ -8260,7 +8942,21 @@ function EmailBody {
         $HTMLOnline = $true
     }
 
+
     $Body = New-HTML -Online:$HTMLOnline {
+        # Email is special and we want margins to be 0px
+        $Script:HTMLSchema['Email'] = $true
+        #$Script:CurrentConfiguration['Features']['Main']['HeaderAlways']['CssInLine']['body']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DefaultImage']['HeaderAlways']['CssInLine']['.logo']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DefaultHeadings']['HeaderAlways']['CssInLine']['h1']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DefaultHeadings']['HeaderAlways']['CssInLine']['h2']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DefaultHeadings']['HeaderAlways']['CssInLine']['h3']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DefaultHeadings']['HeaderAlways']['CssInLine']['h4']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DefaultHeadings']['HeaderAlways']['CssInLine']['h5']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DefaultHeadings']['HeaderAlways']['CssInLine']['h6']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DefaultText']['HeaderAlways']['CssInLine']['.defaultText']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DataTables']['HeaderAlways']['CssInLine']['div.dataTables_wrapper']['margin'] = '0px'
+        $Script:CurrentConfiguration['Features']['DataTables']['HeaderAlways']['CssInLine']['div.dataTables_wrapper']['margin'] = '0px'
         if ($SpanRequired) {
             New-HTMLSpanStyle @newHTMLSplat {
                 Invoke-Command -ScriptBlock $EmailBody
@@ -8268,8 +8964,37 @@ function EmailBody {
         } else {
             Invoke-Command -ScriptBlock $EmailBody
         }
+    } -Format:$Format -Minify:$Minify
+    # This section makes sure that if any script is present in HTML it will be removed.
+    # Our goal here is to make HTML in EMAIL as small as possible without added junk which won't be read anyways
+    # https://docs.microsoft.com/en-us/dotnet/api/system.text.regularexpressions.regexoptions?view=net-5.0
+    $options = [Text.RegularExpressions.RegexOptions] 'Singleline,IgnoreCase' #, CultureInvariant'
+    $OutputToCheck = [Regex]::Matches($Body, '(?<=<script)(.*?)(?=<\/script>)', $options) | Select-Object -ExpandProperty Value
+    foreach ($Script in $OutputToCheck) {
+        $Body = $Body.Replace("<script$Script</script>", '')
     }
-    $Body
+
+    if ($Script:EmailSchema -and $Script:EmailSchema['AttachSelf']) {
+        # if attach self is used we will generate better version with JS present, proper margins and so on
+        $AttachSelfBody = New-HTML -Online:$HTMLOnline {
+            if ($SpanRequired) {
+                New-HTMLSpanStyle @newHTMLSplat {
+                    Invoke-Command -ScriptBlock $EmailBody
+                }
+            } else {
+                Invoke-Command -ScriptBlock $EmailBody
+            }
+        } -Format:$Format -Minify:$Minify
+
+        @{
+            Body           = $Body
+            AttachSelfBody = $AttachSelfBody
+        }
+    } else {
+        # if attach self is not used we need only one version of code
+        $Body
+    }
+
 }
 
 Register-ArgumentCompleter -CommandName EmailBody -ParameterName Color -ScriptBlock $Script:ScriptBlockColors
@@ -8380,7 +9105,7 @@ function EmailServer {
         [switch] $PasswordAsSecure,
         [switch] $PasswordFromFile,
         [switch] $SSL,
-        [switch] $UseDefaultCredentials
+        [alias('UseDefaultCredentials')][switch] $UseDefaultCredential
     )
 
     [PsCustomObject] @{
@@ -8392,7 +9117,7 @@ function EmailServer {
         PasswordAsSecure      = $PasswordAsSecure
         PasswordFromFile      = $PasswordFromFile
         SSL                   = $SSL
-        UseDefaultCredentials = $UseDefaultCredentials
+        UseDefaultCredentials = $UseDefaultCredential
     }
 }
 function EmailSubject {
@@ -8406,50 +9131,6 @@ function EmailSubject {
         Subject = $Subject
     }
 }
-function EmailTextBox {
-    [CmdletBinding()]
-    param(
-        [Parameter(Mandatory = $false, Position = 0)][ScriptBlock] $TextBlock,
-        [string[]] $Color = @(),
-        [string[]] $BackGroundColor = @(),
-        [alias('Size')][int[]] $FontSize = @(),
-        [ValidateSet('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900')][string[]] $FontWeight = @(),
-        [ValidateSet('normal', 'italic', 'oblique')][string[]] $FontStyle = @(),
-        [ValidateSet('none', 'line-through', 'overline', 'underline')][string[]] $TextDecoration = @(),
-        [ValidateSet('normal', 'small-caps')][string[]] $FontVariant = @(),
-        [string[]] $FontFamily = @(),
-        [ValidateSet('left', 'center', 'right', 'justify')][string[]] $Alignment = @(),
-        [ValidateSet('uppercase', 'lowercase', 'capitalize')][string[]] $TextTransform = @(),
-        [ValidateSet('rtl')][string[]] $Direction = @(),
-        [switch] $LineBreak
-    )
-    if ($TextBlock) {
-        $Text = (Invoke-Command -ScriptBlock $TextBlock)
-        if ($Text.Count) {
-            $LineBreak = $true
-        }
-    }
-    foreach ($T in $Text) {
-        $newHTMLTextSplat = @{
-            Alignment       = $Alignment
-            FontSize        = $FontSize
-            TextTransform   = $TextTransform
-            Text            = $T
-            Color           = $Color
-            FontFamily      = $FontFamily
-            Direction       = $Direction
-            FontStyle       = $FontStyle
-            TextDecoration  = $TextDecoration
-            BackGroundColor = $BackGroundColor
-            FontVariant     = $FontVariant
-            FontWeight      = $FontWeight
-            LineBreak       = $LineBreak
-        }
-        New-HTMLText @newHTMLTextSplat -SkipParagraph
-    }
-}
-Register-ArgumentCompleter -CommandName EmailTextBox -ParameterName Color -ScriptBlock $Script:ScriptBlockColors
-Register-ArgumentCompleter -CommandName EmailTextBox -ParameterName BackgroundColor -ScriptBlock $Script:ScriptBlockColors
 
 function EmailTo {
     [CmdletBinding()]
@@ -8460,6 +9141,45 @@ function EmailTo {
     [PsCustomObject] @{
         Type      = 'HeaderTo'
         Addresses = $Addresses
+    }
+}
+function Enable-HTMLFeature {
+    [cmdletBinding()]
+    param(
+        [string[]] $Feature
+    )
+    foreach ($F in $Feature) {
+        $Script:HTMLSchema.Features.$F = $true
+    }
+}
+
+Register-ArgumentCompleter -CommandName Enable-HTMLFeature -ParameterName Feature -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameters)
+    $Script:CurrentConfiguration.Features.Keys | Sort-Object | Where-Object { $_ -like "*$wordToComplete*" }
+}
+function New-AccordionItem {
+    [cmdletBinding()]
+    param(
+        [string] $HeaderText,
+        [string] $HeaderAlign,
+        [string] $PanelText
+    )
+
+    New-HTMLTag -Tag 'div' -Attributes @{ class = 'ac' } {
+        New-HTMLTag -Tag 'h2' -Attributes @{ class = 'ac-header'; } {
+            # text-align: left;
+            # font: bold 16px Arial,sans-serif;
+            New-HTMLTag -Tag 'button' -Attributes @{ class = 'ac-trigger' } {
+                $HeaderText
+            }
+        }
+        New-HTMLTag -Tag 'div' -Attributes @{ class = 'ac-panel' } {
+            New-HTMLTag -Tag 'p' -Attributes @{ class = 'ac-text' } {
+                # font: 15px/24px Arial, sans-serif;
+                # color: #111;
+                $PanelText
+            }
+        }
     }
 }
 function New-CalendarEvent {
@@ -8567,11 +9287,37 @@ function New-ChartAxisX {
         [alias('Name')][Array] $Names,
         [alias('Title')][string] $TitleText,
         [ValidateSet('datetime', 'category', 'numeric')][string] $Type = 'category',
-        [int] $MinValue,
-        [int] $MaxValue
+        [object] $MinValue,
+        [object] $MaxValue,
+
+        [string] $TimeZoneOffset
         #[ValidateSet('top', 'topRight', 'left', 'right', 'bottom', '')][string] $LegendPosition = '',
         # [string[]] $Color
     )
+
+    $offsetMilliseconds = 0
+    if ($TimeZoneOffset) {
+        $offsetMilliseconds = ([System.TimeSpan]::Parse($TimeZoneOffset)).TotalMilliseconds
+    }
+    # if Dates are given, lets auto change type to DateTime
+    if ($MinValue -is [DateTime] -or $MaxValue -is [DateTime]) {
+        $Type = 'datetime'
+    }
+    switch ($Type) {
+        'datetime' {
+            if ($MinValue -is [System.DateTime]) {
+                $MinValue = [int64]([System.DateTimeOffset]$MinValue).ToUnixTimeMilliseconds() + $offsetMilliseconds
+            }
+
+            if ($MaxValue -is [System.DateTime]) {
+                $MaxValue = [int64]([System.DateTimeOffset]$MaxValue).ToUnixTimeMilliseconds() + $offsetMilliseconds
+            }
+        }
+        Default {
+            $MinValue = [int]$MinValue
+            $MaxValue = [int]$MaxValue
+        }
+    }
     [PSCustomObject] @{
         ObjectType = 'ChartAxisX'
         ChartAxisX = @{
@@ -8859,6 +9605,36 @@ function New-ChartBarOptions {
 }
 
 Register-ArgumentCompleter -CommandName New-ChartBarOptions -ParameterName LineColor -ScriptBlock $Script:ScriptBlockColors
+function New-ChartDataLabel {
+    [cmdletBinding()]
+    param(
+        [switch] $Enabled,
+        [int] $DataLabelsOffsetX,
+        [string] $DataLabelsFontSize,
+        [string[]] $DataLabelsColor
+    )
+
+    $Object = [PSCustomObject] @{
+        ObjectType = 'DataLabel'
+        DataLabel  = [ordered] @{
+            enabled = $Enabled.IsPresent
+        }
+    }
+    if ($DataLabelsOffsetX) {
+        $Object['DataLabel']['offsetX'] = $DataLabelsOffsetX
+    }
+    $Object.DataLabel.style = [ordered]@{}
+    if ($DataLabelsFontSize) {
+        $Object.DataLabel.style['fontSize'] = $DataLabelsFontSize
+    }
+    if ($DataLabelsColor.Count -gt 0) {
+        $Object.DataLabel.style['colors'] = @(ConvertFrom-Color -Color $DataLabelsColor)
+    }
+    Remove-EmptyValue -Hashtable $Object.DataLabel -Recursive
+    $Object
+}
+
+Register-ArgumentCompleter -CommandName New-ChartDataLabel -ParameterName DataLabelsColor -ScriptBlock $Script:ScriptBlockColors
 function New-ChartDonut {
     [alias('ChartDonut')]
     [CmdletBinding()]
@@ -9046,21 +9822,31 @@ function New-ChartTimeLine {
         [parameter(Mandatory)][string] $Name,
         [DateTime] $DateFrom,
         [DateTime] $DateTo,
-        [string] $Color
+        [string] $Color,
+        [string] $TimeZoneOffset,
+        [string] $DateFormatPattern = "yyyy-MM-dd HH:mm:ss"
         #[ValidateSet('straight', 'smooth', 'stepline')] $Curve = 'straight',
         #[int] $Width = 6,
         #[ValidateSet('butt', 'square', 'round')][string] $Cap = 'butt',
         #[int] $Dash = 0
     )
 
-    $FormattedDateFrom = Get-Date -Date $DateFrom -Format "yyyy-MM-dd"
-    $FormattedDateTo = Get-Date -Date $DateTo -Format "yyyy-MM-dd"
+    $timezoneString = ""
+    if ($TimeZoneOffset) {
+        if ($TimeZoneOffset -Notlike "-*" -and $TimeZoneOffset -Notlike "+*") {
+            $TimeZoneOffset = "+$TimeZoneOffset"
+        }
+        $timezoneString = " GMT$TimeZoneOffset"
+    }
+
+    $FormattedDateFrom = Get-Date -Date $DateFrom -Format $DateFormatPattern
+    $FormattedDateTo = Get-Date -Date $DateTo -Format $DateFormatPattern
 
     $TimeLine = [ordered] @{
         x         = $Name
         y         = @(
-            "new Date('$FormattedDateFrom').getTime()"
-            "new Date('$FormattedDateTo').getTime()"
+            "new Date('$FormattedDateFrom$timezoneString').getTime()"
+            "new Date('$FormattedDateTo$timezoneString').getTime()"
         )
         fillColor = ConvertFrom-Color -Color $Color
     }
@@ -9109,6 +9895,30 @@ function New-ChartToolbar {
         }
     }
 }
+function New-ChartToolTip {
+    [CmdletBinding()]
+    param(
+        [alias('Name')][Array] $Names,
+        [alias('Title')][string] $TitleText,
+        [ValidateSet('datetime', 'category', 'numeric')][string] $Type = 'category',
+        [object] $MinValue,
+        [object] $MaxValue,
+        [string] $XAxisFormatPattern, #"HH:mm:ss"
+        [string] $YAxisFormatPattern = "function (seriesName) { return ''; }"
+
+        #[ValidateSet('top', 'topRight', 'left', 'right', 'bottom', '')][string] $LegendPosition = '',
+        # [string[]] $Color
+    )
+
+    [PSCustomObject] @{
+        ObjectType   = 'ChartToolTip'
+        ChartToolTip = @{
+            enabled = $true
+            y       = @{ title = @{ formatter = "$YAxisFormatPattern" } }
+            x       = @{ format = "$XAxisFormatPattern" }
+        }
+    }
+}
 function New-DiagramEvent {
     [CmdletBinding()]
     param(
@@ -9129,6 +9939,129 @@ function New-DiagramEvent {
     $Object
 }
 function New-DiagramLink {
+    <#
+    .SYNOPSIS
+    Short description
+
+    .DESCRIPTION
+    Long description
+
+    .PARAMETER From
+    Parameter description
+
+    .PARAMETER To
+    Parameter description
+
+    .PARAMETER Label
+    Parameter description
+
+    .PARAMETER ArrowsToEnabled
+    Parameter description
+
+    .PARAMETER ArrowsToScaleFacto
+    Parameter description
+
+    .PARAMETER ArrowsToType
+    Parameter description
+
+    .PARAMETER ArrowsMiddleEnabled
+    Parameter description
+
+    .PARAMETER ArrowsMiddleScaleFactor
+    Parameter description
+
+    .PARAMETER ArrowsMiddleType
+    Parameter description
+
+    .PARAMETER ArrowsFromEnabled
+    Parameter description
+
+    .PARAMETER ArrowsFromScaleFactor
+    Parameter description
+
+    .PARAMETER ArrowsFromType
+    Parameter description
+
+    .PARAMETER ArrowStrikethrough
+    Parameter description
+
+    .PARAMETER Chosen
+    Parameter description
+
+    .PARAMETER Color
+    Parameter description
+
+    .PARAMETER ColorHighlight
+    Parameter description
+
+    .PARAMETER ColorHover
+    Parameter description
+
+    .PARAMETER ColorInherit
+    Parameter description
+
+    .PARAMETER ColorOpacity
+    Parameter description
+
+    .PARAMETER Dashes
+    Parameter description
+
+    .PARAMETER Length
+    Parameter description
+
+    .PARAMETER FontColor
+    Parameter description
+
+    .PARAMETER FontSize
+    Parameter description
+
+    .PARAMETER FontName
+    Parameter description
+
+    .PARAMETER FontBackground
+    Parameter description
+
+    .PARAMETER FontStrokeWidth
+    Parameter description
+
+    .PARAMETER FontStrokeColor
+    Parameter description
+
+    .PARAMETER FontAlign
+    Possible options: 'horizontal','top','middle','bottom'.
+    The alignment determines how the label is aligned over the edge.
+    The default value horizontal aligns the label horizontally, regardless of the orientation of the edge.
+    When an option other than horizontal is chosen, the label will align itself according to the edge.
+
+    .PARAMETER FontMulti
+    Parameter description
+
+    .PARAMETER FontVAdjust
+    Parameter description
+
+    .PARAMETER WidthConstraint
+    Parameter description
+
+    .PARAMETER SmoothType
+    Possible options: 'dynamic', 'continuous', 'discrete', 'diagonalCross', 'straightCross', 'horizontal', 'vertical', 'curvedCW', 'curvedCCW', 'cubicBezier'.
+    Take a look at this example to see what these look like and pick the one that you like best! When using dynamic, the edges will have an invisible support node guiding the shape.
+    This node is part of the physics simulation.
+
+    .PARAMETER SmoothForceDirection
+    Accepted options: ['horizontal', 'vertical', 'none'].
+    This options is only used with the cubicBezier curves.
+    When true, horizontal is chosen, when false, the direction that is larger (x distance between nodes vs y distance between nodes) is used.
+    If the x distance is larger, horizontal. This is ment to be used with hierarchical layouts.
+
+    .PARAMETER SmoothRoundness
+    Accepted range: 0 .. 1.0. This parameter tweaks the roundness of the smooth curves for all types EXCEPT dynamic.
+
+    .EXAMPLE
+    An example
+
+    .NOTES
+    General notes
+    #>
     [alias('DiagramEdge', 'DiagramEdges', 'New-DiagramEdge', 'DiagramLink')]
     [CmdletBinding()]
     param(
@@ -9159,10 +10092,14 @@ function New-DiagramLink {
         [string] $FontBackground,
         [object] $FontStrokeWidth, #// px
         [string] $FontStrokeColor,
-        [ValidateSet('center', 'left')][string] $FontAlign,
+        [ValidateSet('horizontal', 'top', 'middle', 'bottom')][string] $FontAlign,
         [ValidateSet('false', 'true', 'markdown', 'html')][string]$FontMulti,
         [nullable[int]] $FontVAdjust,
-        [nullable[int]] $WidthConstraint
+        [nullable[int]] $WidthConstraint,
+
+        [ValidateSet('dynamic', 'continuous', 'discrete', 'diagonalCross', 'straightCross', 'horizontal', 'vertical', 'curvedCW', 'curvedCCW', 'cubicBezier')][string] $SmoothType,
+        [ValidateSet('horizontal', 'vertical', 'none')][string] $SmoothForceDirection,
+        [string] $SmoothRoundness
     )
     $Object = [PSCustomObject] @{
         Type     = 'DiagramLink'
@@ -9214,6 +10151,21 @@ function New-DiagramLink {
             widthConstraint    = $WidthConstraint
         }
     }
+    if ($SmoothType -or $SmoothRoundness -or $SmoothForceDirection) {
+        $Object.Edges['smooth'] = @{
+            'enabled' = $true
+        }
+        if ($SmoothType) {
+            $Object.Edges['smooth']['type'] = $SmoothType
+        }
+        if ($SmoothRoundness -ne '') {
+            $Object.Edges['smooth']['roundness'] = $SmoothRoundness
+        }
+        if ($SmoothForceDirection) {
+            $Object.Edges['smooth']['forceDirection'] = $SmoothForceDirection
+        }
+    }
+
     Remove-EmptyValue -Hashtable $Object.Settings -Recursive
     Remove-EmptyValue -Hashtable $Object.Edges -Recursive -Rerun 2
     $Object
@@ -9590,6 +10542,7 @@ function New-DiagramNode {
     }
 
     if ($IconBrands -or $IconRegular -or $IconSolid) {
+        $Script:HTMLSchema.Features.FontsAwesome = $true
         if ($IconBrands) {
             if (-not $IconAsImage) {
                 # Workaround using image for Fonts
@@ -10186,7 +11139,7 @@ function New-DiagramOptionsLinks {
         Type     = 'DiagramOptionsEdges'
         Settings = @{
             edges = [ordered] @{
-                length             = $Length
+                #length             = $Length
                 arrows             = [ordered]@{
                     to     = [ordered]@{
                         enabled     = $ArrowsToEnabled
@@ -11021,7 +11974,10 @@ Function New-HTML {
         # Deprecated - will be removed
         [Parameter(DontShow)][switch] $UseCssLinks,
         [Parameter(DontShow)][switch] $UseJavaScriptLinks,
-        [switch] $Temporary
+        [switch] $Temporary,
+        [switch] $AddComment,
+        [switch] $Format,
+        [switch] $Minify
     )
     if ($UseCssLinks -or $UseJavaScriptLinks) {
         Write-Warning "New-HTML - UseCssLinks and UseJavaScriptLinks is depreciated. Use Online switch instead. Those switches will be removed in near future."
@@ -11034,6 +11990,7 @@ Function New-HTML {
     $Script:CurrentConfiguration = Copy-Dictionary -Dictionary $Script:Configuration
 
     $Script:HTMLSchema = @{
+        Email             = $false
         Features          = [ordered] @{ } # tracks features for CSS/JS implementation
         Charts            = [System.Collections.Generic.List[string]]::new()
         Diagrams          = [System.Collections.Generic.List[string]]::new()
@@ -11126,26 +12083,19 @@ Function New-HTML {
     }
 
     $Script:HTMLSchema.Features.Main = $true
-    $Script:HTMLSchema.Features.MainFlex = $true
-    $Script:HTMLSchema.Features.MainImage = $true
-    $Script:HTMLSchema.Features.MainLink = $true
 
-    $Features = Get-FeaturesInUse -PriorityFeatures 'FontsAwesome', 'JQuery', 'Moment', 'DataTables', 'Tabs'
-
-
+    $Features = Get-FeaturesInUse -PriorityFeatures 'Main', 'FontsAwesome', 'JQuery', 'Moment', 'DataTables', 'Tabs' -Email:$Script:HTMLSchema['Email']
 
     # This removes Nested Tabs from primary Tabs
     foreach ($_ in $Script:HTMLSchema.TabsHeadersNested) {
         $null = $Script:HTMLSchema.TabsHeaders.Remove($_)
     }
-
-
     [string] $HTML = @(
         #"<!-- saved from url=(0016)http://localhost -->" + "`r`n"
         '<!-- saved from url=(0014)about:internet -->' + [System.Environment]::NewLine
         '<!DOCTYPE html>' + [System.Environment]::NewLine
         New-HTMLTag -Tag 'html' {
-            '<!-- HEAD -->'
+            if ($AddComment) { '<!-- HEAD -->' }
             New-HTMLTag -Tag 'head' {
                 New-HTMLTag -Tag 'meta' -Attributes @{ 'http-equiv' = "Content-Type"; content = "text/html; charset=utf-8" } -NoClosing
                 #New-HTMLTag -Tag 'meta' -Attributes @{ charset = "utf-8" } -NoClosing
@@ -11186,25 +12136,46 @@ Function New-HTML {
                 if ($Autorefresh -gt 0) {
                     New-HTMLTag -Tag 'meta' -Attributes @{ 'http-equiv' = 'refresh'; content = $Autorefresh } -SelfClosing
                 }
+                # Those are CSS we always add
+                #Get-Resources -Online:$true -Location 'HeaderAlways' -Features Fonts, FontsAwesome -NoScript
+                #Get-Resources -Online:$false -Location 'HeaderAlways' -Features DefaultHeadings -NoScript
+                Get-Resources -Online:$Online.IsPresent -Location 'HeaderAlways' -Features Fonts #-NoScript
+
+                # we dont need all the scripts/styles in emails, we limit it to approved few
+                #if ($Script:HTMLSchema['Email'] -eq $true) {
+                #  $EmailFeatures = 'DefaultHeadings', 'DefaultText', 'DefaultImage', 'Main' #, 'Fonts', 'FontsAwesome'
+                #[string[]] $Features = foreach ($Feature in $Features) {
+                #    if ($Feature -in $EmailFeatures) {
+                #        $Feature
+                #    }
+                #}
+                #}
+
+                # Those are CSS we only add if user selected proper data
                 if ($null -ne $Features) {
-                    Get-Resources -Online:$Online.IsPresent -Location 'Header' -Features $Features
+                    # additionally we want to have different rules when Email is being built and not
+                    Get-Resources -Online:$Online.IsPresent -Location 'Header' -Features $Features -NoScript
                     Get-Resources -Online:$true -Location 'HeaderAlways' -Features $Features -NoScript
                     Get-Resources -Online:$false -Location 'HeaderAlways' -Features $Features -NoScript
                 }
-                Get-Resources -Online:$true -Location 'HeaderAlways' -Features Default, DefaultHeadings, Fonts, FontsAwesome
-                Get-Resources -Online:$false -Location 'HeaderAlways' -Features Default, DefaultHeadings
-                New-HTMLCustomJS -JS $Script:HTMLSchema.CustomHeaderJS
-                New-HTMLCustomCSS -Css $Script:HTMLSchema.CustomHeaderCSS
+                if ($Script:HTMLSchema['Email'] -ne $true -and $Script:HTMLSchema.CustomHeaderJS) {
+                    New-HTMLCustomJS -JS $Script:HTMLSchema.CustomHeaderJS
+                }
+                if ($Script:HTMLSchema.CustomHeaderCSS) {
+                    New-HTMLCustomCSS -Css $Script:HTMLSchema.CustomHeaderCSS -AddComment:$AddComment
+                }
             }
-            '<!-- END HEAD -->'
-            '<!-- BODY -->'
+            if ($AddComment) {
+                '<!-- END HEAD -->'
+                '<!-- BODY -->'
+            }
             New-HTMLTag -Tag 'body' {
                 if ($HeaderHTML) {
-                    '<!-- HEADER -->'
+                    if ($AddComment) { '<!-- HEADER -->' }
                     New-HTMLTag -Tag 'header' {
                         $HeaderHTML
                     }
-                    '<!-- END HEADER -->'
+                    if ($AddComment) { '<!-- END HEADER -->' }
                 }
                 New-HTMLTag -Tag 'div' -Attributes @{ class = 'main-section' } {
                     # Add logo if there is one
@@ -11230,8 +12201,9 @@ Function New-HTML {
                         $Diagram
                     }
                 }
-                New-HTMLTag -Tag 'footer' {
-                    '<!-- FOOTER -->'
+                if ($AddComment) { '<!-- FOOTER -->' }
+
+                [string] $Footer = @(
                     if ($FooterHTML) {
                         $FooterHTML
                     }
@@ -11239,27 +12211,39 @@ Function New-HTML {
                     if ($null -ne $Features) {
                         # FooterAlways means we're not able to provide consistent output with and without links and we prefer those to be included
                         # either as links or from file per required features
-                        Get-Resources -Online -Location 'FooterAlways' -Features $Features
-                        Get-Resources -Online:$false -Location 'FooterAlways' -Features $Features
+                        Get-Resources -Online:$true -Location 'FooterAlways' -Features $Features -NoScript
+                        Get-Resources -Online:$false -Location 'FooterAlways' -Features $Features -NoScript
                         # standard footer features
-                        Get-Resources -Online:$Online.IsPresent -Location 'Footer' -Features $Features
+                        Get-Resources -Online:$Online.IsPresent -Location 'Footer' -Features $Features -NoScript
+
                     }
-                    New-HTMLCustomCSS -Css $Script:HTMLSchema.CustomFooterCSS
-                    New-HTMLCustomJS -JS $Script:HTMLSchema.CustomFooterJS
-                    '<!-- END FOOTER -->'
+                    if ($Script:HTMLSchema.CustomFooterCSS) {
+                        New-HTMLCustomCSS -Css $Script:HTMLSchema.CustomFooterCSS -AddComment:$AddComment
+                    }
+                    if ($Script:HTMLSchema['Email'] -ne $true -and $Script:HTMLSchema.CustomFooterJS) {
+                        New-HTMLCustomJS -JS $Script:HTMLSchema.CustomFooterJS
+                    }
+                )
+                if ($Footer) {
+                    New-HTMLTag -Tag 'footer' {
+                        $Footer
+                    }
                 }
-                '<!-- END BODY -->'
+                if ($AddComment) {
+                    '<!-- END FOOTER -->'
+                    '<!-- END BODY -->'
+                }
             }
         }
     )
     if ($FilePath -ne '') {
-        Save-HTML -HTML $HTML -FilePath $FilePath -ShowHTML:$ShowHTML -Encoding $Encoding
+        Save-HTML -HTML $HTML -FilePath $FilePath -ShowHTML:$ShowHTML -Encoding $Encoding -Format:$Format -Minify:$Minify
     } else {
         if ($ShowHTML -or $Temporary) {
             # if we have not chosen filepath but we used ShowHTML user wants to show it right? Or we have chosen temporary
             # We want to make sure we don't return useless HTML to the user
             $FilePath = Get-FileName -Extension 'html' -Temporary
-            Save-HTML -HTML $HTML -FilePath $FilePath -ShowHTML:$ShowHTML -Encoding $Encoding
+            Save-HTML -HTML $HTML -FilePath $FilePath -ShowHTML:$ShowHTML -Encoding $Encoding -Format:$Format -Minify:$Minify
         } else {
             # User opted to return all data in form of html
             $HTML
@@ -11267,6 +12251,37 @@ Function New-HTML {
     }
 }
 
+function New-HTMLAccordion {
+    [cmdletBinding()]
+    param(
+        [scriptBlock] $AccordionItem,
+        [int] $Duration,
+        [switch] $CollapseOnClick
+    )
+    # Implementation based on https://github.com/michu2k/Accordion
+    # Make sure AccordionFAQ is added to source
+    $Script:HTMLSchema.Features.AccordionFAQ = $true
+
+    [string] $ID = "Accordion" + (Get-RandomStringName -Size 8)
+
+    $Options = @{}
+    if ($Duration) {
+        $Options['duration'] = $Duration
+    }
+    if ($CollapseOnClick) {
+        $Options['collapse'] = $true
+    }
+    $OptionsJSON = $Options | ConvertTo-Json
+
+    if ($AccordionItem) {
+        New-HTMLTag -Tag 'div' -Attributes @{ id = $Id ; class = "accordion-container flexElement" } {
+            & $AccordionItem
+        }
+        New-HTMLTag -Tag 'script' {
+            "new Accordion('#$Id', $OptionsJSON);"
+        }
+    }
+}
 function New-HTMLAnchor {
     <#
     .SYNOPSIS
@@ -11340,7 +12355,6 @@ function New-HTMLCalendar {
     [CmdletBinding()]
     param(
         [ScriptBlock] $CalendarSettings,
-        #[ValidateSet('interaction', 'dayGrid', 'timeGrid', 'list', 'rrule')][string[]] $Plugins = @('interaction', 'dayGrid', 'timeGrid', 'list', 'rrule'),
         [ValidateSet(
             'prev', 'next', 'today', 'prevYear', 'nextYear', 'dayGridDay', 'dayGridWeek', 'dayGridMonth',
             'timeGridWeek', 'timeGridDay', 'listDay', 'listWeek', 'listMonth', 'title'
@@ -11371,17 +12385,8 @@ function New-HTMLCalendar {
         Write-Warning 'New-HTMLCalendar - Creation of HTML aborted. Most likely New-HTML is missing.'
         Exit
     }
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.FullCalendar = $true
-    <#
-    $Script:HTMLSchema.Features.FullCalendarCore = $true
-    $Script:HTMLSchema.Features.FullCalendarDayGrid = $true
-    $Script:HTMLSchema.Features.FullCalendarInteraction = $true
-    $Script:HTMLSchema.Features.FullCalendarList = $true
-    $Script:HTMLSchema.Features.FullCalendarRRule = $true
-    $Script:HTMLSchema.Features.FullCalendarTimeGrid = $true
-    $Script:HTMLSchema.Features.FullCalendarTimeLine = $true
-
-    #>
     $Script:HTMLSchema.Features.Popper = $true
 
     $CalendarEvents = [System.Collections.Generic.List[System.Collections.IDictionary]]::new()
@@ -11397,7 +12402,6 @@ function New-HTMLCalendar {
     [string] $ID = "Calendar-" + (Get-RandomStringName -Size 8)
 
     $Calendar = [ordered] @{
-        #plugins               = $Plugins
         headerToolbar         = @{
             left   = $HeaderLeft -join ','
             center = $HeaderCenter -join ','
@@ -11415,7 +12419,6 @@ function New-HTMLCalendar {
         events                = $CalendarEvents
         dayMaxEventRows       = $EventLimit
         weekNumbers           = $WeekNumbers
-        #weekNumbersWithinDays = $WeekNumbersWithinDays
         weekNumberCalculation = 'ISO'
         selectable            = $Selectable
         selectMirror          = $SelectMirror
@@ -11477,7 +12480,7 @@ function New-HTMLChart {
         [alias('GradientColors')][switch] $Gradient,
         [alias('PatternedColors')][switch] $Patterned
     )
-
+    $Script:HTMLSchema.Features.MainFlex = $true
     # Datasets Bar/Line
     $DataSet = [System.Collections.Generic.List[object]]::new()
     $DataName = [System.Collections.Generic.List[object]]::new()
@@ -11513,7 +12516,7 @@ function New-HTMLChart {
         if ($Setting.ObjectType -eq 'Bar') {
             # For Bar Charts
             if (-not $Type) {
-                # thiss makes sure type is not set if BarOptions is used which already set type to BarStacked or similar
+                # this makes sure type is not set if BarOptions is used which already set type to BarStacked or similar
                 $Type = $Setting.ObjectType
             }
             $DataSet.Add($Setting.Value)
@@ -11597,7 +12600,6 @@ function New-HTMLChart {
             }
         } elseif ($Setting.ObjectType -eq 'ChartAxisX') {
             $ChartAxisX = $Setting.ChartAxisX
-            #$DataCategory = $ChartAxisX.Names
         } elseif ($Setting.ObjectType -eq 'ChartGrid') {
             $GridOptions = $Setting.Grid
         } elseif ($Setting.ObjectType -eq 'ChartAxisY') {
@@ -11605,6 +12607,10 @@ function New-HTMLChart {
         } elseif ($Setting.ObjectType -eq 'TimeLine') {
             $Type = 'rangeBar'
             $DataSetChartTimeLine.Add($Setting.TimeLine)
+        } elseif ($Setting.ObjectType -eq 'ChartToolTip') {
+            $ChartToolTip = $Setting.ChartToolTip
+        } elseif ($Setting.ObjectType -eq 'DataLabel') {
+            $DataLabel = $Setting.DataLabel
         }
     }
 
@@ -11696,10 +12702,15 @@ function New-HTMLChart {
     } elseif ($Type -eq 'rangeBar') {
         New-HTMLChartTimeLine `
             -Data $DataSetChartTimeLine `
-            -Title $Title -TitleAlignment $TitleAlignment `
+            -Title $Title `
+            -TitleAlignment $TitleAlignment `
             -Height $Height -Width $Width `
             -Theme $Theme -Toolbar $Toolbar `
-            -GridOptions $GridOptions -PatternedColors:$Patterned -GradientColors:$Gradient
+            -ChartAxisX $ChartAxisX `
+            -ChartAxisY $ChartAxisY `
+            -ChartToolTip $ChartToolTip `
+            -GridOptions $GridOptions -PatternedColors:$Patterned -GradientColors:$Gradient `
+            -DataLabel $DataLabel
     }
 }
 Function New-HTMLCodeBlock {
@@ -11726,6 +12737,8 @@ Function New-HTMLCodeBlock {
         [Parameter(Mandatory = $false)][nullable[bool]] $ShowLineNumbers,
         [Parameter(Mandatory = $false)][String] $LineOffset
     )
+    $Script:HTMLSchema.Features.Main = $true
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.CodeBlocks = $true
     <# Explanation to fields:
         data-enlighter-language (string) - The language of the codeblock - overrides the global default setting | Block+Inline Content option
@@ -11783,6 +12796,7 @@ function New-HTMLContainer {
         [string] $Margin,
         [string] $AnchorName
     )
+    $Script:HTMLSchema.Features.MainFlex = $true
     if (-not $AnchorName) {
         $AnchorName = "anchor-$(Get-RandomStringName -Size 7)"
     }
@@ -11823,6 +12837,7 @@ function New-HTMLDiagram {
         Write-Warning 'New-HTMLDiagram - Creation of HTML aborted. Most likely New-HTML is missing.'
         Exit
     }
+    $Script:HTMLSchema.Features.MainFlex = $true
 
     $DataEdges = [System.Collections.Generic.List[System.Collections.IDictionary]]::new()
     $DataNodes = [ordered] @{ }
@@ -12021,6 +13036,7 @@ function New-HTMLGage {
         [string[]] $SectorColors
     )
     # Make sure JustGage JS is added to source
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.JustGage = $true
 
     # Build Options
@@ -12270,11 +13286,12 @@ function New-HTMLHeader {
 Function New-HTMLHeading {
     [CmdletBinding()]
     Param (
-        [validateset('h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7')][string] $Heading,
+        [validateset('h1', 'h2', 'h3', 'h4', 'h5', 'h6')][string] $Heading,
         [string] $HeadingText,
         [switch] $Underline,
         [string] $Color
     )
+    $Script:HTMLSchema.Features.DefaultHeadings = $true
     if ($null -ne $Color) {
         $RGBcolor = ConvertFrom-Color -Color $Color
         $Attributes = @{
@@ -12292,10 +13309,11 @@ Function New-HTMLHeading {
 }
 Register-ArgumentCompleter -CommandName New-HTMLHeading -ParameterName Color -ScriptBlock $Script:ScriptBlockColors
 function New-HTMLHierarchicalTree {
+    [cmdletBinding()]
     param(
         [ScriptBlock] $TreeView
     )
-
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.D3Mitch = $true
 
     [string] $ID = "HierarchicalTree-" + (Get-RandomStringName -Size 8)
@@ -12396,13 +13414,14 @@ function New-HTMLImage {
         [string] $Source,
         [Uri] $UrlLink = '',
         [string] $AlternativeText = '',
-        [string] $Class = 'Logo',
+        [string] $Class = 'logo',
         [string] $Target = '_blank',
         [object] $Width,
         [object] $Height,
         [switch] $Inline,
         [Parameter(DontShow)][switch] $DisableCache
     )
+    $Script:HTMLSchema.Features.DefaultImage = $true
 
     if ($Inline) {
         # Cache makes sure that file is downloaded once and can be reused over and over until cache is reset
@@ -12445,7 +13464,7 @@ function New-HTMLList {
     [alias('EmailList')]
     [CmdletBinding()]
     param(
-        [ScriptBlock]$ListItems,
+        [Parameter(Position = 0)][ScriptBlock]$ListItems,
         [ValidateSet('Unordered', 'Ordered')] [string] $Type = 'Unordered',
         [string] $Color,
         [string] $BackGroundColor,
@@ -12541,9 +13560,10 @@ Register-ArgumentCompleter -CommandName New-HTMLList -ParameterName BackGroundCo
 function New-HTMLListItem {
     [CmdletBinding()]
     param(
-        [string[]] $Text,
-        [string[]] $Color = @(),
-        [string[]] $BackGroundColor = @(),
+        [Parameter(Position = 0)][scriptblock] $NestedListItems,
+        [Parameter(Position = 1)][string[]] $Text,
+        [Parameter(Position = 2)][string[]] $Color = @(),
+        [Parameter(Position = 3)][string[]] $BackGroundColor = @(),
         [object[]] $FontSize = @(),
         [ValidateSet('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900')][string[]] $FontWeight = @(),
         [ValidateSet('normal', 'italic', 'oblique')][string[]] $FontStyle = @(),
@@ -12593,6 +13613,9 @@ function New-HTMLListItem {
 
     New-HTMLTag -Tag 'li' -Attributes $Style -Value {
         New-HTMLText @newHTMLTextSplat -SkipParagraph
+        if ($NestedListItems) {
+            & $NestedListItems
+        }
     }
 }
 
@@ -12608,6 +13631,10 @@ function New-HTMLLogo {
         [string] $RightLogoString,
         [switch] $HideLogos
     )
+    $Script:HTMLSchema.Features.MainImage = $true
+
+    Write-Warning "New-HTMLLogo - This function is deprecated. If you're using it consider letting me know on https://github.com/evotecit/PSWriteHTML"
+    Write-Warning "New-HTMLLogo - There will be replacement for this sooner or later."
 
     $LogoSources = Get-HTMLLogos `
         -RightLogoName $RightLogoName `
@@ -12627,12 +13654,12 @@ function New-HTMLLogo {
         $Rightlogo = $Options.Logos[$RightLogoName]
         $Script:HTMLSchema.Logos = @(
             '<!-- START LOGO -->'
-            New-HTMLTag -Tag 'div' -Attributes @{ class = 'logos' } {
-                New-HTMLTag -Tag 'div' -Attributes @{ class = 'leftLogo' } {
-                    New-HTMLTag -Tag 'img' -Attributes @{ src = "$LeftLogo" } -SelfClosing
+            New-HTMLTag -Tag 'div' -Attributes @{ class = 'legacyLogo' } {
+                New-HTMLTag -Tag 'div' -Attributes @{ class = 'legacyLeftLogo' } {
+                    New-HTMLTag -Tag 'img' -Attributes @{ src = "$LeftLogo"; class = 'legacyImg' } -SelfClosing
                 }
-                New-HTMLTag -Tag 'div' -Attributes @{ class = 'rightLogo' } {
-                    New-HTMLTag -Tag 'img' -Attributes @{ src = "$RightLogo" } -SelfClosing
+                New-HTMLTag -Tag 'div' -Attributes @{ class = 'legacyRightLogo' } {
+                    New-HTMLTag -Tag 'img' -Attributes @{ src = "$RightLogo"; class = 'legacyImg' } -SelfClosing
                 }
             }
             '<!-- END LOGO -->'
@@ -12713,8 +13740,191 @@ function New-HTMLNavHam {
     param(
 
     )
-    $Script:HTMLSchema.Features.NavigationMenu = $true
+    #$Script:HTMLSchema.Features.NavigationMenu = $true
+    $Script:HTMLSchema.Features.NavigationMultilevel = $true
+    $Script:HTMLSchema.Features.FontsAwesome = $true
+    $Script:HTMLSchema.Features.Jquery = $true
 
+    @"
+<div id="menu">
+            <nav>
+                <h2><i class="fas fa-bars text-danger"></i>All Categories</h2>
+                <ul>
+                    <li>
+                        <a href="#"><i class="fa fa-laptop"></i>Devices</a>
+                        <h2><i class="fa fa-laptop"></i>Devices</h2>
+                        <ul>
+                            <li>
+                                <a href="#"><i class="fa fa-phone"></i>Mobile Phones</a>
+                                <h2><i class="fa fa-phone"></i>Mobile Phones</h2>
+                                <ul>
+                                    <li>
+                                        <a href="#">Super Smart Phone</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Thin Magic Mobile</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Performance Crusher</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Futuristic Experience</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-desktop"></i>Televisions</a>
+                                <h2><i class="fa fa-desktop"></i>Televisions</h2>
+                                <ul>
+                                    <li>
+                                        <a href="#">Flat Super Screen</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Gigantic LED</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Power Eater</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">3D Experience</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Classic Comfort</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-camera-retro"></i>Cameras</a>
+                                <h2><i class="fa fa-camera-retro"></i>Cameras</h2>
+                                <ul>
+                                    <li>
+                                        <a href="#">Smart Shot</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Power Shooter</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Easy Photo Maker</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Super Pixel</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-book"></i>Magazines</a>
+                        <h2><i class="fa fa-book"></i>Magazines</h2>
+                        <ul>
+                            <li>
+                                <a href="#">National Geographics</a>
+                            </li>
+                            <li>
+                                <a href="#">The Spectator</a>
+                            </li>
+                            <li>
+                                <a href="#">Rambler</a>
+                            </li>
+                            <li>
+                                <a href="#">Physics World</a>
+                            </li>
+                            <li>
+                                <a href="#">The New Scientist</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa fa-shopping-cart"></i>Store</a>
+                        <h2><i class="fa fa-shopping-cart"></i>Store</h2>
+                        <ul>
+                            <li>
+                                <a href="#"><i class="fa fa-tags"></i>Clothes</a>
+                                <h2><i class="fa fa-tags"></i>Clothes</h2>
+                                <ul>
+                                    <li>
+                                        <a href="#"><i class="fa fa-female"></i>Women's Clothing</a>
+                                        <h2><i class="fa fa-female"></i>Women's Clothing</h2>
+                                        <ul>
+                                            <li>
+                                                <a href="#">Tops</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Dresses</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Trousers</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Shoes</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Sale</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="#"><i class="fa fa-male"></i>Men's Clothing</a>
+                                        <h2><i class="fa fa-male"></i>Men's Clothing</h2>
+                                        <ul>
+                                            <li>
+                                                <a href="#">Shirts</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Trousers</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Shoes</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Sale</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">Jewelry</a>
+                            </li>
+                            <li>
+                                <a href="#">Music</a>
+                            </li>
+                            <li>
+                                <a href="#">Grocery</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">Collections</a>
+                    </li>
+                    <li>
+                        <a href="#">Credits</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+"@
+
+
+    New-HTMLTag -Tag 'script' {
+        @"
+        // HTML markup implementation, overlap mode, initilaize collapsed
+        `$('#menu').multilevelpushmenu({
+            containersToPush: [`$('#pushobj')],
+            menuWidth: '200px',
+            menuHeight: '100%',
+            collapsed: true,
+            mode: 'cover',
+            // Just for fun also changing the look of the menu
+            wrapperClass: 'mlpm_w',
+            menuInactiveClass: 'mlpm_inactive'
+        });
+        `$(window).resize(function () {
+            `$('#menu').multilevelpushmenu('redraw');
+        });
+"@
+    }
 }
 
 <#
@@ -12745,6 +13955,7 @@ function New-HTMLNavLink {
         [string] $Name = 'Menu',
         [string] $Icon = 'fa-dashboard'
     )
+    $Script:HTMLSchema.Features.MainFlex = $true
     if ($SubMenu) {
         $Attributes = @{ class = 'menu-hasdropdown' }
     } else {
@@ -12865,6 +14076,7 @@ function New-HTMLOrgChart {
         "LeftToRight" = 'l2r'
         "RightToLeft" = 'r2l'
     }
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.Jquery = $true
     $Script:HTMLSchema.Features.ChartsOrg = $true
     if ($ExportExtension -eq 'png' -and $AllowExport) {
@@ -12933,7 +14145,7 @@ function New-HTMLOrgChart {
         "`$(`"#$ChartID`").orgchart($JsonOrgChart);"
         "});"
     }
-    New-HTMLTag -Tag 'div' -Attributes @{ id = $ChartID; class = 'orgChart flexElement' }
+    New-HTMLTag -Tag 'div' -Attributes @{ id = $ChartID; class = 'orgchartWrapper flexElement' }
 }
 Function New-HTMLPanel {
     [alias('New-HTMLColumn', 'Panel')]
@@ -12950,8 +14162,11 @@ Function New-HTMLPanel {
         [string] $AnchorName,
         [System.Collections.IDictionary] $StyleSheetsConfiguration
     )
+    $Script:HTMLSchema.Features.Main = $true
+    $Script:HTMLSchema.Features.MainFlex = $true
     # This is so we can support external CSS configuration
     if (-not $StyleSheetsConfiguration) {
+        $Script:HTMLSchema.Features.DefaultPanel = $true
         $StyleSheetsConfiguration = [ordered] @{
             Panel = "defaultPanel"
         }
@@ -13003,7 +14218,7 @@ function New-HTMLPanelStyle {
         [Parameter(ParameterSetName = 'Manual')][switch] $RequestConfiguration
     )
     # lets get original CSS configuration
-    $CssConfiguration = Get-ConfigurationCss -Feature 'Default' -Type 'HeaderAlways'
+    $CssConfiguration = Get-ConfigurationCss -Feature 'DefaultPanel' -Type 'HeaderAlways'
 
     $StyleSheetsConfiguration = [ordered] @{
         Panel = ".defaultPanel"
@@ -13028,6 +14243,57 @@ function New-HTMLPanelStyle {
         return $StyleSheetsConfiguration
     }
 }
+function New-HTMLQRCode {
+    [cmdletBinding()]
+    param(
+        [string] $Link,
+        [object] $Width,
+        [object] $Height,
+        [string] $Title,
+        [string] $TitleColor,
+        [string] $Logo,
+        [object] $LogoWidth,
+        [object] $LogoHeight,
+        [switch] $LogoInline
+    )
+    $Script:HTMLSchema.Features.QR = $true
+
+    if (-not $AnchorName) {
+        $AnchorName = "QrCode$(Get-RandomStringName -Size 8)"
+    }
+    if ($LogoInline) {
+        # Cache makes sure that file is downloaded once and can be reused over and over until cache is reset
+        # Resetting of cache is done automatically on module reload
+        # This can be very useful when sending 3000 emails with same logo
+        $LogoImage = Convert-Image -Image $Logo -Cache:(-not $DisableCache)
+    } else {
+        $LogoImage = $Logo
+    }
+
+    New-HTMLTag -Tag 'div' -Attributes @{ Id = $AnchorName; class = 'qrcode flexElement' }
+
+    $Options = @{
+        text       = $Link
+        width      = ConvertTo-Size -Size $Width
+        height     = ConvertTo-Size -Size $Height
+        title      = $Title
+        logo       = $LogoImage
+        logoWidth  = ConvertTo-Size -Size $LogoWidth
+        logoHeight = ConvertTo-Size -Size $LogoHeight
+        titleColor = ConvertFrom-Color -Color $TitleColor
+    }
+    Remove-EmptyValue -Hashtable $Options -Recursive
+    $OptionsJson = $Options | ConvertTo-Json
+
+    # Since we want to allow use of QR code in tables or other places we push it to footer instead of inline
+    $ScriptBottom = New-HTMLTag -Tag 'script' -Value {
+        "var options = $OptionsJson;"
+        "new QRCode(document.getElementById(`"$AnchorName`"), options);"
+    }
+    Add-HTMLScript -Placement Footer -Content $ScriptBottom -SkipTags
+}
+
+Register-ArgumentCompleter -CommandName New-HTMLQRCode -ParameterName TitleColor -ScriptBlock $Script:ScriptBlockColors
 Function New-HTMLSection {
     [alias('New-HTMLContent', 'Section')]
     [CmdletBinding()]
@@ -13055,13 +14321,16 @@ Function New-HTMLSection {
         [string] $AnchorName,
         [System.Collections.IDictionary] $StyleSheetsConfiguration
     )
+    $Script:HTMLSchema.Features.Main = $true
+    $Script:HTMLSchema.Features.MainFlex = $true
     # This is so we can support external CSS configuration
     if (-not $StyleSheetsConfiguration) {
         $StyleSheetsConfiguration = [ordered] @{
-            Section        = 'defaultSection'
-            SectionText    = 'defaultSectionText'
-            SectionHead    = "defaultSectionHead"
-            SectionContent = 'defaultSectionContent'
+            Section                 = 'defaultSection'
+            SectionText             = 'defaultSectionText'
+            SectionHead             = "defaultSectionHead"
+            SectionContent          = 'defaultSectionContent'
+            SectionContentInvisible = 'defaultSectionContentInvisible'
         }
     }
     # This takes care of starting dots in $StyleSheetsConfiguration
@@ -13090,7 +14359,8 @@ Function New-HTMLSection {
     # we need to find out what is required flex direction and applky rules accordingly
     # same thing happens on JS level in hideSection.js
     if ($StyleSheetsConfiguration.Section -eq 'defaultSection') {
-        $CurrentFlexDirection = $Script:CurrentConfiguration['Features']['Default']['HeaderAlways']['CssInline'][".$($StyleSheetsConfiguration.Section)"]['flex-direction']
+        $Script:HTMLSchema.Features.DefaultSection = $true
+        $CurrentFlexDirection = $Script:CurrentConfiguration['Features']['DefaultSection']['HeaderAlways']['CssInline'][".$($StyleSheetsConfiguration.Section)"]['flex-direction']
     } else {
         $CurrentFlexDirection = $Script:CurrentConfiguration['Features']['Inject']['HeaderAlways']['CssInline'][".$($StyleSheetsConfiguration.Section)"]['flex-direction']
     }
@@ -13168,7 +14438,7 @@ Function New-HTMLSection {
         $Script:HTMLSchema.CustomHeaderCSS[$AnchorName] = $Css
     } else {
         if ($Invisible) {
-            [string] $ClassName = "flexParentInvisible flexElement overflowHidden $($StyleSheetsConfiguration.SectionContent)"
+            [string] $ClassName = "flexParentInvisible flexElement overflowHidden $($StyleSheetsConfiguration.SectionContentInvisible)"
         } else {
             [string] $ClassName = "flexParent flexElement overflowHidden $($StyleSheetsConfiguration.SectionContent)"
         }
@@ -13253,12 +14523,13 @@ function New-HTMLSectionStyle {
     )
     # lets get original CSS configuration
     # this is read from $Script:Configuration (or more precise $Script:CurrentConfiguration which is a copy on New-HTML start)
-    $CssConfiguration = Get-ConfigurationCss -Feature 'Default' -Type 'HeaderAlways'
+    $CssConfiguration = Get-ConfigurationCss -Feature 'DefaultSection' -Type 'HeaderAlways'
     $StyleSheetsConfiguration = [ordered] @{
-        Section        = ".defaultSection"
-        SectionText    = ".defaultSectionText"
-        SectionHead    = ".defaultSectionHead"
-        SectionContent = '.defaultSectionContent'
+        Section                 = ".defaultSection"
+        SectionText             = ".defaultSectionText"
+        SectionHead             = ".defaultSectionHead"
+        SectionContent          = '.defaultSectionContent'
+        SectionContentInvisible = '.defaultSectionContentInvisible'
     }
 
     if ($RequestConfiguration) {
@@ -13389,7 +14660,7 @@ function New-HTMLSectionStyle {
         'justify-content' = $JustifyContent
     }
     Add-ConfigurationCSS -CSS $CssConfiguration -Name $StyleSheetsConfiguration.SectionContent -Inject $SectionContentStyle
-
+    Add-ConfigurationCSS -CSS $CssConfiguration -Name $StyleSheetsConfiguration.SectionContentInvisible -Inject $SectionContentStyle
 
     if ($RequestConfiguration) {
         # We only return this when requesting configuration
@@ -13404,6 +14675,7 @@ function New-HTMLSpanStyle {
         [string] $Color,
         [string] $BackGroundColor,
         [object] $FontSize,
+        [string] $LineHeight,
         [ValidateSet('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900')][string] $FontWeight,
         [ValidateSet('normal', 'italic', 'oblique')][string] $FontStyle,
         [ValidateSet('normal', 'small-caps')][string] $FontVariant,
@@ -13424,8 +14696,7 @@ function New-HTMLSpanStyle {
             'font-family'      = $FontFamily
             'font-style'       = $FontStyle
             'text-align'       = $Alignment
-
-
+            'line-height'      = $LineHeight
             'text-decoration'  = $TextDecoration
             'text-transform'   = $TextTransform
             'direction'        = $Direction
@@ -13459,6 +14730,7 @@ function New-HTMLStatus {
     param(
         [Parameter(Mandatory = $false, Position = 0)][alias('')][ScriptBlock] $Content
     )
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.StatusButtonical = $true
     New-HTMLTag -Tag 'div' -Attributes @{ class = 'buttonicalService' } {
         #New-HTMLTag -Tag 'div' -Attributes @{ class = 'buttonical-align' } {
@@ -13562,6 +14834,7 @@ function New-HTMLStatusItem {
             $IconType = '&#x2714'
         }
     } elseif ($PSCmdlet.ParameterSetName -like 'FontAwesome*') {
+        $Script:HTMLSchema.Features.FontsAwesome = $true
         $BackgroundColor = Convert-FromColor -Color $BackgroundColor
 
         if ($IconBrands) {
@@ -13665,6 +14938,10 @@ function New-HTMLTab {
         Write-Warning 'New-HTMLTab - Creation of HTML aborted. Most likely New-HTML is missing.'
         Exit
     }
+    if ($IconBrands -or $IconRegular -or $IconSolid) {
+        $Script:HTMLSchema.Features.FontsAwesome = $true
+    }
+    $Script:HTMLSchema.Features.MainFlex = $true
     if (-not $AnchorName) {
         $AnchorName = "Tab-$(Get-RandomStringName -Size 8)"
     }
@@ -13865,6 +15142,7 @@ function New-HTMLTable {
         Write-Warning 'New-HTMLTable - Creation of HTML aborted. Most likely New-HTML is missing.'
         Exit
     }
+    $Script:HTMLSchema.Features.MainFlex = $true
     # Building HTML Table / Script
     if (-not $DataTableID) {
         # Only define this if user failed to deliver as per https://github.com/EvotecIT/PSWriteHTML/issues/29
@@ -14252,8 +15530,12 @@ function New-HTMLTable {
                         $Script:HTMLSchema.Features.DataTablesButtonsHTML5 = $true
                         $Script:HTMLSchema.Features.DataTablesButtonsExcel = $true
                         $ButtonOutput = [ordered] @{
-                            extend = $button
-                            title  = $Title
+                            extend        = $button
+                            title         = $Title
+                            exportOptions = @{
+                                columns = ':visible'
+                                format  = "findExportOptions"
+                            }
                         }
                     } elseif ($button -eq 'copyHtml5') {
                         $Script:HTMLSchema.Features.DataTablesButtonsHTML5 = $true
@@ -14329,15 +15611,12 @@ function New-HTMLTable {
     if (-not $Script:HTMLSchema['TableSimplify'] -and ($FixedHeader -or $FixedFooter)) {
         $Script:HTMLSchema.Features.DataTablesFixedHeader = $true
         # Using FixedHeader/FixedFooter won't work with ScrollY.
-        $Options['fixedHeader'] = [ordered] @{ }
-        if ($FixedHeader) {
-            $Options.fixedHeader.header = $FixedHeader.IsPresent
-        }
-        if ($FixedFooter) {
-            $Options.fixedHeader.footer = $FixedFooter.IsPresent
+        # Setting any of those requires to set both of them to prevent one being enabled even if we only requested one
+        $Options['fixedHeader'] = [ordered] @{
+            header = $FixedHeader.IsPresent
+            footer = $FixedFooter.IsPresent
         }
     }
-    #}
 
     # this was due to: https://github.com/DataTables/DataTablesSrc/issues/143
     if (-not $Script:HTMLSchema['TableSimplify'] -and -not $DisableResponsiveTable) {
@@ -14474,6 +15753,16 @@ function New-HTMLTable {
     # After: "display": $.fn.dataTable.Responsive.display.childRowImmediate
     $Options = $Options -replace '"(\$\.fn\.dataTable\.Responsive\.display\.childRowImmediate)"', '$1'
 
+    #
+    $ExportExcelOptions = @'
+    {
+        body: function (data, row, column, node) {
+            data = $('<p>' + data + '</p>').text(); return $.isNumeric(data.replace(',', '.')) ? data.replace(',', '.') : data;
+        }
+    }
+'@
+    $Options = $Options -replace '"findExportOptions"', $ExportExcelOptions
+
     if ($DataStore -eq 'JavaScript') {
         # Since we only want first level of data from DataTable we need to do it via string replacement.
         # ConvertTo-Json -Depth 6 from Options above would copy nested objects
@@ -14534,6 +15823,7 @@ function New-HTMLTable {
     if (-not $Script:HTMLSchema['TableSimplify']) {
         $Script:HTMLSchema.Features.Jquery = $true
         $Script:HTMLSchema.Features.DataTables = $true
+        $Script:HTMLSchema.Features.DataTablesEmail = $true
         $Script:HTMLSchema.Features.Moment = $true
         if (-not $HideButtons) {
             #$Script:HTMLSchema.Features.DataTablesButtonsPDF = $true
@@ -14541,11 +15831,11 @@ function New-HTMLTable {
         }
         #$Script:HTMLSchema.Features.DataTablesSearchFade = $true
 
-        if ($ScrollX) {
-            $TableAttributes = @{ id = $DataTableID; class = "$($Style -join ' ')"; width = $Width }
-        } else {
-            $TableAttributes = @{ id = $DataTableID; class = "$($Style -join ' ')"; width = $Width }
-        }
+        #if ($ScrollX) {
+        #    $TableAttributes = @{ id = $DataTableID; class = "$($Style -join ' ')"; width = $Width }
+        #} else {
+        $TableAttributes = @{ id = $DataTableID; class = "dataTables $($Style -join ' ')"; width = $Width }
+        #}
 
         # Enable Custom Date fromat sorting
         $SortingFormatDateTime = Add-CustomFormatForDatetimeSorting -DateTimeSortingFormat $DateTimeSortingFormat
@@ -14576,6 +15866,9 @@ function New-HTMLTable {
                     $TableEventsCode
                 });
 "@
+                if ($FixedHeader -or $FixedFooter) {
+                    "dataTablesFixedTracker['$DataTableID'] = true;"
+                }
             }
         } else {
             [string] $TabName = $Tab.Id
@@ -14598,6 +15891,9 @@ function New-HTMLTable {
                         $RowGroupingBottom
                     });
 "@
+                if ($FixedHeader -or $FixedFooter) {
+                    "dataTablesFixedTracker['$DataTableID'] = true;"
+                }
             }
         }
     } else {
@@ -14637,7 +15933,14 @@ function New-HTMLTable {
     } else {
         $RowGroupingCSS = ''
     }
-    New-HTMLTag -Tag 'div' -Attributes @{ class = 'flexElement overflowHidden' } -Value {
+
+    if ($Simplify) {
+        $AttributeDiv = @{ class = 'flexElement overflowHidden' ; style = @{ display = 'flex' } }
+    } else {
+        $AttributeDiv = @{ class = 'flexElement overflowHidden' }
+    }
+
+    New-HTMLTag -Tag 'div' -Attributes $AttributeDiv -Value {
         $RowGroupingCSS
         $BeforeTableCode
         $BeforeTable
@@ -14753,10 +16056,111 @@ function New-HTMLTableOption {
     }
 }
 function New-HTMLTableStyle {
+    <#
+    .SYNOPSIS
+    Apply new style for HTML Table
+
+    .DESCRIPTION
+    Apply new style for HTML Table. Currently only works with DataTables.
+
+    .PARAMETER Type
+    Choose type to apply style on. You can choose from: 'Content', 'Table', 'Header', 'Row', 'Footer', 'RowOdd', 'RowEven', 'RowSelected', 'RowSelectedEven', 'RowSelectedOdd', 'RowHover', 'RowHoverSelected', 'Button'. Content is duplicate to Row.
+
+    .PARAMETER FontSize
+    Choose FontSize
+
+    .PARAMETER FontWeight
+    Parameter description
+
+    .PARAMETER FontStyle
+    Parameter description
+
+    .PARAMETER FontVariant
+    Parameter description
+
+    .PARAMETER FontFamily
+    Parameter description
+
+    .PARAMETER BackgroundColor
+    Parameter description
+
+    .PARAMETER TextColor
+    Parameter description
+
+    .PARAMETER TextDecoration
+    Parameter description
+
+    .PARAMETER TextTransform
+    Parameter description
+
+    .PARAMETER TextAlign
+    Parameter description
+
+    .PARAMETER BorderTopStyle
+    Parameter description
+
+    .PARAMETER BorderTopColor
+    Parameter description
+
+    .PARAMETER BorderTopWidthSize
+    Parameter description
+
+    .PARAMETER BorderBottomStyle
+    Parameter description
+
+    .PARAMETER BorderBottomColor
+    Parameter description
+
+    .PARAMETER BorderBottomWidthSize
+    Parameter description
+
+    .PARAMETER BorderLeftStyle
+    Parameter description
+
+    .PARAMETER BorderLeftColor
+    Parameter description
+
+    .PARAMETER BorderLeftWidthSize
+    Parameter description
+
+    .PARAMETER BorderRightStyle
+    Parameter description
+
+    .PARAMETER BorderRightColor
+    Parameter description
+
+    .PARAMETER BorderRightWidthSize
+    Parameter description
+
+    .EXAMPLE
+    $Table = Get-Process | Select-Object -First 3
+    New-HTML -ShowHTML -HtmlData {
+        New-HTMLTable -DataTable $table -HideButtons {
+            New-HTMLTableStyle -FontFamily 'Calibri' -BackgroundColor Yellow -TextColor Aquamarine -TextAlign center -Type RowOdd
+            New-HTMLTableStyle -BackgroundColor Red -TextColor Aquamarine -Type Button
+            New-HTMLTableStyle -FontFamily 'Calibri' -BackgroundColor DarkSlateGray -TextColor Aquamarine -TextAlign center -Type RowEven
+            New-HTMLTableStyle -FontFamily 'Calibri' -BackgroundColor DarkSlateGray -TextColor Aquamarine -TextAlign center -Type Row
+            New-HTMLTableStyle -FontFamily 'Calibri' -BackgroundColor DarkSlateGray -TextColor Aquamarine -TextAlign center -Type Header
+            New-HTMLTableStyle -FontFamily 'Calibri' -BackgroundColor Orange -TextColor Aquamarine -TextAlign center -Type Footer
+            New-HTMLTableStyle -FontFamily 'Calibri' -BackgroundColor Orange -TextColor Aquamarine -TextAlign center -Type RowSelectedEven
+            New-HTMLTableStyle -FontFamily 'Calibri' -BackgroundColor Green -TextColor Aquamarine -TextAlign center -Type RowSelectedOdd
+            New-HTMLTableStyle -FontFamily 'Calibri' -BackgroundColor Yellow -TextColor Aquamarine -TextAlign center -Type RowHover
+            New-HTMLTableStyle -FontFamily 'Calibri' -BackgroundColor Red -TextColor Aquamarine -TextAlign center -Type RowHoverSelected
+            New-HTMLTableStyle -Type Header -BorderLeftStyle dashed -BorderLeftColor Red -BorderLeftWidthSize 1px
+            New-HTMLTableStyle -Type Footer -BorderLeftStyle dotted -BorderLeftColor Red -BorderleftWidthSize 1px
+            New-HTMLTableStyle -Type Footer -BorderTopStyle none -BorderTopColor Red -BorderTopWidthSize 5px -BorderBottomColor Yellow -BorderBottomStyle solid
+            New-HTMLTableStyle -Type Footer -BorderTopStyle none -BorderTopColor Red -BorderTopWidthSize 5px -BorderBottomColor Yellow -BorderBottomStyle solid
+            New-HTMLTableStyle -Type Footer -BorderTopStyle none -BorderTopColor Red -BorderTopWidthSize 5px -BorderBottomColor Yellow -BorderBottomStyle none
+        } -DisablePaging
+    } -FilePath $PSScriptRoot\Example7_TableStyle.html -Online
+
+    .NOTES
+    General notes
+    #>
     [alias('EmailTableStyle', 'TableStyle', 'New-TableStyle')]
-    [cmdletBinding()]
+    [cmdletBinding(DefaultParameterSetName = 'Manual')]
     param(
-        [ValidateSet('Table', 'Header', 'Content')][string] $Type = 'Table',
+        [Parameter(ParameterSetName = 'Manual')][ValidateSet('Content', 'Table', 'Header', 'Row', 'Footer', 'RowOdd', 'RowEven', 'RowSelected', 'RowSelectedEven', 'RowSelectedOdd', 'RowHover', 'RowHoverSelected', 'Button')][string] $Type = 'Table',
         [Parameter(ParameterSetName = 'Manual')][alias('TextSize')][string] $FontSize,
         [Parameter(ParameterSetName = 'Manual')][ValidateSet('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900')][string] $FontWeight,
         [Parameter(ParameterSetName = 'Manual')][ValidateSet('normal', 'italic', 'oblique')][string] $FontStyle,
@@ -14766,33 +16170,164 @@ function New-HTMLTableStyle {
         [Parameter(ParameterSetName = 'Manual')][string] $TextColor,
         [Parameter(ParameterSetName = 'Manual')][ValidateSet('none', 'line-through', 'overline', 'underline')][string] $TextDecoration,
         [Parameter(ParameterSetName = 'Manual')][ValidateSet('uppercase', 'lowercase', 'capitalize')][string] $TextTransform,
-        [alias('FontAlign', 'Align')][Parameter(ParameterSetName = 'Manual')][ValidateSet('left', 'right', 'center', 'justify')][string] $TextAlign
+        [Parameter(ParameterSetName = 'Manual')][alias('FontAlign', 'Align')][ValidateSet('left', 'right', 'center', 'justify')][string] $TextAlign,
+
+        [Parameter(ParameterSetName = 'Manual')][ValidateSet('none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset')] $BorderTopStyle,
+        [Parameter(ParameterSetName = 'Manual')][string] $BorderTopColor,
+        [Parameter(ParameterSetName = 'Manual')][string] $BorderTopWidthSize,
+
+        [Parameter(ParameterSetName = 'Manual')][ValidateSet('none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset')] $BorderBottomStyle,
+        [Parameter(ParameterSetName = 'Manual')][string] $BorderBottomColor,
+        [Parameter(ParameterSetName = 'Manual')][string] $BorderBottomWidthSize,
+
+        [Parameter(ParameterSetName = 'Manual')][ValidateSet('none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset')] $BorderLeftStyle,
+        [Parameter(ParameterSetName = 'Manual')][string] $BorderLeftColor,
+        [Parameter(ParameterSetName = 'Manual')][string] $BorderLeftWidthSize,
+
+        [Parameter(ParameterSetName = 'Manual')][ValidateSet('none', 'hidden', 'dotted', 'dashed', 'solid', 'double', 'groove', 'ridge', 'inset', 'outset')] $BorderRightStyle,
+        [Parameter(ParameterSetName = 'Manual')][string] $BorderRightColor,
+        [Parameter(ParameterSetName = 'Manual')][string] $BorderRightWidthSize
     )
-    $CssConfiguration = Get-ConfigurationCss -Feature 'Main' -Type 'HeaderAlways'
-    $StyleSheetsConfiguration = [ordered] @{
-        Table   = "table"
-        Header  = "th"
-        Content = "tr"
-    }
+    $CssConfiguration = Get-ConfigurationCss -Feature 'DataTables' -Type 'HeaderAlways'
+    #$Row = @(
+    #    'table.dataTable tbody tr'
+    #)
+    $RowOdd = @(
+        'table.dataTable.stripe tbody tr.odd, table.dataTable.display tbody tr.odd'
+        'table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd>.sorting_1'
+        'table.dataTable.display tbody tr.odd>.sorting_2, table.dataTable.order-column.stripe tbody tr.odd>.sorting_2'
+        'table.dataTable.display tbody tr.odd>.sorting_3, table.dataTable.order-column.stripe tbody tr.odd>.sorting_3'
+    )
+    $RowEven = @(
+        'table.dataTable.stripe tbody tr.even, table.dataTable.display tbody tr.even'
+        'table.dataTable.display tbody tr.even>.sorting_1, table.dataTable.order-column.stripe tbody tr.even>.sorting_1'
+        'table.dataTable.display tbody tr.even>.sorting_2, table.dataTable.order-column.stripe tbody tr.even>.sorting_2'
+        'table.dataTable.display tbody tr.even>.sorting_3, table.dataTable.order-column.stripe tbody tr.even>.sorting_3'
+    )
+    #$RowSelected = @(
+    #    'table.dataTable tbody tr.selected'
+    #)
+    $RowSelectedOdd = @(
+        'table.dataTable.stripe tbody tr.odd.selected, table.dataTable.display tbody tr.odd.selected'
+        'table.dataTable.display tbody tr.odd.selected>.sorting_1, table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_1'
+        'table.dataTable.display tbody tr.odd.selected>.sorting_2, table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_2'
+        'table.dataTable.display tbody tr.odd.selected>.sorting_3, table.dataTable.order-column.stripe tbody tr.odd.selected>.sorting_3'
+    )
+    $RowSelectedEven = @(
+        'table.dataTable.stripe tbody tr.even.selected, table.dataTable.display tbody tr.even.selected'
+        'table.dataTable.order-column tbody tr.selected>.sorting_1, table.dataTable.order-column tbody tr.selected>.sorting_2, table.dataTable.order-column tbody tr.selected>.sorting_3, table.dataTable.display tbody tr.selected>.sorting_1, table.dataTable.display tbody tr.selected>.sorting_2, table.dataTable.display tbody tr.selected>.sorting_3'
+        'table.dataTable.display tbody tr.even.selected>.sorting_1, table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_1'
+        'table.dataTable.display tbody tr.even.selected>.sorting_2, table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_2'
+        'table.dataTable.display tbody tr.even.selected>.sorting_3, table.dataTable.order-column.stripe tbody tr.even.selected>.sorting_3'
+    )
+    $RowHover = @(
+        'table.dataTable.hover tbody tr:hover, table.dataTable.display tbody tr:hover'
+        'table.dataTable.display tbody tr:hover>.sorting_1, table.dataTable.order-column.hover tbody tr:hover>.sorting_1'
+        'table.dataTable.display tbody tr:hover>.sorting_2, table.dataTable.order-column.hover tbody tr:hover>.sorting_2'
+        'table.dataTable.display tbody tr:hover>.sorting_3, table.dataTable.order-column.hover tbody tr:hover>.sorting_3'
+    )
+    $RowHoverSelected = @(
+        'table.dataTable.hover tbody tr.odd:hover.selected, table.dataTable.display tbody tr.odd:hover.selected'
+        'table.dataTable.hover tbody tr:hover.selected, table.dataTable.display tbody tr:hover.selected'
+        'table.dataTable.display tbody tr:hover.selected>.sorting_1, table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_1'
+        'table.dataTable.display tbody tr:hover.selected>.sorting_2, table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_2'
+        'table.dataTable.display tbody tr:hover.selected>.sorting_3, table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_3'
+    )
 
     $TableStyle = [ordered] @{
-        'text-align'       = $TextAlign
-        'text-transform'   = $TextTransform
-        'color'            = ConvertFrom-Color -Color $TextColor
-        'background-color' = ConvertFrom-Color -Color $BackgroundColor
-        'font-size'        = ConvertFrom-Size -TextSize $FontSize
-        'font-weight'      = $FontWeight
-        'font-style'       = $FontStyle
-        'font-variant'     = $FontVariant
-        'font-family'      = $FontFamily
-        'text-decoration'  = $TextDecoration
+        'text-align'          = $TextAlign
+        'text-transform'      = $TextTransform
+        'color'               = ConvertFrom-Color -Color $TextColor
+        'background-color'    = ConvertFrom-Color -Color $BackgroundColor
+        'font-size'           = ConvertFrom-Size -TextSize $FontSize
+        'font-weight'         = $FontWeight
+        'font-style'          = $FontStyle
+        'font-variant'        = $FontVariant
+        'font-family'         = $FontFamily
+        'text-decoration'     = $TextDecoration
+
+        'border-top-width'    = ConvertFrom-Size -TextSize $BorderTopWidth
+        'border-top-style'    = $BorderTopStyle
+        'border-top-color'    = ConvertFrom-Color -Color $BorderTopColor
+
+        'border-bottom-width' = ConvertFrom-Size -TextSize $BorderBottomWidth
+        'border-bottom-style' = $BorderBottomStyle
+        'border-bottom-color' = "$(ConvertFrom-Color -Color $BorderBottomColor) !important"
+
+        'border-left-width'   = ConvertFrom-Size -TextSize $BorderLeftWidth
+        'border-left-style'   = $BorderLeftStyle
+        'border-left-color'   = ConvertFrom-Color -Color $BorderLeftColor
+
+        'border-right-width'  = ConvertFrom-Size -TextSize $BorderRightWidth
+        'border-right-style'  = $BorderRightStyle
+        'border-right-color'  = ConvertFrom-Color -Color $BorderRightColor
     }
 
     # this will add configuration for all Tables as it already exists
     # any new elements will be added, any existing elements will be overwritten
     # any existing elements that are not defined will not be touched
-    Add-ConfigurationCSS -CSS $CssConfiguration -Name $StyleSheetsConfiguration.$Type -Inject $TableStyle
+    if ($Type -in 'Button') {
+        $ButtonStyle = [ordered] @{}
+        if ($TextColor) {
+            $ButtonStyle['color'] = "$(ConvertFrom-Color -Color $TextColor) !important"
+        }
+        if ($BackgroundColor) {
+            $ButtonStyle['background-color'] = "$(ConvertFrom-Color -Color $BackgroundColor) !important"
+        }
+        $ButtonCss = @(
+            'td::before, td.sorting_1::before'
+        )
+        foreach ($Name in $ButtonCss) {
+            Add-ConfigurationCSS -CSS $CssConfiguration -Name $Name -Inject $ButtonStyle
+        }
+    }
+    if ($Type -in 'Header', 'Table') {
+        Add-ConfigurationCSS -CSS $CssConfiguration -Name 'table.dataTable thead th, table.dataTable thead td' -Inject $TableStyle
+    }
+    if ($Type -in 'Footer', 'Table') {
+        Add-ConfigurationCSS -CSS $CssConfiguration -Name 'table.dataTable tfoot th, table.dataTable tfoot td' -Inject $TableStyle
+    }
+    if ($Type -in 'RowOdd', 'Row', 'Table', 'Content') {
+        foreach ($Name in $RowOdd) {
+            Add-ConfigurationCSS -CSS $CssConfiguration -Name $Name -Inject $TableStyle
+        }
+    }
+    if ($Type -in 'RowEven', 'Row', 'Table', 'Content') {
+        foreach ($Name in $RowEven) {
+            Add-ConfigurationCSS -CSS $CssConfiguration -Name $Name -Inject $TableStyle
+        }
+    }
+    # Configures selected rows
+    if ($Type -in 'RowSelected', 'RowSelectedOdd') {
+        foreach ($Name in $RowSelectedOdd) {
+            Add-ConfigurationCSS -CSS $CssConfiguration -Name $Name -Inject $TableStyle
+        }
+    }
+    if ($Type -in 'RowSelected', 'RowSelectedEven') {
+        foreach ($Name in $RowSelectedEven) {
+            Add-ConfigurationCSS -CSS $CssConfiguration -Name $Name -Inject $TableStyle
+        }
+    }
+    # Configure Rows on Hover
+    if ($Type -in 'RowHover') {
+        foreach ($Name in $RowHover) {
+            Add-ConfigurationCSS -CSS $CssConfiguration -Name $Name -Inject $TableStyle
+        }
+    }
+    # Configure Rows tha are Selected and hovered
+    if ($Type -in 'RowHoverSelected') {
+        foreach ($Name in $RowHoverSelected) {
+            Add-ConfigurationCSS -CSS $CssConfiguration -Name $Name -Inject $TableStyle
+        }
+    }
 }
+
+Register-ArgumentCompleter -CommandName New-HTMLTableStyle -ParameterName BorderBottomColor -ScriptBlock $Script:ScriptBlockColors
+Register-ArgumentCompleter -CommandName New-HTMLTableStyle -ParameterName BorderTopColor -ScriptBlock $Script:ScriptBlockColors
+Register-ArgumentCompleter -CommandName New-HTMLTableStyle -ParameterName BorderRightColor -ScriptBlock $Script:ScriptBlockColors
+Register-ArgumentCompleter -CommandName New-HTMLTableStyle -ParameterName BorderLeftColor -ScriptBlock $Script:ScriptBlockColors
+Register-ArgumentCompleter -CommandName New-HTMLTableStyle -ParameterName BackgroundColor -ScriptBlock $Script:ScriptBlockColors
+Register-ArgumentCompleter -CommandName New-HTMLTableStyle -ParameterName TextColor -ScriptBlock $Script:ScriptBlockColors
 function New-HTMLTabPanel {
     <#
     .SYNOPSIS
@@ -14851,6 +16386,7 @@ function New-HTMLTabPanel {
     )
     $Script:HTMLSchema.Features.JQuery = $true
     $Script:HTMLSchema.Features.TabsInline = $true
+    $Script:HTMLSchema.Features.RedrawObjects = $true
 
     $TabID = "TabPanel-$(Get-RandomStringName -Size 8 -LettersOnly)"
     if ($Tabs) {
@@ -14917,6 +16453,13 @@ function New-HTMLTabPanel {
             `$(document).ready(function(){
                 // SmartTab initialize
                 `$('#$TabID').smartTab($SmartTabConfiguration);
+                `$("#$TabID").on("showTab", function(e, anchorObject, tabIndex) {
+                    //alert("You are on tab "+tabIndex+" now");
+                    if (anchorObject[0].hash) {
+                        var id = anchorObject[0].hash.replace('#', '');
+                        findObjectsToRedraw(id);
+                    };
+                });
             });
 "@
             }
@@ -15164,7 +16707,8 @@ function New-HTMLText {
         [string[]] $Text,
         [string[]] $Color = @(),
         [string[]] $BackGroundColor = @(),
-        [object[]] $FontSize = @(),
+        [alias('Size')][object[]] $FontSize = @(),
+        [string[]] $LineHeight = @(),
         [ValidateSet('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900')][string[]] $FontWeight = @(),
         [ValidateSet('normal', 'italic', 'oblique')][string[]] $FontStyle = @(),
         [ValidateSet('normal', 'small-caps')][string[]] $FontVariant = @(),
@@ -15174,8 +16718,11 @@ function New-HTMLText {
         [ValidateSet('uppercase', 'lowercase', 'capitalize')][string[]] $TextTransform = @(),
         [ValidateSet('rtl')][string[]] $Direction = @(),
         [switch] $LineBreak,
-        [switch] $SkipParagraph
+        [switch] $SkipParagraph #,
+        #[string] $Margin = '5px'
     )
+    $Script:HTMLSchema.Features.DefaultText = $true
+
     if ($TextBlock) {
         $Text = (Invoke-Command -ScriptBlock $TextBlock)
     }
@@ -15191,6 +16738,7 @@ function New-HTMLText {
     $DefaultFontVariant = if ($null -eq $FontVariant[0]) { '' } else { $FontVariant }
     $DefaultDirection = if ($null -eq $Direction[0]) { '' } else { $Direction[0] }
     $DefaultAlignment = if ($null -eq $Alignment[0]) { '' } else { $Alignment[0] }
+    $DefaultLineHeight = if ($null -eq $LineHeight[0]) { '' } else { $LineHeight[0] }
 
     $Output = for ($i = 0; $i -lt $Text.Count; $i++) {
         if ($null -eq $FontWeight[$i]) {
@@ -15251,6 +16799,11 @@ function New-HTMLText {
         } else {
             $ParamAlignment = $Alignment[$i]
         }
+        if ($null -eq $LineHeight[$i]) {
+            $ParamLineHeight = $DefaultLineHeight
+        } else {
+            $ParamLineHeight = $LineHeight[$i]
+        }
 
         $newSpanTextSplat = @{ }
         $newSpanTextSplat.Color = $ParamColor
@@ -15279,16 +16832,37 @@ function New-HTMLText {
         if ($ParamAlignment -ne '') {
             $newSpanTextSplat.Alignment = $ParamAlignment
         }
+        if ($ParamLineHeight -ne '') {
+            $newSpanTextSplat.LineHeight = $ParamLineHeight
+        }
 
         $newSpanTextSplat.LineBreak = $LineBreak
         New-HTMLSpanStyle @newSpanTextSplat {
-            if ($Text[$i] -match "\[([^\[]*)\)") {
+            $FindMe = [regex]::Matches($Text[$i], "\[[^\]]+\]\([^)]+\)")
+            if ($FindMe) {
+                foreach ($find in $FindMe) {
+                    $LinkName = ([regex]::Match($Find.value, "[^\[]+(?=\])")).Value
+                    $LinkURL = ([regex]::Match($Find.value, "(?<=\().+?(?=\))")).Value
+                    $Link = New-HTMLAnchor -HrefLink $LinkURL -Text $LinkName
+                    $Text[$i] = $Text[$i].Replace($find.value, $Link)
+                }
+                $Text[$i]
+            } else {
+                # Default
+                $Text[$i]
+            }
+            <#
+
+            if ($Text[$i] -match "\[[^\]]+\]\([^)]+\)") {
                 # Covers markdown LINK  "[somestring](https://evotec.xyz)"
+
+                $RegexBrackets1 = [regex] '\[[^\]]+\]\([^)]+\)'
+
                 $RegexBrackets1 = [regex] "\[([^\[]*)\]" # catch 'sometstring'
                 $RegexBrackets2 = [regex] "\(([^\[]*)\)" # catch link
                 $RegexBrackets3 = [regex] "\[([^\[]*)\)" # catch both somestring and link
                 $Text1 = $RegexBrackets1.match($Text[$i]).Groups[1].value
-                $Text2 = $RegexBrackets2.match($Text[$i]).Groups[1].value
+                #$Text2 = $RegexBrackets2.match($Text[$i]).Groups[1].value
                 $Text3 = $RegexBrackets3.match($Text[$i]).Groups[0].value
                 if ($Text1 -ne '' -and $Text2 -ne '') {
                     $Link = New-HTMLAnchor -HrefLink $Text2 -Text $Text1
@@ -15301,13 +16875,15 @@ function New-HTMLText {
                 #    '<br>'
                 #}
             }
+            #>
         }
     }
 
     if ($SkipParagraph) {
         $Output -join ''
     } else {
-        New-HTMLTag -Tag 'div' -Attributes @{ style = @{ 'margin' = '5px' } } {
+        New-HTMLTag -Tag 'div' -Attributes @{ class = 'defaultText' } {
+            #    New-HTMLTag -Tag 'div' -Attributes @{ style = @{ 'margin' = ConvertFrom-Size -Size $Margin } } {
             $Output
         }
     }
@@ -15318,10 +16894,129 @@ function New-HTMLText {
 
 Register-ArgumentCompleter -CommandName New-HTMLText -ParameterName Color -ScriptBlock $Script:ScriptBlockColors
 Register-ArgumentCompleter -CommandName New-HTMLText -ParameterName BackgroundColor -ScriptBlock $Script:ScriptBlockColors
+function New-HTMLTextBox {
+    <#
+    .SYNOPSIS
+    Adds text to HTML where each line in TextBlock is treated as next line (adds BR to each line)
+
+    .DESCRIPTION
+    Adds text to HTML where each line in TextBlock is treated as next line (adds BR to each line).
+    Automatic line breaks are main feature that differentiate New-HTMLTextBox from New-HTMLText
+    where TextBlock is treated as single line of text unless LineBreak switch is used.
+
+    .PARAMETER TextBlock
+    ScriptBlock of one or more strings
+
+    .PARAMETER Color
+    Color of Text to set. Choose one or more colors from up to 800 defined colors. Alternatively provide your own Hex value
+
+    .PARAMETER BackGroundColor
+    Color of Background for a Text to set. Choose one or more colors from up to 800 defined colors. Alternatively provide your own Hex value
+
+    .PARAMETER FontSize
+    Choose FontSize. You can provide just int value which will assume pixels or string value with any other size value.
+
+    .PARAMETER FontWeight
+    Parameter description
+
+    .PARAMETER FontStyle
+    Parameter description
+
+    .PARAMETER TextDecoration
+    Parameter description
+
+    .PARAMETER FontVariant
+    Parameter description
+
+    .PARAMETER FontFamily
+    Parameter description
+
+    .PARAMETER Alignment
+    Chhoose Alignment
+
+    .PARAMETER TextTransform
+    Parameter description
+
+    .PARAMETER Direction
+    Parameter description
+
+    .PARAMETER LineBreak
+    Parameter description
+
+    .EXAMPLE
+    New-HTMLTextBox {
+        "Hello $UserNotify,"
+        ""
+        "Your password is due to expire in $PasswordExpiryDays days."
+        ""
+        'To change your password: '
+        '- press CTRL+ALT+DEL -> Change a password...'
+        ''
+        'If you have forgotten your password and need to reset it, you can do this by clicking here. '
+        "In case of problems please contact the HelpDesk by visiting [Evotec Website](https://evotec.xyz) or by sending an email to Help Desk."
+        ''
+        'Alternatively you can always call Help Desk at +48 22 00 00 00'
+        ''
+        'Kind regards,'
+        'Evotec IT'
+    }
+
+    .NOTES
+    General notes
+    #>
+    [alias('EmailTextBox')]
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $false, Position = 0)][ScriptBlock] $TextBlock,
+        [string[]] $Color = @(),
+        [string[]] $BackGroundColor = @(),
+        [alias('Size')][int[]] $FontSize = @(),
+        [ValidateSet('normal', 'bold', 'bolder', 'lighter', '100', '200', '300', '400', '500', '600', '700', '800', '900')][string[]] $FontWeight = @(),
+        [ValidateSet('normal', 'italic', 'oblique')][string[]] $FontStyle = @(),
+        [ValidateSet('none', 'line-through', 'overline', 'underline')][string[]] $TextDecoration = @(),
+        [ValidateSet('normal', 'small-caps')][string[]] $FontVariant = @(),
+        [string[]] $FontFamily = @(),
+        [ValidateSet('left', 'center', 'right', 'justify')][string[]] $Alignment = @(),
+        [ValidateSet('uppercase', 'lowercase', 'capitalize')][string[]] $TextTransform = @(),
+        [ValidateSet('rtl')][string[]] $Direction = @(),
+        [switch] $LineBreak
+    )
+    if ($TextBlock) {
+        $Text = (Invoke-Command -ScriptBlock $TextBlock)
+        if ($Text.Count) {
+            $LineBreak = $true
+        }
+    }
+    $Span = foreach ($T in $Text) {
+        $newHTMLTextSplat = @{
+            Alignment       = $Alignment
+            FontSize        = $FontSize
+            TextTransform   = $TextTransform
+            Text            = $T
+            Color           = $Color
+            FontFamily      = $FontFamily
+            Direction       = $Direction
+            FontStyle       = $FontStyle
+            TextDecoration  = $TextDecoration
+            BackGroundColor = $BackGroundColor
+            FontVariant     = $FontVariant
+            FontWeight      = $FontWeight
+            LineBreak       = $LineBreak
+        }
+        New-HTMLText @newHTMLTextSplat -SkipParagraph
+    }
+    New-HTMLTag -Tag 'div' -Attributes @{ class = 'defaultText' } {
+        $Span
+    }
+}
+Register-ArgumentCompleter -CommandName EmailTextBox -ParameterName Color -ScriptBlock $Script:ScriptBlockColors
+Register-ArgumentCompleter -CommandName EmailTextBox -ParameterName BackgroundColor -ScriptBlock $Script:ScriptBlockColors
 function New-HTMLTimeline {
+    [cmdletBinding()]
     param(
         [Parameter(Mandatory = $false, Position = 0)][alias('TimeLineItems')][ScriptBlock] $Content
     )
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.TimeLine = $true
     New-HTMLTag -Tag 'div' -Attributes @{ class = 'timelineSimpleContainer' } {
         if ($null -eq $Value) { '' } else { Invoke-Command -ScriptBlock $Content }
@@ -15342,9 +17037,11 @@ function New-HTMLTimelineItem {
 
     if ($null -ne $Color) {
         $RGBcolor = ConvertFrom-Color -Color $Color
-        $Style = "color: $RGBcolor;"
+        $Style = @{
+            color = $RGBcolor
+        }
     } else {
-        $Style = ''
+        $Style = @{}
     }
     # $Script:HTMLSchema.Features.TimeLine = $true
     New-HTMLTag -Tag 'div' -Attributes $Attributes -Value {
@@ -15444,8 +17141,9 @@ function New-HTMLToast {
     } elseif ($IconSolid) {
         $Icon = "fas fa-$IconSolid" # fa-$($FontSize)x"
     }
-
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.Toasts = $true
+    $Script:HTMLSchema.Features.FontsAwesome = $true
 
     [string] $DivClass = "toast"
 
@@ -15505,6 +17203,7 @@ function New-HTMLTree {
         [ValidateSet('none', 'checkbox', 'radio')][string] $Checkbox = 'none',
         [ValidateSet('none', '1', '2', '3')] $SelectMode = '2'
     )
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.Jquery = $true
     $Script:HTMLSchema.Features.FancyTree = $true
 
@@ -15541,7 +17240,7 @@ function New-HTMLTree {
     Remove-EmptyValue -Hashtable $FancyTree -Rerun 1 -Recursive
 
     # Build HTML
-    $Div = New-HTMLTag -Tag 'div' -Attributes @{ id = $ID; }
+    $Div = New-HTMLTag -Tag 'div' -Attributes @{ id = $ID; class = 'fancyTree' }
 
     $Script = New-HTMLTag -Tag 'script' -Value {
         $DivID = -join ('#', $ID)
@@ -15650,16 +17349,17 @@ function New-HTMLWizard {
         [ValidateSet('none', 'fade', 'slide-horizontal', 'slide-vertical', 'slide-swing')][string] $TransitionAnimation, # 'none', // Effect on navigation, none/fade/slide-horizontal/slide-vertical/slide-swing
         [int] $TransitionSpeed
     )
-
+    $Script:HTMLSchema.Features.MainFlex = $true
     $Script:HTMLSchema.Features.JQuery = $true
     $Script:HTMLSchema.Features.Wizard = $true
+    $Script:HTMLSchema.Features.RedrawObjects = $true
 
     $WizardID = "TabPanel-$(Get-RandomStringName -Size 8 -LettersOnly)"
     if ($WizardSteps) {
         $Script:HTMLSchema['WizardList'].Add($WizardID)
         $WizardContent = & $WizardSteps
         if ($WizardContent) {
-            New-HTMLTag -Tag 'div' -Attributes @{ id = $WizardID; class = 'flexElement'; style = @{margin = '5px' } } {
+            New-HTMLTag -Tag 'div' -Attributes @{ id = $WizardID; class = 'flexElement defaultWizard' } {
                 New-HTMLTag -Tag 'ul' -Attributes @{ class = 'nav' } {
                     foreach ($Step in $WizardContent) {
                         New-HTMLTag -Tag 'li' {
@@ -15753,6 +17453,13 @@ function New-HTMLWizard {
                 `$(document).ready(function(){
                     // SmartWizard initialize
                     `$('#$WizardID').smartWizard($SmartWizardConfiguration);
+                });
+                // Initialize the stepContent event
+                `$("#$WizardID").on("showStep", function (e, anchorObject, stepIndex, stepDirection) {
+                    if (anchorObject[0].hash) {
+                        var id = anchorObject[0].hash.replace('#', '');
+                        findObjectsToRedraw(id);
+                    };
                 });
 "@
                 }
@@ -15915,8 +17622,32 @@ function New-OrgChartNode {
         [scriptblock] $Children,
         [string] $Name,
         [string] $Title,
-        [string] $ClassName
+        # [string] $ClassName,
+        [string] $TitleBackgroundColor,
+        [string] $TitleBorderColor,
+        [string] $TitleColor,
+        [string] $ContentBackgroundColor,
+        [string] $ContentBorderColor,
+        [string] $ContentColor
     )
+
+    $ClassName = "orgchartColoring$(Get-RandomStringName -Size 8 -LettersOnly)"
+    $StyleNodeInformation = @{
+        ".orgchart .$ClassName .title"   = @{
+            'color'            = ConvertFrom-Color -Color $TitleColor
+            'border-color'     = ConvertFrom-Color -Color $TitleBorderColor
+            'background-color' = ConvertFrom-Color -Color $TitleBackgroundColor
+        }
+        ".orgchart .$ClassName .content" = @{
+            'color'            = ConvertFrom-Color -Color $ContentColor
+            'border-color'     = ConvertFrom-Color -Color $ContentBorderColor
+            'background-color' = ConvertFrom-Color -Color $ContentBackgroundColor
+        }
+    }
+    Remove-EmptyValue -Hashtable $StyleNodeInformation -Recursive -Rerun 2
+    if ($StyleNodeInformation) {
+        Add-HTMLStyle -Placement Header -Css $StyleNodeInformation -SkipTags
+    }
     $ChartNode = [ordered] @{
         name      = $Name
         title     = $Title
@@ -15930,6 +17661,10 @@ function New-OrgChartNode {
     Remove-EmptyValue -Hashtable $ChartNode
     $ChartNode
 }
+
+Register-ArgumentCompleter -CommandName New-OrgChartNode -ParameterName TitleBackgroundColor -ScriptBlock $Script:ScriptBlockColors
+Register-ArgumentCompleter -CommandName New-OrgChartNode -ParameterName TitleColor -ScriptBlock $Script:ScriptBlockColors
+Register-ArgumentCompleter -CommandName New-OrgChartNode -ParameterName BorderColor -ScriptBlock $Script:ScriptBlockColors
 function New-TableButtonCopy {
     [alias('TableButtonCopy', 'EmailTableButtonCopy', 'New-HTMLTableButtonCopy')]
     [CmdletBinding()]
@@ -16802,7 +18537,9 @@ Function Save-HTML {
         [Parameter(Mandatory = $true)][string] $HTML,
         [alias('Show', 'Open')][Parameter(Mandatory = $false)][switch]$ShowHTML,
         [ValidateSet('Unknown', 'String', 'Unicode', 'Byte', 'BigEndianUnicode', 'UTF8', 'UTF7', 'UTF32', 'Ascii', 'Default', 'Oem', 'BigEndianUTF32')] $Encoding = 'UTF8',
-        [alias('Supress')][bool] $Suppress = $true
+        [alias('Supress')][bool] $Suppress = $true,
+        [switch] $Format,
+        [switch] $Minify
     )
     if ([string]::IsNullOrEmpty($FilePath)) {
         $FilePath = Get-FileName -Temporary -Extension 'html'
@@ -16813,6 +18550,20 @@ Function Save-HTML {
         }
     }
     Write-Verbose "Save-HTML - Saving HTML to file $FilePath"
+
+    if ($Format -or $Minify) {
+        $Commands = Get-Command -Name 'Format-HTML' -ErrorAction SilentlyContinue
+        if ($Commands -and $Commands.Source -eq 'PSParseHTML') {
+            if ($Format) {
+                $HTML = Format-HTML -Content $HTML
+            }
+            if ($Minify) {
+                $HTML = Optimize-HTML -Content $HTML
+            }
+        } else {
+            Write-Warning "Save-HTML - Minify or Format functionality requires PSParseHTML module. Please install it using Install-Module PSParseHTML -Force."
+        }
+    }
     try {
         $HTML | Set-Content -LiteralPath $FilePath -Force -Encoding $Encoding -ErrorAction Stop
         if (-not $Suppress) {
@@ -16842,12 +18593,12 @@ Function Save-HTML {
 
 
 
-Export-ModuleMember -Function @('Add-HTML', 'Add-HTMLScript', 'Add-HTMLStyle', 'ConvertTo-CascadingStyleSheets', 'Email', 'EmailAttachment', 'EmailBCC', 'EmailBody', 'EmailCC', 'EmailFrom', 'EmailHeader', 'EmailListItem', 'EmailOptions', 'EmailReplyTo', 'EmailServer', 'EmailSubject', 'EmailTextBox', 'EmailTo', 'New-CalendarEvent', 'New-ChartAxisX', 'New-ChartAxisY', 'New-ChartBar', 'New-ChartBarOptions', 'New-ChartDonut', 'New-ChartGrid', 'New-ChartLegend', 'New-ChartLine', 'New-ChartPie', 'New-ChartRadial', 'New-ChartTheme', 'New-ChartTimeLine', 'New-ChartToolbar', 'New-DiagramEvent', 'New-DiagramLink', 'New-DiagramNode', 'New-DiagramOptionsInteraction', 'New-DiagramOptionsLayout', 'New-DiagramOptionsLinks', 'New-DiagramOptionsManipulation', 'New-DiagramOptionsNodes', 'New-DiagramOptionsPhysics', 'New-GageSector', 'New-HierarchicalTreeNode', 'New-HTML', 'New-HTMLAnchor', 'New-HTMLCalendar', 'New-HTMLChart', 'New-HTMLCodeBlock', 'New-HTMLContainer', 'New-HTMLDiagram', 'New-HTMLFooter', 'New-HTMLGage', 'New-HTMLHeader', 'New-HTMLHeading', 'New-HTMLHierarchicalTree', 'New-HTMLHorizontalLine', 'New-HTMLImage', 'New-HTMLList', 'New-HTMLListItem', 'New-HTMLLogo', 'New-HTMLMain', 'New-HTMLNav', 'New-HTMLNavHam', 'New-HTMLNavLink', 'New-HTMLOrgChart', 'New-HTMLPanel', 'New-HTMLPanelStyle', 'New-HTMLSection', 'New-HTMLSectionStyle', 'New-HTMLSpanStyle', 'New-HTMLStatus', 'New-HTMLStatusItem', 'New-HTMLTab', 'New-HTMLTable', 'New-HTMLTableOption', 'New-HTMLTableStyle', 'New-HTMLTabPanel', 'New-HTMLTabStyle', 'New-HTMLTag', 'New-HTMLText', 'New-HTMLTimeline', 'New-HTMLTimelineItem', 'New-HTMLToast', 'New-HTMLTree', 'New-HTMLWizard', 'New-HTMLWizardStep', 'New-OrgChartNode', 'New-TableButtonCopy', 'New-TableButtonCSV', 'New-TableButtonExcel', 'New-TableButtonPageLength', 'New-TableButtonPDF', 'New-TableButtonPrint', 'New-TableColumnOption', 'New-TableCondition', 'New-TableContent', 'New-TableEvent', 'New-TableHeader', 'New-TableReplace', 'New-TableRowGrouping', 'New-TreeNode', 'Out-HtmlView', 'Save-HTML') -Alias @('Add-CSS', 'Add-JavaScript', 'Add-JS', 'Calendar', 'CalendarEvent', 'Chart', 'ChartAxisX', 'ChartAxisY', 'ChartBar', 'ChartBarOptions', 'ChartCategory', 'ChartDonut', 'ChartGrid', 'ChartLegend', 'ChartLine', 'ChartPie', 'ChartRadial', 'ChartTheme', 'ChartTimeLine', 'ChartToolbar', 'Container', 'Dashboard', 'Diagram', 'DiagramEdge', 'DiagramEdges', 'DiagramLink', 'DiagramNode', 'DiagramOptionsEdges', 'DiagramOptionsInteraction', 'DiagramOptionsLayout', 'DiagramOptionsLinks', 'DiagramOptionsManipulation', 'DiagramOptionsNodes', 'DiagramOptionsPhysics', 'EmailHTML', 'EmailImage', 'EmailList', 'EmailTable', 'EmailTableButtonCopy', 'EmailTableButtonCSV', 'EmailTableButtonExcel', 'EmailTableButtonPageLength', 'EmailTableButtonPDF', 'EmailTableButtonPrint', 'EmailTableColumnOption', 'EmailTableCondition', 'EmailTableContent', 'EmailTableHeader', 'EmailTableReplace', 'EmailTableRowGrouping', 'EmailTableStyle', 'EmailText', 'Footer', 'Header', 'HierarchicalTreeNode', 'HTMLText', 'Image', 'Main', 'New-ChartCategory', 'New-Diagram', 'New-DiagramEdge', 'New-DiagramOptionsEdges', 'New-HTMLColumn', 'New-HTMLContent', 'New-HTMLLink', 'New-HTMLPanelOption', 'New-HTMLSectionOption', 'New-HTMLSectionOptions', 'New-HTMLTableButtonCopy', 'New-HTMLTableButtonCSV', 'New-HTMLTableButtonExcel', 'New-HTMLTableButtonPageLength', 'New-HTMLTableButtonPDF', 'New-HTMLTableButtonPrint', 'New-HTMLTableColumnOption', 'New-HTMLTableCondition', 'New-HTMLTableContent', 'New-HTMLTableHeader', 'New-HTMLTableReplace', 'New-HTMLTableRowGrouping', 'New-HTMLTabOption', 'New-HTMLTabOptions', 'New-JavaScript', 'New-PanelOption', 'New-PanelStyle', 'New-TableOption', 'New-TableStyle', 'New-TabOption', 'ohv', 'Out-GridHtml', 'Panel', 'PanelOption', 'PanelStyle', 'Section', 'SectionOption', 'Tab', 'Table', 'TableButtonCopy', 'TableButtonCSV', 'TableButtonExcel', 'TableButtonPageLength', 'TableButtonPDF', 'TableButtonPrint', 'TableColumnOption', 'TableCondition', 'TableConditionalFormatting', 'TableContent', 'TableHeader', 'TableOption', 'TableReplace', 'TableRowGrouping', 'TableStyle', 'TabOption', 'TabOptions', 'TabStyle', 'Text')
+Export-ModuleMember -Function @('Add-HTML', 'Add-HTMLScript', 'Add-HTMLStyle', 'ConvertTo-CascadingStyleSheets', 'Email', 'EmailAttachment', 'EmailBCC', 'EmailBody', 'EmailCC', 'EmailFrom', 'EmailHeader', 'EmailListItem', 'EmailOptions', 'EmailReplyTo', 'EmailServer', 'EmailSubject', 'EmailTo', 'Enable-HTMLFeature', 'New-AccordionItem', 'New-CalendarEvent', 'New-ChartAxisX', 'New-ChartAxisY', 'New-ChartBar', 'New-ChartBarOptions', 'New-ChartDataLabel', 'New-ChartDonut', 'New-ChartGrid', 'New-ChartLegend', 'New-ChartLine', 'New-ChartPie', 'New-ChartRadial', 'New-ChartTheme', 'New-ChartTimeLine', 'New-ChartToolbar', 'New-ChartToolTip', 'New-DiagramEvent', 'New-DiagramLink', 'New-DiagramNode', 'New-DiagramOptionsInteraction', 'New-DiagramOptionsLayout', 'New-DiagramOptionsLinks', 'New-DiagramOptionsManipulation', 'New-DiagramOptionsNodes', 'New-DiagramOptionsPhysics', 'New-GageSector', 'New-HierarchicalTreeNode', 'New-HTML', 'New-HTMLAccordion', 'New-HTMLAnchor', 'New-HTMLCalendar', 'New-HTMLChart', 'New-HTMLCodeBlock', 'New-HTMLContainer', 'New-HTMLDiagram', 'New-HTMLFooter', 'New-HTMLGage', 'New-HTMLHeader', 'New-HTMLHeading', 'New-HTMLHierarchicalTree', 'New-HTMLHorizontalLine', 'New-HTMLImage', 'New-HTMLList', 'New-HTMLListItem', 'New-HTMLLogo', 'New-HTMLMain', 'New-HTMLNav', 'New-HTMLNavHam', 'New-HTMLNavLink', 'New-HTMLOrgChart', 'New-HTMLPanel', 'New-HTMLPanelStyle', 'New-HTMLQRCode', 'New-HTMLSection', 'New-HTMLSectionStyle', 'New-HTMLSpanStyle', 'New-HTMLStatus', 'New-HTMLStatusItem', 'New-HTMLTab', 'New-HTMLTable', 'New-HTMLTableOption', 'New-HTMLTableStyle', 'New-HTMLTabPanel', 'New-HTMLTabStyle', 'New-HTMLTag', 'New-HTMLText', 'New-HTMLTextBox', 'New-HTMLTimeline', 'New-HTMLTimelineItem', 'New-HTMLToast', 'New-HTMLTree', 'New-HTMLWizard', 'New-HTMLWizardStep', 'New-OrgChartNode', 'New-TableButtonCopy', 'New-TableButtonCSV', 'New-TableButtonExcel', 'New-TableButtonPageLength', 'New-TableButtonPDF', 'New-TableButtonPrint', 'New-TableColumnOption', 'New-TableCondition', 'New-TableContent', 'New-TableEvent', 'New-TableHeader', 'New-TableReplace', 'New-TableRowGrouping', 'New-TreeNode', 'Out-HtmlView', 'Save-HTML') -Alias @('Add-CSS', 'Add-JavaScript', 'Add-JS', 'Calendar', 'CalendarEvent', 'Chart', 'ChartAxisX', 'ChartAxisY', 'ChartBar', 'ChartBarOptions', 'ChartCategory', 'ChartDonut', 'ChartGrid', 'ChartLegend', 'ChartLine', 'ChartPie', 'ChartRadial', 'ChartTheme', 'ChartTimeLine', 'ChartToolbar', 'Container', 'Dashboard', 'Diagram', 'DiagramEdge', 'DiagramEdges', 'DiagramLink', 'DiagramNode', 'DiagramOptionsEdges', 'DiagramOptionsInteraction', 'DiagramOptionsLayout', 'DiagramOptionsLinks', 'DiagramOptionsManipulation', 'DiagramOptionsNodes', 'DiagramOptionsPhysics', 'EmailHTML', 'EmailImage', 'EmailList', 'EmailTable', 'EmailTableButtonCopy', 'EmailTableButtonCSV', 'EmailTableButtonExcel', 'EmailTableButtonPageLength', 'EmailTableButtonPDF', 'EmailTableButtonPrint', 'EmailTableColumnOption', 'EmailTableCondition', 'EmailTableContent', 'EmailTableHeader', 'EmailTableReplace', 'EmailTableRowGrouping', 'EmailTableStyle', 'EmailText', 'EmailTextBox', 'Footer', 'Header', 'HierarchicalTreeNode', 'HTMLText', 'Image', 'Main', 'New-ChartCategory', 'New-Diagram', 'New-DiagramEdge', 'New-DiagramOptionsEdges', 'New-HTMLColumn', 'New-HTMLContent', 'New-HTMLLink', 'New-HTMLPanelOption', 'New-HTMLSectionOption', 'New-HTMLSectionOptions', 'New-HTMLTableButtonCopy', 'New-HTMLTableButtonCSV', 'New-HTMLTableButtonExcel', 'New-HTMLTableButtonPageLength', 'New-HTMLTableButtonPDF', 'New-HTMLTableButtonPrint', 'New-HTMLTableColumnOption', 'New-HTMLTableCondition', 'New-HTMLTableContent', 'New-HTMLTableHeader', 'New-HTMLTableReplace', 'New-HTMLTableRowGrouping', 'New-HTMLTabOption', 'New-HTMLTabOptions', 'New-JavaScript', 'New-PanelOption', 'New-PanelStyle', 'New-TableOption', 'New-TableStyle', 'New-TabOption', 'ohv', 'Out-GridHtml', 'Panel', 'PanelOption', 'PanelStyle', 'Section', 'SectionOption', 'Tab', 'Table', 'TableButtonCopy', 'TableButtonCSV', 'TableButtonExcel', 'TableButtonPageLength', 'TableButtonPDF', 'TableButtonPrint', 'TableColumnOption', 'TableCondition', 'TableConditionalFormatting', 'TableContent', 'TableHeader', 'TableOption', 'TableReplace', 'TableRowGrouping', 'TableStyle', 'TabOption', 'TabOptions', 'TabStyle', 'Text')
 # SIG # Begin signature block
-# MIIgQAYJKoZIhvcNAQcCoIIgMTCCIC0CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# MIIdSQYJKoZIhvcNAQcCoIIdOjCCHTYCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU109m76h5scTmPACZ3PN6r1Ds
-# gvSgghtvMIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUdtsfDkD2u5AAmzF5HvUNYjfY
+# XgigghhnMIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
 # AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMzExMTEwMDAwMDAwWjBlMQsw
@@ -16867,154 +18618,138 @@ Export-ModuleMember -Function @('Add-HTML', 'Add-HTMLScript', 'Add-HTMLStyle', '
 # fT8r87cmNW1fiQG2SVufAQWbqz0lwcy2f8Lxb4bG+mRo64EtlOtCt/qMHt1i8b5Q
 # Z7dsvfPxH2sMNgcWfzd8qVttevESRmCD1ycEvkvOl77DZypoEd+A5wwzZr8TDRRu
 # 838fYxAe+o0bJW1sj6W3YQGx0qMmoRBxna3iw/nDmVG3KwcIzi7mULKn+gpFL6Lw
-# 8jCCBTAwggQYoAMCAQICEAQJGBtf1btmdVNDtW+VUAgwDQYJKoZIhvcNAQELBQAw
-# ZTELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQ
-# d3d3LmRpZ2ljZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgQXNzdXJlZCBJRCBS
-# b290IENBMB4XDTEzMTAyMjEyMDAwMFoXDTI4MTAyMjEyMDAwMFowcjELMAkGA1UE
-# BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2lj
-# ZXJ0LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUg
-# U2lnbmluZyBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPjTsxx/
-# DhGvZ3cH0wsxSRnP0PtFmbE620T1f+Wondsy13Hqdp0FLreP+pJDwKX5idQ3Gde2
-# qvCchqXYJawOeSg6funRZ9PG+yknx9N7I5TkkSOWkHeC+aGEI2YSVDNQdLEoJrsk
-# acLCUvIUZ4qJRdQtoaPpiCwgla4cSocI3wz14k1gGL6qxLKucDFmM3E+rHCiq85/
-# 6XzLkqHlOzEcz+ryCuRXu0q16XTmK/5sy350OTYNkO/ktU6kqepqCquE86xnTrXE
-# 94zRICUj6whkPlKWwfIPEvTFjg/BougsUfdzvL2FsWKDc0GCB+Q4i2pzINAPZHM8
-# np+mM6n9Gd8lk9ECAwEAAaOCAc0wggHJMBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYD
-# VR0PAQH/BAQDAgGGMBMGA1UdJQQMMAoGCCsGAQUFBwMDMHkGCCsGAQUFBwEBBG0w
-# azAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMGCCsGAQUF
-# BzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVk
-# SURSb290Q0EuY3J0MIGBBgNVHR8EejB4MDqgOKA2hjRodHRwOi8vY3JsNC5kaWdp
-# Y2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3JsMDqgOKA2hjRodHRw
-# Oi8vY3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3Js
-# ME8GA1UdIARIMEYwOAYKYIZIAYb9bAACBDAqMCgGCCsGAQUFBwIBFhxodHRwczov
-# L3d3dy5kaWdpY2VydC5jb20vQ1BTMAoGCGCGSAGG/WwDMB0GA1UdDgQWBBRaxLl7
-# KgqjpepxA8Bg+S32ZXUOWDAfBgNVHSMEGDAWgBRF66Kv9JLLgjEtUYunpyGd823I
-# DzANBgkqhkiG9w0BAQsFAAOCAQEAPuwNWiSz8yLRFcgsfCUpdqgdXRwtOhrE7zBh
-# 134LYP3DPQ/Er4v97yrfIFU3sOH20ZJ1D1G0bqWOWuJeJIFOEKTuP3GOYw4TS63X
-# X0R58zYUBor3nEZOXP+QsRsHDpEV+7qvtVHCjSSuJMbHJyqhKSgaOnEoAjwukaPA
-# JRHinBRHoXpoaK+bp1wgXNlxsQyPu6j4xRJon89Ay0BEpRPw5mQMJQhCMrI2iiQC
-# /i9yfhzXSUWW6Fkd6fp0ZGuy62ZD2rOwjNXpDd32ASDOmTFjPQgaGLOBm0/GkxAG
-# /AeB+ova+YJJ92JuoVP6EpQYhS6SkepobEQysmah5xikmmRR7zCCBT0wggQloAMC
-# AQICEATV3B9I6snYUgC6zZqbKqcwDQYJKoZIhvcNAQELBQAwcjELMAkGA1UEBhMC
-# VVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0
-# LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2ln
-# bmluZyBDQTAeFw0yMDA2MjYwMDAwMDBaFw0yMzA3MDcxMjAwMDBaMHoxCzAJBgNV
-# BAYTAlBMMRIwEAYDVQQIDAnFmmzEhXNraWUxETAPBgNVBAcTCEthdG93aWNlMSEw
-# HwYDVQQKDBhQcnplbXlzxYJhdyBLxYJ5cyBFVk9URUMxITAfBgNVBAMMGFByemVt
-# eXPFgmF3IEvFgnlzIEVWT1RFQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
-# ggEBAL+ygd4sga4ZC1G2xXvasYSijwWKgwapZ69wLaWaZZIlY6YvXTGQnIUnk+Tg
-# 7EoT7mQiMSaeSPOrn/Im6N74tkvRfQJXxY1cnt3U8//U5grhh/CULdd6M3/Z4h3n
-# MCq7LQ1YVaa4MYub9F8WOdXO84DANoNVG/t7YotL4vzqZil3S9pHjaidp3kOXGJc
-# vxrCPAkRFBKvUmYo23QPFa0Rd0qA3bFhn97WWczup1p90y2CkOf28OVOOObv1fNE
-# EqMpLMx0Yr04/h+LPAAYn6K4YtIu+m3gOhGuNc3B+MybgKePAeFIY4EQzbqvCMy1
-# iuHZb6q6ggRyqrJ6xegZga7/gV0CAwEAAaOCAcUwggHBMB8GA1UdIwQYMBaAFFrE
-# uXsqCqOl6nEDwGD5LfZldQ5YMB0GA1UdDgQWBBQYsTUn6BxQICZOCZA0CxS0TZSU
-# ZjAOBgNVHQ8BAf8EBAMCB4AwEwYDVR0lBAwwCgYIKwYBBQUHAwMwdwYDVR0fBHAw
-# bjA1oDOgMYYvaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL3NoYTItYXNzdXJlZC1j
-# cy1nMS5jcmwwNaAzoDGGL2h0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNvbS9zaGEyLWFz
-# c3VyZWQtY3MtZzEuY3JsMEwGA1UdIARFMEMwNwYJYIZIAYb9bAMBMCowKAYIKwYB
-# BQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwCAYGZ4EMAQQBMIGE
-# BggrBgEFBQcBAQR4MHYwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0
-# LmNvbTBOBggrBgEFBQcwAoZCaHR0cDovL2NhY2VydHMuZGlnaWNlcnQuY29tL0Rp
-# Z2lDZXJ0U0hBMkFzc3VyZWRJRENvZGVTaWduaW5nQ0EuY3J0MAwGA1UdEwEB/wQC
-# MAAwDQYJKoZIhvcNAQELBQADggEBAJq9bM+JbCwEYuMBtXoNAfH1SRaMLXnLe0py
-# VK6el0Z1BtPxiNcF4iyHqMNVD4iOrgzLEVzx1Bf/sYycPEnyG8Gr2tnl7u1KGSjY
-# enX4LIXCZqNEDQCeTyMstNv931421ERByDa0wrz1Wz5lepMeCqXeyiawqOxA9fB/
-# 106liR12vL2tzGC62yXrV6WhD6W+s5PpfEY/chuIwVUYXp1AVFI9wi2lg0gaTgP/
-# rMfP1wfVvaKWH2Bm/tU5mwpIVIO0wd4A+qOhEia3vn3J2Zz1QDxEprLcLE9e3Gmd
-# G5+8xEypTR23NavhJvZMgY2kEXBEKEEDaXs0LoPbn6hMcepR2A4wggZqMIIFUqAD
-# AgECAhADAZoCOv9YsWvW1ermF/BmMA0GCSqGSIb3DQEBBQUAMGIxCzAJBgNVBAYT
-# AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2Vy
-# dC5jb20xITAfBgNVBAMTGERpZ2lDZXJ0IEFzc3VyZWQgSUQgQ0EtMTAeFw0xNDEw
-# MjIwMDAwMDBaFw0yNDEwMjIwMDAwMDBaMEcxCzAJBgNVBAYTAlVTMREwDwYDVQQK
-# EwhEaWdpQ2VydDElMCMGA1UEAxMcRGlnaUNlcnQgVGltZXN0YW1wIFJlc3BvbmRl
-# cjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKNkXfx8s+CCNeDg9sYq
-# 5kl1O8xu4FOpnx9kWeZ8a39rjJ1V+JLjntVaY1sCSVDZg85vZu7dy4XpX6X51Id0
-# iEQ7Gcnl9ZGfxhQ5rCTqqEsskYnMXij0ZLZQt/USs3OWCmejvmGfrvP9Enh1DqZb
-# FP1FI46GRFV9GIYFjFWHeUhG98oOjafeTl/iqLYtWQJhiGFyGGi5uHzu5uc0LzF3
-# gTAfuzYBje8n4/ea8EwxZI3j6/oZh6h+z+yMDDZbesF6uHjHyQYuRhDIjegEYNu8
-# c3T6Ttj+qkDxss5wRoPp2kChWTrZFQlXmVYwk/PJYczQCMxr7GJCkawCwO+k8IkR
-# j3cCAwEAAaOCAzUwggMxMA4GA1UdDwEB/wQEAwIHgDAMBgNVHRMBAf8EAjAAMBYG
-# A1UdJQEB/wQMMAoGCCsGAQUFBwMIMIIBvwYDVR0gBIIBtjCCAbIwggGhBglghkgB
-# hv1sBwEwggGSMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5kaWdpY2VydC5jb20v
-# Q1BTMIIBZAYIKwYBBQUHAgIwggFWHoIBUgBBAG4AeQAgAHUAcwBlACAAbwBmACAA
-# dABoAGkAcwAgAEMAZQByAHQAaQBmAGkAYwBhAHQAZQAgAGMAbwBuAHMAdABpAHQA
-# dQB0AGUAcwAgAGEAYwBjAGUAcAB0AGEAbgBjAGUAIABvAGYAIAB0AGgAZQAgAEQA
-# aQBnAGkAQwBlAHIAdAAgAEMAUAAvAEMAUABTACAAYQBuAGQAIAB0AGgAZQAgAFIA
-# ZQBsAHkAaQBuAGcAIABQAGEAcgB0AHkAIABBAGcAcgBlAGUAbQBlAG4AdAAgAHcA
-# aABpAGMAaAAgAGwAaQBtAGkAdAAgAGwAaQBhAGIAaQBsAGkAdAB5ACAAYQBuAGQA
-# IABhAHIAZQAgAGkAbgBjAG8AcgBwAG8AcgBhAHQAZQBkACAAaABlAHIAZQBpAG4A
-# IABiAHkAIAByAGUAZgBlAHIAZQBuAGMAZQAuMAsGCWCGSAGG/WwDFTAfBgNVHSME
-# GDAWgBQVABIrE5iymQftHt+ivlcNK2cCzTAdBgNVHQ4EFgQUYVpNJLZJMp1KKnka
-# g0v0HonByn0wfQYDVR0fBHYwdDA4oDagNIYyaHR0cDovL2NybDMuZGlnaWNlcnQu
-# Y29tL0RpZ2lDZXJ0QXNzdXJlZElEQ0EtMS5jcmwwOKA2oDSGMmh0dHA6Ly9jcmw0
-# LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRENBLTEuY3JsMHcGCCsGAQUF
-# BwEBBGswaTAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEEG
-# CCsGAQUFBzAChjVodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRB
-# c3N1cmVkSURDQS0xLmNydDANBgkqhkiG9w0BAQUFAAOCAQEAnSV+GzNNsiaBXJuG
-# ziMgD4CH5Yj//7HUaiwx7ToXGXEXzakbvFoWOQCd42yE5FpA+94GAYw3+puxnSR+
-# /iCkV61bt5qwYCbqaVchXTQvH3Gwg5QZBWs1kBCge5fH9j/n4hFBpr1i2fAnPTgd
-# KG86Ugnw7HBi02JLsOBzppLA044x2C/jbRcTBu7kA7YUq/OPQ6dxnSHdFMoVXZJB
-# 2vkPgdGZdA0mxA5/G7X1oPHGdwYoFenYk+VVFvC7Cqsc21xIJ2bIo4sKHOWV2q7E
-# LlmgYd3a822iYemKC23sEhi991VUQAOSK2vCUcIKSK+w1G7g9BQKOhvjjz3Kr2qN
-# e9zYRDCCBs0wggW1oAMCAQICEAb9+QOWA63qAArrPye7uhswDQYJKoZIhvcNAQEF
-# BQAwZTELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UE
-# CxMQd3d3LmRpZ2ljZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgQXNzdXJlZCBJ
-# RCBSb290IENBMB4XDTA2MTExMDAwMDAwMFoXDTIxMTExMDAwMDAwMFowYjELMAkG
-# A1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRp
-# Z2ljZXJ0LmNvbTEhMB8GA1UEAxMYRGlnaUNlcnQgQXNzdXJlZCBJRCBDQS0xMIIB
-# IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6IItmfnKwkKVpYBzQHDSnlZU
-# XKnE0kEGj8kz/E1FkVyBn+0snPgWWd+etSQVwpi5tHdJ3InECtqvy15r7a2wcTHr
-# zzpADEZNk+yLejYIA6sMNP4YSYL+x8cxSIB8HqIPkg5QycaH6zY/2DDD/6b3+6LN
-# b3Mj/qxWBZDwMiEWicZwiPkFl32jx0PdAug7Pe2xQaPtP77blUjE7h6z8rwMK5nQ
-# xl0SQoHhg26Ccz8mSxSQrllmCsSNvtLOBq6thG9IhJtPQLnxTPKvmPv2zkBdXPao
-# 8S+v7Iki8msYZbHBc63X8djPHgp0XEK4aH631XcKJ1Z8D2KkPzIUYJX9BwSiCQID
-# AQABo4IDejCCA3YwDgYDVR0PAQH/BAQDAgGGMDsGA1UdJQQ0MDIGCCsGAQUFBwMB
-# BggrBgEFBQcDAgYIKwYBBQUHAwMGCCsGAQUFBwMEBggrBgEFBQcDCDCCAdIGA1Ud
-# IASCAckwggHFMIIBtAYKYIZIAYb9bAABBDCCAaQwOgYIKwYBBQUHAgEWLmh0dHA6
-# Ly93d3cuZGlnaWNlcnQuY29tL3NzbC1jcHMtcmVwb3NpdG9yeS5odG0wggFkBggr
-# BgEFBQcCAjCCAVYeggFSAEEAbgB5ACAAdQBzAGUAIABvAGYAIAB0AGgAaQBzACAA
-# QwBlAHIAdABpAGYAaQBjAGEAdABlACAAYwBvAG4AcwB0AGkAdAB1AHQAZQBzACAA
-# YQBjAGMAZQBwAHQAYQBuAGMAZQAgAG8AZgAgAHQAaABlACAARABpAGcAaQBDAGUA
-# cgB0ACAAQwBQAC8AQwBQAFMAIABhAG4AZAAgAHQAaABlACAAUgBlAGwAeQBpAG4A
-# ZwAgAFAAYQByAHQAeQAgAEEAZwByAGUAZQBtAGUAbgB0ACAAdwBoAGkAYwBoACAA
-# bABpAG0AaQB0ACAAbABpAGEAYgBpAGwAaQB0AHkAIABhAG4AZAAgAGEAcgBlACAA
-# aQBuAGMAbwByAHAAbwByAGEAdABlAGQAIABoAGUAcgBlAGkAbgAgAGIAeQAgAHIA
-# ZQBmAGUAcgBlAG4AYwBlAC4wCwYJYIZIAYb9bAMVMBIGA1UdEwEB/wQIMAYBAf8C
-# AQAweQYIKwYBBQUHAQEEbTBrMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdp
-# Y2VydC5jb20wQwYIKwYBBQUHMAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNv
-# bS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcnQwgYEGA1UdHwR6MHgwOqA4oDaG
-# NGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RD
-# QS5jcmwwOqA4oDaGNGh0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFz
-# c3VyZWRJRFJvb3RDQS5jcmwwHQYDVR0OBBYEFBUAEisTmLKZB+0e36K+Vw0rZwLN
-# MB8GA1UdIwQYMBaAFEXroq/0ksuCMS1Ri6enIZ3zbcgPMA0GCSqGSIb3DQEBBQUA
-# A4IBAQBGUD7Jtygkpzgdtlspr1LPUukxR6tWXHvVDQtBs+/sdR90OPKyXGGinJXD
-# UOSCuSPRujqGcq04eKx1XRcXNHJHhZRW0eu7NoR3zCSl8wQZVann4+erYs37iy2Q
-# wsDStZS9Xk+xBdIOPRqpFFumhjFiqKgz5Js5p8T1zh14dpQlc+Qqq8+cdkvtX8JL
-# FuRLcEwAiR78xXm8TBJX/l/hHrwCXaj++wc4Tw3GXZG5D2dFzdaD7eeSDY2xaYxP
-# +1ngIw/Sqq4AfO6cQg7PkdcntxbuD8O9fAqg7iwIVYUiuOsYGk38KiGtSTGDR5V3
-# cdyxG0tLHBCcdxTBnU8vWpUIKRAmMYIEOzCCBDcCAQEwgYYwcjELMAkGA1UEBhMC
-# VVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0
-# LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2ln
-# bmluZyBDQQIQBNXcH0jqydhSALrNmpsqpzAJBgUrDgMCGgUAoHgwGAYKKwYBBAGC
-# NwIBDDEKMAigAoAAoQKAADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgor
-# BgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUq8N6tN/p
-# BapqGHCvnEBAzQuO+2YwDQYJKoZIhvcNAQEBBQAEggEAjEf25Ve+uu4980SMzPs2
-# NAV34GyA16RNbRgaTMeBgoSavMU8WiV6bDcJYmqUaQ3OIRb41F2xkkNVaBXckmeR
-# KlvHbg9s7pskf5QWQJihXSKD+vVCqxK+Zi76RSdbjoesJYxT5elxOXYSkbsukS4o
-# JIQd8vfqJik5UpKoAewvfs0dM/7I+HAC7miUWxekCB7KS6Ih9/4eFHwitWC1RldF
-# ISg+Q2j9qUsj7dn3FpNiz7YeX5b8V8DaBppuv5LIpFdQiN3xX2p5lwrh0jRbNlj5
-# Pq4Pwj6Mnk5S5jAmmx22UH7H6N/xlCjo04ln2fY8tJqy6D2I+6lkGcUrAuyXApMs
-# z6GCAg8wggILBgkqhkiG9w0BCQYxggH8MIIB+AIBATB2MGIxCzAJBgNVBAYTAlVT
+# 8jCCBP4wggPmoAMCAQICEA1CSuC+Ooj/YEAhzhQA8N0wDQYJKoZIhvcNAQELBQAw
+# cjELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQ
+# d3d3LmRpZ2ljZXJ0LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVk
+# IElEIFRpbWVzdGFtcGluZyBDQTAeFw0yMTAxMDEwMDAwMDBaFw0zMTAxMDYwMDAw
+# MDBaMEgxCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5EaWdpQ2VydCwgSW5jLjEgMB4G
+# A1UEAxMXRGlnaUNlcnQgVGltZXN0YW1wIDIwMjEwggEiMA0GCSqGSIb3DQEBAQUA
+# A4IBDwAwggEKAoIBAQDC5mGEZ8WK9Q0IpEXKY2tR1zoRQr0KdXVNlLQMULUmEP4d
+# yG+RawyW5xpcSO9E5b+bYc0VkWJauP9nC5xj/TZqgfop+N0rcIXeAhjzeG28ffnH
+# bQk9vmp2h+mKvfiEXR52yeTGdnY6U9HR01o2j8aj4S8bOrdh1nPsTm0zinxdRS1L
+# sVDmQTo3VobckyON91Al6GTm3dOPL1e1hyDrDo4s1SPa9E14RuMDgzEpSlwMMYpK
+# jIjF9zBa+RSvFV9sQ0kJ/SYjU/aNY+gaq1uxHTDCm2mCtNv8VlS8H6GHq756Wwog
+# L0sJyZWnjbL61mOLTqVyHO6fegFz+BnW/g1JhL0BAgMBAAGjggG4MIIBtDAOBgNV
+# HQ8BAf8EBAMCB4AwDAYDVR0TAQH/BAIwADAWBgNVHSUBAf8EDDAKBggrBgEFBQcD
+# CDBBBgNVHSAEOjA4MDYGCWCGSAGG/WwHATApMCcGCCsGAQUFBwIBFhtodHRwOi8v
+# d3d3LmRpZ2ljZXJ0LmNvbS9DUFMwHwYDVR0jBBgwFoAU9LbhIB3+Ka7S5GGlsqIl
+# ssgXNW4wHQYDVR0OBBYEFDZEho6kurBmvrwoLR1ENt3janq8MHEGA1UdHwRqMGgw
+# MqAwoC6GLGh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9zaGEyLWFzc3VyZWQtdHMu
+# Y3JsMDKgMKAuhixodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vc2hhMi1hc3N1cmVk
+# LXRzLmNybDCBhQYIKwYBBQUHAQEEeTB3MCQGCCsGAQUFBzABhhhodHRwOi8vb2Nz
+# cC5kaWdpY2VydC5jb20wTwYIKwYBBQUHMAKGQ2h0dHA6Ly9jYWNlcnRzLmRpZ2lj
+# ZXJ0LmNvbS9EaWdpQ2VydFNIQTJBc3N1cmVkSURUaW1lc3RhbXBpbmdDQS5jcnQw
+# DQYJKoZIhvcNAQELBQADggEBAEgc3LXpmiO85xrnIA6OZ0b9QnJRdAojR6OrktIl
+# xHBZvhSg5SeBpU0UFRkHefDRBMOG2Tu9/kQCZk3taaQP9rhwz2Lo9VFKeHk2eie3
+# 8+dSn5On7UOee+e03UEiifuHokYDTvz0/rdkd2NfI1Jpg4L6GlPtkMyNoRdzDfTz
+# ZTlwS/Oc1np72gy8PTLQG8v1Yfx1CAB2vIEO+MDhXM/EEXLnG2RJ2CKadRVC9S0y
+# OIHa9GCiurRS+1zgYSQlT7LfySmoc0NR2r1j1h9bm/cuG08THfdKDXF+l7f0P4Tr
+# weOjSaH6zqe/Vs+6WXZhiV9+p7SOZ3j5NpjhyyjaW4emii8wggUwMIIEGKADAgEC
+# AhAECRgbX9W7ZnVTQ7VvlVAIMA0GCSqGSIb3DQEBCwUAMGUxCzAJBgNVBAYTAlVT
 # MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j
-# b20xITAfBgNVBAMTGERpZ2lDZXJ0IEFzc3VyZWQgSUQgQ0EtMQIQAwGaAjr/WLFr
-# 1tXq5hfwZjAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-# BgkqhkiG9w0BCQUxDxcNMjAxMDI1MDg1NDU4WjAjBgkqhkiG9w0BCQQxFgQUhSZC
-# xvH40G0aEG4a5GUfK3+AosgwDQYJKoZIhvcNAQEBBQAEggEAd5Y67laVreJeS8eC
-# qpBoM7UGy7TyEXKD91Pd22WGJfWeEHtuR2153lAzMTNWUZnDRbiKq6b1O3F1Uq5u
-# Pr4JiLoTvxOzyzLtniftJ5kzKbXpei53/8aY9uqk2WizORUsjHhGe8tAS0Xa5eSn
-# zxJ/1v7NXSbOnh61/kEKIktR4JEelK6MULCm9jp0LDOw27jgf1RpPBgxq6xFskPs
-# MsdDN45xn7BetyJYbUWN7S3M5ejirxHwwIs0P7kO6WirjxtQPZkXXuYPLHTzfkY3
-# 5rmY0gzyjs+BQxSHfdbvzpa/t4tijW9PFM14W6UZvaIAN7Fb4CWi2tVlRF4t027J
-# TBZZZA==
+# b20xJDAiBgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0xMzEw
+# MjIxMjAwMDBaFw0yODEwMjIxMjAwMDBaMHIxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
+# EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xMTAvBgNV
+# BAMTKERpZ2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBDb2RlIFNpZ25pbmcgQ0EwggEi
+# MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQD407Mcfw4Rr2d3B9MLMUkZz9D7
+# RZmxOttE9X/lqJ3bMtdx6nadBS63j/qSQ8Cl+YnUNxnXtqrwnIal2CWsDnkoOn7p
+# 0WfTxvspJ8fTeyOU5JEjlpB3gvmhhCNmElQzUHSxKCa7JGnCwlLyFGeKiUXULaGj
+# 6YgsIJWuHEqHCN8M9eJNYBi+qsSyrnAxZjNxPqxwoqvOf+l8y5Kh5TsxHM/q8grk
+# V7tKtel05iv+bMt+dDk2DZDv5LVOpKnqagqrhPOsZ061xPeM0SAlI+sIZD5SlsHy
+# DxL0xY4PwaLoLFH3c7y9hbFig3NBggfkOItqcyDQD2RzPJ6fpjOp/RnfJZPRAgMB
+# AAGjggHNMIIByTASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBhjAT
+# BgNVHSUEDDAKBggrBgEFBQcDAzB5BggrBgEFBQcBAQRtMGswJAYIKwYBBQUHMAGG
+# GGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2Nh
+# Y2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEUm9vdENBLmNydDCB
+# gQYDVR0fBHoweDA6oDigNoY0aHR0cDovL2NybDQuZGlnaWNlcnQuY29tL0RpZ2lD
+# ZXJ0QXNzdXJlZElEUm9vdENBLmNybDA6oDigNoY0aHR0cDovL2NybDMuZGlnaWNl
+# cnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEUm9vdENBLmNybDBPBgNVHSAESDBGMDgG
+# CmCGSAGG/WwAAgQwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQu
+# Y29tL0NQUzAKBghghkgBhv1sAzAdBgNVHQ4EFgQUWsS5eyoKo6XqcQPAYPkt9mV1
+# DlgwHwYDVR0jBBgwFoAUReuir/SSy4IxLVGLp6chnfNtyA8wDQYJKoZIhvcNAQEL
+# BQADggEBAD7sDVoks/Mi0RXILHwlKXaoHV0cLToaxO8wYdd+C2D9wz0PxK+L/e8q
+# 3yBVN7Dh9tGSdQ9RtG6ljlriXiSBThCk7j9xjmMOE0ut119EefM2FAaK95xGTlz/
+# kLEbBw6RFfu6r7VRwo0kriTGxycqoSkoGjpxKAI8LpGjwCUR4pwUR6F6aGivm6dc
+# IFzZcbEMj7uo+MUSaJ/PQMtARKUT8OZkDCUIQjKyNookAv4vcn4c10lFluhZHen6
+# dGRrsutmQ9qzsIzV6Q3d9gEgzpkxYz0IGhizgZtPxpMQBvwHgfqL2vmCSfdibqFT
+# +hKUGIUukpHqaGxEMrJmoecYpJpkUe8wggUxMIIEGaADAgECAhAKoSXW1jIbfkHk
+# Bdo2l8IVMA0GCSqGSIb3DQEBCwUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxE
+# aWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNVBAMT
+# G0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0xNjAxMDcxMjAwMDBaFw0z
+# MTAxMDcxMjAwMDBaMHIxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJ
+# bmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xMTAvBgNVBAMTKERpZ2lDZXJ0
+# IFNIQTIgQXNzdXJlZCBJRCBUaW1lc3RhbXBpbmcgQ0EwggEiMA0GCSqGSIb3DQEB
+# AQUAA4IBDwAwggEKAoIBAQC90DLuS82Pf92puoKZxTlUKFe2I0rEDgdFM1EQfdD5
+# fU1ofue2oPSNs4jkl79jIZCYvxO8V9PD4X4I1moUADj3Lh477sym9jJZ/l9lP+Cb
+# 6+NGRwYaVX4LJ37AovWg4N4iPw7/fpX786O6Ij4YrBHk8JkDbTuFfAnT7l3ImgtU
+# 46gJcWvgzyIQD3XPcXJOCq3fQDpct1HhoXkUxk0kIzBdvOw8YGqsLwfM/fDqR9mI
+# UF79Zm5WYScpiYRR5oLnRlD9lCosp+R1PrqYD4R/nzEU1q3V8mTLex4F0IQZchfx
+# FwbvPc3WTe8GQv2iUypPhR3EHTyvz9qsEPXdrKzpVv+TAgMBAAGjggHOMIIByjAd
+# BgNVHQ4EFgQU9LbhIB3+Ka7S5GGlsqIlssgXNW4wHwYDVR0jBBgwFoAUReuir/SS
+# y4IxLVGLp6chnfNtyA8wEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMC
+# AYYwEwYDVR0lBAwwCgYIKwYBBQUHAwgweQYIKwYBBQUHAQEEbTBrMCQGCCsGAQUF
+# BzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQwYIKwYBBQUHMAKGN2h0dHA6
+# Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5j
+# cnQwgYEGA1UdHwR6MHgwOqA4oDaGNGh0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNvbS9E
+# aWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmwwOqA4oDaGNGh0dHA6Ly9jcmwzLmRp
+# Z2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmwwUAYDVR0gBEkw
+# RzA4BgpghkgBhv1sAAIEMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2lj
+# ZXJ0LmNvbS9DUFMwCwYJYIZIAYb9bAcBMA0GCSqGSIb3DQEBCwUAA4IBAQBxlRLp
+# UYdWac3v3dp8qmN6s3jPBjdAhO9LhL/KzwMC/cWnww4gQiyvd/MrHwwhWiq3BTQd
+# aq6Z+CeiZr8JqmDfdqQ6kw/4stHYfBli6F6CJR7Euhx7LCHi1lssFDVDBGiy23UC
+# 4HLHmNY8ZOUfSBAYX4k4YU1iRiSHY4yRUiyvKYnleB/WCxSlgNcSR3CzddWThZN+
+# tpJn+1Nhiaj1a5bA9FhpDXzIAbG5KHW3mWOFIoxhynmUfln8jA/jb7UBJrZspe6H
+# USHkWGCbugwtK22ixH67xCUrRwIIfEmuE7bhfEJCKMYYVs9BNLZmXbZ0e/VWMyIv
+# IjayS6JKldj1po5SMIIFPTCCBCWgAwIBAgIQBNXcH0jqydhSALrNmpsqpzANBgkq
+# hkiG9w0BAQsFADByMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5j
+# MRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMTEwLwYDVQQDEyhEaWdpQ2VydCBT
+# SEEyIEFzc3VyZWQgSUQgQ29kZSBTaWduaW5nIENBMB4XDTIwMDYyNjAwMDAwMFoX
+# DTIzMDcwNzEyMDAwMFowejELMAkGA1UEBhMCUEwxEjAQBgNVBAgMCcWabMSFc2tp
+# ZTERMA8GA1UEBxMIS2F0b3dpY2UxITAfBgNVBAoMGFByemVteXPFgmF3IEvFgnlz
+# IEVWT1RFQzEhMB8GA1UEAwwYUHJ6ZW15c8WCYXcgS8WCeXMgRVZPVEVDMIIBIjAN
+# BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAv7KB3iyBrhkLUbbFe9qxhKKPBYqD
+# Bqlnr3AtpZplkiVjpi9dMZCchSeT5ODsShPuZCIxJp5I86uf8ibo3vi2S9F9AlfF
+# jVye3dTz/9TmCuGH8JQt13ozf9niHecwKrstDVhVprgxi5v0XxY51c7zgMA2g1Ub
+# +3tii0vi/OpmKXdL2keNqJ2neQ5cYly/GsI8CREUEq9SZijbdA8VrRF3SoDdsWGf
+# 3tZZzO6nWn3TLYKQ5/bw5U445u/V80QSoykszHRivTj+H4s8ABiforhi0i76beA6
+# Ea41zcH4zJuAp48B4UhjgRDNuq8IzLWK4dlvqrqCBHKqsnrF6BmBrv+BXQIDAQAB
+# o4IBxTCCAcEwHwYDVR0jBBgwFoAUWsS5eyoKo6XqcQPAYPkt9mV1DlgwHQYDVR0O
+# BBYEFBixNSfoHFAgJk4JkDQLFLRNlJRmMA4GA1UdDwEB/wQEAwIHgDATBgNVHSUE
+# DDAKBggrBgEFBQcDAzB3BgNVHR8EcDBuMDWgM6Axhi9odHRwOi8vY3JsMy5kaWdp
+# Y2VydC5jb20vc2hhMi1hc3N1cmVkLWNzLWcxLmNybDA1oDOgMYYvaHR0cDovL2Ny
+# bDQuZGlnaWNlcnQuY29tL3NoYTItYXNzdXJlZC1jcy1nMS5jcmwwTAYDVR0gBEUw
+# QzA3BglghkgBhv1sAwEwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNl
+# cnQuY29tL0NQUzAIBgZngQwBBAEwgYQGCCsGAQUFBwEBBHgwdjAkBggrBgEFBQcw
+# AYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tME4GCCsGAQUFBzAChkJodHRwOi8v
+# Y2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRTSEEyQXNzdXJlZElEQ29kZVNp
+# Z25pbmdDQS5jcnQwDAYDVR0TAQH/BAIwADANBgkqhkiG9w0BAQsFAAOCAQEAmr1s
+# z4lsLARi4wG1eg0B8fVJFowtect7SnJUrp6XRnUG0/GI1wXiLIeow1UPiI6uDMsR
+# XPHUF/+xjJw8SfIbwava2eXu7UoZKNh6dfgshcJmo0QNAJ5PIyy02/3fXjbUREHI
+# NrTCvPVbPmV6kx4Kpd7KJrCo7ED18H/XTqWJHXa8va3MYLrbJetXpaEPpb6zk+l8
+# Rj9yG4jBVRhenUBUUj3CLaWDSBpOA/+sx8/XB9W9opYfYGb+1TmbCkhUg7TB3gD6
+# o6ESJre+fcnZnPVAPESmstwsT17caZ0bn7zETKlNHbc1q+Em9kyBjaQRcEQoQQNp
+# ezQug9ufqExx6lHYDjGCBEwwggRIAgEBMIGGMHIxCzAJBgNVBAYTAlVTMRUwEwYD
+# VQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xMTAv
+# BgNVBAMTKERpZ2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBDb2RlIFNpZ25pbmcgQ0EC
+# EATV3B9I6snYUgC6zZqbKqcwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAI
+# oAKAAKECgAAwGQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIB
+# CzEOMAwGCisGAQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFN85/W3HCnXK+jCXqXSV
+# qNHIzmiIMA0GCSqGSIb3DQEBAQUABIIBAKZoQAUz47aYs4bTGAGtAnBTMZspX3IV
+# uWL4QvykVidkWUnMYknZKlpF/7si2aXkjMCQKpTjLCVGaw3brcABoTRRZiJagZAM
+# 8yk4tHWBui7cyrZMrQNXEv5ABcaBchRrrde5iKveLJtSf+sUqlZwhUa0tT3ad5b5
+# Gkx8hES9pRIDEKcY7XNiVA1ARCF9n+cdzpzi9iJ0EAnjzbvE8Yxevp4oqpUBhvIl
+# yV+0zd2Iqrz1eUC6YiyDoi5s1BOMZqPlPY0L98hEVScyyZfEHNg462MEDQj7IA77
+# 2Za2W9I5Ur2hPuT+ao1c83/VuLu0/DLBOeMKwRzTTRPLXn1+QaymqZGhggIgMIIC
+# HAYJKoZIhvcNAQkGMYICDTCCAgkCAQEwgYYwcjELMAkGA1UEBhMCVVMxFTATBgNV
+# BAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTExMC8G
+# A1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIFRpbWVzdGFtcGluZyBDQQIQ
+# DUJK4L46iP9gQCHOFADw3TAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqG
+# SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMjAyMjE1OTUzWjAjBgkqhkiG9w0B
+# CQQxFgQUuZfuZJPG9m8GugbPj57asRdq3UgwDQYJKoZIhvcNAQEBBQAEggEAQANU
+# +hlgoYWFcijU9ulqlfpAHyBXpmLXy37hyX3NKq7Th+IQ3vV0l7xlojr5cegAxmcz
+# yVqJhQWCF2lP8fPIG4IqNsT9TT1alHd8FSdYkyC+Jo9ebaD6hPwy0kS7PTdqysPC
+# JTHbJm6NQwN1EQhIQHxXMtLDZi0uu2ldroSstePYMEtCPWBNLpzllIUR79FFyxFe
+# FGOrFxO9CFs6iLtlTJWPAHnUP0itQVvFG5Xg2uYo9ISloNpgALfE+Wwh5TbOReSA
+# cSgryEluBf0ZM+v5eL+DStvJlC9JPpKFwyS4CcqfRehj+mbaROMgnCQ3QQTIl9Hp
+# rPJ1Jk07Uw7XFopdWg==
 # SIG # End signature block

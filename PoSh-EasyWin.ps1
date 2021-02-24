@@ -451,7 +451,7 @@ This selection is persistent for this tool, but can be modified within the setti
 }
 if (Test-Path -Path "$Dependencies\Modules\PSWriteHTML"){
     if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
-        Import-Module -Name "$Dependencies\Modules\PSWriteHTML\0.0.117\PSWriteHTML.psm1" -Force
+        Import-Module -Name "$Dependencies\Modules\PSWriteHTML\*\PSWriteHTML.psm1" -Force
     }
 }
 
