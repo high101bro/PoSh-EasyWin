@@ -525,7 +525,25 @@ Loading: $StatusDescription"
     $script:ProgressBarFormProgressBar.Value += 1
     $script:ProgressBarSelectionForm.Refresh()
 }
-    
+
+
+function Set-CheckState {
+    Param(
+        $CheckedListBox,
+         # regex matches anything
+         [string]$Match = '.',
+         [switch]$Check
+    )
+    0 .. ($CheckedListBox.Items.Count - 1) |
+        Where-Object { $CheckedListBox.Items[$_] -match $Match  } |
+        ForEach-Object { $CheckedListBox.SetItemChecked($_, $Check) }
+#    $MyArray = 1,2,5,8,9
+#    # For each item that we want to be checked ...
+#    foreach ($Item in $MyArray) {
+#        # Check it ...
+#        $CheckedListBox.SetItemChecked($CheckedListBox.Items.IndexOf($Item), $true);
+#    }        
+}
 
 # Launches the accompanying Notifications Icon helper in the  System Tray
 Update-FormProgress "$Dependencies\Code\Main Body\Launch-SystemTrayNotifyIcon.ps1"

@@ -145,52 +145,70 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
     $script:PSWriteHTMLSupportForm.Controls.Add($script:PoShEasyWinIPToExcludeLabel)
 
 
-                $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
-                    Text   = "Exclude the following from the Graphs"
+                $script:ConnectionStatesFilterCheckedListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -Property @{
                     Left   = $script:PoShEasyWinIPToExcludeLabel.Left
                     Top    = $script:PoShEasyWinIPToExcludeLabel.Top + $script:PoShEasyWinIPToExcludeLabel.Height
                     Width  = $script:PoShEasyWinIPToExcludeLabel.Width
-                    Height = $FormScale * 44
+                    Height = $FormScale * 90
                     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    checked = $true
+                    ScrollAlwaysVisible = $true
                 }
-                $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox)
+                $ConnectionFilterStates = @('Established','Listen','Bound','TimeWait','CloseWait','All Others: Closed,Closing,DeleteTCB,FinWait1,FinWait2,LastAck,SynReceived,SynSent')
+                foreach ( $State in $ConnectionFilterStates ) { $script:ConnectionStatesFilterCheckedListBox.Items.Add($State) }
+
+                $ConnectionFilterStatesDefaultChecked = @('Established','Listen')
+                foreach ($State in $ConnectionFilterStatesDefaultChecked) {
+                    Set-CheckState -Check -CheckedlistBox $script:ConnectionStatesFilterCheckedListBox -Match $State
+                }
+                $script:PSWriteHTMLSupportForm.Controls.Add($script:ConnectionStatesFilterCheckedListBox)
 
 
                 $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
                     Text   = "Exclude IPv6"
-                    Left   = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Left
-                    Top    = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Height
+                    Left   = $script:ConnectionStatesFilterCheckedListBox.Left
+                    Top    = $script:ConnectionStatesFilterCheckedListBox.Top + $script:ConnectionStatesFilterCheckedListBox.Height
                     Width  = $script:PoShEasyWinIPToExcludeLabel.Width
-                    Height = $FormScale * 44
+                    Height = $FormScale * 22
                     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     checked = $true
                 }
                 $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox)
 
 
-                $script:PoShEasyWinIPToExcludeTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                    Text   = "Enter PoSh-EasyWin's IP; One Per Line if Multiple Hosts"
+                $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
+                    Text   = "Exclude the following from the Graphs"
                     Left   = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Left
                     Top    = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Height
+                    Width  = $script:ConnectionStatesFilterCheckedListBox.Width
+                    Height = $FormScale * 22
+                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    checked = $true
+                }
+                $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox)
+
+
+                $script:IPAddressesToExcludeTextbox = New-Object System.Windows.Forms.TextBox -Property @{
+                    Text   = "127.0.0.1`n0.0.0.0`n::"
+                    Left   = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Left
+                    Top    = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Height
                     Width  = $script:PoShEasyWinIPToExcludeLabel.Width
-                    Height = $FormScale * 110
+                    Height = $FormScale * 80
                     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     Multiline  = $true
                     ScrollBars = 'Vertical'
             #        ScrollAlwaysVisible = $true
                 }
-                $script:PSWriteHTMLSupportForm.Controls.Add($script:PoShEasyWinIPToExcludeTextbox)
+                $script:PSWriteHTMLSupportForm.Controls.Add($script:IPAddressesToExcludeTextbox)
                 if ((Test-Path "$PoShHome\Settings\PoSh-EasyWin's IP to Exclude.txt")){
-                    $script:PoShEasyWinIPToExcludeTextbox.text = Get-Content "$PoShHome\Settings\PoSh-EasyWin's IP to Exclude.txt"
+                    $script:IPAddressesToExcludeTextbox.text = Get-Content "$PoShHome\Settings\PoSh-EasyWin's IP to Exclude.txt"
                 }
 
 
     $script:PSWriteHTMLSupportOkayLabel = New-Object System.Windows.Forms.Label -Property @{
         Text   = "Enter the Domain Controller's hostname or IP Address. This is used to pull back domain level data if an Active Directory option was selected."
-        Left   = $script:PoShEasyWinIPToExcludeTextbox.Left
-        Top    = $script:PoShEasyWinIPToExcludeTextbox.Top + $script:PoShEasyWinIPToExcludeTextbox.Height + ($FormScale * 5)
-        Width  = $script:PoShEasyWinIPToExcludeLabel.Width
+        Left   = $script:IPAddressesToExcludeTextbox.Left
+        Top    = $script:IPAddressesToExcludeTextbox.Top + $script:IPAddressesToExcludeTextbox.Height
+        Width  = $script:IPAddressesToExcludeTextbox.Width
         Height = $FormScale * 44
         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     }
@@ -201,7 +219,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
                     Text   = "<Enter the Domain Controller's hostname/IP>"
                     Left   = $script:PSWriteHTMLSupportOkayLabel.Left
                     Top    = $script:PSWriteHTMLSupportOkayLabel.Top + $script:PSWriteHTMLSupportOkayLabel.Height
-                    Width  = $script:PoShEasyWinIPToExcludeTextbox.Width
+                    Width  = $script:IPAddressesToExcludeTextbox.Width
                     Height = $FormScale * 22
                     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     Multiline = $true
@@ -220,8 +238,8 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
         Width  = $FormScale * 100
         Height = $FormScale * 22
         Add_Click = {
-            $script:PoShEasyWinIPToExcludeTextbox.text | Set-Content "$PoShHome\Settings\PoSh-EasyWin's IP to Exclude.txt"
-            $script:PoShEasyWinIPAddress   = ($script:PoShEasyWinIPToExcludeTextbox.text).split()
+            ($script:IPAddressesToExcludeTextbox.text).split() | Where-Object {$_ -ne '' -or $_ -ne $null} | Set-Content "$PoShHome\Settings\PoSh-EasyWin's IP to Exclude.txt"
+            $script:PoShEasyWinIPAddress   = ($script:IPAddressesToExcludeTextbox.text).split() | Where-Object {$_ -ne '' -or $_ -ne $null}
             $script:PSWriteHTMLSupportOkay = $True
 
             #Checks if the computer entered is in the computer treeview  
@@ -1603,11 +1621,38 @@ Start-Sleep -Seconds 3
                                     $filter = {$_.LocalAddress -notmatch $false}
                                 }
 
-                                $script:EndpointDataNetworkConnections | Where-Object -FilterScript $filter | 
-                                ForEach-Object {
+
+                                $script:LocalAddressList = $script:EndpointDataNetworkConnections | Select-Object -ExpandProperty LocalAddress | Sort-Object -Unique
+                                $script:NameNodeList = $script:EndpointDataNetworkConnections | Select-Object -ExpandProperty PSComputerName | Sort-Object -Unique
+
+                                $script:EndpointDataNetworkConnections | Where-Object -FilterScript $filter `
+                                | ForEach-Object {
                                     function New-ComputerNode {
-                                        #if ($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.checked -and ($_.LocalAddress -in $script:PoShEasyWinIPAddress -or $_.RemoteAddress -in $script:PoShEasyWinIPAddress)) {
+                                        $ResolvedName = (Resolve-DnsName $_.RemoteAddress | Select-Object -ExpandProperty NameHost).split('.')[0]
+                                        
+                                        $ResolvedName > c:\resolved_name.txt
+                                        $_.PSComputerName > c:\pscomputername.txt
+                                        $_.RemoteAddress > c:\remoteaddress.txt
+                                        $script:NameNodeList > c:\NameNodeList.txt
+
+                                        #$ResolvedName -ne $_.PSComputerName
+                                        #if ($ResolvedName -notin $script:NameNodeList -and $_.RemoteAddress -notin $script:LocalAddressList) {
+                                        if ($ResolvedName -notin $script:NameNodeList -and $_.RemoteAddress -notin $script:LocalAddressList) {
+                                            New-DiagramNode `
+                                                -Label  "DNS Resolution:`n$ResolvedName" `
+                                                -To     $_.RemoteAddress `
+                                                -Image  "$Dependencies\Images\DNS.png" `
+                                                -Size   25 `
+                                                -FontSize   20 `
+                                                -FontColor  Blue `
+                                                -LinkColor  Blue
+                                            $script:LocalAddressList += $_.RemoteAddress
+                                            $script:NameNodeList += $ResolvedName
+                                        }
+
+
                                             if ($_.LocalAddress -match '127(\.\d){3}' -or $_.LocalAddress -match '0.0.0.0' ) {
+                                                
                                                 if ($_.LocalAddress -notin $NIClist) {
                                                     New-DiagramNode `
                                                         -Label  $_.PSComputerName `
@@ -1649,11 +1694,10 @@ Start-Sleep -Seconds 3
                                                     -LinkColor Blue `
                                                     -ArrowsToEnabled
                                             }
-                                        #}
                                     }
 
                                     # Only creates nodes for IPs that are not PoSh-EasyWin IPs
-                                    if ($_.state -match 'Establish'){
+                                    if ($_.state -match 'Established' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Established'){
                                         New-ComputerNode
                                         if ($_.RemotePort -ne '0'){
                                             New-DiagramNode `
@@ -1708,7 +1752,7 @@ Start-Sleep -Seconds 3
                                             }
                                         }
                                     }
-                                    elseif ($_.state -match 'Listen'){
+                                    elseif ($_.state -match 'Listen' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Listen'){
                                         New-DiagramNode `
                                             -Label  $_.PSComputerName `
                                             -To     "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
@@ -1734,7 +1778,7 @@ Start-Sleep -Seconds 3
                                             -LinkColor        Gold `
                                             -ArrowsToEnabled
                                     }
-                                    elseif ($_.state -match 'Bound') {
+                                    elseif ($_.state -match 'Bound' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Bound') {
                                         New-ComputerNode
                                         if ($_.RemotePort -ne '0'){
                                             New-DiagramNode `
@@ -1787,7 +1831,7 @@ Start-Sleep -Seconds 3
                                                     -ArrowsToEnabled
                                             }
                                         }
-                                    }   
+                                    }
                                     elseif ($_.state -match 'CloseWait') {
                                         New-ComputerNode
                                         if ($_.RemotePort -ne '0'){
@@ -1896,7 +1940,7 @@ Start-Sleep -Seconds 3
                                             }
                                         }
                                     }
-                                    else {
+                                    elseif ($_.State -match 'All Others') {
                                         New-ComputerNode
                                         if ($_.RemotePort -ne '0'){
                                             New-DiagramNode `
