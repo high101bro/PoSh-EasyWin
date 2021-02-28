@@ -271,7 +271,7 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
     $LogFile                      = "$PoShHome\Log File.txt"
     $IPListFile                   = "$PoShHome\iplist.txt"
 
-    $ComputerTreeNodeFileSave     = "$PoShHome\Computer List TreeView (Saved).csv"
+    $script:ComputerTreeNodeFileSave     = "$PoShHome\Computer List TreeView (Saved).csv"
 
     $OpNotesFile                  = "$PoShHome\OpNotes.txt"
     $OpNotesWriteOnlyFile         = "$PoShHome\OpNotes (Write Only).txt"
@@ -783,7 +783,7 @@ $Column4RightPosition = 845
 
 # Initial load of CSV data
 $script:ComputerTreeViewData = $null
-$script:ComputerTreeViewData = Import-Csv $ComputerTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
+$script:ComputerTreeViewData = Import-Csv $script:ComputerTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
 #$script:ComputerTreeViewData
 
 # Saves the textbox data for Host Data

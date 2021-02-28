@@ -118,7 +118,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
     $script:PSWriteHTMLSupportForm = New-Object System.Windows.Forms.Form -Property @{
         Text    = 'PoSh-EasyWin'
         Width   = $FormScale * 325
-        Height  = $FormScale * 400
+        Height  = $FormScale * 425
         StartPosition = "CenterScreen"
         TopMost = $false
         Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
@@ -153,21 +153,64 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
                     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     ScrollAlwaysVisible = $true
                 }
-                $ConnectionFilterStates = @('Established','Listen','Bound','TimeWait','CloseWait','All Others: Closed,Closing,DeleteTCB,FinWait1,FinWait2,LastAck,SynReceived,SynSent')
+                $ConnectionFilterStates = @('Established','TimeWait','CloseWait','Listen','Bound','All Others: Closed,Closing,DeleteTCB,FinWait1,FinWait2,LastAck,SynReceived,SynSent')
                 foreach ( $State in $ConnectionFilterStates ) { $script:ConnectionStatesFilterCheckedListBox.Items.Add($State) }
+                        if ((Test-Path "$PoShHome\Settings\Network Connection Selected States.txt")){
+                            $ConnectionFilterStatesImportedChecked = Get-Content "$PoShHome\Settings\Network Connection Selected States.txt"
+                            foreach ($State in $ConnectionFilterStatesImportedChecked) {
+                                Set-CheckState -Check -CheckedlistBox $script:ConnectionStatesFilterCheckedListBox -Match $State
+                            }
+                            $script:PSWriteHTMLSupportForm.Controls.Add($script:ConnectionStatesFilterCheckedListBox)
+                        }
+                        else {
+                            $ConnectionFilterStatesDefaultChecked = @('Established','TimeWait','CloseWait')
+                            foreach ($State in $ConnectionFilterStatesDefaultChecked) {
+                                Set-CheckState -Check -CheckedlistBox $script:ConnectionStatesFilterCheckedListBox -Match $State
+                            }
+                            $script:PSWriteHTMLSupportForm.Controls.Add($script:ConnectionStatesFilterCheckedListBox)    
+                        }
 
-                $ConnectionFilterStatesDefaultChecked = @('Established','Listen')
-                foreach ($State in $ConnectionFilterStatesDefaultChecked) {
-                    Set-CheckState -Check -CheckedlistBox $script:ConnectionStatesFilterCheckedListBox -Match $State
+    
+                $script:PSWriteHTMLResolveDNSCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
+                    Text   = "Resolve DNS"
+                    Left   = $script:ConnectionStatesFilterCheckedListBox.Left
+                    Top    = $script:ConnectionStatesFilterCheckedListBox.Top + $script:ConnectionStatesFilterCheckedListBox.Height
+                    Width  = $script:ConnectionStatesFilterCheckedListBox.Width / 3
+                    Height = $FormScale * 22
+                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    checked = $false
                 }
-                $script:PSWriteHTMLSupportForm.Controls.Add($script:ConnectionStatesFilterCheckedListBox)
+                $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLResolveDNSCheckbox)
+
+
+                            $script:PSWriteHTMLNameServerLabel = New-Object System.Windows.Forms.Label -Property @{
+                                Text   = "Name Server:"
+                                Left   = $script:PSWriteHTMLResolveDNSCheckbox.Left + $script:PSWriteHTMLResolveDNSCheckbox.Width
+                                Top    = $script:PSWriteHTMLResolveDNSCheckbox.Top + ($FormScale * 4)
+                                Width  = $script:PSWriteHTMLResolveDNSCheckbox.Width
+                                Height = $FormScale * 22
+                                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                            }
+                            $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLNameServerLabel)
+
+
+                            $script:PSWriteHTMLNameServerTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+                                Text   = "Disabled"
+                                Left   = $script:PSWriteHTMLNameServerLabel.Left + $script:PSWriteHTMLNameServerLabel.Width
+                                Top    = $script:PSWriteHTMLNameServerLabel.Top
+                                Width  = $script:PSWriteHTMLNameServerLabel.Width - ($FormScale * 5)
+                                Height = $FormScale * 22
+                                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                                Enabled = $false
+                            }
+                            $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLNameServerTextBox)
 
 
                 $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
                     Text   = "Exclude IPv6"
-                    Left   = $script:ConnectionStatesFilterCheckedListBox.Left
-                    Top    = $script:ConnectionStatesFilterCheckedListBox.Top + $script:ConnectionStatesFilterCheckedListBox.Height
-                    Width  = $script:PoShEasyWinIPToExcludeLabel.Width
+                    Left   = $script:PSWriteHTMLResolveDNSCheckbox.Left
+                    Top    = $script:PSWriteHTMLResolveDNSCheckbox.Top + $script:PSWriteHTMLResolveDNSCheckbox.Height
+                    Width  = $script:PSWriteHTMLResolveDNSCheckbox.Width
                     Height = $FormScale * 22
                     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     checked = $true
@@ -188,7 +231,10 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
 
 
                 $script:IPAddressesToExcludeTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                    Text   = "127.0.0.1`n0.0.0.0`n::"
+                    Text   = "127.0.0.1
+0.0.0.0
+::1
+::"
                     Left   = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Left
                     Top    = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Height
                     Width  = $script:PoShEasyWinIPToExcludeLabel.Width
@@ -199,8 +245,11 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
             #        ScrollAlwaysVisible = $true
                 }
                 $script:PSWriteHTMLSupportForm.Controls.Add($script:IPAddressesToExcludeTextbox)
-                if ((Test-Path "$PoShHome\Settings\PoSh-EasyWin's IP to Exclude.txt")){
-                    $script:IPAddressesToExcludeTextbox.text = Get-Content "$PoShHome\Settings\PoSh-EasyWin's IP to Exclude.txt"
+                if ((Test-Path "$PoShHome\Settings\Network Connection IP's to Exclude.txt")){
+                    $script:IPAddressesToExcludeTextbox.text = ''
+                    foreach ($line in (Get-Content "$PoShHome\Settings\Network Connection IP's to Exclude.txt")) {
+                        $script:IPAddressesToExcludeTextbox.text += "$line`r`n"
+                    }
                 }
 
 
@@ -238,7 +287,9 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
         Width  = $FormScale * 100
         Height = $FormScale * 22
         Add_Click = {
-            ($script:IPAddressesToExcludeTextbox.text).split() | Where-Object {$_ -ne '' -or $_ -ne $null} | Set-Content "$PoShHome\Settings\PoSh-EasyWin's IP to Exclude.txt"
+            $script:ConnectionStatesFilterCheckedListBox.CheckedItems | Set-Content "$PoShHome\Settings\Network Connection Selected States.txt"
+
+            $script:IPAddressesToExcludeTextbox.text | Set-Content "$PoShHome\Settings\Network Connection IP's to Exclude.txt"
             $script:PoShEasyWinIPAddress   = ($script:IPAddressesToExcludeTextbox.text).split() | Where-Object {$_ -ne '' -or $_ -ne $null}
             $script:PSWriteHTMLSupportOkay = $True
 
@@ -576,11 +627,11 @@ Start-Sleep -Seconds 3
                                     -Color Blue `
                                     -Text 'Click On The Process Icons To Automatically Locate Them Within The Table'
         
-                                New-HTMLDiagram {
+                                New-HTMLDiagram -Height '1000px' {
                                     New-DiagramEvent -ID $DataTableIDProcesses1 -ColumnID 1
-                                    New-DiagramOptionsInteraction
+                                    New-DiagramOptionsInteraction -Hover $true
                                     New-DiagramOptionsManipulation
-                                    New-DiagramOptionsPhysics
+                                    New-DiagramOptionsPhysics -Enabled $true
                                     New-DiagramOptionsLayout `
                                         -RandomSeed 13
                                     New-DiagramOptionsNodes `
@@ -589,8 +640,14 @@ Start-Sleep -Seconds 3
                                         -ColorHighlightBorder Orange `
                                         -ColorHoverBackground Orange
                                     New-DiagramOptionsLinks `
+                                        -FontSize 12 `
                                         -ColorHighlight Orange `
-                                        -ColorHover Orange
+                                        -ColorHover Orange `
+                                        -Length 5000
+                                        # -ArrowsToEnabled $true `
+                                        # -Color BlueViolet `
+                                        # -ArrowsToType arrow `
+                                        # -ArrowsFromEnabled $false `
                                     New-DiagramOptionsEdges `
                                         -ColorHighlight Orange `
                                         -ColorHover Orange
@@ -689,11 +746,11 @@ Start-Sleep -Seconds 3
                                     -Color Blue `
                                     -Text 'Click On The Computer Icons To Automatically Locate Them Within The Table'
         
-                                New-HTMLDiagram -Height '1000px' {
+                                New-HTMLDiagram -Height '1000px' -Height '1000px' {
                                     New-DiagramEvent -ID $DataTableIDProcesses2 -ColumnID 2
-                                    New-DiagramOptionsInteraction
+                                    New-DiagramOptionsInteraction -Hover $true
                                     New-DiagramOptionsManipulation
-                                    New-DiagramOptionsPhysics
+                                    New-DiagramOptionsPhysics -Enabled $true
                                     New-DiagramOptionsLayout `
                                         -RandomSeed 13
                                     New-DiagramOptionsNodes `
@@ -702,8 +759,14 @@ Start-Sleep -Seconds 3
                                         -ColorHighlightBorder Orange `
                                         -ColorHoverBackground Orange
                                     New-DiagramOptionsLinks `
+                                        -FontSize 12 `
                                         -ColorHighlight Orange `
-                                        -ColorHover Orange
+                                        -ColorHover Orange `
+                                        -Length 5000
+                                        # -ArrowsToEnabled $true `
+                                        # -Color BlueViolet `
+                                        # -ArrowsToType arrow `
+                                        # -ArrowsFromEnabled $false `
                                     New-DiagramOptionsEdges `
                                         -ColorHighlight Orange `
                                         -ColorHover Orange
@@ -1208,7 +1271,6 @@ Start-Sleep -Seconds 3
 
 
         function script:Start-PSWriteHTMLNetworkConnections {
-            
             $script:EndpointDataNetworkConnections    = $script:EndpointDataNetworkConnections | Select-Object -Property RemoteIPPort, LocalIPPort, PSComputerName, State, Protocol, LocalAddress, LocalPort, RemoteAddress, RemotePort, ProcessName, ProcessId, ParentProcessId, CreationTime, Duration, CommandLine, ExecutablePath, MD5Hash, OwningProcess, CollectionMethod
             $NetworkConnectionsLocalPortsListening    = $script:EndpointDataNetworkConnections | Select-Object LocalPort, State, PSComputerName -Unique | Where-Object {$_.State -match 'Listen'} | Group-Object LocalPort | Sort-Object Count, Name
             $NetworkConnectionsRemotePortsEstablished = $script:EndpointDataNetworkConnections | Select-Object RemotePort, State, PSComputerName -Unique | Where-Object {$_.State -match 'Establish'} | Group-Object RemotePort | Sort-Object Count, Name
@@ -1262,127 +1324,127 @@ Start-Sleep -Seconds 3
 # Define data
                         $DataTable = @(
                             [PSCustomObject] @{
-                                Name  = 'My Object 1'
+                                Name  = 'Test Data 1'
                                 Time  = 1
                                 Money = 5
                                 Taxes = 20
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 2'
+                                Name  = 'Test Data 2'
                                 Time  = 3
                                 Money = 1
                                 Taxes = 5
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 3'
+                                Name  = 'Test Data 3'
                                 Time  = 12
                                 Money = 5
                                 Taxes = 1
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 4'
+                                Name  = 'Test Data 4'
                                 Time  = 1
                                 Money = 5
                                 Taxes = 20
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 5'
+                                Name  = 'Test Data 5'
                                 Time  = 3
                                 Money = 1
                                 Taxes = 5
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 6'
+                                Name  = 'Test Data 6'
                                 Time  = 12
                                 Money = 5
                                 Taxes = 1
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 7'
+                                Name  = 'Test Data 7'
                                 Time  = 1
                                 Money = 5
                                 Taxes = 20
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 8'
+                                Name  = 'Test Data 8'
                                 Time  = 3
                                 Money = 1
                                 Taxes = 5
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 9'
+                                Name  = 'Test Data 9'
                                 Time  = 12
                                 Money = 5
                                 Taxes = 1
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 10'
+                                Name  = 'Test Data 10'
                                 Time  = 1
                                 Money = 5
                                 Taxes = 20
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 11'
+                                Name  = 'Test Data 11'
                                 Time  = 3
                                 Money = 1
                                 Taxes = 5
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 12'
+                                Name  = 'Test Data 12'
                                 Time  = 12
                                 Money = 5
                                 Taxes = 1
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 13'
+                                Name  = 'Test Data 13'
                                 Time  = 1
                                 Money = 5
                                 Taxes = 20
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 14'
+                                Name  = 'Test Data 14'
                                 Time  = 3
                                 Money = 1
                                 Taxes = 5
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 15'
+                                Name  = 'Test Data 15'
                                 Time  = 12
                                 Money = 5
                                 Taxes = 1
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 16'
+                                Name  = 'Test Data 16'
                                 Time  = 1
                                 Money = 5
                                 Taxes = 20
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 17'
+                                Name  = 'Test Data 17'
                                 Time  = 3
                                 Money = 1
                                 Taxes = 5
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 18'
+                                Name  = 'Test Data 18'
                                 Time  = 12
                                 Money = 5
                                 Taxes = 1
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 19'
+                                Name  = 'Test Data 19'
                                 Time  = 1
                                 Money = 5
                                 Taxes = 20
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 20'
+                                Name  = 'Test Data 20'
                                 Time  = 3
                                 Money = 1
                                 Taxes = 5
                             }
                             [PSCustomObject] @{
-                                Name  = 'My Object 21'
+                                Name  = 'Test Data 21'
                                 Time  = 12
                                 Money = 5
                                 Taxes = 1
@@ -1581,7 +1643,7 @@ Start-Sleep -Seconds 3
                                 -Color Blue `
                                 -Text 'Click On The Network Connection Icons To Automatically Locate Them Within The Table'
         
-                            New-HTMLDiagram {
+                            New-HTMLDiagram -Height '1000px' {
                                 New-DiagramEvent -ID $DataTableIDNetworkConnections -ColumnID 1
                                 New-DiagramEvent -ID $DataTableIDNetworkConnections -ColumnID 2
                                 New-DiagramEvent -ID $DataTableIDNetworkConnections -ColumnID 3
@@ -1599,11 +1661,15 @@ Start-Sleep -Seconds 3
                                     -ColorHighlightBorder Orange `
                                     -ColorHoverBackground Orange
                                 New-DiagramOptionsLinks `
-                                    -Length 500 `
                                     -FontSize 12 `
                                     -ColorHighlight Orange `
-                                    -ColorHover Orange
-                                New-DiagramOptionsEdges `
+                                    -ColorHover Orange `
+                                    -Length 5000
+                                    # -ArrowsToEnabled $true `
+                                    # -Color BlueViolet `
+                                    # -ArrowsToType arrow `
+                                    # -ArrowsFromEnabled $false `
+                            New-DiagramOptionsEdges `
                                     -ColorHighlight Orange `
                                     -ColorHover Orange
         
@@ -1621,143 +1687,246 @@ Start-Sleep -Seconds 3
                                     $filter = {$_.LocalAddress -notmatch $false}
                                 }
 
-
                                 $script:LocalAddressList = $script:EndpointDataNetworkConnections | Select-Object -ExpandProperty LocalAddress | Sort-Object -Unique
                                 $script:NameNodeList = $script:EndpointDataNetworkConnections | Select-Object -ExpandProperty PSComputerName | Sort-Object -Unique
 
+
+                                #$script:AllComputersList = @()
+                                #[System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+                                #foreach ($root in $AllHostsNode) {
+                                #    foreach ($Category in $root.Nodes) {
+                                #        foreach ($Entry in $Category.nodes) {
+                                #            $script:AllComputersList += $Entry.text
+                                #        }
+                                #    }
+                                #}
+
+                                                    #####################################
+                                                    # Hashtable of DNS Results // START #
+                                                    #####################################
+                                                    $StatusListBox.Items.Clear()
+                                                    $StatusListBox.Items.Add("Conducting DNS Resolution - In Progress")
+                                                    $PoShEasyWin.Refresh()
+                                        
+                                                    $script:DNSResolvedList = @{}
+                                                    $RemoteAddresses = ($script:EndpointDataNetworkConnections).RemoteAddress | `
+                                                        Sort-Object -Unique `
+                                                        | Where-Object {$_ -ne '::' -and $_ -ne '::1' -and $_ -ne '0.0.0.0' -and $_ -ne '127.0.0.1'}
+                                                    Get-Job  -Name "nslookup:*" | Remove-Job -Force
+                                                    foreach ( $RemoteIP in $RemoteAddresses ) {
+                                                        if ($script:DNSResolvedList.ContainsKey($RemoteIP)) {
+                                                            $null
+                                                        }
+                                                        else {
+                                                            Start-Job -Name "nslookup:$RemoteIP" `
+                                                            -ScriptBlock {
+                                                                param($RemoteIP)
+                                                                return @{$RemoteIP = $((Resolve-DnsName $RemoteIP -QuickTimeout -ErrorAction SilentlyContinue).NameHost)}
+                                                            } -ArgumentList @($RemoteIP,$null)
+                                                        }
+                                                    }
+
+                                                    $script:ProgressBarQueriesProgressBar.Value = 0
+                                                    $script:ProgressBarQueriesProgressBar.Maximum = (Get-Job -Name "nslookup:*").count
+                                                    while ((Get-Job -Name "nslookup:*").State -match 'Running'){
+                                                        $Jobs = Get-Job -Name "nslookup:*"
+                                                        "$($Jobs.count) / $(($jobs.State -match 'Complete').count)"
+                                                        if ($($Jobs.count) -eq $(($jobs.State -match 'Complete').count)){break}
+
+                                                        $script:ProgressBarQueriesProgressBar.Value = ($jobs.State -match 'Complete').count
+                                                        $script:ProgressBarQueriesProgressBar.Refresh()
+                                                        Start-Sleep -Milliseconds 250
+                                                    }
+                                                    $script:ProgressBarQueriesProgressBar.Maximum = 1
+                                                    $script:ProgressBarQueriesProgressBar.Value = 1
+                                                    $StatusListBox.Items.Clear()
+                                                    $StatusListBox.Items.Add("Conducting DNS Resolution - Completed")
+                                                    $PoShEasyWin.Refresh()
+
+                                                    $UnresolvedCount = 0
+                                                    ForEach ($Job in (Get-Job -Name "nslookup:*")){
+                                                        $JobRecieved = $Job | Receive-Job
+                                                        if ($JobRecieved.Values -ne $null) {
+\                                                            $script:DNSResolvedList.add("$($JobRecieved.Keys)", "$($JobRecieved.Values)")
+                                                        }
+                                                        else {
+                                                            $UnresolvedCount += 1
+                                                            $script:DNSResolvedList.add("$($JobRecieved.Keys)", "Unresolved: $($UnresolvedCount)")
+                                                        }
+                                                    }
+                                                    Get-Job  -Name "nslookup:*" | Remove-Job
+                                                    ###################################
+                                                    # Hashtable of DNS Results // END #
+                                                    ###################################
+
+                                #$DomainDNSHostnameList = @()
+                                #foreach ($Endpoint in $script:DNSResolvedList.Values) {
+                                #    $Endpoint = $Endpoint.split('.')[0]
+                                #    if ( $Endpoint -in $script:AllComputersList -and $Endpoint -notin $DomainDNSHostnameList ) {
+                                #        $DomainDNSHostnameList += $Endpoint
+                                #    }
+                                #}
+                                #$DomainDNSHostnameList | ogv
+
+                                
+                                $StatusListBox.Items.Clear()
+                                $StatusListBox.Items.Add("Generating Graphs, Charts, & Tables")
+                                $PoShEasyWin.Refresh()
                                 $script:EndpointDataNetworkConnections | Where-Object -FilterScript $filter `
                                 | ForEach-Object {
                                     function New-ComputerNode {
-                                        $ResolvedName = (Resolve-DnsName $_.RemoteAddress | Select-Object -ExpandProperty NameHost).split('.')[0]
-                                        
-                                        $ResolvedName > c:\resolved_name.txt
-                                        $_.PSComputerName > c:\pscomputername.txt
-                                        $_.RemoteAddress > c:\remoteaddress.txt
-                                        $script:NameNodeList > c:\NameNodeList.txt
 
-                                        #$ResolvedName -ne $_.PSComputerName
-                                        #if ($ResolvedName -notin $script:NameNodeList -and $_.RemoteAddress -notin $script:LocalAddressList) {
-                                        if ($ResolvedName -notin $script:NameNodeList -and $_.RemoteAddress -notin $script:LocalAddressList) {
-                                            New-DiagramNode `
-                                                -Label  "DNS Resolution:`n$ResolvedName" `
-                                                -To     $_.RemoteAddress `
-                                                -Image  "$Dependencies\Images\DNS.png" `
-                                                -Size   25 `
-                                                -FontSize   20 `
-                                                -FontColor  Blue `
-                                                -LinkColor  Blue
-                                            $script:LocalAddressList += $_.RemoteAddress
-                                            $script:NameNodeList += $ResolvedName
+                                        #if ($DNSHostname.split('.')[0] -in $script:AllComputersList) { 
+                                        #if ( $_.RemoteAddress -in $DomainDNSIPList ) {
+                                        #    $ResolvedHoseName = ($script:DNSResolvedList[$_.RemoteAddress]).spit('.')[0]
+                                        #}
+                                        if ($script:PSWriteHTMLResolveDNSCheckbox.checked) {
+                                            if ( $script:DNSResolvedList[$_.RemoteAddress] ) {
+                                                $ResolvedHoseName = "DNS Resolution:`n$( $script:DNSResolvedList[$_.RemoteAddress] )"
+                                            }
+
+                                            if ($ResolvedHoseName -notin $script:NameNodeList -and $_.RemoteAddress -notin $script:LocalAddressList) {
+                                                New-DiagramNode `
+                                                    -Label  $ResolvedHoseName `
+                                                    -To     $_.RemoteAddress `
+                                                    -Image  "$Dependencies\Images\DNS.png" `
+                                                    -Size   25 `
+                                                    -FontSize   20 `
+                                                    -FontColor  Blue `
+                                                    -LinkColor  Blue
+                                                
+                                                $script:LocalAddressList += $_.RemoteAddress
+                                                $script:NameNodeList += $ResolvedHoseName
+                                                $script:NameNodeList += $DNSResolution
+                                            }
                                         }
 
-
-                                            if ($_.LocalAddress -match '127(\.\d){3}' -or $_.LocalAddress -match '0.0.0.0' ) {
-                                                
-                                                if ($_.LocalAddress -notin $NIClist) {
-                                                    New-DiagramNode `
-                                                        -Label  $_.PSComputerName `
-                                                        -To     "[$($_.PSComputerName)]`n$($_.LocalAddress)" `
-                                                        -Image  "$Dependencies\Images\Computer.jpg" `
-                                                        -Size   50 `
-                                                        -FontSize   20 `
-                                                        -FontColor  Blue `
-                                                        -LinkColor  Blue `
-                                                        -ArrowsToEnabled
-                                                    $NIClist += $_.LocalAddress
-                                                }
+                                        if ($_.LocalAddress -match '127(\.\d){3}' -or $_.LocalAddress -match '0.0.0.0' ) {
+                                            
+                                            if ($_.LocalAddress -notin $NIClist) {
                                                 New-DiagramNode `
-                                                    -Label  "[$($_.PSComputerName)]`n$($_.LocalAddress)" `
-                                                    -To     "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
-                                                    -Image  "$Dependencies\Images\NIC.jpg" `
-                                                    -Size   40 `
-                                                    -LinkColor Blue `
+                                                    -Label  $_.PSComputerName `
+                                                    -To     "[$($_.PSComputerName)]`n$($_.LocalAddress)" `
+                                                    -Image  "$Dependencies\Images\Computer.jpg" `
+                                                    -Size   65 `
+                                                    -FontSize   20 `
+                                                    -FontColor  Blue `
+                                                    -LinkColor  Blue `
                                                     -ArrowsToEnabled
+                                                $NIClist += $_.LocalAddress
                                             }
-                                            else {
-                                                if ($_.LocalAddress -notin $NIClist) {
-                                                    New-DiagramNode `
-                                                        -Label  $_.PSComputerName `
-                                                        -To     $_.LocalAddress `
-                                                        -Image  "$Dependencies\Images\Computer.jpg" `
-                                                        -Size   50 `
-                                                        -FontSize   20 `
-                                                        -FontColor  Blue `
-                                                        -LinkColor  Blue `
-                                                        -ArrowsToEnabled
-                                                    $NIClist += $_.LocalAddress
-                                                }
+                                            New-DiagramNode `
+                                                -Label  "[$($_.PSComputerName)]`n$($_.LocalAddress)" `
+                                                -To     "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
+                                                -Image  "$Dependencies\Images\NIC.jpg" `
+                                                -Size   40 `
+                                                -LinkColor Blue `
+                                                -ArrowsToEnabled
+                                        }
+                                        else {
+                                            if ($_.LocalAddress -notin $NIClist) {
                                                 New-DiagramNode `
-                                                    -Label  $_.LocalAddress `
-                                                    -To     "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
-                                                    -Image  "$Dependencies\Images\NIC.jpg" `
-                                                    -Size   40 `
-                                                    -LinkColor Blue `
+                                                    -Label  $_.PSComputerName `
+                                                    -To     $_.LocalAddress `
+                                                    -Image  "$Dependencies\Images\Computer.jpg" `
+                                                    -Size   65 `
+                                                    -FontSize   20 `
+                                                    -FontColor  Blue `
+                                                    -LinkColor  Blue `
                                                     -ArrowsToEnabled
+                                                $NIClist += $_.LocalAddress
                                             }
+                                            New-DiagramNode `
+                                                -Label  $_.LocalAddress `
+                                                -To     "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
+                                                -Image  "$Dependencies\Images\NIC.jpg" `
+                                                -Size   40 `
+                                                -LinkColor Blue `
+                                                -ArrowsToEnabled
+                                        }
                                     }
 
-                                    # Only creates nodes for IPs that are not PoSh-EasyWin IPs
-                                    if ($_.state -match 'Established' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Established'){
-                                        New-ComputerNode
+                                    function New-ProcessConnectionNodes {
+                                        param(
+                                            $IconColor,
+                                            $LinkColor
+                                        )
                                         if ($_.RemotePort -ne '0'){
                                             New-DiagramNode `
                                                 -Label  "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
                                                 -To     "$($_.LocalAddress):$($_.LocalPort)" `
                                                 -Image  "$Dependencies\Images\Process.jpg" `
                                                 -size   25 `
-                                                -LinkColor Blue `
+                                                -LinkColor $IconColor `
                                                 -ArrowsToEnabled
                                             New-DiagramNode `
                                                 -Label  "$($_.LocalAddress):$($_.LocalPort)" `
                                                 -To     "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                -Size   25 `
+                                                -Size   20 `
                                                 -IconSolid  Network-wired `
-                                                -IconColor  DarkBlue `
-                                                -LinkColor  Blue `
+                                                -IconColor  $IconColor `
+                                                -LinkColor  $IconColor `
                                                 -ArrowsToEnabled
                                             New-DiagramNode `
                                                 -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
                                                 -To     $_.RemoteAddress `
-                                                -Size   25 `
+                                                -Size   20 `
                                                 -IconSolid  Network-wired `
-                                                -IconColor  DarkBlue `
-                                                -LinkColor  Blue `
+                                                -IconColor  $IconColor `
+                                                -LinkColor  $IconColor `
                                                 -ArrowsToEnabled
-                                            if ($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.checked -and ($_.LocalAddress -in $script:PoShEasyWinIPAddress -or $_.RemoteAddress -in $script:PoShEasyWinIPAddress)) {
-                                                New-DiagramNode `
-                                                    -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                    -To     "[$($_.PSComputerName)]`nPoSh-EasyWin`n$($_.RemoteAddress)" `
-                                                    -Image  "$Dependencies\Images\favicon.ico" `
-                                                    -size   20 `
-                                                    -ColorBorder      DarkBlue `
-                                                    -ColorBackground  Blue `
-                                                    -LinkColor        Blue `
-                                                    -ArrowsToEnabled
-                                            }
-                                            else {
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteIPPort  `
-                                                    -To     $_.RemoteAddress `
-                                                    -Size   25 `
-                                                    -IconSolid  Network-wired `
-                                                    -IconColor  DarkBlue `
-                                                    -LinkColor  Blue `
-                                                    -ArrowsToEnabled
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteAddress `
-                                                    -Image  "$Dependencies\Images\NIC.jpg" `
-                                                    -size   40 `
-                                                    -LinkColor Blue `
-                                                    -ArrowsToEnabled
-                                            }
-                                        }
+                                            New-DiagramNode `
+                                                -Label  $_.RemoteIPPort  `
+                                                -To     $_.RemoteAddress `
+                                                -Size   20 `
+                                                -IconSolid  Network-wired `
+                                                -IconColor  $IconColor `
+                                                -LinkColor  $IconColor `
+                                                -ArrowsToEnabled
+                                            New-DiagramNode `
+                                                -Label  $_.RemoteAddress `
+                                                -Image  "$Dependencies\Images\NIC.jpg" `
+                                                -size   40 `
+                                                -LinkColor $IconColor `
+                                                -ArrowsToEnabled
+                                        }                                        
+                                    }
+
+                                    # Only creates nodes for IPs that are not PoSh-EasyWin IPs
+                                    if ($_.state -match 'Established' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Established'){
+                                        New-ComputerNode
+                                        New-ProcessConnectionNodes -IconColor DarkBlue -LinkColor Blue
+                                    }
+                                    elseif ($_.state -match 'Bound' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Bound') {
+                                        New-ComputerNode
+                                        New-ProcessConnectionNodes -IconColor Brown -LinkColor DarkBrown
+                                    }
+                                    elseif ($_.state -match 'CloseWait' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'CloseWait') {
+                                        New-ComputerNode
+                                        New-ProcessConnectionNodes -IconColor Green -LinkColor DarkGreen
+                                    }
+                                    elseif ($_.state -match 'Timeout' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Timeout') {
+                                        New-ComputerNode
+                                        New-ProcessConnectionNodes -IconColor Violet -LinkColor DarkViolet
+                                    }
+                                    elseif ($_.State -match 'All Others' `
+                                        -and ($script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Closed' `
+                                         -or  $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Closing' `
+                                         -or  $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'DeleteTCB' `
+                                         -or  $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'FinWait1' `
+                                         -or  $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'FinWait2' `
+                                         -or  $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'LastAck' `
+                                         -or  $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'SynReceived' `
+                                         -or  $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'SynSent' ) ) {
+                                        New-ComputerNode
+                                        New-ProcessConnectionNodes -IconColor Gray -LinkColor DarkGray
                                     }
                                     elseif ($_.state -match 'Listen' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Listen'){
                                         New-DiagramNode `
                                             -Label  $_.PSComputerName `
                                             -To     "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
                                             -Image  "$Dependencies\Images\Computer.jpg" `
-                                            -Size   50 `
+                                            -Size   65 `
                                             -FontSize   20 `
                                             -FontColor  Orange `
                                             -LinkColor  Gold `
@@ -1777,222 +1946,6 @@ Start-Sleep -Seconds 3
                                             -ColorBackground  Yellow `
                                             -LinkColor        Gold `
                                             -ArrowsToEnabled
-                                    }
-                                    elseif ($_.state -match 'Bound' -and $script:ConnectionStatesFilterCheckedListBox.CheckedItems -contains 'Bound') {
-                                        New-ComputerNode
-                                        if ($_.RemotePort -ne '0'){
-                                            New-DiagramNode `
-                                                -Label  "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
-                                                -To     "$($_.LocalAddress):$($_.LocalPort)" `
-                                                -Image  "$Dependencies\Images\Process.jpg" `
-                                                -size   25 `
-                                                -LinkColor DarkBrown `
-                                                -ArrowsToEnabled
-                                            New-DiagramNode `
-                                                -Label  "$($_.LocalAddress):$($_.LocalPort)" `
-                                                -To     "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                -Size   25 `
-                                                -IconSolid  Network-wired `
-                                                -IconColor  Brown `
-                                                -LinkColor  DarkBrown `
-                                                -ArrowsToEnabled
-                                            New-DiagramNode `
-                                                -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                -To     $_.RemoteAddress `
-                                                -Size   25 `
-                                                -IconSolid  Network-wired `
-                                                -IconColor  Brown `
-                                                -LinkColor  DarkBrown `
-                                                -ArrowsToEnabled
-                                            if ($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.checked -and ($_.LocalAddress -in $script:PoShEasyWinIPAddress -or $_.RemoteAddress -in $script:PoShEasyWinIPAddress)) {
-                                                New-DiagramNode `
-                                                    -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                    -To     "[$($_.PSComputerName)]`nPoSh-EasyWin`n$($_.RemoteAddress)" `
-                                                    #-Label  $_.RemoteAddress `
-                                                    -Image  "$Dependencies\Images\favicon.ico" `
-                                                    -size   20 `
-                                                    -LinkColor DarkBrown `
-                                                    -ArrowsToEnabled
-                                            }
-                                            else {
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteIPPort  `
-                                                    -To     $_.RemoteAddress `
-                                                    -Size   25 `
-                                                    -IconSolid  Network-wired `
-                                                    -IconColor  Brown `
-                                                    -LinkColor  DarkBrown `
-                                                    -ArrowsToEnabled
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteAddress `
-                                                    -Image  "$Dependencies\Images\NIC.jpg" `
-                                                    -size   40 `
-                                                    -LinkColor DarkBrown `
-                                                    -ArrowsToEnabled
-                                            }
-                                        }
-                                    }
-                                    elseif ($_.state -match 'CloseWait') {
-                                        New-ComputerNode
-                                        if ($_.RemotePort -ne '0'){
-                                            New-DiagramNode `
-                                                -Label  "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
-                                                -To     "$($_.LocalAddress):$($_.LocalPort)" `
-                                                -Image  "$Dependencies\Images\Process.jpg" `
-                                                -size   25 `
-                                                -LinkColor DarkGreen `
-                                                -ArrowsToEnabled
-                                            New-DiagramNode `
-                                                -Label  "$($_.LocalAddress):$($_.LocalPort)" `
-                                                -To     "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                -Size   25 `
-                                                -IconSolid  Network-wired `
-                                                -IconColor  Green `
-                                                -LinkColor  DarkGreen `
-                                                -ArrowsToEnabled
-                                            New-DiagramNode `
-                                                -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                -To     $_.RemoteAddress `
-                                                -Size   25 `
-                                                -IconSolid  Network-wired `
-                                                -IconColor  Green `
-                                                -LinkColor  DarkGreen `
-                                                -ArrowsToEnabled
-                                            if ($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.checked -and ($_.LocalAddress -in $script:PoShEasyWinIPAddress -or $_.RemoteAddress -in $script:PoShEasyWinIPAddress))  {
-                                                New-DiagramNode `
-                                                    -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                    -To     "[$($_.PSComputerName)]`nPoSh-EasyWin`n$($_.RemoteAddress)" `
-                                                    #-Label  $_.RemoteAddress `
-                                                    -Image  "$Dependencies\Images\favicon.ico" `
-                                                    -size   20 `
-                                                    -LinkColor DarkGreen `
-                                                    -ArrowsToEnabled
-                                            }
-                                            else {
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteIPPort  `
-                                                    -To     $_.RemoteAddress `
-                                                    -Size   25 `
-                                                    -IconSolid  Network-wired `
-                                                    -IconColor  Green `
-                                                    -LinkColor  DarkGreen `
-                                                    -ArrowsToEnabled
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteAddress `
-                                                    -Image  "$Dependencies\Images\NIC.jpg" `
-                                                    -size   40 `
-                                                    -LinkColor DarkGreen `
-                                                    -ArrowsToEnabled
-                                            }
-                                        }
-                                    }
-                                    elseif ($_.state -match 'Timeout') {
-                                        New-ComputerNode
-                                        if ($_.RemotePort -ne '0'){
-                                            New-DiagramNode `
-                                                -Label  "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
-                                                -To     "$($_.LocalAddress):$($_.LocalPort)" `
-                                                -Image  "$Dependencies\Images\Process.jpg" `
-                                                -size   25 `
-                                                -LinkColor DarkViolet `
-                                                -ArrowsToEnabled
-                                            New-DiagramNode `
-                                                -Label  "$($_.LocalAddress):$($_.LocalPort)" `
-                                                -To     "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                -Size   25 `
-                                                -IconSolid  Network-wired `
-                                                -IconColor  Violet `
-                                                -LinkColor  DarkViolet `
-                                                -ArrowsToEnabled
-                                            New-DiagramNode `
-                                                -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                -To     $_.RemoteAddress `
-                                                -Size   25 `
-                                                -IconSolid  Network-wired `
-                                                -IconColor  Violet `
-                                                -LinkColor  DarkViolet `
-                                                -ArrowsToEnabled
-                                            if ($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.checked -and ($_.LocalAddress -in $script:PoShEasyWinIPAddress -or $_.RemoteAddress -in $script:PoShEasyWinIPAddress))  {
-                                                New-DiagramNode `
-                                                    -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                    -To     "[$($_.PSComputerName)]`nPoSh-EasyWin`n$($_.RemoteAddress)" `
-                                                    #-Label  $_.RemoteAddress `
-                                                    -Image  "$Dependencies\Images\favicon.ico" `
-                                                    -size   20 `
-                                                    -LinkColor DarkViolet `
-                                                    -ArrowsToEnabled
-                                            }
-                                            else {
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteIPPort  `
-                                                    -To     $_.RemoteAddress `
-                                                    -Size   25 `
-                                                    -IconSolid  Network-wired `
-                                                    -IconColor  Violet `
-                                                    -LinkColor  DarkViolet `
-                                                    -ArrowsToEnabled
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteAddress `
-                                                    -Image  "$Dependencies\Images\NIC.jpg" `
-                                                    -size   40 `
-                                                    -LinkColor DarkViolet `
-                                                    -ArrowsToEnabled
-                                            }
-                                        }
-                                    }
-                                    elseif ($_.State -match 'All Others') {
-                                        New-ComputerNode
-                                        if ($_.RemotePort -ne '0'){
-                                            New-DiagramNode `
-                                                -Label  "[$($_.PSComputerName)]`n$($_.ProcessName)`nPID:$($_.ProcessID)`n($($_.State))" `
-                                                -To     "$($_.LocalAddress):$($_.LocalPort)" `
-                                                -Image  "$Dependencies\Images\Process.jpg" `
-                                                -size   25 `
-                                                -LinkColor DarkGray `
-                                                -ArrowsToEnabled
-                                            New-DiagramNode `
-                                                -Label  "$($_.LocalAddress):$($_.LocalPort)" `
-                                                -To     "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                -Size   25 `
-                                                -IconSolid  Network-wired `
-                                                -IconColor  Gray `
-                                                -LinkColor  DarkGray `
-                                                -ArrowsToEnabled
-                                            New-DiagramNode `
-                                                -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                -To     $_.RemoteAddress `
-                                                -Size   25 `
-                                                -IconSolid  Network-wired `
-                                                -IconColor  Gray `
-                                                -LinkColor  DarkGray `
-                                                -ArrowsToEnabled
-                                            if ($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.checked -and ($_.LocalAddress -in $script:PoShEasyWinIPAddress -or $_.RemoteAddress -in $script:PoShEasyWinIPAddress))  {
-                                                New-DiagramNode `
-                                                    -Label  "$($_.RemoteAddress):$($_.RemotePort)" `
-                                                    -To     "[$($_.PSComputerName)]`nPoSh-EasyWin`n$($_.RemoteAddress)" `
-                                                    #-Label  $_.RemoteAddress `
-                                                    -Image  "$Dependencies\Images\favicon.ico" `
-                                                    -size   20 `
-                                                    -LinkColor DarkGray `
-                                                    -ArrowsToEnabled
-                                            }
-                                            else {
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteIPPort  `
-                                                    -To     $_.RemoteAddress `
-                                                    -Size   25 `
-                                                    -IconSolid  Network-wired `
-                                                    -IconColor  Gray `
-                                                    -LinkColor  DarkGray `
-                                                    -ArrowsToEnabled
-                                                New-DiagramNode `
-                                                    -Label  $_.RemoteAddress `
-                                                    -Image  "$Dependencies\Images\NIC.jpg" `
-                                                    -size   40 `
-                                                    -LinkColor DarkGray `
-                                                    -ArrowsToEnabled
-                                            }
-                                        }
                                     }
                                 }
                             }
@@ -2273,7 +2226,7 @@ Start-Sleep -Seconds 3
                                 -Color Blue `
                                 -Text 'Click On The Computer Icons To Automatically Locate Them Within The Table'
         
-                            New-HTMLDiagram {
+                            New-HTMLDiagram -Height '1000px' {
                                 New-DiagramEvent -ID $DataTableIDConsoleLogons -ColumnID 0
                                 New-DiagramOptionsInteraction -Hover $true
                                 New-DiagramOptionsManipulation 
@@ -2289,11 +2242,15 @@ Start-Sleep -Seconds 3
                                     -ColorHighlightBorder Orange `
                                     -ColorHoverBackground Orange
                                 New-DiagramOptionsLinks `
-                                    -Length 500 `
                                     -FontSize 12 `
                                     -ColorHighlight Orange `
-                                    -ColorHover Orange
-                                New-DiagramOptionsEdges `
+                                    -ColorHover Orange `
+                                    -Length 5000
+                                    # -ArrowsToEnabled $true `
+                                    # -Color BlueViolet `
+                                    # -ArrowsToType arrow `
+                                    # -ArrowsFromEnabled $false `
+                            New-DiagramOptionsEdges `
                                     -ColorHighlight Orange `
                                     -ColorHover Orange
         
@@ -2564,7 +2521,7 @@ Start-Sleep -Seconds 3
                                 -Color Blue `
                                 -Text 'Click On The Computer Icons To Automatically Locate Them Within The Table'
         
-                            New-HTMLDiagram {
+                            New-HTMLDiagram -Height '1000px' {
                                 New-DiagramEvent -ID $DataTableIDPowerShellSessions -ColumnID 0
                                 New-DiagramOptionsInteraction -Hover $true
                                 New-DiagramOptionsManipulation 
@@ -2579,10 +2536,14 @@ Start-Sleep -Seconds 3
                                     -ColorHighlightBorder Orange `
                                     -ColorHoverBackground Orange
                                 New-DiagramOptionsLinks `
-                                    -Length 500 `
                                     -FontSize 12 `
                                     -ColorHighlight Orange `
-                                    -ColorHover Orange
+                                    -ColorHover Orange `
+                                    -Length 5000
+                                    # -ArrowsToEnabled $true `
+                                    # -Color BlueViolet `
+                                    # -ArrowsToType arrow `
+                                    # -ArrowsFromEnabled $false `
                                 New-DiagramOptionsEdges `
                                     -ColorHighlight Orange `
                                     -ColorHover Orange
@@ -2808,7 +2769,7 @@ Start-Sleep -Seconds 3
                                 -Color Blue `
                                 -Text 'Click On The Computer Icons To Automatically Locate Them Within The Table'
         
-                            New-HTMLDiagram {
+                            New-HTMLDiagram -Height '1000px' {
                                 New-DiagramEvent -ID $DataTableIDApplicationCrashes -ColumnID 5
                                 New-DiagramOptionsInteraction -Hover $true
                                 New-DiagramOptionsManipulation 
@@ -2824,10 +2785,14 @@ Start-Sleep -Seconds 3
                                     -ColorHighlightBorder Orange `
                                     -ColorHoverBackground Orange
                                 New-DiagramOptionsLinks `
-                                    -Length 500 `
                                     -FontSize 12 `
                                     -ColorHighlight Orange `
-                                    -ColorHover Orange
+                                    -ColorHover Orange `
+                                    -Length 5000
+                                    # -ArrowsToEnabled $true `
+                                    # -Color BlueViolet `
+                                    # -ArrowsToType arrow `
+                                    # -ArrowsFromEnabled $false `
                                 New-DiagramOptionsEdges `
                                     -ColorHighlight Orange `
                                     -ColorHover Orange
@@ -3049,7 +3014,7 @@ Start-Sleep -Seconds 3
                                 -Color Blue `
                                 -Text 'Click On The Computer Icons To Automatically Locate Them Within The Table'
         
-                            New-HTMLDiagram {
+                            New-HTMLDiagram -Height '1000px' {
                                 New-DiagramEvent -ID $DataTableIDApplicationCrashes -ColumnID 5
                                 New-DiagramOptionsInteraction -Hover $true
                                 New-DiagramOptionsManipulation 
@@ -3065,11 +3030,15 @@ Start-Sleep -Seconds 3
                                     -ColorHighlightBorder Orange `
                                     -ColorHoverBackground Orange
                                 New-DiagramOptionsLinks `
-                                    -Length 500 `
                                     -FontSize 12 `
                                     -ColorHighlight Orange `
-                                    -ColorHover Orange
-                                New-DiagramOptionsEdges `
+                                    -ColorHover Orange `
+                                    -Length 5000
+                                    # -ArrowsToEnabled $true `
+                                    # -Color BlueViolet `
+                                    # -ArrowsToType arrow `
+                                    # -ArrowsFromEnabled $false `
+                            New-DiagramOptionsEdges `
                                     -ColorHighlight Orange `
                                     -ColorHover Orange
         
@@ -3453,7 +3422,7 @@ Start-Sleep -Seconds 3
                                 -Color Blue `
                                 -Text 'Click On The XXXXXXXXXXXXXXXXX Icons To Automatically Locate Them Within The Table'
         
-                            New-HTMLDiagram {
+                            New-HTMLDiagram -Height '1000px' {
                                 New-DiagramEvent -ID $DataTableIDLogonActivity -ColumnID 0
                                 New-DiagramOptionsInteraction -Hover $true
                                 New-DiagramOptionsManipulation 
@@ -3469,10 +3438,14 @@ Start-Sleep -Seconds 3
                                     -ColorHighlightBorder Orange `
                                     -ColorHoverBackground Orange
                                 New-DiagramOptionsLinks `
-                                    -Length 500 `
                                     -FontSize 12 `
                                     -ColorHighlight Orange `
-                                    -ColorHover Orange
+                                    -ColorHover Orange `
+                                    -Length 5000
+                                    # -ArrowsToEnabled $true `
+                                    # -Color BlueViolet `
+                                    # -ArrowsToType arrow `
+                                    # -ArrowsFromEnabled $false `
                                 New-DiagramOptionsEdges `
                                     -ColorHighlight Orange `
                                     -ColorHover Orange
@@ -3940,7 +3913,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
                                         -Color Blue `
                                         -Text 'Click On The User Icons To Automatically Locate Them Within The Table'
 
-                                    New-HTMLDiagram {
+                                    New-HTMLDiagram -Height '1000px' {
                                         New-DiagramEvent -ID $DataTableIDUsers -ColumnID 1
 
                                         $OuCnList = @()
@@ -4267,7 +4240,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
                                         -Color Blue `
                                         -Text 'Click On The Computer Icons To Automatically Locate Them Within The Table'
 
-                                    New-HTMLDiagram {
+                                    New-HTMLDiagram -Height '1000px' {
                                         New-DiagramEvent -ID $DataTableIDComputers -ColumnID 1
 
                                         $OuCnList = @()

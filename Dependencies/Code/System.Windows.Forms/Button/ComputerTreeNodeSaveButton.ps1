@@ -9,11 +9,11 @@ $ComputerTreeNodeSaveButtonAdd_MouseHover = {
     Show-ToolTip -Title "Start Collection" -Icon "Warning" -Message @"
 +  Saves changes made to the Computer TreeView and their data
 +  Once saved, the data is loaded automatically upon PoSh-EasyWin startup
-+  Location: "$ComputerTreeNodeFileSave"
++  Location: "$script:ComputerTreeNodeFileSave"
 
 +  Autosaves are made immedately when changes are made
 +  Autosaves are not loaded upon PoSh-EasyWin reload, use 'Import .CSV'
-+  Location: "$ComputerTreeNodeFileSave"
++  Location: "$script:ComputerTreeNodeFileSave"
 "@
 }
 

@@ -73,6 +73,6 @@ Function Save-ComputerTreeNodeHostData {
     Check-HostDataIfModified
 
     # Saves the TreeView Data to File
-    $script:ComputerTreeViewData | Export-Csv $ComputerTreeNodeFileSave -NoTypeInformation -Force
+    $script:ComputerTreeViewData | Export-Csv $script:ComputerTreeNodeFileSave -NoTypeInformation -Force
 }
 
