@@ -4493,6 +4493,13 @@ $script:ProgressBarQueriesProgressBar.Value = $script:ProgressBarQueriesProgress
 $script:ProgressBarQueriesProgressBar.Refresh()
 
 
+if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+    Start-Sleep -Seconds 3
+    Generate-NewRollingPassword
+}
+
+
+
     
 }
 
