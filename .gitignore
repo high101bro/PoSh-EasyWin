@@ -1,7 +1,8 @@
 .gitignore
 Collected**Data
+Autosaved**Charts
 Credential**Management
-Reports/**
+Reports
 alternate_data_stream.txt
 Settings
 Future**Dependency**Check.ps1
