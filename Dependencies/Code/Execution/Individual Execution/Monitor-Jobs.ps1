@@ -35,6 +35,7 @@ function Monitor-Jobs {
         Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
         Invoke-Expression -Command @"
+        `$script:SourceData$ChartNumber = `$SourceData
         `$script:SeriesName$ChartNumber = `$SeriesName
         `$script:PropertyX$ChartNumber  = `$PropertyX
         `$script:PropertyY$ChartNumber  = `$PropertyY
@@ -183,8 +184,8 @@ function Monitor-Jobs {
         `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Color             = `$ChartColor
 
 
-                    `$script:GeneratedAutoChartCsvFileHosts$ChartNumber      = `$SourceData | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
-                    `$script:GeneratedAutoChartUniqueDataFields$ChartNumber  = `$SourceData | Select-Object -Property `$script:PropertyX$ChartNumber | Sort-Object -Property `$script:PropertyX$ChartNumber -Unique | Where {`$_.`$script:PropertyX$ChartNumber -ne `$null -and `$_.`$script:PropertyX$ChartNumber -ne ''}
+                    `$script:GeneratedAutoChartCsvFileHosts$ChartNumber      = `$script:SourceData$ChartNumber | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
+                    `$script:GeneratedAutoChartUniqueDataFields$ChartNumber  = `$script:SourceData$ChartNumber | Select-Object -Property `$script:PropertyX$ChartNumber | Sort-Object -Property `$script:PropertyX$ChartNumber -Unique | Where {`$_.`$script:PropertyX$ChartNumber -ne `$null -and `$_.`$script:PropertyX$ChartNumber -ne ''}
 
                     `$script:AutoChartsProgressBar.ForeColor = 'Red'
                     `$script:AutoChartsProgressBar.Minimum = 0
@@ -205,7 +206,7 @@ function Monitor-Jobs {
                         foreach (`$DataField in `$script:GeneratedAutoChartUniqueDataFields$ChartNumber) {
                             `$Count = 0
                             `$script:GeneratedAutoChartCsvComputers$ChartNumber = @()
-                            foreach ( `$Line in `$SourceData ) {
+                            foreach ( `$Line in `$script:SourceData$ChartNumber ) {
                                 if (`$(`$Line.`$script:PropertyX$ChartNumber) -eq `$DataField.`$script:PropertyX$ChartNumber) {
                                     `$Count += 1
                                     if ( `$script:GeneratedAutoChartCsvComputers$ChartNumber -notcontains `$(`$Line.`$script:PropertyY$ChartNumber) ) { `$script:GeneratedAutoChartCsvComputers$ChartNumber += `$(`$Line.`$script:PropertyY$ChartNumber) }
@@ -409,12 +410,12 @@ function Monitor-Jobs {
         #=====================================
         function script:InvestigateDifference-AutoChart$ChartNumber {
             # List of Positive Endpoints that positively match
-            `$script:GeneratedAutoChartImportCsvPosResults$ChartNumber = `$SourceData | Where-Object `$script:PropertyX$ChartNumber -eq `$(`$script:GeneratedAutoChartInvestDiffDropDownComboBox$ChartNumber.Text) | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
+            `$script:GeneratedAutoChartImportCsvPosResults$ChartNumber = `$script:SourceData$ChartNumber  | Where-Object `$script:PropertyX$ChartNumber -eq `$(`$script:GeneratedAutoChartInvestDiffDropDownComboBox$ChartNumber.Text) | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
             `$script:GeneratedAutoChartInvestDiffPosResultsTextBox$ChartNumber.Text = ''
             ForEach (`$Endpoint in `$script:GeneratedAutoChartImportCsvPosResults$ChartNumber) { `$script:GeneratedAutoChartInvestDiffPosResultsTextBox$ChartNumber.Text += "`$Endpoint`r`n" }
 
             # List of all endpoints within the csv file
-            `$script:GeneratedAutoChartImportCsvAll$ChartNumber = `$SourceData | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
+            `$script:GeneratedAutoChartImportCsvAll$ChartNumber = `$script:SourceData$ChartNumber | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
 
             `$script:GeneratedAutoChartImportCsvNegResults$ChartNumber = @()
             # Creates a list of Endpoints with Negative Results
@@ -472,24 +473,25 @@ function Monitor-Jobs {
                 Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
                 AutoCompleteSource = "ListItems"
                 AutoCompleteMode   = "SuggestAppend"
+                Add_KeyDown = { if (`$_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart$ChartNumber } }
+                Add_Click   = { script:InvestigateDifference-AutoChart$ChartNumber }
             }
             ForEach (`$Item in `$script:GeneratedAutoChartInvestDiffDropDownArray$ChartNumber) { `$script:GeneratedAutoChartInvestDiffDropDownComboBox$ChartNumber.Items.Add(`$Item) }
-            `$script:GeneratedAutoChartInvestDiffDropDownComboBox$ChartNumber.Add_KeyDown({ if (`$_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart$ChartNumber }})
-            `$script:GeneratedAutoChartInvestDiffDropDownComboBox$ChartNumber.Add_Click({ script:InvestigateDifference-AutoChart$ChartNumber })
+            
 
-            ### Investigate Difference Execute Button
+
             `$script:GeneratedAutoChartInvestDiffExecuteButton$ChartNumber = New-Object System.Windows.Forms.Button -Property @{
                 Text   = "Execute"
                 Left   = `$FormScale * 10
                 Top    = `$script:GeneratedAutoChartInvestDiffDropDownComboBox$ChartNumber.Top + `$script:GeneratedAutoChartInvestDiffDropDownComboBox$ChartNumber.Height + `$(`$FormScale * 5)
                 Width  = `$Formscale * 100
                 Height = `$Formscale * 20
+                Add_KeyDown = { if (`$_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart$ChartNumber } }
+                Add_Click   = { script:InvestigateDifference-AutoChart$ChartNumber }
             }
             CommonButtonSettings -Button `$script:GeneratedAutoChartInvestDiffExecuteButton$ChartNumber
-            `$script:GeneratedAutoChartInvestDiffExecuteButton$ChartNumber.Add_KeyDown({ if (`$_.KeyCode -eq "Enter") { script:InvestigateDifference-AutoChart$ChartNumber }})
-            `$script:GeneratedAutoChartInvestDiffExecuteButton$ChartNumber.Add_Click({ script:InvestigateDifference-AutoChart$ChartNumber })
+            
 
-            ### Investigate Difference Positive Results Label & TextBox
             `$script:GeneratedAutoChartInvestDiffPosResultsLabel$ChartNumber = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Positive Match (+)"
                 Left   = `$FormScale * 10
@@ -511,7 +513,6 @@ function Monitor-Jobs {
                 ScrollBars = "Vertical"
             }
 
-            ### Investigate Difference Negative Results Label & TextBox
             `$script:GeneratedAutoChartInvestDiffNegResultsLabel$ChartNumber = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Negative Match (-)"
                 Left   = `$script:GeneratedAutoChartInvestDiffPosResultsLabel$ChartNumber.Left + `$script:GeneratedAutoChartInvestDiffPosResultsLabel$ChartNumber.Width + `$(`$FormScale *  10)
@@ -537,7 +538,8 @@ function Monitor-Jobs {
             `$script:GeneratedAutoChartInvestDiffForm$ChartNumber.ShowDialog()
         })
         `$script:GeneratedAutoChartCheckDiffButton$ChartNumber.Add_MouseHover({
-        Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message "+  Allows you to quickly search for the differences`n`n" })
+            Show-ToolTip -Title "Investigate Difference" -Icon "Info" -Message "+  Allows you to quickly search for the differences`n`n" 
+        })
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartCheckDiffButton$ChartNumber)
 
 
@@ -577,7 +579,7 @@ function Monitor-Jobs {
             Height = `$FormScale * 23
         }
         CommonButtonSettings -Button `$script:GeneratedAutoChartViewResults$ChartNumber
-        `$script:GeneratedAutoChartViewResults$ChartNumber.Add_Click({ `$script:SourceData$ChartNumber | Out-GridView -Title "`$script:AutoChartCSVFileMostRecentCollection" })
+        `$script:GeneratedAutoChartViewResults$ChartNumber.Add_Click({ `$script:SourceData$ChartNumber | Out-GridView -Title "View Results" })
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartViewResults$ChartNumber)
 
 
