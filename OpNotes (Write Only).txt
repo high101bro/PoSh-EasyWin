@@ -1,0 +1,25 @@
+2021/02/13 01:16:29 [+] Notes added from Results Window:
+2021/02/22 07:37:13 l;kjaposdjf
+2021/02/22 07:37:14 this 
+2021/02/22 07:37:15 is
+2021/02/22 07:37:16 a
+2021/02/22 07:37:17 opnote
+2021/02/22 07:37:27 test
+2021/02/22 07:38:38 View CSV File:  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Collected Data\demo test\Processes - (WinRM) PoSh.csv
+2021/02/22 07:38:38  Id=4976; ProcessID=4976; Path=C:\Program Files\Google\Chrome\Application\chrome.exe; StartTime=2/22/2021 1:08:44 AM; WorkingSetSize=20660224; Handle=2792; HandleCount=253; ThreadCount=10; Company=Google LLC; Product=Google Chrome; Description=Google Chrome; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=7024; ProcessID=7024; Path=C:\Windows\system32\conhost.exe; StartTime=2/22/2021 1:34:41 AM; WorkingSetSize=16760832; Handle=2828; HandleCount=260; ThreadCount=3; Company=Microsoft Corporation; Product=Microsoft? Windows? Operating System; Description=Console Window Host; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=512; ProcessID=512; Path=; StartTime=2/22/2021 1:03:10 AM; WorkingSetSize=2150400; Handle=; HandleCount=389; ThreadCount=9; Company=; Product=; Description=; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=580; ProcessID=580; Path=; StartTime=2/22/2021 1:03:11 AM; WorkingSetSize=1101824; Handle=; HandleCount=167; ThreadCount=10; Company=; Product=; Description=; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=3536; ProcessID=3536; Path=; StartTime=2/22/2021 1:03:53 AM; WorkingSetSize=5390336; Handle=; HandleCount=403; ThreadCount=10; Company=; Product=; Description=; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=4104; ProcessID=4104; Path=C:\Windows\system32\ctfmon.exe; StartTime=2/22/2021 1:04:10 AM; WorkingSetSize=18530304; Handle=2968; HandleCount=424; ThreadCount=8; Company=Microsoft Corporation; Product=Microsoft? Windows? Operating System; Description=CTF Loader; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=6436; ProcessID=6436; Path=C:\Windows\system32\DllHost.exe; StartTime=2/22/2021 1:34:34 AM; WorkingSetSize=11288576; Handle=3004; HandleCount=213; ThreadCount=5; Company=Microsoft Corporation; Product=Microsoft? Windows? Operating System; Description=COM Surrogate; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=992; ProcessID=992; Path=C:\Windows\system32\dwm.exe; StartTime=2/22/2021 1:03:11 AM; WorkingSetSize=17039360; Handle=3040; HandleCount=689; ThreadCount=15; Company=Microsoft Corporation; Product=Microsoft? Windows? Operating System; Description=Desktop Window Manager; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=5792; ProcessID=5792; Path=C:\Program Files (x86)\Google\Update\1.3.36.51\GoogleCrashHandler64.exe; StartTime=2/22/2021 1:04:38 AM; WorkingSetSize=368640; Handle=3296; HandleCount=153; ThreadCount=3; Company=Google LLC; Product=Google Update; Description=Google Crash Handler; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=6748; ProcessID=6748; Path=C:\Windows\system32\LogonUI.exe; StartTime=2/22/2021 4:45:26 AM; WorkingSetSize=29712384; Handle=3400; HandleCount=364; ThreadCount=6; Company=Microsoft Corporation; Product=Microsoft? Windows? Operating System; Description=Windows Logon User Interface Host; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=692; ProcessID=692; Path=C:\Windows\system32\lsass.exe; StartTime=2/22/2021 1:03:11 AM; WorkingSetSize=13549568; Handle=3436; HandleCount=1344; ThreadCount=7; Company=Microsoft Corporation; Product=Microsoft? Windows? Operating System; Description=Local Security Authority Process; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:38  Id=716; ProcessID=716; Path=C:\Program Files\Google\Chrome\Application\chrome.exe; StartTime=2/22/2021 1:08:44 AM; WorkingSetSize=50135040; Handle=2612; HandleCount=1034; ThreadCount=23; Company=Google LLC; Product=Google Chrome; Description=Google Chrome; PSComputerName=WIN10-02; RunspaceId=06f32d4f-f197-4c33-b0d1-d0a60a0f3444; PSShowComputerName=True
+2021/02/22 07:38:51 [+] Notes added from Results Window:
+2021/02/22 07:38:51  -  2021/02/22 07:38:14  [00:00:00.8025211]  (WinRM) PoSh -- Processes
+2021/02/22 07:38:51  -  
+2021/02/22 07:38:51  -  2021/02/22 07:38:14  Sessions Created to 2 Endpoints
+2021/02/22 07:38:51  -  2021/02/22 07:38:12  Collection Start Time
