@@ -23,12 +23,12 @@ else {
         }
         $Connection = New-Object -TypeName PSObject -Property $properties
         $proc       = Get-WmiObject -query ('select * from win32_process where ProcessId="{0}"' -f $line[4])
-        $Connection | Add-Member -MemberType NoteProperty OwningProcess $proc.ProcessId
-        $Connection | Add-Member -MemberType NoteProperty ParentProcessId $proc.ParentProcessId
-        $Connection | Add-Member -MemberType NoteProperty Name $proc.Caption
-        $Connection | Add-Member -MemberType NoteProperty ExecutablePath $proc.ExecutablePath
-        $Connection | Add-Member -MemberType NoteProperty CommandLine $proc.CommandLine
-        $Connection | Add-Member -MemberType NoteProperty PSComputerName $env:COMPUTERNAME
+        $Connection | Add-Member -MemberType NoteProperty OwningProcess $proc.ProcessId -Force
+        $Connection | Add-Member -MemberType NoteProperty ParentProcessId $proc.ParentProcessId -Force
+        $Connection | Add-Member -MemberType NoteProperty Name $proc.Caption -Force
+        $Connection | Add-Member -MemberType NoteProperty ExecutablePath $proc.ExecutablePath -Force
+        $Connection | Add-Member -MemberType NoteProperty CommandLine $proc.CommandLine -Force
+        $Connection | Add-Member -MemberType NoteProperty PSComputerName $env:COMPUTERNAME -Force
         if ($Connection.ExecutablePath -ne $null -AND -NOT $NoHash) {
             $MD5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
             $hash = [System.BitConverter]::ToString($MD5.ComputeHash([System.IO.File]::ReadAllBytes($proc.ExecutablePath)))
@@ -89,7 +89,8 @@ function Write-ProcessTree($Process) {
     $ProcessID             = $Process.ProcessID
     $ParentProcessID       = $Process.ParentProcessID
     $ParentProcessName     = $(Get-Process -Id $Process.ParentProcessID).Name
-    #$CreationDate          = $([Management.ManagementDateTimeConverter]::ToDateTime($Process.CreationDate))
+    $CommandLine           = $Process.CommandLine
+    #$CreationDate         = $([Management.ManagementDateTimeConverter]::ToDateTime($Process.CreationDate))
 
     $ServiceInfo           = $ServicePIDs[$Process.ProcessId]
 
@@ -113,6 +114,7 @@ function Write-ProcessTree($Process) {
     | Add-Member NoteProperty 'ProcessID'              $ProcessID         -PassThru -Force `
     | Add-Member NoteProperty 'ParentProcessID'        $ParentProcessID   -PassThru -Force `
     | Add-Member NoteProperty 'ParentProcessName'      $ParentProcessName -PassThru -Force `
+    | Add-Member NoteProperty 'CommandLine'            $CommandLine       -PassThru -Force `
     | Add-Member NoteProperty 'CreationDate'           $CreationDate      -PassThru -Force `
     | Add-Member NoteProperty 'ServiceInfo'            $ServiceInfo       -PassThru -Force `
     | Add-Member NoteProperty 'NetworkConnections'     $NetConns          -PassThru -Force `
@@ -138,6 +140,8 @@ WorkingSet, @{Name='MemoryUsage';Expression={
     else                           {"$([Math]::Round($_.WorkingSet,     2)) Bytes"}
 }}, `
 MD5Hash, SignerCertificate, StatusMessage, SignerCompany, Company, Product, ProductVersion, Description, `
-Modules, ModuleCount, Threads, ThreadCount, Handle, Handles, HandleCount, `
+Modules, ModuleCount, `
+@{n='Threads';e={([string]($_ | Select -Expand Threads | Select -Expand id)).Split() -Join',' }}, `
+ThreadCount, Handle, Handles, HandleCount, `
 Owner, OwnerSID
 

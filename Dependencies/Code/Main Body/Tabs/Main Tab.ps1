@@ -172,13 +172,14 @@ Update-FormProgress "$Dependencies\Code\Charts\Generate-AutoChartsCommand.ps1"
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AutoCreateMultiSeriesChartButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\AutoCreateMultiSeriesChartButton.ps1"
 $AutoCreateMultiSeriesChartButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Multi-Series Charts"
+    #Text     = "Multi-Series [Disabled]"
     Location = @{ X = $PSWriteHTMLButton.Location.X + $PSWriteHTMLButton.Size.Width + $($FormScale * 5)
                   Y = $PSWriteHTMLButton.Location.Y }
     Size     = @{ Width  = $FormScale * 115
                   Height = $FormScale * 22 }
     Add_Click = $AutoCreateMultiSeriesChartButtonAdd_Click
     Add_MouseHover = $AutoCreateMultiSeriesChartButtonAdd_MouseHover
+    Enabled = $false
 }
 $MainCenterMainTab.Controls.Add($AutoCreateMultiSeriesChartButton)
 CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
@@ -195,32 +196,36 @@ Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryG
 . "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryGroups.ps1"
 Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryUserAccounts.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryUserAccounts.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsApplicationCrashes.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsApplicationCrashes.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsApplicationCrashes.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsApplicationCrashes.ps1"
 Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsDeepBlueAll.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsDeepBlueAll.ps1"
 Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue7Days.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue7Days.ps1"
 Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue24Hours.ps1"
 . "$Dependencies\Code\Charts\Update-AutoChartsDeepBlue24Hours.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsLoginActivity.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsLoginActivity.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsNetworkConnections.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsNetworkConnections.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsNetworkInterfaces.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsNetworkInterfaces.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsProcesses.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsProcesses.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsSecurityPatches.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsSecurityPatches.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsServices.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsServices.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsSoftware.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsSoftware.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsSmbShare.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsSmbShare.ps1"
-Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsStartupCommands.ps1"
-. "$Dependencies\Code\Charts\Update-AutoChartsStartupCommands.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsLoginActivity.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsLoginActivity.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsNetworkConnections.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsNetworkConnections.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsNetworkInterfaces.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsNetworkInterfaces.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsProcesses.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsProcesses.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsSecurityPatches.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsSecurityPatches.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsServices.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsServices.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsSoftware.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsSoftware.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsSmbShare.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsSmbShare.ps1"
+#Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsStartupCommands.ps1"
+#. "$Dependencies\Code\Charts\Update-AutoChartsStartupCommands.ps1"
+
+
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AutoChartSelectChartComboBoxSelectedItem_Monitor-Jobs.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\AutoChartSelectChartComboBoxSelectedItem_Monitor-Jobs.ps1"
 
 
 # Used to populate the dashboard choices form
@@ -234,6 +239,7 @@ $AutoCreateDashboardChartButton = New-Object System.Windows.Forms.Button -Proper
                   Height = $FormScale * 22 }
     Add_Click      = $AutoCreateDashboardChartButtonAdd_Click
     Add_MouseHover = $AutoCreateDashboardChartButtonAdd_MouseHover
+    Enabled = $true
 }
 $MainCenterMainTab.Controls.Add($AutoCreateDashboardChartButton)
 CommonButtonSettings -Button $AutoCreateDashboardChartButton
