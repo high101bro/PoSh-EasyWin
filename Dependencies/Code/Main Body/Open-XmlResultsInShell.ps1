@@ -1,4 +1,4 @@
-function Open-XmlResultsInShell {
+function script:Open-XmlResultsInShell {
     param(
         $ViewImportResults,
         $FileName,

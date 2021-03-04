@@ -186,8 +186,8 @@ CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
 
 
 # This is placed here as the code is used with the "Open Data In Shell" button in the main form as well as within the dashboards
-Update-FormProgress "$Dependencies\Code\Main Body\Open-XmlResultsInShell.ps1"
-. "$Dependencies\Code\Main Body\Open-XmlResultsInShell.ps1"
+Update-FormProgress "$Dependencies\Code\Main Body\script:Open-XmlResultsInShell.ps1"
+. "$Dependencies\Code\Main Body\script:Open-XmlResultsInShell.ps1"
 
 # Code to allow the dashboards to update upon request
 Update-FormProgress "$Dependencies\Code\Charts\Update-AutoChartsActiveDirectoryComputers.ps1"

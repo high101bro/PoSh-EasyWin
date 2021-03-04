@@ -17,12 +17,15 @@ function Monitor-Jobs {
         $PSWriteHTML
     )
 
+    $JobId = Get-Random -Minimum 100009 -Maximum 999999
+
     function script:New-PowerShellChart {
         <#
         .Description Dynamically creates powershell charts for collected data
         #>
         param(
-            $SourceData,
+            $SourceCSVData,
+            $SourceXMLPath,
             $SeriesName = 'Unnamed Series',
             $TitleAxisX,
             $TitleAxisY,
@@ -35,7 +38,8 @@ function Monitor-Jobs {
         Add-Type -AssemblyName System.Windows.Forms.DataVisualization
 
         Invoke-Expression -Command @"
-        `$script:SourceData$ChartNumber = `$SourceData
+        `$script:SourceCSVData$ChartNumber = `$SourceCSVData
+        `$script:SourceXMLPath$ChartNumber = `$SourceXMLPath
         `$script:SeriesName$ChartNumber = `$SeriesName
         `$script:PropertyX$ChartNumber  = `$PropertyX
         `$script:PropertyY$ChartNumber  = `$PropertyY
@@ -183,55 +187,55 @@ function Monitor-Jobs {
         `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].ChartType         = 'Column'
         `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Color             = `$ChartColor
 
-
-                    `$script:GeneratedAutoChartCsvFileHosts$ChartNumber      = `$script:SourceData$ChartNumber | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
-                    `$script:GeneratedAutoChartUniqueDataFields$ChartNumber  = `$script:SourceData$ChartNumber | Select-Object -Property `$script:PropertyX$ChartNumber | Sort-Object -Property `$script:PropertyX$ChartNumber -Unique | Where {`$_.`$script:PropertyX$ChartNumber -ne `$null -and `$_.`$script:PropertyX$ChartNumber -ne ''}
-
-                    `$script:AutoChartsProgressBar.ForeColor = 'Red'
-                    `$script:AutoChartsProgressBar.Minimum = 0
-                    `$script:AutoChartsProgressBar.Maximum = `$script:GeneratedAutoChartUniqueDataFields$ChartNumber.count
-                    `$script:AutoChartsProgressBar.Value   = 0
-                    `$script:AutoChartsProgressBar.Update()
-
-                    `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Points.Clear()
-
-                    if (`$script:GeneratedAutoChartUniqueDataFields$ChartNumber.count -gt 0){
-                        `$script:GeneratedAutoChartTitle$ChartNumber.ForeColor = 'Black'
-                        `$script:GeneratedAutoChartTitle$ChartNumber.Text = `$script:SeriesName$ChartNumber
-
-                        # If the Second field/Y Axis equals ComputerName, it counts it
-                        `$script:GeneratedAutoChartOverallDataResults$ChartNumber = @()
-
-                        # Generates and Counts the data - Counts the number of times that any given property possess a given value
-                        foreach (`$DataField in `$script:GeneratedAutoChartUniqueDataFields$ChartNumber) {
-                            `$Count = 0
-                            `$script:GeneratedAutoChartCsvComputers$ChartNumber = @()
-                            foreach ( `$Line in `$script:SourceData$ChartNumber ) {
-                                if (`$(`$Line.`$script:PropertyX$ChartNumber) -eq `$DataField.`$script:PropertyX$ChartNumber) {
-                                    `$Count += 1
-                                    if ( `$script:GeneratedAutoChartCsvComputers$ChartNumber -notcontains `$(`$Line.`$script:PropertyY$ChartNumber) ) { `$script:GeneratedAutoChartCsvComputers$ChartNumber += `$(`$Line.`$script:PropertyY$ChartNumber) }
+    
+                        `$script:GeneratedAutoChartCsvFileHosts$ChartNumber      = `$script:SourceCSVData$ChartNumber | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
+                        `$script:GeneratedAutoChartUniqueDataFields$ChartNumber  = `$script:SourceCSVData$ChartNumber | Select-Object -Property `$script:PropertyX$ChartNumber | Sort-Object -Property `$script:PropertyX$ChartNumber -Unique | Where {`$_.`$script:PropertyX$ChartNumber -ne `$null -and `$_.`$script:PropertyX$ChartNumber -ne ''}
+    
+                        `$script:AutoChartsProgressBar.ForeColor = 'Blue'
+                        `$script:AutoChartsProgressBar.Minimum = 0
+                        `$script:AutoChartsProgressBar.Maximum = `$script:GeneratedAutoChartUniqueDataFields$ChartNumber.count
+                        `$script:AutoChartsProgressBar.Value   = 0
+                        `$script:AutoChartsProgressBar.Update()
+    
+                        `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Points.Clear()
+    
+                        if (`$script:GeneratedAutoChartUniqueDataFields$ChartNumber.count -gt 0){
+                            `$script:GeneratedAutoChartTitle$ChartNumber.ForeColor = 'Black'
+                            `$script:GeneratedAutoChartTitle$ChartNumber.Text = `$script:SeriesName$ChartNumber
+    
+                            # If the Second field/Y Axis equals ComputerName, it counts it
+                            `$script:GeneratedAutoChartOverallDataResults$ChartNumber = @()
+    
+                            # Generates and Counts the data - Counts the number of times that any given property possess a given value
+                            foreach (`$DataField in `$script:GeneratedAutoChartUniqueDataFields$ChartNumber) {
+                                `$Count = 0
+                                `$script:GeneratedAutoChartCsvComputers$ChartNumber = @()
+                                foreach ( `$Line in `$script:SourceCSVData$ChartNumber ) {
+                                    if (`$(`$Line.`$script:PropertyX$ChartNumber) -eq `$DataField.`$script:PropertyX$ChartNumber) {
+                                        `$Count += 1
+                                        if ( `$script:GeneratedAutoChartCsvComputers$ChartNumber -notcontains `$(`$Line.`$script:PropertyY$ChartNumber) ) { `$script:GeneratedAutoChartCsvComputers$ChartNumber += `$(`$Line.`$script:PropertyY$ChartNumber) }
+                                    }
                                 }
+                                `$script:GeneratedAutoChartUniqueCount$ChartNumber = `$script:GeneratedAutoChartCsvComputers$ChartNumber.Count
+                                `$script:GeneratedAutoChartDataResults$ChartNumber = New-Object PSObject -Property @{
+                                    DataField   = `$DataField
+                                    TotalCount  = `$Count
+                                    UniqueCount = `$script:GeneratedAutoChartUniqueCount$ChartNumber
+                                    Computers   = `$script:GeneratedAutoChartCsvComputers$ChartNumber
+                                }
+                                `$script:GeneratedAutoChartOverallDataResults$ChartNumber += `$script:GeneratedAutoChartDataResults$ChartNumber
+                                `$script:AutoChartsProgressBar.Value += 1
+                                `$script:AutoChartsProgressBar.Update()
                             }
-                            `$script:GeneratedAutoChartUniqueCount$ChartNumber = `$script:GeneratedAutoChartCsvComputers$ChartNumber.Count
-                            `$script:GeneratedAutoChartDataResults$ChartNumber = New-Object PSObject -Property @{
-                                DataField   = `$DataField
-                                TotalCount  = `$Count
-                                UniqueCount = `$script:GeneratedAutoChartUniqueCount$ChartNumber
-                                Computers   = `$script:GeneratedAutoChartCsvComputers$ChartNumber
-                            }
-                            `$script:GeneratedAutoChartOverallDataResults$ChartNumber += `$script:GeneratedAutoChartDataResults$ChartNumber
-                            `$script:AutoChartsProgressBar.Value += 1
-                            `$script:AutoChartsProgressBar.Update()
+                            `$script:GeneratedAutoChartOverallDataResults$ChartNumber | Sort-Object -Property UniqueCount | ForEach-Object { `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Points.AddXY(`$_.DataField.`$script:PropertyX$ChartNumber,`$_.UniqueCount) }
+                            `$script:GeneratedAutoChartTrimOffLastTrackBar$ChartNumber.SetRange(0, `$(`$script:GeneratedAutoChartOverallDataResults$ChartNumber.count))
+                            `$script:GeneratedAutoChartTrimOffFirstTrackBar$ChartNumber.SetRange(0, `$(`$script:GeneratedAutoChartOverallDataResults$ChartNumber.count))
                         }
-                        `$script:GeneratedAutoChartOverallDataResults$ChartNumber | Sort-Object -Property UniqueCount | ForEach-Object { `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Points.AddXY(`$_.DataField.`$script:PropertyX$ChartNumber,`$_.UniqueCount) }
-                        `$script:GeneratedAutoChartTrimOffLastTrackBar$ChartNumber.SetRange(0, `$(`$script:GeneratedAutoChartOverallDataResults$ChartNumber.count))
-                        `$script:GeneratedAutoChartTrimOffFirstTrackBar$ChartNumber.SetRange(0, `$(`$script:GeneratedAutoChartOverallDataResults$ChartNumber.count))
-                    }
-                    else {
-                        `$script:GeneratedAutoChartTitle$ChartNumber.ForeColor = 'Red'
-                        `$script:GeneratedAutoChartTitle$ChartNumber.Text = "`$SeriesName`n`n[ No Data Available ]`n"
-                    }
-
+                        else {
+                            `$script:GeneratedAutoChartTitle$ChartNumber.ForeColor = 'Red'
+                            `$script:GeneratedAutoChartTitle$ChartNumber.Text = "`$SeriesName`n`n[ No Data Available ]`n"
+                        }
+    
 
         ### Auto Chart Panel that contains all the options to manage open/close feature
         `$script:GeneratedAutoChartOptionsButton$ChartNumber = New-Object Windows.Forms.Button -Property @{
@@ -410,12 +414,12 @@ function Monitor-Jobs {
         #=====================================
         function script:InvestigateDifference-AutoChart$ChartNumber {
             # List of Positive Endpoints that positively match
-            `$script:GeneratedAutoChartImportCsvPosResults$ChartNumber = `$script:SourceData$ChartNumber  | Where-Object `$script:PropertyX$ChartNumber -eq `$(`$script:GeneratedAutoChartInvestDiffDropDownComboBox$ChartNumber.Text) | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
+            `$script:GeneratedAutoChartImportCsvPosResults$ChartNumber = `$script:SourceCSVData$ChartNumber  | Where-Object `$script:PropertyX$ChartNumber -eq `$(`$script:GeneratedAutoChartInvestDiffDropDownComboBox$ChartNumber.Text) | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
             `$script:GeneratedAutoChartInvestDiffPosResultsTextBox$ChartNumber.Text = ''
             ForEach (`$Endpoint in `$script:GeneratedAutoChartImportCsvPosResults$ChartNumber) { `$script:GeneratedAutoChartInvestDiffPosResultsTextBox$ChartNumber.Text += "`$Endpoint`r`n" }
 
             # List of all endpoints within the csv file
-            `$script:GeneratedAutoChartImportCsvAll$ChartNumber = `$script:SourceData$ChartNumber | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
+            `$script:GeneratedAutoChartImportCsvAll$ChartNumber = `$script:SourceCSVData$ChartNumber | Select-Object -ExpandProperty `$script:PropertyY$ChartNumber -Unique
 
             `$script:GeneratedAutoChartImportCsvNegResults$ChartNumber = @()
             # Creates a list of Endpoints with Negative Results
@@ -443,7 +447,7 @@ function Monitor-Jobs {
         }
         CommonButtonSettings -Button `$script:GeneratedAutoChartCheckDiffButton$ChartNumber
         `$script:GeneratedAutoChartCheckDiffButton$ChartNumber.Add_Click({
-            `$script:GeneratedAutoChartInvestDiffDropDownArray$ChartNumber = `$script:SourceData$ChartNumber | Select-Object -Property `$script:PropertyX$ChartNumber -ExpandProperty `$script:PropertyX$ChartNumber | Sort-Object -Unique
+            `$script:GeneratedAutoChartInvestDiffDropDownArray$ChartNumber = `$script:SourceCSVData$ChartNumber | Select-Object -Property `$script:PropertyX$ChartNumber -ExpandProperty `$script:PropertyX$ChartNumber | Sort-Object -Unique
 
             ### Investigate Difference Compare Csv Files Form
             `$script:GeneratedAutoChartInvestDiffForm$ChartNumber = New-Object System.Windows.Forms.Form -Property @{
@@ -551,7 +555,7 @@ function Monitor-Jobs {
             Height    = `$FormScale * 23
             Add_Click = { 
                 #batman
-                #script:New-PowerShellChart -SourceData `$script:AutoChartDataSourceCsv$JobId -ChartNumber `$count -SeriesName `$Property -TitleAxisX `$Property -TitleAxisY 'Endpoint Count' -PropertyX `$Property -PropertyY 'ComputerName'
+                #script:New-PowerShellChart -SourceCSVData `$script:AutoChartDataSourceCsv$JobId -ChartNumber `$count -SeriesName `$Property -TitleAxisX `$Property -TitleAxisY 'Endpoint Count' -PropertyX `$Property -PropertyY 'ComputerName'
                 Generate-AutoChartsCommand -FilePath `$script:AutoChartDataSourceCsv$JobId -QueryName "Processes" -QueryTabName `$script:SeriesName$ChartNumber -PropertyX `$script:PropertyX$ChartNumber -PropertyY `$script:PropertyY$ChartNumber 
             }
         }
@@ -565,9 +569,17 @@ function Monitor-Jobs {
             Top    = `$script:GeneratedAutoChartCheckDiffButton$ChartNumber.Top + `$script:GeneratedAutoChartCheckDiffButton$ChartNumber.Height + `$(`$FormScale * 5)
             Width  = `$FormScale * 100
             Height = `$FormScale * 23
+            Add_Click = { 
+                `$ViewImportResults = `$script:SourceXMLPath$ChartNumber
+                if ((Test-Path `$ViewImportResults)) {
+                    `$SavePath = Split-Path -Path `$ViewImportResults
+                    `$FileName = Split-Path -Path `$ViewImportResults -Leaf
+                    script:Open-XmlResultsInShell -ViewImportResults `$ViewImportResults -FileName `$FileName -SavePath `$SavePath
+                }                        
+                else { [System.Windows.MessageBox]::Show("Error: Cannot Import Data!`nThe associated .xml file was not located.","PoSh-EasyWin") }
+            }
         }
         CommonButtonSettings -Button `$script:GeneratedAutoChartOpenInShell$ChartNumber
-        `$script:GeneratedAutoChartOpenInShell$ChartNumber.Add_Click({ AutoChartOpenDataInShell })
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartOpenInShell$ChartNumber)
 
 
@@ -577,9 +589,9 @@ function Monitor-Jobs {
             Top    = `$script:GeneratedAutoChartOpenInShell$ChartNumber.Top
             Width  = `$FormScale * 100
             Height = `$FormScale * 23
+            Add_Click = { `$script:SourceCSVData$ChartNumber | Out-GridView -Title "View Results" }
         }
         CommonButtonSettings -Button `$script:GeneratedAutoChartViewResults$ChartNumber
-        `$script:GeneratedAutoChartViewResults$ChartNumber.Add_Click({ `$script:SourceData$ChartNumber | Out-GridView -Title "View Results" })
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartViewResults$ChartNumber)
 
 
@@ -620,7 +632,31 @@ function Monitor-Jobs {
         `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Points.Clear()
         `$script:GeneratedAutoChartOverallDataResults$ChartNumber | Sort-Object -Property UniqueCount | Select-Object -skip `$script:GeneratedAutoChartTrimOffFirstTrackBarValue$ChartNumber | Select-Object -SkipLast `$script:GeneratedAutoChartTrimOffLastTrackBarValue$ChartNumber | ForEach-Object {`$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Points.AddXY(`$_.DataField.`$script:PropertyX$ChartNumber,`$_.UniqueCount)}
 "@
-    }
+        }          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -648,7 +684,6 @@ if ($MonitorMode) {
 
 
 
-    $JobId = Get-Random -Minimum 100009 -Maximum 999999
     #Get-Job | Sort-Object Id | Select-Object -Last 1 -ExpandProperty ID
 
 
@@ -897,7 +932,6 @@ if ($MonitorMode) {
             }
     
 
-
             `$script:Section3MonitorJobCommandButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text     = 'Details'
                 Left     = `$script:Section3MonitorJobShellButton$JobId.Left + `$script:Section3MonitorJobShellButton$JobId.Width + (`$FormScale * 5)
@@ -1097,14 +1131,14 @@ if ($MonitorMode) {
                         `$script:JobXMLResults$JobId = Import-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -ErrorAction SilentlyContinue
                         
                         if (`$script:JobXMLResults$JobId ) {
-                            Open-XmlResultsInShell -ViewImportResults "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -FileName "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -SavePath `$script:CollectionSavedDirectoryTextBox.Text
+                            script:Open-XmlResultsInShell -ViewImportResults "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -FileName "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -SavePath `$script:CollectionSavedDirectoryTextBox.Text
                         }
                         else {
                             [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nThere are no results available.",'PoSh-EasyWin - Shell')
                         }
                     }
                     else {
-                        [System.Windows.Forms.MessageBox]::Show("There is no XML data available.",'PoSh-EasyWin - Shell')
+                        [System.Windows.Forms.MessageBox]::Show("There is no data available to generate charts.",'PoSh-EasyWin - Shell')
                     }
                     Remove-Variable -Name JobXMLResults$JobId -Scope script
                     [System.GC]::Collect()
@@ -1127,59 +1161,75 @@ if ($MonitorMode) {
                         `$This.BackColor = 'LightGray'
                     }
                     if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv")) {
-                                `$AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
-                                [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
+                                        `$AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
+                                        [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 
 
-                                `$script:AutoChartsForm = New-Object Windows.Forms.Form -Property @{
-                                    Left   = `$FormScale * 5
-                                    Top    = `$FormScale * 5
-                                    Width  = `$PoShEasyWin.Size.Width   #1241
-                                    Height = `$PoShEasyWin.Size.Height  #638
-                                    Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
-                                    Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
-                                    StartPosition = "CenterScreen"
-                                    Add_Closing   = { `$This.dispose() }
-                                }
-                                            `$AutoChartsTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-                                                Text   = 'Auto Charts'
-                                                Left   = `$FormScale * 5
-                                                Top    = `$FormScale * 5
-                                                Width  = `$PoShEasyWin.Size.Width - `$(`$FormScale * 25)
-                                                Height = `$PoShEasyWin.Size.Height - `$(`$FormScale * 50)
-                                            }
-                                            `$AutoChartsTabControl.Anchor = `$AnchorAll
-                                            `$AutoChartsTabControl.Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
-                                            `$script:AutoChartsForm.Controls.Add(`$AutoChartsTabControl)
-                                    
-                                    
-                                            `$script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Property @{
-                                                Width      = `$FormScale * 1700
-                                                Height     = `$FormScale * 1050
-                                                #Anchor    = `$AnchorAll
-                                                Font       = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
-                                                AutoScroll = `$True
-                                                UseVisualStyleBackColor = `$True
-                                            }
-                                            `$AutoChartsTabControl.Controls.Add(`$script:AutoChartsIndividualTab01)
-                                                                    
+                                        `$script:AutoChartsForm = New-Object Windows.Forms.Form -Property @{
+                                            Left   = `$FormScale * 5
+                                            Top    = `$FormScale * 5
+                                            Width  = `$PoShEasyWin.Size.Width   #1241
+                                            Height = `$PoShEasyWin.Size.Height  #638
+                                            Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
+                                            Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
+                                            StartPosition = "CenterScreen"
+                                            Add_Closing   = { `$This.dispose() }
+                                        }
+                                                            `$AutoChartsTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+                                                                Text   = 'Auto Charts'
+                                                                Left   = `$FormScale * 5
+                                                                Top    = `$FormScale * 5
+                                                                Width  = `$PoShEasyWin.Size.Width - `$(`$FormScale * 25)
+                                                                Height = `$PoShEasyWin.Size.Height - `$(`$FormScale * 50)
+                                                            }
+                                                            `$AutoChartsTabControl.Anchor = `$AnchorAll
+                                                            `$AutoChartsTabControl.Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
+                                                            `$script:AutoChartsForm.Controls.Add(`$AutoChartsTabControl)
+                                                    
+                                                    
+                                                            `$script:AutoChartsIndividualTab01 = New-Object System.Windows.Forms.TabPage -Property @{
+                                                                Width      = `$FormScale * 1700
+                                                                Height     = `$FormScale * 1050
+                                                                #Anchor    = `$AnchorAll
+                                                                Font       = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
+                                                                AutoScroll = `$True
+                                                                UseVisualStyleBackColor = `$True
+                                                            }
+                                                            `$AutoChartsTabControl.Controls.Add(`$script:AutoChartsIndividualTab01)
+                                                                                    
 
-                                            `$script:AutoChartDataSourceCsv$JobId = Import-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -ErrorAction SilentlyContinue
-                                            if ( `$script:AutoChartDataSourceCsv$JobId ) {
-                                                `$ObjectProperties = `$script:AutoChartDataSourceCsv$JobId[0] | ForEach-Object { `$_.psobject.properties.name }
-                                                `$ObjectProperties = `$ObjectProperties | Where-Object { `$_ -ne '' -and `$_ -ne `$null -and `$_ -notlike "__*" -and `$_ -notmatch 'ComputerName' -and `$_ -notmatch 'RunSpaceID' } | Out-GridView -Title 'Select Properties to Generate Charts' -PassThru | Sort-Object
-                                                
-                                                `$count = 0
-                                                foreach ( `$Property in `$ObjectProperties ) {
-                                                    `$count += 1
-                                                    if (`$Count -le 50) {
-                                                        script:New-PowerShellChart -SourceData `$script:AutoChartDataSourceCsv$JobId -ChartNumber `$count -SeriesName `$Property -TitleAxisX `$Property -TitleAxisY 'Endpoint Count' -PropertyX `$Property -PropertyY 'ComputerName'
-                                                    }
-                                                }
-                                                `$script:AutoChartsIndividualTab01.Text = "$Count Charts Generated"
-                                            }
-                                `$script:AutoChartsForm.Add_Shown({`$script:AutoChartsForm.Activate()})
-                                `$script:AutoChartsForm.ShowDialog()
+                                                            `$script:AutoChartDataSourceCsv$JobId = Import-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv" -ErrorAction SilentlyContinue
+                                                            `$script:AutoChartXmlPath$JobId = "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
+
+                                                            if ( `$script:AutoChartDataSourceCsv$JobId ) {
+                                                                `$ObjectProperties = `$script:AutoChartDataSourceCsv$JobId[0] | ForEach-Object { `$_.psobject.properties.name }
+                                                                `$ObjectProperties = `$ObjectProperties | Where-Object { `$_ -ne '' -and `$_ -ne `$null -and `$_ -notlike "__*" -and `$_ -notmatch 'ComputerName' -and `$_ -notmatch 'RunSpaceID' } | Out-GridView -Title 'Select Properties to Generate Charts' -PassThru | Sort-Object
+                                                                
+                                                                `$ScriptBlockProgressBarInput$JobId = {                                                                
+                                                                    `$script:ProgressBarFormProgressBar.Value   = 0
+                                                                    `$script:ProgressBarFormProgressBar.Maximum = `$ObjectProperties.count
+
+                                                                    `$script:ProgressBarMessageLabel.text = "`Please be patience as the data loads.`nTotal charts to be created:  `$(`$ObjectProperties.count)"
+                                                                    `$script:ProgressBarSelectionForm.Refresh()
+
+                                                                    `$count = 0
+                                                                    foreach ( `$Property in `$ObjectProperties ) {
+                                                                        `$count += 1
+                                                                        if (`$Count -le 50) {
+                                                                            Update-FormProgress `$Property
+                                                                            script:New-PowerShellChart -SourceCSVData `$script:AutoChartDataSourceCsv$JobId -SourceXMLPath `$script:AutoChartXmlPath$JobId -ChartNumber `$count -SeriesName `$Property -TitleAxisX `$Property -TitleAxisY 'Endpoint Count' -PropertyX `$Property -PropertyY 'ComputerName'
+                                                                            `$script:ProgressBarFormProgressBar.Value += 1
+                                                                        }
+                                                                    }
+                                                                    `$script:ProgressBarFormProgressBar.Maximum = 1
+                                                                    `$script:ProgressBarFormProgressBar.Value   = 1
+                                                                    `$script:AutoChartsIndividualTab01.Text = `$script:JobName$JobId
+                                                                    `$script:ProgressBarSelectionForm.Hide()
+                                                                }
+                                                                Launch-ProgressBarForm -FormTitle "PoSh-EasyWin - Generating Charts" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBarInput$JobId
+                                                                `$script:AutoChartsForm.ShowDialog()
+                                                            }
+                                        `$script:AutoChartsForm.Add_Shown({`$script:AutoChartsForm.Activate()})
                     }
                     else {
                         [System.Windows.Forms.MessageBox]::Show("There is no XML data available.",'PoSh-EasyWin - Shell')

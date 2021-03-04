@@ -14,7 +14,7 @@ $OpenXmlResultsButtonAdd_Click = {
         $FileName = Split-Path -Path $ViewXMLResultsOpenResultsOpenFileDialog.filename -Leaf
 
         if ($ViewImportResults) {
-            Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SavePath $SavePath
+            script:Open-XmlResultsInShell -ViewImportResults $ViewImportResults -FileName $FileName -SavePath $SavePath
         }
     }
     else {

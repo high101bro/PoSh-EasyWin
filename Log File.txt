@@ -15022,3 +15022,497 @@
 2021/03/03 11:52:56  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
 2021/03/03 11:52:56  Credentials Used: administrator@mobilelab.home
 2021/03/03 11:52:56  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 21:38:08  ====================================================================================================
+2021/03/03 21:38:08  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 21:38:15  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 21:38:17  ====================================================================================================
+2021/03/03 21:38:52  ====================================================================================================
+2021/03/03 21:38:52  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 21:38:53  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 21:38:54  ====================================================================================================
+2021/03/03 21:47:11   - 
+2021/03/03 21:47:13   - 
+2021/03/03 21:47:27  Credentials Used: administrator@mobilelab.home
+2021/03/03 21:47:27  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 21:47:27  Credentials Used: administrator@mobilelab.home
+2021/03/03 21:47:27  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 21:50:04  Credentials Used: administrator@mobilelab.home
+2021/03/03 21:50:04  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 21:50:04  Credentials Used: administrator@mobilelab.home
+2021/03/03 21:50:04  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:05:21  ====================================================================================================
+2021/03/03 22:05:21  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:05:22  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:05:24  ====================================================================================================
+2021/03/03 22:05:52   - System.Xml.XmlElement
+2021/03/03 22:05:52   - System.Xml.XmlElement
+2021/03/03 22:05:52  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:05:53  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:05:53  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:05:53  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:06:42  ====================================================================================================
+2021/03/03 22:06:42  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:06:44  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:06:45  ====================================================================================================
+2021/03/03 22:07:06   - System.Xml.XmlElement
+2021/03/03 22:07:06   - System.Xml.XmlElement
+2021/03/03 22:07:07  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:07:07  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:07:07  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:07:07  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:20:39  ====================================================================================================
+2021/03/03 22:20:39  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:20:42  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:20:43  ====================================================================================================
+2021/03/03 22:21:20   - System.Xml.XmlElement
+2021/03/03 22:21:21   - System.Xml.XmlElement
+2021/03/03 22:21:21  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:21:22  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:21:22  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:21:22  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:23:59  ====================================================================================================
+2021/03/03 22:23:59  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:24:00  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:24:01  ====================================================================================================
+2021/03/03 22:24:28  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:24:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:24:28  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:24:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:25:03  ====================================================================================================
+2021/03/03 22:25:04  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:25:04  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:25:06  ====================================================================================================
+2021/03/03 22:25:39   - System.Xml.XmlElement
+2021/03/03 22:25:39   - System.Xml.XmlElement
+2021/03/03 22:25:41  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:25:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:25:41  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:25:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:27:30  ====================================================================================================
+2021/03/03 22:27:30  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:27:31  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:27:32  ====================================================================================================
+2021/03/03 22:27:57   - System.Xml.XmlElement
+2021/03/03 22:27:58   - System.Xml.XmlElement
+2021/03/03 22:27:58  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:27:58  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:27:58  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:27:58  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:29:34  ====================================================================================================
+2021/03/03 22:29:34  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:29:36  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:29:37  ====================================================================================================
+2021/03/03 22:30:12   - System.Xml.XmlElement
+2021/03/03 22:30:13   - System.Xml.XmlElement
+2021/03/03 22:30:13  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:30:13  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:30:13  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:30:13  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:33:40  ====================================================================================================
+2021/03/03 22:33:40  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:33:41  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:33:42  ====================================================================================================
+2021/03/03 22:34:05   - System.Xml.XmlElement
+2021/03/03 22:34:05   - System.Xml.XmlElement
+2021/03/03 22:34:07  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:34:07  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:34:07  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:34:07  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/03 22:35:53  ====================================================================================================
+2021/03/03 22:35:53  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:35:54  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:35:55  ====================================================================================================
+2021/03/03 22:36:19   - System.Xml.XmlElement
+2021/03/03 22:36:19   - System.Xml.XmlElement
+2021/03/03 22:36:19  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:36:19  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:36:19  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:36:20  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:36:20  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:36:20  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:36:20  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:36:20  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:38:15  ====================================================================================================
+2021/03/03 22:38:15  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:38:16  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:38:17  ====================================================================================================
+2021/03/03 22:39:18   - True
+2021/03/03 22:39:19   - True
+2021/03/03 22:39:20  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:39:21  Compilied CSV and XML Files
+2021/03/03 22:39:21  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-01" -AcceptEULA -NoBanner -u $UserName -p $Password powershell "Get-WmiObject -Class Win32_Process | Select-Object * | ConvertTo-Csv -NoType"
+2021/03/03 22:39:22  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:39:23  Compilied CSV and XML Files
+2021/03/03 22:39:23  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-02" -AcceptEULA -NoBanner -u $UserName -p $Password powershell "Get-WmiObject -Class Win32_Process | Select-Object * | ConvertTo-Csv -NoType"
+2021/03/03 22:40:42   - System.Xml.XmlElement
+2021/03/03 22:40:42   - System.Xml.XmlElement
+2021/03/03 22:40:43  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:40:44  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:40:44  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:40:44  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:41:44  ====================================================================================================
+2021/03/03 22:41:44  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:41:45  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:41:46  ====================================================================================================
+2021/03/03 22:42:28   - System.Xml.XmlElement
+2021/03/03 22:42:28   - System.Xml.XmlElement
+2021/03/03 22:42:29  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:42:29  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:42:29  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:42:29  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:44:43  ====================================================================================================
+2021/03/03 22:44:43  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:44:44  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:44:45  ====================================================================================================
+2021/03/03 22:46:34   - System.Xml.XmlElement
+2021/03/03 22:46:35   - System.Xml.XmlElement
+2021/03/03 22:46:35   - System.Xml.XmlElement
+2021/03/03 22:46:42   - 
+2021/03/03 22:46:45   - 
+2021/03/03 22:46:47   - 
+2021/03/03 22:46:49   - 
+2021/03/03 22:46:51   - 
+2021/03/03 22:46:54   - 
+2021/03/03 22:46:57  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:46:57  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:46:57  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:46:57  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:46:57  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:46:58  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:46:58  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:46:58  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:46:58  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:46:58  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:46:59  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:46:59  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:41  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:41  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:41  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:41  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:42  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:42  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:42  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:42  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-04 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:42  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:42  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:42  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:42  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:43  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:43  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:43  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:43  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:43  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:43  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:44  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:44  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:44  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:44  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:44  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:44  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:44  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:45  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-04 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:45  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:45  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:45  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:45  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:45  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:45  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:45  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:46  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:47:46  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:47:46  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:53:57  ====================================================================================================
+2021/03/03 22:53:57  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:54:00  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:54:01  ====================================================================================================
+2021/03/03 22:54:35   - System.Xml.XmlElement
+2021/03/03 22:54:36   - System.Xml.XmlElement
+2021/03/03 22:54:36  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:54:36  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:54:36  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:54:36  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:57:11  ====================================================================================================
+2021/03/03 22:57:11  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 22:57:12  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 22:57:13  ====================================================================================================
+2021/03/03 22:57:48   - System.Xml.XmlElement
+2021/03/03 22:57:49  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:57:50  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesTree.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 22:58:10  Credentials Used: administrator@mobilelab.home
+2021/03/03 22:58:11  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:10:33  ====================================================================================================
+2021/03/03 23:10:34  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:10:51  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:10:52  ====================================================================================================
+2021/03/03 23:11:44   - System.Xml.XmlElement
+2021/03/03 23:11:44   - System.Xml.XmlElement
+2021/03/03 23:11:45  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:11:45  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:11:45  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:11:45  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:16:42  ====================================================================================================
+2021/03/03 23:16:42  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:16:43  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:16:44  ====================================================================================================
+2021/03/03 23:17:24   - System.Xml.XmlElement
+2021/03/03 23:17:24   - System.Xml.XmlElement
+2021/03/03 23:17:25  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:17:25  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:17:25  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:17:25  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:24:21  ====================================================================================================
+2021/03/03 23:24:21  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:24:22  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:24:23  ====================================================================================================
+2021/03/03 23:25:10   - System.Xml.XmlElement
+2021/03/03 23:25:10   - System.Xml.XmlElement
+2021/03/03 23:25:11  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:25:11  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:25:11  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:25:11  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:26:36  ====================================================================================================
+2021/03/03 23:26:36  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:26:37  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:26:38  ====================================================================================================
+2021/03/03 23:27:02   - System.Xml.XmlElement
+2021/03/03 23:27:03   - System.Xml.XmlElement
+2021/03/03 23:27:03  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:27:03  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:27:03  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:27:03  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:28:32  ====================================================================================================
+2021/03/03 23:28:32  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:28:34  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:28:35  ====================================================================================================
+2021/03/03 23:29:02   - System.Xml.XmlElement
+2021/03/03 23:29:02   - System.Xml.XmlElement
+2021/03/03 23:29:03  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:29:03  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:29:03  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:29:03  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:30:35  ====================================================================================================
+2021/03/03 23:30:35  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:30:56  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:30:57  ====================================================================================================
+2021/03/03 23:32:20   - System.Xml.XmlElement
+2021/03/03 23:32:21  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:32:21  Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * } -ComputerName DC01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Name, SID, Enabled, LockedOut, AccountLockoutTime, Created, @{n='WhenCreated';e={($_.created).tostring('yyyyMMdd')}}, Modified, @{n='WhenModified';e={($_.modified).tostring('yyyyMMdd')}}, AccountExpirationDate, LogonWorkStations, LastLogonDate, @{n='WhenLastLogonDate';e={($_.LastLogonDate).tostring('yyyyMMdd')}}, LastBadPasswordAttempt, @{n='WhenLastBadPasswordAttempt';e={($_.LastBadPasswordAttempt).tostring('yyyyMMdd')}}, PasswordLastSet, @{n='WhenPasswordLastSet';e={($_.PasswordLastSet).tostring('yyyyMMdd')}}, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CannotChangePassword, SamAccountName, UserPrincipalName, CanonicalName, DistinguishedName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive, Title, Organization, Office, POBox, StreetAddress, City, State, PostalCode, Fax, OfficePhone, HomePhone, MobilePhone, EmailAddress, ObjectClass, ObjectGUID, dSCorePropagationData,  @{n='LastdSCorePropagationData';e={$_.dSCorePropagationData[0].tostring('yyyyMMdd')}}
+2021/03/03 23:36:17  ====================================================================================================
+2021/03/03 23:36:17  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:36:18  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:36:19  ====================================================================================================
+2021/03/03 23:36:43  ====================================================================================================
+2021/03/03 23:36:43  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:36:44  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:36:45  ====================================================================================================
+2021/03/03 23:37:08   - System.Xml.XmlElement
+2021/03/03 23:37:09   - System.Xml.XmlElement
+2021/03/03 23:37:09  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:37:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:37:09  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:37:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:38:13  ====================================================================================================
+2021/03/03 23:38:13  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:38:42  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:38:43  ====================================================================================================
+2021/03/03 23:39:06   - System.Xml.XmlElement
+2021/03/03 23:39:06   - System.Xml.XmlElement
+2021/03/03 23:39:08  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:39:08  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:39:08  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:39:08  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:41:31  ====================================================================================================
+2021/03/03 23:41:31  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:41:34  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:41:35  ====================================================================================================
+2021/03/03 23:42:09   - System.Xml.XmlElement
+2021/03/03 23:42:09   - System.Xml.XmlElement
+2021/03/03 23:42:09  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:42:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:42:09  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:42:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:43:31  ====================================================================================================
+2021/03/03 23:43:32  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:43:34  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:43:35  ====================================================================================================
+2021/03/03 23:44:03   - System.Xml.XmlElement
+2021/03/03 23:44:03   - System.Xml.XmlElement
+2021/03/03 23:44:03  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:44:03  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:44:03  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:44:04  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:45:24  ====================================================================================================
+2021/03/03 23:45:24  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:45:25  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:45:26  ====================================================================================================
+2021/03/03 23:45:52   - System.Xml.XmlElement
+2021/03/03 23:45:52   - System.Xml.XmlElement
+2021/03/03 23:45:53  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:45:53  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:45:53  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:45:54  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:46:52  ====================================================================================================
+2021/03/03 23:46:52  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:46:54  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:46:55  ====================================================================================================
+2021/03/03 23:47:33   - System.Xml.XmlElement
+2021/03/03 23:47:33   - System.Xml.XmlElement
+2021/03/03 23:47:34  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:47:34  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:47:34  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:47:34  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:50:19  ====================================================================================================
+2021/03/03 23:50:19  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:50:28  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:50:29  ====================================================================================================
+2021/03/03 23:50:58   - System.Xml.XmlElement
+2021/03/03 23:50:58   - System.Xml.XmlElement
+2021/03/03 23:50:59  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:51:00  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:51:00  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:51:00  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:51:59  ====================================================================================================
+2021/03/03 23:51:59  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:52:00  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:52:01  ====================================================================================================
+2021/03/03 23:52:36   - System.Xml.XmlElement
+2021/03/03 23:52:36   - System.Xml.XmlElement
+2021/03/03 23:52:37  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:52:37  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:52:37  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:52:38  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:57:00  ====================================================================================================
+2021/03/03 23:57:00  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/03 23:57:01  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/03 23:57:02  ====================================================================================================
+2021/03/03 23:57:22   - System.Xml.XmlElement
+2021/03/03 23:57:22   - System.Xml.XmlElement
+2021/03/03 23:57:22  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:57:22  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/03 23:57:22  Credentials Used: administrator@mobilelab.home
+2021/03/03 23:57:23  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:14:50  ====================================================================================================
+2021/03/04 00:14:50  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 00:14:52  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 00:14:53  ====================================================================================================
+2021/03/04 00:15:15   - System.Xml.XmlElement
+2021/03/04 00:16:14   - \\ZENBOOK\root\cimv2:Win32_PingStatus.Address="WIN10-01",BufferSize=32,NoFragmentation=false,RecordRoute=0,ResolveAddressNames=false,SourceRoute="",SourceRouteType=0,Timeout=4000,TimestampRoute=0,TimeToLive=80,TypeofService=0
+2021/03/04 00:16:15   - \\ZENBOOK\root\cimv2:Win32_PingStatus.Address="WIN10-02",BufferSize=32,NoFragmentation=false,RecordRoute=0,ResolveAddressNames=false,SourceRoute="",SourceRouteType=0,Timeout=4000,TimestampRoute=0,TimeToLive=80,TypeofService=0
+2021/03/04 00:16:15   - \\ZENBOOK\root\cimv2:Win32_PingStatus.Address="WIN10-03",BufferSize=32,NoFragmentation=false,RecordRoute=0,ResolveAddressNames=false,SourceRoute="",SourceRouteType=0,Timeout=4000,TimestampRoute=0,TimeToLive=80,TypeofService=0
+2021/03/04 00:16:20   - \\ZENBOOK\root\cimv2:Win32_PingStatus.Address="WIN10-04",BufferSize=32,NoFragmentation=false,RecordRoute=0,ResolveAddressNames=false,SourceRoute="",SourceRouteType=0,Timeout=4000,TimestampRoute=0,TimeToLive=80,TypeofService=0
+2021/03/04 00:16:20   - \\ZENBOOK\root\cimv2:Win32_PingStatus.Address="WIN10-06",BufferSize=32,NoFragmentation=false,RecordRoute=0,ResolveAddressNames=false,SourceRoute="",SourceRouteType=0,Timeout=4000,TimestampRoute=0,TimeToLive=80,TypeofService=0
+2021/03/04 00:16:21   - \\ZENBOOK\root\cimv2:Win32_PingStatus.Address="WIN10-07",BufferSize=32,NoFragmentation=false,RecordRoute=0,ResolveAddressNames=false,SourceRoute="",SourceRouteType=0,Timeout=4000,TimestampRoute=0,TimeToLive=80,TypeofService=0
+2021/03/04 00:16:21   - \\ZENBOOK\root\cimv2:Win32_PingStatus.Address="WIN10-08",BufferSize=32,NoFragmentation=false,RecordRoute=0,ResolveAddressNames=false,SourceRoute="",SourceRouteType=0,Timeout=4000,TimestampRoute=0,TimeToLive=80,TypeofService=0
+2021/03/04 00:16:21   - \\ZENBOOK\root\cimv2:Win32_PingStatus.Address="WIN10-09",BufferSize=32,NoFragmentation=false,RecordRoute=0,ResolveAddressNames=false,SourceRoute="",SourceRouteType=0,Timeout=4000,TimestampRoute=0,TimeToLive=80,TypeofService=0
+2021/03/04 00:16:22   - \\ZENBOOK\root\cimv2:Win32_PingStatus.Address="WIN10-10",BufferSize=32,NoFragmentation=false,RecordRoute=0,ResolveAddressNames=false,SourceRoute="",SourceRouteType=0,Timeout=4000,TimestampRoute=0,TimeToLive=80,TypeofService=0
+2021/03/04 00:16:27   - System.Xml.XmlElement
+2021/03/04 00:16:27   - System.Xml.XmlElement
+2021/03/04 00:16:28   - System.Xml.XmlElement
+2021/03/04 00:16:39   - 
+2021/03/04 00:16:39   - System.Xml.XmlElement
+2021/03/04 00:16:40   - System.Xml.XmlElement
+2021/03/04 00:16:40   - System.Xml.XmlElement
+2021/03/04 00:16:40   - System.Xml.XmlElement
+2021/03/04 00:16:40   - System.Xml.XmlElement
+2021/03/04 00:16:56   - System.Xml.XmlElement
+2021/03/04 00:16:56   - System.Xml.XmlElement
+2021/03/04 00:16:56   - System.Xml.XmlElement
+2021/03/04 00:16:56   - System.Xml.XmlElement
+2021/03/04 00:16:56   - System.Xml.XmlElement
+2021/03/04 00:16:57   - System.Xml.XmlElement
+2021/03/04 00:16:57   - System.Xml.XmlElement
+2021/03/04 00:16:57   - System.Xml.XmlElement
+2021/03/04 00:16:58  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:16:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 00:16:59  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:16:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 00:16:59  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:16:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 00:16:59  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:16:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 00:16:59  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:17:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 00:17:00  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:17:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 00:17:00  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:17:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 00:17:00  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:17:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 00:22:10  ====================================================================================================
+2021/03/04 00:22:10  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 00:22:12  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 00:22:13  ====================================================================================================
+2021/03/04 00:22:33   - System.Xml.XmlElement
+2021/03/04 00:22:35  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:22:35  Invoke-Command -ScriptBlock { Get-NetFirewallProfile } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Name, Enabled, DefaultInboundAction, DefaultOutboundAction, AllowInboundRules, AllowLocalFirewallRules, AllowLocalIPsecRules, AllowUserApps, AllowUserPorts, AllowUnicastResponseToMulticast, NotifyOnListen, EnableStealthModeForIPsec, LogFileName, LogMaxsizeKilobytes, LogAllowed, LogBlocked, LogIgnored, DisabledInterfaceAliases
+2021/03/04 00:22:50   - System.Xml.XmlElement
+2021/03/04 00:22:51  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:22:51  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:23:44   - System.Xml.XmlElement
+2021/03/04 00:23:45   - System.Xml.XmlElement
+2021/03/04 00:23:45   - System.Xml.XmlElement
+2021/03/04 00:23:53   - 
+2021/03/04 00:23:53   - System.Xml.XmlElement
+2021/03/04 00:23:54   - System.Xml.XmlElement
+2021/03/04 00:23:54   - System.Xml.XmlElement
+2021/03/04 00:23:54   - System.Xml.XmlElement
+2021/03/04 00:23:54   - System.Xml.XmlElement
+2021/03/04 00:23:56  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:23:56  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:23:56  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:23:56  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:23:56  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:23:56  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:23:56  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:23:57  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:23:57  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:23:57  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:23:57  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:23:57  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:23:57  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:23:57  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:23:58  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:23:58  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:33:21  ====================================================================================================
+2021/03/04 00:33:21  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 00:33:23  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 00:33:24  ====================================================================================================
+2021/03/04 00:34:01   - System.Xml.XmlElement
+2021/03/04 00:34:01   - System.Xml.XmlElement
+2021/03/04 00:34:01   - System.Xml.XmlElement
+2021/03/04 00:34:13   - 
+2021/03/04 00:34:13   - System.Xml.XmlElement
+2021/03/04 00:34:13   - System.Xml.XmlElement
+2021/03/04 00:34:13   - System.Xml.XmlElement
+2021/03/04 00:34:13   - System.Xml.XmlElement
+2021/03/04 00:34:14   - System.Xml.XmlElement
+2021/03/04 00:35:28  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:35:28  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:35:28  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:35:28  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:35:28  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:35:28  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:35:28  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:35:28  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:35:29  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:35:29  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:35:29  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:35:29  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:35:29  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:35:29  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 00:35:29  Credentials Used: administrator@mobilelab.home
+2021/03/04 00:35:30  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 01:01:21  ====================================================================================================
+2021/03/04 01:01:21  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 01:01:22  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 01:01:23  ====================================================================================================
+2021/03/04 01:04:29  ====================================================================================================
+2021/03/04 01:04:29  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 01:04:36  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 01:04:37  ====================================================================================================
+2021/03/04 01:05:08   - System.Xml.XmlElement
+2021/03/04 01:05:08   - System.Xml.XmlElement
+2021/03/04 01:05:09  Credentials Used: administrator@mobilelab.home
+2021/03/04 01:05:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 01:05:09  Credentials Used: administrator@mobilelab.home
+2021/03/04 01:05:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop

@@ -99,7 +99,6 @@
             - Push out GPO Updates, or on the computer's powershell/cmd terminal, type in `"gpupdate /force"
 #>
 
-#https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_cmdletbindingattribute?view=powershell-7
 [CmdletBinding(
     #ConfirmImpact=<String>,
     DefaultParameterSetName='GUI',
@@ -108,7 +107,6 @@
     #SupportsShouldProcess=$true,
     PositionalBinding = $true)]
 
-#https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_functions_advanced_parameters?view=powershell-7
 param (
     [Parameter(
         Mandatory=$false,

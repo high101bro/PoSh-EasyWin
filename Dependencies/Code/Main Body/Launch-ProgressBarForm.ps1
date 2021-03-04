@@ -1,9 +1,15 @@
 function Launch-ProgressBarForm {
     param(
         $FormTitle,
+        $ProgressBarImage = "$Dependencies\Images\PoSh-EasyWin Image 01.png",
         $ScriptBlockProgressBarInput,
         [switch]$ShowImage
     )
+    <#
+    https://flamingtext.com/logo/Design-Style
+    https://www11.flamingtext.com/net-fu/dynamic.cgi?script=style-logo&text=PoSh-EasyWin&fontname=Black+Ops+One&fillTextColor=%23006fff&fillOutlineColor=%2320d
+    Font: Display --> Black Ops One
+    #>
     $script:ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = $FormTitle
         Width  = $FormScale * 350
@@ -29,7 +35,7 @@ function Launch-ProgressBarForm {
             Top    = $FormScale * 10
             Width  = $FormScale * 285
             Height = $FormScale * 25
-            Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
+            Image  = [System.Drawing.Image]::Fromfile($ProgressBarImage)
             SizeMode = 'StretchImage'
         }
         $script:ProgressBarSelectionForm.Controls.Add($PoShEasyWinLogoLoadingPictureBox)
