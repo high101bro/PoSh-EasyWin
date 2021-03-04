@@ -12,8 +12,8 @@ $PoShEasyWinLogoPictureBox = New-Object Windows.Forms.PictureBox -Property @{
     Text     = "PoSh-EasyWin Image"
     Location = @{ X = $FormScale * 3
                   Y = $FormScale * 10 }
-    Size     = @{ Width  = $FormScale * 355
-                  Height = $FormScale * 35 }
+    Size     = @{ Width  = $FormScale * 400
+                  Height = $FormScale * 45 }
     Image = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
     SizeMode = 'StretchImage'
 }
@@ -40,7 +40,7 @@ $Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.RichTextBox -P
     Text     = $(Get-Content "$Dependencies\About PoSh-EasyWin.txt" -raw)
     Font     = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     Location = @{ X = $FormScale * 0
-                  Y = $FormScale * $PoShEasyWinLogoPictureBox.Location.Y + $PoShEasyWinLogoPictureBox.Size.Height + 2}
+                  Y = $FormScale * $PoShEasyWinLogoPictureBox.Location.Y + $PoShEasyWinLogoPictureBox.Size.Height - ($FormScale * 10)}
     Size     = @{ Width  = $FormScale * 742
                   Height = $FormScale * 175 }
     MultiLine  = $True
@@ -51,3 +51,4 @@ $Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.RichTextBox -P
     ShortcutsEnabled = $true
 }
 $Section3AboutTab.Controls.Add($Section1AboutSubTabRichTextBox)
+$Section1AboutSubTabRichTextBox.bringtofront()
