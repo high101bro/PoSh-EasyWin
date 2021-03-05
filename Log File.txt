@@ -16484,3 +16484,456 @@
 2021/03/05 03:11:51  ====================================================================================================
 2021/03/05 03:12:16   - System.Xml.XmlElement
 2021/03/05 03:12:17  Localhost: Event Logs - Event ID Manual Entry
+2021/03/05 03:18:22  ====================================================================================================
+2021/03/05 03:18:22  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 03:18:23  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 03:18:25  ====================================================================================================
+2021/03/05 03:20:56   - System.Xml.XmlElement
+2021/03/05 03:20:56   - System.Xml.XmlElement
+2021/03/05 03:21:01  Credentials Used: localhost\dan
+2021/03/05 03:21:02  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 03:21:02  Credentials Used: localhost\dan
+2021/03/05 03:21:02  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 03:21:02  Credentials Used: localhost\dan
+2021/03/05 03:21:03  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 03:21:03  Credentials Used: localhost\dan
+2021/03/05 03:21:03  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 03:21:03  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:21:03  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:21:04  Get-WSManInstance -ComputerName WIN10-01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 03:21:04  Get-WSManInstance -ComputerName WIN10-02 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 03:21:04  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:21:04  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:21:05  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 03:21:05  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 03:21:05  : Event Logs - Application Event Logs
+2021/03/05 03:21:05  : Event Logs - Security Event Logs
+2021/03/05 03:21:06  WIN10-01: Event Logs - Event IDs To Monitor
+2021/03/05 03:21:06  WIN10-02: Event Logs - Event IDs To Monitor
+2021/03/05 03:21:06  WIN10-01: Registry Search - Key Name
+2021/03/05 03:21:06  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:21:06  WIN10-02: Registry Search - Key Name
+2021/03/05 03:21:07  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:21:07  WIN10-01: Directory Listing
+2021/03/05 03:21:07  WIN10-02: Directory Listing
+2021/03/05 03:21:07  WIN10-01: File Search
+2021/03/05 03:21:07  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:21:07  WIN10-02: File Search
+2021/03/05 03:21:07  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:21:08  WIN10-01: Alternate Data Streams
+2021/03/05 03:21:08  WIN10-02: Alternate Data Streams
+2021/03/05 03:21:08  WIN10-01: Network Connection - Remote IP Address
+2021/03/05 03:21:08  WIN10-02: Network Connection - Remote IP Address
+2021/03/05 03:21:08  WIN10-01: Network Connection - Remote Port
+2021/03/05 03:21:09  WIN10-02: Network Connection - Remote Port
+2021/03/05 03:21:09  WIN10-01: Network Connection - Local Port
+2021/03/05 03:21:09  WIN10-02: Network Connection - Local Port
+2021/03/05 03:21:09  WIN10-01: Network Connection - Process Search
+2021/03/05 03:21:09  WIN10-02: Network Connection - Process Search
+2021/03/05 03:22:20  Credentials Used: localhost\dan
+2021/03/05 03:22:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 03:22:20  Credentials Used: localhost\dan
+2021/03/05 03:22:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 03:22:20  Credentials Used: localhost\dan
+2021/03/05 03:22:21  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 03:22:21  Credentials Used: localhost\dan
+2021/03/05 03:22:21  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 03:22:21  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:22:21  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:22:22  Get-WSManInstance -ComputerName WIN10-01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 03:22:22  Get-WSManInstance -ComputerName WIN10-02 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 03:22:22  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:22:22  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:22:22  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 03:22:22  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 03:22:23  : Event Logs - Application Event Logs
+2021/03/05 03:22:23  : Event Logs - Security Event Logs
+2021/03/05 03:22:23  WIN10-01: Event Logs - Event IDs To Monitor
+2021/03/05 03:22:23  WIN10-02: Event Logs - Event IDs To Monitor
+2021/03/05 03:22:24  WIN10-01: Registry Search - Key Name
+2021/03/05 03:22:24  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:22:24  WIN10-02: Registry Search - Key Name
+2021/03/05 03:22:24  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:22:24  WIN10-01: Directory Listing
+2021/03/05 03:22:24  WIN10-02: Directory Listing
+2021/03/05 03:22:24  WIN10-01: File Search
+2021/03/05 03:22:25  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:22:25  WIN10-02: File Search
+2021/03/05 03:22:25  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:22:25  WIN10-01: Alternate Data Streams
+2021/03/05 03:22:25  WIN10-02: Alternate Data Streams
+2021/03/05 03:22:25  WIN10-01: Network Connection - Remote IP Address
+2021/03/05 03:22:25  WIN10-02: Network Connection - Remote IP Address
+2021/03/05 03:22:26  WIN10-01: Network Connection - Remote Port
+2021/03/05 03:22:26  WIN10-02: Network Connection - Remote Port
+2021/03/05 03:22:26  WIN10-01: Network Connection - Local Port
+2021/03/05 03:22:26  WIN10-02: Network Connection - Local Port
+2021/03/05 03:22:52  Created New Credentials and stored them locally as an XML using Windows Data Protection API.
+2021/03/05 03:23:28  Credentials Used: administrator@mobilelab.home
+2021/03/05 03:23:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 03:23:28  Credentials Used: administrator@mobilelab.home
+2021/03/05 03:23:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 03:23:28  Credentials Used: administrator@mobilelab.home
+2021/03/05 03:23:28  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 03:23:28  Credentials Used: administrator@mobilelab.home
+2021/03/05 03:23:29  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 03:23:29  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:23:29  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:23:30  Get-WSManInstance -ComputerName WIN10-01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 03:23:30  Get-WSManInstance -ComputerName WIN10-02 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 03:23:30  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:23:30  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-02' -Credential $script:Credential
+2021/03/05 03:23:30  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 03:23:30  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 03:23:31  : Event Logs - Application Event Logs
+2021/03/05 03:23:31  : Event Logs - Security Event Logs
+2021/03/05 03:23:31  WIN10-01: Event Logs - Event IDs To Monitor
+2021/03/05 03:23:31  WIN10-02: Event Logs - Event IDs To Monitor
+2021/03/05 03:23:32  WIN10-01: Directory Listing
+2021/03/05 03:23:32  WIN10-02: Directory Listing
+2021/03/05 03:23:32  WIN10-01: Network Connection - Remote IP Address
+2021/03/05 03:23:32  WIN10-02: Network Connection - Remote IP Address
+2021/03/05 03:23:33  WIN10-01: Network Connection - Remote Port
+2021/03/05 03:23:33  WIN10-02: Network Connection - Remote Port
+2021/03/05 03:23:33  WIN10-01: Network Connection - Local Port
+2021/03/05 03:23:33  WIN10-02: Network Connection - Local Port
+2021/03/05 03:23:33  WIN10-01: Network Connection - Process Search
+2021/03/05 03:23:33  WIN10-02: Network Connection - Process Search
+2021/03/05 03:25:20  WIN10-01: Registry Search - Key Name
+2021/03/05 03:25:20  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-01' -Credential $script:Credential
+2021/03/05 03:25:20  WIN10-02: Registry Search - Key Name
+2021/03/05 03:25:20  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-02' -Credential $script:Credential
+2021/03/05 09:20:17  ====================================================================================================
+2021/03/05 09:20:17  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 09:20:19  PoSh-EasyWin User Agreemennt NOT Accepted By: ZENBOOK\danie
+2021/03/05 09:21:23  ====================================================================================================
+2021/03/05 09:21:23  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 09:21:25  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 09:21:26  ====================================================================================================
+2021/03/05 09:23:21   - System.Xml.XmlElement
+2021/03/05 09:25:46  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:25:49  Enter-PSSession -ComputerName WIN10-01
+2021/03/05 09:26:06  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:26:09  Enter-PSSession -ComputerName WIN10-02
+2021/03/05 09:26:35   - System.Xml.XmlElement
+2021/03/05 09:26:35   - System.Xml.XmlElement
+2021/03/05 09:26:36   - System.Xml.XmlElement
+2021/03/05 09:26:43   - 
+2021/03/05 09:26:43   - System.Xml.XmlElement
+2021/03/05 09:26:44   - System.Xml.XmlElement
+2021/03/05 09:26:44   - System.Xml.XmlElement
+2021/03/05 09:26:44   - System.Xml.XmlElement
+2021/03/05 09:26:44   - System.Xml.XmlElement
+2021/03/05 09:27:00  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:00  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/05 09:27:00  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:00  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/05 09:27:01  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:01  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/05 09:27:01  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:01  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/05 09:27:01  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:01  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/05 09:27:01  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:02  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/05 09:27:02  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:02  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/05 09:27:02  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:02  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/05 09:27:03  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:03  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:27:03  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:03  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:27:03  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:04  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:27:04  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:04  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:27:04  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:04  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:27:04  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:05  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:27:05  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:05  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:27:05  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:05  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:27:06  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:06  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:27:06  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:06  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:27:06  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:07  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:27:07  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:07  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:27:07  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:07  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:27:08  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:08  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:27:08  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:08  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:27:08  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:27:08  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:27:09  Get-WSManInstance -ComputerName WIN10-01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:27:09  Get-WSManInstance -ComputerName WIN10-02 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:27:10  Get-WSManInstance -ComputerName WIN10-03 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:27:10  Get-WSManInstance -ComputerName WIN10-06 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:27:10  Get-WSManInstance -ComputerName WIN10-07 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:27:10  Get-WSManInstance -ComputerName WIN10-08 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:27:11  Get-WSManInstance -ComputerName WIN10-09 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:27:11  Get-WSManInstance -ComputerName WIN10-10 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:27:11  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 09:27:12  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 09:27:12  WIN10-03: Event Logs - Event ID Manual Entry
+2021/03/05 09:27:12  WIN10-06: Event Logs - Event ID Manual Entry
+2021/03/05 09:27:12  WIN10-07: Event Logs - Event ID Manual Entry
+2021/03/05 09:27:12  WIN10-08: Event Logs - Event ID Manual Entry
+2021/03/05 09:27:12  WIN10-09: Event Logs - Event ID Manual Entry
+2021/03/05 09:27:12  WIN10-10: Event Logs - Event ID Manual Entry
+2021/03/05 09:27:13  WIN10-01: File Search
+2021/03/05 09:27:13  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-01' -Credential $script:Credential
+2021/03/05 09:27:13  WIN10-02: File Search
+2021/03/05 09:27:13  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-02' -Credential $script:Credential
+2021/03/05 09:27:13  WIN10-03: File Search
+2021/03/05 09:27:14  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-03' -Credential $script:Credential
+2021/03/05 09:27:14  WIN10-06: File Search
+2021/03/05 09:27:14  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-06' -Credential $script:Credential
+2021/03/05 09:27:14  WIN10-07: File Search
+2021/03/05 09:27:14  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-07' -Credential $script:Credential
+2021/03/05 09:27:14  WIN10-08: File Search
+2021/03/05 09:27:14  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-08' -Credential $script:Credential
+2021/03/05 09:27:15  WIN10-09: File Search
+2021/03/05 09:27:15  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-09' -Credential $script:Credential
+2021/03/05 09:27:15  WIN10-10: File Search
+2021/03/05 09:27:15  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-10' -Credential $script:Credential
+2021/03/05 09:27:16  WIN10-01: Network Connection - Remote IP Address
+2021/03/05 09:27:16  WIN10-02: Network Connection - Remote IP Address
+2021/03/05 09:27:16  WIN10-03: Network Connection - Remote IP Address
+2021/03/05 09:27:16  WIN10-06: Network Connection - Remote IP Address
+2021/03/05 09:27:16  WIN10-07: Network Connection - Remote IP Address
+2021/03/05 09:27:16  WIN10-08: Network Connection - Remote IP Address
+2021/03/05 09:27:16  WIN10-09: Network Connection - Remote IP Address
+2021/03/05 09:27:17  WIN10-10: Network Connection - Remote IP Address
+2021/03/05 09:43:35  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:43:35  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:43:35  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:43:36  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:43:36  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:43:36  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:43:36  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:43:36  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:43:36  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:43:37  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:43:37  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:43:37  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:43:37  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:43:37  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:43:38  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:43:38  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 09:45:40  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:40  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 09:45:40  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:40  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 09:45:41  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 09:45:41  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 09:45:41  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 09:45:42  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:42  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 09:45:42  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:42  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 09:45:42  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:42  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 09:45:43  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:43  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:45:43  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:43  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:45:43  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:44  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:45:44  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:44  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:45:44  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:44  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:45:44  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:45  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:45:45  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:45  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:45:45  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:45:45  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 09:46:33  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:46:34  Invoke-Command -ScriptBlock { Get-WindowsDriver -Online -All } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, DriverSignature, ProviderName, Date, Version, InBox, LogPath, LogLevel
+2021/03/05 09:46:34  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:46:34  Invoke-Command -ScriptBlock { Get-WindowsDriver -Online -All } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, DriverSignature, ProviderName, Date, Version, InBox, LogPath, LogLevel
+2021/03/05 09:46:34  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:46:34  Invoke-Command -ScriptBlock { Get-WindowsDriver -Online -All } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, DriverSignature, ProviderName, Date, Version, InBox, LogPath, LogLevel
+2021/03/05 09:46:35  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:46:35  Invoke-Command -ScriptBlock { Get-WindowsDriver -Online -All } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, DriverSignature, ProviderName, Date, Version, InBox, LogPath, LogLevel
+2021/03/05 09:46:35  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:46:35  Invoke-Command -ScriptBlock { Get-WindowsDriver -Online -All } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, DriverSignature, ProviderName, Date, Version, InBox, LogPath, LogLevel
+2021/03/05 09:46:35  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:46:35  Invoke-Command -ScriptBlock { Get-WindowsDriver -Online -All } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, DriverSignature, ProviderName, Date, Version, InBox, LogPath, LogLevel
+2021/03/05 09:46:36  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:46:36  Invoke-Command -ScriptBlock { Get-WindowsDriver -Online -All } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, DriverSignature, ProviderName, Date, Version, InBox, LogPath, LogLevel
+2021/03/05 09:46:36  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:46:36  Invoke-Command -ScriptBlock { Get-WindowsDriver -Online -All } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, DriverSignature, ProviderName, Date, Version, InBox, LogPath, LogLevel
+2021/03/05 09:53:11  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:53:14  Enter-PSSession -ComputerName WIN10-02
+2021/03/05 09:53:24  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-01' -Credential $script:Credential
+2021/03/05 09:53:24  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-02' -Credential $script:Credential
+2021/03/05 09:53:24  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-03' -Credential $script:Credential
+2021/03/05 09:53:24  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-06' -Credential $script:Credential
+2021/03/05 09:53:25  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-07' -Credential $script:Credential
+2021/03/05 09:53:25  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-08' -Credential $script:Credential
+2021/03/05 09:53:25  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-09' -Credential $script:Credential
+2021/03/05 09:53:25  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-10' -Credential $script:Credential
+2021/03/05 09:53:25  Get-WSManInstance -ComputerName WIN10-01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:53:26  Get-WSManInstance -ComputerName WIN10-02 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:53:26  Get-WSManInstance -ComputerName WIN10-03 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:53:26  Get-WSManInstance -ComputerName WIN10-06 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:53:26  Get-WSManInstance -ComputerName WIN10-07 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:53:26  Get-WSManInstance -ComputerName WIN10-08 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:53:26  Get-WSManInstance -ComputerName WIN10-09 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:53:27  Get-WSManInstance -ComputerName WIN10-10 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 09:56:15  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/05 09:56:15  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/05 09:56:15  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-03' -Credential $script:Credential
+2021/03/05 09:56:15  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-06' -Credential $script:Credential
+2021/03/05 09:56:15  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-07' -Credential $script:Credential
+2021/03/05 09:56:16  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-08' -Credential $script:Credential
+2021/03/05 09:56:16  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-09' -Credential $script:Credential
+2021/03/05 09:56:16  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-10' -Credential $script:Credential
+2021/03/05 09:56:49  Credentials Used: administrator@mobilelab.home
+2021/03/05 09:56:55  Remote Desktop (RDP): DC01
+2021/03/05 09:57:57  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/05 09:57:57  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/05 09:57:57  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/05 09:57:57  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-03' -Credential $script:Credential
+2021/03/05 09:57:57  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-06' -Credential $script:Credential
+2021/03/05 09:57:57  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-07' -Credential $script:Credential
+2021/03/05 09:57:57  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-08' -Credential $script:Credential
+2021/03/05 09:57:58  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-09' -Credential $script:Credential
+2021/03/05 09:57:58  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-10' -Credential $script:Credential
+2021/03/05 09:59:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/05 09:59:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/05 09:59:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/05 09:59:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-03' -Credential $script:Credential
+2021/03/05 09:59:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-06' -Credential $script:Credential
+2021/03/05 09:59:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-07' -Credential $script:Credential
+2021/03/05 09:59:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-08' -Credential $script:Credential
+2021/03/05 09:59:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-09' -Credential $script:Credential
+2021/03/05 09:59:06  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-10' -Credential $script:Credential
+2021/03/05 10:03:34  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/05 10:03:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/05 10:03:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/05 10:03:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-03' -Credential $script:Credential
+2021/03/05 10:03:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-06' -Credential $script:Credential
+2021/03/05 10:03:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-07' -Credential $script:Credential
+2021/03/05 10:03:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-08' -Credential $script:Credential
+2021/03/05 10:03:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-09' -Credential $script:Credential
+2021/03/05 10:03:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-10' -Credential $script:Credential
+2021/03/05 10:05:01  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/05 10:05:01  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/05 10:05:01  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/05 10:05:02  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-03' -Credential $script:Credential
+2021/03/05 10:05:02  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-06' -Credential $script:Credential
+2021/03/05 10:05:02  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-07' -Credential $script:Credential
+2021/03/05 10:05:02  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-08' -Credential $script:Credential
+2021/03/05 10:05:02  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-09' -Credential $script:Credential
+2021/03/05 10:05:02  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-10' -Credential $script:Credential
+2021/03/05 10:11:43   - System.Xml.XmlElement
+2021/03/05 10:11:44   - System.Xml.XmlElement
+2021/03/05 10:11:44   - System.Xml.XmlElement
+2021/03/05 10:11:44   - System.Xml.XmlElement
+2021/03/05 10:11:44   - System.Xml.XmlElement
+2021/03/05 10:11:45   - System.Xml.XmlElement
+2021/03/05 10:11:45   - System.Xml.XmlElement
+2021/03/05 10:11:45   - System.Xml.XmlElement
+2021/03/05 10:11:45   - System.Xml.XmlElement
+2021/03/05 10:11:47  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:11:47  Invoke-Command -ScriptBlock { Get-Process } -ComputerName DC01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:11:47  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:11:47  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:11:47  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:11:47  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:11:48  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:11:48  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:11:48  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:11:48  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:11:48  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:11:48  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:11:48  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:11:49  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:11:49  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:11:49  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:11:49  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:11:49  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:12:12  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:12:13  Invoke-Command -ScriptBlock { Get-Process } -ComputerName DC01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:12:13  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:12:13  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:12:13  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:12:13  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:12:13  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:12:14  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:12:14  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:12:14  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:12:14  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:12:14  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:12:14  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:12:14  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:12:15  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:12:15  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 10:12:15  Credentials Used: administrator@mobilelab.home
+2021/03/05 10:12:15  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 15:49:04  ====================================================================================================
+2021/03/05 15:49:04  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 15:49:07  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 15:49:08  ====================================================================================================
+2021/03/05 15:49:45   - System.Xml.XmlElement
+2021/03/05 15:49:45   - System.Xml.XmlElement
+2021/03/05 15:49:45   - System.Xml.XmlElement
+2021/03/05 15:49:53   - 
+2021/03/05 15:49:53   - System.Xml.XmlElement
+2021/03/05 15:49:53   - System.Xml.XmlElement
+2021/03/05 15:49:53   - System.Xml.XmlElement
+2021/03/05 15:49:54   - System.Xml.XmlElement
+2021/03/05 15:49:54   - System.Xml.XmlElement
+2021/03/05 15:49:55  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:55  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 15:49:55  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:55  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 15:49:55  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:55  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 15:49:55  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:56  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 15:49:56  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:56  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 15:49:56  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:56  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 15:49:56  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 15:49:57  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 15:49:57  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:58  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 15:49:58  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:58  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 15:49:58  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:58  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 15:49:58  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:59  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 15:49:59  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:59  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 15:49:59  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:49:59  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 15:49:59  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:50:00  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 15:50:00  Credentials Used: administrator@mobilelab.home
+2021/03/05 15:50:00  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 15:59:27  ====================================================================================================
+2021/03/05 15:59:28  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 15:59:30  PoSh-EasyWin User Agreemennt NOT Accepted By: ZENBOOK\danie
+2021/03/05 16:00:07  ====================================================================================================
+2021/03/05 16:00:07  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 16:00:09  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 16:00:10  ====================================================================================================

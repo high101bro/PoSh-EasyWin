@@ -235,7 +235,7 @@ function Monitor-Jobs {
                         }
                         else {
                             `$script:GeneratedAutoChartTitle$ChartNumber.ForeColor = 'Red'
-                            `$script:GeneratedAutoChartTitle$ChartNumber.Text = "`$SeriesName`n`n[ No Data Available ]`n"
+                            `$script:GeneratedAutoChartTitle$ChartNumber.Text = "`$SeriesName`n`n[ No Unique Data Available ]`n"
                         }
 
 
