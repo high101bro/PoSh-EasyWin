@@ -15574,3 +15574,913 @@
 2021/03/04 01:24:55  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
 2021/03/04 01:24:55  Credentials Used: administrator@mobilelab.home
 2021/03/04 01:24:55  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 01:27:53  ====================================================================================================
+2021/03/04 01:27:53  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 01:27:55  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 01:27:56  ====================================================================================================
+2021/03/04 01:28:19   - System.Xml.XmlElement
+2021/03/04 01:28:20   - System.Xml.XmlElement
+2021/03/04 01:28:20  Credentials Used: administrator@mobilelab.home
+2021/03/04 01:28:21  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 01:28:21  Credentials Used: administrator@mobilelab.home
+2021/03/04 01:28:21  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 09:04:37  ====================================================================================================
+2021/03/04 09:04:37  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 09:04:39  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 09:04:40  ====================================================================================================
+2021/03/04 09:05:12   - System.Xml.XmlElement
+2021/03/04 09:05:12   - System.Xml.XmlElement
+2021/03/04 09:05:13  Credentials Used: administrator@mobilelab.home
+2021/03/04 09:05:13  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 09:05:13  Credentials Used: administrator@mobilelab.home
+2021/03/04 09:05:14  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 14:25:26  ====================================================================================================
+2021/03/04 14:25:26  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 14:25:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 14:25:28  ====================================================================================================
+2021/03/04 14:26:15   - System.Xml.XmlElement
+2021/03/04 14:26:15   - System.Xml.XmlElement
+2021/03/04 14:26:16  Credentials Used: administrator@mobilelab.home
+2021/03/04 14:26:16  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 14:26:16  Credentials Used: administrator@mobilelab.home
+2021/03/04 14:26:16  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 14:26:17  Credentials Used: administrator@mobilelab.home
+2021/03/04 14:26:17  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 14:26:17  Credentials Used: administrator@mobilelab.home
+2021/03/04 14:26:17  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 14:28:40  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/04 14:28:40  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/04 14:29:45  Credentials Used: administrator@mobilelab.home
+2021/03/04 14:29:50  Remote Desktop (RDP): WIN10-01
+2021/03/04 14:30:51  Credentials Used: administrator@mobilelab.home
+2021/03/04 14:30:56  Remote Desktop (RDP): DC01
+2021/03/04 14:31:14  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/04 14:31:14  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/04 14:31:14  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/04 20:18:21  ====================================================================================================
+2021/03/04 20:18:21  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 20:19:09  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 20:19:10  ====================================================================================================
+2021/03/04 20:27:21  ====================================================================================================
+2021/03/04 20:27:21  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 20:27:22  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 20:27:23  ====================================================================================================
+2021/03/04 20:31:22   - System.Xml.XmlElement
+2021/03/04 20:31:22   - System.Xml.XmlElement
+2021/03/04 20:31:24  Credentials Used: administrator@mobilelab.home
+2021/03/04 20:31:24  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 20:31:24  Credentials Used: administrator@mobilelab.home
+2021/03/04 20:31:24  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 21:37:06  ====================================================================================================
+2021/03/04 21:37:06  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 21:37:10  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 21:37:11  ====================================================================================================
+2021/03/04 21:37:36   - System.Xml.XmlElement
+2021/03/04 21:37:37  Credentials Used: administrator@mobilelab.home
+2021/03/04 21:37:37  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 22:16:58  ====================================================================================================
+2021/03/04 22:16:58  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:16:59  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:17:00  ====================================================================================================
+2021/03/04 22:19:12  2021/03/04 22:19:12  ==================== Port Scan Initiliaztion ====================
+2021/03/04 22:19:12  2021/03/04 22:19:12  Ports To Be Scanned:  10000 1025 1026 1027 1028 1029 106 110 111 1110 113 119 13 135 139 143 1433 144 1720 1723 1755 179 1900 199 2000 2001 2049 21 2121 22 23 25 26 2717 3000 3128 32768 3306 3389 37 389 3986 427 443 444 445 465 4899 49152 49153 49154 49155 49156 49157 5000 5009 5051 5060 5101 513 514 515 5190 53 5357 543 5432 544 548 554 5631 5666 5800 587 5900 6000 6001 631 646 6646 7 7070 79 80 8000 8008 8009 8080 8081 81 8443 873 88 8888 9 9100 990 993 995 9999
+2021/03/04 22:19:13  Port Scan IP:  10.10.10.100
+2021/03/04 22:19:14  [Response Time: 0.25 ms] 10.10.10.100 is listening on port 135
+2021/03/04 22:19:14  [Response Time: 0.06 ms] 10.10.10.100 is listening on port 139
+2021/03/04 22:19:14  [Response Time: 0.05 ms] 10.10.10.100 is listening on port 445
+2021/03/04 22:19:15  [Response Time: 0.06 ms] 10.10.10.100 is listening on port 5357
+2021/03/04 22:19:16  Port Scan IP:  10.10.10.101
+2021/03/04 22:19:16  [Response Time: 0.47 ms] 10.10.10.101 is listening on port 135
+2021/03/04 22:19:16  [Response Time: 0.41 ms] 10.10.10.101 is listening on port 139
+2021/03/04 22:19:16  [Response Time: 0.67 ms] 10.10.10.101 is listening on port 21
+2021/03/04 22:19:16  [Response Time: 0.35 ms] 10.10.10.101 is listening on port 3389
+2021/03/04 22:19:17  [Response Time: 0.42 ms] 10.10.10.101 is listening on port 445
+2021/03/04 22:19:17  [Response Time: 0.46 ms] 10.10.10.101 is listening on port 5357
+2021/03/04 22:19:18  Port Scan IP:  10.10.10.102
+2021/03/04 22:19:18  [Response Time: 0.51 ms] 10.10.10.102 is listening on port 135
+2021/03/04 22:19:18  [Response Time: 0.39 ms] 10.10.10.102 is listening on port 139
+2021/03/04 22:19:18  [Response Time: 0.43 ms] 10.10.10.102 is listening on port 3389
+2021/03/04 22:19:18  [Response Time: 0.47 ms] 10.10.10.102 is listening on port 445
+2021/03/04 22:19:19  [Response Time: 0.45 ms] 10.10.10.102 is listening on port 5357
+2021/03/04 22:19:19  Port Scan IP:  10.10.10.103
+2021/03/04 22:19:21  Port Scan IP:  10.10.10.104
+2021/03/04 22:19:23  Port Scan IP:  10.10.10.105
+2021/03/04 22:27:48  ====================================================================================================
+2021/03/04 22:27:48  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:27:49  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:27:50  ====================================================================================================
+2021/03/04 22:28:22   - True
+2021/03/04 22:28:23  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:28:24  Compilied CSV and XML Files
+2021/03/04 22:28:24  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-01" -AcceptEULA -NoBanner -u $UserName -p $Password cmd /c "tasklist /V /FO CSV
+2021/03/04 22:28:50   - System.Xml.XmlElement
+2021/03/04 22:28:51  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:28:52  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 22:30:00  ====================================================================================================
+2021/03/04 22:30:00  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:30:02  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:30:03  ====================================================================================================
+2021/03/04 22:30:26   - System.Xml.XmlElement
+2021/03/04 22:30:27  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:30:27  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 22:31:20  ====================================================================================================
+2021/03/04 22:31:20  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:31:21  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:31:23  ====================================================================================================
+2021/03/04 22:31:43   - System.Xml.XmlElement
+2021/03/04 22:31:45  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:31:45  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 22:33:47  ====================================================================================================
+2021/03/04 22:33:47  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:33:48  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:33:50  ====================================================================================================
+2021/03/04 22:34:13   - System.Xml.XmlElement
+2021/03/04 22:34:13  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:34:13  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 22:34:52  ====================================================================================================
+2021/03/04 22:34:52  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:34:53  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:34:54  ====================================================================================================
+2021/03/04 22:35:18   - System.Xml.XmlElement
+2021/03/04 22:35:18  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:35:19  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 22:38:18  ====================================================================================================
+2021/03/04 22:38:18  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:38:19  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:38:20  ====================================================================================================
+2021/03/04 22:38:41   - System.Xml.XmlElement
+2021/03/04 22:38:41  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:38:42  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 22:39:20  ====================================================================================================
+2021/03/04 22:39:20  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:39:21  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:39:22  ====================================================================================================
+2021/03/04 22:39:45   - System.Xml.XmlElement
+2021/03/04 22:39:45   - System.Xml.XmlElement
+2021/03/04 22:39:45   - System.Xml.XmlElement
+2021/03/04 22:39:47  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:39:47  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName DC01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 22:39:47  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:39:47  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 22:39:47  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:39:47  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 22:54:13  ====================================================================================================
+2021/03/04 22:54:13  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:54:14  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:54:16  ====================================================================================================
+2021/03/04 22:54:46   - System.Xml.XmlElement
+2021/03/04 22:54:47   - System.Xml.XmlElement
+2021/03/04 22:54:47   - System.Xml.XmlElement
+2021/03/04 22:54:48  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:54:48  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName DC01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 22:54:48  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:54:48  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 22:54:48  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:54:48  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 22:58:29  ====================================================================================================
+2021/03/04 22:58:29  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 22:58:30  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 22:58:31  ====================================================================================================
+2021/03/04 22:58:49   - System.Xml.XmlElement
+2021/03/04 22:58:49   - System.Xml.XmlElement
+2021/03/04 22:58:51  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:58:51  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 22:58:51  Credentials Used: administrator@mobilelab.home
+2021/03/04 22:58:51  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:00:29  ====================================================================================================
+2021/03/04 23:00:29  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:00:30  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:00:31  ====================================================================================================
+2021/03/04 23:00:52   - System.Xml.XmlElement
+2021/03/04 23:00:52   - System.Xml.XmlElement
+2021/03/04 23:00:53  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:00:53  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:00:53  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:00:53  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:03:22  ====================================================================================================
+2021/03/04 23:03:22  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:03:23  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:03:24  ====================================================================================================
+2021/03/04 23:03:54   - System.Xml.XmlElement
+2021/03/04 23:03:54   - System.Xml.XmlElement
+2021/03/04 23:03:54  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:03:55  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-RegistryStartupCommands.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:03:55  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:03:55  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-RegistryStartupCommands.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:05:40  ====================================================================================================
+2021/03/04 23:05:40  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:05:41  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:05:42  ====================================================================================================
+2021/03/04 23:06:18   - System.Xml.XmlElement
+2021/03/04 23:06:19   - System.Xml.XmlElement
+2021/03/04 23:06:20  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:06:20  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:06:20  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:06:21  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:08:00  ====================================================================================================
+2021/03/04 23:08:00  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:08:01  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:08:02  ====================================================================================================
+2021/03/04 23:08:26   - System.Xml.XmlElement
+2021/03/04 23:08:27   - System.Xml.XmlElement
+2021/03/04 23:08:27  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:08:28  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:08:28  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:08:28  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:43:09  ====================================================================================================
+2021/03/04 23:43:09  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:43:11  PoSh-EasyWin User Agreemennt NOT Accepted By: ZENBOOK\danie
+2021/03/04 23:44:07  ====================================================================================================
+2021/03/04 23:44:07  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:44:09  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:44:10  ====================================================================================================
+2021/03/04 23:45:05   - System.Xml.XmlElement
+2021/03/04 23:45:05   - System.Xml.XmlElement
+2021/03/04 23:45:06  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:45:07  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-FirewallRulesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:45:07  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:45:07  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-FirewallRulesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/04 23:45:57  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:45:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:45:57  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:45:58  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:47:26  ====================================================================================================
+2021/03/04 23:47:26  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:47:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:47:28  ====================================================================================================
+2021/03/04 23:47:50   - System.Xml.XmlElement
+2021/03/04 23:47:50   - System.Xml.XmlElement
+2021/03/04 23:47:50  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:47:51  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:47:51  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:47:51  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:50:33  ====================================================================================================
+2021/03/04 23:50:33  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:50:37  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:50:39  ====================================================================================================
+2021/03/04 23:51:03   - System.Xml.XmlElement
+2021/03/04 23:51:03   - System.Xml.XmlElement
+2021/03/04 23:51:04  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:51:04  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:51:04  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:51:04  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:53:13  ====================================================================================================
+2021/03/04 23:53:13  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:53:15  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:53:16  ====================================================================================================
+2021/03/04 23:53:40   - System.Xml.XmlElement
+2021/03/04 23:53:40   - System.Xml.XmlElement
+2021/03/04 23:53:40  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:53:40  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:53:40  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:53:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:54:26  ====================================================================================================
+2021/03/04 23:54:26  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:54:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:54:28  ====================================================================================================
+2021/03/04 23:54:49   - System.Xml.XmlElement
+2021/03/04 23:54:49   - System.Xml.XmlElement
+2021/03/04 23:54:50  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:54:50  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:54:50  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:54:51  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:55:33  ====================================================================================================
+2021/03/04 23:55:33  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:55:34  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/04 23:55:35  ====================================================================================================
+2021/03/04 23:55:58   - System.Xml.XmlElement
+2021/03/04 23:55:58   - System.Xml.XmlElement
+2021/03/04 23:55:59  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:55:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:55:59  Credentials Used: administrator@mobilelab.home
+2021/03/04 23:55:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/04 23:59:58  ====================================================================================================
+2021/03/04 23:59:58  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/04 23:59:59  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:00:00  ====================================================================================================
+2021/03/05 00:00:40   - System.Xml.XmlElement
+2021/03/05 00:00:40   - System.Xml.XmlElement
+2021/03/05 00:00:41  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:00:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:00:41  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:00:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:01:26  ====================================================================================================
+2021/03/05 00:01:26  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:01:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:01:29  ====================================================================================================
+2021/03/05 00:01:49   - True
+2021/03/05 00:01:49   - True
+2021/03/05 00:01:50  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:01:51  Compilied CSV and XML Files
+2021/03/05 00:01:51  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-01" -AcceptEULA -NoBanner -u $UserName -p $Password powershell "Get-Process | Select-Object * | ConvertTo-Csv -NoType"
+2021/03/05 00:01:51  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:01:52  Compilied CSV and XML Files
+2021/03/05 00:01:52  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-02" -AcceptEULA -NoBanner -u $UserName -p $Password powershell "Get-Process | Select-Object * | ConvertTo-Csv -NoType"
+2021/03/05 00:02:05   - System.Xml.XmlElement
+2021/03/05 00:02:05   - System.Xml.XmlElement
+2021/03/05 00:02:05  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:02:06  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:02:06  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:02:06  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:03:10  ====================================================================================================
+2021/03/05 00:03:10  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:03:11  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:03:13  ====================================================================================================
+2021/03/05 00:03:29   - System.Xml.XmlElement
+2021/03/05 00:03:30  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:03:31  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:04:16  ====================================================================================================
+2021/03/05 00:04:16  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:04:26  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:04:28  ====================================================================================================
+2021/03/05 00:05:15   - System.Xml.XmlElement
+2021/03/05 00:05:16  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:05:16  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:05:50  ====================================================================================================
+2021/03/05 00:05:50  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:05:51  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:05:52  ====================================================================================================
+2021/03/05 00:06:16   - System.Xml.XmlElement
+2021/03/05 00:06:18  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:06:18  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:06:57  ====================================================================================================
+2021/03/05 00:06:57  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:06:59  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:07:00  ====================================================================================================
+2021/03/05 00:07:19   - System.Xml.XmlElement
+2021/03/05 00:07:20  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:07:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:07:41  ====================================================================================================
+2021/03/05 00:07:41  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:07:41  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:07:43  ====================================================================================================
+2021/03/05 00:08:04   - System.Xml.XmlElement
+2021/03/05 00:08:04  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:08:04  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:08:48  ====================================================================================================
+2021/03/05 00:08:48  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:08:49  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:08:50  ====================================================================================================
+2021/03/05 00:09:23   - System.Xml.XmlElement
+2021/03/05 00:09:24  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:09:24  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:09:52  ====================================================================================================
+2021/03/05 00:09:52  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:09:58  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:09:59  ====================================================================================================
+2021/03/05 00:10:23   - System.Xml.XmlElement
+2021/03/05 00:10:24  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:10:24  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:11:18  ====================================================================================================
+2021/03/05 00:11:18  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:11:19  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:11:20  ====================================================================================================
+2021/03/05 00:11:39   - System.Xml.XmlElement
+2021/03/05 00:11:40  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:11:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:12:31  ====================================================================================================
+2021/03/05 00:12:31  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:12:32  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:12:33  ====================================================================================================
+2021/03/05 00:12:53   - System.Xml.XmlElement
+2021/03/05 00:12:54  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:12:54  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:13:50  ====================================================================================================
+2021/03/05 00:13:50  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:13:51  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:13:52  ====================================================================================================
+2021/03/05 00:14:11   - System.Xml.XmlElement
+2021/03/05 00:14:12  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:14:12  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:14:53  ====================================================================================================
+2021/03/05 00:14:53  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:14:54  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:14:56  ====================================================================================================
+2021/03/05 00:15:16   - System.Xml.XmlElement
+2021/03/05 00:15:17  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:15:17  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:16:04  ====================================================================================================
+2021/03/05 00:16:05  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:16:05  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:16:07  ====================================================================================================
+2021/03/05 00:16:40   - System.Xml.XmlElement
+2021/03/05 00:16:49  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:16:49  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:17:16  ====================================================================================================
+2021/03/05 00:17:16  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:17:17  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:17:18  ====================================================================================================
+2021/03/05 00:17:39   - System.Xml.XmlElement
+2021/03/05 00:17:42  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:17:42  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:18:25  ====================================================================================================
+2021/03/05 00:18:25  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:18:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:18:28  ====================================================================================================
+2021/03/05 00:19:06   - System.Xml.XmlElement
+2021/03/05 00:19:16  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:19:16  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:23:49  ====================================================================================================
+2021/03/05 00:23:49  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:23:51  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:23:52  ====================================================================================================
+2021/03/05 00:24:19   - System.Xml.XmlElement
+2021/03/05 00:24:20  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:24:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:25:19  ====================================================================================================
+2021/03/05 00:25:19  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:25:20  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:25:21  ====================================================================================================
+2021/03/05 00:26:07   - System.Xml.XmlElement
+2021/03/05 00:26:09  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:26:09  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:26:34  ====================================================================================================
+2021/03/05 00:26:34  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:26:35  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:26:36  ====================================================================================================
+2021/03/05 00:26:56   - System.Xml.XmlElement
+2021/03/05 00:26:56  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:26:57  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:28:19  ====================================================================================================
+2021/03/05 00:28:19  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:28:20  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:28:21  ====================================================================================================
+2021/03/05 00:28:42   - System.Xml.XmlElement
+2021/03/05 00:28:44  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:28:44  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:29:03  ====================================================================================================
+2021/03/05 00:29:04  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:29:05  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:29:06  ====================================================================================================
+2021/03/05 00:29:24   - System.Xml.XmlElement
+2021/03/05 00:29:27  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:29:27  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:29:58  ====================================================================================================
+2021/03/05 00:29:58  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:29:59  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:30:00  ====================================================================================================
+2021/03/05 00:30:19   - System.Xml.XmlElement
+2021/03/05 00:30:19  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:30:20  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:30:43  ====================================================================================================
+2021/03/05 00:30:43  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:30:45  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:30:46  ====================================================================================================
+2021/03/05 00:31:08   - System.Xml.XmlElement
+2021/03/05 00:31:09  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:31:09  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:35:09  ====================================================================================================
+2021/03/05 00:35:09  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:35:10  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:35:11  ====================================================================================================
+2021/03/05 00:35:40   - System.Xml.XmlElement
+2021/03/05 00:35:41  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:35:41  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:40:35  ====================================================================================================
+2021/03/05 00:40:35  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:40:36  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:40:37  ====================================================================================================
+2021/03/05 00:41:04   - System.Xml.XmlElement
+2021/03/05 00:41:04  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:41:05  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:42:23  ====================================================================================================
+2021/03/05 00:42:23  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:42:24  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:42:25  ====================================================================================================
+2021/03/05 00:42:46   - System.Xml.XmlElement
+2021/03/05 00:42:48  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:42:49  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:45:26  ====================================================================================================
+2021/03/05 00:45:26  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:45:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:45:28  ====================================================================================================
+2021/03/05 00:45:49   - System.Xml.XmlElement
+2021/03/05 00:45:52  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:45:52  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 00:46:37  ====================================================================================================
+2021/03/05 00:46:37  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:46:38  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:46:39  ====================================================================================================
+2021/03/05 00:46:59   - System.Xml.XmlElement
+2021/03/05 00:47:00  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:47:00  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:49:03  ====================================================================================================
+2021/03/05 00:49:03  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:49:05  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:49:06  ====================================================================================================
+2021/03/05 00:49:31   - System.Xml.XmlElement
+2021/03/05 00:49:32  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:49:32  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:53:40  ====================================================================================================
+2021/03/05 00:53:40  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:53:51  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:53:52  ====================================================================================================
+2021/03/05 00:54:32   - System.Xml.XmlElement
+2021/03/05 00:54:33   - System.Xml.XmlElement
+2021/03/05 00:54:33  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:54:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:54:34  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:54:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 00:58:20  ====================================================================================================
+2021/03/05 00:58:20  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 00:58:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 00:58:28  ====================================================================================================
+2021/03/05 00:58:49   - System.Xml.XmlElement
+2021/03/05 00:58:49  Credentials Used: administrator@mobilelab.home
+2021/03/05 00:58:49  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:04:46  ====================================================================================================
+2021/03/05 01:04:46  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:04:47  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:04:48  ====================================================================================================
+2021/03/05 01:05:10   - System.Xml.XmlElement
+2021/03/05 01:05:10   - System.Xml.XmlElement
+2021/03/05 01:05:11  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:05:11  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:05:11  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:05:11  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:06:12  ====================================================================================================
+2021/03/05 01:06:12  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:06:13  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:06:14  ====================================================================================================
+2021/03/05 01:06:37   - System.Xml.XmlElement
+2021/03/05 01:06:37   - System.Xml.XmlElement
+2021/03/05 01:06:37   - System.Xml.XmlElement
+2021/03/05 01:06:38  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:06:38  Invoke-Command -ScriptBlock { Get-Process } -ComputerName DC01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:06:38  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:06:38  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:06:38  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:06:38  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:10:13  ====================================================================================================
+2021/03/05 01:10:13  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:10:14  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:10:15  ====================================================================================================
+2021/03/05 01:11:04   - System.Xml.XmlElement
+2021/03/05 01:11:04   - System.Xml.XmlElement
+2021/03/05 01:11:05  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:11:05  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:11:05  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:11:05  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:14:02  ====================================================================================================
+2021/03/05 01:14:02  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:14:06  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:14:07  ====================================================================================================
+2021/03/05 01:14:26   - System.Xml.XmlElement
+2021/03/05 01:14:27   - System.Xml.XmlElement
+2021/03/05 01:14:28  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:14:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:14:28  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:14:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:20:23  ====================================================================================================
+2021/03/05 01:20:23  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:20:24  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:20:25  ====================================================================================================
+2021/03/05 01:20:48   - System.Xml.XmlElement
+2021/03/05 01:20:49   - System.Xml.XmlElement
+2021/03/05 01:20:49  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:20:50  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:20:50  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:20:50  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:21:39  ====================================================================================================
+2021/03/05 01:21:39  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:21:40  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:21:41  ====================================================================================================
+2021/03/05 01:21:58   - System.Xml.XmlElement
+2021/03/05 01:21:59  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:21:59  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:22:14  ====================================================================================================
+2021/03/05 01:22:14  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:22:15  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:22:16  ====================================================================================================
+2021/03/05 01:22:33   - System.Xml.XmlElement
+2021/03/05 01:22:35  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:22:35  Invoke-Command -ScriptBlock { Get-NetFirewallRule } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Enabled, Name, DisplayName, Description, DisplayGroup, Group, Profile, Direction, Action, EdgeTraversalPolicy, LooseSourceMapping, LocalOnlyMapping, Owner, EnforcementStatus, Status, PrimaryStatus, PolicyStoreSource, PolicyStoreSourceType
+2021/03/05 01:23:51  ====================================================================================================
+2021/03/05 01:23:51  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:23:51  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:23:52  ====================================================================================================
+2021/03/05 01:24:11   - System.Xml.XmlElement
+2021/03/05 01:24:13  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:24:13  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:25:03  ====================================================================================================
+2021/03/05 01:25:03  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:25:04  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:25:05  ====================================================================================================
+2021/03/05 01:25:26   - System.Xml.XmlElement
+2021/03/05 01:25:28  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:25:28  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:25:53  ====================================================================================================
+2021/03/05 01:25:53  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:25:54  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:25:55  ====================================================================================================
+2021/03/05 01:26:14   - System.Xml.XmlElement
+2021/03/05 01:26:15  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:26:15  Invoke-Command -ScriptBlock { Get-LocalGroup } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, *
+2021/03/05 01:27:21  ====================================================================================================
+2021/03/05 01:27:21  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:27:22  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:27:23  ====================================================================================================
+2021/03/05 01:27:44   - System.Xml.XmlElement
+2021/03/05 01:27:45  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:27:45  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:31:44  ====================================================================================================
+2021/03/05 01:31:44  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:31:46  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:31:47  ====================================================================================================
+2021/03/05 01:32:07   - System.Xml.XmlElement
+2021/03/05 01:32:07   - System.Xml.XmlElement
+2021/03/05 01:32:08  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:32:08  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:32:08  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:32:08  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:33:51  ====================================================================================================
+2021/03/05 01:33:51  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:33:53  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:33:54  ====================================================================================================
+2021/03/05 01:34:13   - System.Xml.XmlElement
+2021/03/05 01:34:14   - System.Xml.XmlElement
+2021/03/05 01:34:15  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:34:15  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:34:15  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:34:15  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:35:15  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 01:35:15  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 01:35:51  WIN10-01: Registry Search - Key Name
+2021/03/05 01:35:51  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-01' -Credential $script:Credential
+2021/03/05 01:35:51  WIN10-02: Registry Search - Key Name
+2021/03/05 01:35:51  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-02' -Credential $script:Credential
+2021/03/05 01:36:15  WIN10-01: Registry Search - Key Name
+2021/03/05 01:36:16  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-01' -Credential $script:Credential
+2021/03/05 01:36:16  WIN10-02: Registry Search - Key Name
+2021/03/05 01:36:16  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-02' -Credential $script:Credential
+2021/03/05 01:36:47  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:36:48  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:36:48  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:36:48  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:36:48  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:36:48  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 01:36:48  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:36:48  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 01:37:15  WIN10-01: Endpoint Packet Capture
+2021/03/05 01:37:16  WIN10-02: Endpoint Packet Capture
+2021/03/05 01:37:51  WIN10-01: Network Connection - Remote IP Address
+2021/03/05 01:37:51  WIN10-02: Network Connection - Remote IP Address
+2021/03/05 01:37:51  WIN10-01: Network Connection - Remote Port
+2021/03/05 01:37:52  WIN10-02: Network Connection - Remote Port
+2021/03/05 01:37:52  WIN10-01: Network Connection - Local Port
+2021/03/05 01:37:52  WIN10-02: Network Connection - Local Port
+2021/03/05 01:38:23  WIN10-01: Registry Search - Key Name
+2021/03/05 01:38:23  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-01' -Credential $script:Credential
+2021/03/05 01:38:23  WIN10-02: Registry Search - Key Name
+2021/03/05 01:38:23  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-02' -Credential $script:Credential
+2021/03/05 01:39:15   - System.Xml.XmlElement
+2021/03/05 01:39:16   - System.Xml.XmlElement
+2021/03/05 01:39:16   - System.Xml.XmlElement
+2021/03/05 01:39:17  DC01: Event Logs - Event ID Manual Entry
+2021/03/05 01:39:17  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 01:39:17  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 01:41:43  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- DC01' -Credential $script:Credential
+2021/03/05 01:41:43  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-01' -Credential $script:Credential
+2021/03/05 01:41:43  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-02' -Credential $script:Credential
+2021/03/05 01:41:43  Get-WSManInstance -ComputerName DC01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 01:41:43  Get-WSManInstance -ComputerName WIN10-01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 01:41:43  Get-WSManInstance -ComputerName WIN10-02 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 01:41:44  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- DC01' -Credential $script:Credential
+2021/03/05 01:41:44  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-01' -Credential $script:Credential
+2021/03/05 01:41:44  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-02' -Credential $script:Credential
+2021/03/05 01:46:16  ====================================================================================================
+2021/03/05 01:46:16  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:46:17  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:46:18  ====================================================================================================
+2021/03/05 01:48:30   - True
+2021/03/05 01:48:30   - True
+2021/03/05 01:48:31   - System.Xml.XmlElement
+2021/03/05 01:48:31   - System.Xml.XmlElement
+2021/03/05 01:48:33  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:48:34  Compilied CSV and XML Files
+2021/03/05 01:48:34  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-01" -AcceptEULA -NoBanner -u $UserName -p $Password powershell "Get-Process | Select-Object * | ConvertTo-Csv -NoType"
+2021/03/05 01:48:34  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:48:35  Compilied CSV and XML Files
+2021/03/05 01:48:35  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-02" -AcceptEULA -NoBanner -u $UserName -p $Password powershell "Get-Process | Select-Object * | ConvertTo-Csv -NoType"
+2021/03/05 01:48:35  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-01' -Credential $script:Credential
+2021/03/05 01:48:35  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-02' -Credential $script:Credential
+2021/03/05 01:48:36  Get-WSManInstance -ComputerName WIN10-01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 01:48:36  Get-WSManInstance -ComputerName WIN10-02 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 01:48:37  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-01' -Credential $script:Credential
+2021/03/05 01:48:37  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-02' -Credential $script:Credential
+2021/03/05 01:48:37  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 01:48:37  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 01:48:38  : Event Logs - Application Event Logs
+2021/03/05 01:48:38  : Event Logs - Security Event Logs
+2021/03/05 01:48:38  WIN10-01: Directory Listing
+2021/03/05 01:48:39  WIN10-02: Directory Listing
+2021/03/05 01:48:39  WIN10-01: File Search
+2021/03/05 01:48:39  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-01' -Credential $script:Credential
+2021/03/05 01:48:39  WIN10-02: File Search
+2021/03/05 01:48:39  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-02' -Credential $script:Credential
+2021/03/05 01:49:42   - System.Xml.XmlElement
+2021/03/05 01:49:42   - System.Xml.XmlElement
+2021/03/05 01:49:46  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:49:46  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:49:46  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:49:46  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:49:47  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:49:47  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 01:49:47  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:49:47  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 01:53:08  ====================================================================================================
+2021/03/05 01:53:08  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:53:09  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:53:10  ====================================================================================================
+2021/03/05 01:53:37   - System.Xml.XmlElement
+2021/03/05 01:53:37   - System.Xml.XmlElement
+2021/03/05 01:53:37  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:53:38  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:53:38  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:53:38  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:53:38  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:53:38  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 01:53:39  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:53:39  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 01:55:14  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:55:14  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:55:14  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:55:14  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:57:07  ====================================================================================================
+2021/03/05 01:57:07  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:57:08  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:57:09  ====================================================================================================
+2021/03/05 01:57:33   - System.Xml.XmlElement
+2021/03/05 01:57:33   - System.Xml.XmlElement
+2021/03/05 01:57:34  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:57:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:57:34  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:57:34  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 01:59:12  ====================================================================================================
+2021/03/05 01:59:12  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 01:59:13  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 01:59:14  ====================================================================================================
+2021/03/05 01:59:35   - System.Xml.XmlElement
+2021/03/05 01:59:36  Credentials Used: administrator@mobilelab.home
+2021/03/05 01:59:37  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:02:01  ====================================================================================================
+2021/03/05 02:02:01  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 02:02:03  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 02:02:04  ====================================================================================================
+2021/03/05 02:02:37   - System.Xml.XmlElement
+2021/03/05 02:02:37   - System.Xml.XmlElement
+2021/03/05 02:02:38  Credentials Used: administrator@mobilelab.home
+2021/03/05 02:02:39  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:02:39  Credentials Used: administrator@mobilelab.home
+2021/03/05 02:02:39  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:08:02  ====================================================================================================
+2021/03/05 02:08:02  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 02:08:03  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 02:08:04  ====================================================================================================
+2021/03/05 02:08:30   - System.Xml.XmlElement
+2021/03/05 02:08:30   - System.Xml.XmlElement
+2021/03/05 02:08:30  Credentials Used: administrator@mobilelab.home
+2021/03/05 02:08:30  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:08:30  Credentials Used: administrator@mobilelab.home
+2021/03/05 02:08:30  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:08:31  Credentials Used: administrator@mobilelab.home
+2021/03/05 02:08:31  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 02:08:31  Credentials Used: administrator@mobilelab.home
+2021/03/05 02:08:31  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/05 02:09:33  ====================================================================================================
+2021/03/05 02:09:33  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 02:09:34  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 02:09:35  ====================================================================================================
+2021/03/05 02:10:18   - System.Xml.XmlElement
+2021/03/05 02:10:18   - System.Xml.XmlElement
+2021/03/05 02:10:18   - System.Xml.XmlElement
+2021/03/05 02:10:20  DC01: Event Logs - Event ID Manual Entry
+2021/03/05 02:10:20  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 02:10:20  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 02:10:43  : Event Logs - Application Event Logs
+2021/03/05 02:12:07  Created New Credentials and stored them locally as an XML using Windows Data Protection API.
+2021/03/05 02:12:18  Credentials Used: dan@localhost
+2021/03/05 02:12:19  Invoke-Command -ScriptBlock { Get-Process } -ComputerName DC01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:12:19  Credentials Used: dan@localhost
+2021/03/05 02:12:19  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:12:19  Credentials Used: dan@localhost
+2021/03/05 02:12:19  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:12:19  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- DC01' -Credential $script:Credential
+2021/03/05 02:12:19  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-01' -Credential $script:Credential
+2021/03/05 02:12:19  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-02' -Credential $script:Credential
+2021/03/05 02:12:20  Get-WSManInstance -ComputerName DC01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 02:12:20  Get-WSManInstance -ComputerName WIN10-01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 02:12:20  Get-WSManInstance -ComputerName WIN10-02 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/05 02:12:21  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- DC01' -Credential $script:Credential
+2021/03/05 02:12:21  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-01' -Credential $script:Credential
+2021/03/05 02:12:21  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-02' -Credential $script:Credential
+2021/03/05 02:12:41   - System.Xml.XmlElement
+2021/03/05 02:12:41  Credentials Used: dan@localhost
+2021/03/05 02:12:42  Invoke-Command -ScriptBlock { Get-Process } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:13:23  Created New Credentials and stored them locally as an XML using Windows Data Protection API.
+2021/03/05 02:13:38  Credentials Used: dan@localhost
+2021/03/05 02:13:38  Invoke-Command -ScriptBlock { Get-Process } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:17:03  Created New Credentials and stored them locally as an XML using Windows Data Protection API.
+2021/03/05 02:17:14  Credentials Used: localhost\dan
+2021/03/05 02:17:14  Invoke-Command -ScriptBlock { Get-Process } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:17:54  Localhost: Event Logs - Event ID Manual Entry
+2021/03/05 02:19:37  Created New Credentials and stored them locally as an XML using Windows Data Protection API.
+2021/03/05 02:20:10   - System.Xml.XmlElement
+2021/03/05 02:20:10   - System.Xml.XmlElement
+2021/03/05 02:20:12  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 02:20:12  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 02:20:55  : Event Logs - Application Event Logs
+2021/03/05 02:22:09   - System.Xml.XmlElement
+2021/03/05 02:22:09   - System.Xml.XmlElement
+2021/03/05 02:22:12   - 
+2021/03/05 02:22:14   - 
+2021/03/05 02:22:16  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 02:22:16  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 02:30:22  ====================================================================================================
+2021/03/05 02:30:22  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 02:30:48  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 02:30:49  ====================================================================================================
+2021/03/05 02:32:09   - System.Xml.XmlElement
+2021/03/05 02:32:09   - System.Xml.XmlElement
+2021/03/05 02:32:09   - System.Xml.XmlElement
+2021/03/05 02:32:11  DC01: Event Logs - Event ID Manual Entry
+2021/03/05 02:32:11  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 02:32:11  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 02:33:00   - System.Xml.XmlElement
+2021/03/05 02:33:02  : Event Logs - Application Event Logs
+2021/03/05 02:33:02  DC01: Event Logs - Event IDs To Monitor
+2021/03/05 02:34:36  DC01: Event Logs - Event ID Manual Entry
+2021/03/05 02:37:53  ====================================================================================================
+2021/03/05 02:37:53  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 02:37:56  PoSh-EasyWin User Agreemennt NOT Accepted By: ZENBOOK\danie
+2021/03/05 02:42:11  ====================================================================================================
+2021/03/05 02:42:11  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 02:42:13  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 02:42:15  ====================================================================================================
+2021/03/05 02:42:58   - System.Xml.XmlElement
+2021/03/05 02:42:58   - System.Xml.XmlElement
+2021/03/05 02:42:59  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 02:42:59  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 02:49:01  ====================================================================================================
+2021/03/05 02:49:01  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 02:49:02  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 02:49:03  ====================================================================================================
+2021/03/05 02:49:30   - System.Xml.XmlElement
+2021/03/05 02:49:30   - System.Xml.XmlElement
+2021/03/05 02:49:31  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 02:49:31  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 02:52:31  ====================================================================================================
+2021/03/05 02:52:31  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 02:52:32  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 02:52:33  ====================================================================================================
+2021/03/05 02:53:00   - System.Xml.XmlElement
+2021/03/05 02:53:01   - System.Xml.XmlElement
+2021/03/05 02:53:02  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 02:53:02  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 02:56:55  ====================================================================================================
+2021/03/05 02:56:55  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 02:56:56  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 02:56:57  ====================================================================================================
+2021/03/05 02:57:20   - System.Xml.XmlElement
+2021/03/05 02:57:20   - System.Xml.XmlElement
+2021/03/05 02:57:21  Credentials Used: administrator@mobilelab.home
+2021/03/05 02:57:22  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:57:22  Credentials Used: administrator@mobilelab.home
+2021/03/05 02:57:22  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 02:57:38  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 02:57:38  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 02:58:01  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 02:58:01  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 03:03:51  ====================================================================================================
+2021/03/05 03:03:51  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 03:03:52  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 03:03:53  ====================================================================================================
+2021/03/05 03:04:20   - System.Xml.XmlElement
+2021/03/05 03:04:20   - System.Xml.XmlElement
+2021/03/05 03:04:21  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 03:04:21  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 03:04:55  ====================================================================================================
+2021/03/05 03:04:55  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 03:04:56  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 03:04:57  ====================================================================================================
+2021/03/05 03:05:23   - System.Xml.XmlElement
+2021/03/05 03:05:23   - System.Xml.XmlElement
+2021/03/05 03:05:24  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/05 03:05:24  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/05 03:05:54  ====================================================================================================
+2021/03/05 03:05:54  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 03:05:57  PoSh-EasyWin User Agreemennt NOT Accepted By: ZENBOOK\danie
+2021/03/05 03:06:02  ====================================================================================================
+2021/03/05 03:06:02  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 03:06:04  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 03:06:05  ====================================================================================================
+2021/03/05 03:06:59   - System.Xml.XmlElement
+2021/03/05 03:07:01  Credentials Used: localhost\dan
+2021/03/05 03:07:01  Invoke-Command -ScriptBlock { Get-Process } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 03:07:01  Localhost: Event Logs - Event ID Manual Entry
+2021/03/05 03:11:49  ====================================================================================================
+2021/03/05 03:11:49  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 03:11:50  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 03:11:51  ====================================================================================================
+2021/03/05 03:12:16   - System.Xml.XmlElement
+2021/03/05 03:12:17  Localhost: Event Logs - Event ID Manual Entry

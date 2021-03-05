@@ -19,6 +19,7 @@ function Monitor-Jobs {
 
     $JobId = Get-Random -Minimum 100009 -Maximum 999999
 
+
     function script:New-PowerShellChart {
         <#
         .Description Dynamically creates powershell charts for collected data
@@ -27,6 +28,7 @@ function Monitor-Jobs {
             $SourceCSVData,
             $SourceXMLPath,
             $SeriesName = 'Unnamed Series',
+            $ChartType,
             $TitleAxisX,
             $TitleAxisY,
             $PropertyX,
@@ -184,7 +186,7 @@ function Monitor-Jobs {
         `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Font              = New-Object System.Drawing.Font @('Microsoft Sans Serif','9', [System.Drawing.FontStyle]::Normal)
         `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber]['PieLineColor']   = 'Black'
         `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber]['PieLabelStyle']  = 'Outside'
-        `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].ChartType         = 'Column'
+        `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].ChartType         = `$ChartType
         `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Color             = `$ChartColor
 
     
@@ -235,7 +237,7 @@ function Monitor-Jobs {
                             `$script:GeneratedAutoChartTitle$ChartNumber.ForeColor = 'Red'
                             `$script:GeneratedAutoChartTitle$ChartNumber.Text = "`$SeriesName`n`n[ No Data Available ]`n"
                         }
-    
+
 
         ### Auto Chart Panel that contains all the options to manage open/close feature
         `$script:GeneratedAutoChartOptionsButton$ChartNumber = New-Object Windows.Forms.Button -Property @{
@@ -635,41 +637,6 @@ function Monitor-Jobs {
         }          
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if ($MonitorMode) {
     if (-not $AutoReRun) {
         $MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
@@ -680,12 +647,7 @@ if ($MonitorMode) {
         New-Item -Type Directory "$($script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$($CollectionName)" -Force -ErrorAction SilentlyContinue
     }
 
-
-
-
-
     #Get-Job | Sort-Object Id | Select-Object -Last 1 -ExpandProperty ID
-
 
     $script:AllJobs = Get-Job -Name "PoSh-EasyWin: *"
 
@@ -1202,32 +1164,144 @@ if ($MonitorMode) {
                                                             `$script:AutoChartXmlPath$JobId = "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
 
                                                             if ( `$script:AutoChartDataSourceCsv$JobId ) {
-                                                                `$ObjectProperties = `$script:AutoChartDataSourceCsv$JobId[0] | ForEach-Object { `$_.psobject.properties.name }
-                                                                `$ObjectProperties = `$ObjectProperties | Where-Object { `$_ -ne '' -and `$_ -ne `$null -and `$_ -notlike "__*" -and `$_ -notmatch 'ComputerName' -and `$_ -notmatch 'RunSpaceID' } | Out-GridView -Title 'Select Properties to Generate Charts' -PassThru | Sort-Object
-                                                                
-                                                                `$ScriptBlockProgressBarInput$JobId = {                                                                
-                                                                    `$script:ProgressBarFormProgressBar.Value   = 0
-                                                                    `$script:ProgressBarFormProgressBar.Maximum = `$ObjectProperties.count
+                                                                `$ChartProperties = `$script:AutoChartDataSourceCsv$JobId[0] | ForEach-Object { `$_.psobject.properties.name }
+                                                                #`$ChartProperties = `$ChartProperties | Where-Object { `$_ -ne '' -and `$_ -ne `$null -and `$_ -notlike "__*" -and `$_ -notmatch 'ComputerName' -and `$_ -notmatch 'RunSpaceID' } | Out-GridView -Title 'Select Properties to Generate Charts' -PassThru | Sort-Object
 
-                                                                    `$script:ProgressBarMessageLabel.text = "`Please be patience as the data loads.`nTotal charts to be created:  `$(`$ObjectProperties.count)"
-                                                                    `$script:ProgressBarSelectionForm.Refresh()
-
-                                                                    `$count = 0
-                                                                    foreach ( `$Property in `$ObjectProperties ) {
-                                                                        `$count += 1
-                                                                        if (`$Count -le 50) {
-                                                                            Update-FormProgress `$Property
-                                                                            script:New-PowerShellChart -SourceCSVData `$script:AutoChartDataSourceCsv$JobId -SourceXMLPath `$script:AutoChartXmlPath$JobId -ChartNumber `$count -SeriesName `$Property -TitleAxisX `$Property -TitleAxisY 'Endpoint Count' -PropertyX `$Property -PropertyY 'ComputerName'
-                                                                            `$script:ProgressBarFormProgressBar.Value += 1
-                                                                        }
+                                                                `$ChartProperties = `$ChartProperties | Where-Object { `$_ -ne '' -and `$_ -ne `$null -and `$_ -notlike "__*" -and `$_ -notmatch 'ComputerName' -and `$_ -notmatch 'RunSpaceID' } | Sort-Object
+                                                               
+                                                               
+                                                                    `$ChartGenerationOptionsForm = New-Object System.Windows.Forms.Form -Property @{
+                                                                        Text   = "PoSh-EasyWin - Create Charts"
+                                                                        Width  = `$FormScale * 400
+                                                                        Height = `$FormScale * 500
+                                                                        StartPosition = "CenterScreen"
+                                                                        Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("`$EasyWinIcon")
+                                                                        Font          = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
+                                                                        AutoScroll    = `$True
+                                                                        #FormBorderStyle =  "fixed3d"
+                                                                        #ControlBox    = `$false
+                                                                        MaximizeBox   = `$false
+                                                                        MinimizeBox   = `$false
+                                                                        ShowIcon      = `$true
+                                                                        TopMost       = `$true
+                                                                        Add_Closing = { `$This.dispose() }
                                                                     }
-                                                                    `$script:ProgressBarFormProgressBar.Maximum = 1
-                                                                    `$script:ProgressBarFormProgressBar.Value   = 1
-                                                                    `$script:AutoChartsIndividualTab01.Text = `$script:JobName$JobId
-                                                                    `$script:ProgressBarSelectionForm.Hide()
-                                                                }
-                                                                Launch-ProgressBarForm -FormTitle "PoSh-EasyWin - Generating Charts" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBarInput$JobId
-                                                                `$script:AutoChartsForm.ShowDialog()
+                                                                    
+                                                                
+                                                                                `$ChartGenerationPropertyList0PictureBox = New-Object Windows.Forms.PictureBox -Property @{
+                                                                                    Text   = "PowerShell Charts"
+                                                                                    Left   = `$FormScale * 10
+                                                                                    Top    = `$FormScale * 10
+                                                                                    Width  = `$FormScale * 355
+                                                                                    Height = `$FormScale * 44
+                                                                                    Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PowerShell_Charts.png")
+                                                                                    SizeMode = 'StretchImage'
+                                                                                }
+                                                                                `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList0PictureBox)
+                                                                
+                                                                
+                                                                                `$ChartGenerationPropertyList0Label = New-Object System.Windows.Forms.Label -Property @{
+                                                                                    Text   = "Select among the following list boxes to generate charts. Use the Shift and Ctrl keys to select multiple properties."
+                                                                                    Left   = `$FormScale * 10
+                                                                                    Top    = `$ChartGenerationPropertyList0PictureBox.Top + `$ChartGenerationPropertyList0PictureBox.Height + (`$FormScale * 5)
+                                                                                    Width  = `$FormScale * 355
+                                                                                    Height = `$FormScale * 44
+                                                                                    Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),1,2,1)
+                                                                                    ForeColor = 'Blue'
+                                                                                }
+                                                                                `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList0Label)
+                                                                
+                                                                
+                                                                                `$ChartGenerationPropertyList1Label = New-Object System.Windows.Forms.Label -Property @{
+                                                                                    Text   = "Counts the unique values found across all endpoints`n`nDefault Chart: Bar"
+                                                                                    Left   = `$FormScale * 10
+                                                                                    Top    = `$ChartGenerationPropertyList0Label.Top + `$ChartGenerationPropertyList0Label.Height + (`$FormScale * 5)
+                                                                                    Width  = `$FormScale * 355 #200
+                                                                                    Height = `$FormScale * 50
+                                                                                    Font   = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),1,2,1)
+                                                                                }
+                                                                                `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList1Label)
+                                                                
+                                                                
+                                                                                            `$script:ChartGenerationPropertyList1ListBox = New-Object System.Windows.Forms.ListBox -Property @{
+                                                                                                Name   = "ResultsListBox"
+                                                                                                Left   = `$FormScale * 10
+                                                                                                Top    = `$ChartGenerationPropertyList1Label.Top + `$ChartGenerationPropertyList1Label.Height + (`$FormScale * 5)
+                                                                                                Width  = `$FormScale * 355 #200
+                                                                                                Height = `$FormScale * 200
+                                                                                                FormattingEnabled   = `$True
+                                                                                                SelectionMode       = 'MultiExtended'
+                                                                                                ScrollAlwaysVisible = `$True
+                                                                                                AutoSize            = `$False
+                                                                                                Font                = New-Object System.Drawing.Font("`$Font",`$(`$FormScale * 11),0,0,0)
+                                                                                            }
+                                                                                            `$ChartGenerationOptionsForm.Controls.Add(`$script:ChartGenerationPropertyList1ListBox)
+                                                                
+                                                                
+                                                                                            `$ChartGenerationPropertyList1Button = New-Object System.Windows.Forms.Button -Property @{
+                                                                                                Text   = "Select All"
+                                                                                                Left   = `$FormScale * 10
+                                                                                                Top    = `$script:ChartGenerationPropertyList1ListBox.Top + `$script:ChartGenerationPropertyList1ListBox.Height + (`$FormScale * 5)
+                                                                                                Width  = `$script:ChartGenerationPropertyList1ListBox.Width
+                                                                                                Height = `$FormScale * 22
+                                                                                                Add_Click = {
+                                                                                                    for(`$i = 0; `$i -lt `$script:ChartGenerationPropertyList1ListBox.Items.Count; `$i++) { `$script:ChartGenerationPropertyList1ListBox.SetSelected(`$i, `$true) }
+                                                                                                }
+                                                                                            }
+                                                                                            `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList1Button)
+                                                                                            CommonButtonSettings -Button `$ChartGenerationPropertyList1Button
+                                                                
+                                                                                foreach ( `$Property in `$ChartProperties ) { `$script:ChartGenerationPropertyList1ListBox.Items.Add(`$Property) }
+                                                                
+
+                                                                                `$ChartGenerationPropertyList3Button = New-Object System.Windows.Forms.Button -Property @{
+                                                                                    Text   = "Generate Charts"
+                                                                                    Left   = `$ChartGenerationPropertyList0Label.Left
+                                                                                    Top    = `$ChartGenerationPropertyList1Button.Top + `$ChartGenerationPropertyList1Button.Height + (`$FormScale * 5)
+                                                                                    Width  = `$ChartGenerationPropertyList0Label.Width
+                                                                                    Height = `$FormScale * 44
+                                                                                    Add_Click = {
+                                                                                        `$ScriptBlockProgressBar1Input$JobId = {                                                                
+                                                                                            `$ChartProperties1Selected = @()
+                                                                                            foreach (`$Selected in `$script:ChartGenerationPropertyList1ListBox.SelectedItems) {
+                                                                                                `$ChartProperties1Selected += `$Selected
+                                                                                            }
+
+                                                                                            `$script:ProgressBarFormProgressBar.Value   = 0
+                                                                                            `$script:ProgressBarFormProgressBar.Maximum = `$ChartProperties1Selected.count
+                        
+                                                                                            `$script:ProgressBarMessageLabel.text = "`Please be patience as the data loads.`nTotal charts to be created:  `$(`$ChartProperties1Selected.count)"
+                                                                                            `$script:ProgressBarSelectionForm.Refresh()
+
+
+                                                                                            `$count = 0
+                                                                                            foreach ( `$Property in `$ChartProperties1Selected ) {
+                                                                                                `$count += 1
+                                                                                                if (`$Count -le 50) {
+                                                                                                    Update-FormProgress `$Property
+                                                                                                    script:New-PowerShellChart -ChartType 'Column' -SourceCSVData `$script:AutoChartDataSourceCsv$JobId -SourceXMLPath `$script:AutoChartXmlPath$JobId -ChartNumber `$count -SeriesName `$Property -TitleAxisX `$Property -TitleAxisY 'Endpoint Count' -PropertyX `$Property -PropertyY 'ComputerName'
+                                                                                                    `$script:ProgressBarFormProgressBar.Value += 1
+                                                                                                    `$script:ProgressBarFormProgressBar.Refresh()
+                                                                                                }
+                                                                                            }
+                                                                                            `$script:ProgressBarFormProgressBar.Maximum = 1
+                                                                                            `$script:ProgressBarFormProgressBar.Value   = 1
+                                                                                            `$script:AutoChartsIndividualTab01.Text = `$script:JobName$JobId
+                                                                                            `$script:ProgressBarSelectionForm.Hide()
+                                                                                        }
+
+                                                                                        `$ChartGenerationOptionsForm.Hide()
+
+                                                                                        # Generates Column Charts
+                                                                                        Launch-ProgressBarForm -FormTitle "Generating Charts [Column] Unique Values Found" -ProgressBarImage "$Dependencies\Images\PowerShell_Charts.png" -ShowImage -ScriptBlockProgressBarInput `$ScriptBlockProgressBar1Input$JobId
+
+                                                                                        `$script:AutoChartsForm.ShowDialog()
+                                                                                    }
+                                                                                }
+                                                                                `$ChartGenerationOptionsForm.Controls.Add(`$ChartGenerationPropertyList3Button)
+                                                                                CommonButtonSettings -Button `$ChartGenerationPropertyList3Button
+                                                                
+                                                                    `$ChartGenerationOptionsForm.ShowDialog()
                                                             }
                                         `$script:AutoChartsForm.Add_Shown({`$script:AutoChartsForm.Activate()})
                     }
@@ -1238,29 +1312,6 @@ if ($MonitorMode) {
                     [System.GC]::Collect()
                 }
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             `$script:Section3MonitorJobDetailsButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -1693,7 +1744,6 @@ if ($MonitorMode) {
                                                 `$script:MonitorJobsDetailsFailedListBox$JobId.Items.Add(`$CurrentJobEndpointName)
                                                 `$script:MonitorJobsDetailsStatusRichTextBox$JobId.text += "[`$(`$CurrentJobEndpointName)]  `$(`$job.ChildJobs.JobStateInfo.Reason.Message)`n`n"
                                             }
-    
     
                                         `$script:MonitorJobsDetailsFrom$JobId.ShowDialog()
                 }

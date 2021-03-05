@@ -486,21 +486,55 @@ $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.But
     Top    = $EnumerationComputerListBox.Top + $EnumerationComputerListBox.Height + ($FormScale + 5)
     Width  = $EnumerationResolveDNSNameButton.Width
     Height = $FormScale * 22
-    Add_Click = $EnumerationComputerListBoxAddToListButtonAdd_Click
+    Add_Click = {
+        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Enumeration:  Added $($EnumerationComputerListBox.SelectedItems.Count) IPs")
+        #Removed For Testing#
+        $ResultsListBox.Items.Clear()
+        foreach ($Selected in $EnumerationComputerListBox.SelectedItems) {
+            if ($script:ComputerTreeViewData.Name -contains $Selected) {
+                Message-HostAlreadyExists -Message "Port Scan Import:  Warning" -Computer $Selected
+            }
+            else {
+                if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Selected -ToolTip $Computer.IPv4Address
+                    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                    $ResultsListBox.Items.Add("$($Selected) has been added to the Unknown category")
+                }
+                elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
+                    $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip $Computer.IPv4Address
+                    $ResultsListBox.Items.Add("$($Selected) has been added to /Unknown category")
+                }
+                $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
+                    Name            = $Selected
+                    OperatingSystem = 'Unknown'
+                    CanonicalName   = '/Unknown'
+                    IPv4Address     = $Selected
+                }
+                $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
+            }
+        }
+        $script:ComputerTreeView.ExpandAll()
+        Populate-ComputerTreeNodeDefaultData
+        Save-HostData
+    }
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxAddToListButton)
 CommonButtonSettings -Button $EnumerationComputerListBoxAddToListButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxSelectAllButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\EnumerationComputerListBoxSelectAllButton.ps1"
 $EnumerationComputerListBoxSelectAllButton = New-Object System.Windows.Forms.Button -Property @{
     Left   = $EnumerationComputerListBoxAddToListButton.Left
     Top    = $EnumerationComputerListBoxAddToListButton.Top + $EnumerationComputerListBoxAddToListButton.Height + ($FormScale + 10)
     Width  = $EnumerationResolveDNSNameButton.Width
     Height = $FormScale * 22
     Text   = "Select All"
-    Add_Click = $EnumerationComputerListBoxSelectAllButtonAdd_Click
+    Add_Click = {
+        for($i = 0; $i -lt $EnumerationComputerListBox.Items.Count; $i++) { $EnumerationComputerListBox.SetSelected($i, $true) }
+    }
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxSelectAllButton)
 CommonButtonSettings -Button $EnumerationComputerListBoxSelectAllButton

@@ -1,5 +1,5 @@
 ==================================================
-v5.1.9 BETA 
+v5.1.9 
 ==================================================
 
 Fixed alignment issue within the Monitor Jobs Tab under the following condition:
