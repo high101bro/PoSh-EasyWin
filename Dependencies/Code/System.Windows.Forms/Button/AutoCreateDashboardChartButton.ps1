@@ -61,16 +61,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
         "Active Directory Computers",
         "Active Directory Groups",
         "Active Directory User Accounts",
-        # "Application Crashes",
-        # "Login Activity",
-        # "Network Connections",
-        # "Network Interfaces",
-        # "Processes",
-        # "Security Patches",
-        # "Services",
-        # "SMB Shares",
-        # "Software",
-        # "Startups",
         "Threat Hunting with Deep Blue (All)",
         "Threat Hunting with Deep Blue (Last 7 Days)",
         "Threat Hunting with Deep Blue (Last 24 Hours)"
@@ -174,56 +164,6 @@ $AutoCreateDashboardChartButtonAdd_Click = {
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
             [void]$script:AutoChartsForm.ShowDialog()
         }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Application Crashes") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_ApplicationCrashes.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Login Activity") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_LoginActivity.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Network Connections") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_NetworkConnections.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Network Interfaces") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_NetworkInterfaces.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Processes") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Processes.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Security Patches") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_SecurityPatches.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Services") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Services.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "SMB Shares") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_SmbShare.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Software") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Software.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
-        # elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Startups") {
-        #     . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_Startups.ps1"
-        #     $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})
-        #     [void]$script:AutoChartsForm.ShowDialog()
-        # }
         elseif ($AutoChartSelectChartComboBox.SelectedItem -eq "Threat Hunting with Deep Blue (All)") {
             . "$Dependencies\Code\System.Windows.Forms\ComboBox\AutoChartSelectChartComboBoxSelectedItem_DeepBlueAll.ps1"
             $script:AutoChartsForm.Add_Shown({$script:AutoChartsForm.Activate()})

@@ -90,7 +90,6 @@ function Generate-AutoChartsCommand {
     #--------------------------
     # Auto Create Charts Object
     #--------------------------
-    . "$Dependencies\Code\System.Windows.Forms\DataVisualization\Charting\AutoChartCharting.ps1"
     Clear-Variable -Name AutoChart -Scope script
     $script:AutoChartCharting = New-object System.Windows.Forms.DataVisualization.Charting.Chart -Property @{
         Width           = $FormScale * 1115
@@ -102,7 +101,10 @@ function Generate-AutoChartsCommand {
         BorderDashStyle = 'Solid'
         Font            = New-Object System.Drawing.Font @('Microsoft Sans Serif',$($FormScale * 18), [System.Drawing.FontStyle]::Bold)
         Anchor          = $AnchorAll
-        Add_MouseEnter  = $AutoChartChartingAdd_MouseEnter
+        Add_MouseEnter  = {
+            $script:AutoChartsOptionsButton.Text = 'Options v'
+            $script:AutoChartCharting.Controls.Remove($script:AutoChartsManipulationPanel)
+        }
     }
     #$script:AutoChartCharting.DataManipulator.Sort() = "Descending"
 

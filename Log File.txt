@@ -16937,3 +16937,1371 @@
 2021/03/05 16:00:07  PoSh-EasyWin Started By: ZENBOOK\danie
 2021/03/05 16:00:09  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
 2021/03/05 16:00:10  ====================================================================================================
+2021/03/05 16:54:20  ====================================================================================================
+2021/03/05 16:54:20  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 16:54:21  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 16:54:22  ====================================================================================================
+2021/03/05 16:54:43   - System.Xml.XmlElement
+2021/03/05 16:54:43   - System.Xml.XmlElement
+2021/03/05 16:54:44  Credentials Used: administrator@mobilelab.home
+2021/03/05 16:54:44  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 16:54:44  Credentials Used: administrator@mobilelab.home
+2021/03/05 16:54:44  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/05 17:56:34  ====================================================================================================
+2021/03/05 17:56:34  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 17:56:36  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 17:56:37  ====================================================================================================
+2021/03/05 18:57:11  ====================================================================================================
+2021/03/05 18:57:11  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/05 18:57:16  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/05 18:57:17  ====================================================================================================
+2021/03/05 18:58:06   - System.Xml.XmlElement
+2021/03/05 18:58:06   - System.Xml.XmlElement
+2021/03/05 18:58:06   - System.Xml.XmlElement
+2021/03/05 18:58:09   - 
+2021/03/05 18:58:11   - 
+2021/03/05 18:58:14   - 
+2021/03/05 18:58:16   - 
+2021/03/05 18:58:19   - 
+2021/03/05 18:58:21   - 
+2021/03/05 18:58:24   - 
+2021/03/05 18:59:12   - System.Xml.XmlElement
+2021/03/05 18:59:12   - System.Xml.XmlElement
+2021/03/05 18:59:12   - System.Xml.XmlElement
+2021/03/05 18:59:18   - 
+2021/03/05 18:59:20   - 
+2021/03/05 18:59:22   - 
+2021/03/05 18:59:24   - 
+2021/03/05 18:59:27   - 
+2021/03/05 18:59:29   - 
+2021/03/05 18:59:43  Credentials Used: administrator@mobilelab.home
+2021/03/05 18:59:43  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 18:59:43  Credentials Used: administrator@mobilelab.home
+2021/03/05 18:59:43  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 18:59:44  Credentials Used: administrator@mobilelab.home
+2021/03/05 18:59:44  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 19:00:33   - System.Xml.XmlElement
+2021/03/05 19:00:33   - System.Xml.XmlElement
+2021/03/05 19:00:33   - System.Xml.XmlElement
+2021/03/05 19:00:42   - 
+2021/03/05 19:00:44   - 
+2021/03/05 19:00:46   - 
+2021/03/05 19:00:49   - 
+2021/03/05 19:00:51   - 
+2021/03/05 19:00:53   - 
+2021/03/05 19:03:32   - System.Xml.XmlElement
+2021/03/05 19:03:33   - System.Xml.XmlElement
+2021/03/05 19:03:33   - System.Xml.XmlElement
+2021/03/05 19:03:42   - 
+2021/03/05 19:03:42   - System.Xml.XmlElement
+2021/03/05 19:03:42   - System.Xml.XmlElement
+2021/03/05 19:03:42   - System.Xml.XmlElement
+2021/03/05 19:03:43   - System.Xml.XmlElement
+2021/03/05 19:03:43   - System.Xml.XmlElement
+2021/03/05 19:06:08  Credentials Used: administrator@mobilelab.home
+2021/03/05 19:06:08  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 19:06:08  Credentials Used: administrator@mobilelab.home
+2021/03/05 19:06:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 19:06:09  Credentials Used: administrator@mobilelab.home
+2021/03/05 19:06:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 19:06:09  Credentials Used: administrator@mobilelab.home
+2021/03/05 19:06:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 19:06:09  Credentials Used: administrator@mobilelab.home
+2021/03/05 19:06:09  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 19:06:09  Credentials Used: administrator@mobilelab.home
+2021/03/05 19:06:10  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 19:06:10  Credentials Used: administrator@mobilelab.home
+2021/03/05 19:06:10  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/05 19:06:10  Credentials Used: administrator@mobilelab.home
+2021/03/05 19:06:10  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 11:45:11  ====================================================================================================
+2021/03/07 11:45:11  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/07 11:45:15  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/07 11:45:16  ====================================================================================================
+2021/03/07 21:11:08  ====================================================================================================
+2021/03/07 21:11:08  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/07 21:11:10  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/07 21:11:11  ====================================================================================================
+2021/03/07 21:11:58  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:12:01  Enter-PSSession -ComputerName WIN10-08
+2021/03/07 21:12:34  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:12:37  Enter-PSSession -ComputerName WIN10-09
+2021/03/07 21:12:55  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:12:58  Enter-PSSession -ComputerName WIN10-10
+2021/03/07 21:13:54  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:13:58  Enter-PSSession -ComputerName WIN10-04
+2021/03/07 21:14:16  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:14:19  Enter-PSSession -ComputerName WIN10-03
+2021/03/07 21:14:24  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:14:27  Enter-PSSession -ComputerName WIN10-02
+2021/03/07 21:17:26   - System.Xml.XmlElement
+2021/03/07 21:17:26   - System.Xml.XmlElement
+2021/03/07 21:17:27   - System.Xml.XmlElement
+2021/03/07 21:17:34   - 
+2021/03/07 21:17:34   - System.Xml.XmlElement
+2021/03/07 21:17:35   - System.Xml.XmlElement
+2021/03/07 21:17:35   - System.Xml.XmlElement
+2021/03/07 21:17:35   - System.Xml.XmlElement
+2021/03/07 21:17:35   - System.Xml.XmlElement
+2021/03/07 21:18:12  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:13  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/07 21:18:13  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:13  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/07 21:18:13  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:13  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/07 21:18:13  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:13  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/07 21:18:13  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:14  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/07 21:18:14  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:14  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/07 21:18:14  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:14  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/07 21:18:14  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:14  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/07 21:18:15  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:15  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:15  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:15  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:16  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:16  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:16  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:16  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:16  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:16  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:17  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:17  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:17  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:17  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:17  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:17  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:18  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:18  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:18  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:18  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:18  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:19  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:19  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:19  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:19  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:19  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:19  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:20  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:20  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:20  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:20  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:20  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:20  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:21  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:21  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:21  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:21  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:21  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:21  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:22  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:22  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:22  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:22  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:22  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:22  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:23  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:23  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:23  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ServicesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:18:23  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:23  Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Systemdriver } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType
+2021/03/07 21:18:24  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:24  Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Systemdriver } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType
+2021/03/07 21:18:24  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:24  Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Systemdriver } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType
+2021/03/07 21:18:24  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:24  Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Systemdriver } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType
+2021/03/07 21:18:25  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:25  Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Systemdriver } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType
+2021/03/07 21:18:25  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:25  Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Systemdriver } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType
+2021/03/07 21:18:25  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:25  Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Systemdriver } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType
+2021/03/07 21:18:26  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:18:26  Invoke-Command -ScriptBlock { Get-WmiObject -Class Win32_Systemdriver } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, Status, Started, StartMode, Name, DisplayName, PathName, ExitCode, AcceptPause, AcceptStop, Caption, CreationClassName, Description, DesktopInteract, ErrorControl, InstallDate, ServiceType
+2021/03/07 21:18:26  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-01' -Credential $script:Credential
+2021/03/07 21:18:26  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-02' -Credential $script:Credential
+2021/03/07 21:18:26  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-03' -Credential $script:Credential
+2021/03/07 21:18:27  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-06' -Credential $script:Credential
+2021/03/07 21:18:27  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-07' -Credential $script:Credential
+2021/03/07 21:18:27  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-08' -Credential $script:Credential
+2021/03/07 21:18:27  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-09' -Credential $script:Credential
+2021/03/07 21:18:27  Invoke-Command -ScriptBlock $CommandScriptBlock -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin: Accounts Currently Logged In via Console -- WIN10-10' -Credential $script:Credential
+2021/03/07 21:18:28  Get-WSManInstance -ComputerName WIN10-01 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/07 21:18:28  Get-WSManInstance -ComputerName WIN10-02 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/07 21:18:28  Get-WSManInstance -ComputerName WIN10-03 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/07 21:18:28  Get-WSManInstance -ComputerName WIN10-06 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/07 21:18:28  Get-WSManInstance -ComputerName WIN10-07 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/07 21:18:28  Get-WSManInstance -ComputerName WIN10-08 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/07 21:18:29  Get-WSManInstance -ComputerName WIN10-09 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/07 21:18:29  Get-WSManInstance -ComputerName WIN10-10 -ResourceURI Shell -Enumerate -Credential System.Management.Automation.PSCredential
+2021/03/07 21:18:29  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-01' -Credential $script:Credential
+2021/03/07 21:18:29  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-02' -Credential $script:Credential
+2021/03/07 21:18:29  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-03' -Credential $script:Credential
+2021/03/07 21:18:29  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-06' -Credential $script:Credential
+2021/03/07 21:18:29  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-07' -Credential $script:Credential
+2021/03/07 21:18:30  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-08' -Credential $script:Credential
+2021/03/07 21:18:30  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-09' -Credential $script:Credential
+2021/03/07 21:18:30  Invoke-Command -ScriptBlock ${function:Get-AccountLogonActivity} -ArgumentList @($AccountsStartTimePickerValue,$AccountsStopTimePickerValue,$AccountActivityTextboxtext) -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin: Account Logon Activity -- WIN10-10' -Credential $script:Credential
+2021/03/07 21:18:30  WIN10-01: Event Logs - Event ID Manual Entry
+2021/03/07 21:18:30  WIN10-02: Event Logs - Event ID Manual Entry
+2021/03/07 21:18:30  WIN10-03: Event Logs - Event ID Manual Entry
+2021/03/07 21:18:30  WIN10-06: Event Logs - Event ID Manual Entry
+2021/03/07 21:18:31  WIN10-07: Event Logs - Event ID Manual Entry
+2021/03/07 21:18:31  WIN10-08: Event Logs - Event ID Manual Entry
+2021/03/07 21:18:31  WIN10-09: Event Logs - Event ID Manual Entry
+2021/03/07 21:18:31  WIN10-10: Event Logs - Event ID Manual Entry
+2021/03/07 21:18:31  : Event Logs - Security Event Logs
+2021/03/07 21:18:32  WIN10-01: Registry Search - Key Name
+2021/03/07 21:18:32  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-01' -Credential $script:Credential
+2021/03/07 21:18:32  WIN10-02: Registry Search - Key Name
+2021/03/07 21:18:32  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-02' -Credential $script:Credential
+2021/03/07 21:18:32  WIN10-03: Registry Search - Key Name
+2021/03/07 21:18:32  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-03' -Credential $script:Credential
+2021/03/07 21:18:32  WIN10-06: Registry Search - Key Name
+2021/03/07 21:18:32  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-06' -Credential $script:Credential
+2021/03/07 21:18:33  WIN10-07: Registry Search - Key Name
+2021/03/07 21:18:33  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-07' -Credential $script:Credential
+2021/03/07 21:18:33  WIN10-08: Registry Search - Key Name
+2021/03/07 21:18:33  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-08' -Credential $script:Credential
+2021/03/07 21:18:33  WIN10-09: Registry Search - Key Name
+2021/03/07 21:18:33  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-09' -Credential $script:Credential
+2021/03/07 21:18:33  WIN10-10: Registry Search - Key Name
+2021/03/07 21:18:33  Invoke-Command -ScriptBlock $script:QueryRegistryFunction -ArgumentList $SearchRegistryCommand  -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin: Registry Search - Key Name -- WIN10-10' -Credential $script:Credential
+2021/03/07 21:18:33  WIN10-01: Directory Listing
+2021/03/07 21:18:34  WIN10-02: Directory Listing
+2021/03/07 21:18:34  WIN10-03: Directory Listing
+2021/03/07 21:18:34  WIN10-06: Directory Listing
+2021/03/07 21:18:34  WIN10-07: Directory Listing
+2021/03/07 21:18:34  WIN10-08: Directory Listing
+2021/03/07 21:18:34  WIN10-09: Directory Listing
+2021/03/07 21:18:35  WIN10-10: Directory Listing
+2021/03/07 21:18:35  WIN10-01: File Search
+2021/03/07 21:18:35  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-01' -Credential $script:Credential
+2021/03/07 21:18:35  WIN10-02: File Search
+2021/03/07 21:18:36  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-02' -Credential $script:Credential
+2021/03/07 21:18:36  WIN10-03: File Search
+2021/03/07 21:18:36  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-03 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-03' -Credential $script:Credential
+2021/03/07 21:18:36  WIN10-06: File Search
+2021/03/07 21:18:36  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-06 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-06' -Credential $script:Credential
+2021/03/07 21:18:36  WIN10-07: File Search
+2021/03/07 21:18:36  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-07 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-07' -Credential $script:Credential
+2021/03/07 21:18:36  WIN10-08: File Search
+2021/03/07 21:18:37  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-08 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-08' -Credential $script:Credential
+2021/03/07 21:18:37  WIN10-09: File Search
+2021/03/07 21:18:37  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-09 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-09' -Credential $script:Credential
+2021/03/07 21:18:37  WIN10-10: File Search
+2021/03/07 21:18:37  Invoke-Command -ScriptBlock ${function:Conduct-FileSearch} -ArgumentList @($DirectoriesToSearch,$FilesToSearch,$MaximumDepth,$GetChildItemDepth,$GetFileHash,$FileHashSelection)  -ComputerName WIN10-10 -AsJob -JobName 'PoSh-EasyWin: File Search -- WIN10-10' -Credential $script:Credential
+2021/03/07 21:18:37  WIN10-01: Network Connection - Remote IP Address
+2021/03/07 21:18:37  WIN10-02: Network Connection - Remote IP Address
+2021/03/07 21:18:37  WIN10-03: Network Connection - Remote IP Address
+2021/03/07 21:18:38  WIN10-06: Network Connection - Remote IP Address
+2021/03/07 21:18:38  WIN10-07: Network Connection - Remote IP Address
+2021/03/07 21:18:38  WIN10-08: Network Connection - Remote IP Address
+2021/03/07 21:18:38  WIN10-09: Network Connection - Remote IP Address
+2021/03/07 21:18:38  WIN10-10: Network Connection - Remote IP Address
+2021/03/07 21:18:38  WIN10-01: Network Connection - Remote Port
+2021/03/07 21:18:38  WIN10-02: Network Connection - Remote Port
+2021/03/07 21:18:39  WIN10-03: Network Connection - Remote Port
+2021/03/07 21:18:39  WIN10-06: Network Connection - Remote Port
+2021/03/07 21:18:39  WIN10-07: Network Connection - Remote Port
+2021/03/07 21:18:39  WIN10-08: Network Connection - Remote Port
+2021/03/07 21:18:39  WIN10-09: Network Connection - Remote Port
+2021/03/07 21:18:40  WIN10-10: Network Connection - Remote Port
+2021/03/07 21:18:40  WIN10-01: Network Connection - Local Port
+2021/03/07 21:18:40  WIN10-02: Network Connection - Local Port
+2021/03/07 21:18:40  WIN10-03: Network Connection - Local Port
+2021/03/07 21:18:41  WIN10-06: Network Connection - Local Port
+2021/03/07 21:18:41  WIN10-07: Network Connection - Local Port
+2021/03/07 21:18:41  WIN10-08: Network Connection - Local Port
+2021/03/07 21:18:41  WIN10-09: Network Connection - Local Port
+2021/03/07 21:18:41  WIN10-10: Network Connection - Local Port
+2021/03/07 21:20:35  ====================================================================================================
+2021/03/07 21:20:35  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/07 21:20:35  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/07 21:20:37  ====================================================================================================
+2021/03/07 21:21:07  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:21:10  Enter-PSSession -ComputerName WIN10-01
+2021/03/07 21:21:29  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:21:32  Enter-PSSession -ComputerName WIN10-02
+2021/03/07 21:21:51  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:21:54  Enter-PSSession -ComputerName WIN10-07
+2021/03/07 21:23:35   - System.Xml.XmlElement
+2021/03/07 21:23:36   - System.Xml.XmlElement
+2021/03/07 21:23:36   - System.Xml.XmlElement
+2021/03/07 21:23:43   - 
+2021/03/07 21:23:44   - System.Xml.XmlElement
+2021/03/07 21:23:44   - System.Xml.XmlElement
+2021/03/07 21:23:44   - System.Xml.XmlElement
+2021/03/07 21:23:44   - System.Xml.XmlElement
+2021/03/07 21:23:44   - System.Xml.XmlElement
+2021/03/07 21:23:47  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:23:47  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:23:47  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:23:47  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:23:47  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:23:47  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:23:47  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:23:48  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:23:48  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:23:48  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:23:48  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:23:48  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:23:48  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:23:48  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:23:49  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:23:49  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 21:24:53  ====================================================================================================
+2021/03/07 21:24:53  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/07 21:24:58  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/07 21:24:59  ====================================================================================================
+2021/03/07 21:25:29   - System.Xml.XmlElement
+2021/03/07 21:25:30  Credentials Used: administrator@mobilelab.home
+2021/03/07 21:25:30  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesTree.ps1' -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop
+2021/03/07 22:51:11  ====================================================================================================
+2021/03/07 22:51:11  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/07 22:51:12  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/07 22:51:13  ====================================================================================================
+2021/03/07 22:51:47   - System.Xml.XmlElement
+2021/03/07 22:51:47   - System.Xml.XmlElement
+2021/03/07 22:51:47   - System.Xml.XmlElement
+2021/03/07 22:51:47   - System.Xml.XmlElement
+2021/03/07 22:51:55   - 
+2021/03/07 22:51:55   - System.Xml.XmlElement
+2021/03/07 22:51:55   - System.Xml.XmlElement
+2021/03/07 22:51:55   - System.Xml.XmlElement
+2021/03/07 22:51:56   - System.Xml.XmlElement
+2021/03/07 22:51:56   - System.Xml.XmlElement
+2021/03/07 22:52:03  Credentials Used: administrator@mobilelab.home
+2021/03/07 22:52:04  Invoke-Command -ScriptBlock { Get-SmbShare } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, *
+2021/03/07 22:52:04  Credentials Used: administrator@mobilelab.home
+2021/03/07 22:52:04  Invoke-Command -ScriptBlock { Get-SmbShare } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, *
+2021/03/07 22:52:04  Credentials Used: administrator@mobilelab.home
+2021/03/07 22:52:04  Invoke-Command -ScriptBlock { Get-SmbShare } -ComputerName WIN10-03 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, *
+2021/03/07 22:52:04  Credentials Used: administrator@mobilelab.home
+2021/03/07 22:52:05  Invoke-Command -ScriptBlock { Get-SmbShare } -ComputerName WIN10-06 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, *
+2021/03/07 22:52:05  Credentials Used: administrator@mobilelab.home
+2021/03/07 22:52:05  Invoke-Command -ScriptBlock { Get-SmbShare } -ComputerName WIN10-07 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, *
+2021/03/07 22:52:05  Credentials Used: administrator@mobilelab.home
+2021/03/07 22:52:05  Invoke-Command -ScriptBlock { Get-SmbShare } -ComputerName WIN10-08 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, *
+2021/03/07 22:52:05  Credentials Used: administrator@mobilelab.home
+2021/03/07 22:52:05  Invoke-Command -ScriptBlock { Get-SmbShare } -ComputerName WIN10-09 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, *
+2021/03/07 22:52:05  Credentials Used: administrator@mobilelab.home
+2021/03/07 22:52:06  Invoke-Command -ScriptBlock { Get-SmbShare } -ComputerName WIN10-10 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, *
+2021/03/08 18:00:36  ====================================================================================================
+2021/03/08 18:00:36  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 18:00:39  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 18:00:40  ====================================================================================================
+2021/03/08 18:07:58  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 18:07:58  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:21:12  ====================================================================================================
+2021/03/08 20:21:12  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:21:14  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:21:15  ====================================================================================================
+2021/03/08 20:21:49  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:21:49  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:25:08  ====================================================================================================
+2021/03/08 20:25:08  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:25:09  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:25:10  ====================================================================================================
+2021/03/08 20:25:47  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:25:47  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:28:15  ====================================================================================================
+2021/03/08 20:28:15  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:28:16  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:28:18  ====================================================================================================
+2021/03/08 20:28:41  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:28:41  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:29:58  ====================================================================================================
+2021/03/08 20:29:58  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:29:59  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:30:00  ====================================================================================================
+2021/03/08 20:30:22  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:30:22  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:31:43  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:31:43  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:33:42  ====================================================================================================
+2021/03/08 20:33:42  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:33:49  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:33:51  ====================================================================================================
+2021/03/08 20:34:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:34:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:36:28  ====================================================================================================
+2021/03/08 20:36:28  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:36:33  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:36:34  ====================================================================================================
+2021/03/08 20:37:32  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:37:32  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:39:02  ====================================================================================================
+2021/03/08 20:39:02  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:39:03  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:39:05  ====================================================================================================
+2021/03/08 20:39:30  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:39:30  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:41:03  ====================================================================================================
+2021/03/08 20:41:03  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:41:10  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:41:11  ====================================================================================================
+2021/03/08 20:41:43  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:41:43  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:42:52  ====================================================================================================
+2021/03/08 20:42:52  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:42:55  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:42:56  ====================================================================================================
+2021/03/08 20:44:07  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:44:08  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:46:28  ====================================================================================================
+2021/03/08 20:46:28  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:46:30  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:46:31  ====================================================================================================
+2021/03/08 20:47:20  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/08 20:47:20  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:51:58  ====================================================================================================
+2021/03/08 20:51:58  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:51:59  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:52:00  ====================================================================================================
+2021/03/08 20:52:52  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:52:52  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:54:03  ====================================================================================================
+2021/03/08 20:54:03  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:54:04  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:54:05  ====================================================================================================
+2021/03/08 20:54:29  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:54:29  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:55:55  ====================================================================================================
+2021/03/08 20:55:55  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:55:56  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:55:57  ====================================================================================================
+2021/03/08 20:56:20  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:56:20  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 20:57:28  ====================================================================================================
+2021/03/08 20:57:28  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 20:57:29  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 20:57:30  ====================================================================================================
+2021/03/08 20:57:53  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 20:57:54  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:05:35  ====================================================================================================
+2021/03/08 21:05:35  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:06:06  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:06:08  ====================================================================================================
+2021/03/08 21:07:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:07:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:13:55  ====================================================================================================
+2021/03/08 21:13:55  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:13:56  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:13:57  ====================================================================================================
+2021/03/08 21:14:27  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:14:27  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:22:23  ====================================================================================================
+2021/03/08 21:22:23  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:22:24  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:22:25  ====================================================================================================
+2021/03/08 21:22:49  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:22:49  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:23:24  ====================================================================================================
+2021/03/08 21:23:24  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:23:25  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:23:27  ====================================================================================================
+2021/03/08 21:23:56  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:23:56  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:26:15  ====================================================================================================
+2021/03/08 21:26:15  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:26:17  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:26:18  ====================================================================================================
+2021/03/08 21:26:43  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:26:43  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:31:42  ====================================================================================================
+2021/03/08 21:31:42  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:31:43  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:31:44  ====================================================================================================
+2021/03/08 21:32:19  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:32:20  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:36:53  ====================================================================================================
+2021/03/08 21:36:53  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:36:54  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:36:55  ====================================================================================================
+2021/03/08 21:37:22  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:37:22  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:50:34  ====================================================================================================
+2021/03/08 21:50:34  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:50:51  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:50:52  ====================================================================================================
+2021/03/08 21:51:30  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:51:31  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:52:33  ====================================================================================================
+2021/03/08 21:52:33  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:52:38  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:52:39  ====================================================================================================
+2021/03/08 21:53:27  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:53:27  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:54:49  ====================================================================================================
+2021/03/08 21:54:49  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:54:50  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:54:51  ====================================================================================================
+2021/03/08 21:55:25  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:55:26  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 21:59:22  ====================================================================================================
+2021/03/08 21:59:22  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 21:59:22  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 21:59:24  ====================================================================================================
+2021/03/08 21:59:55  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 21:59:55  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 22:00:51  ====================================================================================================
+2021/03/08 22:00:51  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 22:00:53  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 22:00:54  ====================================================================================================
+2021/03/08 22:02:27  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 22:02:28  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 22:32:10  ====================================================================================================
+2021/03/08 22:32:10  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 22:32:12  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 22:32:14  ====================================================================================================
+2021/03/08 22:32:42  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 22:32:42  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 22:34:09  ====================================================================================================
+2021/03/08 22:34:10  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 22:34:11  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 22:34:12  ====================================================================================================
+2021/03/08 22:34:37  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 22:34:37  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 22:46:02  ====================================================================================================
+2021/03/08 22:46:02  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 22:46:06  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 22:46:08  ====================================================================================================
+2021/03/08 22:48:16  ====================================================================================================
+2021/03/08 22:48:17  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 22:48:18  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 22:48:19  ====================================================================================================
+2021/03/08 22:54:57  ====================================================================================================
+2021/03/08 22:54:57  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 22:54:58  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 22:54:59  ====================================================================================================
+2021/03/08 22:55:26  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 22:55:26  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 22:56:57  ====================================================================================================
+2021/03/08 22:56:57  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 22:57:01  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 22:57:03  ====================================================================================================
+2021/03/08 22:57:24  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 22:57:24  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 22:58:55  ====================================================================================================
+2021/03/08 22:58:55  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 22:58:57  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 22:58:58  ====================================================================================================
+2021/03/08 22:59:22  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 22:59:22  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:00:37  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:00:37  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:09:24  ====================================================================================================
+2021/03/08 23:09:24  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:10:06  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:10:07  ====================================================================================================
+2021/03/08 23:10:32  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:10:32  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:12:42  ====================================================================================================
+2021/03/08 23:12:42  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:12:43  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:12:44  ====================================================================================================
+2021/03/08 23:13:11  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:13:11  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:14:00  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:14:00  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:16:34  ====================================================================================================
+2021/03/08 23:16:34  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:16:38  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:16:39  ====================================================================================================
+2021/03/08 23:17:09  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:17:09  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:24:06  ====================================================================================================
+2021/03/08 23:24:06  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:24:07  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:24:09  ====================================================================================================
+2021/03/08 23:24:34  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:24:34  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:37:38  ====================================================================================================
+2021/03/08 23:37:38  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:37:39  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:37:40  ====================================================================================================
+2021/03/08 23:38:02  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:38:02  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:39:45  ====================================================================================================
+2021/03/08 23:39:45  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:39:46  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:39:47  ====================================================================================================
+2021/03/08 23:40:09  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:40:09  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:41:18  ====================================================================================================
+2021/03/08 23:41:18  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:41:19  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:41:21  ====================================================================================================
+2021/03/08 23:41:44  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:41:44  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:42:34  ====================================================================================================
+2021/03/08 23:42:34  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:42:35  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:42:36  ====================================================================================================
+2021/03/08 23:43:32  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:43:32  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:44:54  ====================================================================================================
+2021/03/08 23:44:54  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:44:55  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:44:56  ====================================================================================================
+2021/03/08 23:45:19  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:45:19  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:50:08  ====================================================================================================
+2021/03/08 23:50:09  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:50:09  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:50:11  ====================================================================================================
+2021/03/08 23:50:40  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:50:40  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/08 23:55:11  ====================================================================================================
+2021/03/08 23:55:11  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/08 23:55:12  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/08 23:55:14  ====================================================================================================
+2021/03/08 23:55:42  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/08 23:55:42  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/08 23:55:42  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/09 10:15:58  ====================================================================================================
+2021/03/09 10:15:58  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 10:16:05  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 10:16:06  ====================================================================================================
+2021/03/09 10:41:39  ====================================================================================================
+2021/03/09 10:41:39  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 10:41:41  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 10:41:42  ====================================================================================================
+2021/03/09 10:42:14  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/09 10:42:14  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-02 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-02' -Credential $script:Credential
+2021/03/09 10:44:27  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 10:50:52  ====================================================================================================
+2021/03/09 10:50:52  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 10:50:53  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 10:50:54  ====================================================================================================
+2021/03/09 10:51:33  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 11:07:25  ====================================================================================================
+2021/03/09 11:07:25  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 11:07:28  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 11:07:29  ====================================================================================================
+2021/03/09 11:08:15  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 11:21:01  ====================================================================================================
+2021/03/09 11:21:01  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 11:21:02  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 11:21:03  ====================================================================================================
+2021/03/09 11:21:39  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 11:54:36  ====================================================================================================
+2021/03/09 11:54:36  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 11:54:38  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 11:54:39  ====================================================================================================
+2021/03/09 11:59:33  ====================================================================================================
+2021/03/09 11:59:33  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 11:59:35  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 11:59:36  ====================================================================================================
+2021/03/09 11:59:57  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:01:09  ====================================================================================================
+2021/03/09 12:01:09  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:01:13  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:01:14  ====================================================================================================
+2021/03/09 12:05:15  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:06:45  ====================================================================================================
+2021/03/09 12:06:45  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:06:48  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:06:49  ====================================================================================================
+2021/03/09 12:07:20  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:10:29  ====================================================================================================
+2021/03/09 12:10:29  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:10:31  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:10:32  ====================================================================================================
+2021/03/09 12:11:26  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:12:50  ====================================================================================================
+2021/03/09 12:12:50  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:12:54  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:12:55  ====================================================================================================
+2021/03/09 12:15:58  ====================================================================================================
+2021/03/09 12:15:58  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:16:00  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:16:01  ====================================================================================================
+2021/03/09 12:17:15  ====================================================================================================
+2021/03/09 12:17:15  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:17:16  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:17:17  ====================================================================================================
+2021/03/09 12:17:47  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:18:49  ====================================================================================================
+2021/03/09 12:18:50  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:18:50  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:18:52  ====================================================================================================
+2021/03/09 12:25:30  ====================================================================================================
+2021/03/09 12:25:30  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:25:35  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:25:36  ====================================================================================================
+2021/03/09 12:26:06  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:28:52  ====================================================================================================
+2021/03/09 12:28:52  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:28:53  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:28:54  ====================================================================================================
+2021/03/09 12:29:23  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:34:13  ====================================================================================================
+2021/03/09 12:34:13  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:34:21  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:34:22  ====================================================================================================
+2021/03/09 12:34:47  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:37:59  ====================================================================================================
+2021/03/09 12:37:59  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:38:00  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:38:02  ====================================================================================================
+2021/03/09 12:38:42  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:39:51  ====================================================================================================
+2021/03/09 12:39:51  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:39:52  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:39:53  ====================================================================================================
+2021/03/09 12:40:13  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:43:34  ====================================================================================================
+2021/03/09 12:43:35  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:43:36  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:43:37  ====================================================================================================
+2021/03/09 12:44:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName WIN10-01 -AsJob -JobName 'PoSh-EasyWin:  -- WIN10-01' -Credential $script:Credential
+2021/03/09 12:44:35  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:46:20  ====================================================================================================
+2021/03/09 12:46:20  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:46:21  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:46:22  ====================================================================================================
+2021/03/09 12:46:43  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:48:44  ====================================================================================================
+2021/03/09 12:48:44  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:48:45  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:48:47  ====================================================================================================
+2021/03/09 12:49:11  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 12:50:54  ====================================================================================================
+2021/03/09 12:50:54  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 12:50:56  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 12:50:57  ====================================================================================================
+2021/03/09 12:51:20  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 18:25:06  ====================================================================================================
+2021/03/09 18:25:06  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 18:25:12  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 18:25:13  ====================================================================================================
+2021/03/09 18:34:31  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 18:36:07  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 18:36:08  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 18:36:08  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 18:36:08  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 18:36:09  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 18:36:11  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 18:36:14  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 18:52:43  ====================================================================================================
+2021/03/09 18:52:43  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 18:52:44  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 18:52:45  ====================================================================================================
+2021/03/09 18:53:11  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:00:32  ====================================================================================================
+2021/03/09 19:00:32  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:00:33  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 19:00:34  ====================================================================================================
+2021/03/09 19:13:09  ====================================================================================================
+2021/03/09 19:13:09  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:13:11  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 19:13:12  ====================================================================================================
+2021/03/09 19:16:22  ====================================================================================================
+2021/03/09 19:16:22  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:16:23  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 19:16:24  ====================================================================================================
+2021/03/09 19:23:17  ====================================================================================================
+2021/03/09 19:23:17  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:23:39  PoSh-EasyWin User Agreemennt NOT Accepted By: ZENBOOK\danie
+2021/03/09 19:26:19  ====================================================================================================
+2021/03/09 19:26:19  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:26:55  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 19:26:56  ====================================================================================================
+2021/03/09 19:29:22  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:36:54  ====================================================================================================
+2021/03/09 19:36:54  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:37:20  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 19:37:21  ====================================================================================================
+2021/03/09 19:38:26  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:38:26  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:38:26  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:38:27  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:38:27  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:38:27  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:39:41  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:45:09  ====================================================================================================
+2021/03/09 19:45:09  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:45:11  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 19:45:12  ====================================================================================================
+2021/03/09 19:45:55  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:46:25  ====================================================================================================
+2021/03/09 19:46:25  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:46:26  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 19:46:28  ====================================================================================================
+2021/03/09 19:47:03  ====================================================================================================
+2021/03/09 19:47:03  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:47:04  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 19:47:06  ====================================================================================================
+2021/03/09 19:47:38  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:51:25  ====================================================================================================
+2021/03/09 19:51:25  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 19:51:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 19:51:28  ====================================================================================================
+2021/03/09 19:51:49  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:51:50  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:51:50  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:51:50  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:51:51  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 19:51:51  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:02:51  ====================================================================================================
+2021/03/09 20:02:51  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 20:03:09  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 20:03:10  ====================================================================================================
+2021/03/09 20:05:15  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:05:15  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:05:15  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:05:16  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:05:16  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:08:51  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:10:34  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:13:03  ====================================================================================================
+2021/03/09 20:13:03  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 20:13:21  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 20:13:22  ====================================================================================================
+2021/03/09 20:14:12  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:16:06  ====================================================================================================
+2021/03/09 20:16:06  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 20:16:10  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 20:16:11  ====================================================================================================
+2021/03/09 20:16:59  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:17:00  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:17:00  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:17:00  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:17:01  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:17:01  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:17:04  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 20:17:06  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 20:18:01  ====================================================================================================
+2021/03/09 20:18:01  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 20:18:15  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 20:18:16  ====================================================================================================
+2021/03/09 20:19:10  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:19:11  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:19:11  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:19:11  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:19:12  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:19:12  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:19:15  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 20:19:17  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 20:26:24  : New-PSSession -ComputerName Localhost -Credential System.Management.Automation.PSCredential
+2021/03/09 20:28:14  [PSSession]WinRM9 | Remove-Session
+2021/03/09 20:28:17  : New-PSSession -ComputerName DC01 -Credential System.Management.Automation.PSCredential
+2021/03/09 20:28:17  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 20:28:17  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 20:28:17   | Remove-Session
+2021/03/09 20:38:49  ====================================================================================================
+2021/03/09 20:38:49  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 20:39:30  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 20:39:31  ====================================================================================================
+2021/03/09 20:40:42  : New-PSSession -ComputerName Localhost -Credential System.Management.Automation.PSCredential
+2021/03/09 20:41:02  [PSSession]WinRM1 | Remove-Session
+2021/03/09 20:48:19  ====================================================================================================
+2021/03/09 20:48:19  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 20:48:43  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 20:48:44  ====================================================================================================
+2021/03/09 20:49:18  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:49:18  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:49:19  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:49:19  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:49:19  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:49:20  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 20:49:22  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 20:49:25  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 21:12:50  ====================================================================================================
+2021/03/09 21:12:50  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 21:12:51  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 21:12:52  ====================================================================================================
+2021/03/09 21:13:45  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:13:46  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:13:46  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:13:46  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:13:47  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:13:47  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:13:50  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 21:13:52  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 21:15:21  ====================================================================================================
+2021/03/09 21:15:21  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 21:15:23  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 21:15:24  ====================================================================================================
+2021/03/09 21:15:59  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:16:00  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:16:00  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:16:00  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:16:01  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:16:01  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:16:03  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 21:16:06  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 21:19:41  ====================================================================================================
+2021/03/09 21:19:41  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 21:20:18  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 21:20:19  ====================================================================================================
+2021/03/09 21:21:04  : New-PSSession -ComputerName Localhost -Credential System.Management.Automation.PSCredential
+2021/03/09 21:23:02  [PSSession]WinRM1 | Remove-Session
+2021/03/09 21:23:04  : New-PSSession -ComputerName DC01 -Credential System.Management.Automation.PSCredential
+2021/03/09 21:23:04  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 21:23:04  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 21:23:04   | Remove-Session
+2021/03/09 21:24:44  : New-PSSession -ComputerName Localhost -Credential System.Management.Automation.PSCredential
+2021/03/09 21:27:03  [PSSession]WinRM3 | Remove-Session
+2021/03/09 21:27:05  : New-PSSession -ComputerName DC01 -Credential System.Management.Automation.PSCredential
+2021/03/09 21:27:05  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 21:27:07  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 21:27:08   | Remove-Session
+2021/03/09 21:27:39  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:27:40  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:27:40  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:28:14  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:28:15  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:28:15  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:30:14  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:30:15  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:30:15  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:36:47  ====================================================================================================
+2021/03/09 21:36:47  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 21:36:49  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 21:36:50  ====================================================================================================
+2021/03/09 21:37:24  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:38:04  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:38:39  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:39:06  : New-PSSession -ComputerName Localhost -Credential System.Management.Automation.PSCredential
+2021/03/09 21:39:08  [PSSession]WinRM4 | Remove-Session
+2021/03/09 21:39:27  : New-PSSession -ComputerName Localhost -Credential System.Management.Automation.PSCredential
+2021/03/09 21:39:40  [PSSession]WinRM5 | Remove-Session
+2021/03/09 21:41:40  ====================================================================================================
+2021/03/09 21:41:40  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 21:41:42  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 21:41:43  ====================================================================================================
+2021/03/09 21:42:05  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:42:39  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:44:13  ====================================================================================================
+2021/03/09 21:44:13  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 21:44:19  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 21:44:20  ====================================================================================================
+2021/03/09 21:45:10  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:45:10  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:45:48  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:45:48  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:45:49  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:47:42  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:47:43  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:47:43  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:50:48  ====================================================================================================
+2021/03/09 21:50:48  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 21:52:01  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 21:52:02  ====================================================================================================
+2021/03/09 21:52:35  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:52:38  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:52:41  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:52:42  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:52:44  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:52:46  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:52:50  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 21:52:54  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 21:54:25  ====================================================================================================
+2021/03/09 21:54:25  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 21:54:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 21:54:28  ====================================================================================================
+2021/03/09 21:55:06  ====================================================================================================
+2021/03/09 21:55:06  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 21:55:08  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 21:55:09  ====================================================================================================
+2021/03/09 21:55:37  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:55:38  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:55:38  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:55:38  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:55:39  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:55:39  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 21:55:42  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 21:55:44  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 22:09:55  ====================================================================================================
+2021/03/09 22:09:56  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 22:09:57  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 22:09:58  ====================================================================================================
+2021/03/09 22:11:59  ====================================================================================================
+2021/03/09 22:11:59  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 22:12:12  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 22:12:13  ====================================================================================================
+2021/03/09 22:13:20  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:13:24  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:13:26  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:13:28  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:13:30  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:13:31  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:13:35  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 22:13:39  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 22:19:45  ====================================================================================================
+2021/03/09 22:19:45  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 22:19:49  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 22:19:50  ====================================================================================================
+2021/03/09 22:20:24  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:20:27  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:20:29  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:20:31  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:20:33  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:20:34  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:20:38  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 22:20:42  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 22:22:15  ====================================================================================================
+2021/03/09 22:22:15  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 22:22:22  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 22:22:23  ====================================================================================================
+2021/03/09 22:22:58  : New-PSSession -ComputerName Localhost -Credential System.Management.Automation.PSCredential
+2021/03/09 22:24:55  [PSSession]WinRM1 | Remove-Session
+2021/03/09 22:24:57  : New-PSSession -ComputerName DC01 -Credential System.Management.Automation.PSCredential
+2021/03/09 22:24:57  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 22:24:57  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 22:24:57   | Remove-Session
+2021/03/09 22:31:06  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:31:14  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:31:18  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:31:20  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:31:22  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:31:30  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:31:40  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 22:31:45  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 22:38:19  ====================================================================================================
+2021/03/09 22:38:19  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 22:38:22  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 22:38:24  ====================================================================================================
+2021/03/09 22:38:45  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:38:46  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:38:46  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:38:46  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:38:47  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:38:47  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 22:38:50  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 22:38:55  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 22:54:44  ====================================================================================================
+2021/03/09 22:54:44  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 22:56:42  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 22:56:43  ====================================================================================================
+2021/03/09 22:59:27  : New-PSSession -ComputerName Localhost -Credential System.Management.Automation.PSCredential
+2021/03/09 23:01:22  [PSSession]WinRM1 | Remove-Session
+2021/03/09 23:01:24  : New-PSSession -ComputerName DC01 -Credential System.Management.Automation.PSCredential
+2021/03/09 23:01:24  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 23:01:24  Invoke-Command -ScriptBlock { Get-ADForest } -Session 
+2021/03/09 23:01:24   | Remove-Session
+2021/03/09 23:04:40  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:04:40  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:04:41  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:04:41  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:04:41  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:04:42  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:04:44  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 23:04:48  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 23:07:19  ====================================================================================================
+2021/03/09 23:07:19  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 23:07:44  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 23:07:46  ====================================================================================================
+2021/03/09 23:08:12  Invoke-Command -ScriptBlock $ProcessesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:08:13  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:08:13  Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:08:13  Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:08:14  Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:08:14  Invoke-Command -ScriptBlock $LogonActivityScriptblock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:08:17  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 23:08:23  Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName DC01 -AsJob -JobName 'PoSh-EasyWin:  -- DC01' -Credential $script:Credential
+2021/03/09 23:08:45  ====================================================================================================
+2021/03/09 23:08:45  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 23:08:47  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 23:08:48  ====================================================================================================
+2021/03/09 23:09:19  ====================================================================================================
+2021/03/09 23:09:19  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 23:09:21  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 23:09:22  ====================================================================================================
+2021/03/09 23:10:03  ====================================================================================================
+2021/03/09 23:10:03  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 23:10:05  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 23:10:06  ====================================================================================================
+2021/03/09 23:10:39  ====================================================================================================
+2021/03/09 23:10:39  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 23:10:40  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 23:10:41  ====================================================================================================
+2021/03/09 23:11:06  ====================================================================================================
+2021/03/09 23:11:06  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 23:11:07  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 23:11:08  ====================================================================================================
+2021/03/09 23:11:31  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:46:49  ====================================================================================================
+2021/03/09 23:46:50  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 23:47:41  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 23:47:42  ====================================================================================================
+2021/03/09 23:48:03  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/09 23:53:01  ====================================================================================================
+2021/03/09 23:53:01  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 23:53:35  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 23:53:36  ====================================================================================================
+2021/03/09 23:54:10   - System.Xml.XmlElement
+2021/03/09 23:54:11  Credentials Used: localhost\dan
+2021/03/09 23:54:11  Invoke-Command -ScriptBlock { Get-Process } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/09 23:56:20  ====================================================================================================
+2021/03/09 23:56:20  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/09 23:56:45  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/09 23:56:46  ====================================================================================================
+2021/03/09 23:57:32   - System.Xml.XmlElement
+2021/03/09 23:57:33  Credentials Used: localhost\dan
+2021/03/09 23:57:33  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 00:00:51  ====================================================================================================
+2021/03/10 00:00:51  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:00:52  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:00:53  ====================================================================================================
+2021/03/10 00:02:59   - System.Xml.XmlElement
+2021/03/10 00:03:00  Credentials Used: localhost\dan
+2021/03/10 00:03:00  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 00:05:51  Credentials Used: localhost\dan
+2021/03/10 00:05:52  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetworkConnectionsTCPEnriched.ps1' -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop
+2021/03/10 00:05:52  Credentials Used: localhost\dan
+2021/03/10 00:05:52  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop
+2021/03/10 00:09:22  ====================================================================================================
+2021/03/10 00:09:22  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:09:24  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:09:25  ====================================================================================================
+2021/03/10 00:18:42  ====================================================================================================
+2021/03/10 00:18:42  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:18:51  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:18:52  ====================================================================================================
+2021/03/10 00:19:31   - System.Xml.XmlElement
+2021/03/10 00:19:32  Credentials Used: localhost\dan
+2021/03/10 00:19:32  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 00:37:22  ====================================================================================================
+2021/03/10 00:37:22  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:37:23  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:37:24  ====================================================================================================
+2021/03/10 00:38:09   - System.Xml.XmlElement
+2021/03/10 00:38:10  Credentials Used: localhost\dan
+2021/03/10 00:38:10  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 00:43:12  ====================================================================================================
+2021/03/10 00:43:12  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:43:17  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:43:18  ====================================================================================================
+2021/03/10 00:43:49   - System.Xml.XmlElement
+2021/03/10 00:43:52  Credentials Used: localhost\dan
+2021/03/10 00:43:53  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 00:44:31  ====================================================================================================
+2021/03/10 00:44:31  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:44:45  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:44:46  ====================================================================================================
+2021/03/10 00:45:15   - System.Xml.XmlElement
+2021/03/10 00:45:15  Credentials Used: localhost\dan
+2021/03/10 00:45:16  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 00:46:14  ====================================================================================================
+2021/03/10 00:46:15  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:46:16  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:46:17  ====================================================================================================
+2021/03/10 00:46:36  Credentials Used: localhost\dan
+2021/03/10 00:46:37  Invoke-Command -ScriptBlock { Get-DnsClientCache } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Entry, RecordName, RecordType, Status, Section, TimeToLive, Data
+2021/03/10 00:49:09  ====================================================================================================
+2021/03/10 00:49:09  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:49:11  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:49:12  ====================================================================================================
+2021/03/10 00:49:35   - System.Xml.XmlElement
+2021/03/10 00:49:36  Credentials Used: localhost\dan
+2021/03/10 00:49:36  Invoke-Command -ScriptBlock { Get-WindowsDriver -Online -All } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Online, ClassName, Driver, OriginalFileName, ClassDescription, BootCritical, DriverSignature, ProviderName, Date, Version, InBox, LogPath, LogLevel
+2021/03/10 00:50:14  ====================================================================================================
+2021/03/10 00:50:14  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:50:16  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:50:17  ====================================================================================================
+2021/03/10 00:50:52   - System.Xml.XmlElement
+2021/03/10 00:50:55   - System.Xml.XmlElement
+2021/03/10 00:50:56  Credentials Used: localhost\dan
+2021/03/10 00:50:56  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 00:56:57  ====================================================================================================
+2021/03/10 00:56:57  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:56:59  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:57:00  ====================================================================================================
+2021/03/10 00:57:26   - System.Xml.XmlElement
+2021/03/10 00:57:27  Credentials Used: localhost\dan
+2021/03/10 00:57:27  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 00:58:07  ====================================================================================================
+2021/03/10 00:58:08  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 00:58:38  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 00:58:39  ====================================================================================================
+2021/03/10 00:59:23   - System.Xml.XmlElement
+2021/03/10 00:59:24  Credentials Used: localhost\dan
+2021/03/10 00:59:24  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:01:28  ====================================================================================================
+2021/03/10 01:01:28  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:01:29  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:01:30  ====================================================================================================
+2021/03/10 01:01:59   - System.Xml.XmlElement
+2021/03/10 01:02:00  Credentials Used: localhost\dan
+2021/03/10 01:02:00  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:03:32  ====================================================================================================
+2021/03/10 01:03:32  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:03:33  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:03:35  ====================================================================================================
+2021/03/10 01:05:11   - System.Xml.XmlElement
+2021/03/10 01:05:11  Credentials Used: localhost\dan
+2021/03/10 01:05:11  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:07:54  ====================================================================================================
+2021/03/10 01:07:54  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:07:59  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:08:00  ====================================================================================================
+2021/03/10 01:08:26   - System.Xml.XmlElement
+2021/03/10 01:08:28  Credentials Used: localhost\dan
+2021/03/10 01:08:28  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:08:55  ====================================================================================================
+2021/03/10 01:08:55  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:08:56  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:08:57  ====================================================================================================
+2021/03/10 01:09:42   - System.Xml.XmlElement
+2021/03/10 01:09:42  Credentials Used: localhost\dan
+2021/03/10 01:09:42  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:12:06  ====================================================================================================
+2021/03/10 01:12:06  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:12:07  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:12:09  ====================================================================================================
+2021/03/10 01:12:31   - System.Xml.XmlElement
+2021/03/10 01:12:33  Credentials Used: localhost\dan
+2021/03/10 01:12:33  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:14:56  ====================================================================================================
+2021/03/10 01:14:56  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:15:02  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:15:03  ====================================================================================================
+2021/03/10 01:15:26   - System.Xml.XmlElement
+2021/03/10 01:15:27  Credentials Used: localhost\dan
+2021/03/10 01:15:28  Invoke-Command -ScriptBlock { Get-NetUDPEndpoint } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, LocalAddress, LocalPort
+2021/03/10 01:16:58  Credentials Used: localhost\dan
+2021/03/10 01:16:58  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetworkConnectionsTCPEnriched.ps1' -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop
+2021/03/10 01:16:58  Credentials Used: localhost\dan
+2021/03/10 01:16:59  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-ProcessesEnriched.ps1' -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop
+2021/03/10 01:24:05  ====================================================================================================
+2021/03/10 01:24:05  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:24:06  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:24:07  ====================================================================================================
+2021/03/10 01:24:32   - System.Xml.XmlElement
+2021/03/10 01:24:33  Credentials Used: localhost\dan
+2021/03/10 01:24:33  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:25:30  ====================================================================================================
+2021/03/10 01:25:30  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:25:31  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:25:32  ====================================================================================================
+2021/03/10 01:26:09   - System.Xml.XmlElement
+2021/03/10 01:26:10  Credentials Used: localhost\dan
+2021/03/10 01:26:10  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:28:54  ====================================================================================================
+2021/03/10 01:28:54  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:28:55  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:28:56  ====================================================================================================
+2021/03/10 01:29:27   - System.Xml.XmlElement
+2021/03/10 01:29:28  Credentials Used: localhost\dan
+2021/03/10 01:29:28  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:30:00  ====================================================================================================
+2021/03/10 01:30:00  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:30:01  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:30:02  ====================================================================================================
+2021/03/10 01:30:23   - System.Xml.XmlElement
+2021/03/10 01:30:23  Credentials Used: localhost\dan
+2021/03/10 01:30:23  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetStatTCP.ps1' -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop
+2021/03/10 01:33:01  ====================================================================================================
+2021/03/10 01:33:01  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:33:02  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:33:03  ====================================================================================================
+2021/03/10 01:33:37   - System.Xml.XmlElement
+2021/03/10 01:33:39  Credentials Used: localhost\dan
+2021/03/10 01:33:39  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:34:18   - System.Xml.XmlElement
+2021/03/10 01:38:04  ====================================================================================================
+2021/03/10 01:38:04  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:38:05  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:38:06  ====================================================================================================
+2021/03/10 01:40:03  ====================================================================================================
+2021/03/10 01:40:03  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:40:05  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:40:06  ====================================================================================================
+2021/03/10 01:40:36   - System.Xml.XmlElement
+2021/03/10 01:40:36  Credentials Used: localhost\dan
+2021/03/10 01:40:36  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:41:15  ====================================================================================================
+2021/03/10 01:41:15  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:41:17  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:41:18  ====================================================================================================
+2021/03/10 01:41:21  Opted to import the PSWriteHTML module
+2021/03/10 01:42:26  ====================================================================================================
+2021/03/10 01:42:26  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:42:27  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:42:28  ====================================================================================================
+2021/03/10 01:43:09  ====================================================================================================
+2021/03/10 01:43:09  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:43:10  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:43:11  ====================================================================================================
+2021/03/10 01:43:34  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/10 01:45:48  ====================================================================================================
+2021/03/10 01:45:48  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:45:49  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:45:51  ====================================================================================================
+2021/03/10 01:46:16   - System.Xml.XmlElement
+2021/03/10 01:46:17  Credentials Used: localhost\dan
+2021/03/10 01:46:17  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:47:00  ====================================================================================================
+2021/03/10 01:47:01  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:47:01  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:47:03  ====================================================================================================
+2021/03/10 01:47:52   - System.Xml.XmlElement
+2021/03/10 01:47:53  Credentials Used: localhost\dan
+2021/03/10 01:47:53  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 01:49:34  ====================================================================================================
+2021/03/10 01:49:34  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:49:36  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:49:37  ====================================================================================================
+2021/03/10 01:50:06  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/10 01:52:07  ====================================================================================================
+2021/03/10 01:52:07  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:52:08  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:52:09  ====================================================================================================
+2021/03/10 01:52:11  Opted to import the PSWriteHTML module
+2021/03/10 01:52:33  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/10 01:53:47  ====================================================================================================
+2021/03/10 01:53:47  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:53:49  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:53:51  ====================================================================================================
+2021/03/10 01:54:15  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/10 01:57:00  ====================================================================================================
+2021/03/10 01:57:00  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:57:02  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:57:03  ====================================================================================================
+2021/03/10 01:57:49  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/10 01:58:01  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/10 01:59:13  ====================================================================================================
+2021/03/10 01:59:13  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 01:59:14  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 01:59:15  ====================================================================================================
+2021/03/10 01:59:41  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/10 02:00:34  ====================================================================================================
+2021/03/10 02:00:34  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 02:00:35  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 02:00:36  ====================================================================================================
+2021/03/10 02:00:58  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/10 02:01:12   - System.Xml.XmlElement
+2021/03/10 02:01:14  Credentials Used: localhost\dan
+2021/03/10 02:01:14  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 02:03:33  ====================================================================================================
+2021/03/10 02:03:33  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 02:03:34  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 02:03:36  ====================================================================================================
+2021/03/10 02:04:09   - System.Xml.XmlElement
+2021/03/10 02:04:10  Credentials Used: localhost\dan
+2021/03/10 02:04:11  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 02:04:40  ====================================================================================================
+2021/03/10 02:04:41  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 02:04:45  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 02:04:46  ====================================================================================================
+2021/03/10 02:04:49  Opted to import the PSWriteHTML module
+2021/03/10 02:05:17   - System.Xml.XmlElement
+2021/03/10 02:05:20  Credentials Used: localhost\dan
+2021/03/10 02:05:20  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/10 02:06:12  Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -ComputerName Localhost -AsJob -JobName 'PoSh-EasyWin:  -- Localhost' -Credential $script:Credential
+2021/03/10 02:07:45  ====================================================================================================
+2021/03/10 02:07:45  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/10 02:07:47  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/10 02:07:48  ====================================================================================================
+2021/03/10 02:08:10   - System.Xml.XmlElement
+2021/03/10 02:08:11  Credentials Used: localhost\dan
+2021/03/10 02:08:11  Invoke-Command -ScriptBlock { Get-Service } -ComputerName Localhost -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle

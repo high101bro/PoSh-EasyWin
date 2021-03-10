@@ -150,20 +150,19 @@ $MainCenterMainTab.Controls.Add($ResultsSectionLabel)
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\PSWriteHTMLButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\PSWriteHTMLButton.ps1"
 $PSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Graph Data [Beta]"
     Location = @{ X = $ResultsSectionLabel.Location.X
                   Y = $ResultsSectionLabel.Location.Y + $ResultsSectionLabel.Size.Height }
     Size     = @{ Width  = $FormScale * 115
                   Height = $FormScale * 22 }
     Add_Click      = $PSWriteHTMLButtonAdd_Click
     Add_MouseHover = $PSWriteHTMLButtonAdd_MouseHover
+    Enabled = $false
 }
 $MainCenterMainTab.Controls.Add($PSWriteHTMLButton)
 CommonButtonSettings -Button $PSWriteHTMLButton
-if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'No') { $PSWriteHTMLButton.enabled = $false }
-if (-not (Test-Path -Path "$Dependencies\Modules\PSWriteHTML")) {
-    $PSWriteHTMLButton.enabled = $false
-    $PSWriteHTMLButton.Text = "Graph Data [N/A]"
+if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
+    $PSWriteHTMLButton.enabled = $true
+    $PSWriteHTMLButton.Text = "Graph Data [Beta]"
 }
 
 

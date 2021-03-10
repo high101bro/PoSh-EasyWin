@@ -13,7 +13,7 @@ function Launch-ProgressBarForm {
     $script:ProgressBarSelectionForm = New-Object System.Windows.Forms.Form -Property @{
         Text   = $FormTitle
         Width  = $FormScale * 350
-        Height = $FormScale * 170
+        Height = $FormScale * 180
         StartPosition = "CenterScreen"
         Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
         Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -34,7 +34,7 @@ function Launch-ProgressBarForm {
             Left   = $FormScale * 10
             Top    = $FormScale * 10
             Width  = $FormScale * 285
-            Height = $FormScale * 25
+            Height = $FormScale * 35
             Image  = [System.Drawing.Image]::Fromfile($ProgressBarImage)
             SizeMode = 'StretchImage'
         }

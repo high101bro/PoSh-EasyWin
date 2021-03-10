@@ -219,6 +219,9 @@ param (
     [switch] $AudibleCompletionMessage
 
 
+# Keycodes
+# https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.keys?view=net-5.0
+
 <#
     # Removed because of inconsistent Winform scaling. The Out-GridView used to show the Copyright/EULA also had the quirk of changing the scaling of WinForms.
     # I cannot find a solution online, but the OGV EULA allowed forced the quirk to happen, allowing for some level of consistency when scaling the GUI.
@@ -240,9 +243,9 @@ param (
 
 # Generates the GUI and contains the majority of the script
 Add-Type -AssemblyName System.Windows.Forms
-    #[reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
 Add-Type -AssemblyName System.Drawing
-    #[reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
+    #Deprecated#[reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
+    #Deprecated#[reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
 
 
 #============================================================================================================================================================

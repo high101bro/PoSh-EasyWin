@@ -591,7 +591,9 @@ function Monitor-Jobs {
             Top    = `$script:GeneratedAutoChartOpenInShell$ChartNumber.Top
             Width  = `$FormScale * 100
             Height = `$FormScale * 23
-            Add_Click = { `$script:SourceCSVData$ChartNumber | Out-GridView -Title "View Results" }
+            Add_Click = { 
+                `$script:SourceCSVData$ChartNumber | Out-GridView -Title "View Results" 
+            }
         }
         CommonButtonSettings -Button `$script:GeneratedAutoChartViewResults$ChartNumber
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartViewResults$ChartNumber)
@@ -634,7 +636,7 @@ function Monitor-Jobs {
         `$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Points.Clear()
         `$script:GeneratedAutoChartOverallDataResults$ChartNumber | Sort-Object -Property UniqueCount | Select-Object -skip `$script:GeneratedAutoChartTrimOffFirstTrackBarValue$ChartNumber | Select-Object -SkipLast `$script:GeneratedAutoChartTrimOffLastTrackBarValue$ChartNumber | ForEach-Object {`$script:GeneratedAutoChart$ChartNumber.Series[`$script:SeriesName$ChartNumber].Points.AddXY(`$_.DataField.`$script:PropertyX$ChartNumber,`$_.UniqueCount)}
 "@
-        }          
+    }
 
 
 if ($MonitorMode) {
@@ -679,6 +681,7 @@ if ($MonitorMode) {
         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobRemoveButton$JobId)
         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobOptionsButton$JobId)
         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobViewButton$JobId)
+        `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobViewHTMLButton$JobId)
         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobShellButton$JobId)
         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobChartsButton$JobId)
         `$script:Section3MonitorJobPanel$JobId.Controls.Remove(`$script:Section3MonitorJobKeepDataCheckbox$JobId)
@@ -826,7 +829,7 @@ if ($MonitorMode) {
         `$script:Section3MonitorJobProgressBar$JobId = New-Object System.Windows.Forms.ProgressBar -Property @{
             Left      = `$script:Section3MonitorJobLabel$JobId.Left
             Top       =  (`$FormScale * 22) + (`$FormScale * 8)
-            Width     = `$FormScale * 381 #261
+            Width     = `$FormScale * 371 #261
             Height    = `$FormScale * 22
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
             Value     = 0
@@ -841,7 +844,7 @@ if ($MonitorMode) {
             Text      = "Endpoint Count:  0 / `$script:JobsStartedCount$JobId `n`$script:JobName$JobId"
             Left      = `$script:Section3MonitorJobLabel$JobId.Left + `$script:Section3MonitorJobLabel$JobId.Width + (`$FormScale * 5)
             Top       = `$script:Section3MonitorJobLabel$JobId.Top
-            Width     = `$FormScale * 261
+            Width     = `$FormScale * 251
             Height    = (`$script:JobsRowHeight / 2) - `$(`$FormScale * 2)
             Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 9),1,2,1)
             ForeColor = 'Blue'
@@ -882,7 +885,7 @@ if ($MonitorMode) {
                 text      = 'Open Folder'
                 Left      = `$script:Section3MonitorJobShellButton$JobId.Left
                 Top       = `$script:Section3MonitorJobShellButton$JobId.Top + `$script:Section3MonitorJobShellButton$JobId.Height + (`$FormScale * 5)
-                Width     = `$FormScale * 100
+                Width     = `$FormScale * 110
                 Height    = `$FormScale * 21
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
@@ -900,7 +903,7 @@ if ($MonitorMode) {
                 Top      = `$script:Section3MonitorJobShellButton$JobId.Top
                 Width    = `$FormScale * 75
                 Height   = `$script:JobsRowHeight
-                    Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
+                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 6),0,0,0)
                 Add_click = {
                     `$script:Section3MonitorJobViewCommandForm$JobId = New-Object Windows.Forms.Form -Property @{
                         Text          = "View Command - `$(`$script:JobName$JobId)"
@@ -976,7 +979,7 @@ if ($MonitorMode) {
                 text      = 'Get File'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
                 Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
-                Width     = `$FormScale * 100
+                Width     = `$FormScale * 110
                 Height    = `$FormScale * 21
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
@@ -1008,7 +1011,7 @@ if ($MonitorMode) {
                 text      = 'Get ADS'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
                 Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
-                Width     = `$FormScale * 100
+                Width     = `$FormScale * 110
                 Height    = `$FormScale * 21
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
@@ -1037,10 +1040,10 @@ if ($MonitorMode) {
             else {
             Invoke-Expression @"
             `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text      = 'View Progress'
+                text      = 'View Results'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
                 Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
-                Width     = `$FormScale * 100
+                Width     = `$FormScale * 110
                 Height    = `$FormScale * 21
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
@@ -1077,12 +1080,12 @@ if ($MonitorMode) {
         }
     
     
-        Invoke-Expression @"            
+        Invoke-Expression @"
             `$script:Section3MonitorJobShellButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text     = 'Shell'
+                text     = 'Console'
                 Left     = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
                 Top      = `$script:Section3MonitorJobViewButton$JobId.Top + `$script:Section3MonitorJobViewButton$JobId.Height + (`$FormScale * 5)
-                Width    = `$FormScale * 45
+                Width    = `$FormScale * 60
                 Height   = `$FormScale * 21
                 Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
@@ -1096,18 +1099,18 @@ if ($MonitorMode) {
                             script:Open-XmlResultsInShell -ViewImportResults "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -FileName "`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml" -SavePath `$script:CollectionSavedDirectoryTextBox.Text
                         }
                         else {
-                            [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nThere are no results available.",'PoSh-EasyWin - Shell')
+                            [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nThere are no results available.",'PoSh-EasyWin - Console')
                         }
                     }
                     else {
-                        [System.Windows.Forms.MessageBox]::Show("There is no data available to generate charts.",'PoSh-EasyWin - Shell')
+                        [System.Windows.Forms.MessageBox]::Show("There is no data available to generate charts.",'PoSh-EasyWin - Console')
                     }
                     Remove-Variable -Name JobXMLResults$JobId -Scope script
                     [System.GC]::Collect()
                 }
             }
             if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) {
-                `$script:Section3MonitorJobShellButton$JobId.Text = 'Shell'
+                `$script:Section3MonitorJobShellButton$JobId.Text = 'Console'
             }
 
             
@@ -1115,7 +1118,7 @@ if ($MonitorMode) {
                 text     = 'Charts'
                 Left     = `$script:Section3MonitorJobShellButton$JobId.Left + `$script:Section3MonitorJobShellButton$JobId.Width + (`$FormScale * 5)
                 Top      = `$script:Section3MonitorJobViewButton$JobId.Top + `$script:Section3MonitorJobViewButton$JobId.Height + (`$FormScale * 5)
-                Width    = `$FormScale * 50
+                Width    = `$FormScale * 45
                 Height   = `$FormScale * 21
                 Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
@@ -1164,7 +1167,7 @@ if ($MonitorMode) {
                                                             `$script:AutoChartXmlPath$JobId = "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
 
                                                             if ( `$script:AutoChartDataSourceCsv$JobId ) {
-                                                                `$ChartProperties = `$script:AutoChartDataSourceCsv$JobId[0] | ForEach-Object { `$_.psobject.properties.name }
+                                                                `$ChartProperties = `$script:AutoChartDataSourceCsv$JobId[0] | Get-member -MemberType 'NoteProperty' | Select-Object -ExpandProperty 'Name'
                                                                 #`$ChartProperties = `$ChartProperties | Where-Object { `$_ -ne '' -and `$_ -ne `$null -and `$_ -notlike "__*" -and `$_ -notmatch 'ComputerName' -and `$_ -notmatch 'RunSpaceID' } | Out-GridView -Title 'Select Properties to Generate Charts' -PassThru | Sort-Object
 
                                                                 `$ChartProperties = `$ChartProperties | Where-Object { `$_ -ne '' -and `$_ -ne `$null -and `$_ -notlike "__*" -and `$_ -notmatch 'ComputerName' -and `$_ -notmatch 'RunSpaceID' } | Sort-Object
@@ -1306,13 +1309,12 @@ if ($MonitorMode) {
                                         `$script:AutoChartsForm.Add_Shown({`$script:AutoChartsForm.Activate()})
                     }
                     else {
-                        [System.Windows.Forms.MessageBox]::Show("There is no XML data available.",'PoSh-EasyWin - Shell')
+                        [System.Windows.Forms.MessageBox]::Show("There is no XML data available.",'PoSh-EasyWin - Console')
                     }
                     Remove-Variable -Name JobXMLResults$JobId -Scope script
                     [System.GC]::Collect()
                 }
             }
-
 
             `$script:Section3MonitorJobDetailsButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 text     = 'Status'
@@ -2104,6 +2106,7 @@ if ($DisableReRun) {
                 `$script:Section3MonitorJobTransparentLabel$JobId.ForeColor = 'Black'
                 `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
                 `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
+                `$script:Section3MonitorJobViewHTMLButton$JobId.BackColor = 'LightGreen'
                 if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightCoral' }
                 else { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightGreen' }
                 `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'LightGreen'
@@ -2225,7 +2228,60 @@ if ($DisableReRun) {
         if ($SMITH) {
             if ($SmithFlag -ne 'RetrieveFile' -and $SmithFlag -ne 'RetrieveADS') {
             Invoke-Expression @"
-            `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
+            if ((Test-Path -Path "`$Dependencies\Modules\PSWriteHTML") -and (Get-Content "`$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
+                `$script:Section3MonitorJobViewButton$JobId.Width = `$FormScale * 60
+                `$script:Section3MonitorJobViewButton$JobId.Text = 'GridView'
+    
+    
+                `$script:Section3MonitorJobViewHTMLButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                    text      = 'HTML'
+                    Left      = `$script:Section3MonitorJobViewButton$JobId.Left + `$script:Section3MonitorJobViewButton$JobId.Width + (`$FormScale * 5)
+                    Top       = `$script:Section3MonitorJobViewButton$JobId.Top
+                    Width     = `$FormScale * 45
+                    Height    = `$FormScale * 21
+                    Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                    Add_click = {
+                        if (`$This.BackColor -ne 'LightGray') {
+                            `$This.BackColor = 'LightGray'
+                        }
+                        if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv")) {
+                            `$script:JobCSVResults$JobId = Import-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv"
+                            if (`$script:JobCSVResults$JobId) {
+                                `$script:JobCSVResults$JobId  | Out-HTMLView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
+                            }
+                            else {
+                                [System.Windows.Forms.MessageBox]::Show("There are no results avaiable.",'PoSh-EasyWin - View Progress')
+                            }
+                        }
+                        else {
+                            `$script:CurrentJobsWithComputerName$JobId = @()
+                            foreach (`$Job in `$script:CurrentJobs$JobId) {
+                                `$script:CurrentJobsWithComputerName$JobId += `$Job | Receive-Job -Keep | Select-Object @{n='ComputerName';e={"`$((`$Job.Name -split ' ')[-1])"}},* -ErrorAction SilentlyContinue
+                            }
+                            if (`$script:CurrentJobsWithComputerName$JobId.count -ge 1) {
+                                `$script:CurrentJobsWithComputerName$JobId | Out-HTMLView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
+                            }
+                            else {
+                                [System.Windows.Forms.MessageBox]::Show("`$(`$script:JobName$JobId)`n`nThere are currently no results available.",'PoSh-EasyWin - View Progress')
+                            }
+                        }
+                        Remove-Variable -Name JobCSVResults$JobId -Scope script
+                        Remove-Variable -Name CurrentJobsWithComputerName$JobId -Scope script
+                        [System.GC]::Collect()
+                    }
+                }
+                `$script:Section3MonitorJobPanel$JobId.Controls.Add(`$script:Section3MonitorJobViewHTMLButton$JobId)
+                CommonButtonSettings -Button `$script:Section3MonitorJobViewHTMLButton$JobId
+    
+                `$script:Section3MonitorJobViewButton$JobId.Width   = `$FormScale * 60
+                `$script:Section3MonitorJobDetailsButton$JobId.Left = `$script:Section3MonitorJobViewHTMLButton$JobId.Left + `$script:Section3MonitorJobViewHTMLButton$JobId.Width + (`$FormScale * 5)
+                `$script:Section3MonitorJobCommandButton$JobId.Left = `$script:Section3MonitorJobDetailsButton$JobId.Left
+                `$script:Section3MonitorJobRemoveButton$JobId.Left  = `$script:Section3MonitorJobDetailsButton$JobId.Left + `$script:Section3MonitorJobDetailsButton$JobId.Width + (`$FormScale * 5)
+                `$script:Section3MonitorJobOptionsButton$JobId.Left = `$script:Section3MonitorJobRemoveButton$JobId.Left    
+                `$script:Section3MonitorJobKeepDataCheckbox$JobId.Left   = `$script:Section3MonitorJobRemoveButton$JobId.Left + `$script:Section3MonitorJobRemoveButton$JobId.Width + (`$FormScale * 5)
+                `$script:Section3MonitorJobContinuousCheckbox$JobId.Left = `$script:Section3MonitorJobKeepDataCheckbox$JobId.Left
+                `$script:Section3MonitorJobNotifyCheckbox$JobId.Left     = `$script:Section3MonitorJobKeepDataCheckbox$JobId.Left
+            }
 "@
             }
 
@@ -2266,7 +2322,7 @@ if ($DisableReRun) {
                             `$script:CurrentJobsWithComputerName$JobId | Select-Object * | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
                         }
                         else {
-                            `$script:Section3MonitorJobShellButton$JobId.Text = 'Shell'
+                            `$script:Section3MonitorJobShellButton$JobId.Text = 'Console'
                             #[System.Windows.Forms.MessageBox]::Show("The Feature is disabled by default as it can be resource intensive. To enable, checkbox the 'Save XML Data' within the top center Options tab.",'PoSh-EasyWin')
                         }
 
@@ -2285,6 +2341,8 @@ if ($DisableReRun) {
                         if ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 ) {
                             `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
                             `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
+                            `$script:Section3MonitorJobViewHTMLButton$JobId.BackColor = 'LightGreen'
+
                             if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightCoral' }
                             else { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightGreen' }
                             `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'LightGreen'
@@ -2292,6 +2350,7 @@ if ($DisableReRun) {
                         else {
                             `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightCoral'
                             `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightCoral'
+                            `$script:Section3MonitorJobViewHTMLButton$JobId.BackColor = 'LightCoral'
                             `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightCoral'
                             `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'LightCoral'
                         }
@@ -2374,9 +2433,13 @@ if ($DisableReRun) {
                         `$script:Section3MonitorJobLabel$JobId.text = "`$(`$script:JobStartTime$JobId)`n   `$(`$((New-TimeSpan -Start (`$script:JobStartTime$JobId)).ToString()))"
                         `$script:Section3MonitorJobTransparentLabel$JobId.Text = "Endpoint Count: [`$(`$script:JobsNotRunning$JobId)/`$script:JobsStartedCount$JobId] -- TIMED OUT `n`$script:JobName$JobId"
         
-                        `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
+                        `$script:Section3MonitorJobViewButton$JobId.Text = 'GridView'
+                        `$script:Section3MonitorJobViewHTMLButton$JobId.Text = 'HTML'
+
                         `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'Gold' #'Orange' #'LightCoral'
                         `$script:Section3MonitorJobViewButton$JobId.BackColor = 'Gold' #'Orange'
+                        `$script:Section3MonitorJobViewHTMLButton$JobId.BackColor = 'Gold' #'Orange'
+
                         `$script:Section3MonitorJobShellButton$JobId.BackColor = 'Gold' #'Orange'
                         `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'Gold' #'Orange'
 
@@ -2430,6 +2493,8 @@ if ($DisableReRun) {
                     `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
                     `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
                     `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
+                    `$script:Section3MonitorJobViewHTMLButton$JobId.BackColor = 'LightGreen'
+                    
                     if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightCoral' }
                     else { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightGreen' }
                     `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'LightGreen'
@@ -2475,6 +2540,7 @@ if ($DisableReRun) {
                         `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightCoral'
                         `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
                         `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
+                        `$script:Section3MonitorJobViewHTMLButton$JobId.BackColor = 'LightGreen'
                         if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightCoral' }
                         else { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightGreen' }
                         `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'LightGreen'

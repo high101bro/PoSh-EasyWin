@@ -26,27 +26,36 @@ $PSWriteHTMLForm = New-Object System.Windows.Forms.Form -Property @{
 }
 
 
-$PSWriteHTMLIndividualWebPagesCheckbox = New-Object -TypeName System.Windows.Forms.CheckBox -Property @{
-    Text    = "Create Individual HTML Pages"
+$script:PSWriteHTMLIndividualWebPagesCheckbox = New-Object -TypeName System.Windows.Forms.CheckBox -Property @{
+    Text    = "Display Results In Individual Browser Tabs"
     Left    = $FormScale * 5
     Top     = $FormScale * 5
     Width   = $FormScale * 270
     Height  = $FormScale * 22
     Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Checked = $true
-    Enabled = $true
+    Add_click = {
+        if ( $this.checked ) {
+            [System.Windows.Forms.MessageBox]::Show("Switching to Monitor Jobs mode. Data will be collected separately as jobs. Results will be displayed in multiple browser tabs.",'PoSh-EasyWin - Individual Tabs','Ok',"Info")
+            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem = 'Monitor Jobs'
+        }
+        else { 
+            [System.Windows.Forms.MessageBox]::Show("Switching to Session Based mode. Please be patient as PoSh-EasyWin gathers data - the tool may appear unresponsive as data is compiled. Results will be combined and displayed in one browser tab.",'PoSh-EasyWin - Combine Results','Ok',"Info")
+            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem = 'Session Based' 
+        }
+    }
 }
-$PSWriteHTMLForm.Controls.Add($PSWriteHTMLIndividualWebPagesCheckbox)    
+$PSWriteHTMLForm.Controls.Add($script:PSWriteHTMLIndividualWebPagesCheckbox)    
 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-    $PSWriteHTMLIndividualWebPagesCheckbox.enabled = $false
+    $script:PSWriteHTMLIndividualWebPagesCheckbox.enabled = $true
 }
 
 
 $PSWriteHTMLCheckedListBox = New-Object -TypeName System.Windows.Forms.CheckedListBox -Property @{
     Text   = "Select Data to Collect"
-    Left   = $PSWriteHTMLIndividualWebPagesCheckbox.Left
-    Top    = $PSWriteHTMLIndividualWebPagesCheckbox.Top + $PSWriteHTMLIndividualWebPagesCheckbox.Height + ($FormScale * 5)
-    Width  = $PSWriteHTMLIndividualWebPagesCheckbox.Width
+    Left   = $script:PSWriteHTMLIndividualWebPagesCheckbox.Left
+    Top    = $script:PSWriteHTMLIndividualWebPagesCheckbox.Top + $script:PSWriteHTMLIndividualWebPagesCheckbox.Height + ($FormScale * 5)
+    Width  = $script:PSWriteHTMLIndividualWebPagesCheckbox.Width
     Height = $FormScale * 150
     ScrollAlwaysVisible = $true
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -82,6 +91,13 @@ $PSWriteHTMLGraphDataButton = New-Object -TypeName System.Windows.Forms.Button -
     Height = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = { 
+        if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked) {
+            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem = 'Monitor Jobs'
+        }
+        else {
+            $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem = 'Session Based'
+        }
+
         if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
             Generate-ComputerList
             if ($script:ComputerList.count -eq 0) {
@@ -114,7 +130,24 @@ foreach($Checked in $PSWriteHTMLCheckedListBox.CheckedItems) {
 
 
 
-if ($script:PSWriteHTMLFormOkay -eq $true) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Network Connections') {
     $script:PSWriteHTMLSupportForm = New-Object System.Windows.Forms.Form -Property @{
         Text    = 'PoSh-EasyWin'
         Width   = $FormScale * 325
@@ -154,7 +187,9 @@ if ($script:PSWriteHTMLFormOkay -eq $true) {
                     ScrollAlwaysVisible = $true
                 }
                 $ConnectionFilterStates = @('Established','TimeWait','CloseWait','Listen','Bound','All Others: Closed,Closing,DeleteTCB,FinWait1,FinWait2,LastAck,SynReceived,SynSent')
-                foreach ( $State in $ConnectionFilterStates ) { $script:ConnectionStatesFilterCheckedListBox.Items.Add($State) }
+                        foreach ( $State in $ConnectionFilterStates ) { 
+                            $script:ConnectionStatesFilterCheckedListBox.Items.Add($State) 
+                        }                
                         if ((Test-Path "$PoShHome\Settings\Network Connection Selected States.txt")){
                             $ConnectionFilterStatesImportedChecked = Get-Content "$PoShHome\Settings\Network Connection Selected States.txt"
                             foreach ($State in $ConnectionFilterStatesImportedChecked) {
@@ -424,7 +459,7 @@ function script:Individual-PSWriteHTML {
 ####################################################################################################
 Generate-ComputerList
 
-if ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.count -gt 0) {
+if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -match 'Endpoint') {
 
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         $StatusListBox.Items.Clear()
@@ -448,17 +483,18 @@ if ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.cou
 }
 
 
-$script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
-$script:ProgressBarEndpointsProgressBar.Value = 0
-$script:ProgressBarEndpointsProgressBar.Refresh()
+if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList.count -gt 0) {
+    $script:ProgressBarEndpointsProgressBar.Maximum = $script:ComputerList.count
+    $script:ProgressBarEndpointsProgressBar.Value = 0
+    $script:ProgressBarEndpointsProgressBar.Refresh()
 
-$script:ProgressBarQueriesProgressBar.Maximum = $PSWriteHTMLCheckedItemsList.count
-$script:ProgressBarQueriesProgressBar.Value = 0
-$script:ProgressBarQueriesProgressBar.Refresh()
-$StatusListBox.Items.Clear()
-$StatusListBox.Items.Add("Using WinRM To Collect Data")
-Start-Sleep -Seconds 3
-
+    $script:ProgressBarQueriesProgressBar.Maximum = $PSWriteHTMLCheckedItemsList.count
+    $script:ProgressBarQueriesProgressBar.Value = 0
+    $script:ProgressBarQueriesProgressBar.Refresh()
+    $StatusListBox.Items.Clear()
+    $StatusListBox.Items.Add("Using WinRM To Collect Data")
+    Start-Sleep -Seconds 1
+}
 
 
 
@@ -466,7 +502,7 @@ Start-Sleep -Seconds 3
     ####################################################################################################
     # Process Data                                                                                     #
     ####################################################################################################
-    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Process Data') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Process Data') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Query: Endpoint Process Data")
 
@@ -528,11 +564,27 @@ Start-Sleep -Seconds 3
                 ###########
                 New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
                     New-HTMLSection -HeaderText 'Per Endpoint Summary' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                        $DataTableIDNetworkConnections = Get-Random -Minimum 100000 -Maximum 2000000
+                        New-HTMLPanel -Width 50% {
+                            #New-HTMLText `
+                            #    -FontSize 12 `
+                            #    -FontFamily 'Source Sans Pro' `
+                            #    -Color Red `
+                            #    -Text 'Some Text' `
+                            #    -Alignment left
+                            New-HTMLTable -DataTable ($ProcessesTotalMemoryPerHost `
+                                | Select-Object `
+                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
+                                Count, `
+                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
+                                -DataTableID $DataTableIDNetworkConnections
+                        }
                         New-HTMLPanel {
                             New-HTMLChart -Title 'Memory Used By Processes Per Endpoint' -Gradient -TitleAlignment left {
                                 Foreach ($Process in $ProcessesTotalMemoryPerHost){
                                     New-ChartPie -Name $Process.Name -Value $Process.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
                         }
                         New-HTMLPanel {
@@ -540,21 +592,27 @@ Start-Sleep -Seconds 3
                                 Foreach ($Process in $ProcessesCountPerHost){
                                     New-ChartPie -Name $Process.Name -Value $Process.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
                         }
                     }
+                    
                     New-HTMLSection -HeaderText 'Unique Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Unique Processes' {
-                                New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
-                                New-ChartLegend -LegendPosition topRight -Names 'Processes'
-                                foreach ($Process in $ProcessesUnique) {
-                                    New-ChartBar -Name $Process.name -Value $Process.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText '25 Least Common Unique Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                        $DataTableIDNetworkConnections = Get-Random -Minimum 100000 -Maximum 2000000
+                        New-HTMLPanel -Width 50% {
+                            #New-HTMLText `
+                            #    -FontSize 12 `
+                            #    -FontFamily 'Source Sans Pro' `
+                            #    -Color Red `
+                            #    -Text 'Some Text' `
+                            #    -Alignment left
+                            New-HTMLTable -DataTable ($ProcessesUnique `
+                                | Select-Object `
+                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
+                                Count, `
+                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
+                                -DataTableID $DataTableIDNetworkConnections
+                        }                        
                         New-HTMLPanel {
                             New-HTMLChart -Title '25 Least Common Unique Processes' {
                                 New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
@@ -562,10 +620,9 @@ Start-Sleep -Seconds 3
                                 foreach ($Process in $($ProcessesUnique | Select-Object -First 25)) {
                                     New-ChartBar -Name $Process.name -Value $Process.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
                         }
-                    }
-                    New-HTMLSection -HeaderText '25 Most Common Unique Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLPanel {
                             New-HTMLChart -Title '25 Most Common Unique Processes' {
                                 New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
@@ -573,6 +630,17 @@ Start-Sleep -Seconds 3
                                 foreach ($Process in $($ProcessesUnique | Select-Object -Last 25)) {
                                     New-ChartBar -Name $Process.name -Value $Process.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
+                            }
+                        }
+                        New-HTMLPanel {
+                            New-HTMLChart -Title 'Unique Processes' {
+                                New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
+                                New-ChartLegend -LegendPosition topRight -Names 'Processes'
+                                foreach ($Process in $ProcessesUnique) {
+                                    New-ChartBar -Name $Process.name -Value $Process.Count
+                                }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
                         }
                     }
@@ -1214,11 +1282,11 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
-                script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
-            }
-        }
+        # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+        #         script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
+        #     }
+        # }
     }
 
 
@@ -1265,7 +1333,7 @@ Start-Sleep -Seconds 3
     ####################################################################################################
     # Network Connections                                                                              #
     ####################################################################################################
-    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Network Connections') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $script:PSWriteHTMLSupportOkay -eq $true -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Network Connections') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Query: Endpoint Network Connections")
 
@@ -1316,167 +1384,26 @@ Start-Sleep -Seconds 3
                     }
                 }
                 ###########
-                New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
-
-                    New-HTMLSection -HeaderText 'Needs a Table Name' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-#                        #batman
-#                        New-HTMLTable -DataTable $NetworkConnectionsLocalPortsListening -DataTableID 'EndpointDataNetworkConnections'
-# Define data
-                        $DataTable = @(
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 1'
-                                Time  = 1
-                                Money = 5
-                                Taxes = 20
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 2'
-                                Time  = 3
-                                Money = 1
-                                Taxes = 5
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 3'
-                                Time  = 12
-                                Money = 5
-                                Taxes = 1
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 4'
-                                Time  = 1
-                                Money = 5
-                                Taxes = 20
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 5'
-                                Time  = 3
-                                Money = 1
-                                Taxes = 5
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 6'
-                                Time  = 12
-                                Money = 5
-                                Taxes = 1
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 7'
-                                Time  = 1
-                                Money = 5
-                                Taxes = 20
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 8'
-                                Time  = 3
-                                Money = 1
-                                Taxes = 5
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 9'
-                                Time  = 12
-                                Money = 5
-                                Taxes = 1
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 10'
-                                Time  = 1
-                                Money = 5
-                                Taxes = 20
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 11'
-                                Time  = 3
-                                Money = 1
-                                Taxes = 5
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 12'
-                                Time  = 12
-                                Money = 5
-                                Taxes = 1
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 13'
-                                Time  = 1
-                                Money = 5
-                                Taxes = 20
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 14'
-                                Time  = 3
-                                Money = 1
-                                Taxes = 5
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 15'
-                                Time  = 12
-                                Money = 5
-                                Taxes = 1
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 16'
-                                Time  = 1
-                                Money = 5
-                                Taxes = 20
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 17'
-                                Time  = 3
-                                Money = 1
-                                Taxes = 5
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 18'
-                                Time  = 12
-                                Money = 5
-                                Taxes = 1
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 19'
-                                Time  = 1
-                                Money = 5
-                                Taxes = 20
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 20'
-                                Time  = 3
-                                Money = 1
-                                Taxes = 5
-                            }
-                            [PSCustomObject] @{
-                                Name  = 'Test Data 21'
-                                Time  = 12
-                                Money = 5
-                                Taxes = 1
-                            }
-                        )
-
-                        # Define HTML
-                            New-HTMLTable -DataTable $DataTable -DataTableID 'NewIDtoSearchInChart'
-                            New-HTMLChart {
-                                New-ChartToolbar -Download
-                                foreach ($Object in $DataTable) {
-                                    New-ChartPie -Name $Object.Name -Value $Object.Time
-                                }
-                                # Define event
-                                New-ChartEvent -DataTableID 'NewIDtoSearchInChart' -ColumnID 0
-                            }
-
+                New-HTMLTab -Name 'Charts' -IconRegular chart-bar { 
+                    
+                    New-HTMLSection -HeaderText 'testing' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                        New-HTMLMap
                     }
                     New-HTMLSection -HeaderText 'IPv4 Listening Local Ports' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel -Width 25% {
+                        $DataTableIDNetworkConnections = Get-Random -Minimum 100000 -Maximum 2000000
+                        New-HTMLPanel -Width 50% {
+                            New-HTMLTable -DataTable ($NetworkConnectionsLocalPortsListening `
+                                | Select-Object Name, Count, `
+                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
+                                -DataTableID $DataTableIDNetworkConnections
+                        }
+                        New-HTMLPanel -Width 50% {
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
-                                    
-                                    #batman
-                                    #New-ChartToolbar -Download
-
                                     Foreach ($_ in ($NetworkConnectionsLocalPortsListening | Select-Object -First 10)){
                                         New-ChartPie -Name $_.Name -Value $_.Count
                                     }
-
-                                    #batman
-                                    New-ChartEvent -DataTableID 'EndpointDataNetworkConnections' -ColumnID 1
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                             New-HTMLSection  -Invisible {
@@ -1484,8 +1411,7 @@ Start-Sleep -Seconds 3
                                     Foreach ($_ in ($NetworkConnectionsLocalPortsListening | Select-Object -Last 10)){
                                         New-ChartPie -Name $_.Name -Value $_.Count
                                     }
-                                    #batman
-                                    New-ChartEvent -DataTableID 'EndpointDataNetworkConnections' -ColumnID 1
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                         }
@@ -1494,18 +1420,25 @@ Start-Sleep -Seconds 3
                                 Foreach ($_ in $NetworkConnectionsLocalPortsListening){
                                     New-ChartBar -Name $_.Name -Value $_.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
-                            #batman
-                            New-ChartEvent -DataTableID 'EndpointDataNetworkConnections' -ColumnID 1
                         }
                     }
                     New-HTMLSection -HeaderText 'IPv4 Established Connections Remote Ports' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel -Width 25% {
+                        $DataTableIDNetworkConnections = Get-Random -Minimum 100000 -Maximum 2000000
+                        New-HTMLPanel -Width 50% {
+                            New-HTMLTable -DataTable ($NetworkConnectionsRemotePortsEstablished `
+                                | Select-Object Name, Count, `
+                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
+                                -DataTableID $DataTableIDNetworkConnections
+                        }
+                        New-HTMLPanel -Width 50% {
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
                                     Foreach ($_ in ($NetworkConnectionsRemotePortsEstablished | Select-Object -First 10)){
                                         New-ChartPie -Name $_.Name -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                             New-HTMLSection  -Invisible {
@@ -1513,6 +1446,7 @@ Start-Sleep -Seconds 3
                                     Foreach ($_ in ($NetworkConnectionsRemotePortsEstablished | Select-Object -Last 10)){
                                         New-ChartPie -Name $_.Name -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                         }
@@ -1521,106 +1455,179 @@ Start-Sleep -Seconds 3
                                 Foreach ($_ in $NetworkConnectionsRemotePortsEstablished){
                                     New-ChartBar -Name $_.Name -Value $_.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
                         }
                     }
                     New-HTMLSection -HeaderText 'Connections To Local IP Subnets (Unique)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel -Width 25% {
+                        $DataTableIDNetworkConnections = Get-Random -Minimum 100000 -Maximum 2000000
+                        New-HTMLPanel -Width 50% {
+                            New-HTMLText `
+                                -FontSize 12 `
+                                -FontFamily 'Source Sans Pro' `
+                                -Color Red `
+                                -Text 'Note: Use comas instead of periods in IP Addresses: ex: 10,0,0,1' `
+                                -Alignment left
+                            New-HTMLTable -DataTable ($NetworkConnectionsRemoteLocalIPsUnique `
+                                | Select-Object `
+                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
+                                Count, `
+                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
+                                -DataTableID $DataTableIDNetworkConnections
+                        }
+                        New-HTMLPanel -Width 50% {
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
                                     Foreach ($_ in ($NetworkConnectionsRemoteLocalIPsUnique | Select-Object -First 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
+                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
                                     Foreach ($_ in ($NetworkConnectionsRemoteLocalIPsUnique | Select-Object -Last 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
+                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                         }
                         New-HTMLPanel {
                             New-HTMLChart -Title 'Connections To Local IP Subnets (Unique)' -Gradient -TitleAlignment left {
                                 Foreach ($_ in $NetworkConnectionsRemoteLocalIPsUnique){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
+                                    New-ChartBar -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
                         }
                     }
                     New-HTMLSection -HeaderText 'Connections To Local IP Subnets (Sum)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel -Width 25% {
+                        $DataTableIDNetworkConnections = Get-Random -Minimum 100000 -Maximum 2000000
+                        New-HTMLPanel -Width 50% {
+                            New-HTMLText `
+                                -FontSize 12 `
+                                -FontFamily 'Source Sans Pro' `
+                                -Color Red `
+                                -Text 'Note: Use comas instead of periods in IP Addresses: ex: 10,0,0,1' `
+                                -Alignment left
+                            New-HTMLTable -DataTable ($NetworkConnectionsRemoteLocalIPsSum `
+                                | Select-Object `
+                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
+                                Count, `
+                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
+                                -DataTableID $DataTableIDNetworkConnections
+                        }
+                        New-HTMLPanel -Width 50% {
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
                                     Foreach ($_ in ($NetworkConnectionsRemoteLocalIPsSum | Select-Object -First 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
+                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
                                     Foreach ($_ in ($NetworkConnectionsRemoteLocalIPsSum | Select-Object -Last 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
+                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                         }
                         New-HTMLPanel {
                             New-HTMLChart -Title 'Connections To Local IP Subnets (Sum)' -Gradient -TitleAlignment left {
                                 Foreach ($_ in $NetworkConnectionsRemoteLocalIPsSum){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
+                                    New-ChartBar -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
                         }
                     }
                     New-HTMLSection -HeaderText 'Connections To Public IP Space (Unique)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel -Width 25% {
+                        $DataTableIDNetworkConnections = Get-Random -Minimum 100000 -Maximum 2000000
+                        New-HTMLPanel -Width 50% {
+                            New-HTMLText `
+                                -FontSize 12 `
+                                -FontFamily 'Source Sans Pro' `
+                                -Color Red `
+                                -Text 'Note: Use comas instead of periods in IP Addresses: ex: 10,0,0,1' `
+                                -Alignment left
+                            New-HTMLTable -DataTable ($NetworkConnectionsRemotePublicIPsUnique `
+                                | Select-Object `
+                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
+                                Count, `
+                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
+                                -DataTableID $DataTableIDNetworkConnections
+                        }
+                        New-HTMLPanel -Width 50% {
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
                                     Foreach ($_ in ($NetworkConnectionsRemotePublicIPsUnique | Select-Object -First 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
+                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
                                     Foreach ($_ in ($NetworkConnectionsRemotePublicIPsUnique | Select-Object -Last 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
+                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                         }
                         New-HTMLPanel {
                             New-HTMLChart -Title 'Connections To Public IP Space (Unique)' -Gradient -TitleAlignment left {
                                 Foreach ($_ in $NetworkConnectionsRemotePublicIPsUnique){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
+                                    New-ChartBar -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
                         }
                     }
                     New-HTMLSection -HeaderText 'Connections To Remote IPs (Sum)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel -Width 25% {
+                        $DataTableIDNetworkConnections = Get-Random -Minimum 100000 -Maximum 2000000
+                        New-HTMLPanel -Width 50% {
+                            New-HTMLText `
+                                -FontSize 12 `
+                                -FontFamily 'Source Sans Pro' `
+                                -Color Red `
+                                -Text 'Note: Use comas instead of periods in IP Addresses: ex: 10,0,0,1' `
+                                -Alignment left
+                            New-HTMLTable -DataTable ($NetworkConnectionsRemotePublicIPsSum `
+                                | Select-Object `
+                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
+                                Count, `
+                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
+                                -DataTableID $DataTableIDNetworkConnections
+                        }
+                        New-HTMLPanel -Width 50% {
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
                                     Foreach ($_ in ($NetworkConnectionsRemotePublicIPsSum | Select-Object -First 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
+                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                             New-HTMLSection  -Invisible {
                                 New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
                                     Foreach ($_ in ($NetworkConnectionsRemotePublicIPsSum | Select-Object -Last 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
+                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                     }
+                                    New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                                 }
                             }
                         }
                         New-HTMLPanel {
                             New-HTMLChart -Title 'Connections To Remote IPs (Sum)' -Gradient -TitleAlignment left {
                                 Foreach ($_ in $NetworkConnectionsRemotePublicIPsSum){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
+                                    New-ChartBar -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
                                 }
+                                New-ChartEvent -DataTableID $DataTableIDNetworkConnections -ColumnID 0
                             }
                         }
                     }
@@ -1673,18 +1680,17 @@ Start-Sleep -Seconds 3
                                     -ColorHighlight Orange `
                                     -ColorHover Orange
         
-                                    #batman
                                 if ($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.checked -and $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.checked){
-                                    $filter = {$_.RemoteAddress -notin $script:PoShEasyWinIPAddress -and ($_.LocalAddress -notmatch ':' -or $_.RemoteAddress -notmatch ':')}
+                                    $filter = { $_.RemoteAddress -notin $script:PoShEasyWinIPAddress -and ($_.LocalAddress -notmatch ':' -or $_.RemoteAddress -notmatch ':') }
                                 }
-                                elseif ($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.checked){
-                                    $filter = {$_.RemoteAddress -notin $script:PoShEasyWinIPAddress}
+                                elseif ( $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.checked ) {
+                                    $filter = { $_.RemoteAddress -notin $script:PoShEasyWinIPAddress }
                                 }
                                 elseif ($script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.checked) {
-                                    $filter = {$_.LocalAddress -notmatch ':' -or $_.RemoteAddress -notmatch ':'}
+                                    $filter = { $_.LocalAddress -notmatch ':' -or $_.RemoteAddress -notmatch ':' }
                                 }
                                 else {
-                                    $filter = {$_.LocalAddress -notmatch $false}
+                                    $filter = { $_.LocalAddress -notmatch $false }
                                 }
 
                                 $script:LocalAddressList = $script:EndpointDataNetworkConnections | Select-Object -ExpandProperty LocalAddress | Sort-Object -Unique
@@ -1700,65 +1706,66 @@ Start-Sleep -Seconds 3
                                 #        }
                                 #    }
                                 #}
+                                if ($script:PSWriteHTMLResolveDNSCheckbox.checked) {
 
-                                                    #####################################
-                                                    # Hashtable of DNS Results // START #
-                                                    #####################################
-                                                    $StatusListBox.Items.Clear()
-                                                    $StatusListBox.Items.Add("Conducting DNS Resolution - In Progress")
-                                                    $PoShEasyWin.Refresh()
-                                        
-                                                    $script:DNSResolvedList = @{}
-                                                    $RemoteAddresses = ($script:EndpointDataNetworkConnections).RemoteAddress | `
-                                                        Sort-Object -Unique `
-                                                        | Where-Object {$_ -ne '::' -and $_ -ne '::1' -and $_ -ne '0.0.0.0' -and $_ -ne '127.0.0.1'}
-                                                    Get-Job  -Name "nslookup:*" | Remove-Job -Force
-                                                    foreach ( $RemoteIP in $RemoteAddresses ) {
-                                                        if ($script:DNSResolvedList.ContainsKey($RemoteIP)) {
-                                                            $null
-                                                        }
-                                                        else {
-                                                            Start-Job -Name "nslookup:$RemoteIP" `
-                                                            -ScriptBlock {
-                                                                param($RemoteIP)
-                                                                return @{$RemoteIP = $((Resolve-DnsName $RemoteIP -QuickTimeout -ErrorAction SilentlyContinue).NameHost)}
-                                                            } -ArgumentList @($RemoteIP,$null)
-                                                        }
-                                                    }
+                                        #####################################
+                                        # Hashtable of DNS Results // START #
+                                        #####################################
+                                        $StatusListBox.Items.Clear()
+                                        $StatusListBox.Items.Add("Conducting DNS Resolution - In Progress")
+                                        $PoShEasyWin.Refresh()
+                            
+                                        $script:DNSResolvedList = @{}
+                                        $RemoteAddresses = ($script:EndpointDataNetworkConnections).RemoteAddress | `
+                                            Sort-Object -Unique `
+                                            | Where-Object {$_ -ne '::' -and $_ -ne '::1' -and $_ -ne '0.0.0.0' -and $_ -ne '127.0.0.1'}
+                                        Get-Job  -Name "nslookup:*" | Remove-Job -Force
+                                        foreach ( $RemoteIP in $RemoteAddresses ) {
+                                            if ($script:DNSResolvedList.ContainsKey($RemoteIP)) {
+                                                $null
+                                            }
+                                            else {
+                                                Start-Job -Name "nslookup:$RemoteIP" `
+                                                -ScriptBlock {
+                                                    param($RemoteIP)
+                                                    return @{$RemoteIP = $((Resolve-DnsName $RemoteIP -QuickTimeout -ErrorAction SilentlyContinue).NameHost)}
+                                                } -ArgumentList @($RemoteIP,$null)
+                                            }
+                                        }
 
-                                                    $script:ProgressBarQueriesProgressBar.Value = 0
-                                                    $script:ProgressBarQueriesProgressBar.Maximum = (Get-Job -Name "nslookup:*").count
-                                                    while ((Get-Job -Name "nslookup:*").State -match 'Running'){
-                                                        $Jobs = Get-Job -Name "nslookup:*"
-                                                        "$($Jobs.count) / $(($jobs.State -match 'Complete').count)"
-                                                        if ($($Jobs.count) -eq $(($jobs.State -match 'Complete').count)){break}
+                                        $script:ProgressBarQueriesProgressBar.Value = 0
+                                        $script:ProgressBarQueriesProgressBar.Maximum = (Get-Job -Name "nslookup:*").count
+                                        while ((Get-Job -Name "nslookup:*").State -match 'Running'){
+                                            $Jobs = Get-Job -Name "nslookup:*"
+                                            "$($Jobs.count) / $(($jobs.State -match 'Complete').count)"
+                                            if ($($Jobs.count) -eq $(($jobs.State -match 'Complete').count)){break}
 
-                                                        $script:ProgressBarQueriesProgressBar.Value = ($jobs.State -match 'Complete').count
-                                                        $script:ProgressBarQueriesProgressBar.Refresh()
-                                                        Start-Sleep -Milliseconds 250
-                                                    }
-                                                    $script:ProgressBarQueriesProgressBar.Maximum = 1
-                                                    $script:ProgressBarQueriesProgressBar.Value = 1
-                                                    $StatusListBox.Items.Clear()
-                                                    $StatusListBox.Items.Add("Conducting DNS Resolution - Completed")
-                                                    $PoShEasyWin.Refresh()
+                                            $script:ProgressBarQueriesProgressBar.Value = ($jobs.State -match 'Complete').count
+                                            $script:ProgressBarQueriesProgressBar.Refresh()
+                                            Start-Sleep -Milliseconds 250
+                                        }
+                                        $script:ProgressBarQueriesProgressBar.Maximum = 1
+                                        $script:ProgressBarQueriesProgressBar.Value = 1
+                                        $StatusListBox.Items.Clear()
+                                        $StatusListBox.Items.Add("Conducting DNS Resolution - Completed")
+                                        $PoShEasyWin.Refresh()
 
-                                                    $UnresolvedCount = 0
-                                                    ForEach ($Job in (Get-Job -Name "nslookup:*")){
-                                                        $JobRecieved = $Job | Receive-Job
-                                                        if ($JobRecieved.Values -ne $null) {
-\                                                            $script:DNSResolvedList.add("$($JobRecieved.Keys)", "$($JobRecieved.Values)")
-                                                        }
-                                                        else {
-                                                            $UnresolvedCount += 1
-                                                            $script:DNSResolvedList.add("$($JobRecieved.Keys)", "Unresolved: $($UnresolvedCount)")
-                                                        }
-                                                    }
-                                                    Get-Job  -Name "nslookup:*" | Remove-Job
-                                                    ###################################
-                                                    # Hashtable of DNS Results // END #
-                                                    ###################################
-
+                                        $UnresolvedCount = 0
+                                        ForEach ($Job in (Get-Job -Name "nslookup:*")){
+                                            $JobRecieved = $Job | Receive-Job
+                                            if ($JobRecieved.Values -ne $null) {
+                                                $script:DNSResolvedList.add("$($JobRecieved.Keys)", "$($JobRecieved.Values)")
+                                            }
+                                            else {
+                                                $UnresolvedCount += 1
+                                                $script:DNSResolvedList.add("$($JobRecieved.Keys)", "Unresolved: $($UnresolvedCount)")
+                                            }
+                                        }
+                                        Get-Job  -Name "nslookup:*" | Remove-Job
+                                        ###################################
+                                        # Hashtable of DNS Results // END #
+                                        ###################################
+                                }
                                 #$DomainDNSHostnameList = @()
                                 #foreach ($Endpoint in $script:DNSResolvedList.Values) {
                                 #    $Endpoint = $Endpoint.split('.')[0]
@@ -1766,7 +1773,7 @@ Start-Sleep -Seconds 3
                                 #        $DomainDNSHostnameList += $Endpoint
                                 #    }
                                 #}
-                                #$DomainDNSHostnameList | ogv
+                                #$DomainDNSHostnameList
 
                                 
                                 $StatusListBox.Items.Clear()
@@ -2066,16 +2073,16 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
-                script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Start-PSWriteHTMLNetworkConnections }
-            }
-        }
+        # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+        #         script:Individual-PSWriteHTML -Title 'Network Connections' -Data { script:Start-PSWriteHTMLNetworkConnections }
+        #     }
+        # }
     }
    
 
 
-
+    
 
 
 
@@ -2123,7 +2130,7 @@ Start-Sleep -Seconds 3
     ####################################################################################################
     # Console Logons                                                                                   #
     ####################################################################################################
-    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Console Logons') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Console Logons') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Query: Endpoint Console Logons")
         
@@ -2354,11 +2361,11 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
-                script:Individual-PSWriteHTML -Title 'Console Logons' { script:Start-PSWriteHTMLConsoleLogons }
-            }
-        }        
+        # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+        #         script:Individual-PSWriteHTML -Title 'Console Logons' { script:Start-PSWriteHTMLConsoleLogons }
+        #     }
+        # }        
     }
 
 
@@ -2367,7 +2374,7 @@ Start-Sleep -Seconds 3
     ####################################################################################################
     # PowerShell Sessions                                                                              #
     ####################################################################################################
-    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint PowerShell Sessions') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint PowerShell Sessions') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Query: Endpoint PowerShell Sessions")
         
@@ -2637,12 +2644,38 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
-                script:Individual-PSWriteHTML -Title 'PowerShell Sessions' { script:Start-PSWriteHTMLPowerShellSessions }
-            }
-        } 
+        # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+        #         script:Individual-PSWriteHTML -Title 'PowerShell Sessions' { script:Start-PSWriteHTMLPowerShellSessions }
+        #     }
+        # } 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2655,7 +2688,7 @@ Start-Sleep -Seconds 3
     ####################################################################################################
     # SMB Server Connection                                                                            #
     ####################################################################################################
-    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint SMB Server Connections') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint SMB Server Connections') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Query: Endpoint Application Crashes (30 Days)")
         
@@ -2868,8 +2901,8 @@ Start-Sleep -Seconds 3
 #        $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-#        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-#           if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+#        if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+#           if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
 #                script:Individual-PSWriteHTML -Title 'xxxxxxxxxxxx' { script:Start-PSWriteHTMLxxxxxxxxxxxxxxxxxxx }        
 #           }
 #        }
@@ -2901,7 +2934,7 @@ Start-Sleep -Seconds 3
     ####################################################################################################
     # Application Crashes
     ####################################################################################################
-    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Application Crashes (30 Days)') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Application Crashes (30 Days)') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Query: Endpoint Application Crashes (30 Days)")
         
@@ -3147,11 +3180,11 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
-                script:Individual-PSWriteHTML -Title 'Application Crashes' { script:Start-PSWriteHTMLApplicationCrashes }
-            }
-        }
+        # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+        #         script:Individual-PSWriteHTML -Title 'Application Crashes' { script:Start-PSWriteHTMLApplicationCrashes }
+        #     }
+        # }
     }
 
 
@@ -3187,12 +3220,11 @@ Start-Sleep -Seconds 3
     ####################################################################################################
     # Logon Activity                                                                                   #
     ####################################################################################################
-    if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Logon Activity (30 Days)') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Logon Activity (30 Days)') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Query: Endpoint Logon Activity (30 Days)")
 
         function script:Start-PSWriteHTMLLogonActivity {
-
             $LogonActivityTimeStampDaySortDay   = $script:EndpointLogonActivity | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}} | Group-Object TimeStampDay | Sort-Object Name, Count
             $LogonActivityTimeStampDaySortCount = $script:EndpointLogonActivity | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}} | Group-Object TimeStampDay | Sort-Object Count, Name
             $LogonActivityLogonType             = $script:EndpointLogonActivity | Select-Object LogonType | Group-Object LogonType | Sort-Object Count, Name
@@ -3619,17 +3651,17 @@ Start-Sleep -Seconds 3
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
-                script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Start-PSWriteHTMLLogonActivity }
-            }
-        }
+        # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+        #         script:Individual-PSWriteHTML -Title 'Logon Activity' -Data { script:Start-PSWriteHTMLLogonActivity }
+        #     }
+        # }
     }    
 
 
 
 
-if ($PSWriteHTMLCheckedItemsList -match 'Endpoint') {
+if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -match 'Endpoint') {
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Completed: Individual Execution")
@@ -3676,7 +3708,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Endpoint') {
 ####################################################################################################
 Generate-ComputerList
 
-if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
+if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -match 'Active Directory'){
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Individual Exeuction")
@@ -3705,7 +3737,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
     # Active Directory Users                                                                           #
     ####################################################################################################
 
-    if ($PSWriteHTMLCheckedItemsList -contains 'Active Directory Users') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Active Directory Users') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Query: Active Directory Users Data")
 
@@ -4033,8 +4065,8 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+        if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+            if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
                 script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
             }
         }
@@ -4063,7 +4095,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 
-
+    
 
 
 
@@ -4072,7 +4104,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
     # Active Directory Computers                                                                       #
     ####################################################################################################
 
-    if ($PSWriteHTMLCheckedItemsList -contains 'Active Directory Computers') {
+    if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Active Directory Computers') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Query: Active Directory Computer Data")
 
@@ -4358,11 +4390,11 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
-                script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
-            }
-        }
+        # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
+        #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+        #         script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
+        #     }
+        # }
     }
 
 
@@ -4372,7 +4404,7 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
 
 
 
-if ($PSWriteHTMLCheckedItemsList -match 'Active Directory') {    
+if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -match 'Active Directory') {    
     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Completed: Individual Execution")    
@@ -4416,9 +4448,6 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory') {
 
 
 
-
-
-
 ####################################################################################################
 ####################################################################################################
 ##                                                                                                ##
@@ -4428,17 +4457,16 @@ if ($PSWriteHTMLCheckedItemsList -match 'Active Directory') {
 ####################################################################################################
 
 
-if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and (
-    ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -and $script:ComputerList.count -gt 0) -or 
-    ($PSWriteHTMLCheckedItemsList -match 'Active Directory') -and
-    $script:PSWriteHTMLSupportOkay -eq $true
-    )
-) {     
+if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and `
+    $script:PSWriteHTMLFormOkay -eq $true -and `
+    $script:ComputerList.count -gt 0 -and `
+    $script:PSWriteHTMLSupportOkay -eq $true -and `
+    ($PSWriteHTMLCheckedItemsList -match 'Endpoint' -or $PSWriteHTMLCheckedItemsList -match 'Active Directory')
+    ) {
     ##################################
     # Launches One Compiled Web Page #
     ##################################
-    if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $false -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-
+    if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $false -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
         New-HTML -TitleText 'PoSh-EasyWin' -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
             -FilePath "$($script:CollectionSavedDirectoryTextBox.Text)\PoSh-EasyWin $(Get-Date).html" -Show {
             
@@ -4450,25 +4478,26 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and (
 
             New-HTMLTabStyle -SlimTabs -Transition -LinearGradient -SelectorColor DarkBlue -SelectorColorTarget Blue -BorderRadius 25px -BorderBackgroundColor LightBlue
 
-            if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Process Data') {
+
+            if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Process Data') {
                 script:Start-PSWriteHTMLProcessData
-            }
-            if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Network Connections') {
+            } 
+            if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $script:PSWriteHTMLSupportOkay -eq $true -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Network Connections') {
                 script:Start-PSWriteHTMLNetworkConnections
             }
-            if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Console Logons') {
+            if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Console Logons') {
                 script:Start-PSWriteHTMLConsoleLogons
             }
-            if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint PowerShell Sessions') {
+            if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint PowerShell Sessions') {
                 script:Start-PSWriteHTMLPowerShellSessions
             } 
-            if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Logon Activity (30 Days)') {
+            if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Logon Activity (30 Days)') {
                 script:Start-PSWriteHTMLLogonActivity
             }
-            if ($PSWriteHTMLCheckedItemsList -contains 'Endpoint Application Crashes (30 Days)') {
+            if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Application Crashes (30 Days)') {
                 script:Start-PSWriteHTMLApplicationCrashes
             }
-            if ($PSWriteHTMLCheckedItemsList -match 'Active Directory'){
+            if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -match 'Active Directory'){
                 script:Start-PSWriteHTMLActiveDirectory
             }
 
@@ -4478,7 +4507,8 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and (
                     -FontSize 12 `
                     -FontFamily 'Source Sans Pro' `
                     -Color Black `
-                    -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided And done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.'
+                    -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided And done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.' `
+                    -Alignment left
                 New-HTMLText `
                     -Text "https://www.GitHub.com/high101bro/PoSh-EasyWin" `
                     -Color Blue `
@@ -4489,9 +4519,10 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and (
 }
 
 
-$script:ProgressBarQueriesProgressBar.Value = $script:ProgressBarQueriesProgressBar.Maximum
-$script:ProgressBarQueriesProgressBar.Refresh()
-
+if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList.count -gt 0) {
+    $script:ProgressBarQueriesProgressBar.Value = $script:ProgressBarQueriesProgressBar.Maximum
+    $script:ProgressBarQueriesProgressBar.Refresh()
+}
 
 if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
     Start-Sleep -Seconds 3

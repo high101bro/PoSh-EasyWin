@@ -1,7 +1,5 @@
 $EventLogWinRMRadioButtonAdd_Click = {
-    #if ($EventLogWinRMRadioButton.checked -eq $true {
-        $ExternalProgramsWinRMRadioButton.checked = $true
-    #}
+    $ExternalProgramsWinRMRadioButton.checked = $true
 }
 
 $EventLogWinRMRadioButtonAdd_MouseHover = {
