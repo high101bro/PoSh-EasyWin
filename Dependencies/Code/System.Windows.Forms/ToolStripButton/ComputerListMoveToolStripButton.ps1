@@ -83,12 +83,12 @@ $ComputerListMoveSelectedToolStripButtonAdd_Click = {
 
         if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
             Foreach($Computer in $script:ComputerTreeViewData) {
-                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
+                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address  -Metadata $Computer
             }
         }
         elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
             Foreach($Computer in $script:ComputerTreeViewData) {
-                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
+                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address  -Metadata $Computer
             }
         }
         Remove-EmptyCategory
@@ -122,12 +122,12 @@ $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
 
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
                 Foreach($Computer in $script:ComputerTreeViewData) {
-                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address  -Metadata $Computer
                 }
             }
             elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
                 Foreach($Computer in $script:ComputerTreeViewData) {
-                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address  -Metadata $Computer
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address  -Metadata $Computer
                 }
             }
 

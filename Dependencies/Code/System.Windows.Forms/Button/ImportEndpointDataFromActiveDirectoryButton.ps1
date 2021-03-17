@@ -9,24 +9,24 @@ function Import-EndpointsFromDomain {
         # Checks if data already exists
         if ($script:ComputerTreeViewData.Name -contains $Computer.Name) {
             Message-HostAlreadyExists -Message "Importing Hosts:  Warning" -Computer $Computer.Name -ResultsListBoxMessage
-            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address            
+            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address            
         }
         else {
             if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
                 if ($Computer.OperatingSystem -eq "") {
-                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer.Name -ToolTip $Computer.IPv4Address
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                 }
                 else {
-                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                 }
             }
             elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
                 $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
                 if ($Computer.CanonicalName -eq "") {
-                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer.Name -ToolTip $Computer.IPv4Address
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                 }
                 else {
-                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address
+                    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                 }
             }
             $script:ComputerTreeViewData += $Computer
@@ -34,19 +34,19 @@ function Import-EndpointsFromDomain {
     }
     if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
         Foreach($Computer in $script:ComputerTreeViewData) {
-            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address
+            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
         }
     }
     elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
         Foreach($Computer in $script:ComputerTreeViewData) {
-            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address
+            Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
         }
     }
     $script:ComputerTreeView.Nodes.Clear()
     Initialize-ComputerTreeNodes
     Update-TreeNodeComputerState -NoMessage
     Populate-ComputerTreeNodeDefaultData
-    Foreach($Computer in $script:ComputerTreeViewData) { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+    Foreach($Computer in $script:ComputerTreeViewData) { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
     $script:ComputerTreeView.ExpandAll()
     Save-HostData
 }
@@ -392,7 +392,7 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                                 Message-HostAlreadyExists -Message "Add Hostname/IP:  Error" -Computer $Computer -ResultsListBoxMessage
                             }
                             elseif ($ImportFromADAutoCheckBox.Checked) {
-                                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer #-ToolTip $Computer.IPv4Address
+                                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                                 $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
                                     Name            = $Computer
                                     OperatingSystem = 'Unknown'
@@ -402,7 +402,7 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                                 $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
                             }
                             else {
-                                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer #-ToolTip $Computer.IPv4Address
+                                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                                 $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
                                     Name            = $Computer
                                     OperatingSystem = 'Unknown'
@@ -416,7 +416,7 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                         }
                         elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
                             if ($ImportFromADAutoCheckBox.Checked) {
-                                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $CurrentDomain -Entry $Computer #-ToolTip $Computer.IPv4Address
+                                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $CurrentDomain -Entry $Computer -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                                 $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
                                     Name            = $Computer
                                     OperatingSystem = 'Unknown'
@@ -426,7 +426,7 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                                 $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
                             }
                             else {
-                                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $($ImportFromADManualEntryTextBox.Text) -Entry $Computer #-ToolTip $Computer.IPv4Address
+                                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $($ImportFromADManualEntryTextBox.Text) -Entry $Computer -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                                 $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
                                     Name            = $Computer
                                     OperatingSystem = 'Unknown'

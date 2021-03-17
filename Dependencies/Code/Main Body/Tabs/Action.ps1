@@ -258,17 +258,32 @@ $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
 $Column5DownPosition += $Column5DownPositionShift - $($FormScale * 2)
 
 
+$script:ComputerListUseDNSCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
+    Text    = "Use DNS Hostname"
+    Left    = $FormScale * $Column5RightPosition
+    Top     = $FormScale * $Column5DownPosition
+    Width   = $FormScale * $Column5BoxWidth
+    Height = $FormScale * $Column5BoxHeight
+    Checked = $true
+    #Add_MouseHover = $null
+}
+$Section3ActionTab.Controls.Add($script:ComputerListUseDNSCheckbox)
+
+$Column5DownPosition += $Column5DownPositionShift - $($FormScale * 2)
+
+
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListExecuteButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListExecuteButton.ps1"
 $script:ComputerListExecuteButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "Execute Script"
-    Left   = $FormScale * $Column5RightPosition
-    Top    = $FormScale * $Column5DownPosition
-    Width  = $FormScale * $Column5BoxWidth
-    Height = $FormScale * ($Column5BoxHeight * 2) - 10
-    Enabled   = $false
+    Text    = "Execute Script"
+    Left    = $FormScale * $Column5RightPosition
+    Top     = $FormScale * $Column5DownPosition
+    Width   = $FormScale * $Column5BoxWidth
+    Height  = $FormScale * ($Column5BoxHeight * 2) - 10
+    Enabled = $false
     Add_MouseHover = $script:ComputerListExecuteButtonAdd_MouseHover
 }
 ### $script:ComputerListExecuteButton.Add_Click($ExecuteScriptHandler) ### Is located lower in the script
 $Section3ActionTab.Controls.Add($script:ComputerListExecuteButton)
 CommonButtonSettings -Button $script:ComputerListExecuteButton
+

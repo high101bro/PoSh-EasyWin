@@ -558,17 +558,19 @@ $ResolutionCheckForm.topmost = $false
 $PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 #[System.Windows.Forms.Application]::EnableVisualStyles()
 $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
-    Text          = "PoSh-EasyWin   ($PoShEasyWinAccountLaunch)  [$InitialScriptLoadTime]"
-    StartPosition = "CenterScreen"
-    Width  = $FormScale * 1260
-    Height = $FormScale * 660
-    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
-    AutoScroll    = $True
+    Text    = "PoSh-EasyWin   ($PoShEasyWinAccountLaunch)  [$InitialScriptLoadTime]"
+    Width   = $FormScale * 1260
+    Height  = $FormScale * 660
+    Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+    TopMost = $true
+    AutoScroll  = $True
+    ControlBox  = $true
+    MaximizeBox = $false
+    MinimizeBox = $true
+    StartPosition  = "CenterScreen"
     FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
-    ControlBox      = $true
-    MaximizeBox     = $false
-    MinimizeBox     = $true
     Add_Load = {
+        $This.TopMost = $false
         if ((Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
             $SelectedCredentialName = Get-Content "$script:CredentialManagementPath\Specified Credentials.txt"
             $SelectedCredentialPath = Get-ChildItem "$script:CredentialManagementPath\$SelectedCredentialName"
@@ -945,8 +947,9 @@ Populate-ComputerTreeNodeDefaultData
 Save-HostData
 
 # This will load data that is located in the saved file
+#batman
 Foreach($Computer in $script:ComputerTreeViewData) {
-    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $Computer.IPv4Address -Metadata $Computer
+    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
 }
 $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
 
@@ -1758,6 +1761,7 @@ $ScriptBlockProgressBarInput = {
 
 if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
     Launch-ProgressBarForm -FormTitle "PoSh-EasyWin  [$InitialScriptLoadTime]" -ShowImage -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
+    $script:ProgressBarSelectionForm.Topmost = $false
 }
 
 

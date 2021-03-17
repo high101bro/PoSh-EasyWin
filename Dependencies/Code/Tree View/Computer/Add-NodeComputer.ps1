@@ -4,12 +4,20 @@ function Add-NodeComputer {
         $Category,
         $Entry,
         $Metadata,
+        $IPv4Address,
         $ToolTip
     )
     $newNode      = New-Object System.Windows.Forms.TreeNode -Property @{
         Name = "$Entry"
         Text = "$Entry"
     }
+
+    $MetadataIPv4Address = New-Object System.Windows.Forms.TreeNode -Property @{
+        Name = "IPv4Address"
+        Text = "$IPv4Address"
+    }
+    $newNode.Nodes.Add($MetadataIPv4Address)
+    
     <# #batman #TODO work on this
     $MetadataOperatingSystem = New-Object System.Windows.Forms.TreeNode -Property @{
         Name = $($Metadata.OperatingSystem)

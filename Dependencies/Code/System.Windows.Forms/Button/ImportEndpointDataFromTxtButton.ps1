@@ -36,7 +36,7 @@ $ImportEndpointDataFromTxtButtonAdd_Click = {
             Initialize-ComputerTreeNodes
             Update-TreeNodeComputerState -NoMessage
             Populate-ComputerTreeNodeDefaultData
-            Foreach($Computer in $script:ComputerTreeViewData) { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $Computer.IPv4Address }
+            Foreach($Computer in $script:ComputerTreeViewData) { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
             $script:ComputerTreeView.ExpandAll()
         }
     }
