@@ -46,6 +46,10 @@ function Search-ComputerTreeNode {
                     Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData MAC]') -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                     $SearchFound += $Computer
                 }
+                if (($SearchFound -inotcontains $Computer) -and ($Computer.PortScan -imatch $ComputerSearchText)) {
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Port Scan]') -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
+                    $SearchFound += $Computer
+                }
             }
         }
     }
@@ -90,6 +94,10 @@ function Search-ComputerTreeNode {
                 }
                 if (($SearchFound -inotcontains $Computer) -and ($Computer.MACAddress -imatch $ComputerSearchText)) {
                     Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [HostData MAC]') -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
+                    $SearchFound += $Computer
+                }
+                if (($SearchFound -inotcontains $Computer) -and ($Computer.PortScan -imatch $ComputerSearchText)) {
+                    Add-NodeComputer -RootNode $script:ComputerListSearch -Category $($ComputerSearchText + ' [Port Scan]') -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
                     $SearchFound += $Computer
                 }
             }
@@ -147,6 +155,7 @@ function Search-ComputerTreeNode {
                 }
             }
         }
+        # Manages TreeView Appearance when Search Results are found
         [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
         foreach ($root in $AllHostsNode) {
             if ($root.text -match 'Search Results'){

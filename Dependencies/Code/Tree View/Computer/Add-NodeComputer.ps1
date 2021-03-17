@@ -7,32 +7,29 @@ function Add-NodeComputer {
         $IPv4Address,
         $ToolTip
     )
-    $newNode      = New-Object System.Windows.Forms.TreeNode -Property @{
+    $newNode = New-Object System.Windows.Forms.TreeNode -Property @{
         Name = "$Entry"
         Text = "$Entry"
     }
 
-    $MetadataIPv4Address = New-Object System.Windows.Forms.TreeNode -Property @{
-        Name = "IPv4Address"
-        Text = "$IPv4Address"
-    }
-    $newNode.Nodes.Add($MetadataIPv4Address)
-    
-    <# #batman #TODO work on this
-    $MetadataOperatingSystem = New-Object System.Windows.Forms.TreeNode -Property @{
-        Name = $($Metadata.OperatingSystem)
-        Text = $($Metadata.OperatingSystem)
-        Tag  = $($Metadata.OperatingSystem)
-        ToolTipText = ""
-        NodeFont    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-        ForeColor   = [System.Drawing.Color]::FromArgb(0,0,0,0)
-    }
-    $newNode.Nodes.Add($MetadataOperatingSystem)
+   
+    #batman #TODO work on this
+    # $MetadataOperatingSystem = New-Object System.Windows.Forms.TreeNode -Property @{
+    #     Name = "OperatingSystem"
+    #     Text = $($Metadata.OperatingSystem)
+    #     Tag  = $($Metadata.OperatingSystem)
+    #     ToolTipText = ""
+    #     NodeFont    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+    #     ForeColor   = [System.Drawing.Color]::FromArgb(0,0,0,0)
+    # }
+    # $newNode.Nodes.Add($MetadataOperatingSystem)
 
     $MetadataIPv4Address = New-Object System.Windows.Forms.TreeNode -Property @{
-        Name = $Metadata.IPv4Address
+        Name = "IPv4Address"
         Text = $Metadata.IPv4Address
     }
+    $MetadataIPv4Address.Bounds.Height = 0
+    $MetadataIPv4Address.Bounds.Width = 0
     $newNode.Nodes.Add($MetadataIPv4Address)
 
     $MetadataIPv4Ports = New-Object System.Windows.Forms.TreeNode -Property @{
@@ -41,8 +38,8 @@ function Add-NodeComputer {
     }
     $newNode.Nodes.Add($MetadataIPv4Ports)
 
-    $MetadataIPv4Ports.Nodes.Add("[ Total Count: $($Metadata.'Port Scan'.split(',').Count) ]")
-    foreach ($PortScan in ($Metadata.'Port Scan'.split(','))) {
+    $MetadataIPv4Ports.Nodes.Add("[ Total Count: $($Metadata.PortScan.split(',').Count) ]")
+    foreach ($PortScan in ($Metadata.PortScan.split(','))) {
         $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
             Name = $PortScan
             Text = $PortScan
