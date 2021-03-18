@@ -19813,3 +19813,38 @@
 2021/03/18 01:06:27   - System.Xml.XmlElement
 2021/03/18 01:06:29  Credentials Used: administrator@mobilelab.home
 2021/03/18 01:06:29  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description,*
+2021/03/18 11:36:42  ====================================================================================================
+2021/03/18 11:36:42  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/18 11:36:45  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/18 11:36:46  ====================================================================================================
+2021/03/18 11:37:31   - 
+2021/03/18 11:37:34   - 
+2021/03/18 11:38:16  Credentials Used: administrator@mobilelab.home
+2021/03/18 11:38:17  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/18 11:38:17  Credentials Used: administrator@mobilelab.home
+2021/03/18 11:38:17  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/18 11:38:54  Credentials Used: administrator@mobilelab.home
+2021/03/18 11:38:58  Enter-PSSession -ComputerName WIN10-01
+2021/03/18 11:41:24  Credentials Used: administrator@mobilelab.home
+2021/03/18 11:41:27  Enter-PSSession -ComputerName DC01
+2021/03/18 11:41:38  Credentials Used: administrator@mobilelab.home
+2021/03/18 11:41:41  Enter-PSSession -ComputerName WIN10-01
+2021/03/18 11:42:07   - 
+2021/03/18 11:42:09   - 
+2021/03/18 11:43:20  Credentials Used: administrator@mobilelab.home
+2021/03/18 11:43:23  Enter-PSSession -ComputerName WIN10-02
+2021/03/18 11:44:28  ====================================================================================================
+2021/03/18 11:44:28  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/18 11:44:31  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/18 11:44:32  ====================================================================================================
+2021/03/18 12:20:58  ====================================================================================================
+2021/03/18 12:20:58  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/18 12:21:00  PoSh-EasyWin User Agreemennt NOT Accepted By: ZENBOOK\danie
+2021/03/18 12:21:48  ====================================================================================================
+2021/03/18 12:21:48  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/18 12:21:55  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/18 12:21:56  ====================================================================================================
+2021/03/18 12:22:47  ====================================================================================================
+2021/03/18 12:22:48  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/18 12:23:32  Credentials Used: administrator@mobilelab.home
+2021/03/18 12:23:35  Enter-PSSession -ComputerName WIN10-02
