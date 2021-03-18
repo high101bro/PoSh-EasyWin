@@ -153,8 +153,8 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                 elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Importing Hosts' }
                 elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Importing Hosts' }
 
-                Save-HostData
-
+                Save-ComputerTreeNodeHostData
+                
                 $ImportFromADFrom.Close()
             }
         }
@@ -250,8 +250,8 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                     | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive }"
                 }
-                Save-HostData
-
+                Save-ComputerTreeNodeHostData
+            
                 $ImportFromADFrom.Close()
             }
         }

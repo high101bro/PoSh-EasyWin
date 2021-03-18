@@ -182,7 +182,7 @@ $ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckB
 }
 $Section3ActionTab.Controls.Add($ComputerListProvideCredentialsCheckBox)
 
-$Column5DownPosition += $Column5DownPositionShift + 2
+$Column5DownPosition += $Column5DownPositionShift
 
 
 $script:ComputerListUseDNSCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
@@ -190,7 +190,7 @@ $script:ComputerListUseDNSCheckbox = New-Object System.Windows.Forms.Checkbox -P
     Left    = $FormScale * $Column5RightPosition
     Top     = $FormScale * $Column5DownPosition
     Width   = $FormScale * $Column5BoxWidth
-    Height  = $FormScale * $Column5BoxHeight
+    Height  = $FormScale * $Column5BoxHeight - 5
     Checked = $true
     #Add_MouseHover = $null
 }

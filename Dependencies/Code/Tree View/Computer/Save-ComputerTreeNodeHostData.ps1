@@ -10,7 +10,6 @@ Function Save-ComputerTreeNodeHostData {
         $ComputerTreeNodeSaveDataTemp = New-Object PSObject -Property @{ Name = $Computer.Name}
         $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name OperatingSystem -Value $Computer.OperatingSystem -Force
         $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name CanonicalName   -Value $Computer.CanonicalName -Force
-
         if ($SaveScan){
             # If the node is selected, it will save the values you enter
             if ($Computer.Name -in $Endpoints) {

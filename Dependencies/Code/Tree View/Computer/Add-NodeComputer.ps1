@@ -3,6 +3,7 @@ function Add-NodeComputer {
         $RootNode,
         $Category,
         $Entry,
+        [switch]$DoNotPopulateMetadata,
         $Metadata,
         $IPv4Address,
         $ToolTip
@@ -24,27 +25,29 @@ function Add-NodeComputer {
     # }
     # $newNode.Nodes.Add($MetadataOperatingSystem)
 
-    $MetadataIPv4Address = New-Object System.Windows.Forms.TreeNode -Property @{
-        Name = "IPv4Address"
-        Text = $Metadata.IPv4Address
-    }
-    $MetadataIPv4Address.Bounds.Height = 0
-    $MetadataIPv4Address.Bounds.Width = 0
-    $newNode.Nodes.Add($MetadataIPv4Address)
-
-    $MetadataIPv4Ports = New-Object System.Windows.Forms.TreeNode -Property @{
-        Name = 'Port Scan'
-        Text = 'Port Scan'
-    }
-    $newNode.Nodes.Add($MetadataIPv4Ports)
-
-    $MetadataIPv4Ports.Nodes.Add("[ Total Count: $($Metadata.PortScan.split(',').Count) ]")
-    foreach ($PortScan in ($Metadata.PortScan.split(','))) {
-        $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
-            Name = $PortScan
-            Text = $PortScan
+    if (-not $DoNotPopulateMetadata) {
+        $MetadataIPv4Address = New-Object System.Windows.Forms.TreeNode -Property @{
+            Name = "IPv4Address"
+            Text = $Metadata.IPv4Address
         }
-        $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)
+        $MetadataIPv4Address.Bounds.Height = 0
+        $MetadataIPv4Address.Bounds.Width = 0
+        $newNode.Nodes.Add($MetadataIPv4Address)
+
+        $MetadataIPv4Ports = New-Object System.Windows.Forms.TreeNode -Property @{
+            Name = 'Port Scan'
+            Text = 'Port Scan'
+        }
+        $newNode.Nodes.Add($MetadataIPv4Ports)
+
+        $MetadataIPv4Ports.Nodes.Add("[ Total Count: $($Metadata.PortScan.split(',').Count) ]")
+        foreach ($PortScan in ($Metadata.PortScan.split(','))) {
+            $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
+                Name = $PortScan
+                Text = $PortScan
+            }
+            $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)
+        }
     }
 
     if ($ToolTip) {
@@ -53,7 +56,7 @@ function Add-NodeComputer {
     else {
         $newNode.ToolTipText  = "No Data Available"
     }
-#>
+
     If ($RootNode.Nodes.Tag -contains $Category) {
         $EndpointNode = $RootNode.Nodes | Where-Object {$_.Tag -eq $Category}
     }

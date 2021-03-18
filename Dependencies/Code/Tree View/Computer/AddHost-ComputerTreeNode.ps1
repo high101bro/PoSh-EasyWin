@@ -36,7 +36,7 @@ function AddHost-ComputerTreeNode {
         $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
         $script:ComputerTreeView.ExpandAll()
         $ComputerTreeNodePopup.close()
-        Save-HostData
+        Save-ComputerTreeNodeHostData
         Update-TreeNodeComputerState -NoMessage
     }
 }

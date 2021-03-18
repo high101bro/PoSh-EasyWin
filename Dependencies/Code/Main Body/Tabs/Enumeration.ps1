@@ -519,7 +519,7 @@ $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.But
         }
         $script:ComputerTreeView.ExpandAll()
         Populate-ComputerTreeNodeDefaultData
-        Save-HostData
+        Save-ComputerTreeNodeHostData
     }
 }
 $Section1EnumerationTab.Controls.Add($EnumerationComputerListBoxAddToListButton)

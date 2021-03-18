@@ -19,24 +19,24 @@ $EnumerationPortScanExecutionButtonAdd_Click = {
         $ResultsListBox.Items.Clear()
         if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked){
             Conduct-PortScan `
-            -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
-            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
-            -EndpointList `
-            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
-            -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
-            -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
+                -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
+                -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
+                -EndpointList `
+                -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
+                -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
+                -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
         }
         else {
             Conduct-PortScan `
-            -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
-            -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
-            -SpecificIPsToScan $EnumerationPortScanSpecificIPTextbox.Text `
-            -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
-            -Network $EnumerationPortScanIPRangeNetworkTextbox.Text `
-            -FirstIP $EnumerationPortScanIPRangeFirstTextbox.Text `
-            -LastIP $EnumerationPortScanIPRangeLastTextbox.Text `
-            -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
-            -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
+                -Timeout_ms $EnumerationPortScanTimeoutTextbox.Text `
+                -TestWithICMPFirst $EnumerationPortScanTestICMPFirstCheckBox.Checked `
+                -SpecificIPsToScan $EnumerationPortScanSpecificIPTextbox.Text `
+                -SpecificPortsToScan $EnumerationPortScanSpecificPortsTextbox.Text `
+                -Network $EnumerationPortScanIPRangeNetworkTextbox.Text `
+                -FirstIP $EnumerationPortScanIPRangeFirstTextbox.Text `
+                -LastIP $EnumerationPortScanIPRangeLastTextbox.Text `
+                -FirstPort $EnumerationPortScanPortRangeFirstTextbox.Text `
+                -LastPort $EnumerationPortScanPortRangeLastTextbox.Text
         }
     }
     else {
@@ -45,7 +45,15 @@ $EnumerationPortScanExecutionButtonAdd_Click = {
         $StatusListBox.Items.Add("Port Scan:  Cancelled")
     }
 
-    Update-TreeNodeComputerState -NoMessage
+    $script:ComputerTreeView.Nodes.Clear()
+    Initialize-ComputerTreeNodes
+    Populate-ComputerTreeNodeDefaultData
+    Save-ComputerTreeNodeHostData
+
+    Foreach($Computer in $script:ComputerTreeViewData) {
+        Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
+    }
+    Update-TreeNodeComputerState
 }
 
 

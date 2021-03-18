@@ -59,7 +59,7 @@ $ComputerListRenameToolStripButtonAdd_Click = {
     #elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Rename Selection' }
 
     Remove-EmptyCategory
-    Save-HostData
+    Save-ComputerTreeNodeHostData
 }
 
 

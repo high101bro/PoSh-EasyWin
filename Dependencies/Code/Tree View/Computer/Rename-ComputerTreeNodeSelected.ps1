@@ -41,7 +41,7 @@ function Rename-ComputerTreeNodeSelected {
                 }
             }
         }
-        Save-HostData
+        Save-ComputerTreeNodeHostDataHostData
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Rename Selection:  $($ComputerTreeNodeToRename.Count) Hosts")
         #Removed For Testing#$ResultsListBox.Items.Clear()

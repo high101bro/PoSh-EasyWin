@@ -32,7 +32,7 @@ $ComputerListDeleteSelectedToolStripButtonAdd_Click = {
                 $script:FirstCheck = $false
 
                 Remove-EmptyCategory
-                Save-HostData
+                Save-ComputerTreeNodeHostData
             }
             'No' {
                 $StatusListBox.Items.Clear()
@@ -112,7 +112,7 @@ $ComputerListDeleteAllCheckedToolStripButtonAdd_Click = {
                     elseif ($ComputerTreeNodeOUHostnameRadioButton.checked){$ComputerTreeNodeOUHostnameRadioButton.PerformClick()}
 
                     Remove-EmptyCategory
-                    Save-HostData
+                    Save-ComputerTreeNodeHostData
                 }
                 else { ComputerNodeSelectedLessThanOne -Message 'Delete Selection' }
             }

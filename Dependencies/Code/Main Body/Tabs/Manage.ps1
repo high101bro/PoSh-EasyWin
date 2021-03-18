@@ -11,11 +11,6 @@ $Section3ManageListTab = New-Object System.Windows.Forms.TabPage -Property @{
 $MainRightTabControl.Controls.Add($Section3ManageListTab)
 
 
-# Changes the Comoputer TreeView Save Button to Red
-Load-Code "$Dependencies\Code\Tree View\Computer\Update-NeedToSaveTreeView.ps1"
-. "$Dependencies\Code\Tree View\Computer\Update-NeedToSaveTreeView.ps1"
-
-
 $ImportEndpointDataLabel = New-Object System.Windows.Forms.RadioButton -Property @{
     Text   = "Endpoint Data"
     Left   = 6

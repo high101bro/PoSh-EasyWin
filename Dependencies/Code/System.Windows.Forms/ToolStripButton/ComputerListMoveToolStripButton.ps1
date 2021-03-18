@@ -92,7 +92,7 @@ $ComputerListMoveSelectedToolStripButtonAdd_Click = {
             }
         }
         Remove-EmptyCategory
-        Save-HostData
+        Save-ComputerTreeNodeHostData
         Update-TreeNodeComputerState -NoMessage
 
         $StatusListBox.Items.Clear()
@@ -132,7 +132,7 @@ $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
             }
 
             Remove-EmptyCategory
-            Save-HostData
+            Save-ComputerTreeNodeHostData
             Update-TreeNodeComputerState -NoMessage
 
             $StatusListBox.Items.Clear()

@@ -47,7 +47,6 @@ $ComputerListNSLookupCheckedToolStripButtonAdd_Click = {
                                     $Section3HostDataMACTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
                                     $Section3HostDataNotesRichTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                                     Save-ComputerTreeNodeHostData
-#                                    Save-HostData
 
                                 }
                                 $script:ProgressBarEndpointsProgressBar.Value += 1

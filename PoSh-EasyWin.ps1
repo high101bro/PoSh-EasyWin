@@ -789,10 +789,6 @@ $script:ComputerTreeViewData = $null
 $script:ComputerTreeViewData = Import-Csv $script:ComputerTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
 #$script:ComputerTreeViewData
 
-# Saves the textbox data for Host Data
-Update-FormProgress "$Dependencies\Code\Main Body\Save-HostData.ps1"
-. "$Dependencies\Code\Main Body\Save-HostData.ps1"
-
 # Initializes the Computer TreeView section that computer nodes are added to
 # TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
 # These include the root nodes of Search, and various Operating System and OU/CN names
@@ -944,7 +940,7 @@ Initialize-ComputerTreeNodes
 Populate-ComputerTreeNodeDefaultData
 
 # Yes, save initially during the load because it will save any poulated default data
-Save-HostData
+Save-ComputerTreeNodeHostData
 
 # This will load data that is located in the saved file
 #batman

@@ -40,7 +40,7 @@ $ImportEndpointDataFromTxtButtonAdd_Click = {
             $script:ComputerTreeView.ExpandAll()
         }
     }
-    Update-NeedToSaveTreeView
+    Save-ComputerTreeNodeHostData
 }
 
 
