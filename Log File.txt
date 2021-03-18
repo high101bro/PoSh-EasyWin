@@ -19449,3 +19449,71 @@
 2021/03/17 21:52:13  PoSh-EasyWin Started By: ZENBOOK\danie
 2021/03/17 21:52:14  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
 2021/03/17 21:52:15  ====================================================================================================
+2021/03/17 22:00:46  ====================================================================================================
+2021/03/17 22:00:46  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:00:47  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:00:48  ====================================================================================================
+2021/03/17 22:04:53  ====================================================================================================
+2021/03/17 22:04:53  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:04:54  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:04:55  ====================================================================================================
+2021/03/17 22:06:22   - System.Xml.XmlElement
+2021/03/17 22:06:22   - System.Xml.XmlElement
+2021/03/17 22:06:24  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:06:24  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 10.10.10.101 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/17 22:06:24  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:06:24  Invoke-Command -ScriptBlock { Get-Process } -ComputerName 10.10.10.102 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description
+2021/03/17 22:06:25  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:06:25  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 10.10.10.101 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/17 22:06:25  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:06:25  Invoke-Command -ScriptBlock { Get-Service } -ComputerName 10.10.10.102 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/17 22:08:33  ====================================================================================================
+2021/03/17 22:08:33  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:08:34  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:08:35  ====================================================================================================
+2021/03/17 22:16:22  ====================================================================================================
+2021/03/17 22:16:22  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:16:23  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:16:24  ====================================================================================================
+2021/03/17 22:18:36  ====================================================================================================
+2021/03/17 22:18:36  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:18:38  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:18:39  ====================================================================================================
+2021/03/17 22:23:06  ====================================================================================================
+2021/03/17 22:23:06  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:23:07  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:23:08  ====================================================================================================
+2021/03/17 22:24:08   - System.Xml.XmlElement
+2021/03/17 22:24:08   - System.Xml.XmlElement
+2021/03/17 22:24:10  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:24:10  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description,*
+2021/03/17 22:24:11  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:24:11  Invoke-Command -ScriptBlock { Get-Process } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, ID, @{Name='ProcessID';Expression={$_.ID}},Path, StartTime, @{name="WorkingSetSize";expression={$_.WS}} , Handle, HandleCount, @{Name="ThreadCount";expression={($_.Threads).count}}, Company, Product, Description,*
+2021/03/17 22:24:11  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:24:11  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/17 22:24:11  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:24:12  Invoke-Command -ScriptBlock { Get-Service } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, Status, Name, DisplayName, RequiredServices, StartType, CanPauseAndContinue, CanShutdown, CanStop, ServiceHandle
+2021/03/17 22:27:14  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:27:14  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/17 22:27:14  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:27:14  Invoke-Command -ScriptBlock { Get-NetTCPConnection } -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop | Select-Object -Property PSComputerName, State, LocalAddress, LocalPort, RemoteAddress, RemotePort, OwningProcess, CreationTime, OffloadState, AppliedSetting
+2021/03/17 22:27:52  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:27:53  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetworkConnectionsTCPEnriched.ps1' -ComputerName WIN10-01 -Credential $script:Credential -ErrorAction Stop
+2021/03/17 22:27:53  Credentials Used: administrator@mobilelab.home
+2021/03/17 22:27:53  Invoke-Command -FilePath 'C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Cmds & Scripts\Scripts-Host\Get-NetworkConnectionsTCPEnriched.ps1' -ComputerName WIN10-02 -Credential $script:Credential -ErrorAction Stop
+2021/03/17 22:30:05  ====================================================================================================
+2021/03/17 22:30:05  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:30:06  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:30:07  ====================================================================================================
+2021/03/17 22:32:23  ====================================================================================================
+2021/03/17 22:32:24  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:32:24  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:32:26  ====================================================================================================
+2021/03/17 22:34:29  ====================================================================================================
+2021/03/17 22:34:29  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:34:30  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:34:31  ====================================================================================================
+2021/03/17 22:37:05  ====================================================================================================
+2021/03/17 22:37:05  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/17 22:37:06  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/17 22:37:08  ====================================================================================================

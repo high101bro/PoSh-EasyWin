@@ -109,7 +109,12 @@ function Search-ComputerTreeNode {
                     if ($OptionSearchProcessesCheckBox.Checked) {
                         # Searches for the CSV file that matches the data selected
                         if ($CSVFile -match "Processes") {
-                            $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property ComputerName, Name, Description  | where {($_.Name -imatch $ComputerSearchText) -or ($_.Description -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
+                            if ($ComputerTreeNodeSearchGreedyCheckbox.checked) {
+                                $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property ComputerName, ProcessName, Name, Description  | where {($_.ProcessName -imatch $ComputerSearchText) -or ($_.Name -imatch $ComputerSearchText) -or ($_.Description -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
+                            }
+                            else {
+                                $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property ComputerName, ProcessName, Name, Description  | where {($_.ProcessName -eq $ComputerSearchText) -or ($_.Name -eq $ComputerSearchText) -or ($_.Description -eq $ComputerSearchText)} #| where {$_.name -ne ''}
+                            }                            
                             $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty ComputerName -Unique
                             if ( $SearchImportedCsvData ) {
                                 foreach ($PSComputerName in $SearchImportedCsvData) {
@@ -122,7 +127,12 @@ function Search-ComputerTreeNode {
                     if ($OptionSearchServicesCheckBox.Checked) {
                         # Searches for the CSV file that matches the data selected
                         if ($CSVFile -match "Services") {
-                            $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property ComputerName, Name, DisplayName  | where {($_.Name -imatch $ComputerSearchText) -or ($_.DisplayName -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
+                            if ($ComputerTreeNodeSearchGreedyCheckbox.checked) {
+                                $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property ComputerName, Name, DisplayName  | where {($_.Name -imatch $ComputerSearchText) -or ($_.DisplayName -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
+                            }
+                            else {
+                                $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property ComputerName, Name, DisplayName  | where {($_.Name -eq $ComputerSearchText) -or ($_.DisplayName -eq $ComputerSearchText)} #| where {$_.name -ne ''}
+                            }
                             $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty ComputerName -Unique
                             if ( $SearchImportedCsvData ) {
                                 foreach ($PSComputerName in $SearchImportedCsvData) {
@@ -135,7 +145,13 @@ function Search-ComputerTreeNode {
                     if ($OptionSearchNetworkTCPConnectionsCheckBox.Checked) {
                         # Searches for the CSV file that matches the data selected
                         if ($CSVFile -match "Network") {
-                            $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property ComputerName, RemoteAddress, RemotePort, LocalPort | where {($_.RemoteAddress -imatch $ComputerSearchText) -or ($_.RemotePort -imatch $ComputerSearchText) -or ($_.LocalPort -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
+                            if ($ComputerTreeNodeSearchGreedyCheckbox.checked) {
+                                $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property ComputerName, RemoteAddress, RemotePort, LocalPort, ProcessName, CommandLine | where {($_.CommandLine -imatch $ComputerSearchText) -or ($_.ProcessName -imatch $ComputerSearchText) -or ($_.RemoteAddress -imatch $ComputerSearchText) -or ($_.RemotePort -imatch $ComputerSearchText) -or ($_.LocalPort -imatch $ComputerSearchText)} #| where {$_.name -ne ''}
+                            }
+                            else {
+                                $SearchImportedCsvData = Import-CSV -Path $CSVFile | Select-Object -Property ComputerName, RemoteAddress, RemotePort, LocalPort, ProcessName, CommandLine | where {($_.CommandLine -eq $ComputerSearchText) -or ($_.ProcessName -eq $ComputerSearchText) -or ($_.RemoteAddress -eq $ComputerSearchText) -or ($_.RemotePort -eq $ComputerSearchText) -or ($_.LocalPort -eq $ComputerSearchText)} #| where {$_.name -ne ''}
+                            }
+
                             $SearchImportedCsvData = $SearchImportedCsvData | Select-Object -ExpandProperty ComputerName -Unique
                             if ( $SearchImportedCsvData ) {
                                 foreach ($PSComputerName in $SearchImportedCsvData) {

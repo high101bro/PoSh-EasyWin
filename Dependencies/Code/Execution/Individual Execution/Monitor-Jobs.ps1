@@ -1103,7 +1103,7 @@ if ($MonitorMode) {
                         }
                     }
                     else {
-                        [System.Windows.Forms.MessageBox]::Show("There is no data available to generate charts.",'PoSh-EasyWin - Console')
+                        [System.Windows.Forms.MessageBox]::Show("There is no XML data available. Enable this under the main options section.",'PoSh-EasyWin - Console')
                     }
                     Remove-Variable -Name JobXMLResults$JobId -Scope script
                     [System.GC]::Collect()
