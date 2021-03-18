@@ -114,7 +114,4 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
     Start-Sleep -match 500
 }
 
-$AutoCreateDashboardChartButton.BackColor = 'LightGreen'
-$AutoCreateMultiSeriesChartButton.BackColor = 'LightGreen'
-
 

@@ -11,23 +11,23 @@ $MainBottomTabControl.Controls.Add($Section3HostDataTab)
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataNameTextBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataNameTextBox.ps1"
-$Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+$script:Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
                   Y = $FormScale * 3 }
     Size     = @{ Width  = $FormScale * 250
                   Height = $FormScale * 25 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ReadOnly = $true
-    Add_MouseHover = $Section3HostDataNameTextBoxAdd_MouseHover
+    Add_MouseHover = $script:Section3HostDataNameTextBoxAdd_MouseHover
 }
-$Section3HostDataTab.Controls.Add($Section3HostDataNameTextBox)
+$Section3HostDataTab.Controls.Add($script:Section3HostDataNameTextBox)
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOSTextBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOSTextBox.ps1"
 $Section3HostDataOSTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Location = @{ X = 0
-                  Y = $Section3HostDataNameTextBox.Location.Y + $Section3HostDataNameTextBox.Size.Height + $($FormScale * 4) }
+                  Y = $script:Section3HostDataNameTextBox.Location.Y + $script:Section3HostDataNameTextBox.Size.Height + $($FormScale * 4) }
     Size     = @{ Width  = $FormScale * 250
                   Height = $FormScale * 25 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -82,6 +82,7 @@ $Section3HostDataTab.Controls.Add($Section3HostDataMACTextBox)
 #============================================================================================================================================================
 # Host Data - Selection Data ComboBox and Date/Time ComboBox
 #============================================================================================================================================================
+$HostDataList1 = (Get-ChildItem -Path $CollectedDataDirectory -Recurse | Where-Object {$_.Extension -match 'csv'}).basename | ForEach-Object { $_.split('(')[0].trim() } | Sort-Object -Unique -Descending
 
     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataSelectionComboBox.ps1"
     . "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataSelectionComboBox.ps1"
@@ -121,18 +122,31 @@ $Section3HostDataTab.Controls.Add($Section3HostDataMACTextBox)
 
     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataGetDataButton.ps1"
     . "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataGetDataButton.ps1"
-    $Section3HostDataGetDataButton = New-Object System.Windows.Forms.Button -Property @{
-        Text     = "Get Data"
-        Location = @{ X = $Section3HostDataSelectionDateTimeComboBox.Location.X + $Section3HostDataSelectionDateTimeComboBox.Size.Width + 5
+    $Section3HostDataGridViewButton = New-Object System.Windows.Forms.Button -Property @{
+        Text     = "Grid View"
+        Location = @{ X = $Section3HostDataSelectionDateTimeComboBox.Location.X + $Section3HostDataSelectionDateTimeComboBox.Size.Width + $($FormScale * 5)
                       Y =  $Section3HostDataSelectionDateTimeComboBox.Location.Y - $($FormScale * 1) }
         Size     = @{ Width  = $FormScale * 75
                       Height = $FormScale * 22 }
-        Add_Click = $Section3HostDataGetDataButtonAdd_Click
-        Add_MouseHover = $Section3HostDataGetDataButtonAdd_MouseHover
+        Add_Click = $Section3HostDataGridViewButtonAdd_Click
+        Add_MouseHover = $Section3HostDataGridViewButtonAdd_MouseHover
     }
-    $Section3HostDataTab.Controls.Add($Section3HostDataGetDataButton)
-    CommonButtonSettings -Button $Section3HostDataGetDataButton
+    $Section3HostDataTab.Controls.Add($Section3HostDataGridViewButton)
+    CommonButtonSettings -Button $Section3HostDataGridViewButton
 
+
+    if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
+        $Section3HostDataPSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
+            Text     = "HTML"
+            Location = @{ X = $Section3HostDataGridViewButton.Location.X + $Section3HostDataGridViewButton.Size.Width + $($FormScale * 5)
+                          Y =  $Section3HostDataGridViewButton.Location.Y - $($FormScale * 1) }
+            Size     = @{ Width  = $FormScale * 75
+                          Height = $FormScale * 22 }
+            Add_Click = $Section3HostDataPSWriteHTMLButtonAdd_Click
+        }
+        $Section3HostDataTab.Controls.Add($Section3HostDataPSWriteHTMLButton)
+        CommonButtonSettings -Button $Section3HostDataPSWriteHTMLButton    
+    }
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataTagsComboBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataTagsComboBox.ps1"

@@ -388,11 +388,7 @@ $script:commandstring
     $ResultsListBox.Items.RemoveAt(0)
     $ResultsListBox.Items.Insert(0,"$(($ExecutionStartTime).ToString('yyyy/MM/dd HH:mm:ss')) [$CollectionCommandDiffTime]  $($Command.Name)")
 
-
-    $AutoCreateDashboardChartButton.BackColor = 'LightGreen'
-    $AutoCreateMultiSeriesChartButton.BackColor = 'LightGreen'
-
-                         
+    
     # Removes any files have are empty
     foreach ($file in (Get-ChildItem $script:CollectedDataTimeStampDirectory)) {
         if ($File.length -eq 0) {

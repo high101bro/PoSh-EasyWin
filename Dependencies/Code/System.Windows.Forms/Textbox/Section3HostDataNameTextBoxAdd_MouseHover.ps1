@@ -1,4 +1,4 @@
-$Section3HostDataNameTextBoxAdd_MouseHover = {
+$script:Section3HostDataNameTextBoxAdd_MouseHover = {
     Show-ToolTip -Title "Hostname" -Icon "Info" -Message @"
 +  This field is reserved for the hostname.
 +  Hostnames are not case sensitive.

@@ -103,7 +103,7 @@ $ComputerTreeViewAdd_AfterSelect = {
             #Removed For Testing#$ResultsListBox.Items.Clear()
             #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
 
-            $Section3HostDataNameTextBox.Text  = "N/A"
+            $script:Section3HostDataNameTextBox.Text  = "N/A"
             $Section3HostDataOSTextBox.Text    = "N/A"
             $Section3HostDataOUTextBox.Text    = "N/A"
             $Section3HostDataIPTextBox.Text    = "N/A"
@@ -122,7 +122,7 @@ $ComputerTreeViewAdd_AfterSelect = {
                 #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
 
                 # The follwing fields are filled out with N/A when host nodes are not selected
-                $Section3HostDataNameTextBox.Text  = "N/A"
+                $script:Section3HostDataNameTextBox.Text  = "N/A"
                 $Section3HostDataOSTextBox.Text    = "N/A"
                 $Section3HostDataOUTextBox.Text    = "N/A"
                 $Section3HostDataIPTextBox.Text    = "N/A"
@@ -139,7 +139,7 @@ $ComputerTreeViewAdd_AfterSelect = {
                     $script:ComputerTreeViewSelected = $Entry.Text
                     Function Update-HostDataNotes {
                         # Populates the Host Data Tab with data from the selected TreeNode
-                        $Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
+                        $script:Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
                         $Section3HostDataOSTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
                         $Section3HostDataOUTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
                         $Section3HostDataIPTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
@@ -161,7 +161,7 @@ $ComputerTreeViewAdd_AfterSelect = {
                                     'Yes'{ Update-HostDataNotes }
                                     'No' { $Entry.isselected -eq $true  #... this line isn't working as expected, but isn't causing errors
                                         $StatusListBox.Items.Clear()
-                                        $StatusListBox.Items.Add($Section3HostDataNameTextBox.Text)
+                                        $StatusListBox.Items.Add($script:Section3HostDataNameTextBox.Text)
                                         $script:EntrySelected.isselected = $true
                                     }
                                     'Cancel' { continue } #cancel option not needed
@@ -175,7 +175,7 @@ $ComputerTreeViewAdd_AfterSelect = {
                     Update-HostDataNotes
 
                     #                    $StatusListBox.Items.Clear()
-#                    $StatusListBox.Items.Add($Section3HostDataNameTextBox.Text)
+#                    $StatusListBox.Items.Add($script:Section3HostDataNameTextBox.Text)
 #                    $script:EntrySelected.isselected = $true
                 }
             }

@@ -1,7 +1,7 @@
-$Section3HostDataGetDataButtonAdd_Click = {
+$Section3HostDataGridViewButtonAdd_Click = {
     # Chooses the most recent file if multiple exist
-    $MostRecentResultIfMultipleCopiesExist = Get-ChildItem "$CollectedDataDirectory\$($Section3HostDataSelectionDateTimeComboBox.SelectedItem)\$script:HostDataCsvPath\*$($Section3HostDataNameTextBox.Text)*.csv" | Select-Object -Last 1
-    $HostData = Import-Csv -Path $MostRecentResultIfMultipleCopiesExist
+    $CSVFileToImport = (Get-ChildItem -File -Path $CollectedDataDirectory -Recurse | Where-Object {$_.name -like $Section3HostDataSelectionDateTimeComboBox.SelectedItem}).Fullname
+    $HostData = Import-Csv $CSVFileToImport
     if ($HostData) {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Showing Results:  $HostDataSection")
@@ -22,7 +22,24 @@ $Section3HostDataGetDataButtonAdd_Click = {
     }
 }
 
-$Section3HostDataGetDataButtonAdd_MouseHover = {
+$Section3HostDataPSWriteHTMLButtonAdd_Click = {
+    # Chooses the most recent file if multiple exist
+    $CSVFileToImport = (Get-ChildItem -File -Path $CollectedDataDirectory -Recurse | Where-Object {$_.name -like $Section3HostDataSelectionDateTimeComboBox.SelectedItem}).Fullname
+    $HostData = Import-Csv $CSVFileToImport
+    if ($HostData) {
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Showing Results:  $HostDataSection")
+        $HostData | Out-HTMLView -Title "$($CSVFileToImport | Split-Path -Leaf)"
+    }
+    else {
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("No Data Available:  $HostDataSection")
+        # Sounds a chime if there is not data
+        [system.media.systemsounds]::Exclamation.play()
+    }
+}
+
+$Section3HostDataGridViewButtonAdd_MouseHover = {
 Show-ToolTip -Title "Get Data" -Icon "Info" -Message @"
 +  If data exists, the datetime group will be displayed.
 +  These files can be searchable, toggle in Options Tab.

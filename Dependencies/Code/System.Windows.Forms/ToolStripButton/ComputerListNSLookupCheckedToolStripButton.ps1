@@ -36,7 +36,7 @@ $ComputerListNSLookupCheckedToolStripButtonAdd_Click = {
 
                                 if ($Entry.Checked -and $Entry.Text -notin $ComputerListNSLookupArray) {
                                     $ComputerListNSLookupArray += $Entry.Text
-                                    $Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
+                                    $script:Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
                                     $Section3HostDataOSTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
                                     $Section3HostDataOUTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
 

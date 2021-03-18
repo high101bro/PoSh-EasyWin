@@ -2247,7 +2247,7 @@ if ($DisableReRun) {
                         if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv")) {
                             `$script:JobCSVResults$JobId = Import-Csv "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).csv"
                             if (`$script:JobCSVResults$JobId) {
-                                `$script:JobCSVResults$JobId  | Out-HTMLView -Title "PoSh-EasyWin: `$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
+                                `$script:JobCSVResults$JobId  | Out-HTMLView -Title "`$(`$script:JobName$JobId) (`$(`$JobStartTimeFileFriendly$JobId))"
                             }
                             else {
                                 [System.Windows.Forms.MessageBox]::Show("There are no results avaiable.",'PoSh-EasyWin - View Progress')

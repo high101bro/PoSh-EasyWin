@@ -1,7 +1,7 @@
 $Section3HostDataSaveButtonAdd_Click = {
     Save-ComputerTreeNodeHostData
     $StatusListBox.Items.Clear()
-    $StatusListBox.Items.Add("Saved Host Data:  $($Section3HostDataNameTextBox.Text)")
+    $StatusListBox.Items.Add("Saved Host Data:  $($script:Section3HostDataNameTextBox.Text)")
 }
 
 $Section3HostDataSaveButtonAdd_MouseHover = {

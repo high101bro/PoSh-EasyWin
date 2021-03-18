@@ -48,7 +48,7 @@ Function Save-ComputerTreeNodeHostData {
         ### Saves just that selected
         else {
             # If the node is selected, it will save the values you enter
-            if ($Computer.Name -eq $Section3HostDataNameTextBox.Text) {
+            if ($Computer.Name -eq $script:Section3HostDataNameTextBox.Text) {
                 $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name IPv4Address -Value $Section3HostDataIPTextBox.Text -Force
                 $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name MACAddress  -Value $Section3HostDataMACTextBox.Text -Force
                 $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name PortScan    -Value $Computer.PortScan -Force
