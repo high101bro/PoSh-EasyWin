@@ -1,7 +1,3 @@
-$ComputerTreeNodeSearchButtonAdd_Click = {
-    Search-ComputerTreeNode
-}
-
 $ComputerTreeNodeSearchButtonAdd_MouseHover = {
     Show-ToolTip -Title "Search for Hosts" -Icon "Info" -Message @"
 +  Searches through host data and returns results as nodes.

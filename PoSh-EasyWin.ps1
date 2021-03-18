@@ -844,7 +844,9 @@ $ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property
                   Y = $ComputerTreeNodeSearchComboBox.Location.Y }
     Size     = @{ Width  = $FormScale * 55
                   Height = $FormScale * 22 }
-    Add_Click      = $ComputerTreeNodeSearchButtonAdd_Click
+    Add_Click = { 
+        Search-ComputerTreeNode
+    }
     Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
 }
 $PoShEasyWin.Controls.Add($ComputerTreeNodeSearchButton)
@@ -960,12 +962,12 @@ foreach ($root in $AllHostsNode) {
 
 
 $ComputerTreeNodeViewByLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text     = "View by:"
-    Location = @{ X = $FormScale * $Column4RightPosition
-                  Y = $FormScale * 7 }
-    Size     = @{ Width  = $FormScale * 75
-                  Height = $FormScale * 25 }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+    Text   = "View by:"
+    Left   = $FormScale * $Column4RightPosition
+    Top    = $FormScale * 7
+    Width  = $FormScale * 53
+    Height = $FormScale * 25
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
 }
 $PoShEasyWin.Controls.Add($ComputerTreeNodeViewByLabel)
 
@@ -973,13 +975,13 @@ $PoShEasyWin.Controls.Add($ComputerTreeNodeViewByLabel)
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOSHostnameRadioButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOSHostnameRadioButton.ps1"
 $script:ComputerTreeNodeOSHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-    Text     = "OS"
-    Location = @{ X = $ComputerTreeNodeViewByLabel.Location.X + $ComputerTreeNodeViewByLabel.Size.Width
-                  Y = $ComputerTreeNodeViewByLabel.Location.Y - $($FormScale * 5) }
-    Size     = @{ Height = $FormScale * 25
-                  Width  = $FormScale * 50 }
-    Checked  = $True
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Text    = "OS"
+    Left    = $ComputerTreeNodeViewByLabel.Left + $ComputerTreeNodeViewByLabel.Width
+    Top     = $ComputerTreeNodeViewByLabel.Top - $($FormScale * 5)
+    Width   = $FormScale * 40
+    Height  = $FormScale * 25
+    Checked = $True
+    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click      = $ComputerTreeNodeOSHostnameRadioButtonAdd_Click
     Add_MouseHover = $ComputerTreeNodeOSHostnameRadioButtonAdd_MouseHover
 }
@@ -988,18 +990,30 @@ $PoShEasyWin.Controls.Add($script:ComputerTreeNodeOSHostnameRadioButton)
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOUHostnameRadioButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOUHostnameRadioButton.ps1"
-$ComputerTreeNodeOUHostnameRadioButton  = New-Object System.Windows.Forms.RadioButton -Property @{
-    Text     = "OU / CN"
-    Location = @{ X = $script:ComputerTreeNodeOSHostnameRadioButton.Location.X + $script:ComputerTreeNodeOSHostnameRadioButton.Size.Width + 5
-                  Y = $script:ComputerTreeNodeOSHostnameRadioButton.Location.Y }
-    Size     = @{ Height = $FormScale * 25
-                  Width  = $FormScale * 75 }
-    Checked  = $false
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+$ComputerTreeNodeOUHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+    Text    = "OU / CN"
+    Left    = $script:ComputerTreeNodeOSHostnameRadioButton.Left + $script:ComputerTreeNodeOSHostnameRadioButton.Width + $($FormScale * 5)
+    Top     = $script:ComputerTreeNodeOSHostnameRadioButton.Top
+    Width   = $FormScale * 70
+    Height  = $FormScale * 25
+    Checked = $false
+    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click      = $ComputerTreeNodeOUHostnameRadioButtonAdd_Click
     Add_MouseHover = $ComputerTreeNodeOUHostnameRadioButtonAdd_MouseHover
 }
 $PoShEasyWin.Controls.Add($ComputerTreeNodeOUHostnameRadioButton)
+
+
+$ComputerTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+    Text    = "Greedy"
+    Left    = $ComputerTreeNodeOUHostnameRadioButton.Left + $ComputerTreeNodeOUHostnameRadioButton.Width + $($FormScale * 5)
+    Top     = $ComputerTreeNodeOUHostnameRadioButton.Top
+    Height  = $FormScale * 25
+    Width   = $FormScale * 65
+    Checked = $true
+    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$PoShEasyWin.Controls.Add($ComputerTreeNodeSearchGreedyCheckbox)
 
 
 #============================================================================================================================================================
