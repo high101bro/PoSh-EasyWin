@@ -2,8 +2,8 @@ $SendFilesButtonAdd_Click = {
 
         $FileTransferOptionsForm = New-Object System.Windows.Forms.Form -Property @{
             Text   = "PoSh-EasyWin - File Transfer"
-            Width  = $FormScale * 450
-            Height = $FormScale * 500
+            Width  = $FormScale * 470
+            Height = $FormScale * 535
             StartPosition = "CenterScreen"
             Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
             Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -13,7 +13,7 @@ $SendFilesButtonAdd_Click = {
             MaximizeBox   = $false
             MinimizeBox   = $false
             ShowIcon      = $true
-            TopMost       = $true
+            TopMost       = $false
             Add_Shown     = $null
             Add_Closing = { $This.dispose() }
         }
@@ -176,10 +176,10 @@ $SendFilesButtonAdd_Click = {
                                     FormattingEnabled   = $True
                                     SelectionMode       = 'MultiExtended'
                                     ScrollAlwaysVisible = $True
-                                    AutoSize            = $False
-                                    IntegralHeight      = $False
+                                    #AutoSize            = $False
+                                    #IntegralHeight      = $False
                                     Font                = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                                    Anchor = ([System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right -bor [System.Windows.Forms.AnchorStyles]::Top)
+                                    #Anchor = ([System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right -bor [System.Windows.Forms.AnchorStyles]::Top)
                                     Add_Click = {
                                         Update-SendButtonColor
                                     }
@@ -238,88 +238,39 @@ $SendFilesButtonAdd_Click = {
                         Add_Click = {
                             Generate-ComputerList
                             $CollectionName = 'Send Files'
-                            # function MonitorJobScriptBlock {
-                            #     param(
-                            #         $ExecutionStartTime,
-                            #         $CollectionName,
-                            #         $NetworkConnectionSearchExecutablePath,
-                            #         $NetworkConnectionRegex
-                            #     )
                             
-                            #     foreach ($TargetComputer in $script:ComputerList) {                            
-                            #         if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                            #             if (!$script:Credential) { $script:Credential = Get-Credential }
-                            #             $QueryCredentialParam = ", $script:Credential"
-                            #             $QueryCredential      = "-Credential $script:Credential"
-                            #         }
-                            #         else {
-                            #             $QueryCredentialParam = $null
-                            #             $QueryCredential      = $null
-                            #         }
-                            
-                            
-                            #         if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                            #             if (!$script:Credential) { Create-NewCredentials }
-                            
-                            #             Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-                            #             -ArgumentList @($null,$null,$null,$null,$null,$NetworkConnectionSearchExecutablePath,$NetworkConnectionRegex) `
-                            #             -ComputerName $TargetComputer `
-                            #             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                            #             -Credential $script:Credential `
-                            #             | Select-Object PSComputerName, *
-                            #         }
-                            #         else {
-                            #             Invoke-Command -ScriptBlock ${function:Query-NetworkConnection} `
-                            #             -ArgumentList @($null,$null,$null,$null,$null,$NetworkConnectionSearchExecutablePath,$NetworkConnectionRegex) `
-                            #             -ComputerName $TargetComputer `
-                            #             -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                            #             | Select-Object PSComputerName, *
-                            #         }
-                            #     }
-                            # }
-                            
+                            $FilePaths = [array]$script:FileTransferPathsListBox.SelectedItems
+
                             foreach ($TargetComputer in $script:ComputerList) {
                                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Create-NewCredentials }
-                            
                                     Start-Job -ScriptBlock {
-                                        param($FileTransferPathsListBox,$FileTransferDestinationPathRichTextBox,$TargetComputer,$Credential)
-                                
+                                        param(
+                                            $FileTransferPathsListBox,
+                                            $FileTransferDestinationPathRichTextBox,
+                                            $TargetComputer,
+                                            $Credential
+                                        )
                                         # In case a $TargetComputer is an IP Address and not a Hostname
                                         $TargetComputerDrive = $TargetComputer -replace '`.','-'
                                         
                                         $AdminShare   = ($FileTransferDestinationPathRichTextBox | Split-Path -Qualifier) -replace ':','$'
                                         $TargetFolder = ($FileTransferDestinationPathRichTextBox | Split-Path -NoQualifier).Trim('\')
 
-                                        echo $FileTransferDestinationPathRichTextBox > c:\DestinationTextbox.txt
-                                        echo $AdminShare > c:\AdminShare.txt
-                                        echo $TargetFolder > c:\TargetFolder.txt
-                                        echo $TargetComputerDrive > c:\TargetComputerDrive.txt
-
                                         New-PSDrive -Name $TargetComputerDrive `
                                         -PSProvider FileSystem `
                                         -Root "\\$TargetComputer\$AdminShare\$TargetFolder" `
                                         -Credential $Credential | Out-Null
                             
-                                        $Credential > c:\credential.txt
-
-                                        "\\$TargetComputer\$AdminShare\$TargetFolder" > c:\root.txt
-                                        echo $FileTransferPathsListBox > c:\FileTransferListBox.txt
-
                                         foreach ($Path in $FileTransferPathsListBox) {
                                             Copy-Item -Path $Path -Destination "$($TargetComputerDrive):" -Recurse -Force
-                                            echo $Path > c:\path.txt
-                                            "$($TargetComputerDrive):" > c:\TargetComputerDrive.txt
                                         }
 
                                         Remove-PSDrive -Name $TargetComputerDrive | Out-Null
-                            
                                     } `
-                                    -ArgumentList @($script:FileTransferPathsListBox.Items,$script:FileTransferDestinationPathRichTextBox.text,$TargetComputer,$script:Credential) `
+                                    -ArgumentList @($FilePaths,$script:FileTransferDestinationPathRichTextBox.text,$TargetComputer,$script:Credential) `
                                     -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
 
-                                    Get-Job > c:\Get-Jobs.txt
-                                    echo '1' > c:\1.txt
                                     ############Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScript,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
                                 }
                             }
