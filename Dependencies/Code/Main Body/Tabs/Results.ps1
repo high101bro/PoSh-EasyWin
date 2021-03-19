@@ -19,6 +19,7 @@ $ResultsTabOpNotesAddButton = New-Object System.Windows.Forms.Button -Property @
                    Height = $FormScale * 25 }
     Add_Click = $ResultsTabOpNotesAddButtonAdd_Click
     Add_MouseHover = $ResultsTabOpNotesAddButtonAdd_MouseHover
+    Font      = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
 }
 $Section3ResultsTab.Controls.Add($ResultsTabOpNotesAddButton)
 CommonButtonSettings -Button $ResultsTabOpNotesAddButton

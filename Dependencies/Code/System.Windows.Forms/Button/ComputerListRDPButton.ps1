@@ -1,6 +1,6 @@
 <# TODO: Remote Screenshot Implementation
 $ComputerListScreenShotButtonAdd_Click = {
-
+#batman
     $MainBottomTabControl.SelectedTab = $Section3ResultsTab
     Create-ComputerNodeCheckBoxArray
     Generate-ComputerList

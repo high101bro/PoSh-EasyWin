@@ -244,8 +244,6 @@ param (
 # Generates the GUI and contains the majority of the script
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
-    #Deprecated#[reflection.assembly]::loadwithpartialname("System.Windows.Forms") | Out-Null
-    #Deprecated#[reflection.assembly]::loadwithpartialname("System.Drawing") | Out-Null
 
 
 #============================================================================================================================================================
@@ -320,10 +318,6 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
 
         # Location of separate queries
         $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
-
-
-# Website / URL for Character Art
-# http://patorjk.com/software/taag/#p=display&h=1&f=Standard&t=Script%20%20%20Execution
 
 
 # Keeps track of the number of RPC protocol commands selected, if the value is ever greater than one, it'll set the collection mode to 'Monitor Jobs'
@@ -470,22 +464,22 @@ if (Test-Path -Path "$Dependencies\Modules\PSWriteHTML"){
 #============================================================================================================================================================
 
 # Test code for loading and executing C# / C Sharpe code within PowerShell
-$id = get-random
-$code = @"
-using System;
-namespace Loading
-{
-	public class Test$id
-	{
-        public static void Main()
-        {
-			Console.WriteLine("C# Test: Loading PoSh-EasyWin... Enjoy!");
-        }
-    }
-}
-"@
-Add-Type -TypeDefinition $code -Language CSharp
-Invoke-Expression "[Loading.Test$id]::Main()"
+# $id = get-random
+# $code = @"
+# using System;
+# namespace Loading
+# {
+# 	public class Test$id
+# 	{
+#         public static void Main()
+#         {
+# 			Console.WriteLine("C# Test: Loading PoSh-EasyWin... Enjoy!");
+#         }
+#     }
+# }
+# "@
+# Add-Type -TypeDefinition $code -Language CSharp
+# Invoke-Expression "[Loading.Test$id]::Main()"
 
 
 # Timer that updates the GUI on interval
@@ -501,10 +495,6 @@ Invoke-Expression "[Loading.Test$id]::Main()"
 #$script:Timer.stop()
 #$PoShEasyWin.Refresh()
 
-
-###############
-#
-###############
 
 #Start Progress bar form loading
 $global:ScriptBlockForGuiLoadAndProgressBar = {
@@ -528,6 +518,7 @@ Loading: $StatusDescription"
 }
 
 
+# Used with PSWriteHTML
 function Set-CheckState {
     Param(
         $CheckedListBox,
@@ -538,12 +529,6 @@ function Set-CheckState {
     0 .. ($CheckedListBox.Items.Count - 1) |
         Where-Object { $CheckedListBox.Items[$_] -match $Match  } |
         ForEach-Object { $CheckedListBox.SetItemChecked($_, $Check) }
-#    $MyArray = 1,2,5,8,9
-#    # For each item that we want to be checked ...
-#    foreach ($Item in $MyArray) {
-#        # Check it ...
-#        $CheckedListBox.SetItemChecked($CheckedListBox.Items.IndexOf($Item), $true);
-#    }        
 }
 
 # Launches the accompanying Notifications Icon helper in the  System Tray

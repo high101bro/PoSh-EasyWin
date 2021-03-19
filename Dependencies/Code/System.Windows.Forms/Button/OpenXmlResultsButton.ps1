@@ -27,7 +27,7 @@ $OpenXmlResultsButtonAdd_Click = {
     CommonButtonSettings -Button $OpenCsvResultsButton
 
     CommonButtonSettings -Button $AutoCreateDashboardChartButton
-    CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
+    CommonButtonSettings -Button $SendFilesButton
 }
 $OpenXmlResultsButtonAdd_MouseHover = {
     Show-ToolTip -Title "Open Data In Shell (PowerShell Terminal)" -Icon "Info" -Message @"

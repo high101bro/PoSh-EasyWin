@@ -36,7 +36,7 @@ $Section3AboutTab.Controls.Add($PoShEasyWinLicenseAndAboutButton)
 CommonButtonSettings -Button $PoShEasyWinLicenseAndAboutButton
 
 
-$Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+$Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.TextBox -Property @{
     Text     = $(Get-Content "$Dependencies\About PoSh-EasyWin.txt" -raw)
     Font     = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     Location = @{ X = $FormScale * 0

@@ -234,10 +234,10 @@ $AutoCreateMultiSeriesChartButtonAdd_Click = {
     CommonButtonSettings -Button $OpenCsvResultsButton
 
     CommonButtonSettings -Button $AutoCreateDashboardChartButton
-    CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
+    CommonButtonSettings -Button $SendFilesButton
 }
 
-$AutoCreateMultiSeriesChartButtonAdd_MouseHover = {
+$SendFilesButtonAdd_MouseHover = {
     Show-ToolTip -Title "Multi-Series Chart" -Icon "Info" -Message @"
 +  Utilizes PowerShell (v3) charts to visualize data.
 +  These charts are auto created from pre-selected CSV files and fields.

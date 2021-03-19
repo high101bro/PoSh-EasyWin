@@ -13,7 +13,7 @@
 "WIN81-06A","Windows 8.1 Pro","/US Branch/Employee","10.10.10.108","No MAC Available",,"No Notes Available"
 "WIN81-05A","Windows 8.1 Pro","/US Branch/Employee","No IP Available","No MAC Available",,"No Notes Available"
 "WIN81-10","Windows 8.1 Pro","/US Branch/Employee","10.10.10.116","No MAC Available",,"No Notes Available"
-"WIN10-01","Windows 10 Pro","/US Branch/Employee","10.10.10.101","No MAC Available",,"No Notes Available"
+"WIN10-01","Windows 10 Pro","/US Branch/Employee","10.10.10.101","No MAC Available","135,139,21,3389,445,5357","No Notes Available"
 "WIN10-03","Windows 10 Pro","/US Branch/Employee","10.10.10.103","No MAC Available",,"No Notes Available"
 "WIN10-04","Windows 10 Pro","/US Branch/Employee","10.10.10.104","No MAC Available",,"No Notes Available"
 "WIN10-02","Windows 10 Pro","/US Branch/Employee","10.10.10.102","No MAC Available",,"No Notes Available"

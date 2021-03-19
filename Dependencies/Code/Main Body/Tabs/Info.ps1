@@ -53,7 +53,7 @@ foreach ($File in $ResourceFiles) {
                       Height = $FormScale * $TextBoxHeight }
         MultiLine  = $True
         ScrollBars = "Vertical"
-        Font       = New-Object System.Drawing.Font("Courier New",$($FormScale * 9),0,0,0)
+        Font       = New-Object System.Drawing.Font("Courier New",($FormScale * 9),0,0,0)
     }
     $Section1AboutSubTab.Controls.Add($Section1AboutSubTabTextBox)
 }

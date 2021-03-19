@@ -25,7 +25,7 @@ $OpenCsvResultsButtonAdd_Click = {
     CommonButtonSettings -Button $OpenCsvResultsButton
 
     CommonButtonSettings -Button $AutoCreateDashboardChartButton
-    CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
+    CommonButtonSettings -Button $SendFilesButton
 }
 
 $OpenCsvResultsButtonAdd_MouseHover = {

@@ -189,7 +189,7 @@ $AutoCreateDashboardChartButtonAdd_Click = {
     CommonButtonSettings -Button $OpenCsvResultsButton
 
     CommonButtonSettings -Button $AutoCreateDashboardChartButton
-    CommonButtonSettings -Button $AutoCreateMultiSeriesChartButton
+    CommonButtonSettings -Button $SendFilesButton
 }
 
 $AutoCreateDashboardChartButtonAdd_MouseHover = {
