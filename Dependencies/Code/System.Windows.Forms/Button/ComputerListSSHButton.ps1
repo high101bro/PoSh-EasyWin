@@ -50,7 +50,7 @@ $ComputerListSSHButtonAdd_Click = {
                 $Domain   = $Username.split('@')[1]
                 $Username = "$($Domain)\$($User)"
             }
-            $ssh_client = "$Dependencies\Executables\kitty-0.74.4.7.exe"
+            $ssh_client = "$Dependencies\Executables\KiTTY\kitty-0.74.4.7.exe"
 
             $ResultsListBox.Items.Add("kitty-0.74.4.7.exe -ssh '$script:ComputerTreeViewSelected' -l '$User' -pw 'password'")
             start-process $ssh_client -ArgumentList @("-ssh",$script:ComputerTreeViewSelected,"-l",$User,"-pw",$Password)
@@ -82,7 +82,7 @@ $ComputerListPsExecButtonAdd_MouseHover = {
 +  SSH (OpenSSH) is natively available on Windows 10 as up the April 2018 update, it does not support passing credentials automatically.
 +  Usefult to access Linux and Windows hosts with SSH enabled.
 +  Command:
-        kitty-0.74.4.7.exe -ssh 'IP/hostname' -l 'username' -pw 'password'
+        kitty.exe -ssh 'IP/hostname' -l 'username' -pw 'password'
 +  Compatiable with 'Specify Credentials'
 "@
 }

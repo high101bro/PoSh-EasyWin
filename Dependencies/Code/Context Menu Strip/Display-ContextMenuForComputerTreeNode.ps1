@@ -50,7 +50,7 @@ function Display-ContextMenuForComputerTreeNode {
     $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionToolStripButton)
 
 
-    if (Test-Path "$Dependencies\Executables\kitty-0.74.4.7.exe") {
+    if (Test-Path "$Dependencies\Executables\KiTTY\kitty-0.74.4.7.exe") {
         $ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "SSH"
             ForeColor = 'DarkRed'
