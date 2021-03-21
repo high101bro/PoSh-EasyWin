@@ -111,6 +111,8 @@ CommonButtonSettings -Button $ComputerListPSSessionButton
 $Column5DownPosition += $Column5DownPositionShift
 
 
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListSSHButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListSSHButton.ps1"
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPsExecButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPsExecButton.ps1"
 $ComputerListPsExecButton = New-Object System.Windows.Forms.Button -Property @{
@@ -189,7 +191,7 @@ $script:ComputerListUseDNSCheckbox = New-Object System.Windows.Forms.Checkbox -P
     Text    = "Use DNS Hostname"
     Left    = $FormScale * $Column5RightPosition
     Top     = $FormScale * $Column5DownPosition
-    Width   = $FormScale * $Column5BoxWidth
+    Width   = $FormScale * $Column5BoxWidth + ($FormScale + 5)
     Height  = $FormScale * $Column5BoxHeight - 5
     Checked = $true
     #Add_MouseHover = $null

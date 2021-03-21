@@ -523,7 +523,25 @@ $ComputerListRDPButtonAdd_Click = {
 
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
         $VerifyAction = Verify-Action -Title "Verification: Remote Desktop" -Question "Connecting Account:  $Username`n`nOpen a Remote Desktop session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
-        $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
+        if ($script:ComputerListUseDNSCheckbox.checked) { 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+        }
+        else {
+            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllHostsNode) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                            foreach ($Metadata in $Entry.nodes) {
+                                if ($Metadata.Name -eq 'IPv4Address') {
+                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
         [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select Remote Desktop.','Remote Desktop')

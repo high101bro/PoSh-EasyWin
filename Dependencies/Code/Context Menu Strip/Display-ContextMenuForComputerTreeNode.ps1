@@ -50,13 +50,25 @@ function Display-ContextMenuForComputerTreeNode {
     $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionToolStripButton)
 
 
-    $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "PSExec"
-        ForeColor = 'DarkRed'
-        Add_CLick = $ComputerListPsExecButtonAdd_Click
+    if (Test-Path 'C:\WINDOWS\System32\OpenSSH\ssh.exe') {
+        $ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "SSH"
+            ForeColor = 'DarkRed'
+            Add_CLick = $ComputerListSSHButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListSSHToolStripButton)
     }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
 
+
+    if (Test-Path "$Dependencies\Executables\PsExec.exe") {
+        $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "PSExec"
+            ForeColor = 'DarkRed'
+            Add_CLick = $ComputerListPsExecButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
+    }
+    
 
     $script:ExpandCollapseStatus = "Collapse"
     $ComputerListCollapseToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
