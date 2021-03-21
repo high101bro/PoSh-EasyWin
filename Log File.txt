@@ -20371,3 +20371,13 @@
 2021/03/21 12:40:57  PsExec: 10.10.10.101
 2021/03/21 12:41:09  Credentials Used: administrator@mobilelab.home
 2021/03/21 12:41:10  PsExec: WIN10-01
+2021/03/21 13:00:54  Credentials Used: administrator@mobilelab.home
+2021/03/21 13:00:54  start-process C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\kitty-0.74.4.7.exe -ArgumentList @("-ssh",10.10.10.99,"-l",administrator,"-pw","Password")
+2021/03/21 13:01:11  Credentials Used: administrator@mobilelab.home
+2021/03/21 13:01:12  start-process C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\kitty-0.74.4.7.exe -ArgumentList @("-ssh",10.10.10.99,"-l",administrator,"-pw","Password")
+2021/03/21 13:07:36  ====================================================================================================
+2021/03/21 13:07:36  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/21 13:07:37  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/21 13:07:38  ====================================================================================================
+2021/03/21 13:08:00  Credentials Used: administrator@mobilelab.home
+2021/03/21 13:08:01  start-process C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\kitty-0.74.4.7.exe -ArgumentList @("-ssh",10.10.10.99,"-l",administrator,"-pw","Password")
