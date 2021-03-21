@@ -345,29 +345,28 @@ if (-not (Test-Path $ShortcutDestination)) {
 # Not Using the following commandline, but rather the script below
 # Note: Unable to . source this code from another file or use the call '&' operator to use as external cmdlet; it won't run the new terminal/GUI as Admin
 <# #Requires -RunAsAdministrator #>
-# If (-NOT $SkipEvelationCheck -and -NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-#     $ElevateShell = [System.Windows.Forms.MessageBox]::Show("Attention Under-Privileged User!`n   $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)`n`nThe remote commands executed to collect data require elevated credentials. Select 'Yes' to attempt to run this script with elevated privileges; select 'No' to run this script with the current user's privileges; or select 'Cancel' and re-run this script within an Administrator terminal.","PoSh-EasyWin",'YesNoCancel',"Warning")
-#     switch ($ElevateShell) {
-#     'Yes'{
-#         if ($ShowTerminal) { Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript }
-#         else               { Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript -WindowStyle Hidden -NonInteractive }
-#         exit
-#     }
-#     'No' {
-#         if ($ShowTerminal) { Start-Process PowerShell.exe -ArgumentList "$ThisScript -SkipEvelationCheck" }
-#         else               { Start-Process PowerShell.exe -ArgumentList "$ThisScript -SkipEvelationCheck" -WindowStyle Hidden -NonInteractive }
-#         exit
-#     }
-#     'Cancel' {exit}
-#     }
-# }
-# elseif (-NOT $SkipEvelationCheck) {
-#     if ($ShowTerminal) { Start-Process PowerShell.exe -Verb runAs -ArgumentList "$ThisScript -SkipEvelationCheck" }
-#     else               { Start-Process PowerShell.exe -Verb runAs -ArgumentList "$ThisScript -SkipEvelationCheck" -WindowStyle Hidden }
-#     exit
-# }
-# $FormAdminCheck = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-
+If (-NOT $SkipEvelationCheck -and -NOT ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    $ElevateShell = [System.Windows.Forms.MessageBox]::Show("PoSh-EasyWin is writen in PowerShell and makes use of the .NET Framwork and WinForms to generate the user interface.`n`nIf you experience performance, user interface, or remoting issues, then running the tool with elevated privileges often helps. You can create and use alternate credentials for remoting within the Credential Management section.`n`nWould you like to relaunch this tool using administrator privileges.","PoSh-EasyWin",'YesNoCancel',"Warning")
+    switch ($ElevateShell) {
+        'Yes'{
+            if ($ShowTerminal) { Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript }
+            else               { Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript -WindowStyle Hidden }
+            exit
+        }
+        'No' {
+            if ($ShowTerminal) { Start-Process PowerShell.exe -ArgumentList "$ThisScript -SkipEvelationCheck" }
+            else               { Start-Process PowerShell.exe -ArgumentList "$ThisScript -SkipEvelationCheck" -WindowStyle Hidden }
+            exit
+        }
+        'Cancel' {exit}
+    }
+}
+elseif (-NOT $SkipEvelationCheck) {
+    if ($ShowTerminal) { Start-Process PowerShell.exe -Verb runAs -ArgumentList "$ThisScript -SkipEvelationCheck" }
+    else               { Start-Process PowerShell.exe -Verb runAs -ArgumentList "$ThisScript -SkipEvelationCheck" -WindowStyle Hidden }
+    exit
+}
+$FormAdminCheck = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
 
 # Creates a log entry to an external file
 . "$Dependencies\Code\Main Body\Create-LogEntry.ps1"
@@ -379,28 +378,28 @@ if (-Not (Test-Path $PoShSettings)){New-Item -ItemType Directory $PoShSettings |
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "===================================================================================================="
 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin Started By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
 
-# # This prompts the user for accepting the GPLv3 License
-# if ($AcceptEULA) {
-#     Write-Output -ForeGroundColor Green  "You accepted the EULA."
-#     Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
-# }
-# else {
-#     Get-Content "$Dependencies\GPLv3 Notice.txt" | Out-GridView -Title 'PoSh-EasyWin User Agreement' -PassThru | Set-Variable -Name UserAgreement
-#     if ($UserAgreement) {
-#         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
-#         Write-Output -ForeGroundColor Green  "You accepted the EULA."
-#         Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
-#         Start-Sleep -Seconds 1
-#     }
-#     else {
-#         [system.media.systemsounds]::Exclamation.play()
-#         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt NOT Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
-#         Write-Output -ForeGroundColor Red    "You must accept the EULA to continue."
-#         Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
-#         exit
-#     }
-#     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "===================================================================================================="
-# }
+# This prompts the user for accepting the GPLv3 License
+if ($AcceptEULA) {
+    Write-Output -ForeGroundColor Green  "You accepted the EULA."
+    Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+}
+else {
+    Get-Content "$Dependencies\GPLv3 Notice.txt" | Out-GridView -Title 'PoSh-EasyWin User Agreement' -PassThru | Set-Variable -Name UserAgreement
+    if ($UserAgreement) {
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
+        Write-Output -ForeGroundColor Green  "You accepted the EULA."
+        Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+        Start-Sleep -Seconds 1
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt NOT Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
+        Write-Output -ForeGroundColor Red    "You must accept the EULA to continue."
+        Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+        exit
+    }
+    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "===================================================================================================="
+}
 
 
 # These are the common settings for buttons in a function
@@ -1421,15 +1420,15 @@ $ExecuteScriptHandler = {
 
                 # Directory Listing
                 # Combines the inputs from the various GUI fields to query for directory listings
-                if ($FileSearchDirectoryListingCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchDirectoryListing.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+                if ($FileSearchDirectoryListingCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchDirectoryListing.ps1" }
 
                 # File Search
                 # Combines the inputs from the various GUI fields to query for filenames and/or file hashes
-                if ($FileSearchFileSearchCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchFileSearch.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+                if ($FileSearchFileSearchCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchFileSearch.ps1" }
 
                 # Alternate Data Streams
                 # Combines the inputs from the various GUI fields to query for Alternate Data Streams
-                if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchAlternateDataStream.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+                if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchAlternateDataStream.ps1" }
 
                 if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
                     [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support Packet Capture, use either Monitor Jobs or Session Based mode.","Incompatible Mode",'Ok',"Info")
@@ -1629,15 +1628,15 @@ $ExecuteScriptHandler = {
 
                 # Directory Listing
                 # Combines the inputs from the various GUI fields to query for directory listings
-                if ($FileSearchDirectoryListingCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-FileSearchDirectoryListing.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+                if ($FileSearchDirectoryListingCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-FileSearchDirectoryListing.ps1" }
 
                 # File Search
                 # Combines the inputs from the various GUI fields to query for filenames and/or file hashes
-                if ($FileSearchFileSearchCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-FileSearchFileSearch.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+                if ($FileSearchFileSearchCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-FileSearchFileSearch.ps1" }
 
                 # Alternate Data Stream
                 # Combines the inputs from the various GUI fields to query for Alternate Data Streams
-                if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-FileSearchAlternateDataStream.ps1" ; $RetrieveFilesButton.BackColor = 'LightGreen' }
+                if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Session Based\SessionQuery-FileSearchAlternateDataStream.ps1" }
 
                 # Endpoint Packet Capture
                 # Conducts a packet capture on the endpoints using netsh

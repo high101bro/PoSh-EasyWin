@@ -25,7 +25,7 @@ $EventViewerButtonAdd_Click = {
                                 $script:Credential
                             )
                             if (Test-Path 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'){
-                                [System.Windows.Forms.MessageBox]::Show("If the Event Viewer doesn't display, try re-launching PoSh-EasyWin itself with domain credentials and wihtout checking 'Specify Credentials'. This method would require the localhost to be on the domain.",'Show-EvengLog')
+                                [System.Windows.Forms.MessageBox]::Show("If the Event Viewer doesn't display, try re-launching PoSh-EasyWin itself with domain credentials and wihtout checking 'Specify Credentials'. This method would require the localhost to be on the domain.",'Show-EventLog')
                                 start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-WindowStyle Hidden -Command Show-eventLog -ComputerName $TargetComputer" -Credential $script:Credential -WindowStyle Hidden
                             }
                             else {
