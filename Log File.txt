@@ -20381,3 +20381,17 @@
 2021/03/21 13:07:38  ====================================================================================================
 2021/03/21 13:08:00  Credentials Used: administrator@mobilelab.home
 2021/03/21 13:08:01  start-process C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\kitty-0.74.4.7.exe -ArgumentList @("-ssh",10.10.10.99,"-l",administrator,"-pw","Password")
+2021/03/22 16:48:46  ====================================================================================================
+2021/03/22 16:48:46  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/22 16:48:49  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/22 16:48:50  ====================================================================================================
+2021/03/22 16:52:52   - 
+2021/03/22 16:53:07   - 
+2021/03/22 16:53:18  Credentials Used: administrator@mobilelab.home
+2021/03/22 16:53:19  start-process C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\KiTTY\kitty-0.74.4.7.exe -ArgumentList @("-ssh",10.10.10.99,"-l",administrator,"-pw","Password")
+2021/03/22 17:10:23  Credentials Used: administrator@mobilelab.home
+2021/03/22 17:10:23  start-process C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\KiTTY\kitty-0.74.4.7.exe -ArgumentList @("-ssh",10.10.10.99,"-l",administrator,"-pw","Password")
+2021/03/22 17:10:35  Credentials Used: administrator@mobilelab.home
+2021/03/22 17:10:35  start-process C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\KiTTY\kitty-0.74.4.7.exe -ArgumentList @("-ssh",ubuntu,"-l",administrator,"-pw","Password")
+2021/03/22 17:11:30  Credentials Used: administrator@mobilelab.home
+2021/03/22 17:11:30  start-process C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\KiTTY\kitty-0.74.4.7.exe -ArgumentList @("-ssh",10.10.10.99,"-l",administrator,"-pw","Password")
