@@ -298,6 +298,8 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
         # Location of External Programs directory
         $ExternalPrograms                     = "$Dependencies\Executables"
             $PsExecPath                       = "$ExternalPrograms\PsExec.exe"
+            $kitty_ssh_client                 = "$ExternalPrograms\KiTTY\kitty-0.74.4.7.exe"
+            $plink_ssh_client                 = "$ExternalPrograms\plink.exe"
 
         # CSV list of Event IDs numbers, names, and description
         $TagAutoListFile                      = "$Dependencies\Tags - Auto Populate.txt"
@@ -426,7 +428,7 @@ if (-not (Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
 
 # Check for, and prompt to install the PSWriteHTML module
 if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt") -and -not (Test-Path "$PoShHome\Settings\PSWriteHTML Module Install.txt")) {
-    if (-not (Get-Module -ListAvailable -Name PSWriteHTML)) {
+    if (-not (Get-InstalledModule -Name PSWriteHTML)) {
         $InstallPSWriteHTML = [System.Windows.Forms.MessageBox]::Show("PoSh-EasyWin can make use of the PSWriteHTML module to generate dynamic graphs. If this third party module is installed, it provides another means to represent data in an intuitive manner using a web browser. Though this module has been scanned and reviewed, any third party modules may pose a security risk. The PSWriteHTML module files have been packaged with PoSh-EasyWin, but are not being used unless its import. More information can be located at the following:
     https://www.powershellgallery.com/packages/PSWriteHTML
     https://github.com/EvotecIT/PSWriteHTML
@@ -442,6 +444,10 @@ This selection is persistent for this tool, but can be modified within the setti
              }
         }
     }
+    else {
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PSWriteHTML was detected as being installed."
+        'Import PSWriteHTML: Yes' | Set-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt"
+    }    
 }
 if (Test-Path -Path "$Dependencies\Modules\PSWriteHTML"){
     if ((Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {

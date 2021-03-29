@@ -16,33 +16,33 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
     if ($Command.Type -eq "(WinRM) Script") {
         $CommandString = "$($Command.Command)"
-        $OutputFileFileType = "csv"
+        $script:OutputFileFileType = "csv"
     }
     elseif ($Command.Type -eq "(WinRM) PoSh") {
         $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
-        $OutputFileFileType = "csv"
+        $script:OutputFileFileType = "csv"
     }
     elseif ($Command.Type -eq "(WinRM) WMI") {
         $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
-        $OutputFileFileType = "csv"
+        $script:OutputFileFileType = "csv"
     }
     #elseif ($Command.Type -eq "(WinRM) CMD") {
     #    $CommandString = "$($Command.Command)"
-    #    $OutputFileFileType = "txt"
+    #    $script:OutputFileFileType = "txt"
     #}
 
 
     #elseif ($Command.Type -eq "(RPC) PoSh") {
     #    $CommandString = "$($Command.Command) | Select-Object -Property @{n='PSComputerName';e={`$TargetComputer}}, $($Command.Properties)"
-    #    $OutputFileFileType = "csv"
+    #    $script:OutputFileFileType = "csv"
     #}
     elseif (($Command.Type -eq "(RPC) WMI") -and ($Command.Command -match "Get-WmiObject")) {
         $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
-        $OutputFileFileType = "csv"
+        $script:OutputFileFileType = "csv"
     }
     #elseif ($Command.Type -eq "(RPC) CMD") {
     #    $CommandString = "$($Command.Command)"
-    #    $OutputFileFileType = "txt"
+    #    $script:OutputFileFileType = "txt"
     #}
 
 
@@ -50,15 +50,15 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
 
     elseif ($Command.Type -eq "(SMB) PoSh") {
         $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
-        $OutputFileFileType = "txt"
+        $script:OutputFileFileType = "txt"
     }
     elseif ($Command.Type -eq "(SMB) WMI") {
         $CommandString = "$($Command.Command) | Select-Object -Property $($Command.Properties)"
-        $OutputFileFileType = "txt"
+        $script:OutputFileFileType = "txt"
     }
     elseif ($Command.Type -eq "(SMB) CMD") {
         $CommandString = "$($Command.Command)"
-        $OutputFileFileType = "txt"
+        $script:OutputFileFileType = "txt"
     }
 
 
@@ -80,7 +80,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $SessionData | Export-Clixml -Path "$OutputFilePath.xml"
         Remove-Variable -Name SessionData
     }
-    elseif ( $OutputFileFileType -eq "csv" ) {
+    elseif ( $script:OutputFileFileType -eq "csv" ) {
         $OutputFilePath = "$script:CollectedDataTimeStampDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType"
         Remove-Item -Path "$OutputFilePath.csv" -Force -ErrorAction SilentlyContinue
         Invoke-Command -ScriptBlock { param($CommandString); Invoke-Expression -Command $CommandString } -argumentlist $CommandString -Session $PSSession `
@@ -89,7 +89,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         $SessionData | Export-Clixml -Path "$OutputFilePath.xml" -Force
         Remove-Variable -Name SessionData -Force
     }
-    elseif ( $OutputFileFileType -eq "txt" ) {
+    elseif ( $script:OutputFileFileType -eq "txt" ) {
         $OutputFilePath = "$script:CollectedDataTimeStampDirectory\$((($CommandName) -split ' -- ')[1]) - $CommandType - $($TargetComputer)"
         Remove-Item -Path "$OutputFilePath.txt" -Force -ErrorAction SilentlyContinue
         Invoke-Command -ScriptBlock { param($CommandString); Invoke-Expression -Command $CommandString } -argumentlist $CommandString -Session $PSSession `

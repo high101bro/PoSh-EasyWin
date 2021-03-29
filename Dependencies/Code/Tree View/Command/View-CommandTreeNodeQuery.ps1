@@ -4,10 +4,15 @@ Function View-CommandTreeNodeQuery {
         This functions populates the command treeview under the Query view mode.
         It takes the nested different types of commmands within the main command object and places
         them within their respective protocol/command type node
+
+        Related Function:
+            View-CommandTreeNodeMethod
+            Compile-SelectedCommandTreeNode
+            MonitorJobScriptBlock
     #>
 
     # Adds Endpoint Command nodes
-    Foreach($Command in $script:AllEndpointCommands) {
+    Foreach($Command in $script:AllEndpointCommands) {        
         if ($Command.Command_WinRM_Script) { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRM) Script -- $($Command.Name)" -ToolTip $Command.Command_WinRM_Script }
         if ($Command.Command_WinRM_PoSh)   { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRM) PoSh -- $($Command.Name)"   -ToolTip $Command.Command_WinRM_PoSh }
         if ($Command.Command_WinRM_WMI)    { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(WinRM) WMI -- $($Command.Name)"    -ToolTip $Command.Command_WinRM_WMI }
@@ -21,6 +26,8 @@ Function View-CommandTreeNodeQuery {
         if ($Command.Command_SMB_PoSh)     { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(SMB) PoSh -- $($Command.Name)"     -ToolTip $Command.Command_SMB_PoSh }
         if ($Command.Command_SMB_WMI)      { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(SMB) WMI -- $($Command.Name)"      -ToolTip $Command.Command_SMB_WMI }
         if ($Command.Command_SMB_CMD)      { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(SMB) CMD -- $($Command.Name)"      -ToolTip $Command.Command_SMB_CMD }
+
+        if ($Command.Command_Linux) { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $Command.Name -Entry "(SSH) Linux -- $($Command.Name)" -ToolTip $Command.Command_Linux }
     }
     # Adds Active Directory Command nodes
     Foreach($Command in $script:AllActiveDirectoryCommands) {

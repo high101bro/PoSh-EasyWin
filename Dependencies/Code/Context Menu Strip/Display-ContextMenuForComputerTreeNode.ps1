@@ -18,20 +18,7 @@ function Display-ContextMenuForComputerTreeNode {
     }
     $ComputerListContextMenuStrip.Items.Add($script:ComputerListEndpointNameToolStripLabel)
 
-    #$comboBoxMenuItem = New-Object System.Windows.Forms.ToolStripComboBox
-    #$comboBoxMenuItem.Items.Add('Option 1')
-    #$comboBoxMenuItem.Items.Add('Option 2')
-    #$ComputerListContextMenuStrip.Items.Add($comboBoxMenuItem)
-
     $ComputerListContextMenuStrip.Items.Add('-')
-
-
-#    $ComputerListScreenShotToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-#        Text      = "Screenshot"
-#        ForeColor = 'DarkRed'
-#        Add_CLick = $ComputerListScreenShotButtonAdd_Click
-#    }
-#    $ComputerListContextMenuStrip.Items.Add($ComputerListScreenShotToolStripButton)
 
 
     $ComputerListRemoteDesktopToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
@@ -50,7 +37,7 @@ function Display-ContextMenuForComputerTreeNode {
     $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionToolStripButton)
 
 
-    if (Test-Path "$Dependencies\Executables\KiTTY\kitty-0.74.4.7.exe") {
+    if (Test-Path $kitty_ssh_client) {
         $ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "SSH"
             ForeColor = 'DarkRed'
@@ -60,7 +47,7 @@ function Display-ContextMenuForComputerTreeNode {
     }
 
 
-    if (Test-Path "$Dependencies\Executables\PsExec.exe") {
+    if (Test-Path $PsExecPath) {
         $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
             Text      = "PSExec"
             ForeColor = 'DarkRed'
@@ -84,6 +71,22 @@ function Display-ContextMenuForComputerTreeNode {
     }
     $ComputerListContextMenuStrip.Items.Add($ComputerListTagSelectedToolStripButton)
 
+<# Working proof of concept...
+    $comboBoxMenuItem = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
+        Width = $FormScale * 500
+        Add_SelectedIndexChanged = {
+            if ($This.selectedItem -eq 'Add Endpoint') { & $ComputerListAddEndpointToolStripButtonAdd_Click }
+            if ($This.selectedItem -eq 'Rename')       { & $ComputerListRenameToolStripButtonAdd_Click }
+            if ($This.selectedItem -eq 'Move')         { & $ComputerListMoveSelectedToolStripButtonAdd_Click }
+            if ($This.selectedItem -eq 'Delete')       { & $ComputerListDeleteSelectedToolStripButtonAdd_Click }
+        }
+    }
+    $comboBoxMenuItem.Items.Add('Add Endpoint')
+    $comboBoxMenuItem.Items.Add('Rename')
+    $comboBoxMenuItem.Items.Add('Move')
+    $comboBoxMenuItem.Items.Add('Delete')
+    $ComputerListContextMenuStrip.Items.Add($comboBoxMenuItem)
+#>
 
     $ComputerListAddEndpointToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "Add Endpoint"

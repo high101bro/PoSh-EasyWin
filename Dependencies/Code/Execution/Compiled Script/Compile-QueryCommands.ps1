@@ -5,7 +5,7 @@ function Compile-QueryCommands {
     $script:QueryCommands = @{}
     Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         # Checks for the type of command selected and assembles the command to be executed
-        $OutputFileFileType = ""
+        $script:OutputFileFileType = ""
 
         if ($Command.Type -eq "(WinRM) Script") {
             $CommandScript = $command.command

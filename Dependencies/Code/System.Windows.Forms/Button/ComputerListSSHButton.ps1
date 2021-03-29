@@ -50,16 +50,15 @@ $ComputerListSSHButtonAdd_Click = {
                 $Domain   = $Username.split('@')[1]
                 $Username = "$($Domain)\$($User)"
             }
-            $ssh_client = "$Dependencies\Executables\KiTTY\kitty-0.74.4.7.exe"
 
-            $ResultsListBox.Items.Add("kitty-0.74.4.7.exe -ssh '$script:ComputerTreeViewSelected' -l '$User' -pw 'password'")
-            start-process $ssh_client -ArgumentList @("-ssh",$script:ComputerTreeViewSelected,"-l",$User,"-pw",$Password)
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "start-process $ssh_client -ArgumentList @(`"-ssh`",$script:ComputerTreeViewSelected,`"-l`",$User,`"-pw`",`"Password`")"
+            $ResultsListBox.Items.Add("kitty-0.74.4.7.exe -ssh '$script:ComputerTreeViewSelected' -l '$Username' -pw 'password'")
+            start-process $kitty_ssh_client -ArgumentList @("-ssh",$script:ComputerTreeViewSelected,"-l",$Username,"-pw",$Password)
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "start-process $kitty_ssh_client -ArgumentList @(`"-ssh`",$script:ComputerTreeViewSelected,`"-l`",$User,`"-pw`",`"Password`")"
         }
         else {
-            $ResultsListBox.Items.Add("kitty-0.74.4.7.exe -ssh '$script:ComputerTreeViewSelected' -l '$User'")
-            start-process $ssh_client -ArgumentList @("-ssh",$script:ComputerTreeViewSelected,"-l",$User)
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "start-process $ssh_client -ArgumentList @(`"-ssh`",$script:ComputerTreeViewSelected,`"-l`",$User)"
+            $ResultsListBox.Items.Add("kitty-0.74.4.7.exe -ssh '$script:ComputerTreeViewSelected' -l '$Username'")
+            start-process $kitty_ssh_client -ArgumentList @("-ssh",$script:ComputerTreeViewSelected,"-l",$Username)
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "start-process $kitty_ssh_client -ArgumentList @(`"-ssh`",$script:ComputerTreeViewSelected,`"-l`",$User)"
         }
 
         if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {

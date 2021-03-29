@@ -3,6 +3,11 @@ function Compile-SelectedCommandTreeNode {
         .Description
         This function compiles the selected treeview comamnds, placing the proper command
         type and protocol into a variable list to be executed.
+
+        Related Functions:
+            View-CommandTreeNodeMethod
+            View-CommandTreeNodeQuery
+            MonitorJobScriptBlock
     #>
 
     # Commands in the treenode that are selected
@@ -124,6 +129,16 @@ function Compile-SelectedCommandTreeNode {
                             Type           = "(SMB) CMD"
                         }
                     }
+                    elseif ($Entry.Checked -and $Entry -match '(SSH)' -and $Entry -match 'Linux') {
+                        $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                        $script:CommandsCheckedBoxesSelected += New-Object psobject @{
+                            Name           = $Entry.Text
+                            Command        = $Command.Command_Linux
+                            ExportFileName = $Command.ExportFileName
+                            Type           = "(SSH) Linux"
+                        }
+                    }
+
                 }
             }
             if ($CommandsViewCommandNamesRadioButton.Checked) {
@@ -229,6 +244,15 @@ function Compile-SelectedCommandTreeNode {
                             Command        = $Command.Command_SMB_CMD
                             ExportFileName = $Command.ExportFileName
                             Type           = "(SMB) CMD"
+                        }
+                    }
+                    elseif ($Entry -match '(SSH)' -and $Entry -match 'Linux' -and $Entry.Checked) {
+                        $Command = $script:AllCommands | Where-Object Name -eq $(($Entry.Text -split ' -- ')[1])
+                        $script:CommandsCheckedBoxesSelected += New-Object psobject @{
+                            Name           = $Entry.Text
+                            Command        = $Command.Command_Linux
+                            ExportFileName = $Command.ExportFileName
+                            Type           = "(SSH) Linux"
                         }
                     }
                 }

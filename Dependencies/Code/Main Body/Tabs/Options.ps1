@@ -304,28 +304,29 @@ if (Test-Path "$PoShHome\Settings\Packet Captures - Keep etl and cab files.txt")
 $Section2OptionsTab.Controls.Add($OptionPacketKeepEtlCabFilesCheckBox)
 
 
-$OptionKeepResultsByEndpointsFilesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-    Text    = "Individual Execution - Keep Results by Endpoints"
-    Left    = $FormScale * 3
-    Top     = $OptionPacketKeepEtlCabFilesCheckBox.Top + $OptionPacketKeepEtlCabFilesCheckBox.Height
-    Width   = $FormScale * 300
-    Height  = $FormScale * 22
-    Enabled = $true
-    Checked = $false
-    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt" -Force }
-}
-if (Test-Path "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt") { 
-    if ((Get-Content "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt") -eq 'True'){$OptionKeepResultsByEndpointsFilesCheckBox.checked = $true}
-    else {$OptionKeepResultsByEndpointsFilesCheckBox.checked = $false}
-}
-$Section2OptionsTab.Controls.Add($OptionKeepResultsByEndpointsFilesCheckBox)
+# # BUG: When the box is unchecked, the results don't compile correctly
+# $OptionKeepResultsByEndpointsFilesCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
+#     Text    = "Individual Execution - Keep Results by Endpoints"
+#     Left    = $FormScale * 3
+#     Top     = $OptionPacketKeepEtlCabFilesCheckBox.Top + $OptionPacketKeepEtlCabFilesCheckBox.Height
+#     Width   = $FormScale * 300
+#     Height  = $FormScale * 22
+#     Enabled = $true
+#     Checked = $false
+#     Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+#     Add_Click = { $This.Checked | Set-Content "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt" -Force }
+# }
+# if (Test-Path "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt") { 
+#     if ((Get-Content "$PoShHome\Settings\Individual Execution - Keep Results by Endpoints.txt") -eq 'True'){$OptionKeepResultsByEndpointsFilesCheckBox.checked = $true}
+#     else {$OptionKeepResultsByEndpointsFilesCheckBox.checked = $false}
+# }
+# $Section2OptionsTab.Controls.Add($OptionKeepResultsByEndpointsFilesCheckBox)
 
 
 $OptionSaveCliXmlDataCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text    = "Save XML Data - Object Data Used For Terminals"
     Left    = $FormScale * 3
-    Top     = $OptionKeepResultsByEndpointsFilesCheckBox.Top + $OptionKeepResultsByEndpointsFilesCheckBox.Height
+    Top     = $OptionPacketKeepEtlCabFilesCheckBox.Top + $OptionPacketKeepEtlCabFilesCheckBox.Height
     Width   = $FormScale * 300
     Height  = $FormScale * 22
     Enabled = $true
