@@ -885,8 +885,8 @@ if ($MonitorMode) {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng")) {
-                        Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng"
+                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng")) {
+                        Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng"
                     }
                     else {
                         [System.Windows.Forms.MessageBox]::Show("You cannot view the pcap until the data collection has completed.",'PoSh-EasyWin')
@@ -906,7 +906,7 @@ if ($MonitorMode) {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\"
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\"
                 }
             }
     
@@ -1054,7 +1054,7 @@ if ($MonitorMode) {
             elseif ("$JobsExportFiles" -eq "false" -and "$FileExtension" -like 'txt') {
             Invoke-Expression @"
             `$script:Section3MonitorJobViewButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text      = 'Open Results'
+                text      = 'Open Folder'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
                 Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
                 Width     = `$FormScale * 110
@@ -1064,8 +1064,8 @@ if ($MonitorMode) {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
-                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\*")) {
-                        Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\"
+                    if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\*")) {
+                        Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\"
                     }
                     else {
                         [System.Windows.Forms.MessageBox]::Show("There are no results avaiable.",'PoSh-EasyWin')
@@ -1157,18 +1157,28 @@ if ($MonitorMode) {
                 `$script:Section3MonitorJobShellButton$JobId.Text = 'Console'
             }
 
-            
+
             `$script:Section3MonitorJobChartsButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text     = 'Charts'
                 Left     = `$script:Section3MonitorJobShellButton$JobId.Left + `$script:Section3MonitorJobShellButton$JobId.Width + (`$FormScale * 5)
                 Top      = `$script:Section3MonitorJobViewButton$JobId.Top + `$script:Section3MonitorJobViewButton$JobId.Height + (`$FormScale * 5)
                 Width    = `$FormScale * 45
                 Height   = `$FormScale * 21
                 Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
-                Add_click = {
+                Add_Click = {
                     if (`$This.BackColor -ne 'LightGray') {
                         `$This.BackColor = 'LightGray'
                     }
+                }
+            }
+            if ("$JobsExportFiles" -eq "true" -and "$FileExtension" -like 'txt') {
+                `$script:Section3MonitorJobChartsButton$JobId.text = 'Folder'
+                `$script:Section3MonitorJobChartsButton$JobId.Add_click({
+                    Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\"
+                })
+            }
+            else {
+                `$script:Section3MonitorJobChartsButton$JobId.text = 'Charts'
+                `$script:Section3MonitorJobChartsButton$JobId.Add_click({
                     if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).$FileExtension")) {
                                         `$AnchorAll = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
                                         [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
@@ -1357,7 +1367,7 @@ if ($MonitorMode) {
                     }
                     Remove-Variable -Name JobXMLResults$JobId -Scope script
                     [System.GC]::Collect()
-                }
+                })
             }
 
             `$script:Section3MonitorJobDetailsButton$JobId = New-Object System.Windows.Forms.Button -Property @{
@@ -2449,7 +2459,8 @@ if ($DisableReRun) {
 
                         
                         # Sets the button color depending on if there are results
-                        if ("$JobsExportFiles" -eq "false" -and (Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\*")) {
+                        if ("$JobsExportFiles" -eq "false" -and (Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\*")) {
+                        # Support for PSExec/SMB commands
                             `$script:Section3MonitorJobProgressBar$JobId.ForeColor          = 'LightGreen'
                             `$script:Section3MonitorJobViewButton$JobId.BackColor           = 'LightGreen'
                             `$script:Section3MonitorJobViewHTMLorTextButton$JobId.BackColor = 'LightGreen'
@@ -2461,14 +2472,16 @@ if ($DisableReRun) {
                                 `$script:Section3MonitorJobChartsButton$JobId.BackColor     = 'LightCoral'
                             }
                         }
-                        elseif ("$JobsExportFiles" -eq "false" -and -not (Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\$CollectionName\*")) {
+                        elseif ("$JobsExportFiles" -eq "false" -and -not (Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\*")) {
+                        # Support for PSExec/SMB commands
                             `$script:Section3MonitorJobProgressBar$JobId.ForeColor          = 'LightCoral'
                             `$script:Section3MonitorJobViewButton$JobId.BackColor           = 'LightCoral'
                             `$script:Section3MonitorJobViewHTMLorTextButton$JobId.BackColor = 'LightCoral'
                             `$script:Section3MonitorJobShellButton$JobId.BackColor          = 'LightCoral'
                             `$script:Section3MonitorJobChartsButton$JobId.BackColor         = 'LightCoral'
-                        }                
+                        }
                         elseif ( `$script:CurrentJobsWithComputerName$JobId.count -ge 1 -or `$script:CurrentJobsWithComputerNameAuto$JobId.count -ge 1) {
+                        # Support for normal WinRM and WMI/RPC commands
                             `$script:Section3MonitorJobProgressBar$JobId.ForeColor          = 'LightGreen'
                             `$script:Section3MonitorJobViewButton$JobId.BackColor           = 'LightGreen'
                             `$script:Section3MonitorJobViewHTMLorTextButton$JobId.BackColor = 'LightGreen'
@@ -2478,7 +2491,7 @@ if ($DisableReRun) {
                             else { 
                                 `$script:Section3MonitorJobShellButton$JobId.BackColor      = 'LightGreen' 
                             }
-                            `$script:Section3MonitorJobChartsButton$JobId.BackColor         = 'LightGreen'
+                            `$script:Section3MonitorJobChartsButton$JobId.BackColor     = 'LightGreen'
                         }
                         else {
                             `$script:Section3MonitorJobProgressBar$JobId.ForeColor          = 'LightCoral'

@@ -25890,3 +25890,95 @@
 2021/03/29 01:17:24  ps aux || ps ef
 2021/03/29 01:17:24  Credentials Used: administrator
 2021/03/29 01:17:24  ps aux || ps ef
+2021/03/29 11:05:12  ====================================================================================================
+2021/03/29 11:05:12  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/29 11:05:23  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/29 11:05:24  ====================================================================================================
+2021/03/29 11:06:14  Credentials Used: administrator
+2021/03/29 11:06:14  start-process C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\KiTTY\kitty-0.74.4.7.exe -ArgumentList @("-ssh",10.10.10.71,"-l",,"-pw","Password")
+2021/03/29 11:06:30  Credentials Used: administrator
+2021/03/29 11:06:30  ps aux || ps ef
+2021/03/29 11:06:30  Credentials Used: administrator
+2021/03/29 11:06:30  ps aux || ps ef
+2021/03/29 11:16:16  ====================================================================================================
+2021/03/29 11:16:16  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/29 11:17:01  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/29 11:17:02  ====================================================================================================
+2021/03/29 11:17:45  Credentials Used: administrator
+2021/03/29 11:17:45  ps aux || ps ef
+2021/03/29 11:17:45  Credentials Used: administrator
+2021/03/29 11:17:45  ps aux || ps ef
+2021/03/29 11:18:44  Credentials Used: administrator
+2021/03/29 11:18:44  ps aux || ps ef
+2021/03/29 11:18:45  Credentials Used: administrator
+2021/03/29 11:18:45  ps aux || ps ef
+2021/03/29 11:24:02  ====================================================================================================
+2021/03/29 11:24:02  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/29 11:24:17  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/29 11:24:18  ====================================================================================================
+2021/03/29 11:26:21  Credentials Used: administrator
+2021/03/29 11:26:21  ps aux || ps ef
+2021/03/29 11:26:21  Credentials Used: administrator
+2021/03/29 11:26:22  ps aux || ps ef
+2021/03/29 11:26:52  Credentials Used: administrator
+2021/03/29 11:26:52  ps aux || ps ef
+2021/03/29 11:26:52  Credentials Used: administrator
+2021/03/29 11:26:53  ps aux || ps ef
+2021/03/29 11:28:33  ====================================================================================================
+2021/03/29 11:28:33  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/29 11:28:34  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/29 11:28:35  ====================================================================================================
+2021/03/29 11:31:18  Credentials Used: administrator
+2021/03/29 11:31:18  ps aux || ps ef
+2021/03/29 11:31:18  Credentials Used: administrator
+2021/03/29 11:31:18  ps aux || ps ef
+2021/03/29 11:32:41  ====================================================================================================
+2021/03/29 11:32:42  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/29 11:32:43  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/29 11:32:44  ====================================================================================================
+2021/03/29 11:33:38  Credentials Used: administrator
+2021/03/29 11:33:38  ps aux || ps ef
+2021/03/29 11:33:38  Credentials Used: administrator
+2021/03/29 11:33:38  ps aux || ps ef
+2021/03/29 11:34:32  ====================================================================================================
+2021/03/29 11:34:32  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/29 11:34:37  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/29 11:34:38  ====================================================================================================
+2021/03/29 11:35:16  Credentials Used: administrator
+2021/03/29 11:35:16  ps aux || ps ef
+2021/03/29 11:35:17  Credentials Used: administrator
+2021/03/29 11:35:17  ps aux || ps ef
+2021/03/29 11:36:16  ====================================================================================================
+2021/03/29 11:36:17  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/29 11:36:18  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/29 11:36:20  ====================================================================================================
+2021/03/29 11:36:44  Credentials Used: administrator
+2021/03/29 11:36:44  ps aux || ps ef
+2021/03/29 11:36:44  Credentials Used: administrator
+2021/03/29 11:36:44  ps aux || ps ef
+2021/03/29 11:37:26  Credentials Used: administrator
+2021/03/29 11:37:26  ps aux || ps ef
+2021/03/29 11:37:26  Credentials Used: administrator
+2021/03/29 11:37:26  ps aux || ps ef
+2021/03/29 11:39:26  ====================================================================================================
+2021/03/29 11:39:26  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/29 11:39:28  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/29 11:39:29  ====================================================================================================
+2021/03/29 11:39:56  ====================================================================================================
+2021/03/29 11:39:56  PoSh-EasyWin Started By: ZENBOOK\danie
+2021/03/29 11:39:58  PoSh-EasyWin User Agreemennt Accepted By: ZENBOOK\danie
+2021/03/29 11:39:59  ====================================================================================================
+2021/03/29 11:40:37  Credentials Used: administrator
+2021/03/29 11:40:38  ps aux || ps ef
+2021/03/29 11:40:38  Credentials Used: administrator
+2021/03/29 11:40:38  ps aux || ps ef
+2021/03/29 11:41:16   - True
+2021/03/29 11:41:16   - True
+2021/03/29 11:41:18  Credentials Used: administrator@mobilelab.home
+2021/03/29 11:41:19  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-01" -AcceptEULA -NoBanner -u $UserName -p $Password cmd /c "tasklist /V
+2021/03/29 11:41:20  Credentials Used: administrator@mobilelab.home
+2021/03/29 11:41:20  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-02" -AcceptEULA -NoBanner -u $UserName -p $Password cmd /c "tasklist /V
+2021/03/29 11:42:15  Credentials Used: administrator@mobilelab.home
+2021/03/29 11:42:18  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-01" -AcceptEULA -NoBanner -u $UserName -p $Password powershell "Get-Process | Select-Object * | ConvertTo-Csv -NoType"
+2021/03/29 11:42:19  Credentials Used: administrator@mobilelab.home
+2021/03/29 11:42:21  C:\Users\danie\Documents\GitHub\PoSh-EasyWin\Dependencies\Executables\PsExec.exe "\\WIN10-02" -AcceptEULA -NoBanner -u $UserName -p $Password powershell "Get-Process | Select-Object * | ConvertTo-Csv -NoType"
