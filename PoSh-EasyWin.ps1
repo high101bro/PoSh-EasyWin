@@ -321,6 +321,8 @@ $PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -paren
         # Location of separate queries
         $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
 
+# Send Files listbox value store
+$script:SendFilesValueStoreListBox = @()
 
 # Keeps track of the number of RPC protocol commands selected, if the value is ever greater than one, it'll set the collection mode to 'Monitor Jobs'
 $script:RpcCommandCount = 0

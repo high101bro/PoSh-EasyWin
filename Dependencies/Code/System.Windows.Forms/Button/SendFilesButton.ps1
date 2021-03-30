@@ -29,8 +29,62 @@ $SendFilesButtonAdd_Click = {
                         SizeMode = 'StretchImage'
                     }
                     $FileTransferOptionsForm.Controls.Add($FileTransferPropertyList0PictureBox)
-    
-    
+
+                    
+                            $FileTransferProtocolGroupBox = New-Object Windows.Forms.GroupBox -Property @{
+                                Text   = "Protocol:"
+                                Left   = $FileTransferPropertyList0PictureBox.Left + $FileTransferPropertyList0PictureBox.Width + ($FormScale * 40)
+                                Top    = $FileTransferPropertyList0PictureBox.Top + ($FormScale * 10)
+                                Width  = $FormScale * 100
+                                Height = $FormScale * 85
+                                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+                                ForeColor = 'Blue'
+                            }
+                            $FileTransferOptionsForm.Controls.Add($FileTransferProtocolGroupBox)
+
+                    
+                            $script:FileTransferProtocolWinRMRadioButton = New-Object Windows.Forms.RadioButton -Property @{
+                                Text   = "WinRM"
+                                Left   = $FormScale * 15
+                                Top    = $FormScale * 15
+                                Width  = $FormScale * 75
+                                Height = $FormScale * 22
+                                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                                ForeColor = 'Black'
+                                Checked   = $true
+                                Enabled   = $true
+                            }
+                            $FileTransferProtocolGroupBox.Controls.Add($script:FileTransferProtocolWinRMRadioButton)
+
+
+                            $script:FileTransferProtocolRPCRadioButton = New-Object Windows.Forms.RadioButton -Property @{
+                                Text   = "RPC (n/a)"
+                                Left   = $script:FileTransferProtocolWinRMRadioButton.Left
+                                Top    = $script:FileTransferProtocolWinRMRadioButton.Top + $script:FileTransferProtocolWinRMRadioButton.Height
+                                Width  = $FormScale * 75
+                                Height = $FormScale * 22
+                                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                                ForeColor = 'Black'
+                                Checked   = $false
+                                Enabled   = $false
+                            }
+                            $FileTransferProtocolGroupBox.Controls.Add($script:FileTransferProtocolRPCRadioButton)
+
+                            
+                            $script:FileTransferProtocolSMBRadioButton = New-Object Windows.Forms.RadioButton -Property @{
+                                Text   = "SMB (n/a)"
+                                Left   = $script:FileTransferProtocolRPCRadioButton.Left
+                                Top    = $script:FileTransferProtocolRPCRadioButton.Top + $script:FileTransferProtocolRPCRadioButton.Height
+                                Width  = $FormScale * 75
+                                Height = $FormScale * 22
+                                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                                ForeColor = 'Black'
+                                Checked   = $false
+                                Enabled   = $false
+                            }
+                            $FileTransferProtocolGroupBox.Controls.Add($script:FileTransferProtocolSMBRadioButton)
+
+
                     $FileTransferPropertyList0Label = New-Object System.Windows.Forms.Label -Property @{
                         Text   = "Select any number of files to send to endpoints."
                         Left   = $FormScale * 10
@@ -76,6 +130,7 @@ $SendFilesButtonAdd_Click = {
                                 }
                                 else {
                                     $script:FileTransferPathsListBox.Items.Add($filename)
+                                    $script:SendFilesValueStoreListBox += $filename
                                 }
                             }
                             Update-SendButtonColor
@@ -109,6 +164,7 @@ $SendFilesButtonAdd_Click = {
                                 }
                                 else {
                                     $script:FileTransferPathsListBox.Items.Add($directory)
+                                    $script:SendFilesValueStoreListBox += $directory
                                 }
                             }
                             Update-SendButtonColor
@@ -148,6 +204,9 @@ $SendFilesButtonAdd_Click = {
                             while($script:FileTransferPathsListBox.SelectedItems) {
                                 $script:FileTransferPathsListBox.Items.Remove($script:FileTransferPathsListBox.SelectedItems[0])
                             }
+
+                            $script:SendFilesValueStoreListBox = $script:FileTransferPathsListBox.items
+
                             Update-SendButtonColor
                         }
                     }
@@ -200,11 +259,18 @@ $SendFilesButtonAdd_Click = {
                                                 $script:FileTransferPathsListBox.Items.Add($filename)
                                             }
                                         }
+                                        $script:SendFilesValueStoreListBox = $script:FileTransferPathsListBox.items
+
                                         $FileTransferStatusBar.Text = ("List contains $($script:FileTransferPathsListBox.Items.Count) items")
                                         Update-SendButtonColor
                                     }
                                 }
                                 $FileTransferOptionsForm.Controls.Add($script:FileTransferPathsListBox)
+
+                                foreach ($path in $script:SendFilesValueStoreListBox) {
+                                    $script:FileTransferPathsListBox.Items.Add($path)
+                                }
+    
 
                     $FileTransferDestinationPathLabel = New-Object System.Windows.Forms.Label -Property @{
                         Text   = "Destination Path:"
@@ -244,31 +310,43 @@ $SendFilesButtonAdd_Click = {
                             foreach ($TargetComputer in $script:ComputerList) {
                                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Create-NewCredentials }
+                                    
                                     Start-Job -ScriptBlock {
                                         param(
                                             $FileTransferPathsListBox,
                                             $FileTransferDestinationPathRichTextBox,
                                             $TargetComputer,
-                                            $Credential
+                                            $Credential,
+                                            $FileTransferProtocolWinRMRadioButton,
+                                            $FileTransferProtocolRPCRadioButton,
+                                            $FileTransferProtocolSMBRadioButton
                                         )
-                                        # In case a $TargetComputer is an IP Address and not a Hostname
-                                        $TargetComputerDrive = $TargetComputer -replace '`.','-'
-                                        
-                                        $AdminShare   = ($FileTransferDestinationPathRichTextBox | Split-Path -Qualifier) -replace ':','$'
-                                        $TargetFolder = ($FileTransferDestinationPathRichTextBox | Split-Path -NoQualifier).Trim('\')
+                                        if ($FileTransferProtocolWinRMRadioButton.checked) {
+                                            # In case a $TargetComputer is an IP Address and not a Hostname
+                                            $TargetComputerDrive = $TargetComputer -replace '`.','-'
+                                            
+                                            $AdminShare   = ($FileTransferDestinationPathRichTextBox | Split-Path -Qualifier) -replace ':','$'
+                                            $TargetFolder = ($FileTransferDestinationPathRichTextBox | Split-Path -NoQualifier).Trim('\')
 
-                                        New-PSDrive -Name $TargetComputerDrive `
-                                        -PSProvider FileSystem `
-                                        -Root "\\$TargetComputer\$AdminShare\$TargetFolder" `
-                                        -Credential $Credential | Out-Null
-                            
-                                        foreach ($Path in $FileTransferPathsListBox) {
-                                            Copy-Item -Path $Path -Destination "$($TargetComputerDrive):" -Recurse -Force
+                                            New-PSDrive -Name $TargetComputerDrive `
+                                            -PSProvider FileSystem `
+                                            -Root "\\$TargetComputer\$AdminShare\$TargetFolder" `
+                                            -Credential $Credential | Out-Null
+                                
+                                            foreach ($Path in $FileTransferPathsListBox) {
+                                                Copy-Item -Path $Path -Destination "$($TargetComputerDrive):" -Recurse -Force
+                                            }
+
+                                            Remove-PSDrive -Name $TargetComputerDrive | Out-Null
                                         }
-
-                                        Remove-PSDrive -Name $TargetComputerDrive | Out-Null
+                                        elseif ($FileTransferProtocolRPCRadioButton.checked) {
+                                            $null
+                                        }
+                                        elseif ($FileTransferProtocolSMBRadioButton.checked) {
+                                            $null
+                                        }
                                     } `
-                                    -ArgumentList @($FilePaths,$script:FileTransferDestinationPathRichTextBox.text,$TargetComputer,$script:Credential) `
+                                    -ArgumentList @($FilePaths,$script:FileTransferDestinationPathRichTextBox.text,$TargetComputer,$script:Credential,$script:FileTransferProtocolWinRMRadioButton,$script:FileTransferProtocolRPCRadioButton,$script:FileTransferProtocolSMBRadioButton) `
                                     -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
 
                                     ############Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScript,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
