@@ -4,7 +4,7 @@ Function Message-HostAlreadyExists {
         $Computer,
         [Switch]$ResultsListBoxMessage
     )
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
     [system.media.systemsounds]::Exclamation.play()
     if ($Computer){
         $ComputerNameExist = $Computer

@@ -293,7 +293,7 @@ function Launch-RekallWinPmemForm {
         CommonButtonSettings -Button $RekallWinPmemCheckRemoteResourcesButton
         $RekallWinPmemCheckRemoteResourcesButton.add_click({
             # This brings specific tabs to the forefront/front view
-            $MainBottomTabControl.SelectedTab   = $Section3ResultsTab
+            $InformationTabControl.SelectedTab   = $Section3ResultsTab
 
             if ($RekallWinPmemCheckRemoteResourcesButton.Text -eq "Check Remote Resources") {
                 $RekallWinPmemCheckRemoteResourcesButton.Text = "Querying Endpoint"

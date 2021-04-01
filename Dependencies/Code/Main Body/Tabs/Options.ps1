@@ -41,6 +41,22 @@ $Section2OptionsTab.Controls.Add($OptionViewReadMeButton)
 CommonButtonSettings -Button $OptionViewReadMeButton
 
 
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\PoShEasyWinLicenseAndAboutButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\PoShEasyWinLicenseAndAboutButton.ps1"
+$PoShEasyWinLicenseAndAboutButton = New-Object Windows.Forms.Button -Property @{
+    Text   = "GNU General Public License v3"
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Left   = $OptionViewReadMeButton.Left + $OptionViewReadMeButton.Width + ($FormScale * 5)
+    Top    = $OptionViewReadMeButton.Top
+    Width  = $FormScale * 200
+    Height = $FormScale * 22
+    Add_Click      = $PoShEasyWinLicenseAndAboutButtonAdd_Click
+    Add_MouseHover = $PoShEasyWinLicenseAndAboutButtonAdd_MouseHover
+}
+$Section2OptionsTab.Controls.Add($PoShEasyWinLicenseAndAboutButton)
+CommonButtonSettings -Button $PoShEasyWinLicenseAndAboutButton
+
+
 $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox = New-Object System.Windows.Forms.Groupbox -Property @{
     Text   = "Search Endpoints for Previously Collected Data"
     Top    = $OptionTextToSpeachButton.Top + $OptionTextToSpeachButton.Height + $($FormScale * 5)

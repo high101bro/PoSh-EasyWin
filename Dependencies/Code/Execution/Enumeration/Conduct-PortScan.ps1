@@ -11,7 +11,7 @@ function Conduct-PortScan {
         $FirstPort,
         $LastPort
     )
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     if ($EndpointList) {
         $IPsToScan = $script:ComputerList

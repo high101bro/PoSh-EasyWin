@@ -3,7 +3,7 @@ function Stop-ProcessesOnMultipleComputers {
         [switch]$SelectProcessCsvFile,
         [switch]$CollectNewProcessData
     )
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     if ($SelectProcessCsvFile) {
         [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null

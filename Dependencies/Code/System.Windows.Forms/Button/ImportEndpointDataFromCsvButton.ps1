@@ -1,5 +1,5 @@
 $ImportEndpointDataFromCsvButtonAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $ComputerTreeNodeImportCsvOpenFileDialog                  = New-Object System.Windows.Forms.OpenFileDialog -Property @{

@@ -1,6 +1,6 @@
 $ComputerListRenameToolStripButtonAdd_Click = {
     # This brings specific tabs to the forefront/front view
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     Create-ComputerNodeCheckBoxArray
     if ($script:EntrySelected) {

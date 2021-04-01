@@ -1,6 +1,6 @@
 $ComputerListDeleteSelectedToolStripButtonAdd_Click = {
     # This brings specific tabs to the forefront/front view
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     Create-ComputerNodeCheckBoxArray
     if ($script:EntrySelected) {
@@ -49,7 +49,7 @@ $ComputerListDeleteAllCheckedToolStripButtonAdd_Click = {
     }
     else {
         # This brings specific tabs to the forefront/front view
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
         Create-ComputerNodeCheckBoxArray
         if ($script:ComputerTreeViewSelected.count -eq 1) {

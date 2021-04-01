@@ -4,9 +4,9 @@ $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     Name = "Host Data Tab"
     Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
-    Add_click = { Minimize-MonitorJobsTab }
+    Add_click = { script:Minimize-MonitorJobsTab }
 }
-$MainBottomTabControl.Controls.Add($Section3HostDataTab)
+$InformationTabControl.Controls.Add($Section3HostDataTab)
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataNameTextBox.ps1"
@@ -184,11 +184,10 @@ CommonButtonSettings -Button $Section3HostDataTagsAddButton
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\Section3HostDataNotesRichTextBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\RichTextBox\Section3HostDataNotesRichTextBox.ps1"
 $Section3HostDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
-    Location = @{ X = 0
-                  Y = $Section3HostDataMACTextBox.Location.Y + $Section3HostDataMACTextBox.Size.Height + $($FormScale * 6) }
-    Size     = @{ Width  = $FormScale * 634
-                  Height = $FormScale * 135 }
-    Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Left   = 0
+    Top    = $Section3HostDataMACTextBox.Location.Y + $Section3HostDataMACTextBox.Size.Height + $($FormScale * 6)
+    Width  = $FormScale * 634
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Multiline  = $True
     ScrollBars = 'Vertical'
     WordWrap   = $True

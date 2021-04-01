@@ -6,10 +6,6 @@ $Section1OpNotesTab = New-Object System.Windows.Forms.TabPage -Property @{
 }
 $MainLeftTabControl.Controls.Add($Section1OpNotesTab)
 
-#$TabRightPosition          = 3
-#$TabhDownPosition          = 3
-#$TabAreaWidth              = 446
-#$TabAreaHeight             = 557
 $OpNotesInputTextBoxWidth  = 450
 $OpNotesInputTextBoxHeight = 22
 $OpNotesButtonWidth        = 100
@@ -200,8 +196,8 @@ $OpNotesListBox = New-Object System.Windows.Forms.ListBox -Property @{
     SelectionMode       = 'MultiExtended'
     ScrollAlwaysVisible = $True
     AutoSize            = $false
-    Add_MouseEnter = $OpNotesListBoxAdd_MouseEnter
-    Add_MouseLeave = $OpNotesListBoxAdd_MouseLeave
+    #Add_MouseEnter = $OpNotesListBoxAdd_MouseEnter
+    #Add_MouseLeave = $OpNotesListBoxAdd_MouseLeave
 
 }
 $Section1OpNotesTab.Controls.Add($OpNotesListBox)

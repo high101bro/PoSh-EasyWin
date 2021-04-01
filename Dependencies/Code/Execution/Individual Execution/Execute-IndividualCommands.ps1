@@ -229,7 +229,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $script:CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
                     }
                     elseif ($script:CommandType -eq "(SMB) PoSh"){
-                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                        $InformationTabControl.SelectedTab = $Section3ResultsTab
                         $PoShEasyWin.Refresh()
 
                         $script:JobsStarted = $true
@@ -255,7 +255,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         $script:ProgressBarEndpointsProgressBar.Value += 1
                     }
                     elseif ($script:CommandType -eq "(SMB) WMI"){
-                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                        $InformationTabControl.SelectedTab = $Section3ResultsTab
                         $PoShEasyWin.Refresh()
 
                         $script:JobsStarted = $true
@@ -280,7 +280,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         $script:ProgressBarEndpointsProgressBar.Value += 1
                     }
                     elseif ($script:CommandType -eq "(SMB) CMD"){
-                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                        $InformationTabControl.SelectedTab = $Section3ResultsTab
                         $PoShEasyWin.Refresh()
 
                         $script:JobsStarted = $true
@@ -308,7 +308,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                         #Start-Process PowerShell -WindowStyle Hidden -ArgumentList "Start-Process '$PsExecPath' -ArgumentList '-AcceptEULA -NoBanner \\$script:ComputerTreeViewSelected $UseCredential tasklist'" > c:\ressults.txt
                     }
                     elseif ($script:CommandType -eq "(SSH) Linux") {
-                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                        $InformationTabControl.SelectedTab = $Section3ResultsTab
                         $PoShEasyWin.Refresh()
 
                         $script:JobsStarted = $true

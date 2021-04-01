@@ -3,7 +3,7 @@ function Quarantine-EndpointsWithFirewallRules {
         [switch]$CopyEndpointFirewallRulesToLocalhost,
         [switch]$ApplyFirewallRulesLocalCopyToEndpoints
     )
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     $ResultsListBox.Items.Clear()
 

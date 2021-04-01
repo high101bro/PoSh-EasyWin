@@ -11,7 +11,7 @@ $RekallWinPmemMemoryCaptureButtonAdd_MouseHover = {
 
 $RekallWinPmemMemoryCaptureButtonAdd_Click = {
     # This brings specific tabs to the forefront/front view
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     # Ensures only one endpoint is selected
     # This array stores checkboxes that are check; a minimum of at least one checkbox will be needed later in the script

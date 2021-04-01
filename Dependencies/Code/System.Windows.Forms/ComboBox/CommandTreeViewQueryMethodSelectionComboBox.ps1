@@ -34,7 +34,7 @@ $script:CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged = {
 
                 # This brings specific tabs to the forefront/front view
                 $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                 #Removed For Testing#$ResultsListBox.Items.Clear()
                 if ($RpcCommandNodesRemoved.count -gt 0) {

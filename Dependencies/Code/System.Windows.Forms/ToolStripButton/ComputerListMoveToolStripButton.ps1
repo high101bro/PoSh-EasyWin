@@ -57,7 +57,7 @@ function Show-MoveForm {
     CommonButtonSettings -Button $ComputerTreeNodePopupExecuteButton
     $ComputerTreeNodePopupExecuteButton.Add_Click({
         # This brings specific tabs to the forefront/front view
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
         if ($SelectedEndpoint){ Move-ComputerTreeNodeSelected -SelectedEndpoint }
         else { Move-ComputerTreeNodeSelected }
         $ComputerTreeNodePopup.close()
@@ -72,7 +72,7 @@ function Show-MoveForm {
 
 
 $ComputerListMoveSelectedToolStripButtonAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     Create-ComputerNodeCheckBoxArray
     if ($script:EntrySelected) {
@@ -111,7 +111,7 @@ $ComputerListMoveAllCheckedToolStripButtonAdd_Click = {
         [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Move All')
     }
     else {
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
         Create-ComputerNodeCheckBoxArray
         if ($script:ComputerTreeViewSelected.count -ge 0) {

@@ -21,7 +21,7 @@ function Get-RemoteFile {
 
 
     if ($FilesToDownload -and $ConfirmDownload) {
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
         if (Test-Path $($script:CollectionSavedDirectoryTextBox.Text)) { $RetrieveFilesSaveDirectory = $script:CollectionSavedDirectoryTextBox.Text }
         $RetrieveFilesSaveDirectory = $script:CollectionSavedDirectoryTextBox.Text

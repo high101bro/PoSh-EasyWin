@@ -470,7 +470,7 @@ $EnumerationComputerListBox = New-Object System.Windows.Forms.ListBox -Property 
     Left   = $EnumerationResolveDNSNameButton.Left
     Top    = $EnumerationResolveDNSNameButton.Top + $EnumerationResolveDNSNameButton.Height + ($FormScale + 10)
     Width  = $FormScale * 152
-    Height = $EnumerationResolveDNSNameButton.Size.Height + $( $FormScale * 410)
+    Height = $EnumerationResolveDNSNameButton.Size.Height + $( $FormScale * 350)
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     SelectionMode = 'MultiExtended'
 }
@@ -487,7 +487,7 @@ $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.But
     Width  = $EnumerationResolveDNSNameButton.Width
     Height = $FormScale * 22
     Add_Click = {
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Enumeration:  Added $($EnumerationComputerListBox.SelectedItems.Count) IPs")
@@ -500,7 +500,7 @@ $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.But
             else {
                 if ($ComputerTreeNodeOSHostnameRadioButton.Checked) {
                     Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Selected -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
-                    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                    $InformationTabControl.SelectedTab = $Section3ResultsTab
                     $ResultsListBox.Items.Add("$($Selected) has been added to the Unknown category")
                 }
                 elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {

@@ -1,5 +1,5 @@
 $EventViewerButtonAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
     #Create-ComputerNodeCheckBoxArray
     Generate-ComputerList
 
@@ -7,7 +7,7 @@ $EventViewerButtonAdd_Click = {
         if ($script:ComputerList.count -gt 0) {
             if (Verify-Action -Title "Verification: Event Viewer" -Question "Open the Event Viewer to the following?" -Computer $($script:ComputerList -join ', ')) {
                 # This brings specific tabs to the forefront/front view
-                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Show Event Viewer:  $($script:ComputerList)")

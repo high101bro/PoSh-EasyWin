@@ -5,7 +5,7 @@ $EventLogRPCRadioButtonAdd_Click = {
             "OK" {
                 # This brings specific tabs to the forefront/front view
                 $MainLeftTabControl.SelectedTab   = $Section1CollectionsTab
-                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Collection Mode Changed to: Individual Execution")

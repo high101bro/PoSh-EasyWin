@@ -1,6 +1,6 @@
 function Search-ComputerTreeNode {
 
-    #$MainBottomTabControl.SelectedTab   = $Section3ResultsTab
+    #$InformationTabControl.SelectedTab   = $Section3ResultsTab
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
 
     # Checks if the search node already exists
@@ -190,10 +190,8 @@ function Search-ComputerTreeNode {
         }
     }
     $ComputerSearchText = ""
-    $script:SingleHostIPCheckBox.Checked    = $false
-    $script:SingleHostIPTextBox.Text        = $DefaultSingleHostIPText
-    $script:ComputerTreeView.Enabled    = $true
-    $script:ComputerTreeView.BackColor  = "white"
+    $script:ComputerTreeView.Enabled   = $true
+    $script:ComputerTreeView.BackColor = "white"
 
 }
 

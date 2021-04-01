@@ -1,5 +1,5 @@
 $EventLogsEventIDsToMonitorCheckedListBoxAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
     $EventID = $($script:EventLogSeverityQueries | Where-Object {$_.EventID -eq $($($EventLogsEventIDsToMonitorCheckListBox.SelectedItem) -split " ")[0]})
     $Display = @(
         "====================================================================================================",

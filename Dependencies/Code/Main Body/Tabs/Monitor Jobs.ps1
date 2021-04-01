@@ -1,21 +1,3 @@
-
-function Maximize-MonitorJobsTab {
-    $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
-    $MainBottomTabControl.Top    = $MainCenterTabControl.Top
-    $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight + $MainCenterTabControl.Height + ($FormScale * 63)
-    $MainBottomTabControl.bringtofront()
-    $PoShEasyWin.Controls.Add($MainBottomTabControlResizeButton)
-    $MainBottomTabControlResizeButton.bringtofront()
-}
-
-function Minimize-MonitorJobsTab {
-    $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
-    $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop
-    $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight    
-    $MainBottomTabControl.bringtofront()
-    $PoShEasyWin.Controls.Remove($MainBottomTabControlResizeButton)
-}
-
 $script:Section3MonitorJobsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Monitor Jobs"
     Name = "Monitor Jobs Tab"
@@ -23,7 +5,7 @@ $script:Section3MonitorJobsTab = New-Object System.Windows.Forms.TabPage -Proper
     AutoScroll = $true
     UseVisualStyleBackColor = $True
 }
-$MainBottomTabControl.Controls.Add($script:Section3MonitorJobsTab)
+$InformationTabControl.Controls.Add($script:Section3MonitorJobsTab)
 
 $script:AllJobs = $null
 
@@ -60,8 +42,8 @@ $script:Section3MonitorJobsResizeButton = New-Object System.Windows.Forms.Button
     Font      = New-Object System.Drawing.Font($Font,$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
-        if ($this.text -eq     "^ Maximize Tab") { Maximize-MonitorJobsTab }
-        elseif ($this.text -eq "v Minimize Tab") { Minimize-MonitorJobsTab }
+        if ($this.text -eq     "^ Maximize Tab") { script:Maximize-MonitorJobsTab }
+        elseif ($this.text -eq "v Minimize Tab") { script:Minimize-MonitorJobsTab }
     }
 }
 $script:Section3MonitorJobsGroupBox.Controls.Add($script:Section3MonitorJobsResizeButton)
@@ -132,8 +114,8 @@ $script:Section3MonitorJobRemoveButton = New-Object System.Windows.Forms.Button 
             $RemoveAllJobsVerify = [System.Windows.Forms.MessageBox]::Show("Do you want to stop and remove all jobs?`n`nThis method currently only stops running jobs and removes them from view; it will not delete the files regardless if their 'keep data' box is not checked.",'PoSh-EasyWin','YesNo','Warning')
             switch ($RemoveAllJobsVerify) {
                 'Yes'{
-                    $MainBottomTabControl.Top    = $MainBottomTabControlOriginalTop
-                    $MainBottomTabControl.Height = $MainBottomTabControlOriginalHeight    
+                    $InformationPanel.Top    = $InformationTabControlOriginalTop
+                    $InformationPanel.Height = $InformationTabControlOriginalHeight    
             
                     Get-Variable | Where-Object {$_.Name -match 'Section3MonitorJobPanel'} | Foreach-Object {
                         Invoke-Expression "`$script:Section3MonitorJobsTab.Controls.Remove(`$script:$($_.Name))"

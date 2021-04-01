@@ -12,7 +12,7 @@ $MainLeftCollectionsTabControl = New-Object System.Windows.Forms.TabControl -Pro
     Location = @{ X = $FormScale * $TabRightPosition
                   Y = $FormScale * $TabhDownPosition }
     Size     = @{ Width  = $FormScale * $TabAreaWidth
-                  Height = $FormScale * $TabAreaHeight }
+                  Height = $FormScale * ($TabAreaHeight + 5)}
     ShowToolTips  = $True
     SelectedIndex = 0
     Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)

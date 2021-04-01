@@ -1,26 +1,3 @@
-$ComputerTreeViewAdd_MouseHover = {
-    $this.size = @{
-        Width  = $FormScale * 230
-        Height = $FormScale * 544
-    }
-    $this.bringtofront()
-}
-# Prefer to use MourseHover as it provides better compatability in this case with the scrollbars
-#$ComputerTreeViewAdd_MouseEnter = {
-#    $this.size = @{
-#        Width = 230
-#        Height = 544
-#    }
-#}
-
-$ComputerTreeViewAdd_MouseLeave = {
-    $this.size = @{
-        Width  = $FormScale * 230
-        Height = $FormScale * 308
-    }
-}
-
-
 $ComputerTreeViewAdd_Click = {
     Conduct-NodeAction -TreeView $this.Nodes -ComputerList
 
@@ -111,7 +88,7 @@ $ComputerTreeViewAdd_AfterSelect = {
             $Section3HostDataNotesRichTextBox.Text = "N/A"
 
             # Brings the Host Data Tab to the forefront/front view
-            $MainBottomTabControl.SelectedTab   = $Section3HostDataTab
+            $InformationTabControl.SelectedTab   = $Section3HostDataTab
         }
         foreach ($Category in $root.Nodes) {
             if ($Category.isselected) {
@@ -131,11 +108,11 @@ $ComputerTreeViewAdd_AfterSelect = {
                 $Section3HostDataNotesRichTextBox.Text = "N/A"
 
                 # Brings the Host Data Tab to the forefront/front view
-                $MainBottomTabControl.SelectedTab = $Section3HostDataTab
+                $InformationTabControl.SelectedTab = $Section3HostDataTab
             }
             foreach ($Entry in $Category.nodes) {
                 if ($Entry.isselected) {
-                    $MainBottomTabControl.SelectedTab = $Section3HostDataTab
+                    $InformationTabControl.SelectedTab = $Section3HostDataTab
                     $script:ComputerTreeViewSelected = $Entry.Text
                     Function Update-HostDataNotes {
                         # Populates the Host Data Tab with data from the selected TreeNode

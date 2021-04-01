@@ -5,7 +5,7 @@ function Check-Connection {
         $MessageFalse
     )
     # This brings specific tabs to the forefront/front view
-    $MainBottomTabControl.SelectedTab   = $Section3ResultsTab
+    $InformationTabControl.SelectedTab   = $Section3ResultsTab
 
     $ResultsListBox.Items.Clear()
 

@@ -1,7 +1,7 @@
 <# TODO: Remote Screenshot Implementation
 $ComputerListScreenShotButtonAdd_Click = {
 #batman
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
     Create-ComputerNodeCheckBoxArray
     Generate-ComputerList
 
@@ -13,7 +13,7 @@ $ComputerListScreenShotButtonAdd_Click = {
 
     if ($VerifyAction) {
         # This brings specific tabs to the forefront/front view
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
         $RetrieveFilesSaveDirectory = $script:CollectionSavedDirectoryTextBox.Text 
         $LocalSavePath = "$RetrieveFilesSaveDirectory\Screenshots"
@@ -28,7 +28,7 @@ $ComputerListScreenShotButtonAdd_Click = {
 
 
         # This brings specific tabs to the forefront/front view
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
                 Invoke-Command -ScriptBlock {
@@ -514,7 +514,7 @@ $ComputerListScreenShotButtonAdd_Click = {
 
 
 $ComputerListRDPButtonAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
     Create-ComputerNodeCheckBoxArray
     Generate-ComputerList
 
@@ -549,7 +549,7 @@ $ComputerListRDPButtonAdd_Click = {
 
     if ($VerifyAction) {
         # This brings specific tabs to the forefront/front view
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
 

@@ -3,7 +3,7 @@ function Kill-NetworkConnectionsOnMultipleComputers {
         [switch]$SelectNetworkConnectionsCsvFile,
         [switch]$CollectNewNetworkConnections
     )
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     $ResultsListBox.Items.Clear()
 

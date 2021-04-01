@@ -3,7 +3,7 @@ function Logout-AccountsOnMultipleComputers {
         [switch]$SelectAccountCsvFile,
         [switch]$CollectNewAccountData
     )
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     if ($SelectAccountCsvFile) {
         [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null

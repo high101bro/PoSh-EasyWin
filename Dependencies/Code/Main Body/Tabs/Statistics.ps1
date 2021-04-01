@@ -31,25 +31,20 @@ Load-Code "$Dependencies\Code\System.Windows.Forms\Button\StatisticsViewLogButto
 . "$Dependencies\Code\System.Windows.Forms\Button\StatisticsViewLogButton.ps1"
 $StatisticsViewLogButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = "View Log"
-    Location = @{ X = $FormScale * 258
-                  Y = $FormScale * 5 }
-    Size     = @{ Width  = $FormScale * 100
-                  Height = $FormScale * 22 }
     Add_Click      = $StatisticsViewLogButtonAdd_Click
     Add_MouseHover = $StatisticsViewLogButtonAdd_MouseHover
 }
-$Section2StatisticsTab.Controls.Add($StatisticsViewLogButton)
+#$Section2StatisticsTab.Controls.Add($StatisticsViewLogButton)
 CommonButtonSettings -Button $StatisticsViewLogButton
 
 
-$StatisticsNumberOfCSVs = New-Object System.Windows.Forms.Textbox -Property @{
-    Text       = $StatisticsResults
-    Location = @{ X = $FormScale * 3
-                  Y = $FormScale * 32 }
-    Size     = @{ Width  = $FormScale * 354
-                  Height = $FormScale * 215 }
-    Font       = New-Object System.Drawing.Font("Courier new",$($FormScale * 11),0,0,0)
+$PoshEasyWinStatistics = New-Object System.Windows.Forms.Textbox -Property @{
+    Text   = $StatisticsResults
+    Left   = $FormScale * 3
+    Top    = $FormScale * 32
+    Height = $FormScale * 215
+    Font   = New-Object System.Drawing.Font("Courier new",$($FormScale * 11),0,0,0)
     Multiline  = $true
     Enabled    = $true
 }
-$Section2StatisticsTab.Controls.Add($StatisticsNumberOfCSVs)
+$Section2StatisticsTab.Controls.Add($PoshEasyWinStatistics)

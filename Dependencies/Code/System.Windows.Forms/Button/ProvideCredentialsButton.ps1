@@ -1,5 +1,5 @@
 $ProvideCredentialsButtonAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
     Launch-CredentialManagementForm
 }
 

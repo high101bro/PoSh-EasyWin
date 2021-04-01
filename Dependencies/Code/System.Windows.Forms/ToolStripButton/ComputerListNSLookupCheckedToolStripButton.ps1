@@ -3,7 +3,7 @@ $ComputerListNSLookupCheckedToolStripButtonAdd_Click = {
         [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','NSLookup')
     }
     else {
-        $MainBottomTabControl.SelectedTab = $Section3HostDataTab
+        $InformationTabControl.SelectedTab = $Section3HostDataTab
 
         $script:ProgressBarEndpointsProgressBar.Value     = 0
         $script:ProgressBarQueriesProgressBar.Value       = 0

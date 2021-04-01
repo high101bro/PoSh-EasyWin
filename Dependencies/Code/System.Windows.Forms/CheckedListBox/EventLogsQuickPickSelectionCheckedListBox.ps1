@@ -1,5 +1,5 @@
 $EventLogsQuickPickSelectionCheckedListBoxAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
     foreach ( $Query in $script:EventLogQueries ) {
         If ( $Query.Name -imatch $EventLogsQuickPickSelectionCheckedListBox.SelectedItem ) {
             $ResultsListBox.Items.Clear()

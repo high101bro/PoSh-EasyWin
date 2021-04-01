@@ -1,5 +1,5 @@
 $RetrieveFilesButtonAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
     try {
 #       [System.Reflection.Assembly]::LoadWithPartialName("System .Windows.Forms") | Out-Null
         $RetrieveFileOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{

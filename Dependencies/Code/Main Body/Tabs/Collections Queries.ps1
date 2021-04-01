@@ -4,7 +4,7 @@ $Section1CommandsTab = New-Object System.Windows.Forms.TabPage -Property @{
     Left   = $FormScale * $Column1RightPosition
     Top    = $FormScale * $Column1DownPosition
     Width  = $FormScale * $Column1BoxWidth
-    Height = $FormScale * $Column1BoxHeight
+    Height = $FormScale * ($Column1BoxHeight + 10)
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
@@ -294,7 +294,7 @@ $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     Left   = 0
     Top    = $FormScale * 70
     Width  = $FormScale * 435
-    Height = $FormScale * 390
+    Height = $FormScale * 395
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     CheckBoxes       = $True
     #LabelEdit       = $True
@@ -335,7 +335,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
     Left   = $script:CommandsTreeView.Left
     Top    = $script:CommandsTreeView.Top + $script:CommandsTreeView.Height + ($FormScale * 6)
     Width  = $script:CommandsTreeView.width
-    Height = $FormScale * 180
+    Height = $FormScale * 68
 }
             $script:CustomQueryScriptBlockTextbox = New-Object System.Windows.Forms.Textbox -Property @{
                 Text   = 'Enter A Get Cmdlet (ex: Get-Process)'

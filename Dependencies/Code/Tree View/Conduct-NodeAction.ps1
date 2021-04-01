@@ -71,7 +71,7 @@ function Conduct-NodeAction {
                     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                         # This brings specific tabs to the forefront/front view
                         $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                         [system.media.systemsounds]::Exclamation.play()
                         $StatusListBox.Items.Clear()
@@ -89,7 +89,7 @@ function Conduct-NodeAction {
                     if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                         # This brings specific tabs to the forefront/front view
                         $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                         [system.media.systemsounds]::Exclamation.play()
                         $StatusListBox.Items.Clear()
@@ -118,7 +118,7 @@ function Conduct-NodeAction {
                         if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                             # This brings specific tabs to the forefront/front view
                             $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-                            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                            $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                             [system.media.systemsounds]::Exclamation.play()
                             $StatusListBox.Items.Clear()
@@ -136,7 +136,7 @@ function Conduct-NodeAction {
                         if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                             # This brings specific tabs to the forefront/front view
                             $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-                            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                            $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                             [system.media.systemsounds]::Exclamation.play()
                             $StatusListBox.Items.Clear()
@@ -174,7 +174,7 @@ function Conduct-NodeAction {
                             if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                                 # This brings specific tabs to the forefront/front view
                                 $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-                                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                                $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                                 [system.media.systemsounds]::Exclamation.play()
                                 $StatusListBox.Items.Clear()
@@ -192,7 +192,7 @@ function Conduct-NodeAction {
                             if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
                                 # This brings specific tabs to the forefront/front view
                                 $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-                                $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                                $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                                 [system.media.systemsounds]::Exclamation.play()
                                 $StatusListBox.Items.Clear()
@@ -242,7 +242,7 @@ function Conduct-NodeAction {
                 $Section3QueryExplorationRPCPoShTextBox.Text   = "N/A"
                 $Section3QueryExplorationRPCWMITextBox.Text    = "N/A"
 
-                #$MainBottomTabControl.SelectedTab   = $Section3ResultsTab
+                #$InformationTabControl.SelectedTab   = $Section3ResultsTab
             }
 
             foreach ($Entry in $Category.nodes) {
@@ -328,7 +328,7 @@ function Conduct-NodeAction {
                         $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSaveButton)
                         $Section3QueryExplorationTabPage.Controls.Remove($Section3QueryExplorationViewScriptButton)
                     }
-                    if ($TreeView -match 'Command') { $MainBottomTabControl.SelectedTab   = $Section3QueryExplorationTabPage }
+                    if ($TreeView -match 'Command') { $InformationTabControl.SelectedTab   = $Section3QueryExplorationTabPage }
 
                     foreach ($Entry in $Category.nodes) {
                         if ($entry.checked) {

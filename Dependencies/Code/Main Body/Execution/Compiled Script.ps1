@@ -2,16 +2,16 @@
 # Compiles the individual commands into an object hashtable '$script:QueryCommands'
 . "$Dependencies\Code\Execution\Compiled Script\Compile-QueryCommands.ps1"
 
-$PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
-$PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
-$PoShEasyWin.Controls.Remove($ProgressBarQueriesLabel)
-$PoSHEasyWin.Controls.Remove($script:ProgressBarQueriesProgressBar)
+$ProgressBarPanel.Controls.Add($ProgressBarEndpointsLabel)
+$ProgressBarPanel.Controls.Add($script:ProgressBarEndpointsProgressBar)
+$ProgressBarPanel.Controls.Remove($ProgressBarQueriesLabel)
+$ProgressBarPanel.Controls.Remove($script:ProgressBarQueriesProgressBar)
 Count-SectionQueries
 
 if ($script:SectionQueryCount -gt 0) {
     # This brings specific tabs to the forefront/front view
     $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     [system.media.systemsounds]::Exclamation.play()
     [System.Windows.Forms.MessageBox]::Show("This mode does not currently support pushing:`nSysMon, AutoRuns, and ProcMon`n`nNor does it support the following sections:`nEventLogs, Registry, File Search, Network Connections","Compiled Script Error",[System.Windows.Forms.MessageBoxButtons]::OK)

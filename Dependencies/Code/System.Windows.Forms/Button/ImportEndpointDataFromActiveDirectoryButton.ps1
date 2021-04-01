@@ -149,7 +149,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                         $StatusListBox.Items.Add("Importing Hosts From Active Directory")
 
                         # This brings specific tabs to the forefront/front view
-                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                        $InformationTabControl.SelectedTab = $Section3ResultsTab
                         $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
                         if ($ComputerListProvideCredentialsCheckBox.Checked) {
                             if (!$script:Credential) { Create-NewCredentials }
@@ -174,7 +174,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                 elseif ($ImportFromADWinRMAutoCheckBox.checked -and $script:ComputerTreeViewSelected.count -eq 1) {
                     Create-ComputerNodeCheckBoxArray
                     if (Verify-Action -Title "Verification: Active Directory Import" -Question "Make sure to select the proper server.`nImport Active Directory hosts from the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
-                        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("Importing Hosts From Active Directory")
@@ -412,7 +412,7 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                                 $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
                             }
 
-                            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+                            $InformationTabControl.SelectedTab = $Section3ResultsTab
                         }
                         elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked) {
                             if ($ImportFromADAutoCheckBox.Checked) {

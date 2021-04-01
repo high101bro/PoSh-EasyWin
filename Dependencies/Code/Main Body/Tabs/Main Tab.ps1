@@ -7,63 +7,11 @@ $MainCenterMainTab = New-Object System.Windows.Forms.TabPage -Property @{
 }
 $MainCenterTabControl.Controls.Add($MainCenterMainTab)
 
-$DefaultSingleHostIPText = "<Type In A Hostname / IP>"
-
-
-# This checkbox highlights when selecting computers from the ComputerList
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Checkbox\SingleHostIPCheckBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Checkbox\SingleHostIPCheckBox.ps1"
-$script:SingleHostIPCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-    Text      = "Query A Single Endpoint:"
-    Left      = $FormScale * 3
-    Top       = $FormScale * 11
-    Width     = $FormScale * 210
-    Height    = $FormScale * 22
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-    Forecolor = 'Blue'
-    Enabled   = $true
-    Add_Click = $SingleHostIPCheckBoxAdd_Click
-    Add_MouseHover = $SingleHostIPCheckBoxAdd_MouseHover
-}
-$MainCenterMainTab.Controls.Add($script:SingleHostIPCheckBox)
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\SingleHostIPTextBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TextBox\SingleHostIPTextBox.ps1"
-$script:SingleHostIPTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Text   = $DefaultSingleHostIPText
-    Left   = $script:SingleHostIPCheckBox.Left
-    Top    = $script:SingleHostIPCheckBox.Top + $script:SingleHostIPCheckBox.Height + ($FormScale * 2)
-    Width  = $FormScale * 235
-    Height = $FormScale * 22
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_KeyDown    = $SingleHostIPTextBoxAdd_KeyDown
-    Add_MouseHover = $SingleHostIPTextBoxAdd_MouseHover
-    Add_MouseEnter = $SingleHostIPTextBoxAdd_MouseEnter
-    Add_MouseLeave = $SingleHostIPTextBoxAdd_MouseLeave
-}
-$MainCenterMainTab.Controls.Add($script:SingleHostIPTextBox)
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\SingleHostIPAddButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\SingleHostIPAddButton.ps1"
-$SingleHostIPAddButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "Add To List"
-    Left   = $script:SingleHostIPTextBox.Left + $script:SingleHostIPTextBox.Width + ($FormScale * 5)
-    Top    = $script:SingleHostIPTextBox.Top
-    Width  = $FormScale * 115
-    Height = $FormScale * 22
-    Add_Click      = $SingleHostIPAddButtonAdd_Click
-    Add_MouseHover = $SingleHostIPAddButtonAdd_MouseHover
-}
-$MainCenterMainTab.Controls.Add($SingleHostIPAddButton)
-CommonButtonSettings -Button $SingleHostIPAddButton
-
 
 $DirectoryListLabel = New-Object System.Windows.Forms.Label -Property @{
     Text   = "Results Folder:"
-    Left   = $script:SingleHostIPTextBox.Left
-    Top    = $script:SingleHostIPTextBox.Top + $script:SingleHostIPTextBox.Height + $($FormScale * 28)
+    Left   = $FormScale * 3
+    Top    = $FormScale * 11
     Width  = $FormScale * 120
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
@@ -95,27 +43,21 @@ $script:CollectionSavedDirectoryTextBox = New-Object System.Windows.Forms.TextBo
 $MainCenterMainTab.Controls.Add($script:CollectionSavedDirectoryTextBox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\DirectoryOpenButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\DirectoryOpenButton.ps1"
-$DirectoryOpenButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "Open Folder"
-    Left   = $script:CollectionSavedDirectoryTextBox.Left + ($FormScale * 120)
+$ResultsFolderAutoTimestampCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
+    Text   = "Auto Timestamp"
     Top    = $script:CollectionSavedDirectoryTextBox.Top + $script:CollectionSavedDirectoryTextBox.Height + $($FormScale * 5)
     Width  = $FormScale * 115
     Height = $FormScale * 22
-    Add_Click      = $DirectoryOpenButtonAdd_Click
-    Add_MouseHover = $DirectoryOpenButtonAdd_MouseHover
+    Checked = $true
 }
-$MainCenterMainTab.Controls.Add($DirectoryOpenButton)
-CommonButtonSettings -Button $DirectoryOpenButton
+$MainCenterMainTab.Controls.Add($ResultsFolderAutoTimestampCheckbox)
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\DirectoryUpdateButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\DirectoryUpdateButton.ps1"
 $DirectoryUpdateButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "New Timestamp"
-    Left   = $DirectoryOpenButton.Left + $DirectoryOpenButton.Width + $($FormScale * 5)
-    Top    = $DirectoryOpenButton.Top
+    Top    = $ResultsFolderAutoTimestampCheckbox.Top
     Width  = $FormScale * 115
     Height = $FormScale * 22
     Add_Click      = $DirectoryUpdateButtonAdd_Click
@@ -125,10 +67,24 @@ $MainCenterMainTab.Controls.Add($DirectoryUpdateButton)
 CommonButtonSettings -Button $DirectoryUpdateButton
 
 
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\DirectoryOpenButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\DirectoryOpenButton.ps1"
+$DirectoryOpenButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "Open Folder"
+    Top    = $DirectoryUpdateButton.Top
+    Width  = $FormScale * 115
+    Height = $FormScale * 22
+    Add_Click      = $DirectoryOpenButtonAdd_Click
+    Add_MouseHover = $DirectoryOpenButtonAdd_MouseHover
+}
+$MainCenterMainTab.Controls.Add($DirectoryOpenButton)
+CommonButtonSettings -Button $DirectoryOpenButton
+
+
 $ResultsSectionLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text   = "File Actions and Analysis:"
+    Text   = "Actions and Analysis:"
     Left   = $CollectionSavedDirectoryTextBox.Left
-    Top    = $DirectoryUpdateButton.Top + $DirectoryUpdateButton.Height + $($FormScale * 20)
+    Top    = $DirectoryUpdateButton.Top + $DirectoryUpdateButton.Height + $($FormScale * 10)
     Width  = $FormScale * 230
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
@@ -227,6 +183,21 @@ $MainCenterMainTab.Controls.Add($AutoCreateDashboardChartButton)
 CommonButtonSettings -Button $AutoCreateDashboardChartButton
 
 
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
+$EventViewerButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = 'Event Viewer'
+    Left   = $AutoCreateDashboardChartButton.Left + $AutoCreateDashboardChartButton.Width + $($FormScale * 5)
+    Top    = $AutoCreateDashboardChartButton.Top
+    Height = $FormScale * 22
+    Width  = $FormScale * 115
+    Add_Click = $EventViewerButtonAdd_Click
+    Add_MouseHover = $EventViewerButtonAdd_MouseHover
+}
+$MainCenterMainTab.Controls.Add($EventViewerButton)
+CommonButtonSettings -Button $EventViewerButton
+
+
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\RetrieveFilesButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\RetrieveFilesButton.ps1"
 Update-FormProgress "$Dependencies\Code\Main Body\Get-RemoteFile.ps1"
@@ -282,3 +253,73 @@ Update-FormProgress "$Dependencies\Code\Charts\Launch-ChartImageSaveFileDialog.p
 # Increases the chart size by 4 then saves it to file
 Update-FormProgress "$Dependencies\Code\Charts\Save-ChartImage.ps1"
 . "$Dependencies\Code\Charts\Save-ChartImage.ps1"
+
+
+$StatusLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text   = "Status:"
+    Left   = $RetrieveFilesButton.Left
+    Top    = $RetrieveFilesButton.Top + $RetrieveFilesButton.Height + $FormScale * 25
+    Width  = $FormScale * 60
+    Height = $FormScale * 20
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+    ForeColor = "Blue"
+}
+$MainCenterMainTab.Controls.Add($StatusLabel)
+
+
+$StatusListBox = New-Object System.Windows.Forms.ListBox -Property @{
+    Name   = "StatusListBox"
+    Left   = $StatusLabel.Left + $StatusLabel.Width
+    Top    = $StatusLabel.Top
+    Height = $FormScale * 22
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    FormattingEnabled = $True
+}
+$StatusListBox.Items.Add("Welcome to PoSh-EasyWin!") | Out-Null
+$MainCenterMainTab.Controls.Add($StatusListBox)
+
+
+$ProgressBarEndpointsLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text   = "Endpoint:"
+    Left   = $StatusLabel.Left
+    Top    = $StatusLabel.Top + $StatusLabel.Height
+    Width  = $StatusLabel.Width
+    Height = $StatusLabel.Height
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$MainCenterMainTab.Controls.Add($ProgressBarEndpointsLabel)
+
+
+$script:ProgressBarEndpointsProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
+    Left   = $ProgressBarEndpointsLabel.Left + $ProgressBarEndpointsLabel.Width
+    Top    = $ProgressBarEndpointsLabel.Top
+    Height = $FormScale * 15
+    Forecolor = 'LightBlue'
+    BackColor = 'white'
+    Style     = "Continuous" #"Marque"
+    Minimum   = 0
+}
+$MainCenterMainTab.Controls.Add($script:ProgressBarEndpointsProgressBar)
+
+
+$ProgressBarQueriesLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text   = "Task:"
+    Left   = $ProgressBarEndpointsLabel.Left
+    Top    = $ProgressBarEndpointsLabel.Top + $ProgressBarEndpointsLabel.Height
+    Width  = $ProgressBarEndpointsLabel.Width
+    Height = $ProgressBarEndpointsLabel.Height
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$MainCenterMainTab.Controls.Add($ProgressBarQueriesLabel)
+
+
+$script:ProgressBarQueriesProgressBar = New-Object System.Windows.Forms.ProgressBar -Property @{
+    Left = $ProgressBarQueriesLabel.Left + $ProgressBarQueriesLabel.Width
+    Top = $ProgressBarQueriesLabel.Top
+    Height = $FormScale * 15
+    Forecolor = 'LightGreen'
+    BackColor = 'white'
+    Style     = "Continuous"
+    Minimum   = 0
+}
+$MainCenterMainTab.Controls.Add($script:ProgressBarQueriesProgressBar)

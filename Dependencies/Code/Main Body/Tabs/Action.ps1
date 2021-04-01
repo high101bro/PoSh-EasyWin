@@ -1,9 +1,5 @@
-
-$Column5RightPosition     = 3
 $Column5DownPosition      = 6
 $Column5DownPositionShift = 28
-$Column5BoxWidth          = 124
-$Column5BoxHeight         = 22
 
 Update-FormProgress "$Dependencies\Code\Tree View\Computer\Create-ComputerNodeCheckBoxArray.ps1"
 . "$Dependencies\Code\Tree View\Computer\Create-ComputerNodeCheckBoxArray.ps1"
@@ -19,10 +15,10 @@ Update-FormProgress "$Dependencies\Code\Tree View\Computer\Verify-Action.ps1"
 
 $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Action"
-    Left   = $FormScale * $Column5RightPosition
+    Left   = $FormScale * 3
     Top    = $FormScale * $Column5DownPosition
-    Height = $FormScale * $Column5BoxWidth
-    Width  = $FormScale * $Column5BoxHeight
+    Height = $FormScale * 124
+    Width  = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     UseVisualStyleBackColor = $True
 }
@@ -40,10 +36,10 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\RekallWinPme
 . "$Dependencies\Code\System.Windows.Forms\Button\RekallWinPmemMemoryCaptureButton.ps1"
 $RekallWinPmemMemoryCaptureButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Memory Capture"
-    Left   = $FormScale * $Column5RightPosition
+    Left   = $FormScale * 3
     Top    = $FormScale * $Column5DownPosition
-    Width  = $FormScale * $Column5BoxWidth
-    Height = $FormScale * $Column5BoxHeight
+    Width  = $FormScale * 124
+    Height = $FormScale * 22
     Add_MouseHover = $RekallWinPmemMemoryCaptureButtonAdd_MouseHover
     Add_Click      = $RekallWinPmemMemoryCaptureButtonAdd_Click
 }
@@ -56,81 +52,63 @@ if (Test-Path "$ExternalPrograms\WinPmem\WinPmem.exe") { $Section3ActionTab.Cont
 $Column5DownPosition += $Column5DownPositionShift
 #>
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
-$EventViewerButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = 'Event Viewer'
-    Left   = $FormScale * $Column5RightPosition
-    Top    = $FormScale * $Column5DownPosition
-    Height = $FormScale * $Column5BoxHeight
-    Width  = $FormScale * $Column5BoxWidth
-    Add_Click = $EventViewerButtonAdd_Click
-    Add_MouseHover = $EventViewerButtonAdd_MouseHover
-}
-$Section3ActionTab.Controls.Add($EventViewerButton)
-CommonButtonSettings -Button $EventViewerButton
-
-$Column5DownPosition += $Column5DownPositionShift
-
 
 #. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListScreenShot.ps1"
-
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListRDPButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListRDPButton.ps1"
-$ComputerListRDPButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = 'Remote Desktop'
-    Left   = $FormScale * $Column5RightPosition
-    Top    = $FormScale * $Column5DownPosition
-    Width  = $FormScale * $Column5BoxWidth
-    Height = $FormScale * $Column5BoxHeight
-    Add_Click = $ComputerListRDPButtonAdd_Click
-    Add_MouseHover = $ComputerListRDPButtonAdd_MouseHover
-    Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
-}
-$Section3ActionTab.Controls.Add($ComputerListRDPButton)
-CommonButtonSettings -Button $ComputerListRDPButton
-
-$Column5DownPosition += $Column5DownPositionShift
+# DEPRECATED - Button moved to Context Menu
+# $ComputerListRDPButton = New-Object System.Windows.Forms.Button -Property @{
+#     Text   = 'Remote Desktop'
+#     Left   = $FormScale * 3
+#     Top    = $FormScale * $Column5DownPosition
+#     Width  = $FormScale * 124
+#     Height = $FormScale * 22
+#     Add_Click = $ComputerListRDPButtonAdd_Click
+#     Add_MouseHover = $ComputerListRDPButtonAdd_MouseHover
+#     Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
+# }
+# $Section3ActionTab.Controls.Add($ComputerListRDPButton)
+# CommonButtonSettings -Button $ComputerListRDPButton
+# $Column5DownPosition += $Column5DownPositionShift
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionButton.ps1"
-$ComputerListPSSessionButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "PS Session"
-    Left   = $FormScale * $Column5RightPosition
-    Top    = $FormScale * $Column5DownPosition
-    Width  = $FormScale * $Column5BoxWidth
-    Height = $FormScale * $Column5BoxHeight
-    Add_Click      = $ComputerListPSSessionButtonAdd_Click
-    Add_MouseHover = $ComputerListPSSessionButtonAdd_MouseHover
-    Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
-}
-$Section3ActionTab.Controls.Add($ComputerListPSSessionButton)
-CommonButtonSettings -Button $ComputerListPSSessionButton
-
-$Column5DownPosition += $Column5DownPositionShift
+# DEPRECATED - Button moved to Context Menu
+# $ComputerListPSSessionButton = New-Object System.Windows.Forms.Button -Property @{
+#     Text   = "PS Session"
+#     Left   = $FormScale * 3
+#     Top    = $FormScale * $Column5DownPosition
+#     Width  = $FormScale * 124
+#     Height = $FormScale * 22
+#     Add_Click      = $ComputerListPSSessionButtonAdd_Click
+#     Add_MouseHover = $ComputerListPSSessionButtonAdd_MouseHover
+#     Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
+# }
+# $Section3ActionTab.Controls.Add($ComputerListPSSessionButton)
+# CommonButtonSettings -Button $ComputerListPSSessionButton
+# $Column5DownPosition += $Column5DownPositionShift
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListSSHButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListSSHButton.ps1"
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPsExecButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPsExecButton.ps1"
-$ComputerListPsExecButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = 'PsExec'
-    Left   = $FormScale * $Column5RightPosition
-    Top    = $FormScale * $Column5DownPosition
-    Width  = $FormScale * $Column5BoxWidth
-    Height = $FormScale * $Column5BoxHeight
-    Add_Click = $ComputerListPsExecButtonAdd_Click
-    Add_MouseHover = $ComputerListPsExecButtonAdd_MouseHover
-    Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
-}
-CommonButtonSettings -Button $ComputerListPsExecButton
-
-# Test if the External Programs directory is present; if it's there load the tab
-if (Test-Path "$ExternalPrograms\PsExec.exe") { $Section3ActionTab.Controls.Add($ComputerListPsExecButton) }
-
-$Column5DownPosition += $Column5DownPositionShift
+# DEPRECATED - Button moved to Context Menu
+# $ComputerListPsExecButton = New-Object System.Windows.Forms.Button -Property @{
+#     Text   = 'PsExec'
+#     Left   = $FormScale * 3
+#     Top    = $FormScale * $Column5DownPosition
+#     Width  = $FormScale * 124
+#     Height = $FormScale * 22
+#     Add_Click = $ComputerListPsExecButtonAdd_Click
+#     Add_MouseHover = $ComputerListPsExecButtonAdd_MouseHover
+#     Add_MouseEnter = {$script:ComputerListEndpointNameToolStripLabel.text = $null}
+# }
+# CommonButtonSettings -Button $ComputerListPsExecButton
+# # Test if the External Programs directory is present; if it's there load the tab
+# if (Test-Path "$ExternalPrograms\PsExec.exe") { $Section3ActionTab.Controls.Add($ComputerListPsExecButton) }
+# $Column5DownPosition += $Column5DownPositionShift
 
 
 # Rolls the credenaisl: 250 characters of random: abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
@@ -156,27 +134,27 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ProvideCrede
 . "$Dependencies\Code\System.Windows.Forms\Button\ProvideCredentialsButton.ps1"
 $ProvideCredentialsButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Manage Credentials"
-    Left   = $FormScale * $Column5RightPosition
+    Left   = $FormScale * 3
     Top    = $FormScale * $Column5DownPosition
-    Width  = $FormScale * $Column5BoxWidth
-    Height = $FormScale * $Column5BoxHeight
+    Width  = $FormScale * 124
+    Height = $FormScale * 22
     Add_Click      = $ProvideCredentialsButtonAdd_Click
     Add_MouseHover = $ProvideCredentialsButtonAdd_MouseHover
 }
 $Section3ActionTab.Controls.Add($ProvideCredentialsButton)
 CommonButtonSettings -Button $ProvideCredentialsButton
 
-$Column5DownPosition += $Column5DownPositionShift - 2
+$Column5DownPosition += $Column5DownPositionShift
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\CheckBox\ComputerListProvideCredentialsCheckBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\ComputerListProvideCredentialsCheckBox.ps1"
 $ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
     Text   = "Specify Credentials"
-    Left   = $FormScale * $Column5RightPosition + 1
+    Left   = $FormScale * 3 + 1
     Top    = $FormScale * $Column5DownPosition
-    Width  = $FormScale * $Column5BoxWidth
-    Height = $FormScale * $Column5BoxHeight - 5
+    Width  = $FormScale * 124
+    Height = $FormScale * 22 - 5
     Checked = $false
     Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click      = $ComputerListProvideCredentialsCheckBoxAdd_Click
@@ -185,14 +163,15 @@ $ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckB
 $Section3ActionTab.Controls.Add($ComputerListProvideCredentialsCheckBox)
 
 $Column5DownPosition += $Column5DownPositionShift
+$Column5DownPosition += $Column5DownPositionShift
 
 
 $script:ComputerListUseDNSCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
     Text    = "Use DNS Hostname"
-    Left    = $FormScale * $Column5RightPosition
+    Left    = $FormScale * 3
     Top     = $FormScale * $Column5DownPosition
-    Width   = $FormScale * $Column5BoxWidth + ($FormScale + 5)
-    Height  = $FormScale * $Column5BoxHeight - 5
+    Width   = $FormScale * 124 + ($FormScale + 5)
+    Height  = $FormScale * 22 - 5
     Checked = $true
     #Add_MouseHover = $null
 }
@@ -204,9 +183,9 @@ $Column5DownPosition += $Column5DownPositionShift
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\CommandTreeViewQueryMethodSelectionComboBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\ComboBox\CommandTreeViewQueryMethodSelectionComboBox.ps1"
 $script:CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Left   = $FormScale * $Column5RightPosition
+    Left   = $FormScale * 3
     Top    = $FormScale * $Column5DownPosition
-    Width  = ($FormScale * $Column5BoxWidth + 1)
+    Width  = ($FormScale * 124 + 1)
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     ForeColor     = 'Black'
@@ -244,14 +223,15 @@ $Column5DownPosition += $Column5DownPositionShift + 2
 
 $script:OptionJobTimeoutSelectionLabel = New-Object System.Windows.Forms.Label -Property @{
     Text   = "Job Timeout:"
-    Left   = $FormScale * $Column5RightPosition
+    Left   = $FormScale * 3
     Top    = $FormScale * $Column5DownPosition
     Width  = $FormScale * 70
-    Height = $FormScale * $Column5BoxHeight
+    Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionLabel)
 
+$Column5DownPosition += $Column5DownPositionShift
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\OptionJobTimeoutSelectionComboBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\ComboBox\OptionJobTimeoutSelectionComboBox.ps1"
@@ -278,10 +258,10 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerList
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListExecuteButton.ps1"
 $script:ComputerListExecuteButton = New-Object System.Windows.Forms.Button -Property @{
     Text    = "Execute Script"
-    Left    = $FormScale * $Column5RightPosition
+    Left    = $FormScale * 3
     Top     = $FormScale * $Column5DownPosition
-    Width   = $FormScale * $Column5BoxWidth
-    Height  = $FormScale * ($Column5BoxHeight * 2) - 10
+    Width   = $FormScale * 124
+    Height  = $FormScale * (22 * 2) - 10
     Enabled = $false
     Add_MouseHover = $script:ComputerListExecuteButtonAdd_MouseHover
 }

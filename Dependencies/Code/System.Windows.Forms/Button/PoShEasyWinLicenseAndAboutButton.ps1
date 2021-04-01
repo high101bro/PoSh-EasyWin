@@ -1,4 +1,6 @@
 $PoShEasyWinLicenseAndAboutButtonAdd_Click = {
+    $InformationTabControl.SelectedTab = $Section3AboutTab
+
     if ($PoShEasyWinLicenseAndAboutButton.Text -match "GNU General Public License v3" ) {
         $PoShEasyWinLicenseAndAboutButton.Text = "About PoSh-EasyWin"
         $Section1AboutSubTabRichTextBox.Text   = $(Get-Content "$Dependencies\GPLv3 - GNU General Public License.txt" -raw)

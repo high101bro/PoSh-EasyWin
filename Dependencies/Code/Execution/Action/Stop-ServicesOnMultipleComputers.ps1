@@ -3,7 +3,7 @@ function Stop-ServicesOnMultipleComputers {
         [switch]$SelectServiceCsvFile,
         [switch]$CollectNewServiceData
     )
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
 
     if ($SelectServiceCsvFile) {
         [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null

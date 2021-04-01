@@ -88,7 +88,7 @@ function Search-CommandTreeNode {
     else {
         $CommandSearchText = $CommandsTreeViewSearchComboBox.Text
 
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
         # Checks if the search has already been conduected
         $SearchCheck = $false

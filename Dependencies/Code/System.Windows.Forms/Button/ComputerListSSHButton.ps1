@@ -1,5 +1,5 @@
 $ComputerListSSHButtonAdd_Click = {
-    $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+    $InformationTabControl.SelectedTab = $Section3ResultsTab
     Create-ComputerNodeCheckBoxArray
     Generate-ComputerList
 
@@ -34,7 +34,7 @@ $ComputerListSSHButtonAdd_Click = {
 
     if ($VerifyAction) {
         # This brings specific tabs to the forefront/front view
-        $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
 
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("SSH:  $($script:ComputerTreeViewSelected)")

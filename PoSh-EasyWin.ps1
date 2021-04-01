@@ -549,10 +549,9 @@ $ResolutionCheckForm.topmost = $false
 
 $PoShEasyWinAccountLaunch = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
 #[System.Windows.Forms.Application]::EnableVisualStyles()
+
 $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     Text    = "PoSh-EasyWin   ($PoShEasyWinAccountLaunch)  [$InitialScriptLoadTime]"
-    Width   = $FormScale * 1260
-    Height  = $FormScale * 660
     Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
     TopMost = $true
     AutoScroll  = $True
@@ -561,6 +560,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     MinimizeBox = $true
     StartPosition  = "CenterScreen"
     FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
+    #Backcolor = 'LightGray'
     Add_Load = {
         $This.TopMost = $false
         if ((Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
@@ -656,458 +656,463 @@ Update-FormProgress "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 . "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 
 
-#============================================================================================================================================================
-#    _____       _       ____               _                _
-#   |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
-#     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
-#     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
-#     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
-#
-#============================================================================================================================================================
-
-$MainLeftTabControlBoxWidth  = 460
-$MainLeftTabControlBoxHeight = 590
-
-$MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-    Name     = "Main Tab Window"
-    Location = @{ X = $FormScale * 5
-                  Y = $FormScale * 5 }
-    Size     = @{ Width  = $FormScale * $MainLeftTabControlBoxWidth
-                  Height = $FormScale * $MainLeftTabControlBoxHeight }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    SelectedIndex = 0
-    ShowToolTips  = $True
-}
-$PoShEasyWin.Controls.Add($MainLeftTabControl)
 
 
-$TabRightPosition     = 3
-$TabhDownPosition     = 3
-$TabAreaWidth         = 446
-$TabAreaHeight        = 557
-$TextBoxRightPosition = -2
-$TextBoxDownPosition  = -2
-$TextBoxWidth         = 442
-$TextBoxHeight        = 536
 
 
-#============================================================================================================================================================
-#    _____       _       ____               _                _
-#   |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
-#     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
-#     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
-#     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
-#
-#============================================================================================================================================================
-
-# Collections Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Collections.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Collections.ps1"
-
-# Interactions Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
-
-# Enumeration Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Enumeration.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Enumeration.ps1"
-
-# Checklists Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Checklists.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Checklists.ps1"
-
-### DEPRECATED ###
-# Processes Tab 
-#. "$Dependencies\Code\Main Body\Tabs\Processes.ps1"
-### DEPRECATED ###
-
-# OpNotes Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\OpNotes.ps1"
-. "$Dependencies\Code\Main Body\Tabs\OpNotes.ps1"
-
-# Info Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Info.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Info.ps1"
 
 
-#============================================================================================================================================================
-#    _____       _       ____               _                _
-#   |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
-#     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
-#     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
-#     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
-#
-#============================================================================================================================================================
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TabControl\Section2TabControl.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TabControl\Section2TabControl.ps1"
-$MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-    Left   = $FormScale * 470
+
+$QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
+    Left   = $FormScale * 5
     Top    = $FormScale * 5
-    Width  = $FormScale * 370
-    Height = $FormScale * 278 
-    SelectedIndex  = 0
-    ShowToolTips   = $True
-    Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click      = $MainCenterTabControlAdd_Click
-    Add_MouseHover = $MainCenterTabControlAdd_MouseHover
 }
-$PoShEasyWin.Controls.Add($MainCenterTabControl)
-
-
-# Main Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
-
-# Options Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Options.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Options.ps1"
-
-# Statistics Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
-
-
-#============================================================================================================================================================
-#============================================================================================================================================================
-# ComputerList Treeview Section
-#============================================================================================================================================================
-#============================================================================================================================================================
-
-$Column4RightPosition = 845
-
-# Initial load of CSV data
-$script:ComputerTreeViewData = $null
-$script:ComputerTreeViewData = Import-Csv $script:ComputerTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
-#$script:ComputerTreeViewData
-
-# Initializes the Computer TreeView section that computer nodes are added to
-# TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
-# These include the root nodes of Search, and various Operating System and OU/CN names
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Initialize-ComputerTreeNodes.ps1"
-. "$Dependencies\Code\Tree View\Computer\Initialize-ComputerTreeNodes.ps1"
-
-# If Computer treenodes are imported/created with missing data, this populates various fields with default data
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Populate-ComputerTreeNodeDefaultData.ps1"
-. "$Dependencies\Code\Tree View\Computer\Populate-ComputerTreeNodeDefaultData.ps1"
-
-# This will keep the Computer TreeNodes checked when switching between OS and OU/CN views
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Update-TreeNodeComputerState.ps1"
-. "$Dependencies\Code\Tree View\Computer\Update-TreeNodeComputerState.ps1"
-
-# Adds a treenode to the specified root node... a computer node within a category node
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Add-NodeComputer.ps1"
-. "$Dependencies\Code\Tree View\Computer\Add-NodeComputer.ps1"
-
-$script:ComputerTreeViewSelected = ""
-
-# Populate Auto Tag List used for Host Data tagging and Searching
-$TagListFileContents = Get-Content -Path $TagAutoListFile
-
-# Searches for Computer nodes that match a given search entry
-# A new category node named by the search entry will be created and all results will be nested within
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1"
-. "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1"
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
-$ComputerTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Name     = "Search TextBox"
-    Location = @{ X = $FormScale * $Column4RightPosition
-                  Y = $FormScale * 25 }
-    Size     = @{ Width  = $FormScale * 168
-                  Height = $FormScale * 25 }
-    AutoCompleteSource = "ListItems"
-    AutoCompleteMode   = "SuggestAppend"
-    Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown
-    Add_MouseHover     = $ComputerTreeNodeSearchComboBoxAdd_MouseHover
-}
-ForEach ($Tag in $TagListFileContents) { [void] $ComputerTreeNodeSearchComboBox.Items.Add($Tag) }
-$PoShEasyWin.Controls.Add($ComputerTreeNodeSearchComboBox)
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
-$ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Search"
-    Location = @{ X = $ComputerTreeNodeSearchComboBox.Location.X + $ComputerTreeNodeSearchComboBox.Size.Width + $($FormScale * 5 )
-                  Y = $ComputerTreeNodeSearchComboBox.Location.Y }
-    Size     = @{ Width  = $FormScale * 55
-                  Height = $FormScale * 22 }
-    Add_Click = { 
-        Search-ComputerTreeNode
-    }
-    Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
-}
-$PoShEasyWin.Controls.Add($ComputerTreeNodeSearchButton)
-CommonButtonSettings -Button $ComputerTreeNodeSearchButton
-
-
-# Code to remove empty categoryies
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1"
-. "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1"
-Remove-EmptyCategory
-
-
-# Context menu button code
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListCollapseToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListCollapseToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1"
-. "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1"
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
-. "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListAddEndpointToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListAddEndpointToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNodeSelected.ps1"
-. "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNodeSelected.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
-. "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
-
-
-# Code for the Context Menu
-# This context menu is the one activeated when you click within the computer treeview area, but not when clicking on a computer ndoe itself
-Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
-. "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
-
-
-# This context menu is the one activeated when you click on the computer node itself within the computer treeview
-# It is also activated within the Conduct-NodeAction function
-Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
-. "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
-Display-ContextMenuForComputerTreeNode
-
-# Ref Guide: https://info.sapien.com/index.php/guis/gui-controls/spotlight-on-the-contextmenustrip-control
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
-$script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-    size              = @{ Width  = $FormScale * 230
-                           Height = $FormScale * 308 }
-    Location          = @{ X = $ComputerTreeNodeSearchComboBox.Location.X
-                           Y = $ComputerTreeNodeSearchButton.Location.Y + $ComputerTreeNodeSearchButton.Size.Height + $($FormScale * 5) }
-    Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    CheckBoxes        = $True
-    #LabelEdit         = $True  #Not implementing yet...
-    #not working # AfterLabelEdit = {  }
-    #not working #ShowRootLines     = $false
-    ShowLines         = $True
-    ShowNodeToolTips  = $True
-    Add_Click         = $ComputerTreeViewAdd_Click
-    Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
-    Add_MouseHover    = $ComputerTreeViewAdd_MouseHover
-    #Add_MouseEnter    = $ComputerTreeViewAdd_MouseEnter
-    Add_MouseLeave    = $ComputerTreeViewAdd_MouseLeave
-    #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
-    ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
-    ShowPlusMinus     = $true
-    HideSelection     = $false
-    #not working #AfterSelect       = {( 1 | ogv )}
-    ImageList         = $ComputerTreeViewImageList
-    ImageIndex        = 1
-}
-$script:ComputerTreeView.Sort()
-$PoShEasyWin.Controls.Add($script:ComputerTreeView)
-
-
-Initialize-ComputerTreeNodes
-Populate-ComputerTreeNodeDefaultData
-
-# Yes, save initially during the load because it will save any poulated default data
-Save-ComputerTreeNodeHostData
-
-# This will load data that is located in the saved file
-#batman
-Foreach($Computer in $script:ComputerTreeViewData) {
-    Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
-}
-$script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
-
-# Controls the layout of the computer treeview
-$script:ComputerTreeView.ExpandAll()
-[System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-foreach ($root in $AllHostsNode) {
-    foreach ($Category in $root.Nodes) {
-        foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
-    }
-}
-
-
-$ComputerTreeNodeViewByLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text   = "View by:"
-    Left   = $FormScale * $Column4RightPosition
-    Top    = $FormScale * 7
-    Width  = $FormScale * 53
-    Height = $FormScale * 25
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-}
-$PoShEasyWin.Controls.Add($ComputerTreeNodeViewByLabel)
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOSHostnameRadioButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOSHostnameRadioButton.ps1"
-$script:ComputerTreeNodeOSHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-    Text    = "OS"
-    Left    = $ComputerTreeNodeViewByLabel.Left + $ComputerTreeNodeViewByLabel.Width
-    Top     = $ComputerTreeNodeViewByLabel.Top - $($FormScale * 5)
-    Width   = $FormScale * 40
-    Height  = $FormScale * 25
-    Checked = $True
-    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click      = $ComputerTreeNodeOSHostnameRadioButtonAdd_Click
-    Add_MouseHover = $ComputerTreeNodeOSHostnameRadioButtonAdd_MouseHover
-}
-$PoShEasyWin.Controls.Add($script:ComputerTreeNodeOSHostnameRadioButton)
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOUHostnameRadioButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOUHostnameRadioButton.ps1"
-$ComputerTreeNodeOUHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-    Text    = "OU / CN"
-    Left    = $script:ComputerTreeNodeOSHostnameRadioButton.Left + $script:ComputerTreeNodeOSHostnameRadioButton.Width + $($FormScale * 5)
-    Top     = $script:ComputerTreeNodeOSHostnameRadioButton.Top
-    Width   = $FormScale * 70
-    Height  = $FormScale * 25
-    Checked = $false
-    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_Click      = $ComputerTreeNodeOUHostnameRadioButtonAdd_Click
-    Add_MouseHover = $ComputerTreeNodeOUHostnameRadioButtonAdd_MouseHover
-}
-$PoShEasyWin.Controls.Add($ComputerTreeNodeOUHostnameRadioButton)
-
-
-$ComputerTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-    Text    = "Greedy"
-    Left    = $ComputerTreeNodeOUHostnameRadioButton.Left + $ComputerTreeNodeOUHostnameRadioButton.Width + $($FormScale * 5)
-    Top     = $ComputerTreeNodeOUHostnameRadioButton.Top
-    Height  = $FormScale * 25
-    Width   = $FormScale * 65
-    Checked = $true
-    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-}
-$PoShEasyWin.Controls.Add($ComputerTreeNodeSearchGreedyCheckbox)
-
-
-#============================================================================================================================================================
-#    _____       _       ____               _                _
-#   |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
-#     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
-#     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
-#     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
-#
-#============================================================================================================================================================
-
-$MainRightTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-    Name         = "Main Tab Window for Computer List"
-    Location     = @{ X = $FormScale * 1082
-                      Y = $FormScale * 10 }
-    Size         = @{ Height = $FormScale * 349
-                      Width  = $FormScale * 140 }
-    ShowToolTips = $True
-    Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-}
-$PoShEasyWin.Controls.Add($MainRightTabControl)
-
-
-# Action Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Action.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Action.ps1"
-
-# Manage Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Manage.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Manage.ps1"
-
-
-#============================================================================================================================================================
-#    _____       _       ____               _                _
-#   |_   _|__ _ | |__   / ___| ___   _ __  | |_  _ __  ___  | |
-#     | | / _` || '_ \ | |    / _ \ | '_ \ | __|| '__|/ _ \ | |
-#     | || (_| || |_) || |___| (_) || | | || |_ | |  | (_) || |
-#     |_| \__,_||_.__/  \____|\___/ |_| |_| \__||_|   \___/ |_|
-#
-#============================================================================================================================================================
-
-$MainBottomTabControlOriginalTop    = $ProgressBarQueriesLabel.Location.Y + $ProgressBarQueriesLabel.Size.Height - 2
-$MainBottomTabControlOriginalHeight = $FormScale * 250
-
-
-$MainBottomTabControlResizeButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "v Minimize Tab"
-    Left   = $FormScale * 349
-    Top    = 0
-    Width  = $FormScale * 116
-    Height = $FormScale * 20
-    Font   = New-Object System.Drawing.Font($Font,$($FormScale * 11),1,2,1)
-    ForeColor = 'Black'
-    BackColor = 'LightCoral'
-    Add_Click = {
-        if ($this.text -eq     "^ Maximize Tab") { Maximize-MonitorJobsTab }
-        elseif ($this.text -eq "v Minimize Tab") { Minimize-MonitorJobsTab }
-    }
-}
-#$PoShEasyWin.Controls.Add($MainBottomTabControlResizeButton)
-CommonButtonSettings -Button $MainBottomTabControlResizeButton
-
-
-$MainBottomTabControl = New-Object System.Windows.Forms.TabControl -Property @{
-    Name   = "Main Tab Window"
-    Left   = $FormScale * 470
-    Top    = $MainBottomTabControlOriginalTop
-    Width  = $FormScale * 752
-    Height = $MainBottomTabControlOriginalHeight
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    ShowToolTips = $True
-    Add_MouseHover = { $this.bringtofront() }
-}
-$PoShEasyWin.Controls.Add($MainBottomTabControl)
-
-
-
-
-# About Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\About.ps1"
-. "$Dependencies\Code\Main Body\Tabs\About.ps1"
-
-# Results Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Results.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Results.ps1"
-
-# Monitor Jobs Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
-
-# Endpoint Data Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
-
-# Query Exploration Tab
-Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
-. "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
-
-
-##########################################################################
-##########################################################################
-##########################################################################
+            $PoShEasyWinPictureBox = New-Object Windows.Forms.PictureBox -Property @{
+                Text   = "PowerShell Charts"
+                Left   = 0
+                Top    = 0
+                Width  = $FormScale * 400
+                Height = $FormScale * 45
+                Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
+                SizeMode = 'StretchImage'
+            }
+            $QueryAndCollectionPanel.Controls.Add($PoShEasyWinPictureBox)
+
+
+            $MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+                Left   = 0
+                Top    = $PoShEasyWinPictureBox.Top + $PoShEasyWinPictureBox.Height
+                Width  = $FormScale * 460
+                Height = $FormScale * 590
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            }
+            $QueryAndCollectionPanel.Controls.Add($MainLeftTabControl)
+
+
+            $TabRightPosition     = 3
+            $TabhDownPosition     = 3
+            $TabAreaWidth         = 446
+            $TabAreaHeight        = 557
+            $TextBoxRightPosition = -2
+            $TextBoxDownPosition  = -2
+            $TextBoxWidth         = 442
+            $TextBoxHeight        = 536
+
+
+            # Collections Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Collections.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Collections.ps1"
+
+            # Interactions Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Interactions.ps1"
+
+            # Enumeration Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Enumeration.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Enumeration.ps1"
+
+            # Checklists Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Checklists.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Checklists.ps1"
+
+            ### DEPRECATED ###
+            # Processes Tab 
+            #. "$Dependencies\Code\Main Body\Tabs\Processes.ps1"
+            ### DEPRECATED ###
+
+            # OpNotes Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\OpNotes.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\OpNotes.ps1"
+
+            # Info Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Info.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Info.ps1"
+            
+$PoShEasyWin.Controls.Add($QueryAndCollectionPanel)
+
+
+
+
+
+
+
+
+
+
+$MainCenterPanel = New-Object System.Windows.Forms.Panel
+
+            $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+                Left   = 0
+                Top    = 0
+                Width  = $FormScale * 370
+                Height = $FormScale * 278 
+                SelectedIndex  = 0
+                ShowToolTips   = $True
+                Font           = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Add_MouseHover = $MainCenterTabControlAdd_MouseHover
+            }
+            $MainCenterPanel.Controls.Add($MainCenterTabControl)
+
+
+            # Main Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
+
+            # Options Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Options.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Options.ps1"
+
+            # Statistics Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Statistics.ps1"
+
+$PoShEasyWin.Controls.Add($MainCenterPanel)
+
+
+
+
+
+
+
+
+
+
+$ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
+
+            $ComputerAndAccountTreeViewTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+                Left   = 0
+                Top    = 0
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            }
+            $ComputerAndAccountTreeNodeViewPanel.Controls.Add($ComputerAndAccountTreeViewTabControl)
+
+
+            $ComputerTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
+                Text   = "Endpoints"
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                UseVisualStyleBackColor = $True
+            }
+            $ComputerAndAccountTreeViewTabControl.Controls.Add($ComputerTreeviewTab)
+            
+
+            $AccountsTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
+                Text   = "Accounts"
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                UseVisualStyleBackColor = $True
+            }
+            $ComputerAndAccountTreeViewTabControl.Controls.Add($AccountsTreeviewTab)
+
+
+            $FutureFeatureLabel = New-Object System.Windows.Forms.Label -Property @{
+                Text   = "Future Feature Under Development!"
+                Left   = $FormScale * 5
+                Top    = $FormScale * 20
+                Width  = $FormScale * 200
+                Height = $FormScale * 25
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
+                ForeColor = 'Blue'
+            }
+            $AccountsTreeviewTab.Controls.Add($FutureFeatureLabel)
+            
+
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOSHostnameRadioButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOSHostnameRadioButton.ps1"
+            $script:ComputerTreeNodeOSHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text    = "OS"
+                Left    = 0
+                Top     = 0
+                Width   = $FormScale * 42
+                Height  = $FormScale * 25
+                Checked = $True
+                Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Add_Click      = $ComputerTreeNodeOSHostnameRadioButtonAdd_Click
+                Add_MouseHover = $ComputerTreeNodeOSHostnameRadioButtonAdd_MouseHover
+            }
+            $ComputerTreeviewTab.Controls.Add($script:ComputerTreeNodeOSHostnameRadioButton)
+
+
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOUHostnameRadioButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOUHostnameRadioButton.ps1"
+            $ComputerTreeNodeOUHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+                Text    = "OU / CN"
+                Left    = $script:ComputerTreeNodeOSHostnameRadioButton.Left + $script:ComputerTreeNodeOSHostnameRadioButton.Width + $($FormScale * 5)
+                Top     = $script:ComputerTreeNodeOSHostnameRadioButton.Top
+                Width   = $FormScale * 73
+                Height  = $FormScale * 25
+                Checked = $false
+                Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Add_Click      = $ComputerTreeNodeOUHostnameRadioButtonAdd_Click
+                Add_MouseHover = $ComputerTreeNodeOUHostnameRadioButtonAdd_MouseHover
+            }
+            $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeOUHostnameRadioButton)
+
+
+            $ComputerTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+                Text    = "Greedy"
+                Left    = $ComputerTreeNodeOUHostnameRadioButton.Left + $ComputerTreeNodeOUHostnameRadioButton.Width + $($FormScale * 5)
+                Top     = $ComputerTreeNodeOUHostnameRadioButton.Top
+                Height  = $FormScale * 25
+                Width   = $FormScale * 65
+                Checked = $true
+                Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            }
+            $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchGreedyCheckbox)
+                      
+
+            # Initial load of CSV data
+            $script:ComputerTreeViewData = $null
+            $script:ComputerTreeViewData = Import-Csv $script:ComputerTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
+
+            # Initializes the Computer TreeView section that computer nodes are added to
+            # TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
+            # These include the root nodes of Search, and various Operating System and OU/CN names
+            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Initialize-ComputerTreeNodes.ps1"
+            . "$Dependencies\Code\Tree View\Computer\Initialize-ComputerTreeNodes.ps1"
+
+            # If Computer treenodes are imported/created with missing data, this populates various fields with default data
+            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Populate-ComputerTreeNodeDefaultData.ps1"
+            . "$Dependencies\Code\Tree View\Computer\Populate-ComputerTreeNodeDefaultData.ps1"
+
+            # This will keep the Computer TreeNodes checked when switching between OS and OU/CN views
+            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Update-TreeNodeComputerState.ps1"
+            . "$Dependencies\Code\Tree View\Computer\Update-TreeNodeComputerState.ps1"
+
+            # Adds a treenode to the specified root node... a computer node within a category node
+            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Add-NodeComputer.ps1"
+            . "$Dependencies\Code\Tree View\Computer\Add-NodeComputer.ps1"
+
+            $script:ComputerTreeViewSelected = ""
+
+            # Populate Auto Tag List used for Host Data tagging and Searching
+            $TagListFileContents = Get-Content -Path $TagAutoListFile
+
+            # Searches for Computer nodes that match a given search entry
+            # A new category node named by the search entry will be created and all results will be nested within
+            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1"
+            . "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1"
+
+
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
+            $ComputerTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                Name   = "Search TextBox"
+                Left   = $script:ComputerTreeNodeOSHostnameRadioButton.Left
+                Top    = $script:ComputerTreeNodeOSHostnameRadioButton.Top + $script:ComputerTreeNodeOSHostnameRadioButton.Height
+                Width  = $FormScale * 120
+                Height = $FormScale * 25
+                AutoCompleteSource = "ListItems"
+                AutoCompleteMode   = "SuggestAppend"
+                Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown
+                Add_MouseHover     = $ComputerTreeNodeSearchComboBoxAdd_MouseHover
+            }
+            ForEach ($Tag in $TagListFileContents) { [void] $ComputerTreeNodeSearchComboBox.Items.Add($Tag) }
+            $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchComboBox)
+
+
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
+            $ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
+                Text   = "Search"
+                Left   = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5 )
+                Top    = $ComputerTreeNodeSearchComboBox.Top
+                Width  = $FormScale * 55
+                Height = $FormScale * 22
+                Add_Click = { 
+                    Search-ComputerTreeNode
+                }
+                Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
+            }
+            $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchButton)
+            CommonButtonSettings -Button $ComputerTreeNodeSearchButton
+
+
+            # Code to remove empty categoryies
+            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1"
+            . "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1"
+            Remove-EmptyCategory
+
+
+            # Context menu button code
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListCollapseToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListCollapseToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1"
+            . "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1"
+            Update-FormProgress "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
+            . "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListAddEndpointToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListAddEndpointToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNodeSelected.ps1"
+            . "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNodeSelected.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
+            . "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
+
+            # Code for the Context Menu
+            # This context menu is the one activeated when you click within the computer treeview area, but not when clicking on a computer ndoe itself
+            Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
+            . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
+
+            # This context menu is the one activeated when you click on the computer node itself within the computer treeview
+            # It is also activated within the Conduct-NodeAction function
+            Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
+            . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
+            Display-ContextMenuForComputerTreeNode
+
+            # Ref Guide: https://info.sapien.com/index.php/guis/gui-controls/spotlight-on-the-contextmenustrip-control
+            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
+            . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
+            $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
+                # Note: size and location properties are are managed by 
+                Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                CheckBoxes        = $True
+                #LabelEdit         = $True  #Not implementing yet...
+                #not working # AfterLabelEdit = {  }
+                #not working #ShowRootLines     = $false
+                ShowLines         = $True
+                ShowNodeToolTips  = $True
+                Add_Click         = $ComputerTreeViewAdd_Click
+                Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
+                Add_MouseHover    = $ComputerTreeViewAdd_MouseHover
+                #Add_MouseEnter    = $ComputerTreeViewAdd_MouseEnter
+                Add_MouseLeave    = $ComputerTreeViewAdd_MouseLeave
+                #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
+                ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
+                ShowPlusMinus     = $true
+                HideSelection     = $false
+                #not working #AfterSelect       = {( 1 | ogv )}
+                ImageList         = $ComputerTreeViewImageList
+                ImageIndex        = 1
+            }
+            $script:ComputerTreeView.Sort()
+            $ComputerTreeviewTab.Controls.Add($script:ComputerTreeView)
+
+
+            Initialize-ComputerTreeNodes
+            Populate-ComputerTreeNodeDefaultData
+
+            # Yes, save initially during the load because it will save any poulated default data
+            Save-ComputerTreeNodeHostData
+
+            # This will load data that is located in the saved file
+            Foreach($Computer in $script:ComputerTreeViewData) {
+                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
+            }
+            $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
+
+            # Controls the layout of the computer treeview
+            $script:ComputerTreeView.ExpandAll()
+            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllHostsNode) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
+                }
+            }
+
+$PoShEasyWin.Controls.Add($ComputerAndAccountTreeNodeViewPanel)
+
+
+
+
+
+
+
+
+
+
+$ExecutionButtonPanel = New-Object System.Windows.Forms.Panel
+
+            $MainRightTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+                Name   = "Main Tab Window for Computer List"
+                Left   = 0
+                Top    = 0
+                Width  = $FormScale * 140
+                ShowToolTips = $True
+                Font         = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            }
+            $ExecutionButtonPanel.Controls.Add($MainRightTabControl)
+
+            # Action Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Action.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Action.ps1"
+
+            # Manage Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Import Data.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Import Data.ps1"
+
+$PoShEasyWin.Controls.Add($ExecutionButtonPanel)
+
+
+
+
+
+
+
+
+
+$InformationPanel = New-Object System.Windows.Forms.Panel
+
+            $InformationTabControl = New-Object System.Windows.Forms.TabControl -Property @{
+                Left   = 0
+                Top    = 0
+                Width  = $FormScale * 752
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ShowToolTips = $True
+                Add_Click = { script:Minimize-MonitorJobsTab }
+                Add_MouseHover = { $this.bringtofront() }
+            }
+            $InformationPanel.Controls.Add($InformationTabControl)
+
+            # About Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\About.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\About.ps1"
+
+            # Results Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Results.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Results.ps1"
+
+            # Monitor Jobs Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
+
+            # Endpoint Data Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
+
+            # Query Exploration Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
+
+$PoShEasyWin.Controls.Add($InformationPanel)
+
+
+
+
+
+
+
+
+
 
 # Charts - Convert CSV Number Strings To Intergers
 Update-FormProgress "$Dependencies\Code\Charts\Convert-CsvNumberStringsToIntergers.ps1"
@@ -1182,6 +1187,183 @@ Update-FormProgress "$Dependencies\Code\Execution\Execute-TextToSpeach.ps1"
 Update-FormProgress "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
 . "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
 
+
+
+
+
+#batman
+function Set-PoShEasyWinLayout {
+    param(
+        [switch]$Compact,
+        [switch]$Extended
+    )
+    if ($Compact) {
+        $PoShEasyWin.Width  = $FormScale * 1260
+        $PoShEasyWin.Height = $FormScale * 660
+
+        $QueryAndCollectionPanel.Width  = $FormScale * 460
+        $QueryAndCollectionPanel.Height = $FormScale * 590
+    
+        $MainCenterPanel.Left   = $FormScale * 470
+        $MainCenterPanel.Top    = $FormScale * 5
+        $MainCenterPanel.Width  = $FormScale * 370
+        $MainCenterPanel.Height = $FormScale * 278 
+            $StatusListBox.Width  = $FormScale * 310
+            $script:ProgressBarEndpointsProgressBar.Width = $StatusListBox.Width - ($FormScale * 1)
+            $script:ProgressBarQueriesProgressBar.Width = $StatusListBox.Width - ($FormScale * 1)
+
+            $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Width = $FormScale * 352
+            $ResultsFolderAutoTimestampCheckbox.Left = $script:CollectionSavedDirectoryTextBox.Left + ($FormScale * 240)
+            $DirectoryUpdateButton.Left = $ResultsFolderAutoTimestampCheckbox.Left + $ResultsFolderAutoTimestampCheckbox.Width + $($FormScale * 5)
+            $DirectoryOpenButton.Left = $DirectoryUpdateButton.Left + $DirectoryUpdateButton.Width + $($FormScale * 5)
+
+            $MainCenterMainTab.Controls.Remove($StatisticsViewLogButton)
+            $Section2StatisticsTab.Controls.Add($StatisticsViewLogButton)
+            $StatisticsViewLogButton.Left   = $FormScale * 258
+            $StatisticsViewLogButton.Top    = $FormScale * 5
+            $StatisticsViewLogButton.Width  = $FormScale * 100
+            $StatisticsViewLogButton.Height = $FormScale * 22
+            $PoshEasyWinStatistics.Width    = $FormScale * 354
+    
+        $ComputerAndAccountTreeNodeViewPanel.Left   = $FormScale * 845
+        $ComputerAndAccountTreeNodeViewPanel.Top    = $FormScale * 7
+        $ComputerAndAccountTreeNodeViewPanel.Width  = $FormScale * 230
+        $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 450
+        $script:ComputerTreeView.Left     = $ComputerTreeNodeSearchComboBox.Left
+        $script:ComputerTreeView.Top      = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
+        $script:ComputerTreeView.Width    = $FormScale * 230
+        $script:ComputerTreeView.Height   = $FormScale * 400
+        $script:ComputerTreeView.Add_MouseHover({
+            $script:ComputerTreeView.Width  = $FormScale * 230
+            $script:ComputerTreeView.Height = $FormScale * 544
+            $script:ComputerTreeView.bringtofront()
+        })
+        $script:ComputerTreeView.Add_MouseLeave({
+            $script:ComputerTreeView.Width  = $FormScale * 230
+            $script:ComputerTreeView.Height = $FormScale * 308
+        })
+        
+        $ExecutionButtonPanel.Left   = $FormScale * 1082
+        $ExecutionButtonPanel.Top    = $FormScale * 10
+        $ExecutionButtonPanel.Height = $FormScale * 349
+        $ExecutionButtonPanel.Width  = $FormScale * 140
+            $MainRightTabControl.Height = $FormScale * 349
+        
+        $InformationPanel.Left   = $MainCenterPanel.Left
+        $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height
+        $InformationPanel.Width  = $FormScale * 752
+        $InformationPanel.Height = $FormScale * 349
+            $ResultsTabOpNotesAddButton.Top = $FormScale * 198
+            $InformationTabControl.Height = $FormScale * 250
+            $Section1AboutSubTabRichTextBox.Height = $FormScale * 175
+            $ResultsListBox.Height = $FormScale * 250 - 15
+            $Section3HostDataNotesRichTextBox.Height = $FormScale * 135
+            function script:Maximize-MonitorJobsTab {
+                $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
+                $InformationPanel.Top    = $MainCenterTabControl.Top
+                #$InformationPanel.Height = $InformationTabControlOriginalHeight + $MainCenterTabControl.Height + ($FormScale * 63)
+                $InformationPanel.Height = $InformationTabControlOriginalHeight + $MainCenterTabControl.Height + ($FormScale * 563)
+                $InformationPanel.bringtofront()
+            }
+            function script:Minimize-MonitorJobsTab {
+                $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
+                $InformationPanel.Top    = $InformationTabControlOriginalTop
+                $InformationPanel.Height = $InformationTabControlOriginalHeight    
+                $InformationPanel.bringtofront()
+            }            
+    }
+    elseif ($Extended) {
+        $PoShEasyWin.Width  = $FormScale * 1470
+        $PoShEasyWin.Height = $FormScale * 695
+
+        $QueryAndCollectionPanel.Width  = $FormScale * 460
+        $QueryAndCollectionPanel.Height = $FormScale * 645
+    
+        $ComputerAndAccountTreeNodeViewPanel.Left   = $FormScale * 472
+        $ComputerAndAccountTreeNodeViewPanel.Top    = $FormScale * 5
+        $ComputerAndAccountTreeNodeViewPanel.Width  = $FormScale * 200
+        $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
+            $ComputerAndAccountTreeViewTabControl.Width  = $FormScale * 192
+            $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
+            $script:ComputerTreeView.Left   = $ComputerTreeNodeSearchComboBox.Left
+            $script:ComputerTreeView.Top    = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
+            $script:ComputerTreeView.Width  = $FormScale * 180
+            $script:ComputerTreeView.Height = $FormScale * 558
+            $script:ComputerTreeView.Add_MouseHover({$null})
+            $script:ComputerTreeView.Add_MouseLeave({$null})
+
+        $MainCenterPanel.Left   = $ComputerAndAccountTreeNodeViewPanel.Left + $ComputerAndAccountTreeNodeViewPanel.Width + ($FormScale * 2)
+        $MainCenterPanel.Top    = $FormScale * 5
+        $MainCenterPanel.Width  = $FormScale * 607
+        $MainCenterPanel.Height = $FormScale * 278 
+            $MainCenterTabControl.Width = $FormScale * 607
+            $script:CollectionSavedDirectoryTextBox.Width = $FormScale * 595
+            $DirectoryOpenButton.Left = $script:CollectionSavedDirectoryTextBox.Width - ($FormScale * 232)
+            $DirectoryUpdateButton.Left = $DirectoryOpenButton.Left + $DirectoryOpenButton.width + ($FormScale * 5)
+            $StatusListBox.Width = $FormScale * 535
+            $script:ProgressBarEndpointsProgressBar.Width = $StatusListBox.Width - ($FormScale * 1)
+            $script:ProgressBarQueriesProgressBar.Width = $StatusListBox.Width - ($FormScale * 1)
+
+            $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Width = $FormScale * 590
+            $ResultsFolderAutoTimestampCheckbox.Left = $script:CollectionSavedDirectoryTextBox.Left + ($FormScale * 240)
+            $DirectoryUpdateButton.Left = $ResultsFolderAutoTimestampCheckbox.Left + $ResultsFolderAutoTimestampCheckbox.Width + $($FormScale * 5)
+            $DirectoryOpenButton.Left = $DirectoryUpdateButton.Left + $DirectoryUpdateButton.Width + $($FormScale * 5)
+
+            $Section2StatisticsTab.Controls.Remove($StatisticsViewLogButton)
+            $MainCenterMainTab.Controls.Add($StatisticsViewLogButton)
+            $StatisticsViewLogButton.Left   = $EventViewerButton.Left + $EventViewerButton.Width + ($FormScale * 5)
+            $StatisticsViewLogButton.Top    = $EventViewerButton.Top
+            $StatisticsViewLogButton.Width  = $EventViewerButton.Width
+            $StatisticsViewLogButton.Height = $EventViewerButton.Height
+            $PoshEasyWinStatistics.Width    = $FormScale * 590
+    
+        $ExecutionButtonPanel.Left   = $MainCenterPanel.Left + $MainCenterPanel.Width + ($FormScale * 5)
+        $ExecutionButtonPanel.Top    = $FormScale * 10
+        $ExecutionButtonPanel.Height = $FormScale * 273
+        $ExecutionButtonPanel.Width  = $FormScale * 140
+            $MainRightTabControl.Height = $FormScale * 273
+
+
+        $InformationPanel.Left   = $MainCenterPanel.Left
+        $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
+        $InformationPanel.Width  = $FormScale * 752
+        $InformationPanel.Height = $FormScale * 352
+            $ResultsTabOpNotesAddButton.Top = $FormScale * 296
+            $InformationTabControl.Height = $FormScale * 352
+            $Section1AboutSubTabRichTextBox.Height = $FormScale * 317
+            $ResultsListBox.Height = $FormScale * 317
+            $Section3HostDataNotesRichTextBox.Height = $FormScale * 243
+
+            function script:Maximize-MonitorJobsTab {
+                $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
+                $InformationPanel.Top    = $ComputerAndAccountTreeNodeViewPanel.Top
+                $InformationPanel.Height = $FormScale * 655
+                $InformationPanel.bringtofront()
+                $InformationTabControl.Height = $ComputerAndAccountTreeNodeViewPanel.Height
+            }            
+            function script:Minimize-MonitorJobsTab {
+                $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
+                $InformationPanel.Top    = $InformationTabControlOriginalTop
+                $InformationPanel.Height = $FormScale * 352
+                $InformationPanel.bringtofront()
+                $InformationTabControl.Height = $InformationPanel.Height
+            }
+    }
+}
+
+Set-PoShEasyWinLayout -Extended
+$InformationTabControlOriginalTop    = $InformationPanel.Top
+$InformationTabControlOriginalHeight = $InformationPanel.Height
+
+
+
+
+
+
+
+
+
+
 #============================================================================================================================================================
 #   ____               _         _       _____                          _    _
 #  / ___|   ___  _ __ (_) _ __  | |_    | ____|__  __ ___   ___  _   _ | |_ (_)  ___   _ __
@@ -1201,6 +1383,11 @@ $script:WinRmCommandCountHistory = $false
 
 $ExecuteScriptHandler = {
     [System.Windows.Forms.Application]::UseWaitCursor = $true
+
+    if ($ResultsFolderAutoTimestampCheckbox.Checked) {
+        $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
+        $script:CollectionSavedDirectoryTextBox.Text = $script:CollectedDataTimeStampDirectory
+    }
 
     # Clears the Progress bars
     $script:ProgressBarEndpointsProgressBar.Value     = 0
@@ -1231,8 +1418,8 @@ $ExecuteScriptHandler = {
     if ($script:EventLogsStartTimePicker.Checked -xor $script:EventLogsStopTimePicker.Checked) {
         # This brings specific tabs to the forefront/front view
         $MainLeftTabControl.SelectedTab = $Section1CollectionsTab
-        #$MainBottomTabControl.SelectedTab = $Section3ResultsTab
-        #$MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
+        #$InformationTabControl.SelectedTab = $Section3ResultsTab
+        #$InformationTabControl.SelectedTab = $Section3MonitorJobsTab
 
         [system.media.systemsounds]::Exclamation.play()
         $StatusListBox.Items.Clear()
@@ -1245,17 +1432,13 @@ $ExecuteScriptHandler = {
     else {
         # This brings specific tabs to the forefront/front view
         #$MainLeftTabControl.SelectedTab = $Section1OpNotesTab
-        #$MainCenterTabControl.SelectedTab = $MainCenterMainTab
-        $MainCenterTabControl.SelectedTab = $Section2StatisticsTab
-            if ($MainCenterTabControl.SelectedTab -match 'Statistics') {
-                $MainCenterTabControl.Width  = $FormScale * 370
-                $MainCenterTabControl.Height = $FormScale * 278
-            }
-        $MainRightTabControl.SelectedTab  = $Section3ActionTab
-        #$MainBottomTabControl.SelectedTab = $Section3ResultsTab
-        #$MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
-        $PoShEasyWin.Refresh()
+        $MainCenterTabControl.SelectedTab = $MainCenterMainTab
+        #$MainCenterTabControl.SelectedTab = $Section2StatisticsTab
 
+        $MainRightTabControl.SelectedTab  = $Section3ActionTab
+        #$InformationTabControl.SelectedTab = $Section3ResultsTab
+        #$InformationTabControl.SelectedTab = $Section3MonitorJobsTab
+        $PoShEasyWin.Refresh()
 
         $CollectionTimerStart = Get-Date
         $ResultsListBox.Items.Clear()
@@ -1391,10 +1574,10 @@ $ExecuteScriptHandler = {
 
             if (Verify-Action -Title "Execution Verification" -Question "Connecting Account:`n$Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerList -join ', ')) {
             
-                $PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
-                $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
-                $PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)
-                $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
+                $ProgressBarPanel.Controls.Add($ProgressBarEndpointsLabel)
+                $ProgressBarPanel.Controls.Add($script:ProgressBarEndpointsProgressBar)
+                $ProgressBarPanel.Controls.Add($ProgressBarQueriesLabel)
+                $ProgressBarPanel.Controls.Add($script:ProgressBarQueriesProgressBar)
 
                 $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
                 New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
@@ -1438,7 +1621,7 @@ $ExecuteScriptHandler = {
                 # Combines the inputs from the various GUI fields to query for Alternate Data Streams
                 if ($FileSearchAlternateDataStreamCheckbox.Checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualQuery-FileSearchAlternateDataStream.ps1" }
 
-                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
+                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $NetworkEndpointPacketCaptureCheckBox.Checked) {
                     [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support Packet Capture, use either Monitor Jobs or Session Based mode.","Incompatible Mode",'Ok',"Info")
                 }
                 else {
@@ -1517,7 +1700,7 @@ $ExecuteScriptHandler = {
 
                 Start-Sleep -Seconds 1
                 if ($script:Section3MonitorJobsResizeCheckbox.checked){
-                    Maximize-MonitorJobsTab
+                    script:Maximize-MonitorJobsTab
                 }
                 $PoShEasyWin.Refresh()
                 Completed-QueryExecution
@@ -1555,7 +1738,7 @@ $ExecuteScriptHandler = {
         # A session is established to each endpoint, and queries are executed through it
 
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based' -and $script:RpcCommandCount -eq 0 -and $script:SmbCommandCount -eq 0 ) {
-            $MainBottomTabControl.SelectedTab = $Section3ResultsTab
+            $InformationTabControl.SelectedTab = $Section3ResultsTab
 
             Compile-QueryCommands
 
@@ -1564,10 +1747,10 @@ $ExecuteScriptHandler = {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Attempting to Establish Sessions to $($script:ComputerList.Count) Endpoints"
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[!] $($script:ComputerList -join ', ')"
 
-            $PoSHEasyWin.Controls.Add($ProgressBarEndpointsLabel)
-            $PoSHEasyWin.Controls.Add($script:ProgressBarEndpointsProgressBar)
-            $PoShEasyWin.Controls.Add($ProgressBarQueriesLabel)
-            $PoSHEasyWin.Controls.Add($script:ProgressBarQueriesProgressBar)
+            $ProgressBarPanel.Controls.Add($ProgressBarEndpointsLabel)
+            $ProgressBarPanel.Controls.Add($script:ProgressBarEndpointsProgressBar)
+            $ProgressBarPanel.Controls.Add($ProgressBarQueriesLabel)
+            $ProgressBarPanel.Controls.Add($script:ProgressBarQueriesProgressBar)
 
             $script:CollectedDataTimeStampDirectory = $script:CollectionSavedDirectoryTextBox.Text
             New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
@@ -1718,11 +1901,7 @@ $ExecuteScriptHandler = {
         }
     }
 
-    $MainCenterTabControl.SelectedTab = $MainCenterMainTab
-    if ($MainCenterTabControl.SelectedTab -match 'Main') {
-        $MainCenterTabControl.Width  = $FormScale * 370
-        $MainCenterTabControl.Height = $FormScale * 278
-    }
+    $InformationTabControl.SelectedTab = $script:Section3MonitorJobsTab
     $PoShEasyWin.Refresh()
 
     [System.Windows.Forms.Application]::UseWaitCursor = $false

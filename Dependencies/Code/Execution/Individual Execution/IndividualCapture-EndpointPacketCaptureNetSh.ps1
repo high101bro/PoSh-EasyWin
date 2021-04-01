@@ -24,8 +24,8 @@ Defaults:
 #>
 
 
-#$MainBottomTabControl.SelectedTab = $Section3ResultsTab
-$MainBottomTabControl.SelectedTab = $Section3MonitorJobsTab
+#$InformationTabControl.SelectedTab = $Section3ResultsTab
+$InformationTabControl.SelectedTab = $Section3MonitorJobsTab
 
 $ExecutionStartTime = Get-Date
 $CollectionName = "Endpoint Packet Capture"
