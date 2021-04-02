@@ -8,10 +8,10 @@ $MainCenterTabControl.Controls.Add($Section2OptionsTab)
 
 
 $OptionTextToSpeachButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = "Resize PoSh-EasyWin"
+    Text   = "Resize GUI"
     Left   = $FormScale * 3
     Top    = $FormScale * 3
-    Width  = $FormScale * 175
+    Width  = $FormScale * 100
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = {
@@ -32,7 +32,7 @@ $OptionViewReadMeButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "View Read Me"
     Left   = $OptionTextToSpeachButton.Left + $OptionTextToSpeachButton.Width + ($FormScale * 5)
     Top    = $OptionTextToSpeachButton.Top
-    Width  = $FormScale * 175
+    Width  = $FormScale * 100
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = { Launch-ReadMe -ReadMe }
@@ -44,11 +44,11 @@ CommonButtonSettings -Button $OptionViewReadMeButton
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\PoShEasyWinLicenseAndAboutButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\PoShEasyWinLicenseAndAboutButton.ps1"
 $PoShEasyWinLicenseAndAboutButton = New-Object Windows.Forms.Button -Property @{
-    Text   = "GNU General Public License v3"
+    Text   = "License (GPLv3)"
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Left   = $OptionViewReadMeButton.Left + $OptionViewReadMeButton.Width + ($FormScale * 5)
     Top    = $OptionViewReadMeButton.Top
-    Width  = $FormScale * 200
+    Width  = $FormScale * 150
     Height = $FormScale * 22
     Add_Click      = $PoShEasyWinLicenseAndAboutButtonAdd_Click
     Add_MouseHover = $PoShEasyWinLicenseAndAboutButtonAdd_MouseHover
@@ -175,41 +175,44 @@ $OptionMonitorJobsDefaultRestartTimeLabel = New-Object System.Windows.Forms.Labe
 $Section2OptionsTab.Controls.Add($OptionMonitorJobsDefaultRestartTimeLabel)
 
 
-Load-Code "$Dependencies\Code\System.Windows.Forms\Combobox\OptionStatisticsUpdateIntervalComboBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Combobox\OptionStatisticsUpdateIntervalComboBox.ps1"
-$OptionStatisticsUpdateIntervalCombobox = New-Object System.Windows.Forms.Combobox -Property @{
-    Text   = 5
-    Left   = $FormScale * 3
-    Top    = $script:OptionMonitorJobsDefaultRestartTimeCombobox.Top + $script:OptionMonitorJobsDefaultRestartTimeCombobox.Height + $($FormScale + 2)
-    Width  = $FormScale * 50
-    Height = $FormScale * 22 
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseHover = $OptionStatisticsUpdateIntervalComboboxAdd_MouseHover
-    Add_SelectedIndexChanged = { $This.Text | Set-Content "$PoShHome\Settings\Statistics Update Interval.txt" -Force }
-}
-$StatisticsTimesAvailable = @(1,5,10,15,30,45,60)
-ForEach ($Item in $StatisticsTimesAvailable) { $OptionStatisticsUpdateIntervalCombobox.Items.Add($Item) }
-if (Test-Path "$PoShHome\Settings\Statistics Update Interval.txt") { $OptionStatisticsUpdateIntervalCombobox.text = Get-Content "$PoShHome\Settings\Statistics Update Interval.txt" }
-$Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalCombobox)
-
-
-$OptionStatisticsUpdateIntervalLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text   = "Statistics Update Interval"
-    Left   = $OptionStatisticsUpdateIntervalCombobox.Left + $OptionStatisticsUpdateIntervalCombobox.Width + $($FormScale + 5)
-    Top    = $OptionStatisticsUpdateIntervalCombobox.Top + $($FormScale + 3)
-    Width  = $FormScale * 200
+$GuiLayout = Get-Content "$PoShHome\Settings\GUI Layout.txt"
+$CompactViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+    Text   = "Compact View"
+    Left   = $script:OptionMonitorJobsDefaultRestartTimeCombobox.Left
+    Top    = $script:OptionMonitorJobsDefaultRestartTimeCombobox.Top + $script:OptionMonitorJobsDefaultRestartTimeCombobox.Height + ($FormScale * 5)
+    Width  = $FormScale * 100
     Height = $FormScale * 18
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Checked = $true
+    Add_Click = { 
+        Set-GuiLayout -Compact 
+        'GUI Layout = Compact' | Set-Content "$PoShHome\Settings\GUI Layout.txt"
+    }
 }
-$Section2OptionsTab.Controls.Add($OptionStatisticsUpdateIntervalLabel)
+$Section2OptionsTab.Controls.Add($CompactViewRadioButton)
+
+
+$ExtendedViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+    Text   = "Extended View"
+    Left   = $CompactViewRadioButton.Left + $CompactViewRadioButton.Width + $($FormScale + 5)
+    Top    = $CompactViewRadioButton.Top
+    Width  = $FormScale * 100
+    Height = $FormScale * 18
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Add_Click = {
+        Set-GuiLayout -Extended
+        'GUI Layout = Extended' | Set-Content "$PoShHome\Settings\GUI Layout.txt"
+    }
+}
+$Section2OptionsTab.Controls.Add($ExtendedViewRadioButton)
 
 
 Load-Code "$Dependencies\Code\System.Windows.Forms\Checkbox\OptionsAutoSaveChartsAsImages.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Checkbox\OptionsAutoSaveChartsAsImages.ps1"
 $OptionsAutoSaveChartsAsImages = New-Object System.Windows.Forms.Checkbox -Property @{
     Text    = "Autosave Charts As Images"
-    Left    = $FormScale * 3
-    Top     = $OptionStatisticsUpdateIntervalLabel.Top + $OptionStatisticsUpdateIntervalLabel.Height
+    Left    = $CompactViewRadioButton.Left
+    Top     = $CompactViewRadioButton.Top + $CompactViewRadioButton.Height
     Width   = $FormScale * 225
     Height  = $FormScale * 22
     Enabled = $true

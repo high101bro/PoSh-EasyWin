@@ -16,7 +16,7 @@ Update-FormProgress "$Dependencies\Code\Tree View\Computer\Verify-Action.ps1"
 $Section3ActionTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text   = "Action"
     Left   = $FormScale * 3
-    Top    = $FormScale * $Column5DownPosition
+    Top    = 0
     Height = $FormScale * 124
     Width  = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -110,6 +110,8 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerList
 # if (Test-Path "$ExternalPrograms\PsExec.exe") { $Section3ActionTab.Controls.Add($ComputerListPsExecButton) }
 # $Column5DownPosition += $Column5DownPositionShift
 
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
 
 # Rolls the credenaisl: 250 characters of random: abcdefghiklmnoprstuvwxyzABCDEFGHKLMNOPRSTUVWXYZ1234567890
 Update-FormProgress "$Dependencies\Code\Credential Management\Generate-NewRollingPassword.ps1"

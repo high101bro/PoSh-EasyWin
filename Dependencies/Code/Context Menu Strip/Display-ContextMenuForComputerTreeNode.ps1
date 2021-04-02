@@ -55,8 +55,16 @@ function Display-ContextMenuForComputerTreeNode {
         }
         $ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
     }
-    
 
+    
+    $EventViewerButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+        Text      = "Event Viewer"
+        ForeColor = 'DarkRed'
+        Add_CLick = $EventViewerButtonAdd_Click
+    }
+    $ComputerListContextMenuStrip.Items.Add($EventViewerButton)
+
+    
     $script:ExpandCollapseStatus = "Collapse"
     $ComputerListCollapseToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "Collapse"

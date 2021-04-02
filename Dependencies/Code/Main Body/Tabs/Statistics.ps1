@@ -30,11 +30,15 @@ CommonButtonSettings -Button $StatisticsRefreshButton
 Load-Code "$Dependencies\Code\System.Windows.Forms\Button\StatisticsViewLogButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\StatisticsViewLogButton.ps1"
 $StatisticsViewLogButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "View Log"
+    Text   = "View Log"
+    Left   = $StatisticsRefreshButton.Left + $StatisticsRefreshButton.Width + ($FormScale * 5)
+    Top    = $FormScale * 5
+    Width  = $FormScale * 100
+    Height = $FormScale * 22
     Add_Click      = $StatisticsViewLogButtonAdd_Click
     Add_MouseHover = $StatisticsViewLogButtonAdd_MouseHover
 }
-#$Section2StatisticsTab.Controls.Add($StatisticsViewLogButton)
+$Section2StatisticsTab.Controls.Add($StatisticsViewLogButton)
 CommonButtonSettings -Button $StatisticsViewLogButton
 
 

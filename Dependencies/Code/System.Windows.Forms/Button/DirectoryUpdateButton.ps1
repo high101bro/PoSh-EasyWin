@@ -1,6 +1,6 @@
 $DirectoryUpdateButtonAdd_Click = {
     $script:CollectedDataTimeStampDirectory = "$CollectedDataDirectory\$((Get-Date).ToString('yyyy-MM-dd @ HHmm ss'))"
-    $script:CollectionSavedDirectoryTextBox.Text  = $script:CollectedDataTimeStampDirectory
+    $script:CollectionSavedDirectoryTextBox.Text = $script:CollectedDataTimeStampDirectory
 }
 
 $DirectoryUpdateButtonAdd_MouseHover = {

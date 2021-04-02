@@ -2778,7 +2778,7 @@ if (-not $MonitorMode) {
     # Sets the job timeout value, so they don't run forever
     $script:JobsTimer  = [int]$($script:OptionJobTimeoutSelectionComboBox.Text)
     # This is how often the statistics page updates, be default it is 20 which is 5 Seconds (250 ms x 4)
-    $StatisticsUpdateInterval      = (1000 / $SleepMilliSeconds) * $OptionStatisticsUpdateIntervalCombobox.text
+    $StatisticsUpdateInterval      = (1000 / $SleepMilliSeconds) * 5
     $StatisticsUpdateIntervalCount = 0
 
     # The number of Jobs created by PoSh-EasyWin

@@ -3,62 +3,66 @@ $EventViewerButtonAdd_Click = {
     #Create-ComputerNodeCheckBoxArray
     Generate-ComputerList
 
-    function Launch-EventViewer {
-        if ($script:ComputerList.count -gt 0) {
-            if (Verify-Action -Title "Verification: Event Viewer" -Question "Open the Event Viewer to the following?" -Computer $($script:ComputerList -join ', ')) {
-                # This brings specific tabs to the forefront/front view
-                $InformationTabControl.SelectedTab = $Section3ResultsTab
+    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    else {$Username = $PoShEasyWinAccountLaunch }
 
-                $StatusListBox.Items.Clear()
-                $StatusListBox.Items.Add("Show Event Viewer:  $($script:ComputerList)")
-                #Removed For Testing#$ResultsListBox.Items.Clear()
-
-                if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                    if (!$script:Credential) { Create-NewCredentials }
-                }
-                # Note: Show-EventLog doesn't support -Credential, nor will it spawn a local GUI if used witn invoke-command/enter-pssession for a remote host with credentials provided
-                Foreach ($TargetComputer in $($script:ComputerList | Select-Object -Unique)){
-                    if ($ComputerListProvideCredentialsCheckBox.Checked) {
-                        Invoke-Command -Command {
-                            param(
-                                $TargetComputer,
-                                $script:Credential
-                            )
-                            if (Test-Path 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'){
-                                [System.Windows.Forms.MessageBox]::Show("If the Event Viewer doesn't display, try re-launching PoSh-EasyWin itself with domain credentials and wihtout checking 'Specify Credentials'. This method would require the localhost to be on the domain.",'Show-EventLog')
-                                start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-WindowStyle Hidden -Command Show-eventLog -ComputerName $TargetComputer" -Credential $script:Credential -WindowStyle Hidden
+    if ($script:ComputerListEndpointNameToolStripLabel.text) {
+        $VerifyAction = Verify-Action -Title "Verification: Event Viewer" -Question "Connecting Account:  $Username`n`nAttempt to launch the Event Viewer on the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
+        if ($script:ComputerListUseDNSCheckbox.checked) { 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+        }
+        else {
+            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllHostsNode) {
+                foreach ($Category in $root.Nodes) {
+                    foreach ($Entry in $Category.nodes) {
+                        if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {
+                            foreach ($Metadata in $Entry.nodes) {
+                                if ($Metadata.Name -eq 'IPv4Address') {
+                                    $script:ComputerTreeViewSelected = $Metadata.text
+                                }
                             }
-                            else {
-                                start-process powershell.exe -ArgumentList "-WindowStyle Hidden -Command Show-EventLog -ComputerName $TargetComputer" -Credential $script:Credential -WindowStyle Hidden
-                            }
-                        } -ArgumentList @($TargetComputer,$script:Credential)
-                        $ResultsListBox.Items.Add("Show-EventLog -ComputerName $script:ComputerList")
-                        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Show-EventLog -ComputerName $($script:ComputerList)"
-                    }
-                    else{
-                        Show-EventLog -ComputerName $TargetComputer
-                        $ResultsListBox.Items.Add("Show-EventLog -ComputerName $script:ComputerList")
-                        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Show-EventLog -ComputerName $($script:ComputerList)"
+                        }
                     }
                 }
-            }
-            else {
-                [system.media.systemsounds]::Exclamation.play()
-                $StatusListBox.Items.Clear()
-                $StatusListBox.Items.Add("Event Viewer:  Cancelled")
             }
         }
-        elseif ($script:ComputerList.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Show Event Viewer' }
-        elseif ($script:ComputerList.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Show Event Viewer' }
+    }
+    elseif (-not $script:ComputerListEndpointNameToolStripLabel.text) {
+        [System.Windows.Forms.Messagebox]::Show('Left click an endpoint node to select it, then right click to access the context menu and select PSExec.','PSExec (Sysinternals)')
     }
 
-    #if ($ComputerListProvideCredentialsCheckBox.checked) {
-    #    if ((Verify-Action -Title "Verification: Credential Warning" -Question "Warning!`nEvent Viewer does not support providing alternate credentials.`nDo you want to continue?" -Computer '')) {
-    #        Launch-EventViewer
-    #    }
-    #}
-    #else {Launch-EventViewer}
-    Launch-EventViewer
+    if ($VerifyAction) {
+        $InformationTabControl.SelectedTab = $Section3ResultsTab
+
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Event Viewer:  $($script:ComputerTreeViewSelected)")
+
+        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
+
+            $ResultsListBox.Items.Add("start-process powershell.exe -ArgumentList '-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected' -Credential <Credential> -WindowStyle Hidden")
+            #start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-WindowStyle Hidden -Command Show-eventLog -ComputerName $script:ComputerTreeViewSelected" -Credential $script:Credential -WindowStyle Hidden
+            [System.Windows.Forms.MessageBox]::Show("If the Event Viewer doesn't display, try re-launching PoSh-EasyWin itself with domain credentials and wihtout checking 'Specify Credentials'. This method would require the localhost to be on the domain.",'Show-EventLog')
+            start-process powershell.exe -ArgumentList "-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected" -Credential $script:Credential -WindowStyle Hidden
+        }
+        else {
+            $ResultsListBox.Items.Add("start-process powershell.exe -ArgumentList '-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected' -WindowStyle Hidden")
+            [System.Windows.Forms.MessageBox]::Show("If the Event Viewer doesn't display, try re-launching PoSh-EasyWin itself with domain credentials and wihtout checking 'Specify Credentials'. This method would require the localhost to be on the domain.",'Show-EventLog')
+            start-process powershell.exe -ArgumentList "-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected" -WindowStyle Hidden
+        }
+        Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "start-process powershell.exe -ArgumentList '-WindowStyle Hidden -Command Show-EventLog -ComputerName $script:ComputerTreeViewSelected' -WindowStyle Hidden"
+
+        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+            Start-Sleep -Seconds 3
+            Generate-NewRollingPassword
+        }
+    }
+    else {
+        [system.media.systemsounds]::Exclamation.play()
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Event Viewer:  Cancelled")
+    }
 }
 
 $EventViewerButtonAdd_MouseHover = {

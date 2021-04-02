@@ -332,7 +332,6 @@ if ( $Credential ) { $script:Credential = $Credential }
 # Clears out the Credential variable. Specify Credentials provided will stored in this variable
 else { $script:Credential = $null }
 
-
 # Creates Shortcut for PoSh-EasyWin on Desktop
 $FileToShortCut      = $($myinvocation.mycommand.definition)
 $ShortcutDestination = "C:\Users\$env:USERNAME\Desktop\PoSh-EasyWin.lnk"
@@ -677,12 +676,10 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                 Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\PoSh-EasyWin Image 01.png")
                 SizeMode = 'StretchImage'
             }
-            $QueryAndCollectionPanel.Controls.Add($PoShEasyWinPictureBox)
-
+            # Added/Removed by Set-GuiLayout
 
             $MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
-                Top    = $PoShEasyWinPictureBox.Top + $PoShEasyWinPictureBox.Height
                 Width  = $FormScale * 460
                 Height = $FormScale * 590
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -850,7 +847,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
 
             $ComputerTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
                 Text    = "Greedy"
-                Left    = $ComputerTreeNodeOUHostnameRadioButton.Left + $ComputerTreeNodeOUHostnameRadioButton.Width + $($FormScale * 5)
                 Top     = $ComputerTreeNodeOUHostnameRadioButton.Top
                 Height  = $FormScale * 25
                 Width   = $FormScale * 65
@@ -899,7 +895,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                 Name   = "Search TextBox"
                 Left   = $script:ComputerTreeNodeOSHostnameRadioButton.Left
                 Top    = $script:ComputerTreeNodeOSHostnameRadioButton.Top + $script:ComputerTreeNodeOSHostnameRadioButton.Height
-                Width  = $FormScale * 120
                 Height = $FormScale * 25
                 AutoCompleteSource = "ListItems"
                 AutoCompleteMode   = "SuggestAppend"
@@ -915,7 +910,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
             . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
             $ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
                 Text   = "Search"
-                Left   = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5 )
                 Top    = $ComputerTreeNodeSearchComboBox.Top
                 Width  = $FormScale * 55
                 Height = $FormScale * 22
@@ -1192,109 +1186,133 @@ Update-FormProgress "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
 
 
 #batman
-function Set-PoShEasyWinLayout {
+function Set-GuiLayout {
     param(
         [switch]$Compact,
         [switch]$Extended
     )
     if ($Compact) {
-        $PoShEasyWin.Width  = $FormScale * 1260
+        $PoShEasyWin.Width = $FormScale * 1260
         $PoShEasyWin.Height = $FormScale * 660
 
-        $QueryAndCollectionPanel.Width  = $FormScale * 460
+        $QueryAndCollectionPanel.Controls.Remove($PoShEasyWinPictureBox)
+        $Section3AboutTab.Controls.Add($PoShEasyWinPictureBox)
+        $MainLeftTabControl.Top = 0
+
+        $QueryAndCollectionPanel.Width = $FormScale * 460
         $QueryAndCollectionPanel.Height = $FormScale * 590
     
-        $MainCenterPanel.Left   = $FormScale * 470
-        $MainCenterPanel.Top    = $FormScale * 5
-        $MainCenterPanel.Width  = $FormScale * 370
+        $MainCenterPanel.Left = $FormScale * 470
+        $MainCenterPanel.Top = $FormScale * 5
+        $MainCenterPanel.Width = $FormScale * 370
         $MainCenterPanel.Height = $FormScale * 278 
-            $StatusListBox.Width  = $FormScale * 310
+            $StatusListBox.Width = $FormScale * 295
             $script:ProgressBarEndpointsProgressBar.Width = $StatusListBox.Width - ($FormScale * 1)
             $script:ProgressBarQueriesProgressBar.Width = $StatusListBox.Width - ($FormScale * 1)
 
             $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Width = $FormScale * 352
-            $ResultsFolderAutoTimestampCheckbox.Left = $script:CollectionSavedDirectoryTextBox.Left + ($FormScale * 240)
+            $ResultsFolderAutoTimestampCheckbox.Left = $OptionSearchComputersForPreviouslyCollectedDataProcessesGroupBox.Left
             $DirectoryUpdateButton.Left = $ResultsFolderAutoTimestampCheckbox.Left + $ResultsFolderAutoTimestampCheckbox.Width + $($FormScale * 5)
             $DirectoryOpenButton.Left = $DirectoryUpdateButton.Left + $DirectoryUpdateButton.Width + $($FormScale * 5)
+            $PoshEasyWinStatistics.Width = $FormScale * 354
+            $MainCenterMainTab.Controls.Remove($PowerShellTerminalButton)
 
-            $MainCenterMainTab.Controls.Remove($StatisticsViewLogButton)
-            $Section2StatisticsTab.Controls.Add($StatisticsViewLogButton)
-            $StatisticsViewLogButton.Left   = $FormScale * 258
-            $StatisticsViewLogButton.Top    = $FormScale * 5
-            $StatisticsViewLogButton.Width  = $FormScale * 100
-            $StatisticsViewLogButton.Height = $FormScale * 22
-            $PoshEasyWinStatistics.Width    = $FormScale * 354
-    
-        $ComputerAndAccountTreeNodeViewPanel.Left   = $FormScale * 845
-        $ComputerAndAccountTreeNodeViewPanel.Top    = $FormScale * 7
-        $ComputerAndAccountTreeNodeViewPanel.Width  = $FormScale * 230
-        $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 450
-        $script:ComputerTreeView.Left     = $ComputerTreeNodeSearchComboBox.Left
-        $script:ComputerTreeView.Top      = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
-        $script:ComputerTreeView.Width    = $FormScale * 230
-        $script:ComputerTreeView.Height   = $FormScale * 400
-        $script:ComputerTreeView.Add_MouseHover({
-            $script:ComputerTreeView.Width  = $FormScale * 230
-            $script:ComputerTreeView.Height = $FormScale * 544
-            $script:ComputerTreeView.bringtofront()
-        })
-        $script:ComputerTreeView.Add_MouseLeave({
-            $script:ComputerTreeView.Width  = $FormScale * 230
-            $script:ComputerTreeView.Height = $FormScale * 308
-        })
+        $ComputerAndAccountTreeNodeViewPanel.Left = $FormScale * 845
+        $ComputerAndAccountTreeNodeViewPanel.Top = $FormScale * 7
+        $ComputerAndAccountTreeNodeViewPanel.Width = $FormScale * 230
+        $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 300
+            $ComputerAndAccountTreeViewTabControl.Width = $FormScale * 230
+            $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 275
+            $ComputerTreeNodeSearchGreedyCheckbox.Left = $ComputerTreeNodeOUHostnameRadioButton.Left + $ComputerTreeNodeOUHostnameRadioButton.Width + $($FormScale * 45)
+            $ComputerTreeNodeSearchComboBox.Width = $FormScale * 162
+            $ComputerTreeNodeSearchButton.Left = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5 )
+            $script:ComputerTreeView.Left = $ComputerTreeNodeSearchComboBox.Left
+            $script:ComputerTreeView.Top = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
+            $script:ComputerTreeView.Width = $FormScale * 222
+            $script:ComputerTreeView.Height = $FormScale * 200
+            $script:ComputerTreeView.Add_MouseHover({
+                $ComputerAndAccountTreeNodeViewPanel.Height = $QueryAndCollectionPanel.Height
+                $ComputerAndAccountTreeViewTabControl.Height = $QueryAndCollectionPanel.Height - ($FormScale * 2)
+                $script:ComputerTreeView.Height = $FormScale * 514
+                $script:ComputerTreeView.bringtofront()
+            })
+            $script:ComputerTreeView.Add_MouseLeave({
+                $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 300
+                $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 275
+                $script:ComputerTreeView.Height = $FormScale * 200
+            })
+            $script:ComputerTreeView.Scrollable = $true
+
+        $ExecutionButtonPanel.Left = $FormScale * 1082
+        $ExecutionButtonPanel.Top = $FormScale * 7
+        $ExecutionButtonPanel.Height = $FormScale * 300
+        $ExecutionButtonPanel.Width = $FormScale * 140
+            $MainRightTabControl.Height = $ComputerAndAccountTreeViewTabControl.Height
         
-        $ExecutionButtonPanel.Left   = $FormScale * 1082
-        $ExecutionButtonPanel.Top    = $FormScale * 10
-        $ExecutionButtonPanel.Height = $FormScale * 349
-        $ExecutionButtonPanel.Width  = $FormScale * 140
-            $MainRightTabControl.Height = $FormScale * 349
-        
-        $InformationPanel.Left   = $MainCenterPanel.Left
-        $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height
-        $InformationPanel.Width  = $FormScale * 752
-        $InformationPanel.Height = $FormScale * 349
-            $ResultsTabOpNotesAddButton.Top = $FormScale * 198
-            $InformationTabControl.Height = $FormScale * 250
-            $Section1AboutSubTabRichTextBox.Height = $FormScale * 175
-            $ResultsListBox.Height = $FormScale * 250 - 15
-            $Section3HostDataNotesRichTextBox.Height = $FormScale * 135
+        $InformationPanel.Left = $MainCenterPanel.Left
+        $InformationPanel.Top = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
+        $InformationPanel.Width = $FormScale * 752
+        $InformationPanel.Height = $FormScale * 352
+  
+        $ResultsTabOpNotesAddButton.Top = $FormScale * 296
+            $InformationTabControl.Height = $FormScale * 307
+            $Section1AboutSubTabRichTextBox.Top = $PoShEasyWinPictureBox.Top + $PoShEasyWinPictureBox.Height
+            $Section1AboutSubTabRichTextBox.Height = ($FormScale * 283) - $PoShEasyWinPictureBox.Height
+            $ResultsListBox.Height = $FormScale * 276
+            $Section3HostDataNotesRichTextBox.Height = $FormScale * 200
+
             function script:Maximize-MonitorJobsTab {
                 $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
-                $InformationPanel.Top    = $MainCenterTabControl.Top
+                $InformationPanel.Top = $MainCenterTabControl.Top
                 #$InformationPanel.Height = $InformationTabControlOriginalHeight + $MainCenterTabControl.Height + ($FormScale * 63)
                 $InformationPanel.Height = $InformationTabControlOriginalHeight + $MainCenterTabControl.Height + ($FormScale * 563)
                 $InformationPanel.bringtofront()
             }
             function script:Minimize-MonitorJobsTab {
                 $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
-                $InformationPanel.Top    = $InformationTabControlOriginalTop
+                $InformationPanel.Top = $InformationTabControlOriginalTop
                 $InformationPanel.Height = $InformationTabControlOriginalHeight    
                 $InformationPanel.bringtofront()
             }            
     }
     elseif ($Extended) {
-        $PoShEasyWin.Width  = $FormScale * 1470
+        $PoShEasyWin.Width = $FormScale * 1470
         $PoShEasyWin.Height = $FormScale * 695
 
-        $QueryAndCollectionPanel.Width  = $FormScale * 460
+        $Section3AboutTab.Controls.Remove($PoShEasyWinPictureBox)
+        $QueryAndCollectionPanel.Controls.Add($PoShEasyWinPictureBox)
+        $MainLeftTabControl.Top = $PoShEasyWinPictureBox.Top + $PoShEasyWinPictureBox.Height
+
+        $QueryAndCollectionPanel.Width = $FormScale * 460
         $QueryAndCollectionPanel.Height = $FormScale * 645
     
-        $ComputerAndAccountTreeNodeViewPanel.Left   = $FormScale * 472
-        $ComputerAndAccountTreeNodeViewPanel.Top    = $FormScale * 5
-        $ComputerAndAccountTreeNodeViewPanel.Width  = $FormScale * 200
+        $ComputerAndAccountTreeNodeViewPanel.Left = $FormScale * 472
+        $ComputerAndAccountTreeNodeViewPanel.Top = $FormScale * 5
+        $ComputerAndAccountTreeNodeViewPanel.Width = $FormScale * 200
         $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
-            $ComputerAndAccountTreeViewTabControl.Width  = $FormScale * 192
+            $ComputerAndAccountTreeViewTabControl.Width = $FormScale * 192
             $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
-            $script:ComputerTreeView.Left   = $ComputerTreeNodeSearchComboBox.Left
-            $script:ComputerTreeView.Top    = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
-            $script:ComputerTreeView.Width  = $FormScale * 180
+            $ComputerTreeNodeSearchGreedyCheckbox.Left = $ComputerTreeNodeOUHostnameRadioButton.Left + $ComputerTreeNodeOUHostnameRadioButton.Width + $($FormScale * 5)
+            $ComputerTreeNodeSearchComboBox.Width = $FormScale * 120
+            $ComputerTreeNodeSearchButton.Left = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5 )
+            $script:ComputerTreeView.Left = $ComputerTreeNodeSearchComboBox.Left
+            $script:ComputerTreeView.Top = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
+            $script:ComputerTreeView.Width = $FormScale * 180
             $script:ComputerTreeView.Height = $FormScale * 558
-            $script:ComputerTreeView.Add_MouseHover({$null})
-            $script:ComputerTreeView.Add_MouseLeave({$null})
+            $script:ComputerTreeView.Add_MouseHover({
+                $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
+                $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
+                $script:ComputerTreeView.Height = $FormScale * 558
+            })
+            $script:ComputerTreeView.Add_MouseLeave({
+                $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
+                $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
+                $script:ComputerTreeView.Height = $FormScale * 558
+            })
 
-        $MainCenterPanel.Left   = $ComputerAndAccountTreeNodeViewPanel.Left + $ComputerAndAccountTreeNodeViewPanel.Width + ($FormScale * 2)
-        $MainCenterPanel.Top    = $FormScale * 5
-        $MainCenterPanel.Width  = $FormScale * 607
+        $MainCenterPanel.Left = $ComputerAndAccountTreeNodeViewPanel.Left + $ComputerAndAccountTreeNodeViewPanel.Width + ($FormScale * 2)
+        $MainCenterPanel.Top = $FormScale * 5
+        $MainCenterPanel.Width = $FormScale * 607
         $MainCenterPanel.Height = $FormScale * 278 
             $MainCenterTabControl.Width = $FormScale * 607
             $script:CollectionSavedDirectoryTextBox.Width = $FormScale * 595
@@ -1308,28 +1326,23 @@ function Set-PoShEasyWinLayout {
             $ResultsFolderAutoTimestampCheckbox.Left = $script:CollectionSavedDirectoryTextBox.Left + ($FormScale * 240)
             $DirectoryUpdateButton.Left = $ResultsFolderAutoTimestampCheckbox.Left + $ResultsFolderAutoTimestampCheckbox.Width + $($FormScale * 5)
             $DirectoryOpenButton.Left = $DirectoryUpdateButton.Left + $DirectoryUpdateButton.Width + $($FormScale * 5)
+            $PoshEasyWinStatistics.Width = $FormScale * 590
+            $MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
 
-            $Section2StatisticsTab.Controls.Remove($StatisticsViewLogButton)
-            $MainCenterMainTab.Controls.Add($StatisticsViewLogButton)
-            $StatisticsViewLogButton.Left   = $EventViewerButton.Left + $EventViewerButton.Width + ($FormScale * 5)
-            $StatisticsViewLogButton.Top    = $EventViewerButton.Top
-            $StatisticsViewLogButton.Width  = $EventViewerButton.Width
-            $StatisticsViewLogButton.Height = $EventViewerButton.Height
-            $PoshEasyWinStatistics.Width    = $FormScale * 590
-    
-        $ExecutionButtonPanel.Left   = $MainCenterPanel.Left + $MainCenterPanel.Width + ($FormScale * 5)
-        $ExecutionButtonPanel.Top    = $FormScale * 10
+        $ExecutionButtonPanel.Left = $MainCenterPanel.Left + $MainCenterPanel.Width + ($FormScale * 5)
+        $ExecutionButtonPanel.Top = $FormScale * 10
         $ExecutionButtonPanel.Height = $FormScale * 273
-        $ExecutionButtonPanel.Width  = $FormScale * 140
+        $ExecutionButtonPanel.Width = $FormScale * 140
             $MainRightTabControl.Height = $FormScale * 273
 
 
-        $InformationPanel.Left   = $MainCenterPanel.Left
-        $InformationPanel.Top    = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
-        $InformationPanel.Width  = $FormScale * 752
+        $InformationPanel.Left = $MainCenterPanel.Left
+        $InformationPanel.Top = $MainCenterPanel.Top + $MainCenterPanel.Height + ($FormScale * 5)
+        $InformationPanel.Width = $FormScale * 752
         $InformationPanel.Height = $FormScale * 352
             $ResultsTabOpNotesAddButton.Top = $FormScale * 296
             $InformationTabControl.Height = $FormScale * 352
+            $Section1AboutSubTabRichTextBox.Top = $FormScale * 10
             $Section1AboutSubTabRichTextBox.Height = $FormScale * 317
             $ResultsListBox.Height = $FormScale * 317
             $Section3HostDataNotesRichTextBox.Height = $FormScale * 243
@@ -1351,7 +1364,20 @@ function Set-PoShEasyWinLayout {
     }
 }
 
-Set-PoShEasyWinLayout -Extended
+if ( $GuiLayout -match 'Compact' ) {
+    Set-GuiLayout -Compact
+    $CompactViewRadioButton.checked = $true
+}
+elseif ( $GuiLayout -match 'Extended' ) {
+    Set-GuiLayout -Extended
+    $ExtendedViewRadioButton.checked = $true
+    $MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
+}
+else {
+    Set-GuiLayout -Compact
+    $CompactViewRadioButton.checked = $true
+}
+
 $InformationTabControlOriginalTop    = $InformationPanel.Top
 $InformationTabControlOriginalHeight = $InformationPanel.Height
 

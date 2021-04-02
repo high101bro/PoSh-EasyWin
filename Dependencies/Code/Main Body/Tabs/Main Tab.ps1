@@ -183,19 +183,18 @@ $MainCenterMainTab.Controls.Add($AutoCreateDashboardChartButton)
 CommonButtonSettings -Button $AutoCreateDashboardChartButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\EventViewerButton.ps1"
-$EventViewerButton = New-Object System.Windows.Forms.Button -Property @{
-    Text   = 'Event Viewer'
+$PowerShellTerminalButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "PowerShell"
     Left   = $AutoCreateDashboardChartButton.Left + $AutoCreateDashboardChartButton.Width + $($FormScale * 5)
     Top    = $AutoCreateDashboardChartButton.Top
-    Height = $FormScale * 22
     Width  = $FormScale * 115
-    Add_Click = $EventViewerButtonAdd_Click
-    Add_MouseHover = $EventViewerButtonAdd_MouseHover
+    Height = $FormScale * 22
+    Add_Click = {
+        Start-Process PowerShell.exe
+    }
 }
-$MainCenterMainTab.Controls.Add($EventViewerButton)
-CommonButtonSettings -Button $EventViewerButton
+#$MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
+CommonButtonSettings -Button $PowerShellTerminalButton
 
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\RetrieveFilesButton.ps1"

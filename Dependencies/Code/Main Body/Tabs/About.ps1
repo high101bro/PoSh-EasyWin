@@ -12,7 +12,6 @@ $Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.TextBox -Prope
     Text   = $(Get-Content "$Dependencies\About PoSh-EasyWin.txt" -raw)
     Font   = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
     Left   = $FormScale * 3
-    Top    = $FormScale * 10
     Width  = $FormScale * 742
     MultiLine  = $True
     ScrollBars = "Vertical"
