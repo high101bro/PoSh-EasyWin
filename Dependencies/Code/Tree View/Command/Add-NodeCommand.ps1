@@ -74,7 +74,7 @@ Protocols: SMB (and NetBIOS)
 Encrypted: Yes, v3.0+
 Ports:     445 and 139 (over NetBIOS)
 OS:        Port 445 - Windows 2000 and above
-Data:      Serialized Data (though EasyWin will convert it)
+Data:      Serialized Data (PoSh-EasyWin will convert it)
 Pros:      Works with older Operating Systems
                 Access to domained and non-domained hosts
                 Does not require WinRM or RPC
@@ -83,6 +83,21 @@ Cons:      Does NOT Work With PoSh-EasyWin's Monitor Jobs Feature
                 Creates the service: PSEXEC
                 May be blocked via Anti-Virus / Endpoint Security
                 May be blocked via Application White/Black Listing
+"@
+        }
+        elseif ($Category -match '[\[\(]SSH[\)\]].+') {
+            $CategoryNode.ToolTipText = @"
+Secure Shell (SSH)
+Protocols: SSL/TLS (Secure Socket Layer/Transport Socket Layer)
+Encrypted: Yes
+Ports:     22 (default)
+OS:        Windows 10+ and Server 2019+ (OpenSSH)
+Data:      Serialized Data (PoSh-EasyWin will attempt to convert it)
+Pros:      Access to Linux and Windows systems with SSH enabled
+                Access to domained and non-domained hosts                
+Cons:      Does NOT Work With PoSh-EasyWin's Monitor Jobs Feature
+                PoSh-EasyWin uses plink and kitty (more compatiable)
+                SSH is often used on non-default (port 22) ports
 "@
         }
         else { $CategoryNode.ToolTipText = "This is the directory name of the commands executed previously at that momemnt." }

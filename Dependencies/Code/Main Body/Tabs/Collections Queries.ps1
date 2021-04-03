@@ -154,10 +154,10 @@ $CommandsTreeViewViewByGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\CommandsViewMethodRadioButton.ps1"
             . "$Dependencies\Code\System.Windows.Forms\RadioButton\CommandsViewMethodRadioButton.ps1"
             $CommandsViewProtocolsUsedRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-                Text      = "Protocols "
+                Text      = "Protocol"
                 Left      = $FormScale * 10
                 Top       = $FormScale * 13
-                Width     = $FormScale * 105
+                Width     = $FormScale * 95
                 Height    = $FormScale * 22
                 Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = 'Black'
@@ -171,7 +171,7 @@ $CommandsTreeViewViewByGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\CommandsViewQueryRadioButton.ps1"
             . "$Dependencies\Code\System.Windows.Forms\RadioButton\CommandsViewQueryRadioButton.ps1"
             $CommandsViewCommandNamesRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-                Text      = "Command Names"
+                Text      = "Command Name"
                 Left      = $CommandsViewProtocolsUsedRadioButton.Left + $CommandsViewProtocolsUsedRadioButton.Width
                 Top       = $CommandsViewProtocolsUsedRadioButton.Top
                 Width     = $FormScale * 115
@@ -187,7 +187,7 @@ $Section1CommandsTab.Controls.Add($CommandsTreeViewViewByGroupBox)
 
 
 $CommandsTreeViewFilterGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
-    Text   = "Command Filter:"
+    Text   = "Protocol Command Filter:"
     Left   = $CommandsTreeViewViewByGroupBox.Left + $CommandsTreeViewViewByGroupBox.Width + ($FormScale * 4)
     Top    = $FormScale * 5
     Width  = $FormScale * 200
@@ -195,17 +195,30 @@ $CommandsTreeViewFilterGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
 }
-            $CommandsViewFilterComboBox = New-Object System.Windows.Forms.ComboListBox -Property @{
-                Text   = 'All'
+            $CommandsViewFilterComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
                 Left   = $FormScale * 5
                 Top    = $FormScale * 15
                 Width  = $FormScale * 190
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor = 'Black'
+                Add_SelectedValueChanged = {
+                    $script:CommandsTreeView.Nodes.Clear()
+                    Initialize-CommandTreeNodes
+                    View-CommandTreeNodeMethod
+                    Update-TreeNodeCommandState
+                    $CommandsViewProtocolsUsedRadioButton.Checked = $true
+                    $This.Text | Set-Content "$PoShHome\Settings\Display Commands Filter.txt" -Force
+                }
             }
-            $QueryTypeList = @('All','WinRM','RPC','SMB','SSH')
-            foreach ( $QueryType in $QueryTypeList ) { $CommandsViewFilterComboBox.Items.Add($QueryType) }
+            $QueryTypeList = @('All (WinRM,RPC,SMB,SSH)','WinRM','RPC','SMB','SSH')
+            foreach ( $QueryType in $QueryTypeList ) { $CommandsViewFilterComboBox.Items.Add("$QueryType") }
+            if (Get-Content "$PoShHome\Settings\Display Commands Filter.txt") {
+                $CommandsViewFilterComboBox.Text = Get-Content "$PoShHome\Settings\Display Commands Filter.txt"
+            }
+            else {
+                $CommandsViewFilterComboBox.Text = 'All (WinRM,RPC,SMB,SSH)'
+            }
             $CommandsTreeViewFilterGroupBox.Controls.Add( $CommandsViewFilterComboBox )
 
 $Section1CommandsTab.Controls.Add($CommandsTreeViewFilterGroupBox)
@@ -426,7 +439,7 @@ $CustomQueryScriptBlockGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
 
 
             $CustomQueryScriptBlockOverrideCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
-                Text   = 'Override - Allow other verbs'
+                Text   = 'Allow All Verbs'
                 Left   = $CustomQueryScriptBlockButton.Left + $CustomQueryScriptBlockButton.width + ($FormScale * 10)
                 Top    = $script:CustomQueryScriptBlockTextbox.Top + $script:CustomQueryScriptBlockTextbox.Height + ($FormScale * 5)
                 AutoSize  = $true

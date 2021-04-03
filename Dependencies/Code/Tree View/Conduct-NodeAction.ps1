@@ -235,12 +235,24 @@ function Conduct-NodeAction {
                 ##Removed For Testing#$ResultsListBox.Items.Clear()
                 #$ResultsListBox.Items.Add("- Checkbox This Node to Execute All Commands Within")
 
-                $Section3QueryExplorationName.Text             = "N/A"
-                $Section3QueryExplorationTypeTextBox.Text      = "N/A"
-                $Section3QueryExplorationWinRMPoShTextBox.Text = "N/A"
-                $Section3QueryExplorationWinRMWMITextBox.Text  = "N/A"
-                $Section3QueryExplorationRPCPoShTextBox.Text   = "N/A"
-                $Section3QueryExplorationRPCWMITextBox.Text    = "N/A"
+                $Section3QueryExplorationNameTextBox.Text = ''
+                $Section3QueryExplorationName.Text = ''
+                $Section3QueryExplorationTypeTextBox.Text = ''
+                $Section3QueryExplorationWinRMPoShTextBox.Text = ''
+                $Section3QueryExplorationWinRMWMITextBox.Text = ''
+                $Section3QueryExplorationRPCPoShTextBox.Text = ''
+                $Section3QueryExplorationRPCWMITextBox.Text = ''
+                $Section3QueryExplorationWinRMCmdTextBox.Text = ''
+                $Section3QueryExplorationSmbPoshTextBox.Text = ''
+                $Section3QueryExplorationSmbWmiTextBox.Text = ''
+                $Section3QueryExplorationSmbCmdTextBox.Text = ''
+                $Section3QueryExplorationSshLinuxTextBox.Text = ''
+                $Section3QueryExplorationPropertiesPoshTextBox.Text = ''
+                $Section3QueryExplorationPropertiesWMITextBox.Text = ''
+                $Section3QueryExplorationWinRSWmicTextBox.Text = ''
+                $Section3QueryExplorationWinRSCmdTextBox.Text = ''
+                $Section3QueryExplorationTagWordsTextBox.Text = ''
+                $Section3QueryExplorationDescriptionRichTextbox.Text = ''
 
                 #$InformationTabControl.SelectedTab   = $Section3ResultsTab
             }
@@ -262,13 +274,17 @@ function Conduct-NodeAction {
                         $Section3QueryExplorationTagWordsTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
                         $Section3QueryExplorationWinRMPoShTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
                         $Section3QueryExplorationWinRMWMITextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
-                        $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_CMD
+                        $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
                         $Section3QueryExplorationRPCPoShTextBox.Text         = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
                         $Section3QueryExplorationRPCWMITextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_WMI
                         $Section3QueryExplorationPropertiesPoshTextBox.Text  = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
                         $Section3QueryExplorationPropertiesWMITextBox.Text   = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
                         $Section3QueryExplorationWinRSWmicTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
-                        $Section3QueryExplorationWinRSCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
+                        $Section3QueryExplorationWinRSCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD                       
+                        $Section3QueryExplorationSmbPoshTextBox.Text         = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_PoSh
+                        $Section3QueryExplorationSmbWmiTextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_WMI
+                        $Section3QueryExplorationSmbCmdTextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_Cmd
+                        $Section3QueryExplorationSshLinuxTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_Linux
                         $Section3QueryExplorationDescriptionRichTextbox.Text = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
                     }
                     elseif ($root.text -match 'Active Directory Commands') {
@@ -276,13 +292,17 @@ function Conduct-NodeAction {
                         $Section3QueryExplorationTagWordsTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
                         $Section3QueryExplorationWinRMPoShTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
                         $Section3QueryExplorationWinRMWMITextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
-                        $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_CMD
+                        $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
                         $Section3QueryExplorationRPCPoShTextBox.Text         = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
                         $Section3QueryExplorationRPCWMITextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_WMI
                         $Section3QueryExplorationPropertiesPoshTextBox.Text  = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
                         $Section3QueryExplorationPropertiesWMITextBox.Text   = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
                         $Section3QueryExplorationWinRSWmicTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
                         $Section3QueryExplorationWinRSCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
+                        $Section3QueryExplorationSmbPoshTextBox.Text         = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_PoSh
+                        $Section3QueryExplorationSmbWmiTextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_WMI
+                        $Section3QueryExplorationSmbCmdTextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_Cmd
+                        $Section3QueryExplorationSshLinuxTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_Linux
                         $Section3QueryExplorationDescriptionRichTextbox.Text = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
                     }
                     elseif ($root.text -match 'Search Results'){
@@ -291,27 +311,35 @@ function Conduct-NodeAction {
                             $Section3QueryExplorationTagWordsTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
                             $Section3QueryExplorationWinRMPoShTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
                             $Section3QueryExplorationWinRMWMITextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
-                            $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_CMD
+                            $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
                             $Section3QueryExplorationRPCPoShTextBox.Text         = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
                             $Section3QueryExplorationRPCWMITextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_WMI
                             $Section3QueryExplorationPropertiesPoshTextBox.Text  = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
                             $Section3QueryExplorationPropertiesWMITextBox.Text   = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
                             $Section3QueryExplorationWinRSWmicTextBox.Text       = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
                             $Section3QueryExplorationWinRSCmdTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
-                            $Section3QueryExplorationDescriptionRichTextbox.Text = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
+                            $Section3QueryExplorationSmbPoshTextBox.Text         = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_PoSh
+                            $Section3QueryExplorationSmbWmiTextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_WMI
+                            $Section3QueryExplorationSmbCmdTextBox.Text          = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_Cmd
+                            $Section3QueryExplorationSshLinuxTextBox.Text        = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_Linux
+                            $Section3QueryExplorationDescriptionRichTextbox.Text = $($script:AllEndpointCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description    
                         }
                         else {
                             $Section3QueryExplorationNameTextBox.Text            = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Name
                             $Section3QueryExplorationTagWordsTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Type
                             $Section3QueryExplorationWinRMPoShTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_PoSh
                             $Section3QueryExplorationWinRMWMITextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_WMI
-                            $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_CMD
+                            $Section3QueryExplorationWinRMCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRM_Cmd
                             $Section3QueryExplorationRPCPoShTextBox.Text         = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_PoSh
                             $Section3QueryExplorationRPCWMITextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_RPC_WMI
                             $Section3QueryExplorationPropertiesPoshTextBox.Text  = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_PoSh
                             $Section3QueryExplorationPropertiesWMITextBox.Text   = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Properties_WMI
                             $Section3QueryExplorationWinRSWmicTextBox.Text       = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_WMIC
                             $Section3QueryExplorationWinRSCmdTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_WinRS_CMD
+                            $Section3QueryExplorationSmbPoshTextBox.Text         = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_PoSh
+                            $Section3QueryExplorationSmbWmiTextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_WMI
+                            $Section3QueryExplorationSmbCmdTextBox.Text          = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_SMB_Cmd
+                            $Section3QueryExplorationSshLinuxTextBox.Text        = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Command_Linux
                             $Section3QueryExplorationDescriptionRichTextbox.Text = $($script:AllActiveDirectoryCommands | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Description
                         }
                     }

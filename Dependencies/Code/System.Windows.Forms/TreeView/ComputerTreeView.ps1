@@ -80,11 +80,11 @@ $ComputerTreeViewAdd_AfterSelect = {
             #Removed For Testing#$ResultsListBox.Items.Clear()
             #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
 
-            $script:Section3HostDataNameTextBox.Text  = "N/A"
-            $Section3HostDataOSTextBox.Text    = "N/A"
-            $Section3HostDataOUTextBox.Text    = "N/A"
-            $Section3HostDataIPTextBox.Text    = "N/A"
-            $Section3HostDataTags.Text  = "N/A"
+            $script:Section3HostDataNameTextBox.Text = "N/A"
+            $Section3HostDataOSTextBox.Text = "N/A"
+            $Section3HostDataOUTextBox.Text = "N/A"
+            $Section3HostDataIPTextBox.Text = "N/A"
+            $Section3HostDataTags.Text = "N/A"
             $Section3HostDataNotesRichTextBox.Text = "N/A"
 
             # Brings the Host Data Tab to the forefront/front view
@@ -99,12 +99,12 @@ $ComputerTreeViewAdd_AfterSelect = {
                 #$ResultsListBox.Items.Add("- Checkbox this Category to query all its hosts")
 
                 # The follwing fields are filled out with N/A when host nodes are not selected
-                $script:Section3HostDataNameTextBox.Text  = "N/A"
-                $Section3HostDataOSTextBox.Text    = "N/A"
-                $Section3HostDataOUTextBox.Text    = "N/A"
-                $Section3HostDataIPTextBox.Text    = "N/A"
-                $Section3HostDataMACTextBox.Text   = "N/A"
-                $Section3HostDataTags.Text  = "N/A"
+                $script:Section3HostDataNameTextBox.Text = "N/A"
+                $Section3HostDataOSTextBox.Text = "N/A"
+                $Section3HostDataOUTextBox.Text = "N/A"
+                $Section3HostDataIPTextBox.Text = "N/A"
+                $Section3HostDataMACTextBox.Text = "N/A"
+                $Section3HostDataTags.Text = "N/A"
                 $Section3HostDataNotesRichTextBox.Text = "N/A"
 
                 # Brings the Host Data Tab to the forefront/front view

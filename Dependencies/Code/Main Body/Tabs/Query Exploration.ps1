@@ -23,9 +23,10 @@ $Section3QueryExplorationNameTextBox = New-Object System.Windows.Forms.TextBox -
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationNameTextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationNameTextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationNameLabel,$Section3QueryExplorationNameTextBox))
 
@@ -44,9 +45,10 @@ $Section3QueryExplorationWinRMPoShTextBox = New-Object System.Windows.Forms.Text
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRMPoShTextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRMPoShTextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.AddRange(@($Section3QueryExplorationWinRMPoShLabel,$Section3QueryExplorationWinRMPoShTextBox))
 
@@ -68,9 +70,10 @@ $Section3QueryExplorationWinRMWMITextBox = New-Object System.Windows.Forms.TextB
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRMWMITextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRMWMITextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationWinRMWMITextBox)
 
@@ -92,9 +95,10 @@ $Section3QueryExplorationWinRMCmdTextBox = New-Object System.Windows.Forms.TextB
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRMCmdTextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRMCmdTextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationWinRMCmdTextBox)
 
@@ -116,9 +120,10 @@ $Section3QueryExplorationRPCPoShTextBox = New-Object System.Windows.Forms.TextBo
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationRPCPoShTextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationRPCPoShTextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationRPCPoShTextBox)
 
@@ -140,9 +145,10 @@ $Section3QueryExplorationRPCWMITextBox = New-Object System.Windows.Forms.TextBox
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationRPCWMITextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationRPCWMITextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationRPCWMITextBox)
 
@@ -164,9 +170,10 @@ $Section3QueryExplorationPropertiesPoshTextBox = New-Object System.Windows.Forms
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationPropertiesPoshTextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationPropertiesPoshTextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationPropertiesPoshTextBox)
 
@@ -188,9 +195,10 @@ $Section3QueryExplorationPropertiesWMITextBox = New-Object System.Windows.Forms.
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationPropertiesWMITextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationPropertiesWMITextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationPropertiesWMITextBox)
 
@@ -212,9 +220,10 @@ $Section3QueryExplorationWinRSWmicTextBox = New-Object System.Windows.Forms.Text
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRSWmicTextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRSWmicTextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationWinRSWmicTextBox)
 
@@ -236,45 +245,198 @@ $Section3QueryExplorationWinRSCmdTextBox = New-Object System.Windows.Forms.TextB
     Size     = @{ Width  = $FormScale * 195
                   Height = $FormScale * 22 }
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
-    Add_MouseEnter = { $Section3QueryExplorationWinRSCmdTextBox.size = @{ Width  = $FormScale * 633 } }
-    Add_MouseLeave = { $Section3QueryExplorationWinRSCmdTextBox.size = @{ Width  = $FormScale * 195 } }
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $This.size = @{ Width  = $FormScale * 195 } }
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationWinRSCmdTextBox)
 
 
-$Section3QueryExplorationDescriptionRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Section3QueryExplorationSmbPoshLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text     = "SMB PoSh:"
+    Location = @{ X = 0
+                  Y = $Section3QueryExplorationWinRSCmdLabel.location.Y + $Section3QueryExplorationWinRSCmdLabel.Size.Height }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSmbPoshLabel)
+
+
+$Section3QueryExplorationSmbPoshTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Location = @{ X = $Section3QueryExplorationSmbPoshLabel.Location.X + $Section3QueryExplorationSmbPoshLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationSmbPoshLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
+    ReadOnly = $true
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $this.size = @{ Width  = $FormScale * 195 } }
+}
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSmbPoshTextBox)
+
+
+$Section3QueryExplorationSmbWmiLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text     = "SMB WMI:"
+    Location = @{ X = 0
+                  Y = $Section3QueryExplorationSmbPoshLabel.location.Y + $Section3QueryExplorationSmbPoshLabel.Size.Height }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSmbWmiLabel)
+
+
+$Section3QueryExplorationSmbWmiTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Location = @{ X = $Section3QueryExplorationSmbWmiLabel.Location.X + $Section3QueryExplorationSmbWmiLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationSmbWmiLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
+    ReadOnly = $true
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $this.size = @{ Width  = $FormScale * 195 } }
+}
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSmbWmiTextBox)
+
+
+$Section3QueryExplorationSmbCmdLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text     = "SMB Cmd:"
+    Location = @{ X = 0
+                  Y = $Section3QueryExplorationSmbWmiLabel.location.Y + $Section3QueryExplorationSmbWmiLabel.Size.Height }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSmbCmdLabel)
+
+
+$Section3QueryExplorationSmbCmdTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Location = @{ X = $Section3QueryExplorationSmbCmdLabel.Location.X + $Section3QueryExplorationSmbCmdLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationSmbCmdLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
+    ReadOnly = $true
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $this.size = @{ Width  = $FormScale * 195 } }
+}
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSmbCmdTextBox)
+
+
+
+$Section3QueryExplorationSshLinuxLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text     = "SSH Linux:"
+    Location = @{ X = 0
+                  Y = $Section3QueryExplorationSmbCmdLabel.location.Y + $Section3QueryExplorationSmbCmdLabel.Size.Height }
+    Size     = @{ Width  = $FormScale * 100
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+}
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSshLinuxLabel)
+
+
+$Section3QueryExplorationSshLinuxTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Location = @{ X = $Section3QueryExplorationSshLinuxLabel.Location.X + $Section3QueryExplorationSshLinuxLabel.Size.Width + $($FormScale * 5)
+                  Y = $Section3QueryExplorationSshLinuxLabel.Location.Y - $($FormScale * 3) }
+    Size     = @{ Width  = $FormScale * 195
+                  Height = $FormScale * 22 }
+    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
+    ReadOnly = $true
+    Add_MouseEnter = { $This.size = @{ Width  = $FormScale * 633 } }
+    Add_MouseLeave = { $this.size = @{ Width  = $FormScale * 195 } }
+}
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationSshLinuxTextBox)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$Section3QueryExplorationDescriptionPanel = New-Object System.Windows.Forms.Panel -Property @{
     Location   = @{ X = $Section3QueryExplorationNameTextBox.Location.X + $Section3QueryExplorationNameTextBox.Size.Width + $($FormScale * 10)
                     Y = $Section3QueryExplorationNameTextBox.Location.Y }
     Size       = @{ Width  = $FormScale * 428
-                    Height = $FormScale * 196 }
-    Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Multiline  = $True
-    ScrollBars = 'Vertical'
-    WordWrap   = $True
-    ReadOnly   = $true
-    ShortcutsEnabled = $true
+                    Height = $FormScale * 300 }
+    BorderStyle = 'FixedSingle'
 }
-$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationDescriptionRichTextbox)
+            $Section3QueryExplorationDescriptionRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
+                Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Backcolor = 'White'
+                Multiline   = $True
+                ScrollBars  = 'Vertical'
+                WordWrap    = $True
+                ReadOnly    = $true
+                Dock       = 'Fill'
+                BorderStyle = 'None'
+                ShortcutsEnabled = $true
+            }
+            $Section3QueryExplorationDescriptionPanel.Controls.Add($Section3QueryExplorationDescriptionRichTextbox)
+$Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationDescriptionPanel)
 
 
 $Section3QueryExplorationTagWordsLabel = New-Object System.Windows.Forms.Label -Property @{
-    Text     = "Tags"
-    Location = @{ X = $Section3QueryExplorationDescriptionRichTextbox.Location.X
-                  Y = $Section3QueryExplorationDescriptionRichTextbox.location.Y + $Section3QueryExplorationDescriptionRichTextbox.Size.Height + $($FormScale * 5) }
-    Size     = @{ Width  = $FormScale * 35
-                  Height = $FormScale * 22 }
+    Text     = "Tags: "
+    Left     = $Section3QueryExplorationDescriptionPanel.Location.X + ($FormScale * 1)
+    Top      = $Section3QueryExplorationDescriptionPanel.location.Y + $Section3QueryExplorationDescriptionPanel.Size.Height + $($FormScale * 5)
+    AutoSize = $true
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationTagWordsLabel)
 
 
 $Section3QueryExplorationTagWordsTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3QueryExplorationTagWordsLabel.Location.X + $Section3QueryExplorationTagWordsLabel.Size.Width + $($FormScale * 5)
-                  Y = $Section3QueryExplorationTagWordsLabel.Location.Y - $($FormScale * 3) }
-    Size     = @{ Width  = $FormScale * 200
-                  Height = $FormScale * 22 }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Left   = $Section3QueryExplorationTagWordsLabel.Left + $Section3QueryExplorationTagWordsLabel.Width + $($FormScale * 5)
+    Top    = $Section3QueryExplorationTagWordsLabel.Top
+    Width  = $FormScale * 200
+    Height = $FormScale * 22
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Backcolor = 'White'
     ReadOnly = $true
 }
 $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationTagWordsTextBox)
@@ -283,13 +445,12 @@ $Section3QueryExplorationTabPage.Controls.Add($Section3QueryExplorationTagWordsT
 Load-Code "$Dependencies\Code\System.Windows.Forms\CheckBox\Section3QueryExplorationEditCheckBox.ps1"
 . "$Dependencies\Code\System.Windows.Forms\CheckBox\Section3QueryExplorationEditCheckBox.ps1"
 $Section3QueryExplorationEditCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
-    Text      = "Edit"
-    Location  = @{ X = $Section3QueryExplorationDescriptionRichTextbox.Location.X + $($FormScale * 255)
-                   Y = $Section3QueryExplorationDescriptionRichTextbox.Location.Y + $Section3QueryExplorationDescriptionRichTextbox.Size.Height + $($FormScale * 3) }
-    Size      = @{ Height = $FormScale * 25
-                   Width  = $FormScale * 50 }
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,2,1)
+    Text  = "Edit"
+    Left  = $FormScale * 580
+    Top   = $Section3QueryExplorationTagWordsTextBox.Top
+    Font  = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,2,1)
     Checked   = $false
+    AutoSize  = $true
     Add_Click = $Section3QueryExplorationEditCheckBoxAdd_Click
 }
 # Note: The button is added/removed in other parts of the code
@@ -298,11 +459,11 @@ $Section3QueryExplorationEditCheckBox = New-Object System.Windows.Forms.Checkbox
 Load-Code "$Dependencies\Code\System.Windows.Forms\Button\Section3QueryExplorationSaveButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\Section3QueryExplorationSaveButton.ps1"
 $Section3QueryExplorationSaveButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = 'Locked'
-    Location  = @{ X = $Section3QueryExplorationEditCheckBox.Location.X + $($FormScale * 50)
-                   Y = $Section3QueryExplorationEditCheckBox.Location.Y }
-    Size      = @{ Width  = $FormScale * $Column5BoxWidth
-                   Height = $FormScale * $Column5BoxHeight }
+    Text   = 'Locked'
+    Left   = $FormScale * 638
+    Top    = $Section3QueryExplorationEditCheckBox.Top
+    Width  = $FormScale * 100
+    Height = $FormScale * 22
     Add_Click = $Section3QueryExplorationSaveButtonAdd_Click
 }
 CommonButtonSettings -Button $Section3QueryExplorationSaveButton
@@ -312,11 +473,11 @@ CommonButtonSettings -Button $Section3QueryExplorationSaveButton
 Load-Code "$Dependencies\Code\System.Windows.Forms\Button\Section3QueryExplorationViewScriptButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\Section3QueryExplorationViewScriptButton.ps1"
 $Section3QueryExplorationViewScriptButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = 'View Script'
-    Location  = @{ X = $Section3QueryExplorationEditCheckBox.Location.X + $($FormScale * 50)
-                   Y = $Section3QueryExplorationEditCheckBox.Location.Y }
-    Size      = @{ Width  = $FormScale * $Column5BoxWidth
-                   Height = $FormScale * $Column5BoxHeight }
+    Text   = 'View Script'
+    Left   = $FormScale * 500
+    Top    = $Section3QueryExplorationEditCheckBox.Top
+    Width  = $FormScale * $Column5BoxWidth
+    Height = $FormScale * $Column5BoxHeight
     Add_Click = $Section3QueryExplorationViewScriptButtonAdd_Click
 }
 CommonButtonSettings -Button $Section3QueryExplorationViewScriptButton
