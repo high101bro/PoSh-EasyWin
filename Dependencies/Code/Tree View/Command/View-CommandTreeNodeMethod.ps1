@@ -20,7 +20,7 @@ Function View-CommandTreeNodeMethod {
             #if ($Command.Command_WinRM_Cmd)    { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $("{0,-10}{1}" -f "[WinRM]", "Native Windows Command")                   -Entry "(WinRM) CMD -- $($Command.Name)"    -ToolTip $Command.Command_WinRM_CMD }    
         }
         if ($CommandsViewFilterComboBox.text -match 'RPC' -or $CommandsViewFilterComboBox.text -match 'All') {
-            if ($Command.Command_RPC_PoSh)     { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $("{0,-13}{1}" -f "[RPC]", "PowerShell Cmdlets")                         -Entry "(RPC) PoSh -- $($Command.Name)"     -ToolTip $Command.Command_RPC_PoSh }
+            #if ($Command.Command_RPC_PoSh)     { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $("{0,-13}{1}" -f "[RPC]", "PowerShell Cmdlets")                         -Entry "(RPC) PoSh -- $($Command.Name)"     -ToolTip $Command.Command_RPC_PoSh }
             if ($Command.Command_RPC_WMI)      { Add-NodeCommand -RootNode $script:TreeNodeEndpointCommands -Category $("{0,-13}{1}" -f "[RPC]", "Windows Management Instrumentation")          -Entry "(RPC) WMI -- $($Command.Name)"      -ToolTip $Command.Command_RPC_WMI }
 
             # Not included in the treeview generation as the native Windows CMDs either don't natively support remoting or have non-standard switches/parameters
@@ -44,7 +44,7 @@ Function View-CommandTreeNodeMethod {
             #if ($Command.Command_WinRM_Cmd)    { Add-NodeCommand -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-10}{1}" -f "[WinRM]", "Native Windows Command")            -Entry "(WinRM) CMD -- $($Command.Name)"    -ToolTip $Command.Command_WinRM_CMD }    
         }
         if ($CommandsViewFilterComboBox.text -match 'RPC' -or $CommandsViewFilterComboBox.text -match 'All') {
-            if ($Command.Command_RPC_PoSh)     { Add-NodeCommand -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-13}{1}" -f "[RPC]", "PowerShell Cmdlets")                  -Entry "(RPC) PoSh -- $($Command.Name)"     -ToolTip $Command.Command_RPC_PoSh }
+            #if ($Command.Command_RPC_PoSh)     { Add-NodeCommand -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-13}{1}" -f "[RPC]", "PowerShell Cmdlets")                  -Entry "(RPC) PoSh -- $($Command.Name)"     -ToolTip $Command.Command_RPC_PoSh }
             if ($Command.Command_RPC_WMI)      { Add-NodeCommand -RootNode $script:TreeNodeActiveDirectoryCommands -Category $("{0,-13}{1}" -f "[RPC]", "Windows Management Instrumentation")   -Entry "(RPC) WMI -- $($Command.Name)"      -ToolTip $Command.Command_RPC_WMI }
 
             # Not included in the treeview generation as the native Windows CMDs either don't natively support remoting or have non-standard switches/parameters
