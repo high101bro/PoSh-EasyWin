@@ -1264,16 +1264,17 @@ function Set-GuiLayout {
             function script:Maximize-MonitorJobsTab {
                 $script:Section3MonitorJobsResizeButton.text = "v Minimize Tab"
                 $InformationPanel.Top = $MainCenterTabControl.Top
-                #$InformationPanel.Height = $InformationTabControlOriginalHeight + $MainCenterTabControl.Height + ($FormScale * 63)
-                $InformationPanel.Height = $InformationTabControlOriginalHeight + $MainCenterTabControl.Height + ($FormScale * 563)
+                $InformationPanel.Height = $FormScale * 605
                 $InformationPanel.bringtofront()
+                $InformationTabControl.Height = $FormScale * 595
             }
             function script:Minimize-MonitorJobsTab {
                 $script:Section3MonitorJobsResizeButton.text = "^ Maximize Tab"
                 $InformationPanel.Top = $InformationTabControlOriginalTop
-                $InformationPanel.Height = $InformationTabControlOriginalHeight    
+                $InformationPanel.Height = $FormScale * 340
                 $InformationPanel.bringtofront()
-            }            
+                $InformationTabControl.Height = $InformationPanel.Height - ($FormScale * 33)
+            }
     }
     elseif ($Extended) {
         $PoShEasyWin.Width = $FormScale * 1470

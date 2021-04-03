@@ -435,10 +435,7 @@ function Conduct-NodeAction {
         CommonButtonSettings -Button $ActionsTabQuarantineEndpointsButton
     }
 
-
-    # Code Testing
-    # [system.windows.forms.messagebox]::show("$script:TreeeViewCommandsCount -- $script:TreeeViewComputerListCount")
-
+    script:Minimize-MonitorJobsTab
 }
 
 

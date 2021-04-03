@@ -146,7 +146,7 @@ $CommandsTreeViewViewByGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
     Text   = "Display And Group By:"
     Left   = $FormScale * 0
     Top    = $FormScale * 5
-    Width  = $FormScale * 232
+    Width  = $FormScale * 231
     Height = $FormScale * 37
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
@@ -154,7 +154,7 @@ $CommandsTreeViewViewByGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\CommandsViewMethodRadioButton.ps1"
             . "$Dependencies\Code\System.Windows.Forms\RadioButton\CommandsViewMethodRadioButton.ps1"
             $CommandsViewProtocolsUsedRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-                Text      = "Protocols Used"
+                Text      = "Protocols "
                 Left      = $FormScale * 10
                 Top       = $FormScale * 13
                 Width     = $FormScale * 105
@@ -186,19 +186,43 @@ $CommandsTreeViewViewByGroupBox = New-Object System.Windows.Forms.GroupBox -Prop
 $Section1CommandsTab.Controls.Add($CommandsTreeViewViewByGroupBox)
 
 
-$PoShEasyWinLogoPictureBox = New-Object System.Windows.Forms.PictureBox -Property @{
-    #text     = "PoSh-EasyWin Image"
-    Left     = $CommandsTreeViewViewByGroupBox.Left + $CommandsTreeViewViewByGroupBox.Width + ($FormScale * + 15)
-    Top      = $FormScale * $CommandsTreeViewViewByGroupBox.Top
-    Width    = $FormScale * 175
-    Height   = $FormScale * 35
-    AutoSize = $true
-    SizeMode = 'Stretch'
-    Image    = [System.Drawing.Image]::FromFile("$Dependencies\PoSh-EasyWin Image.png" )
-    #InitialImage = $null
-    #ErrorImage   = $null
+$CommandsTreeViewFilterGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+    Text   = "Command Filter:"
+    Left   = $CommandsTreeViewViewByGroupBox.Left + $CommandsTreeViewViewByGroupBox.Width + ($FormScale * 4)
+    Top    = $FormScale * 5
+    Width  = $FormScale * 200
+    Height = $FormScale * 37
+    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+    ForeColor = 'Blue'
 }
-$Section1CommandsTab.Controls.Add($PoShEasyWinLogoPictureBox)
+            $CommandsViewFilterComboBox = New-Object System.Windows.Forms.ComboListBox -Property @{
+                Text   = 'All'
+                Left   = $FormScale * 5
+                Top    = $FormScale * 15
+                Width  = $FormScale * 190
+                Height = $FormScale * 22
+                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                ForeColor = 'Black'
+            }
+            $QueryTypeList = @('All','WinRM','RPC','SMB','SSH')
+            foreach ( $QueryType in $QueryTypeList ) { $CommandsViewFilterComboBox.Items.Add($QueryType) }
+            $CommandsTreeViewFilterGroupBox.Controls.Add( $CommandsViewFilterComboBox )
+
+$Section1CommandsTab.Controls.Add($CommandsTreeViewFilterGroupBox)
+
+# $PoShEasyWinLogoPictureBox = New-Object System.Windows.Forms.PictureBox -Property @{
+#     #text     = "PoSh-EasyWin Image"
+#     Left     = $CommandsTreeViewViewByGroupBox.Left + $CommandsTreeViewViewByGroupBox.Width + ($FormScale * + 15)
+#     Top      = $FormScale * $CommandsTreeViewViewByGroupBox.Top
+#     Width    = $FormScale * 175
+#     Height   = $FormScale * 35
+#     AutoSize = $true
+#     SizeMode = 'Stretch'
+#     Image    = [System.Drawing.Image]::FromFile("$Dependencies\PoSh-EasyWin Image.png" )
+#     #InitialImage = $null
+#     #ErrorImage   = $null
+# }
+# $Section1CommandsTab.Controls.Add($PoShEasyWinLogoPictureBox)
 
 
 # Searches for command nodes that match a given search entry
