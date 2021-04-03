@@ -51,38 +51,56 @@ $SendFilesButtonAdd_Click = {
                                 Height = $FormScale * 22
                                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                                 ForeColor = 'Black'
-                                Checked   = $true
                                 Enabled   = $true
+                                Add_Click = { $this.Text | Set-Content "$PoShHome\Settings\Send Files Protocol.txt" -Force }
                             }
                             $FileTransferProtocolGroupBox.Controls.Add($script:FileTransferProtocolWinRMRadioButton)
 
 
-                            $script:FileTransferProtocolRPCRadioButton = New-Object Windows.Forms.RadioButton -Property @{
-                                Text   = "RPC (n/a)"
+                            $script:FileTransferProtocolSMBRadioButton = New-Object Windows.Forms.RadioButton -Property @{
+                                Text   = "SMB"
                                 Left   = $script:FileTransferProtocolWinRMRadioButton.Left
                                 Top    = $script:FileTransferProtocolWinRMRadioButton.Top + $script:FileTransferProtocolWinRMRadioButton.Height
                                 Width  = $FormScale * 75
                                 Height = $FormScale * 22
                                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                                 ForeColor = 'Black'
-                                Checked   = $false
-                                Enabled   = $false
+                                Enabled   = $true
+                                Add_Click = { $this.Text | Set-Content "$PoShHome\Settings\Send Files Protocol.txt" -Force }
                             }
-                            $FileTransferProtocolGroupBox.Controls.Add($script:FileTransferProtocolRPCRadioButton)
+                            $FileTransferProtocolGroupBox.Controls.Add($script:FileTransferProtocolSMBRadioButton)
 
-                            
-                            $script:FileTransferProtocolSMBRadioButton = New-Object Windows.Forms.RadioButton -Property @{
-                                Text   = "SMB (n/a)"
-                                Left   = $script:FileTransferProtocolRPCRadioButton.Left
-                                Top    = $script:FileTransferProtocolRPCRadioButton.Top + $script:FileTransferProtocolRPCRadioButton.Height
+
+                            $script:FileTransferProtocolRPCRadioButton = New-Object Windows.Forms.RadioButton -Property @{
+                                Text   = "RPC (n/a)"
+                                Left   = $script:FileTransferProtocolSMBRadioButton.Left
+                                Top    = $script:FileTransferProtocolSMBRadioButton.Top + $script:FileTransferProtocolSMBRadioButton.Height
                                 Width  = $FormScale * 75
                                 Height = $FormScale * 22
                                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                                 ForeColor = 'Black'
-                                Checked   = $false
                                 Enabled   = $false
+                                #Add_Click = { $this.Text | Set-Content "$PoShHome\Settings\Send Files Protocol.txt" -Force }
                             }
-                            $FileTransferProtocolGroupBox.Controls.Add($script:FileTransferProtocolSMBRadioButton)
+                            $FileTransferProtocolGroupBox.Controls.Add($script:FileTransferProtocolRPCRadioButton)
+
+                            if ((Test-Path "$PoShHome\Settings\Send Files Protocol.txt")) { 
+                                if ((Get-Content "$PoShHome\Settings\Send Files Protocol.txt") -eq 'WinRM') {
+                                    $script:FileTransferProtocolWinRMRadioButton.checked = $true
+                                }
+                                elseif ((Get-Content "$PoShHome\Settings\Send Files Protocol.txt") -eq 'SMB')   {
+                                    $script:FileTransferProtocolSMBRadioButton.checked = $true
+                                }
+                                elseif ((Get-Content "$PoShHome\Settings\Send Files Protocol.txt") -eq 'RPC') {
+                                    $script:FileTransferProtocolRPCRadioButton.checked = $true
+                                }
+                                else {
+                                    $script:FileTransferProtocolWinRMRadioButton.checked = $true
+                                }
+                            }
+                            else {
+                                $script:FileTransferProtocolWinRMRadioButton.checked = $true
+                            }
 
 
                     $FileTransferPropertyList0Label = New-Object System.Windows.Forms.Label -Property @{
@@ -318,10 +336,19 @@ $SendFilesButtonAdd_Click = {
                                             $TargetComputer,
                                             $Credential,
                                             $FileTransferProtocolWinRMRadioButton,
-                                            $FileTransferProtocolRPCRadioButton,
-                                            $FileTransferProtocolSMBRadioButton
+                                            $FileTransferProtocolSMBRadioButton,
+                                            $FileTransferProtocolRPCRadioButton
                                         )
-                                        if ($FileTransferProtocolWinRMRadioButton.checked) {
+                                        if ($FileTransferProtocolWinRMRadioButton.checked -eq $true) {
+                                            $PSSession = New-PSSession -ComputerName $TargetComputer -Credential $Credential
+                                            Foreach ($Session in $PSSession) {
+                                                foreach ($Path in $FileTransferPathsListBox) {
+                                                    Copy-Item -Path "$Path" -Recurse -Destination "$FileTransferDestinationPathRichTextBox" -ToSession $Session -Force -ErrorAction Stop
+                                                }
+                                            }
+                                            $PSSession | Remove-PSSession
+                                        }
+                                        if ($FileTransferProtocolSMBRadioButton.checked -eq $true) {
                                             # In case a $TargetComputer is an IP Address and not a Hostname
                                             $TargetComputerDrive = $TargetComputer -replace '`.','-'
                                             
@@ -334,19 +361,16 @@ $SendFilesButtonAdd_Click = {
                                             -Credential $Credential | Out-Null
                                 
                                             foreach ($Path in $FileTransferPathsListBox) {
-                                                Copy-Item -Path $Path -Destination "$($TargetComputerDrive):" -Recurse -Force
+                                                Copy-Item -Path "$Path" -Destination "$($TargetComputerDrive):" -Recurse -Force
                                             }
 
                                             Remove-PSDrive -Name $TargetComputerDrive | Out-Null
                                         }
-                                        elseif ($FileTransferProtocolRPCRadioButton.checked) {
-                                            $null
-                                        }
-                                        elseif ($FileTransferProtocolSMBRadioButton.checked) {
+                                        if ($FileTransferProtocolRPCRadioButton.checked -eq $true) {
                                             $null
                                         }
                                     } `
-                                    -ArgumentList @($FilePaths,$script:FileTransferDestinationPathRichTextBox.text,$TargetComputer,$script:Credential,$script:FileTransferProtocolWinRMRadioButton,$script:FileTransferProtocolRPCRadioButton,$script:FileTransferProtocolSMBRadioButton) `
+                                    -ArgumentList @($FilePaths,$script:FileTransferDestinationPathRichTextBox.text,$TargetComputer,$script:Credential,$script:FileTransferProtocolWinRMRadioButton,$script:FileTransferProtocolSMBRadioButton,$script:FileTransferProtocolRPCRadioButton) `
                                     -Name "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
 
                                     ############Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `${function:ExecutableAndScript} -ArgumentList @(`$ExeScriptSelectScript,`$ExeScriptScriptOnlyCheckbox,`$ExeScriptSelectDirRadioButton,`$ExeScriptSelectFileRadioButton,`$ExeScriptSelectDirOrFilePath,`$TargetComputer,`$AdminShare,`$TargetFolder) -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
