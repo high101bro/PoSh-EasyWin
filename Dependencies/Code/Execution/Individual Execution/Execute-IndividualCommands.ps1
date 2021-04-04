@@ -181,13 +181,19 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
                     $CompileResults     = $true
 
                     Start-Job -Name "PoSh-EasyWin: $((($CommandName) -split ' -- ')[1]) - $script:CommandType - $($TargetComputer)" -ScriptBlock {
-                        param($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $script:CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
+                        param($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $script:CommandType, $TargetComputer, $CommandString, $PsExecPath, $Credential, $UseCredential, $ComputerListPivotExecutionCheckboxChecked, $ComputerListPivotExecutionTextBoxText)
                         # Available priority values: Low, BelowNormal, Normal, AboveNormal, High, RealTime
                         [System.Threading.Thread]::CurrentThread.Priority = 'High'
                         ([System.Diagnostics.Process]::GetCurrentProcess()).PriorityClass = 'High'
 
-                        Invoke-Expression -Command $CommandString
-                    } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $script:CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential)
+                        if ($ComputerListPivotExecutionCheckboxChecked) {
+                            Invoke-Command -ComputerName $ComputerListPivotExecutionTextBoxText -Credential $script:Credential -ScriptBlock { param($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $script:CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential, $ComputerListPivotExecutionCheckboxChecked) ; Invoke-Expression -Command $CommandString } -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $script:CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential, $ComputerListPivotExecutionCheckboxChecked, $ComputerListPivotExecutionTextBoxText)
+                        }
+                        else {
+                            Invoke-Expression -Command $CommandString
+                        }
+
+                    } -InitializationScript $null -ArgumentList @($OutputFileFileType, $CollectionSavedDirectory, $CommandName, $script:CommandType, $TargetComputer, $CommandString, $PsExecPath, $script:Credential, $UseCredential, $script:ComputerListPivotExecutionCheckbox.checked,$script:ComputerListPivotExecutionTextBox.Text)
                 }               
                 elseif ( $OutputFileFileType -eq "txt" ) {
                     $OutputFilePath = "$CollectionSavedDirectory\$((($CommandName) -split ' -- ')[1]) - $script:CommandType - $($TargetComputer).txt"

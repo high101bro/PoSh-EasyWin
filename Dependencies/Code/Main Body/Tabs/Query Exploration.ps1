@@ -407,12 +407,12 @@ $Section3QueryExplorationDescriptionPanel = New-Object System.Windows.Forms.Pane
 }
             $Section3QueryExplorationDescriptionRichTextbox = New-Object System.Windows.Forms.RichTextBox -Property @{
                 Font        = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Backcolor = 'White'
+                Backcolor   = 'White'
                 Multiline   = $True
                 ScrollBars  = 'Vertical'
                 WordWrap    = $True
                 ReadOnly    = $true
-                Dock       = 'Fill'
+                Dock        = 'Fill'
                 BorderStyle = 'None'
                 ShortcutsEnabled = $true
             }

@@ -165,6 +165,111 @@ $ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckB
 $Section3ActionTab.Controls.Add($ComputerListProvideCredentialsCheckBox)
 
 $Column5DownPosition += $Column5DownPositionShift
+
+$PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
+    Left   = 0
+    Top    = $FormScale * $Column5DownPosition
+    Width  = $FormScale * 126 + ($FormScale + 5)
+    Height = $FormScale * 48
+}
+            $script:ComputerListPivotExecutionCheckbox = New-Object System.Windows.Forms.Checkbox -Property @{
+                Text    = "Pivot Thru (WinRM)"
+                Left    = $FormScale * 3
+                Top     = $FormScale * 7
+                Width   = $FormScale * 120
+                Height  = $FormScale * 22 - 5
+                Checked = $false
+                Add_Click = {
+                    if ( $script:ComputerListPivotExecutionTextBox.Text -eq '' ) {
+                        [System.Windows.Forms.MessageBox]::Show("Ensure to enter an endpoint hostname or IP address below.`n`nWinRM commands will be sent to and exected by this endpoint, then returned to PoSh-EasyWin. This can be used to pivot to networks that this localhost does not have access to, but where the other may. Data can be collected, files sent or received, and actions taken from that endpoint's perspecitve.","PoSh-EasyWin - Pivot Execution (WinRM)",'Ok',"Info")
+                        $this.checked = $false
+                        $script:ComputerListPivotExecutionTextBox.enabled = $true
+                    }
+                    elseif ( $script:ComputerListPivotExecutionTextBox.Text -ne '' -and $This.checked -eq $false) {
+                        $this.checked = $false
+                        $script:ComputerListPivotExecutionTextBox.enabled = $true
+                    }
+                    else {
+                        [System.Windows.Forms.MessageBox]::Show("WinRM commands will be sent to and executed by '$($script:ComputerListPivotExecutionTextBox.text)', then returned to PoSh-EasyWin. This can be used to pivot to networks that this localhost does not have access to, but '$($script:ComputerListPivotExecutionTextBox.text)' may be able to access. Data can be collected, files sent or received, and actions taken from the perspecitve of '$($script:ComputerListPivotExecutionTextBox.text)'.`n`nAre you sure you want to pivot commands through '$($script:ComputerListPivotExecutionTextBox.text)'?","PoSh-EasyWin - Pivot Execution (WinRM)",'Ok',"Info")
+                        if ($this.Checked){$this.checked = $true}
+                        else {$this.checked = $false}
+                        $script:ComputerListPivotExecutionTextBox.enabled = $true
+                        $script:ComputerListPivotExecutionTextBox.text | Set-Content "$PoShHome\Settings\Pivot Thru Endpoint (WinRM).txt"
+                    }
+                    if ($this.checked) { 
+                        $MainLeftTabControl.Controls.Remove($Section1InteractionsTab)
+                        $MainLeftTabControl.Controls.Remove($Section1EnumerationTab)
+
+                        $MainLeftCollectionsTabControl.Controls.Remove($Section1AccountsTab)
+                        $MainLeftCollectionsTabControl.Controls.Remove($Section1EventLogsTab)
+                        $MainLeftCollectionsTabControl.Controls.Remove($Section1RegistryTab)
+                        $MainLeftCollectionsTabControl.Controls.Remove($Section1FileSearchTab)
+                        $MainLeftCollectionsTabControl.Controls.Remove($Section1NetworkConnectionsSearchTab)
+                        $MainLeftCollectionsTabControl.Controls.Remove($Section1PacketCaptureTab)
+                        Deselect-AllCommands
+
+                        $CommandsViewFilterComboBox.text = 'Pivot Thru (WinRM)'
+                        $CommandsViewFilterComboBox.enabled = $false
+                        $CommandsViewProtocolsUsedRadioButton.enabled = $false
+                        $CommandsViewCommandNamesRadioButton.enabled = $false
+                
+                        $script:CommandsTreeView.Nodes.Clear()
+                        Initialize-CommandTreeNodes
+                        View-CommandTreeNodeMethod
+                        Update-TreeNodeCommandState
+                    }
+                    else { 
+                        $MainLeftTabControl.Controls.Remove($Section1OpNotesTab)
+                        $MainLeftTabControl.Controls.Remove($MainLeftInfoTab)
+                        $MainLeftTabControl.Controls.Add($Section1InteractionsTab)
+                        $MainLeftTabControl.Controls.Add($Section1EnumerationTab)
+                        $MainLeftTabControl.Controls.Add($Section1OpNotesTab)
+                        $MainLeftTabControl.Controls.Add($MainLeftInfoTab)
+
+                        $MainLeftCollectionsTabControl.Controls.Add($Section1AccountsTab)
+                        $MainLeftCollectionsTabControl.Controls.Add($Section1EventLogsTab)
+                        $MainLeftCollectionsTabControl.Controls.Add($Section1RegistryTab)
+                        $MainLeftCollectionsTabControl.Controls.Add($Section1FileSearchTab)
+                        $MainLeftCollectionsTabControl.Controls.Add($Section1NetworkConnectionsSearchTab)
+                        $MainLeftCollectionsTabControl.Controls.Add($Section1PacketCaptureTab)
+
+                        $CommandsViewFilterComboBox.text = 'All (WinRM,RPC,SMB,SSH)'
+                        $CommandsViewFilterComboBox.enabled = $true
+                        $CommandsViewProtocolsUsedRadioButton.enabled = $true
+                        $CommandsViewCommandNamesRadioButton.enabled = $true
+                
+                        $script:CommandsTreeView.Nodes.Clear()
+                        Initialize-CommandTreeNodes
+                        View-CommandTreeNodeMethod
+                        Update-TreeNodeCommandState    
+                    }
+                }
+            }
+            $PivotExecutionGroupBox.Controls.Add($script:ComputerListPivotExecutionCheckbox)
+
+
+            $script:ComputerListPivotExecutionTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+                Left    = $FormScale * 3
+                Top     = $script:ComputerListPivotExecutionCheckbox.Top + $script:ComputerListPivotExecutionCheckbox.Height
+                Width   = $FormScale * 122
+                Height  = $FormScale * 22 - 5
+            }
+            $PivotExecutionGroupBox.Controls.Add($script:ComputerListPivotExecutionTextBox)
+
+            if (Test-Path "$PoShHome\Settings\Pivot Thru Endpoint (WinRM).txt") { 
+                $script:ComputerListPivotExecutionTextBox.text = Get-Content "$PoShHome\Settings\Pivot Thru Endpoint (WinRM).txt"
+            }
+
+            $script:CommandsTreeView.Nodes.Clear()
+            Initialize-CommandTreeNodes
+            View-CommandTreeNodeMethod
+            Update-TreeNodeCommandState
+
+
+$Section3ActionTab.Controls.Add($PivotExecutionGroupBox)
+
+
+$Column5DownPosition += $Column5DownPositionShift
 $Column5DownPosition += $Column5DownPositionShift
 
 
@@ -175,7 +280,6 @@ $script:ComputerListUseDNSCheckbox = New-Object System.Windows.Forms.Checkbox -P
     Width   = $FormScale * 124 + ($FormScale + 5)
     Height  = $FormScale * 22 - 5
     Checked = $true
-    #Add_MouseHover = $null
 }
 $Section3ActionTab.Controls.Add($script:ComputerListUseDNSCheckbox)
 
@@ -199,13 +303,10 @@ $script:CommandTreeViewQueryMethodSelectionComboBox = New-Object System.Windows.
         if ($this.SelectedItem -eq 'Monitor Jobs') {
             $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionLabel)
             $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
-            $Column5DownPosition += $Column5DownPositionShift
-            $script:ComputerListExecuteButton.Top = $script:OptionJobTimeoutSelectionLabel.Top + $($FormScale * $Column5DownPositionShift)
         }
         else {
             $Section3ActionTab.Controls.Remove($script:OptionJobTimeoutSelectionLabel)
             $Section3ActionTab.Controls.Remove($script:OptionJobTimeoutSelectionComboBox)
-            $script:ComputerListExecuteButton.Top = $this.Top + $($FormScale * $Column5DownPositionShift)
         }
     }
 }
@@ -253,15 +354,13 @@ ForEach ($Item in $JobTimesAvailable) { $script:OptionJobTimeoutSelectionComboBo
 if (Test-Path "$PoShHome\Settings\Job Timeout.txt") { $script:OptionJobTimeoutSelectionComboBox.text = Get-Content "$PoShHome\Settings\Job Timeout.txt" }
 $Section3ActionTab.Controls.Add($script:OptionJobTimeoutSelectionComboBox)
 
-$Column5DownPosition += $Column5DownPositionShift - $($FormScale * 2)
-
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListExecuteButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListExecuteButton.ps1"
 $script:ComputerListExecuteButton = New-Object System.Windows.Forms.Button -Property @{
     Text    = "Execute Script"
     Left    = $FormScale * 3
-    Top     = $FormScale * $Column5DownPosition
+    Top     = $FormScale * 203
     Width   = $FormScale * 124
     Height  = $FormScale * (22 * 2) - 10
     Enabled = $false
