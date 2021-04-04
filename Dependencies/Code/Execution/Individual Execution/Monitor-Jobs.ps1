@@ -596,6 +596,23 @@ function Monitor-Jobs {
         `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartOpenInShell$ChartNumber)
 
 
+        `$script:GeneratedAutoChartGridView$ChartNumber = New-Object Windows.Forms.Button -Property @{
+            Text   = "GridView"
+            Left   = `$script:GeneratedAutoChartOpenInShell$ChartNumber.Left + `$script:GeneratedAutoChartOpenInShell$ChartNumber.Width + `$(`$FormScale * 5)
+            Top    = `$script:GeneratedAutoChartOpenInShell$ChartNumber.Top
+            Width  = `$FormScale * 100
+            Height = `$FormScale * 23
+            Add_Click = {
+                if (`$script:SourceCSVData$ChartNumber) {
+                    `$script:SourceCSVData$ChartNumber | Out-GridView -Title `$script:SeriesName$ChartNumber
+                }                        
+                else { [System.Windows.MessageBox]::Show("No CSV data available.","PoSh-EasyWin") }
+            }
+        }
+        CommonButtonSettings -Button `$script:GeneratedAutoChartGridView$ChartNumber
+        `$script:GeneratedAutoChartManipulationPanel$ChartNumber.controls.Add(`$script:GeneratedAutoChartGridView$ChartNumber)
+
+
         `$script:GeneratedAutoChartSaveButton$ChartNumber = New-Object Windows.Forms.Button -Property @{
             Text   = "Save Chart"
             Left   = `$script:GeneratedAutoChartOpenInShell$ChartNumber.Left
@@ -878,7 +895,7 @@ if ($MonitorMode) {
                 text      = 'View PCap'
                 Left      = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
                 Top       = `$script:Section3MonitorJobLabel$JobId.Top - (`$FormScale * 1)
-                Width     = `$FormScale * 100
+                Width     = `$FormScale * 110
                 Height    = `$FormScale * 21
                 Font      = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
                 Add_click = {
@@ -889,7 +906,7 @@ if ($MonitorMode) {
                         Invoke-Item "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng"
                     }
                     else {
-                        [System.Windows.Forms.MessageBox]::Show("You cannot view the pcap until the data collection has completed.",'PoSh-EasyWin')
+                        [System.Windows.Forms.MessageBox]::Show("There is no pcap data available.",'PoSh-EasyWin')
                     }
                 }
             }
@@ -2158,9 +2175,15 @@ if ($DisableReRun) {
                 `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
                 `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
                 `$script:Section3MonitorJobViewHTMLorTextButton$JobId.BackColor = 'LightGreen'
-                if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightCoral' }
-                else { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightGreen' }
-                `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'LightGreen'
+                
+                if ((Test-Path "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng")) {
+                    `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightGreen'
+                    `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'LightGreen'
+                }
+                elseif ((Get-ChildItem "`$(`$script:CollectionSavedDirectoryTextBox.Text)\Results By Endpoints\`$(`$script:JobName$JobId)\`$(`$script:PcapEndpointName$JobId)*Packet Capture*`$(`$script:PcapJobData$JobId)*.pcapng").length -lt 30 ) {
+                    `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightCoral'
+                    `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'LightCoral'
+                }
 
                 `$script:JobsTimeCompleted$JobId = Get-Date
                 `$script:Timer$JobId.Stop()

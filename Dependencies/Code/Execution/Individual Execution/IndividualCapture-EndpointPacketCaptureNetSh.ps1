@@ -60,13 +60,13 @@ $PacketCaptureName    = "Endpoint Packet Capture - $DateTime.pcapng"
 
 ##################################################
 if ($NetworkEndpointPacketCaptureDurationComboBox.text -match 'second') {
-    $NetworkEndpointPacketCaptureDuration = [int](($NetworkEndpointPacketCaptureDurationComboBox.text).split()[0])
+    $NetworkEndpointPacketCaptureDuration = [int]([int]($NetworkEndpointPacketCaptureDurationComboBox.text).split()[0])
 }
 elseif ($NetworkEndpointPacketCaptureDurationComboBox.text -match 'minute') {
-    $NetworkEndpointPacketCaptureDuration = [int](($NetworkEndpointPacketCaptureDurationComboBox.text).split()[0] * 60)
+    $NetworkEndpointPacketCaptureDuration = [int]([int]($NetworkEndpointPacketCaptureDurationComboBox.text).split()[0] * 60)
 }
 elseif ($NetworkEndpointPacketCaptureDurationComboBox.text -match 'hour') {
-    $NetworkEndpointPacketCaptureDuration = [int](($NetworkEndpointPacketCaptureDurationComboBox.text).split()[0] * 60 * 60)
+    $NetworkEndpointPacketCaptureDuration = [int]([int]($NetworkEndpointPacketCaptureDurationComboBox.text).split()[0] * 60 * 60)
 }
 else {
     $NetworkEndpointPacketCaptureDuration = [int]$NetworkEndpointPacketCaptureDurationComboBox.text
