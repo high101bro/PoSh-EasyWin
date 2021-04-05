@@ -464,6 +464,7 @@ function Conduct-NodeAction {
     }
 
     script:Minimize-MonitorJobsTab
+    Check-IfScanExecutionReady
 }
 
 

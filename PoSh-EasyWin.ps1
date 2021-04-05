@@ -383,22 +383,22 @@ Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin Start
 
 # This prompts the user for accepting the GPLv3 License
 if ($AcceptEULA) {
-    Write-Output -ForeGroundColor Green  "You accepted the EULA."
-    Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+    Write-Host  "You accepted the EULA." -ForeGroundColor Green
+    Write-Host "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder." -ForeGroundColor Yellow
 }
 else {
     Get-Content "$Dependencies\GPLv3 Notice.txt" | Out-GridView -Title 'PoSh-EasyWin User Agreement' -PassThru | Set-Variable -Name UserAgreement
     if ($UserAgreement) {
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
-        Write-Output -ForeGroundColor Green  "You accepted the EULA."
-        Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+        Write-Host "You accepted the EULA." -ForeGroundColor Green
+        Write-Host "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder." -ForeGroundColor Yellow
         Start-Sleep -Seconds 1
     }
     else {
         [system.media.systemsounds]::Exclamation.play()
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "PoSh-EasyWin User Agreemennt NOT Accepted By: $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)"
-        Write-Output -ForeGroundColor Red    "You must accept the EULA to continue."
-        Write-Output -ForeGroundColor Yellow "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder."
+        Write-Host "You must accept the EULA to continue." -ForeGroundColor Red
+        Write-Host "For more infor, visit https://www.gnu.org/licenses/gpl-3.0.html or view a copy in the Dependencies folder." -ForeGroundColor Yellow
         exit
     }
     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "===================================================================================================="

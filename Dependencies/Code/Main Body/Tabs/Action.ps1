@@ -196,9 +196,10 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                         $script:ComputerListPivotExecutionTextBox.enabled = $true
                         $script:ComputerListPivotExecutionTextBox.text | Set-Content "$PoShHome\Settings\Pivot Thru Endpoint (WinRM).txt"
                     }
-                    if ($this.checked) { 
+
+                    if ($this.checked -eq $true) { 
                         $MainLeftTabControl.Controls.Remove($Section1InteractionsTab)
-                        $MainLeftTabControl.Controls.Remove($Section1EnumerationTab)
+                        #$MainLeftTabControl.Controls.Remove($Section1EnumerationTab)
 
                         $MainLeftCollectionsTabControl.Controls.Remove($Section1AccountsTab)
                         $MainLeftCollectionsTabControl.Controls.Remove($Section1EventLogsTab)
@@ -217,12 +218,15 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                         Initialize-CommandTreeNodes
                         View-CommandTreeNodeMethod
                         Update-TreeNodeCommandState
+
+                        # $script:EnumerationPortScanMonitorJobsCheckbox.checked = $true
+                        # $script:EnumerationPortScanMonitorJobsCheckbox.enabled = $false
                     }
-                    else { 
+                    elseif ($this.checked -eq $false) { 
                         $MainLeftTabControl.Controls.Remove($Section1OpNotesTab)
                         $MainLeftTabControl.Controls.Remove($MainLeftInfoTab)
                         $MainLeftTabControl.Controls.Add($Section1InteractionsTab)
-                        $MainLeftTabControl.Controls.Add($Section1EnumerationTab)
+                        #$MainLeftTabControl.Controls.Add($Section1EnumerationTab)
                         $MainLeftTabControl.Controls.Add($Section1OpNotesTab)
                         $MainLeftTabControl.Controls.Add($MainLeftInfoTab)
 
@@ -241,7 +245,10 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                         $script:CommandsTreeView.Nodes.Clear()
                         Initialize-CommandTreeNodes
                         View-CommandTreeNodeMethod
-                        Update-TreeNodeCommandState    
+                        Update-TreeNodeCommandState
+
+                        # $script:EnumerationPortScanMonitorJobsCheckbox.checked = $false
+                        # $script:EnumerationPortScanMonitorJobsCheckbox.enabled = $true
                     }
                 }
             }

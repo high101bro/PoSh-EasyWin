@@ -34,6 +34,74 @@ Update-FormProgress "$Dependencies\Code\Execution\Enumeration\Conduct-PortScan.p
 . "$Dependencies\Code\Execution\Enumeration\Conduct-PortScan.ps1"
 
 
+#batman
+function Check-IfScanExecutionReady {
+    Generate-ComputerList
+    $IPv4Pattern = "([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}"
+    $ClassC = "^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){2}$"
+    $PortPattern = "([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])"
+    $InvalidChars = "abcdefghijklmnopqrstuvwxyz~``'`"!@#$%^&*()_+-=[]{}|\/?<>"
+    if (
+        (
+            (
+                ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked) -and 
+                ($script:computerList.count -gt 0)
+            ) -or 
+            (
+                ($EnumerationPortScanSpecificIPTextbox.text -match $IPv4Pattern)
+            ) -or
+            (
+                (
+                    ($EnumerationPortScanIPRangeNetworkTextbox.text -match $ClassC)
+                ) -and
+                (
+                    ($EnumerationPortScanIPRangeFirstTextbox.text -gt 0 ) -and 
+                    ($EnumerationPortScanIPRangeFirstTextbox.text -lt 255) -and 
+                    ($EnumerationPortScanIPRangeFirstTextbox.text -le $EnumerationPortScanIPRangeLastTextbox.text)
+                ) -and
+                (
+                    ($EnumerationPortScanIPRangeLastTextbox.text -gt 0 ) -and 
+                    ($EnumerationPortScanIPRangeLastTextbox.text -lt 255) -and 
+                    ($EnumerationPortScanIPRangeLastTextbox.text -ge $EnumerationPortScanIPRangeFirstTextbox.text)
+                )
+            )
+        ) -and
+        (
+            (
+                ($EnumerationPortScanPortQuickPickComboBox.text -ne 'Quick-Pick Port Selection') -and
+                ($EnumerationPortScanPortQuickPickComboBox.selectedItem -ne 'N/A')
+            ) -or
+            (
+                ($EnumerationPortScanSpecificPortsTextbox.text -match $PortPattern)
+            ) -or
+            (
+                (
+                    ($EnumerationPortScanPortRangeFirstTextbox.text -ge 0) -and
+                    ($EnumerationPortScanPortRangeFirstTextbox.text -le 65535) -and
+                    ($EnumerationPortScanPortRangeFirstTextbox.text -le $EnumerationPortScanPortRangeLastTextbox.text)
+                ) -and
+                (
+                    ($EnumerationPortScanPortRangeLastTextbox.text -ge 0) -and
+                    ($EnumerationPortScanPortRangeLastTextbox.text -le 65535) -and
+                    ($EnumerationPortScanPortRangeLastTextbox.text -ge $EnumerationPortScanPortRangeFirstTextbox.text)
+                )
+            ) 
+        ) -and
+        (
+            ($EnumerationPortScanTimeoutTextbox.text -gt 0) -and 
+            ($EnumerationPortScanTimeoutTextbox.text -match "\d")
+        )
+    ) {
+        $EnumerationPortScanExecutionButton.enabled = $true
+        $EnumerationPortScanExecutionButton.BackColor = 'LightGreen'
+    }
+    else {
+        $EnumerationPortScanExecutionButton.enabled = $false
+        $EnumerationPortScanExecutionButton.BackColor = 'LightGray'
+    }
+}
+
+
 $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
     Text   = "Create List From TCP Port Scan"
     Left   = 0
@@ -44,10 +112,10 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
     ForeColor = "Blue"
 }
            $script:EnumerationPortScanSpecificComputerNodeCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
-                Text   = "Scan Endpoints That Are Checkboxed"
+                Text   = "Scan Checkboxed Endpoints"
                 Left   = $FormScale * 3
                 Top    = $FormScale * 15
-                Width  = $FormScale * 287
+                Width  = $FormScale * 185
                 Height = $FormScale * 22
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor     = "Black"
@@ -68,11 +136,25 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                         $EnumerationPortScanIPRangeFirstTextbox.enabled   = $true
                         $EnumerationPortScanIPRangeLastTextbox.enabled    = $true
                     }
+                    Check-IfScanExecutionReady
                 }
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($script:EnumerationPortScanSpecificComputerNodeCheckbox)
 
 
+            # $script:EnumerationPortScanMonitorJobsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
+            #     Text   = "Monitor as Job"
+            #     Left   = $script:EnumerationPortScanSpecificComputerNodeCheckbox.Left + $script:EnumerationPortScanSpecificComputerNodeCheckbox.Width
+            #     Top    = $script:EnumerationPortScanSpecificComputerNodeCheckbox.Top
+            #     Width  = $FormScale * 100
+            #     Height = $FormScale * 22
+            #     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+            #     ForeColor     = "Black"
+            # }
+            # $EnumerationPortScanGroupBox.Controls.Add($script:EnumerationPortScanMonitorJobsCheckbox)
+
+            
             $EnumerationPortScanIPNote1Label = New-Object System.Windows.Forms.Label -Property @{
                 Text   = "Enter Comma Separated IPs (ex: 10.0.0.1,10.0.0.2)"
                 Left   = $script:EnumerationPortScanSpecificComputerNodeCheckbox.Left
@@ -97,6 +179,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 AcceptsReturn = $false
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 ForeColor     = "Black"
+                Add_Click      = {Check-IfScanExecutionReady}
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificIPTextbox)
 
@@ -137,6 +221,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 AcceptsReturn = $false
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
+                Add_Click      = {Check-IfScanExecutionReady}
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeNetworkTextbox)
 
@@ -165,6 +251,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 AcceptsReturn = $false
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
+                Add_Click      = {Check-IfScanExecutionReady}
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeFirstTextbox)
 
@@ -193,6 +281,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 AcceptsReturn = $false
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
+                Add_Click      = {Check-IfScanExecutionReady}
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanIPRangeLastTextbox)
 
@@ -221,6 +311,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 AcceptsReturn = $false
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
+                Add_Click      = {Check-IfScanExecutionReady}
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanSpecificPortsTextbox)
 
@@ -236,6 +328,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
                 Add_Click = $EnumerationPortScanPortQuickPickComboBoxAdd_Click
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanPortQuickPickComboBox.Items.AddRange($EnumerationPortScanPortQuickPickComboBoxItemsAddRange)
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortQuickPickComboBox)
@@ -250,6 +343,7 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Width  = $FormScale * 100
                 Height = $FormScale * 20
                 Add_Click = $EnumerationPortScanPortsSelectionButtonAdd_Click
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortsSelectionButton)
             CommonButtonSettings -Button $EnumerationPortScanPortsSelectionButton
@@ -291,6 +385,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 AcceptsReturn = $false # Allows you to enter in returnss into the textbox
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
+                Add_Click      = {Check-IfScanExecutionReady}
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeFirstTextbox)
 
@@ -319,6 +415,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 AcceptsReturn = $false # Allows you to enter in returnss into the textbox
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
+                Add_Click      = {Check-IfScanExecutionReady}
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanPortRangeLastTextbox)
 
@@ -332,6 +430,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor = "Black"
                 Checked   = $False
+                Add_Click      = {Check-IfScanExecutionReady}
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTestICMPFirstCheckBox)
 
@@ -360,6 +460,8 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 AcceptsReturn = $false
                 Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
                 ForeColor     = "Black"
+                Add_Click      = {Check-IfScanExecutionReady}
+                Add_MouseEnter = {Check-IfScanExecutionReady}
             }
             $EnumerationPortScanGroupBox.Controls.Add($EnumerationPortScanTimeoutTextbox)
 
@@ -372,8 +474,10 @@ $EnumerationPortScanGroupBox = New-Object System.Windows.Forms.GroupBox -Propert
                 Top    = $EnumerationPortScanTimeoutTextbox.Top
                 Width  = $FormScale * 100
                 Height = $FormScale * 22
+                Enabled   = $false
                 Add_Click = $EnumerationPortScanExecutionButtonAdd_Click
                 Add_MouseHover = {
+                    Check-IfScanExecutionReady
 Show-ToolTip -Title "Execute Scan" -Icon "Info" -Message @"
 +  Reference Port Check:
      New-Object System.Net.Sockets.TcpClient("<Hostname/IP>", 139)
