@@ -21,48 +21,58 @@ function Display-ContextMenuForComputerTreeNode {
     $ComputerListContextMenuStrip.Items.Add('-')
 
 
-    $ComputerListRemoteDesktopToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Remote Desktop"
-        ForeColor = 'DarkRed'
-        Add_CLick = $ComputerListRDPButtonAdd_Click
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListRemoteDesktopToolStripButton)
-
-
-    $ComputerListPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "PSSession"
-        ForeColor = 'DarkRed'
-        Add_CLick = $ComputerListPSSessionButtonAdd_Click
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionToolStripButton)
-
-
-    if (Test-Path $kitty_ssh_client) {
-        $ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "SSH"
+    if ($script:ComputerListPivotExecutionCheckbox.checked -eq $false) {
+        $ComputerListRemoteDesktopToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Remote Desktop"
             ForeColor = 'DarkRed'
-            Add_CLick = $ComputerListSSHButtonAdd_Click
+            Add_CLick = $ComputerListRDPButtonAdd_Click
         }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListSSHToolStripButton)
-    }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListRemoteDesktopToolStripButton)
 
 
-    if (Test-Path $PsExecPath) {
-        $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "PSExec"
+        $ComputerListPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Enter-PSSession"
             ForeColor = 'DarkRed'
-            Add_CLick = $ComputerListPsExecButtonAdd_Click
+            Add_CLick = $ComputerListPSSessionButtonAdd_Click
         }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
-    }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionToolStripButton)
 
-    
-    $EventViewerButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Event Viewer"
-        ForeColor = 'DarkRed'
-        Add_CLick = $EventViewerButtonAdd_Click
+
+        if (Test-Path $kitty_ssh_client) {
+            $ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text      = "SSH"
+                ForeColor = 'DarkRed'
+                Add_CLick = $ComputerListSSHButtonAdd_Click
+            }
+            $ComputerListContextMenuStrip.Items.Add($ComputerListSSHToolStripButton)
+        }
+
+
+        if (Test-Path $PsExecPath) {
+            $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text      = "PSExec"
+                ForeColor = 'DarkRed'
+                Add_Click = $ComputerListPsExecButtonAdd_Click
+            }
+            $ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
+        }
+
+        
+        $EventViewerButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Event Viewer"
+            ForeColor = 'DarkRed'
+            Add_CLick = $EventViewerButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($EventViewerButton)
     }
-    $ComputerListContextMenuStrip.Items.Add($EventViewerButton)
+    elseif ($script:ComputerListPivotExecutionCheckbox.checked -eq $true) {
+        $ComputerListPSSessionPivotToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+            Text      = "Pivot-PSSession"
+            ForeColor = 'DarkRed'
+            Add_Click = $ComputerListPSSessionPivotButtonAdd_Click
+        }
+        $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionPivotToolStripButton)
+    }
 
     
     $script:ExpandCollapseStatus = "Collapse"

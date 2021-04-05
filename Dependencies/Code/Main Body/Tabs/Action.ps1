@@ -74,6 +74,10 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerList
 
 Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionButton.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionButton.ps1"
+
+Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionPivotButton.ps1"
+. "$Dependencies\Code\System.Windows.Forms\Button\ComputerListPSSessionPivotButton.ps1"
+
 # DEPRECATED - Button moved to Context Menu
 # $ComputerListPSSessionButton = New-Object System.Windows.Forms.Button -Property @{
 #     Text   = "PS Session"
@@ -219,6 +223,7 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                         View-CommandTreeNodeMethod
                         Update-TreeNodeCommandState
 
+                        $script:ComputerListPivotExecutionTextBox.enabled = $false
                         # $script:EnumerationPortScanMonitorJobsCheckbox.checked = $true
                         # $script:EnumerationPortScanMonitorJobsCheckbox.enabled = $false
                     }
@@ -247,6 +252,7 @@ $PivotExecutionGroupBox = New-Object System.Windows.Forms.GroupBox -Property @{
                         View-CommandTreeNodeMethod
                         Update-TreeNodeCommandState
 
+                        $script:ComputerListPivotExecutionTextBox.enabled = $true
                         # $script:EnumerationPortScanMonitorJobsCheckbox.checked = $false
                         # $script:EnumerationPortScanMonitorJobsCheckbox.enabled = $true
                     }
