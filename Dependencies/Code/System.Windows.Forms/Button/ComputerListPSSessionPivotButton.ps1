@@ -51,24 +51,43 @@ $ComputerListPSSessionPivotButtonAdd_Click = {
             $ResultsListBox.Items.Add("Pivot-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential")
             #Normal PSSession# start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)))"
 
-            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $($script:ComputerListPivotExecutionTextBox.text) -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force))); function Pivot-PSSession(`$Id) { while ( `$Command -ne 'Exit' ) {`$Session = Get-PSSession -Id `$id; `$ComputerName = `$Session.ComputerName; Write-Host -NoNewline `"[$($script:ComputerListPivotExecutionTextBox.text) --> `$ComputerName]: Pivot> `"; `$Command = Read-Host; Invoke-Command -Session `$Session -ScriptBlock {param(`$Command) invoke-command {iex `$Command}} -ArgumentList `$Command; }; exit; }; Pivot-PSSession -Id (New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)))).Id"
-            <#
-            Enter-PSSession -ComputerName win10-02 -Credential $creds
-            function Pivot-PSSession($Id) {
-                while ( $Command -ne "Exit" ) {
-                    $Session = Get-PSSession -Id $id
-                    $ComputerName = $Session.ComputerName
-                    Write-Host -NoNewline "[$ComputerName]: Pivot> "
-                    $Command = Read-Host
-                    #limited#$ScriptBlock = [scriptblock]::Create($Command)
-                    #limited#Invoke-Command -Session $Session -ScriptBlock $ScriptBlock -ArgumentList $creds
-                    Invoke-Command -Session $Session -ScriptBlock {param($Command) invoke-command {iex $Command}} -ArgumentList @($Command,$creds)
+            #start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $($script:ComputerListPivotExecutionTextBox.text) -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force))); function Pivot-PSSession(`$Id) { while ( `$Command -ne 'Exit' ) {`$Session = Get-PSSession -Id `$id; `$ComputerName = `$Session.ComputerName; Write-Host -NoNewline `"[$($script:ComputerListPivotExecutionTextBox.text) --> `$ComputerName]: Pivot> `"; `$Command = Read-Host; Invoke-Command -Session `$Session -ScriptBlock {param(`$Command) invoke-command {iex `$Command}} -ArgumentList `$Command; }; ; }; Pivot-PSSession -Id (New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)))).Id"
+            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList @"
+-noexit -Command Enter-PSSession -ComputerName $($script:ComputerListPivotExecutionTextBox.text) -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)));
+"@
+            function Pivot-PSSession ($id) {
+                $TargetComputer = 'win10-02'
+
+                while ($cmd -ne "exit") {
+                    $sess = Get-PSSession -Id $id #win10-01
+                    $computername = $sess.computername #win10-01
+                    write-host -NoNewline "[$ComputerName]: Pivot> "
+                    $Command = Read-Host #command
+
+                    
+                    Invoke-Command `
+                        -ScriptBlock {
+                            param($TargetComputer,$Command,$script:Credential)
+                            Invoke-Command -ScriptBlock {param($Command); $Command} -ComputerName $TargetComputer -Credential $script:Credential -ArgumentList @($Command,$null)
+                        } `
+                        -ArgumentList @($TargetComputer,$Command,$script:Credential) `
+                        -Session $sess
                 }
-                exit
-            }       
-            Pivot-PSSession -Id (New-PSSession -ComputerName dc01 -Credential $creds).Id
-            #>
-            Start-Sleep -Seconds 3
+            }
+            #$PivotPSSession = "function Pivot-PSSession { ${function:Pivot-PSSession} }"
+
+            $Session = New-PSSession -ComputerName 'Win10-01' -Credential $script:Credential
+            Pivot-PSSession -id $Session.Id
+
+
+
+
+
+
+
+
+
+                Start-Sleep -Seconds 3
         }
         else {
             $ResultsListBox.Items.Add("Pivot-PSSession -ComputerName $script:ComputerTreeViewSelected")
