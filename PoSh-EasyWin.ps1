@@ -564,8 +564,8 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
         $This.TopMost = $false
         if ((Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
             $SelectedCredentialName = Get-Content "$script:CredentialManagementPath\Specified Credentials.txt"
-            $SelectedCredentialPath = Get-ChildItem "$script:CredentialManagementPath\$SelectedCredentialName"
-            $script:Credential      = Import-CliXml $SelectedCredentialPath
+            $script:SelectedCredentialPath = Get-ChildItem "$script:CredentialManagementPath\$SelectedCredentialName"
+            $script:Credential      = Import-CliXml $script:SelectedCredentialPath
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Credentials:  $SelectedCredentialName.xml")
             $ComputerListProvideCredentialsCheckBox.checked = $true

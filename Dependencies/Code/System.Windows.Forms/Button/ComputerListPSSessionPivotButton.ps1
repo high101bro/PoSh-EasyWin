@@ -43,55 +43,19 @@ $ComputerListPSSessionPivotButtonAdd_Click = {
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (-not $script:Credential) { Create-NewCredentials }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
-            $Username = $script:Credential.UserName
-            $Password = $script:Credential.GetNetworkCredential().Password
+            #$Username = $script:Credential.UserName
+            #$Password = $script:Credential.GetNetworkCredential().Password
+            #$password = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Password))
 
-            $password = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Password))
-
-            $ResultsListBox.Items.Add("Pivot-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential")
-            #Normal PSSession# start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)))"
-
+            $ResultsListBox.Items.Add("Pivot-PSSession -PivotHost $($script:ComputerListPivotExecutionTextBox.text) -TargetComputer $($script:ComputerTreeViewSelected) -Credential $script:Credential")
             #start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName $($script:ComputerListPivotExecutionTextBox.text) -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force))); function Pivot-PSSession(`$Id) { while ( `$Command -ne 'Exit' ) {`$Session = Get-PSSession -Id `$id; `$ComputerName = `$Session.ComputerName; Write-Host -NoNewline `"[$($script:ComputerListPivotExecutionTextBox.text) --> `$ComputerName]: Pivot> `"; `$Command = Read-Host; Invoke-Command -Session `$Session -ScriptBlock {param(`$Command) invoke-command {iex `$Command}} -ArgumentList `$Command; }; ; }; Pivot-PSSession -Id (New-PSSession -ComputerName $script:ComputerTreeViewSelected -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)))).Id"
-            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList @"
--noexit -Command Enter-PSSession -ComputerName $($script:ComputerListPivotExecutionTextBox.text) -Credential `$(New-Object PSCredential('$Username'`,`$([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$Password')) | ConvertTo-SecureString -AsPlainText -Force)));
-"@
-            function Pivot-PSSession ($id) {
-                $TargetComputer = 'win10-02'
+            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command & '$Dependencies\Code\Main Body\Pivot-Session.ps1' -PivotHost '$($script:ComputerListPivotExecutionTextBox.text)' -TargetComputer '$($script:ComputerTreeViewSelected)' -CredentialXML '$script:SelectedCredentialPath'"
 
-                while ($cmd -ne "exit") {
-                    $sess = Get-PSSession -Id $id #win10-01
-                    $computername = $sess.computername #win10-01
-                    write-host -NoNewline "[$ComputerName]: Pivot> "
-                    $Command = Read-Host #command
-
-                    
-                    Invoke-Command `
-                        -ScriptBlock {
-                            param($TargetComputer,$Command,$script:Credential)
-                            Invoke-Command -ScriptBlock {param($Command); $Command} -ComputerName $TargetComputer -Credential $script:Credential -ArgumentList @($Command,$null)
-                        } `
-                        -ArgumentList @($TargetComputer,$Command,$script:Credential) `
-                        -Session $sess
-                }
-            }
-            #$PivotPSSession = "function Pivot-PSSession { ${function:Pivot-PSSession} }"
-
-            $Session = New-PSSession -ComputerName 'Win10-01' -Credential $script:Credential
-            Pivot-PSSession -id $Session.Id
-
-
-
-
-
-
-
-
-
-                Start-Sleep -Seconds 3
+            Start-Sleep -Seconds 3
         }
         else {
-            $ResultsListBox.Items.Add("Pivot-PSSession -ComputerName $script:ComputerTreeViewSelected")
-            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command Enter-PSSession -ComputerName 'win10-01' | ConvertTo-SecureString -AsPlainText -Force))); function Pivot-PSSession(`$Id) { while ( `$Command -ne 'Exit' ) {`$Session = Get-PSSession -Id `$id; `$ComputerName = `$Session.ComputerName; Write-Host -NoNewline `"[$($script:ComputerListPivotExecutionTextBox.text) --> `$ComputerName]: Pivot> `"; `$Command = Read-Host; Invoke-Command -Session `$Session -ScriptBlock {param(`$Command) invoke-command {iex `$Command}} -ArgumentList `$Command; }; exit; }; Pivot-PSSession -Id (New-PSSession -ComputerName dc01).Id"
+            $ResultsListBox.Items.Add("Pivot-PSSession -PivotHost $($script:ComputerListPivotExecutionTextBox.text) -TargetComputer $($script:ComputerTreeViewSelected)")
+            start-process -FilePath 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' -ArgumentList "-noexit -Command & '$Dependencies\Code\Main Body\Pivot-Session.ps1' -PivotHost '$($script:ComputerListPivotExecutionTextBox.text)' -TargetComputer '$($script:ComputerTreeViewSelected)'"
             Start-Sleep -Seconds 3
         }
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Pivot-PSSession -ComputerName $($script:ComputerTreeViewSelected)"

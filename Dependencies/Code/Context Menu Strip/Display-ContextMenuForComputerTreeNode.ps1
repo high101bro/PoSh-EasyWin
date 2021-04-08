@@ -31,7 +31,7 @@ function Display-ContextMenuForComputerTreeNode {
 
 
         $ComputerListPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Enter-PSSession"
+            Text      = "PSSession"
             ForeColor = 'DarkRed'
             Add_CLick = $ComputerListPSSessionButtonAdd_Click
         }
@@ -67,10 +67,10 @@ function Display-ContextMenuForComputerTreeNode {
     }
     elseif ($script:ComputerListPivotExecutionCheckbox.checked -eq $true) {
         $ComputerListPSSessionPivotToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text = "Pivoting Thru RDP,`nPSSession, PSExec, and`nSSH are Not Supported"
-            #Text      = "Pivot-PSSession"
+            #Text = "Pivoting Thru RDP,`nPSSession, PSExec, and`nSSH are Not Supported"
+            Text      = "Pivot-PSSession"
             ForeColor = 'DarkRed'
-            #Add_Click = $ComputerListPSSessionPivotButtonAdd_Click
+            Add_Click = $ComputerListPSSessionPivotButtonAdd_Click
         }
         $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionPivotToolStripButton)
     }

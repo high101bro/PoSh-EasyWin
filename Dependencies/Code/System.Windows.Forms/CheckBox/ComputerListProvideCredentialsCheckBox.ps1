@@ -1,8 +1,8 @@
 $ComputerListProvideCredentialsCheckBoxAdd_Click = {
     if ($ComputerListProvideCredentialsCheckBox.Checked -and (Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
         $SelectedCredentialName = Get-Content "$script:CredentialManagementPath\Specified Credentials.txt"
-        $SelectedCredentialPath = Get-ChildItem "$script:CredentialManagementPath\$SelectedCredentialName"
-        $script:Credential = Import-CliXml $SelectedCredentialPath
+        $script:SelectedCredentialPath = Get-ChildItem "$script:CredentialManagementPath\$SelectedCredentialName"
+        $script:Credential = Import-CliXml $script:SelectedCredentialPath
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("Credentials:  $SelectedCredentialName.xml")
     }
