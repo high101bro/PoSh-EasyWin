@@ -38,16 +38,6 @@ function Display-ContextMenuForComputerTreeNode {
         $ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionToolStripButton)
 
 
-        if (Test-Path $kitty_ssh_client) {
-            $ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-                Text      = "SSH"
-                ForeColor = 'DarkRed'
-                Add_CLick = $ComputerListSSHButtonAdd_Click
-            }
-            $ComputerListContextMenuStrip.Items.Add($ComputerListSSHToolStripButton)
-        }
-
-
         if (Test-Path $PsExecPath) {
             $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
                 Text      = "PSExec"
@@ -55,6 +45,16 @@ function Display-ContextMenuForComputerTreeNode {
                 Add_Click = $ComputerListPsExecButtonAdd_Click
             }
             $ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
+        }
+
+
+        if (Test-Path $kitty_ssh_client) {
+            $ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text      = "SSH"
+                ForeColor = 'DarkRed'
+                Add_CLick = $ComputerListSSHButtonAdd_Click
+            }
+            $ComputerListContextMenuStrip.Items.Add($ComputerListSSHToolStripButton)
         }
 
         
@@ -67,7 +67,6 @@ function Display-ContextMenuForComputerTreeNode {
     }
     elseif ($script:ComputerListPivotExecutionCheckbox.checked -eq $true) {
         $ComputerListPSSessionPivotToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            #Text = "Pivoting Thru RDP,`nPSSession, PSExec, and`nSSH are Not Supported"
             Text      = "Pivot-PSSession"
             ForeColor = 'DarkRed'
             Add_Click = $ComputerListPSSessionPivotButtonAdd_Click

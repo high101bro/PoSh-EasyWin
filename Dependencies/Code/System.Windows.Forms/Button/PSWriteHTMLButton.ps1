@@ -128,30 +128,28 @@ foreach($Checked in $PSWriteHTMLCheckedListBox.CheckedItems) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
 
 
 if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedItemsList -contains 'Endpoint Network Connections') {
     $script:PSWriteHTMLSupportForm = New-Object System.Windows.Forms.Form -Property @{
         Text    = 'PoSh-EasyWin'
         Width   = $FormScale * 325
-        Height  = $FormScale * 425
+        Height  = $FormScale * 350
         StartPosition = "CenterScreen"
         TopMost = $false
         Icon    = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
@@ -266,10 +264,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
                 $script:IPAddressesToExcludeTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                    Text   = "127.0.0.1
-0.0.0.0
-::1
-::"
+                    Text   = "127.0.0.1`n0.0.0.0`n::1`n::"
                     Left   = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Left
                     Top    = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Height
                     Width  = $script:PoShEasyWinIPToExcludeLabel.Width
@@ -288,37 +283,37 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
 
 
-    $script:PSWriteHTMLSupportOkayLabel = New-Object System.Windows.Forms.Label -Property @{
-        Text   = "Enter the Domain Controller's hostname or IP Address. This is used to pull back domain level data if an Active Directory option was selected."
-        Left   = $script:IPAddressesToExcludeTextbox.Left
-        Top    = $script:IPAddressesToExcludeTextbox.Top + $script:IPAddressesToExcludeTextbox.Height
-        Width  = $script:IPAddressesToExcludeTextbox.Width
-        Height = $FormScale * 44
-        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    }
-    $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLSupportOkayLabel)
+    # $script:PSWriteHTMLSupportOkayLabel = New-Object System.Windows.Forms.Label -Property @{
+    #     Text   = "Enter the Domain Controller's hostname or IP Address. This is used to pull back domain level data if an Active Directory option was selected."
+    #     Left   = $script:IPAddressesToExcludeTextbox.Left
+    #     Top    = $script:IPAddressesToExcludeTextbox.Top + $script:IPAddressesToExcludeTextbox.Height
+    #     Width  = $script:IPAddressesToExcludeTextbox.Width
+    #     Height = $FormScale * 44
+    #     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    # }
+    # $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLSupportOkayLabel)
 
     
-                $script:PSWriteHTMLSupportOkayTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-                    Text   = "<Enter the Domain Controller's hostname/IP>"
-                    Left   = $script:PSWriteHTMLSupportOkayLabel.Left
-                    Top    = $script:PSWriteHTMLSupportOkayLabel.Top + $script:PSWriteHTMLSupportOkayLabel.Height
-                    Width  = $script:IPAddressesToExcludeTextbox.Width
-                    Height = $FormScale * 22
-                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    Multiline = $true
-                }
-                $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLSupportOkayTextBox)
-                if ((Test-Path "$PoShHome\Settings\Domain Controller Selected.txt")){
-                    $script:PSWriteHTMLSupportOkayTextBox.text = Get-Content "$PoShHome\Settings\Domain Controller Selected.txt"
-                }
+    #             $script:PSWriteHTMLSupportOkayTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    #                 Text   = "<Enter the Domain Controller's hostname/IP>"
+    #                 Left   = $script:PSWriteHTMLSupportOkayLabel.Left
+    #                 Top    = $script:PSWriteHTMLSupportOkayLabel.Top + $script:PSWriteHTMLSupportOkayLabel.Height
+    #                 Width  = $script:IPAddressesToExcludeTextbox.Width
+    #                 Height = $FormScale * 22
+    #                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    #                 Multiline = $true
+    #             }
+    #             $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLSupportOkayTextBox)
+    #             if ((Test-Path "$PoShHome\Settings\Domain Controller Selected.txt")){
+    #                 $script:PSWriteHTMLSupportOkayTextBox.text = Get-Content "$PoShHome\Settings\Domain Controller Selected.txt"
+    #             }
 
 
     $script:PSWriteHTMLSupportOkay = $False
     $PSWriteHTMLSupportOkayButton = New-Object System.Windows.Forms.Button -Property @{
         Text   = 'Okay'
-        Left   = $script:PSWriteHTMLSupportOkayTextBox.Left
-        Top    = $script:PSWriteHTMLSupportOkayTextBox.Top + $script:PSWriteHTMLSupportOkayTextBox.Height + $($FormScale * 5)
+        Left   = $script:IPAddressesToExcludeTextbox.Left
+        Top    = $script:IPAddressesToExcludeTextbox.Top + $script:IPAddressesToExcludeTextbox.Height + $($FormScale * 5)
         Width  = $FormScale * 100
         Height = $FormScale * 22
         Add_Click = {
@@ -328,27 +323,28 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             $script:PoShEasyWinIPAddress   = ($script:IPAddressesToExcludeTextbox.text).split() | Where-Object {$_ -ne '' -or $_ -ne $null}
             $script:PSWriteHTMLSupportOkay = $True
 
-            #Checks if the computer entered is in the computer treeview  
-            $ComputerNodeFound = $false
-            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-            foreach ($root in $AllHostsNode) {
-                foreach ($Category in $root.Nodes) {
-                    foreach ($Entry in $Category.nodes) { 
-                        if ($Entry.Text -eq $script:PSWriteHTMLSupportOkayTextBox.text){
-                            $ComputerNodeFound = $true 
-                        }
-                    }
-                }
-            }
+            # #Checks if the computer entered is in the computer treeview  
+            # $ComputerNodeFound = $false
+            # [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+            # foreach ($root in $AllHostsNode) {
+            #     foreach ($Category in $root.Nodes) {
+            #         foreach ($Entry in $Category.nodes) { 
+            #             if ($Entry.Text -eq $script:PSWriteHTMLSupportOkayTextBox.text){
+            #                 $ComputerNodeFound = $true 
+            #             }
+            #         }
+            #     }
+            # }
             
-            if (-not $ComputerNodeFound) {
-                [System.Windows.Forms.MessageBox]::Show('The hostname entered was not found within the computer treeview.','PoSh-EasyWin','Ok','Warning')
-            }
-            else {
-                $script:PSWriteHTMLSupportOkayTextBox.text | Set-Content "$PoShHome\Settings\Domain Controller Selected.txt"
-                $script:DomainControllerComputerName = $script:PSWriteHTMLSupportOkayTextBox.text
-                $script:PSWriteHTMLSupportForm.close()
-            }
+            # if (-not $ComputerNodeFound) {
+            #     [System.Windows.Forms.MessageBox]::Show('The hostname entered was not found within the computer treeview.','PoSh-EasyWin','Ok','Warning')
+            # }
+            # else {
+            #     $script:PSWriteHTMLSupportOkayTextBox.text | Set-Content "$PoShHome\Settings\Domain Controller Selected.txt"
+            #     $script:DomainControllerComputerName = $script:PSWriteHTMLSupportOkayTextBox.text
+            #     $script:PSWriteHTMLSupportForm.close()
+            # }
+            $script:PSWriteHTMLSupportForm.close()
         }
     }
     $script:PSWriteHTMLSupportForm.Controls.Add($PSWriteHTMLSupportOkayButton)
@@ -370,6 +366,21 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
 
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
 
 
 
@@ -435,6 +446,21 @@ function script:Individual-PSWriteHTML {
 
 
 
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
+###########################################
 
 
 
@@ -3739,19 +3765,37 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
     }
     elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
         $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Add("Establishing a PS Session with $script:DomainControllerComputerName")
-    
+        $StatusListBox.Items.Add("Establishing a PS Session with $script:ComputerList")
+
         if ($ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
-            $PSSession = New-PSSession -ComputerName $script:DomainControllerComputerName -Credential $script:Credential
-            Create-LogEntry -LogFile $LogFile -Message "New-PSSession -ComputerName $script:DomainControllerComputerName -Credential $script:Credential"
+            $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential
+            Create-LogEntry -LogFile $LogFile -Message "New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential"
         }
         else {
-            $PSSession = New-PSSession -ComputerName $script:DomainControllerComputerName 
-            Create-LogEntry -LogFile $LogFile -Message "New-PSSession -ComputerName $script:DomainControllerComputerName"
+            $PSSession = New-PSSession -ComputerName $script:ComputerList 
+            Create-LogEntry -LogFile $LogFile -Message "New-PSSession -ComputerName $script:ComputerList"
         }    
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3767,6 +3811,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
         function script:start-PSWriteHTMLActiveDirectoryUsers {
+
             $ADUsersEnabled                = $script:PSWriteHTMLADUsers | Select-Object Enabled | Where-Object {$_.Enabled -ne $null} | Group-Object Enabled | Sort-Object Count, Name                
             $ADUsersLockedOut              = $script:PSWriteHTMLADUsers | Select-Object LockedOut | Where-Object {$_.LockedOut -ne $null} | Group-Object LockedOut | Sort-Object Count, Name
             $ADUsersBadLogonCount          = $script:PSWriteHTMLADUsers | Select-Object BadLogonCount | Where-Object {$_.BadLogonCount -ne $null} | Group-Object BadLogonCount | Sort-Object Count, Name                
@@ -4023,7 +4068,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
         if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-            foreach ($TargetComputer in $script:DomainControllerComputerName) {
+            foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
 
@@ -4033,16 +4078,15 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADForest } -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
 
-
                     foreach ($Domain in $script:PSWriteHTMLForest.Domains) {
-                        Invoke-Command -ScriptBlock {
+                        $Script:Job = Invoke-Command -ScriptBlock {
                             param($Domain)
                             Get-ADUser -Server $Domain -Filter * -Properties SamAccountName, Name, Enabled, LockedOut, BadLogonCount, SmartcardLogonRequired, PasswordNotRequired, PasswordNeverExpires, PasswordExpired, LastBadPasswordAttempt, PasswordLastSet, AccountExpirationDate, WhenCreated, WhenChanged, LastLogonDate, MemberOf, Description, Certificates, DistinguishedName, SID | Select-Object SamAccountName, Name, Enabled, LockedOut, BadLogonCount, SmartcardLogonRequired, PasswordNotRequired, PasswordNeverExpires, PasswordExpired, LastBadPasswordAttempt, PasswordLastSet, AccountExpirationDate, WhenCreated, WhenChanged, LastLogonDate, MemberOf, Description, Certificates, DistinguishedName, SID
                         } `
                         -ArgumentList $Domain `
                         -ComputerName $TargetComputer `
-                        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)" `
-                        -Credential $script:Credential
+                        -Credential $script:Credential `
+                        -AsJob -JobName "PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)"
                 
                         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock {param($Domain); Get-ADUser -Server $Domain -Filter * -Properties SamAccountName, Name, Enabled, LockedOut, BadLogonCount, SmartcardLogonRequired, PasswordNotRequired, PasswordNeverExpires, PasswordExpired, LastBadPasswordAttempt, PasswordLastSet, AccountExpirationDate, WhenCreated, WhenChanged, LastLogonDate, MemberOf, Description, Certificates, DistinguishedName, SID | Select-Object SamAccountName, Name, Enabled, LockedOut, BadLogonCount, SmartcardLogonRequired, PasswordNotRequired, PasswordNeverExpires, PasswordExpired, LastBadPasswordAttempt, PasswordLastSet, AccountExpirationDate, WhenCreated, WhenChanged, LastLogonDate, MemberOf, Description, Certificates, DistinguishedName, SID} -ArgumentList $Domain -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)' -Credential `$script:Credential"
                     }
@@ -4055,7 +4099,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
                     foreach ($Domain in $script:PSWriteHTMLForest.Domains) {
-                        Invoke-Command -ScriptBlock {
+                        $Script:Job = Invoke-Command -ScriptBlock {
                             param($Domain)
                             Get-ADUser -Server $Domain -Filter * -Properties SamAccountName, Name, Enabled, LockedOut, BadLogonCount, SmartcardLogonRequired, PasswordNotRequired, PasswordNeverExpires, PasswordExpired, LastBadPasswordAttempt, PasswordLastSet, AccountExpirationDate, WhenCreated, WhenChanged, LastLogonDate, MemberOf, Description, Certificates, DistinguishedName, SID | Select-Object SamAccountName, Name, Enabled, LockedOut, BadLogonCount, SmartcardLogonRequired, PasswordNotRequired, PasswordNeverExpires, PasswordExpired, LastBadPasswordAttempt, PasswordLastSet, AccountExpirationDate, WhenCreated, WhenChanged, LastLogonDate, MemberOf, Description, Certificates, DistinguishedName, SID
                         } `
@@ -4074,21 +4118,11 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADForest } -Session $PSSession"
 
-
             foreach ($Domain in $script:PSWriteHTMLForest.Domains) {
                 $script:PSWriteHTMLADUsers = invoke-command -ScriptBlock {
                     param($Domain)
                     Get-ADUser -Server $Domain -Filter * -Properties SamAccountName, Name, Enabled, LockedOut, BadLogonCount, SmartcardLogonRequired, PasswordNotRequired, PasswordNeverExpires, PasswordExpired, LastBadPasswordAttempt, PasswordLastSet, AccountExpirationDate, WhenCreated, WhenChanged, LastLogonDate, MemberOf, Description, Certificates, DistinguishedName, SID | Select-Object SamAccountName, Name, Enabled, LockedOut, BadLogonCount, SmartcardLogonRequired, PasswordNotRequired, PasswordNeverExpires, PasswordExpired, LastBadPasswordAttempt, PasswordLastSet, AccountExpirationDate, WhenCreated, WhenChanged, LastLogonDate, MemberOf, Description, Certificates, DistinguishedName, SID
                 } -ArgumentList $Domain -Session $PSSession
-            }
-        }
-
-
-
-
-        if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-            if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
-                script:Individual-PSWriteHTML -Title 'AD Users' -Data { script:Start-PSWriteHTMLActiveDirectoryUsers }
             }
         }
     }
@@ -4344,7 +4378,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
         if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-            foreach ($TargetComputer in $script:DomainControllerComputerName) {
+            foreach ($TargetComputer in $script:ComputerList) {
                 if ($ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
 
@@ -4403,15 +4437,6 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 } -ArgumentList $Domain -Session $PSSession
             }
         }
-
-
-
-
-        # if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
-        #     if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
-        #         script:Individual-PSWriteHTML -Title 'AD Computers' -Data { script:Start-PSWriteHTMLActiveDirectoryComputers }
-        #     }
-        # }
     }
 
 

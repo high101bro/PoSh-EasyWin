@@ -46,6 +46,8 @@ function Set-GuiLayout {
                 $ComputerAndAccountTreeNodeViewPanel.Height = $QueryAndCollectionPanel.Height
                 $ComputerAndAccountTreeViewTabControl.Height = $QueryAndCollectionPanel.Height - ($FormScale * 2)
                 $script:ComputerTreeView.Height = $FormScale * 514
+                $ComputerAndAccountTreeNodeViewPanel.bringtofront()
+                $ComputerAndAccountTreeViewTabControl.bringtofront()
                 $script:ComputerTreeView.bringtofront()
             })
             $script:ComputerTreeView.Add_MouseLeave({

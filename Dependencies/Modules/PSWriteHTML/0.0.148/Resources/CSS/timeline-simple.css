@@ -1,0 +1,61 @@
+h1.timelineSimple, h2.timelineSimple, h3.timelineSimple, h4.timelineSimple, h5.timelineSimple, h6.timelineSimple {
+    border-bottom: unset !important;
+    font-weight: unset !important;
+    margin: unset !important;
+}
+
+h1.timelineSimple {
+    font-size: 16px;
+    margin-bottom: 0.5em;
+    line-height: unset !important;
+}
+
+p.timelineSimple {
+    font-size: 14px !important;
+}
+
+.timelineSimpleContainer {
+    margin: 10px;
+    box-sizing: unset !important;
+}
+
+.timelineSimple-item {
+    padding: 3em 2em 2em;
+    position: relative;
+    color: rgba(0, 0, 0, 0.7);
+    border-left: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+.timelineSimple-item p {
+    font-size: 1rem;
+}
+
+.timelineSimple-item::before {
+    content: attr(date-is);
+    position: absolute;
+    /* left: 2em; */
+    font-weight: bold;
+    top: 9px;
+    display: block;
+    /* font-weight: 700; */
+    font-size: 16px;
+}
+
+.timelineSimple-item::after {
+    width: 10px;
+    height: 10px;
+    display: block;
+    top: 1em;
+    position: absolute;
+    left: -8px;
+    border-radius: 10px;
+    content: "";
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    background: white;
+}
+
+.timelineSimple-item:last-child {
+    -o-border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 60%, transparent) 1 100%;
+    border-image: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.3) 60%, transparent) 1 100%;
+    border-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 60%, transparent) 1 100%;
+}
