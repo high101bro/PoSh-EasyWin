@@ -4,6 +4,7 @@ function Generate-ComputerList {
     #$StatusListBox.Items.Clear()
     #$StatusListBox.Items.Add("Multiple Host Collection")
     $script:ComputerList = @()
+    $script:ComputerListAll = @()
 
     # If the root computerlist checkbox is checked, All Endpoints will be queried
     [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
@@ -42,12 +43,14 @@ function Generate-ComputerList {
             # This loop will check for entries that are checked
             foreach ($Category in $root.Nodes) {
                 foreach ($Entry in $Category.nodes) {
+                    $script:ComputerListAll += $Entry.Text
                     if ($Entry.Checked) { $script:ComputerList += $Entry.text }
                 }
             }
         }
         # This will dedup the ComputerList, though there is unlikely multiple computers of the same name
         $script:ComputerList = $script:ComputerList | Sort-Object -Unique
+        $script:ComputerListAll = $script:ComputerListAll | Sort-Object -Unique
     }
     else {
         if ($script:ComputerListSearch.Checked) {

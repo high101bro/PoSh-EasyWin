@@ -678,6 +678,28 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
             }
             # Added/Removed by Set-GuiLayout
 
+            $High101BroPictureBox = New-Object Windows.Forms.PictureBox -Property @{
+                Text   = "high101bro"
+                Left   = $PoShEasyWinPictureBox.Left + $PoShEasyWinPictureBox.Width + ($FormScale * 10)
+                Top    = $PoShEasyWinPictureBox.Top
+                Width  = $FormScale * 35
+                Height = $FormScale * 35
+                Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\high101bro Logo Color Transparent.png")
+                SizeMode = 'StretchImage'
+                Add_Click = {
+                    $Verify = [System.Windows.Forms.MessageBox]::Show(
+                        "Do you want to navigate to PoSh-EasyWin's GitHub page?",
+                        "PoSh-EasyWin - high101bro",
+                        'YesNo',
+                        "Warning")
+                    $Decision = switch ($Verify) {
+                        'Yes'{Start-Process "https://www.github.com/high101bro/PoSh-EasyWin"}
+                        'No' {continue}
+                    }                    
+                }
+            }
+            # Added/Removed by Set-GuiLayout
+
             $MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Width  = $FormScale * 460
@@ -973,7 +995,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
             . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
             Display-ContextMenuForComputerTreeNode
 
-            # Ref Guide: https://info.sapien.com/index.php/guis/gui-controls/spotlight-on-the-contextmenustrip-control
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
             . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
             $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{

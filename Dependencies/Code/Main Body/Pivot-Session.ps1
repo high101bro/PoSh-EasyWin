@@ -12,14 +12,13 @@ function Pivot-PSSession {
     while ($Command -ne "exit") {
         $Session = Get-PSSession -Id $SessionId
         $PivotHost = $Session.ComputerName
-        Write-Host -NoNewline "[$PivotHost -> $TargetComputer]: Pivot> "
+        Write-Host "[$PivotHost -> $TargetComputer]: Pivot> " -NoNewline
         $Command = Read-Host
-        $sb = [scriptblock]::Create($Command)
         
-        if ($command -eq '' -or $command -eq $null) {
+        if ($Command -eq '' -or $Command -eq $null) {
             continue
         }        
-        elseif ($command -ne "exit") {
+        elseif ($Command -ne "exit") {
             function Pivot-Command {
                 param(
                     $Command,
@@ -29,11 +28,12 @@ function Pivot-PSSession {
                 Invoke-Command `
                 -ScriptBlock {
                     param($Command)
-                    & $Command
+                    Invoke-Expression -Command "$Command"
                 } `
                 -ArgumentList @($Command,$null) `
                 -ComputerName $TargetComputer `
-                -credential $Credential
+                -credential $Credential `
+                -HideComputerName
             }
             $PivotCommand = "function Pivot-Command { ${function:Pivot-Command} }"
             Invoke-Command `
@@ -45,7 +45,8 @@ function Pivot-PSSession {
             
             } `
             -Session $Session `
-            -ArgumentList @($PivotCommand,$Command,$TargetComputer,$Credential)
+            -ArgumentList @($PivotCommand,$Command,$TargetComputer,$Credential) `
+            -HideComputerName
         }
         elseif ($command -eq "exit") {
             $Session = Get-PSSession -Id $SessionId | Remove-PSSession

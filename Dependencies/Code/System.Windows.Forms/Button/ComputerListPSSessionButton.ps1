@@ -77,17 +77,17 @@ $ComputerListPSSessionButtonAdd_Click = {
     }
 }
 
-$ComputerListPSSessionButtonAdd_MouseHover = {
-    Show-ToolTip -Title "Enter-PSSession" -Icon "Info" -Message @"
-+  Starts an interactive session with a remote computer.
-+  Requires the WinRM service.
-+  To use with an IP address, the Credential parameter must be used.
-Also, the computer must be configured for HTTPS transport or
-the remote computer's IP must be in the local TrustedHosts.
-+  Command:
-        Enter-PSSession -ComputerName <target>
-+  Compatiable with 'Specify Credentials'
-"@
-}
+# $ComputerListPSSessionButtonAdd_MouseHover = {
+#     Show-ToolTip -Title "Enter-PSSession" -Icon "Info" -Message @"
+# +  Starts an interactive session with a remote computer.
+# +  Requires the WinRM service.
+# +  To use with an IP address, the Credential parameter must be used.
+# Also, the computer must be configured for HTTPS transport or
+# the remote computer's IP must be in the local TrustedHosts.
+# +  Command:
+#         Enter-PSSession -ComputerName <target>
+# +  Compatiable with 'Specify Credentials'
+# "@
+# }
 
 

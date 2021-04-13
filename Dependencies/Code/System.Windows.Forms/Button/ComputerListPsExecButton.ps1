@@ -76,16 +76,16 @@ $ComputerListPsExecButtonAdd_Click = {
     }
 }
 
-$ComputerListPsExecButtonAdd_MouseHover = {
-    Show-ToolTip -Title "PsExec" -Icon "Info" -Message @"
-+  Will attempt to obtain a cmd prompt via PsExec.
-+  PsExec is a Windows Sysinternals tool.
-+  Some anti-virus scanners will alert on this.
-+  Command:
-        PsExec.exe -AcceptEULA -NoBanner \\<target> cmd
-        PsExec.exe -AcceptEULA -NoBanner \\<target> -u <domain\username> -p <password> cmd
-+  Compatiable with 'Specify Credentials'
-"@
-}
+# $ComputerListPsExecButtonAdd_MouseHover = {
+#     Show-ToolTip -Title "PsExec" -Icon "Info" -Message @"
+# +  Will attempt to obtain a cmd prompt via PsExec.
+# +  PsExec is a Windows Sysinternals tool.
+# +  Some anti-virus scanners will alert on this.
+# +  Command:
+#         PsExec.exe -AcceptEULA -NoBanner \\<target> cmd
+#         PsExec.exe -AcceptEULA -NoBanner \\<target> -u <domain\username> -p <password> cmd
+# +  Compatiable with 'Specify Credentials'
+# "@
+# }
 
 

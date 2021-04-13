@@ -23,5 +23,3 @@ Function Verify-Action {
     }
     return $Decision
 }
-
-

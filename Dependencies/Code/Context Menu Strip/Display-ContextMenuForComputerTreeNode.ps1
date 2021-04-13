@@ -106,6 +106,13 @@ function Display-ContextMenuForComputerTreeNode {
     $ComputerListContextMenuStrip.Items.Add($comboBoxMenuItem)
 #>
 
+<#
+$textBoxMenuItem = New-Object System.Windows.Forms.ToolStripTextBox
+$textBoxMenuItem.Text = 'Default Text'
+$textBoxMenuItem.Width = 300
+$ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
+#>
+
     $ComputerListAddEndpointToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "Add Endpoint"
         Add_CLick = $ComputerListAddEndpointToolStripButtonAdd_Click
