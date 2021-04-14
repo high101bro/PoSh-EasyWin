@@ -22,3 +22,28 @@ $Section1AboutSubTabRichTextBox = New-Object System.Windows.Forms.TextBox -Prope
 }
 $Section3AboutTab.Controls.Add($Section1AboutSubTabRichTextBox)
 $Section1AboutSubTabRichTextBox.bringtofront()
+
+
+$FeatureRequestReportBugButton = New-Object System.Windows.Forms.Button -Property @{
+    Text   = "Request Feature / Report Bug"
+    Top    = $FormScale * 300
+    Left   = $FormScale * 553
+    Width  = $FormScale * 175
+    Height = $FormScale * 25
+    Font   = New-Object System.Drawing.Font("Courier New",$($FormScale * 11),0,0,0)
+    Add_Click = {
+        $Verify = [System.Windows.Forms.MessageBox]::Show(
+            "Do you want to navigate to PoSh-EasyWin's GitHub page and either request a feature or report a bug?",
+            "PoSh-EasyWin - Feature Request / Report Bug",
+            'YesNo',
+            "Warning")
+        switch ($Verify) {
+            'Yes'{Start-Process "https://github.com/high101bro/PoSh-EasyWin/issues"}
+            'No' {continue}
+        }                    
+    }
+}
+$Section3AboutTab.Controls.Add($FeatureRequestReportBugButton)
+CommonButtonSettings -Button $FeatureRequestReportBugButton
+$FeatureRequestReportBugButton.bringtofront()
+

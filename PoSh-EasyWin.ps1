@@ -692,7 +692,7 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                         "PoSh-EasyWin - high101bro",
                         'YesNo',
                         "Warning")
-                    $Decision = switch ($Verify) {
+                    switch ($Verify) {
                         'Yes'{Start-Process "https://www.github.com/high101bro/PoSh-EasyWin"}
                         'No' {continue}
                     }                    

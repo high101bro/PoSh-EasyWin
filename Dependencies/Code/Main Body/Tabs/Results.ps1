@@ -13,8 +13,9 @@ Load-Code "$Dependencies\Code\System.Windows.Forms\Button\ResultsTabOpNotesAddBu
 . "$Dependencies\Code\System.Windows.Forms\Button\ResultsTabOpNotesAddButton.ps1"
 $ResultsTabOpNotesAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text   = "Add Selected To OpNotes"
-    Left   = $FormScale * 578
-    Width  = $FormScale * 150
+    Top    = $FormScale * 300
+    Left   = $FormScale * 553
+    Width  = $FormScale * 175
     Height = $FormScale * 25
     Add_Click = $ResultsTabOpNotesAddButtonAdd_Click
     Add_MouseHover = $ResultsTabOpNotesAddButtonAdd_MouseHover
