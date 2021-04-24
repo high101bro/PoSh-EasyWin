@@ -16,7 +16,9 @@
     ==================================================================================
 
     File Name      : PoSh-EasyWin.ps1
-    Version        : v.5.2
+    Version        : v5.3
+    Updated        : 24 Apr 2021
+    Created        : 21 Aug 2018
 
     Requirements   : PowerShell v3.0 - Splatting Arguments
                                      - PowerShell Charts support
@@ -30,9 +32,6 @@
                                        TCP 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
     Optional       : PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,
                      etl2pcapng.exe, WinPmem.exe, kitty.exe, plink.exe
-
-    Updated        :  3 Apr 2021
-    Created        : 21 Aug 2018
 
     Author         : Daniel Komnick (high101bro)
     Email          : high101bro@gmail.com
