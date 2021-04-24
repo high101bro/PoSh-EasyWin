@@ -410,9 +410,9 @@ else {
 
 
 # Scales the PoSh-EasyWin GUI as desired by the user
-. "$Dependencies\Code\Main Body\Launch-FormScaleGUI.ps1"
+. "$Dependencies\Code\Main Body\script:Launch-FormScaleGUI.ps1"
 if (-not (Test-Path "$PoShSettings\Form Scaling Modifier.txt")){
-    Launch-FormScaleGUI
+    script:Launch-FormScaleGUI -Extended
     if ($script:ResolutionSetOkay) {$null}
     else {exit}
     $FormScale = $script:ResolutionCheckScalingTrackBar.Value / 10
@@ -468,39 +468,6 @@ if (Test-Path -Path "$Dependencies\Modules\PSWriteHTML"){
 #  |_|  |_| \__,_||_||_| |_|   |_|   \___/ |_|   |_| |_| |_|
 #
 #============================================================================================================================================================
-
-# Test code for loading and executing C# / C Sharpe code within PowerShell
-# $id = get-random
-# $code = @"
-# using System;
-# namespace Loading
-# {
-# 	public class Test$id
-# 	{
-#         public static void Main()
-#         {
-# 			Console.WriteLine("C# Test: Loading PoSh-EasyWin... Enjoy!");
-#         }
-#     }
-# }
-# "@
-# Add-Type -TypeDefinition $code -Language CSharp
-# Invoke-Expression "[Loading.Test$id]::Main()"
-
-
-# Timer that updates the GUI on interval
-#$script:Timer = New-Object System.Windows.Forms.Timer -Property @{
-#    Enabled  = $true
-#    Interval = 1000 #1000 = 1 second
-#}
-#$script:Timer.Start()
-
-#$script:timer.add_Tick({write-host $(Get-Date)})
-
-### How to stop the timer... if needed
-#$script:Timer.stop()
-#$PoShEasyWin.Refresh()
-
 
 #Start Progress bar form loading
 $global:ScriptBlockForGuiLoadAndProgressBar = {
@@ -682,8 +649,8 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                 Text   = "high101bro"
                 Left   = $PoShEasyWinPictureBox.Left + $PoShEasyWinPictureBox.Width + ($FormScale * 10)
                 Top    = $PoShEasyWinPictureBox.Top
-                Width  = $FormScale * 35
-                Height = $FormScale * 35
+                Width  = $FormScale * 45
+                Height = $FormScale * 45
                 Image  = [System.Drawing.Image]::Fromfile("$Dependencies\Images\high101bro Logo Color Transparent.png")
                 SizeMode = 'StretchImage'
                 Add_Click = {
@@ -772,7 +739,6 @@ $MainCenterPanel = New-Object System.Windows.Forms.Panel
                 Add_MouseHover = $MainCenterTabControlAdd_MouseHover
             }
             $MainCenterPanel.Controls.Add($MainCenterTabControl)
-
 
             # Main Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Main Tab.ps1"
@@ -1210,18 +1176,19 @@ Update-FormProgress "$Dependencies\Code\Execution\Completed-QueryExecution.ps1"
 # Sets the GUI layout
 Update-FormProgress "$Dependencies\Code\Main Body\Set-GuiLayout.ps1"
 . "$Dependencies\Code\Main Body\Set-GuiLayout.ps1"
-        if ( $GuiLayout -match 'Compact' ) {
+        if ( $script:GuiLayout -match 'Compact' ) {
             Set-GuiLayout -Compact
-            $CompactViewRadioButton.checked = $true
+            $script:CompactViewRadioButton.checked = $true
         }
-        elseif ( $GuiLayout -match 'Extended' ) {
+        elseif ( $script:GuiLayout -match 'Extended' ) {
             Set-GuiLayout -Extended
-            $ExtendedViewRadioButton.checked = $true
+            $script:ExtendedViewRadioButton.checked = $true
             $MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
         }
         else {
-            Set-GuiLayout -Compact
-            $CompactViewRadioButton.checked = $true
+            Set-GuiLayout -Extended
+            $script:ExtendedViewRadioButton.checked = $true
+            $MainCenterMainTab.Controls.Add($PowerShellTerminalButton)
         }
         $InformationTabControlOriginalTop    = $InformationPanel.Top
         $InformationTabControlOriginalHeight = $InformationPanel.Height

@@ -1,5 +1,10 @@
-function Launch-FormScaleGUI {
-    param([switch]$Relaunch)
+function script:Launch-FormScaleGUI {
+    param(
+        [switch]$Relaunch,
+        [switch]$Compact,
+        [switch]$Extended,
+        $FormScale = 1
+    )
 
     # Code to detection current screen resolution
     Add-Type @"
@@ -10,14 +15,19 @@ public class PInvoke {
     [DllImport("gdi32.dll")] public static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
 }
 "@
-    $hdc    = [PInvoke]::GetDC([IntPtr]::Zero)
-    $ScreenWidth  = [PInvoke]::GetDeviceCaps($hdc, 118)
+    $hdc = [PInvoke]::GetDC([IntPtr]::Zero)
+    $ScreenWidth = [PInvoke]::GetDeviceCaps($hdc, 118)
     $ScreenHeight = [PInvoke]::GetDeviceCaps($hdc, 117)
 
 
-    $FormOriginalWidth  = 1260
-    $FormOriginalHeight = 660
-    $FormScale = 1
+    if ($Compact) {
+        $FormOriginalWidth  = 1260
+        $FormOriginalHeight = 660
+    }
+    if ($Extended) {
+        $FormOriginalWidth  = 1470
+        $FormOriginalHeight = 695
+    }
 
     
     $ResolutionCheckForm = New-Object System.Windows.Forms.Form -Property @{

@@ -125,10 +125,10 @@ Load-Code "$Dependencies\Code\System.Windows.Forms\Button\OpNotesRemoveButton.ps
 . "$Dependencies\Code\System.Windows.Forms\Button\OpNotesRemoveButton.ps1"
 $OpNotesRemoveButton = New-Object System.Windows.Forms.Button -Property @{
     Text     = 'Remove'
-            Location = @{ X = $FormScale * $OpNotesRightPosition
-                      Y = $FormScale * $OpNotesDownPosition }
-        Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
-                      Height = $FormScale * $OpNotesButtonHeight }
+    Location = @{ X = $FormScale * $OpNotesRightPosition
+                  Y = $FormScale * $OpNotesDownPosition }
+    Size     = @{ Width  = $FormScale * $OpNotesButtonWidth
+                  Height = $FormScale * $OpNotesButtonHeight }
     Add_Click = $OpNotesRemoveButtonAdd_Click
 }
 $Section1OpNotesTab.Controls.Add($OpNotesRemoveButton)

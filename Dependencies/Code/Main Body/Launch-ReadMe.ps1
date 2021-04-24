@@ -71,7 +71,7 @@ $UserNoticeAcknowledgementForm.Controls.Add($AcknowledgeTreeView)
 
 $AcknowledgeAllTreeNode = New-Object System.Windows.Forms.TreeNode -Property @{
     #Name = $line
-    Text = "Acknowledge All"
+    Text = "Checkbox All"
 }
 $AcknowledgeTreeView.Nodes.Add($AcknowledgeAllTreeNode)
 

@@ -15,7 +15,13 @@ $OptionTextToSpeachButton = New-Object System.Windows.Forms.Button -Property @{
     Height = $FormScale * 22
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     Add_Click = {
-        Launch-FormScaleGUI -Relaunch
+        if ($script:ExtendedViewRadioButton.checked -eq $true) {
+            script:Launch-FormScaleGUI -Relaunch -Extended
+        }
+        elseif ($script:CompactViewRadioButton.checked -eq $true) {
+            script:Launch-FormScaleGUI -Relaunch -Compact
+        }
+
         If ($script:RelaunchEasyWin){
             $PoSHEasyWin.Close()
             Start-Process PowerShell.exe -Verb runAs -ArgumentList $ThisScript
@@ -175,8 +181,8 @@ $OptionMonitorJobsDefaultRestartTimeLabel = New-Object System.Windows.Forms.Labe
 $Section2OptionsTab.Controls.Add($OptionMonitorJobsDefaultRestartTimeLabel)
 
 
-$GuiLayout = Get-Content "$PoShHome\Settings\GUI Layout.txt"
-$CompactViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+$script:GuiLayout = Get-Content "$PoShHome\Settings\GUI Layout.txt"
+$script:CompactViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
     Text   = "Compact View"
     Left   = $script:OptionMonitorJobsDefaultRestartTimeCombobox.Left
     Top    = $script:OptionMonitorJobsDefaultRestartTimeCombobox.Top + $script:OptionMonitorJobsDefaultRestartTimeCombobox.Height + ($FormScale * 5)
@@ -189,13 +195,13 @@ $CompactViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property 
         'GUI Layout = Compact' | Set-Content "$PoShHome\Settings\GUI Layout.txt"
     }
 }
-$Section2OptionsTab.Controls.Add($CompactViewRadioButton)
+$Section2OptionsTab.Controls.Add($script:CompactViewRadioButton)
 
 
-$ExtendedViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
+$script:ExtendedViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
     Text   = "Extended View"
-    Left   = $CompactViewRadioButton.Left + $CompactViewRadioButton.Width + $($FormScale + 5)
-    Top    = $CompactViewRadioButton.Top
+    Left   = $script:CompactViewRadioButton.Left + $script:CompactViewRadioButton.Width + $($FormScale + 5)
+    Top    = $script:CompactViewRadioButton.Top
     Width  = $FormScale * 100
     Height = $FormScale * 18
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -204,15 +210,15 @@ $ExtendedViewRadioButton = New-Object System.Windows.Forms.RadioButton -Property
         'GUI Layout = Extended' | Set-Content "$PoShHome\Settings\GUI Layout.txt"
     }
 }
-$Section2OptionsTab.Controls.Add($ExtendedViewRadioButton)
+$Section2OptionsTab.Controls.Add($script:ExtendedViewRadioButton)
 
 
 Load-Code "$Dependencies\Code\System.Windows.Forms\Checkbox\OptionsAutoSaveChartsAsImages.ps1"
 . "$Dependencies\Code\System.Windows.Forms\Checkbox\OptionsAutoSaveChartsAsImages.ps1"
 $OptionsAutoSaveChartsAsImages = New-Object System.Windows.Forms.Checkbox -Property @{
     Text    = "Autosave Charts As Images"
-    Left    = $CompactViewRadioButton.Left
-    Top     = $CompactViewRadioButton.Top + $CompactViewRadioButton.Height
+    Left    = $script:CompactViewRadioButton.Left
+    Top     = $script:CompactViewRadioButton.Top + $script:CompactViewRadioButton.Height
     Width   = $FormScale * 225
     Height  = $FormScale * 22
     Enabled = $true
