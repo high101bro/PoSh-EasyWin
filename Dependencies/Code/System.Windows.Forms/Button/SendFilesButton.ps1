@@ -235,10 +235,12 @@ $SendFilesButtonAdd_Click = {
 
                                 function Update-SendButtonColor {
                                     if ( $script:FileTransferPathsListBox.SelectedItems.count -gt 0 ) {
-                                        $FileTransferSendButton.BackColor = 'LightGreen'                                    
+                                        $FileTransferSendButton.BackColor = 'LightGreen'
+                                        $FileTransferSendButton.Enabled = $true
                                     }
                                     else {
                                         $FileTransferSendButton.BackColor = 'LightGray'                                         
+                                        $FileTransferSendButton.Enabled = $false
                                         #$FileTransferSendButton.ResetBackColor()
                                     }
                                 }
@@ -319,6 +321,7 @@ $SendFilesButtonAdd_Click = {
                         Width  = $FormScale * 100
                         Height = $FormScale * 22
                         Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+                        Enabled = $false
                         Add_Click = {
                             Generate-ComputerList
                             $CollectionName = 'Send Files'
