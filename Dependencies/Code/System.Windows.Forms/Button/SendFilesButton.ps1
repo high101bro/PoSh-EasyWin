@@ -234,7 +234,7 @@ $SendFilesButtonAdd_Click = {
     
 
                                 function Update-SendButtonColor {
-                                    if ( $script:FileTransferPathsListBox.SelectedItems.count -gt 0 ) {
+                                    if ( $script:ComputerList -gt 0 -and $script:FileTransferPathsListBox.SelectedItems.count -gt 0 ) {
                                         $FileTransferSendButton.BackColor = 'LightGreen'
                                         $FileTransferSendButton.Enabled = $true
                                     }

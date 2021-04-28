@@ -1533,7 +1533,13 @@ $ExecuteScriptHandler = {
                 # User Specified Files and Custom Script
                 # Pushes user Specified Files and Custom Script to the endpoints
                 # The script has to manage all the particulars with the executable; execution, results retrieval, cleanup, etc.
-                if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-ExecutableAndScript.ps1" }
+                if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution' -and $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.Checked) {
+                    [System.Windows.Forms.MessageBox]::Show("The Individual Execution mode does not support 'User Specified Files and Custom Script', you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
+                }
+                elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' -and $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.Checked) {
+                    [System.Windows.Forms.MessageBox]::Show("The Monitor Jobs mode does not support 'User Specified Files and Custom Script', you need to use the Session Based mode.","Incompatible Mode",'Ok',"Info")
+                }
+                #if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { . "$Dependencies\Code\Execution\Individual Execution\IndividualPush-ExecutableAndScript.ps1" }
 
                 Start-Sleep -Seconds 1
                 if ($script:Section3MonitorJobsResizeCheckbox.checked){
