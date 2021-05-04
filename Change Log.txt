@@ -61,6 +61,11 @@ Updated Commands Treeview
 Added Support for SSHing to Linux hosts
 	- See the above about SSH commands and credentials
 	- Able to SSH into remote endpoints using the context menu, just like PS Sessions and PSExecing
+	- kitty.exe is used to seemlessly drop into a remote ssh session
+		- provides better integration into PoSh-EasyWin, plink.exe didn't want to play nice with me 
+	- plink.exe is used to execute commands on remote hosts and collect data
+		- for some reason this tool has better support
+		- formatting issues with returned results
 
 Changed/updated the PowerShell Art type
 
