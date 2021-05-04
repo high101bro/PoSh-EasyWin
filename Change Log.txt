@@ -1,5 +1,122 @@
 ==================================================
-v5.1.9 
+v5.3.1 - 29 April 2021
+==================================================
+
+Fixed bug where User Specified Scripts with File/Directory didn't prompt you, nor auto-switched you to Session execution mode
+
+Fixed bug with Send Files where you could click the send button and nothing would appear to happen
+	- The issue was that either:
+		- the user didn't click on at least one endpoint
+		- or the user didn't select a file/files/directory to send
+	- Fixed action:
+		- Disabled Send button by default unless the following conditions were met
+			- At least one endpoint was selected in the computer treeview
+			- At least one file/dir was selected
+		- The above would enable the Send Button
+
+Change Log
+	- updated change long... tried my best to remember everything from v5.1.9
+	- I need to stop slacking on this
+
+==================================================
+v5.3 - 7 April 2021
+==================================================
+
+Added GUI Extended View
+	- Set the extended view as the default
+		- PoSh-EasyWin logo now at top left and always present
+	- Maintianing compact view for legacy support
+		- fits better on older windows VMs with low resolution support
+	- Able to select between the compact and extended view
+		- the view selected is persistent
+	- Updated Resize GUI feature to support scaling either compact or extended view
+
+Tweaked the GUI's layout
+	- did some aligning of text and boxes...etc
+	- See above notes about Extended View
+	- Added high101bro logo/icon to extended view
+		- able to click on icon, which will prompt you if you want to navigate to the projects GitHub page
+	- Added Submit Feature Request or Report Button
+		- prompts you if you want to navigate to the projects GitHub's issue page
+	- Removed deprecated buttons on the right Action Tab
+		- Removed Remote Desktop
+		- Removed PS Session
+		- Removed PSExec
+	- Relocated Event Viewer button to the computer treeview context menu
+	- Added group boxes for easier management and better look
+	- Created new tabcontrol for endpoints and accounts
+		- Computer Treeview was added to the Endpoints tab
+		- The Accounts tab is a placeholder for a future accounts treeview
+
+Updated Commands Treeview
+	- Added support for Linux SSH commands
+		- These commands support credentials
+			- Credentials are currently stored the same way as normal Windows creds
+			- Currently only support username and password
+				- Will one day add support for SSH keys
+	- Added filter to only show commands that use a specific protocol
+		- Intially by default, you can see all commands and protocols: WinRM, SMB, RPC, SSH
+		- Selecting a specific protocol maintains persistence throughout tools restarts
+
+Added Support for SSHing to Linux hosts
+	- See the above about SSH commands and credentials
+	- Able to SSH into remote endpoints using the context menu, just like PS Sessions and PSExecing
+
+Changed/updated the PowerShell Art type
+
+Added PowerShell button to extended view...
+	- just a quick and easy shortcut to a fresh terminal
+
+==================================================
+v5.2 - 15 March 2021
+==================================================
+
+Added support to quesy hosts using their IP Address rather than their hostnames
+	- This is useful if the DNS server is acting up or if you don't know the hostname...
+	- That said, you can sill enter IP addresses as hostnames, but the above supports easily switching between hostname and IP
+
+Upated PSWriteHTML to new version
+	- the graph nodes how have some editing features
+	- abiltity link tables to graph nodes
+		- my code is still in BETA... need to get off my ass and finish this
+
+Enumeration scans conducted by PoSh-EasyWin 
+	- now populate under each node
+	- also provide port count
+
+Fixed bug with the Endpoint Data tab`
+	- the feature that auto searches for the endpoints among files has been fixed
+		- It wasn't reliably showing the individual files
+	- Also, it now dynamically generates the query field
+
+Revamped Monitor Mode layout
+	- Added dynamicaly generated pwoershell charts
+		- Creates up to 50 charts... need to expand this to 100
+	- This effectively deprecates the previous static / predetermined powershell charts
+	- Results can now be viewed with Out-HTML using PSWriteHTML
+		- Provided it's installed/enabled
+	- Some buttons now dynamically change depending on the query type
+
+PowerShell Charts
+	- Removed PowerShell Charts button in favor of dynamically created charts for any kind of data
+	- Removed multi-series charts button
+		- Not completely gone, but currently broken and needs a bit of love before I re-incorporate
+	- Need to fix/verify buttons within dynamically generated powershell charts
+
+Added Send Files
+	- It supports two protocols
+		- WinRM
+		- SMB
+	- Has it's own cool GUI
+	- Able to Drag and Drop files
+		- so long as you don't have the tool opened with elevated credentials
+	- Able to send any number of files or directories to any number of endpoints
+
+Agentless SMITH
+	- It's a bit not well branded now... need to highlight its' feature some...
+
+==================================================
+v5.1.9 - 1 March 2021
 ==================================================
 
 Fixed alignment issue within the Monitor Jobs Tab under the following condition:
@@ -52,7 +169,6 @@ Adding Montioring feature - aka Agent(less) SMITH
 		- Event IDs to Monitor [verified disabled]
 		- File Search - Directory Listing [verified disabled]
 		- Endpoint Packet Capture <------------------------update buttons!!!!!!!!!!!!!!!!!!!
-		- 
 
 Added 'SHow All Jobs' button to Monitor Jobs tab
 	- Shows all jobs
@@ -68,7 +184,6 @@ Accounts Tab
 
 Event Logs Tab
 	- Fixed issue where Event Log Quick Pick didn't start individual monitor jobs
-
 
 ==================================================
 v5.1.8 BETA - 11 Dec 20

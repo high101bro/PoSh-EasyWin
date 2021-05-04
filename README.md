@@ -4,7 +4,7 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v5.3.1                                                          |
+|  Version       |  v5.3.1                                                         |
 |  Updated       |  29 Apr 2021                                                    |
 |  Created       |  21 Aug 2018                                                    |
 |                |                                                                 |
@@ -13,8 +13,8 @@
 |  Website       |  https://github.com/high101bro/PoSh-EasyWin                     |
 |  Requirements  |  PowerShell v3 (Ideally v5)                                     |
 |                |  WinRM and/or DCOM/RPC                                          |
-|  Optional      |  PSExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe              |
-|                |  etl2pcapng.exe, WinPmem.exe                                    |
+|  Optional      |  PsExec.exe, Procmon.exe, Autoruns.exe, Sysmon.exe,             |
+|                |  etl2pcapng.exe, WinPmem.exe, kitty.exe, plink.exe              |
 |                |                                                                 |
 
 ***
