@@ -20,7 +20,7 @@
 ***
 ***
 ### The Scope of this Tool
-PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .Net Framework to primarily query for various information from remote computers. It obtains data that is on the system 'now' without the need to install agents on remote systems. It provides a method to easily make any number of queries to any number of hosts, and maintains a local log to track when they were conducted and  to which systems. Little to no PowerShell knowledge is needed, just click on the desired queries and endpoints, then start collecting data. That said, individuals can learn PowerShell by way of viewing the automatiicaly displayed tool tips that appear over commands or by compiling and review queries before submission. 
+PoSh-EasyWin is a Graphical User Interface (GUI) that uses PowerShell with the .Net Framework to primarily query for various information from remote computers. It obtains data that is on the system 'now' without the need to install agents on remote systems. It provides a method to easily make any number of queries to any number of hosts, and maintains a local log to track when they were conducted and  to which systems. Little to no PowerShell knowledge is needed, just click on the desired queries and endpoints, then start collecting data. 
 
 ### The goals of PoSh-EasyWin are to provide:
 1. a user interface that is easy to use and intuitive.
