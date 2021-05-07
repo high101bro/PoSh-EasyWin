@@ -4,8 +4,8 @@
 |                |                                                                 |
 |:---------------|:----------------------------------------------------------------|
 |  File Name     |  PoSh-EasyWin.ps1                                               |
-|  Version       |  v5.3.1                                                         |
-|  Updated       |  29 Apr 2021                                                    |
+|  Version       |  v5.3.2                                                         |
+|  Updated       |  07 May 2021                                                    |
 |  Created       |  21 Aug 2018                                                    |
 |                |                                                                 |
 |  Author        |  Daniel Komnick (high101bro)                                    |

@@ -4,8 +4,8 @@ I know, I know... but who doesn't love tools with catchy acronym names?
 Rebranded because another tool had the same name, which made it hard to locate online.
 
      File Name      : PoSh-EasyWin.ps1
-     Version        : v5.3.1 
-     Updated        : 29 APR 2021
+     Version        : v5.3.2 
+     Updated        : 07 May 2021
      Created        : 21 Aug 2018
 
      Author         : Daniel Komnick (high101bro)

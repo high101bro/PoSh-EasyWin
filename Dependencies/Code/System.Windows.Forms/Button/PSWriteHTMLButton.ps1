@@ -1,5 +1,53 @@
 $PSWriteHTMLButtonAdd_Click = {
 
+$InformationTabControl.SelectedTab = $Section3MonitorJobsTab
+
+$script:PSWriteHTMLFilePath = "$($script:CollectionSavedDirectoryTextBox.Text)\$CollectionName (Browser) $($(Get-Date).ToString('yyyy-MM-dd HH.mm.ss')).html"
+
+function script:Generate-TablePieBarCharts {
+    param(
+        $Title,
+        $Data
+    )
+    New-HTMLSection -HeaderText "$Title" -Height 725 -HeaderTextSize 15 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+        $DataTableID = Get-Random -Minimum 100000 -Maximum 2000000
+        New-HTMLPanel -Width 50% {
+            New-HTMLTable -DataTable ($Data `
+                | Select-Object Name, Count, `
+                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
+                -DataTableID $DataTableID
+        }
+        New-HTMLPanel -Width 50% {
+            New-HTMLSection -Invisible {
+                New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
+                    New-ChartLegend -HideLegend #-LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
+                    Foreach ($_ in ($Data | Select-Object -First 10)){
+                        New-ChartPie -Name $_.Name -Value $_.Count
+                    }
+                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
+                }
+            }
+            New-HTMLSection -Invisible {
+                New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
+                    New-ChartLegend -HideLegend #-LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
+                    Foreach ($_ in ($Data | Select-Object -Last 10)){
+                        New-ChartPie -Name $_.Name -Value $_.Count
+                    }
+                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
+                }
+            }
+        }
+        New-HTMLPanel {
+            New-HTMLChart -Title "$Title" -Gradient -TitleAlignment left {
+                New-ChartLegend -HideLegend #-LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
+                Foreach ($_ in $Data){
+                    New-ChartBar -Name $_.Name -Value $_.Count
+                }
+                New-ChartEvent -DataTableID $DataTableID -ColumnID 0
+            }
+        }
+    }
+}
 
 ####################################################################################################
 ####################################################################################################
@@ -14,7 +62,7 @@ $PSWriteHTMLForm = New-Object System.Windows.Forms.Form -Property @{
     Width           = $FormScale * 350
     Height          = $FormScale * 294
     Icon            = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
-    FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
+    FormBorderStyle = 'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
     ShowIcon        = $true
     showintaskbar   = $false
     ControlBox      = $true
@@ -98,18 +146,21 @@ $PSWriteHTMLGraphDataButton = New-Object -TypeName System.Windows.Forms.Button -
             $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem = 'Session Based'
         }
 
-        if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
+        if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -eq 1) {
             Generate-ComputerList
             if ($script:ComputerList.count -eq 0) {
-                [System.Windows.Forms.MessageBox]::Show("Checkbox at least one endpoint to collect data from.",'PoSh-EasyWin')
+                [System.Windows.Forms.MessageBox]::Show("Checkbox at least one endpoint from the computer treeview.",'PoSh-EasyWin')
             }
             else {
                 $script:PSWriteHTMLFormOkay = $true
                 $PSWriteHTMLForm.Close()    
             }
         }
+        elseif ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 2) {
+            [System.Windows.Forms.MessageBox]::Show("Checkbox only one option from the list to collect data.",'PoSh-EasyWin')
+        }
         else {
-            [System.Windows.Forms.MessageBox]::Show("Checkbox at least one to collect and graph data.",'PoSh-EasyWin')
+            [System.Windows.Forms.MessageBox]::Show("Checkbox one option from the list to collect data.",'PoSh-EasyWin')
         }
     }
 }
@@ -240,31 +291,30 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
                 $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
-                    Text   = "Exclude IPv6"
-                    Left   = $script:PSWriteHTMLResolveDNSCheckbox.Left
-                    Top    = $script:PSWriteHTMLResolveDNSCheckbox.Top + $script:PSWriteHTMLResolveDNSCheckbox.Height
-                    Width  = $script:PSWriteHTMLResolveDNSCheckbox.Width
-                    Height = $FormScale * 22
-                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Text    = "Exclude IPv6"
+                    Left    = $script:PSWriteHTMLResolveDNSCheckbox.Left
+                    Top     = $script:PSWriteHTMLResolveDNSCheckbox.Top + $script:PSWriteHTMLResolveDNSCheckbox.Height
+                    Width   = $script:PSWriteHTMLResolveDNSCheckbox.Width
+                    Height  = $FormScale * 22
+                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     checked = $true
                 }
                 $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox)
 
 
                 $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox = New-Object System.Windows.Forms.checkbox -Property @{
-                    Text   = "Exclude the following from the Graphs"
-                    Left   = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Left
-                    Top    = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Height
-                    Width  = $script:ConnectionStatesFilterCheckedListBox.Width
-                    Height = $FormScale * 22
-                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Text    = "Exclude the following from the Graphs"
+                    Left    = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Left
+                    Top     = $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeIPv6FromGraphsCheckbox.Height
+                    Width   = $script:ConnectionStatesFilterCheckedListBox.Width
+                    Height  = $FormScale * 22
+                    Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                     checked = $true
                 }
                 $script:PSWriteHTMLSupportForm.Controls.Add($script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox)
 
 
                 $script:IPAddressesToExcludeTextbox = New-Object System.Windows.Forms.TextBox -Property @{
-                    Text   = "127.0.0.1`n0.0.0.0`n::1`n::"
                     Left   = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Left
                     Top    = $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Top + $script:PSWriteHTMLExcludeEasyWinFromGraphsCheckbox.Height
                     Width  = $script:PoShEasyWinIPToExcludeLabel.Width
@@ -280,6 +330,13 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     foreach ($line in (Get-Content "$PoShHome\Settings\Network Connection IP's to Exclude.txt")) {
                         $script:IPAddressesToExcludeTextbox.text += "$line`r`n"
                     }
+                }
+                else {
+                    $DefaultIPListToExclude = @('127.0.0.1','0.0.0.0','::1','::')
+                    $script:IPAddressesToExcludeTextbox.text = ''
+                    foreach ($IP in $DefaultIPListToExclude) {
+                        $script:IPAddressesToExcludeTextbox.text += "$IP`r`n"
+                    }                    
                 }
 
 
@@ -400,8 +457,8 @@ function script:Individual-PSWriteHTML {
         $Data
     )
     New-HTML -TitleText $Title -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
-        -FilePath "$CollectedDataDirectory\PoSh-EasyWin $($(Get-Date).ToString('yyyy-MM-dd HH.mm.ss')).html" -Show {
-        
+        -FilePath $script:PSWriteHTMLFilePath {
+            #-Show
         New-HTMLHeader { 
             New-HTMLText -Text "Date of this report $(Get-Date)" -Color Blue -Alignment right 
 
@@ -417,7 +474,7 @@ function script:Individual-PSWriteHTML {
                 -FontSize 12 `
                 -FontFamily 'Source Sans Pro' `
                 -Color Black `
-                -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided And done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.'
+                -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided and done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.'
             New-HTMLText `
                 -Text "https://www.GitHub.com/high101bro/PoSh-EasyWin" `
                 -Color Blue `
@@ -565,14 +622,14 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             $ProcessesTotalMemoryPerHost = $script:PSWriteHTMLProcesses | Select-Object pscomputername, workingset | Sort-Object PScomputerName | Group-Object pscomputername | Foreach-Object {[PSCustomObject]@{Name=$_.group.pscomputername[0];count=(($_.group.workingset | Measure-Object -Sum).Sum)}} | Sort-Object Count, Name -Descending
             $ProcessesCountPerHost = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, ProcessID | Group-Object PSComputerName | Sort-Object Count, Name -Descending
             $ProcessesUnique = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, ProcessName -Unique | Where-Object {$_.ProcessName -ne $null} | Group-Object ProcessName | Sort-Object Count, Name
-                #$ProcessesNetworkConnections = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, NetworkConnections -unique | Where-Object {$_.NetworkConnections -ne $null} | Group-Object NetworkConnections | Sort-Object Count, Name
-                #$ProcessesServicesStarted = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, ServiceInfo -unique | Where-Object {$_.ServiceInfo -ne $null} | Group-Object ServiceInfo | Sort-Object Count, Name
+                $ProcessesNetworkConnections = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, NetworkConnections -unique | Where-Object {$_.NetworkConnections -ne $null} | Group-Object NetworkConnections | Sort-Object Count, Name
+                $ProcessesServicesStarted = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, ServiceInfo -unique | Where-Object {$_.ServiceInfo -ne $null} | Group-Object ServiceInfo | Sort-Object Count, Name
             $ProcessesCompanyNames = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, Company -unique | Where-Object {$_.Company -ne $null} | Group-Object Company | Sort-Object Count, Name
             $ProcessesProductNames = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, Product -unique | Where-Object {$_.Product -ne $null} | Group-Object Product | Sort-Object Count, Name
             $ProcessesSignerCompany = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, SignerCompany -Unique | Where-Object {$_.SignerCompany -ne $null} | Group-Object SignerCompany | Where-Object {$_.Name -ne ''} | Sort-Object Count, Name
-                #$ProcessesSignerCertificates = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, SignerCertificate -unique | Where-Object {$_.SignerCertificate -ne $null} | Group-Object SignerCertificate | Sort-Object Count, Name
-                #$ProcessesPaths = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, Path | Where-Object {$_.Path -ne $null} | Group-Object Path | Sort-Object Count, Name
-                #$ProcessesMD5Hashes = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, MD5Hash -unique | Where-Object {$_.MD5Hash -ne $null} | Group-Object MD5Hash | Sort-Object Count, Name
+                $ProcessesSignerCertificates = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, SignerCertificate -unique | Where-Object {$_.SignerCertificate -ne $null} | Group-Object SignerCertificate | Sort-Object Count, Name
+                $ProcessesPaths = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, Path | Where-Object {$_.Path -ne $null} | Group-Object Path | Sort-Object Count, Name
+                $ProcessesMD5Hashes = $script:PSWriteHTMLProcesses | Select-Object PSComputerName, MD5Hash -unique | Where-Object {$_.MD5Hash -ne $null} | Group-Object MD5Hash | Sort-Object Count, Name
             $ProcessesModules = @()
                 $script:PSWriteHTMLProcesses | Select-Object pscomputername, processname, modules | Where-Object modules -ne $null | Foreach-Object {$ProcessesModules += $_.modules}
                 $ProcessesModules = $ProcessesModules | Group-Object | Sort-Object count
@@ -581,7 +638,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             New-HTMLTab -Name 'Process Data' -IconBrands acquisitions-incorporated {
                 ###########
                 New-HTMLTab -Name 'Table' -IconSolid th {
-                    New-HTMLSection -HeaderText 'Table' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Table' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:PSWriteHTMLProcesses {
                             New-TableHeader -Color Blue -Alignment left -Title 'Process Data Has Been Enriched With Related Network Connections, Authenticode Signatures, And File Hashes.' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -SearchRegularExpression
@@ -589,7 +646,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Search Pane' -IconSolid th {
-                    New-HTMLSection -HeaderText 'Search Pane' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Search Pane' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:PSWriteHTMLProcesses {
                             New-TableHeader -Color Blue -Alignment left -Title 'Process Data Has Been Enriched With Related Network Connections, Authenticode Signatures, And File Hashes.' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
@@ -597,7 +654,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Calendar' -IconRegular calendar-alt  {
-                    New-HTMLSection -HeaderText 'Calendar' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Calendar' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:PSWriteHTMLProcesses {
                             New-TableHeader -Color Blue -Alignment left -Title 'Calendar - Process Data' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -612,88 +669,18 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
-                    New-HTMLSection -HeaderText 'Per Endpoint Summary' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Memory Used By Processes Per Endpoint' -Gradient -TitleAlignment left {
-                                Foreach ($Process in $ProcessesTotalMemoryPerHost){
-                                    New-ChartPie -Name $Process.Name -Value $Process.Count
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Total Processes Per Endpoint' -Gradient -TitleAlignment left {
-                                Foreach ($Process in $ProcessesCountPerHost){
-                                    New-ChartPie -Name $Process.Name -Value $Process.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Unique Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Unique Processes' {
-                                New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
-                                New-ChartLegend -LegendPosition topRight -Names 'Processes'
-                                foreach ($Process in $ProcessesUnique) {
-                                    New-ChartBar -Name $Process.name -Value $Process.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText '25 Least Common Unique Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title '25 Least Common Unique Processes' {
-                                New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
-                                New-ChartLegend -LegendPosition topRight -Names 'Processes' -Color GoldenGlow
-                                foreach ($Process in $($ProcessesUnique | Select-Object -First 25)) {
-                                    New-ChartBar -Name $Process.name -Value $Process.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText '25 Most Common Unique Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title '25 Most Common Unique Processes' {
-                                New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
-                                New-ChartLegend -LegendPosition topRight -Names 'Processes' -Color LightGreen
-                                foreach ($Process in $($ProcessesUnique | Select-Object -Last 25)) {
-                                    New-ChartBar -Name $Process.name -Value $Process.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Compnay Names Associated With Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Company Names Associated With Processes' {
-                                New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
-                                New-ChartLegend -LegendPosition topRight -Names 'Processes' -Color LightCoral
-                                foreach ($Process in $ProcessesCompanyNames) {
-                                    New-ChartBar -Name $Process.name -Value $Process.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Product Names Associated With Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Product Names Associated With Processes' {
-                                New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
-                                New-ChartLegend -LegendPosition topRight -Names 'Processes' -Color VeryLightGrey
-                                foreach ($Process in $ProcessesProductNames) {
-                                    New-ChartBar -Name $Process.name -Value $Process.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Company Signatures Associated With Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Company Signatures Associated With Processes' {
-                                New-ChartBarOptions -DataLabelsColor GreenYellow -Gradient
-                                New-ChartLegend -LegendPosition topRight -Names 'Processes' -Color LightBlue
-                                foreach ($Process in $ProcessesSignerCompany) {
-                                    New-ChartBar -Name $Process.name -Value $Process.Count
-                                }
-                            }
-                        }
-                    }
+                    script:Generate-TablePieBarCharts -Title "Total Memory Per Host" -Data $ProcessesTotalMemoryPerHost
+                    script:Generate-TablePieBarCharts -Title "Count Per Host" -Data $ProcessesCountPerHost
+                    script:Generate-TablePieBarCharts -Title "Unique Processes" -Data $ProcessesUnique
+                    script:Generate-TablePieBarCharts -Title "Processes with Network Connections" -Data $ProcessesNetworkConnections
+                    script:Generate-TablePieBarCharts -Title "Services Started by Processes" -Data $ProcessesServicesStarted
+                    script:Generate-TablePieBarCharts -Title "Company Names" -Data $ProcessesCompanyNames
+                    script:Generate-TablePieBarCharts -Title "Product Names" -Data $ProcessesProductNames
+                    script:Generate-TablePieBarCharts -Title "Signer Company" -Data $ProcessesSignerCompany
+                    script:Generate-TablePieBarCharts -Title "Signer Certificates" -Data $ProcessesSignerCertificates
+                    script:Generate-TablePieBarCharts -Title "Paths" -Data $ProcessesPaths
+                    script:Generate-TablePieBarCharts -Title "MD5 Hashes" -Data $ProcessesMD5Hashes
+                    script:Generate-TablePieBarCharts -Title "Modules" -Data $ProcessesModules
                 }        
                 ###########
                 New-HTMLTab -TabName 'Graph & Table' -IconSolid bezier-curve {
@@ -831,11 +818,11 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                                     -Color Blue `
                                     -Text 'Click On The Computer Icons To Automatically Locate Them Within The Table'
         
-                                New-HTMLDiagram -Height '1000px' -Height '1000px' {
+                                New-HTMLDiagram -Height '1000px' {
                                     New-DiagramEvent -ID $DataTableIDProcesses2 -ColumnID 2
-                                    New-DiagramOptionsInteraction -Hover $true
+                                    New-DiagramOptionsInteraction
                                     New-DiagramOptionsManipulation
-                                    New-DiagramOptionsPhysics -Enabled $true
+                                    New-DiagramOptionsPhysics
                                     New-DiagramOptionsLayout `
                                         -RandomSeed 13
                                     New-DiagramOptionsNodes `
@@ -844,14 +831,8 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                                         -ColorHighlightBorder Orange `
                                         -ColorHoverBackground Orange
                                     New-DiagramOptionsLinks `
-                                        -FontSize 12 `
                                         -ColorHighlight Orange `
-                                        -ColorHover Orange `
-                                        -Length 5000
-                                        # -ArrowsToEnabled $true `
-                                        # -Color BlueViolet `
-                                        # -ArrowsToType arrow `
-                                        # -ArrowsFromEnabled $false `
+                                        -ColorHover Orange
                                     New-DiagramOptionsEdges `
                                         -ColorHighlight Orange `
                                         -ColorHover Orange
@@ -1282,7 +1263,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$ProcessesScriptblock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
                 }
             }
-            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PSWriteHTMLProcesses'
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PSWriteHTMLProcesses' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:PSWriteHTMLProcesses = Invoke-Command -ScriptBlock $ProcessesScriptblock -Session $PSSession |
@@ -1299,11 +1280,11 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
         $script:ProgressBarQueriesProgressBar.Refresh()
 
 
-        if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
-            if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
-                script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
-            }
-        }
+        # if ($PSWriteHTMLIndividualWebPagesCheckbox.checked -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
+        #     if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and $script:ComputerList.count -gt 0) {
+        #         script:Individual-PSWriteHTML -Title 'Process Data' -Data { script:Start-PSWriteHTMLProcessData }
+        #     }
+        # }
     }
 
 
@@ -1367,7 +1348,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             New-HTMLTab -Name 'Network Connections' -IconBrands acquisitions-incorporated {
                 ###########
                 New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
-                    New-HTMLSection -HeaderText 'Table Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Table Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointDataNetworkConnections {
                             New-TableHeader -Color Blue -Alignment left -Title 'Network Connections Have Been Enriched With Related Process Data And File Hashes.' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -1375,7 +1356,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Pane Search' -IconSolid th {
-                    New-HTMLSection -HeaderText 'Pane Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Pane Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointDataNetworkConnections {
                             New-TableHeader -Color Blue -Alignment left -Title 'Network Connections Have Been Enriched With Related Process Data And File Hashes.' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
@@ -1383,7 +1364,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Calendar' -IconRegular calendar-alt  {
-                    New-HTMLSection -HeaderText 'Calendar' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Calendar' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointDataNetworkConnections {
                             New-TableHeader -Color Blue -Alignment left -Title 'Calendar - Network Connections Data' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -1398,269 +1379,12 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Charts' -IconRegular chart-bar { 
-                    
-                    New-HTMLSection -HeaderText 'testing' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                    }
-                    New-HTMLSection -HeaderText 'IPv4 Listening Local Ports' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        $DataTableID = Get-Random -Minimum 100000 -Maximum 2000000
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLTable -DataTable ($NetworkConnectionsLocalPortsListening `
-                                | Select-Object Name, Count, `
-                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
-                                -DataTableID $DataTableID
-                        }
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsLocalPortsListening | Select-Object -First 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsLocalPortsListening | Select-Object -Last 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'IPv4 Listening Local Ports' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $NetworkConnectionsLocalPortsListening){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                                New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'IPv4 Established Connections Remote Ports' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        $DataTableID = Get-Random -Minimum 100000 -Maximum 2000000
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLTable -DataTable ($NetworkConnectionsRemotePortsEstablished `
-                                | Select-Object Name, Count, `
-                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
-                                -DataTableID $DataTableID
-                        }
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemotePortsEstablished | Select-Object -First 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemotePortsEstablished | Select-Object -Last 10)){
-                                        New-ChartPie -Name $_.Name -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'IPv4 Established Connections Remote Ports' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $NetworkConnectionsRemotePortsEstablished){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                                New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Connections To Local IP Subnets (Unique)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        $DataTableID = Get-Random -Minimum 100000 -Maximum 2000000
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLText `
-                                -FontSize 12 `
-                                -FontFamily 'Source Sans Pro' `
-                                -Color Red `
-                                -Text 'Note: Use comas instead of periods in IP Addresses: ex: 10,0,0,1' `
-                                -Alignment left
-                            New-HTMLTable -DataTable ($NetworkConnectionsRemoteLocalIPsUnique `
-                                | Select-Object `
-                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
-                                Count, `
-                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
-                                -DataTableID $DataTableID
-                        }
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemoteLocalIPsUnique | Select-Object -First 10)){
-                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemoteLocalIPsUnique | Select-Object -Last 10)){
-                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Connections To Local IP Subnets (Unique)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $NetworkConnectionsRemoteLocalIPsUnique){
-                                    New-ChartBar -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                }
-                                New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Connections To Local IP Subnets (Sum)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        $DataTableID = Get-Random -Minimum 100000 -Maximum 2000000
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLText `
-                                -FontSize 12 `
-                                -FontFamily 'Source Sans Pro' `
-                                -Color Red `
-                                -Text 'Note: Use comas instead of periods in IP Addresses: ex: 10,0,0,1' `
-                                -Alignment left
-                            New-HTMLTable -DataTable ($NetworkConnectionsRemoteLocalIPsSum `
-                                | Select-Object `
-                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
-                                Count, `
-                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
-                                -DataTableID $DataTableID
-                        }
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemoteLocalIPsSum | Select-Object -First 10)){
-                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemoteLocalIPsSum | Select-Object -Last 10)){
-                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Connections To Local IP Subnets (Sum)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $NetworkConnectionsRemoteLocalIPsSum){
-                                    New-ChartBar -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                }
-                                New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Connections To Public IP Space (Unique)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        $DataTableID = Get-Random -Minimum 100000 -Maximum 2000000
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLText `
-                                -FontSize 12 `
-                                -FontFamily 'Source Sans Pro' `
-                                -Color Red `
-                                -Text 'Note: Use comas instead of periods in IP Addresses: ex: 10,0,0,1' `
-                                -Alignment left
-                            New-HTMLTable -DataTable ($NetworkConnectionsRemotePublicIPsUnique `
-                                | Select-Object `
-                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
-                                Count, `
-                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
-                                -DataTableID $DataTableID
-                        }
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemotePublicIPsUnique | Select-Object -First 10)){
-                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemotePublicIPsUnique | Select-Object -Last 10)){
-                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Connections To Public IP Space (Unique)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $NetworkConnectionsRemotePublicIPsUnique){
-                                    New-ChartBar -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                }
-                                New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Connections To Remote IPs (Sum)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        $DataTableID = Get-Random -Minimum 100000 -Maximum 2000000
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLText `
-                                -FontSize 12 `
-                                -FontFamily 'Source Sans Pro' `
-                                -Color Red `
-                                -Text 'Note: Use comas instead of periods in IP Addresses: ex: 10,0,0,1' `
-                                -Alignment left
-                            New-HTMLTable -DataTable ($NetworkConnectionsRemotePublicIPsSum `
-                                | Select-Object `
-                                @{n='Name';e={$_.name | % {$_.replace('.',',')}}}, `
-                                Count, `
-                                @{n='PSComputerName';e={($_.Group.PSComputerName | Sort-Object -Unique) -join ', '}} ) `
-                                -DataTableID $DataTableID
-                        }
-                        New-HTMLPanel -Width 50% {
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Top 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemotePublicIPsSum | Select-Object -First 10)){
-                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                            New-HTMLSection  -Invisible {
-                                New-HTMLChart -Title 'Botom 10' -Gradient -TitleAlignment left {
-                                    New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                    Foreach ($_ in ($NetworkConnectionsRemotePublicIPsSum | Select-Object -Last 10)){
-                                        New-ChartPie -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                    }
-                                    New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Connections To Remote IPs (Sum)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $NetworkConnectionsRemotePublicIPsSum){
-                                    New-ChartBar -Name $($_.Name | % {$_.replace('.',',')}) -Value $_.Count
-                                }
-                                New-ChartEvent -DataTableID $DataTableID -ColumnID 0
-                            }
-                        }
-                    }
+                    script:Generate-TablePieBarCharts -Title "Local Ports Listening" -Data $NetworkConnectionsLocalPortsListening
+                    script:Generate-TablePieBarCharts -Title "Remote Ports Established" -Data $NetworkConnectionsRemotePortsEstablished
+                    script:Generate-TablePieBarCharts -Title "Remote Local IPs Unique" -Data $NetworkConnectionsRemoteLocalIPsUnique
+                    script:Generate-TablePieBarCharts -Title "Remote Local IPs Sum" -Data $NetworkConnectionsRemoteLocalIPsSum
+                    script:Generate-TablePieBarCharts -Title "Remote Public IPs Unique" -Data $NetworkConnectionsRemotePublicIPsUnique
+                    script:Generate-TablePieBarCharts -Title "Remote Public IPs Sum" -Data $NetworkConnectionsRemotePublicIPsSum
                 }        
                 ###########
                 New-HTMLTab -TabName 'Graph & Table' -IconSolid bezier-curve {
@@ -2092,7 +1816,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$NetworkConnectionsScriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
                 }
             }
-            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataNetworkConnections'
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataNetworkConnections' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:EndpointDataNetworkConnections = Invoke-Command -ScriptBlock $NetworkConnectionsScriptBlock -Session $PSSession
@@ -2175,7 +1899,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             New-HTMLTab -Name 'Console Logons' -IconBrands acquisitions-incorporated {
                 ###########
                 New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
-                    New-HTMLSection -HeaderText 'Table Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Table Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointDataConsoleLogons {
                             New-TableHeader -Color Blue -Alignment left -Title 'Console Logons' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -2183,7 +1907,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Pane Search' -IconSolid th {
-                    New-HTMLSection -HeaderText 'Pane Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Pane Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointDataConsoleLogons {
                             New-TableHeader -Color Blue -Alignment left -Title 'Console Logons' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
@@ -2191,7 +1915,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Calendar' -IconRegular calendar-alt  {
-                    New-HTMLSection -HeaderText 'Calendar' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Calendar' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointDataConsoleLogons {
                             New-TableHeader -Color Blue -Alignment left -Title 'Calendar - Console Logons' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -2206,46 +1930,11 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########       
                 New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
-                    New-HTMLSection -HeaderText 'Console Logons' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Console Logons Per Endpoint' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ConsoleLogonsPerEndpoint){
-                                    New-ChartPie -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Console Logon Count' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ConsoleLogonsCount){
-                                    New-ChartPie -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Console Logons Per Hour' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Console Logons Per Hour' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ConsoleLogonsLogonTimeHour){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Console Logon State' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Console Logon State' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ConsoleLogonsState){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                } 
-            
+                    script:Generate-TablePieBarCharts -Title "Console Logons Per Endpoint" -Data $ConsoleLogonsPerEndpoint
+                    script:Generate-TablePieBarCharts -Title "Console Logon Count" -Data $ConsoleLogonsCount
+                    script:Generate-TablePieBarCharts -Title "Logon Times (Hour)" -Data $ConsoleLogonsLogonTimeHour
+                    script:Generate-TablePieBarCharts -Title "Console Logon State" -Data $ConsoleLogonsState
+                }
                 ###########
                 New-HTMLTab -TabName 'Graph & Table' -IconSolid bezier-curve {
                     $DataTableIDConsoleLogons = Get-Random -Minimum 100000 -Maximum 2000000
@@ -2379,7 +2068,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$ConsoleLogonsScriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
                 }
             }
-            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataConsoleLogons'
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataConsoleLogons' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:EndpointDataConsoleLogons = Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -Session $PSSession | 
@@ -2424,7 +2113,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             New-HTMLTab -Name 'PowerShell Sessions' -IconBrands acquisitions-incorporated {
                 ###########
                 New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
-                    New-HTMLSection -HeaderText 'Table Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Table Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:PowerShellSessionsData {
                             New-TableHeader -Color Blue -Alignment left -Title 'PowerShell Sessions' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -2432,7 +2121,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Pane Search' -IconSolid th {
-                    New-HTMLSection -HeaderText 'Pane Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Pane Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:PowerShellSessionsData {
                             New-TableHeader -Color Blue -Alignment left -Title 'PowerShell Sessions' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
@@ -2440,7 +2129,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Calendar' -IconRegular calendar-alt  {
-                    New-HTMLSection -HeaderText 'Calendar' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Calendar' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:PowerShellSessionsData {
                             New-TableHeader -Color Blue -Alignment left -Title 'Calendar - PowerShell Sessions' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression                       
@@ -2455,95 +2144,15 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
-                    New-HTMLSection -HeaderText 'PowerShell Sessions' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'PowerShell Sessions Per Endpoint' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $PowerShellSessionsPerEndpoint){
-                                    New-ChartPie -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'PowerShell Session Account Count' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $PowerShellSessionsCount){
-                                    New-ChartPie -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'PowerShell Session Logon Time' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'PowerShell Session Logon Time' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $PowerShellSessionsLogonTime){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'PowerShell Session Client IP' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'PowerShell Session Client IP' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $PowerShellSessionsClientIP){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'PowerShell Session Owner' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'PowerShell Session Owner' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $PowerShellSessionsOwner){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'PowerShell Session State' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'PowerShell Session State' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $PowerShellSessionsState){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'PowerShell Session Memory Used' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'PowerShell Session Memory Used' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $PowerShellSessionsMemoryUsed){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'PowerShell Session Profile Loaded' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'PowerShell Session Profile Loaded' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $PowerShellSessionsProfileLoaded){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'PowerShell Session Child Processes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'PowerShell Session Child Processes' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $PowerShellSessionsChildProcesses){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-
+                    script:Generate-TablePieBarCharts -Title "PowerShell Sessions Per Endpoint" -Data $PowerShellSessionsPerEndpoint
+                    script:Generate-TablePieBarCharts -Title "PowerShell Sessions Count" -Data $PowerShellSessionsCount
+                    script:Generate-TablePieBarCharts -Title "PowerShell Sessions Logon Time" -Data $PowerShellSessionsLogonTime
+                    script:Generate-TablePieBarCharts -Title "PowerShell Sessions Client IP" -Data $PowerShellSessionsClientIP
+                    script:Generate-TablePieBarCharts -Title "PowerShell Sessions Owner" -Data $PowerShellSessionsOwner
+                    script:Generate-TablePieBarCharts -Title "PowerShell Sessions State" -Data $PowerShellSessionsState
+                    script:Generate-TablePieBarCharts -Title "PowerShell Sessions Memory Used" -Data $PowerShellSessionsMemoryUsed
+                    script:Generate-TablePieBarCharts -Title "PowerShell Sessions Profile Loaded" -Data $PowerShellSessionsProfileLoaded
+                    script:Generate-TablePieBarCharts -Title "PowerShell Sessions Child Processes" -Data $PowerShellSessionsChildProcesses
                 } 
             
                 ###########
@@ -2667,7 +2276,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$PowerShellSessionsScriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
                 }
             }
-            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PowerShellSessionsData'
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PowerShellSessionsData' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:PowerShellSessionsData = Invoke-Command -ScriptBlock $PowerShellSessionsScriptBlock -Session $PSSession |
@@ -2740,7 +2349,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
            New-HTMLTab -Name 'Application Crashes' -IconBrands acquisitions-incorporated {
                 ###########
                 New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
-                    New-HTMLSection -HeaderText 'Table Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Table Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointApplicationCrashes {
                             New-TableHeader -Color Blue -Alignment left -Title 'Application Crashes' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -2748,7 +2357,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Pane Search' -IconSolid th {
-                    New-HTMLSection -HeaderText 'Pane Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Pane Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointApplicationCrashes {
                             New-TableHeader -Color Blue -Alignment left -Title 'Application Crashes' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
@@ -2756,7 +2365,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Calendar' -IconRegular calendar-alt  {
-                    New-HTMLSection -HeaderText 'Calendar' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Calendar' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointApplicationCrashes {
                             New-TableHeader -Color Blue -Alignment left -Title 'Calendar - Application Crashes' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression                       
@@ -2771,54 +2380,11 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
-                    New-HTMLSection -HeaderText 'Application Crashes Per Endpoint' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Application Crashes Per Endpoint' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesPerEndpoint){
-                                    New-ChartPie -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Application Overall Crash Count' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesCount){
-                                    New-ChartPie -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Crashes Per Day' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Crashes Per Day' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesTimeCreatedDay){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Crash Count By Application Name' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Crash Count By Application Name' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesApplicationName){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Crash Count By Module Name' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Crash Count By Module Name' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesModuleName){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Per Endpoint" -Data $ApplicationCrashesPerEndpoint
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Count" -Data $ApplicationCrashesCount
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Time Created Day" -Data $ApplicationCrashesTimeCreatedDay
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Application Name" -Data $  ApplicationCrashesApplicationName      
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Module Name" -Data $ApplicationCrashesModuleName
                 } 
             
                 ###########
@@ -2926,7 +2492,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 #                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$ConsoleLogonsScriptBlock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
 #                }
 #            }
-#           Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataConsoleLogons'
+#           Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointDataConsoleLogons' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath
         #}
         #elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
            # $script:EndpointDataConsoleLogons = Invoke-Command -ScriptBlock $ConsoleLogonsScriptBlock -Session $PSSession
@@ -2939,7 +2505,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 #        if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $true -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs') {
 #           if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 -and $PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0) {
-#                script:Individual-PSWriteHTML -Title 'xxxxxxxxxxxx' { script:Start-PSWriteHTMLxxxxxxxxxxxxxxxxxxx }        
+#                script:Individual-PSWriteHTML -Title 'xxxxxxxxxxxx' { script:Start-PSWriteHTMLxxxxxxxxxxxxx }        
 #           }
 #        }
     }
@@ -2986,7 +2552,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             New-HTMLTab -Name 'Application Crashes' -IconBrands acquisitions-incorporated {
                 ###########
                 New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
-                    New-HTMLSection -HeaderText 'Table Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Table Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointApplicationCrashes {
                             New-TableHeader -Color Blue -Alignment left -Title 'Application Crashes' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -2994,7 +2560,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Pane Search' -IconSolid th {
-                    New-HTMLSection -HeaderText 'Pane Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Pane Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointApplicationCrashes {
                             New-TableHeader -Color Blue -Alignment left -Title 'Application Crashes' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
@@ -3002,7 +2568,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Calendar' -IconRegular calendar-alt  {
-                    New-HTMLSection -HeaderText 'Calendar' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Calendar' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointApplicationCrashes {
                             New-TableHeader -Color Blue -Alignment left -Title 'Calendar - Application Crashes' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression                       
@@ -3017,54 +2583,11 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
-                    New-HTMLSection -HeaderText 'Application Crashes Per Endpoint' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Application Crashes Per Endpoint' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesPerEndpoint){
-                                    New-ChartPie -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Application Overall Crash Count' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesCount){
-                                    New-ChartPie -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Crashes Per Day' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Crashes Per Day' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesTimeCreatedDay){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Crash Count By Application Name' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Crash Count By Application Name' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesApplicationName){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Crash Count By Module Name' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Crash Count By Module Name' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $ApplicationCrashesModuleName){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Per Endpoint" -Data $ApplicationCrashesPerEndpoint
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Count" -Data $ApplicationCrashesCount
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Time Created Day" -Data $ApplicationCrashesTimeCreatedDay
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Application Name" -Data $ApplicationCrashesApplicationName
+                    script:Generate-TablePieBarCharts -Title "Application Crashes Module Name" -Data $ApplicationCrashesModuleName
                 } 
             
                 ###########
@@ -3205,7 +2728,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$ApplicationCrashesScriptblock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
                 }
             }
-            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointApplicationCrashes'
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointApplicationCrashes' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:EndpointApplicationCrashes = Invoke-Command -ScriptBlock $ApplicationCrashesScriptblock -Session $PSSession | 
@@ -3267,10 +2790,10 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             $LogonActivityLogonType             = $script:EndpointLogonActivity | Select-Object LogonType | Group-Object LogonType | Sort-Object Count, Name
             $LogonActivityWorkstationName       = $script:EndpointLogonActivity | Select-Object WorkstationName | Where-Object {$_.WorkStationName -ne '' -and $_.WorkStationName -ne '-'} | Group-Object WorkstationName | Sort-Object Count, Name
             $LogonActivitySourceNetworkAddress  = $script:EndpointLogonActivity | Select-Object SourceNetworkAddress | Where-Object {$_.SourceNetworkAddress -ne '' -and $_.SourceNetworkAddress -ne '-'} | Group-Object SourceNetworkAddress | Sort-Object Count, Name
-            $LogonActivityLogonType             = $script:EndpointLogonActivity | Select-Object LogonType | Group-Object LogonType | Sort-Object Count, Name
             $LogonActivityTimeStampLogonLocalSystem   = $script:EndpointLogonActivity | Where-Object LogonType -eq LocalSystem | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
             $LogonActivityTimeStampLogonInteractive   = $script:EndpointLogonActivity | Where-Object LogonType -eq Interactive | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
-            #$LogonActivityTimeStampLogonNetwork       = $script:EndpointLogonActivity | Where-Object LogonType -eq Network | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+            $LogonActivityTimeStampLogonNetwork       = $script:EndpointLogonActivity | Where-Object LogonType -eq Network | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
+                #very noisy
             $LogonActivityTimeStampLogonBatch         = $script:EndpointLogonActivity | Where-Object LogonType -eq Batch | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
             $LogonActivityTimeStampLogonService       = $script:EndpointLogonActivity | Where-Object LogonType -eq Service | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
             $LogonActivityTimeStampLogonUnlock        = $script:EndpointLogonActivity | Where-Object LogonType -eq Unlock | Select-Object @{n='TimeStampDay';e={($_.TimeStamp -split ' ')[0]}}, logontype | Group-Object TimeStampDay  | Sort-Object Name, Count
@@ -3284,7 +2807,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             New-HTMLTab -Name 'Logon Activity' -IconBrands acquisitions-incorporated {
                 ###########
                 New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
-                    New-HTMLSection -HeaderText 'Table Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Table Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointLogonActivity {
                             New-TableHeader -Color Blue -Alignment left -Title 'Logon Type 3 (Network) have been excluded due to excessive logs. (i.e. remote connection to shared folder)' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -3292,7 +2815,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Pane Search' -IconSolid th {
-                    New-HTMLSection -HeaderText 'Pane Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Pane Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointLogonActivity {
                             New-TableHeader -Color Blue -Alignment left -Title 'Logon Type 3 (Network) have been excluded due to excessive logs. (i.e. remote connection to shared folder)' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
@@ -3300,7 +2823,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Calendar' -IconRegular calendar-alt  {
-                    New-HTMLSection -HeaderText 'Calendar' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                    New-HTMLSection -HeaderText 'Calendar' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                         New-HTMLTable -DataTable $script:EndpointLogonActivity {
                             New-TableHeader -Color Blue -Alignment left -Title 'Calendar - Logon Activity' -FontSize 18
                         } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression                       
@@ -3315,260 +2838,24 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                 }
                 ###########
                 New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
-                    New-HTMLSection -HeaderText 'Time Stamp Day Login (Sort By Day)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Time Stamp Day Login (Sort By Day)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampDaySortDay){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Time Stamp Day Login (Sort By Count)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Time Stamp Day Login (Sort By Count)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampDaySortCount){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Logon Type' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Logon Type' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityLogonType){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Local System' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Local System' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonLocalSystem){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Interactive (Logon Via Console)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Interactive (Logon Via Console)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonInteractive){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Network (Network Remote Logon) - Not Created Because of Excessive Logs' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        #New-HTMLPanel {
-                        #    New-HTMLChart -Title 'Network(No Chart Produce Because of Excessive Logs)' -Gradient -TitleAlignment left {
-                        #        New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                        #        Foreach ($_ in $LogonActivityTimeStampLogonNetwork){
-                        #            New-ChartBar -Name $_.Name -Value $_.Count
-                        #        }
-                        #    }
-                        #}
-                    }
-                    New-HTMLSection -HeaderText 'Batch (Scheduled Task Logon)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Batch (Scheduled Task Logon)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonBatch){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Service (Windows Service Account Logon)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Service (Windows Service Account Logon)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonService){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Unlock (Screen Unlock)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Unlock (Screen Unlock)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonUnlock){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Clear Text (Clear Text Network Logon)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Clear Text (Clear Text Network Logon)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonNetworkClearText){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'New Credentials (Alternate Credentials Other Than Logon)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'New Credentials (Alternate Credentials Other Than Logon)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonNewCredentials){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Remote Interactive (RDP/TS Remote Assistance)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Remote Interactive (RDP/TS Remote Assistance)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonRemoteInteractive){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Cached Interactive (Cached Local Credentials)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Cached Interactive (Cached Local Credentials)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonCachedInteractive){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Remote Interactive (Cached RDP TS RemoteAssistance)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Remote Interactive (Cached RDP TS RemoteAssistance)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonCachedRemoteInteractive){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Cached Unlock (Cached Screen Unlock)' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Cached Unlock (Cached Screen Unlock)' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityTimeStampLogonCachedUnlock){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Workstation Name' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Workstation Name' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivityWorkstationName){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                    New-HTMLSection -HeaderText 'Source Network Address' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                        New-HTMLPanel {
-                            New-HTMLChart -Title 'Source Network Address' -Gradient -TitleAlignment left {
-                                New-ChartLegend -LegendPosition topRight -Names "XXXXXXXX" -Color LightCoral
-                                Foreach ($_ in $LogonActivitySourceNetworkAddress){
-                                    New-ChartBar -Name $_.Name -Value $_.Count
-                                }
-                            }
-                        }
-                    }
-                } 
-            <#
-                ###########
-                New-HTMLTab -TabName 'Graph & Table' -IconSolid bezier-curve {
-                    $DataTableIDLogonActivity = Get-Random -Minimum 100000 -Maximum 2000000
-                    New-HTMLSection -HeaderText 'Logon Activity' -CanCollapse {
-                        New-HTMLPanel -Width 40% {
-                            New-HTMLTable -DataTable $script:EndpointLogonActivity -DataTableID $DataTableIDLogonActivity -SearchRegularExpression  {
-                                New-TableHeader -Color Blue -Alignment left -Title 'Logon Activity' -FontSize 18 
-                            } 
-                        }
-                        New-HTMLPanel {
-                            
-                            New-HTMLText `
-                                -FontSize 12 `
-                                -FontFamily 'Source Sans Pro' `
-                                -Color Blue `
-                                -Text 'Click On The XXXXXXXXXXXXXXXXX Icons To Automatically Locate Them Within The Table'
-        
-                            New-HTMLDiagram -Height '1000px' {
-                                New-DiagramEvent -ID $DataTableIDLogonActivity -ColumnID 0
-                                New-DiagramOptionsInteraction -Hover $true
-                                New-DiagramOptionsManipulation 
-                                New-DiagramOptionsPhysics -Enabled $true
-                                New-DiagramOptionsLayout `
-                                    -RandomSeed 13
-        
-                                ###New-DiagramOptionsLayout -RandomSeed 500 -HierarchicalEnabled $true -HierarchicalDirection FromLeftToRight
-                                
-                                New-DiagramOptionsNodes `
-                                    -BorderWidth 1 `
-                                    -ColorBackground LightSteelBlue `
-                                    -ColorHighlightBorder Orange `
-                                    -ColorHoverBackground Orange
-                                New-DiagramOptionsLinks `
-                                    -FontSize 12 `
-                                    -ColorHighlight Orange `
-                                    -ColorHover Orange `
-                                    -Length 5000
-                                    # -ArrowsToEnabled $true `
-                                    # -Color BlueViolet `
-                                    # -ArrowsToType arrow `
-                                    # -ArrowsFromEnabled $false `
-                                New-DiagramOptionsEdges `
-                                    -ColorHighlight Orange `
-                                    -ColorHover Orange
-        
-                                foreach ($object in $script:EndpointLogonActivity) {
-                                    function New-ComputerNode {
-                                        New-DiagramNode `
-                                            -Label  $object.PSComputerName `
-                                            -To     "[$($Object.PSComputerName)]`n$($object.WorkStationName)" `
-                                            -Image  "$Dependencies\Images\Computer.jpg" `
-                                            -Size   50 `
-                                            -FontSize   20 `
-                                            -FontColor  Blue `
-                                            -LinkColor  Blue `
-                                            -ArrowsToEnabled
-                                        New-DiagramNode `
-                                            -Label  $object.PSComputerName `
-                                            -To     "[$($Object.PSComputerName)]`n$($object.WorkStationName)" `
-                                            -shape dot `
-                                            -size 10 `
-                                            -FontColor  Blue `
-                                            -LinkColor  Blue
-                                        New-DiagramNode `
-                                            -Label  "[$($Object.PSComputerName)]`n$($object.WorkStationName)" `
-                                            -To     "[$($Object.PSComputerName)]`n$($object.WorkStationName)`n$($object.SourceNetworkAddress)" `
-                                            -shape dot `
-                                            -size 10 `
-                                            -FontColor  Blue `
-                                            -LinkColor  Blue
-                                        New-DiagramNode `
-                                            -Label     "[$($Object.PSComputerName)]`n$($object.WorkStationName)`n$($object.SourceNetworkAddress)" `
-                                            -shape dot `
-                                            -size 10 `
-                                            -FontColor  Blue `
-                                            -LinkColor  Blue
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }#>
+                    script:Generate-TablePieBarCharts -Title "Logon Activity (Day Sort Day)" -Data $LogonActivityTimeStampDaySortDay
+                    script:Generate-TablePieBarCharts -Title "Logon Activity (Day Sort Count)" -Data $LogonActivityTimeStampDaySortCount
+                    script:Generate-TablePieBarCharts -Title "Workstation Name" -Data $LogonActivityWorkstationName
+                    script:Generate-TablePieBarCharts -Title "Source Network Address" -Data $LogonActivitySourceNetworkAddress
+                    script:Generate-TablePieBarCharts -Title "Logon Type" -Data $LogonActivityLogonType
+                    script:Generate-TablePieBarCharts -Title "Logon Local System" -Data $LogonActivityTimeStampLogonLocalSystem
+                    script:Generate-TablePieBarCharts -Title "Logon Interactive" -Data $LogonActivityTimeStampLogonInteractive
+                    script:Generate-TablePieBarCharts -Title "Logon Network" -Data $LogonActivityTimeStampLogonNetwork
+                    script:Generate-TablePieBarCharts -Title "Logon Batch" -Data $LogonActivityTimeStampLogonBatch
+                    script:Generate-TablePieBarCharts -Title "Logon Service" -Data $LogonActivityTimeStampLogonService
+                    script:Generate-TablePieBarCharts -Title "Logon Unlock" -Data $LogonActivityTimeStampLogonUnlock
+                    script:Generate-TablePieBarCharts -Title "Logon Network Clear Text" -Data $LogonActivityTimeStampLogonNetworkClearText
+                    script:Generate-TablePieBarCharts -Title "Logon New Credentials" -Data $LogonActivityTimeStampLogonNewCredentials
+                    script:Generate-TablePieBarCharts -Title "Logon Remote Interactive" -Data $LogonActivityTimeStampLogonRemoteInteractive
+                    script:Generate-TablePieBarCharts -Title "Logon Cached Interactive" -Data $LogonActivityTimeStampLogonCachedInteractive
+                    script:Generate-TablePieBarCharts -Title "Logon Cached Remote Interactive" -Data $LogonActivityTimeStampLogonCachedRemoteInteractive
+                    script:Generate-TablePieBarCharts -Title "Logon Cached Unlock" -Data $LogonActivityTimeStampLogonCachedUnlock
+                }
             }
         }
         
@@ -3689,7 +2976,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock `$LogonActivityScriptblock -ComputerName $TargetComputer -AsJob -JobName 'PoSh-EasyWin: $($CollectionName) -- $($TargetComputer)'"
                 }
             }
-            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointLogonActivity'
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'EndpointLogonActivity' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:EndpointLogonActivity = Invoke-Command -ScriptBlock $LogonActivityScriptblock -Session $PSSession | 
@@ -3843,7 +3130,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     New-HTMLTab -TabName "Active Directory Users" -IconSolid user -IconColor LightSkyBlue {
                         ###########
                         New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
-                            New-HTMLSection -HeaderText 'Table Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                            New-HTMLSection -HeaderText 'Table Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                                 New-HTMLTable -DataTable $script:PSWriteHTMLADUsers {
                                     New-TableHeader -Color Blue -Alignment left -Title 'Active Directory Users' -FontSize 18
                                 } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -3851,7 +3138,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                         }
                         ###########
                         New-HTMLTab -Name 'Pane Search' -IconSolid th {
-                            New-HTMLSection -HeaderText 'Pane Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                            New-HTMLSection -HeaderText 'Pane Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                                 New-HTMLTable -DataTable $script:PSWriteHTMLADUsers {
                                     New-TableHeader -Color Blue -Alignment left -Title 'Active Directory Users' -FontSize 18
                                 } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
@@ -3873,128 +3160,20 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                         }
                         ###########
                         New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
-                            New-HTMLSection -HeaderText 'Enabled & Locked Out' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Enabled' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -Vertical -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color DarkViolet
-                                    Foreach ($_ in $ADUsersEnabled){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                                New-HTMLChart -Title 'Locked Out' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -Vertical -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Blue
-                                    Foreach ($_ in $ADUsersLockedOut){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Bad Logon Count' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Bad Logon Count' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Green
-                                    Foreach ($_ in $ADUsersBadLogonCount){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Group Member Count' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Group Member Count' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Gold
-                                    Foreach ($_ in $ADUsersMemberOf){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Smartcard Logon Required & Password Not Required' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Smartcard Logon Required' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -Vertical -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Orange
-                                    Foreach ($_ in $ADUsersSmartcardLogonRequired){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                                New-HTMLChart -Title 'Password Not Required' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -Vertical -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Red
-                                    Foreach ($_ in $ADUsersPasswordNotRequired){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Password Never Expires' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Password Never Expires' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color DarkViolet
-                                    Foreach ($_ in $ADUsersPasswordNeverExpires){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Password Expired' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Password Expired' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Blue
-                                    Foreach ($_ in $ADUsersPasswordExpired){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Last Bad Password Attempt Dates' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Last Bad Password Attempt Dates' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Green
-                                    Foreach ($_ in $ADUsersLastBadPasswordAttempt){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'PassWord Last Set Dates' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'PassWord Last Set Dates' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Gold
-                                    Foreach ($_ in $ADUsersPassWordLastSetDay){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Account Expiration Dates' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Account Expiration Dates' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Orange
-                                    Foreach ($_ in $ADUsersAccountExpirationDay){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'When Created Dates' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'When Created Dates' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Red
-                                    Foreach ($_ in $ADUsersWhenCreatedDay){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'When Changed Dates' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'When Changed Dates' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color DarkViolet
-                                    Foreach ($_ in $ADUsersWhenChangedDay){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Last Logon Dates' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Last Logon Dates' -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Blue
-                                    Foreach ($_ in $ADUsersLastLogonDay){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
+                            script:Generate-TablePieBarCharts -Title "Enabled" -Data $ADUsersEnabled
+                            script:Generate-TablePieBarCharts -Title "Locked Out" -Data $ADUsersLockedOut
+                            script:Generate-TablePieBarCharts -Title "Bad Logon Count" -Data $ADUsersBadLogonCount
+                            script:Generate-TablePieBarCharts -Title "Member Of" -Data $ADUsersMemberOf
+                            script:Generate-TablePieBarCharts -Title "Smartcard Logon Required" -Data $ADUsersSmartcardLogonRequired
+                            script:Generate-TablePieBarCharts -Title "Password Not Required" -Data $ADUsersPasswordNotRequired
+                            script:Generate-TablePieBarCharts -Title "Password Never Expires" -Data $ADUsersPasswordNeverExpires
+                            script:Generate-TablePieBarCharts -Title "Password Expired" -Data $ADUsersPasswordExpired
+                            script:Generate-TablePieBarCharts -Title "Last Bad Password Attempt" -Data $ADUsersLastBadPasswordAttempt
+                            script:Generate-TablePieBarCharts -Title "PassWord Last Set Day" -Data $ADUsersPassWordLastSetDay
+                            script:Generate-TablePieBarCharts -Title "Account Expiration Day" -Data $ADUsersAccountExpirationDay
+                            script:Generate-TablePieBarCharts -Title "When Created Day" -Data $ADUsersWhenCreatedDay
+                            script:Generate-TablePieBarCharts -Title "When Changed Day" -Data $ADUsersWhenChangedDay
+                            script:Generate-TablePieBarCharts -Title "Last Logon Day" -Data $ADUsersLastLogonDay
                         }
                         ###########
                         New-HTMLTab -TabName 'Graph & Table' -IconSolid bezier-curve {
@@ -4111,7 +3290,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     }
                 }
             }
-            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PSWriteHTMLADUsers'
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PSWriteHTMLADUsers' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:PSWriteHTMLForest = invoke-command -ScriptBlock { Get-ADForest } -Session $PSSession
@@ -4165,6 +3344,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
         function script:start-PSWriteHTMLActiveDirectoryComputers {
+
             $ADComputersOperatingSystems   = $script:PSWriteHTMLADComputers | Select-Object OperatingSystem | Where-Object {$_.OperatingSystem -ne $null} | Group-Object OperatingSystem | Sort-Object Count, Name                
             $ADComputersOSVersions         = $script:PSWriteHTMLADComputers | Select-Object OperatingSystemVersion | Where-Object {$_.OperatingSystemVersion -ne $null} | Group-Object OperatingSystemVersion | Sort-Object Count, Name                
             $ADComputersOSServicePacks     = $script:PSWriteHTMLADComputers | Select-Object OperatingSystemServicePack | Where-Object {$_.OperatingSystemServicePack -ne $null} | Group-Object OperatingSystemServicePack | Sort-Object Count, Name                
@@ -4177,7 +3357,6 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
             $ADComputersPassWordLastSetDay = $script:PSWriteHTMLADComputers | Select-Object @{n='PasswordLastSetDay';e={($_.PasswordLastSet -split ' ')[0]}} | Group-Object PasswordLastSetDay | Sort-Object Count, Name
 
 
-
             #foreach ($Domain in $script:PSWriteHTMLForest.Domains) {
             #    New-HTMLTab -TabName "Domain: $Domain" -IconSolid dice -IconColor LightSkyBlue {
 
@@ -4186,7 +3365,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     New-HTMLTab -TabName "Active Directory Computers" -IconSolid server -IconColor LightSkyBlue {
                         ###########
                         New-HTMLTab -Name 'Table Search' -IconRegular window-maximize {
-                            New-HTMLSection -HeaderText 'Table Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                            New-HTMLSection -HeaderText 'Table Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                                 New-HTMLTable -DataTable $script:PSWriteHTMLADComputers {
                                     New-TableHeader -Color Blue -Alignment left -Title 'Active Directory Computers' -FontSize 18
                                 } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength') -SearchRegularExpression
@@ -4194,7 +3373,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                         }
                         ###########
                         New-HTMLTab -Name 'Pane Search' -IconSolid th {
-                            New-HTMLSection -HeaderText 'Pane Search' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
+                            New-HTMLSection -HeaderText 'Pane Search' -Height 725 -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
                                 New-HTMLTable -DataTable $script:PSWriteHTMLADComputers {
                                     New-TableHeader -Color Blue -Alignment left -Title 'Active Directory Computers' -FontSize 18
                                 } -Buttons @('copyHtml5', 'excelHtml5', 'csvHtml5', 'pdfHtml5', 'pageLength', 'searchPanes') -searchpane -SearchRegularExpression
@@ -4217,96 +3396,16 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                         }
                         ###########
                         New-HTMLTab -Name 'Charts' -IconRegular chart-bar {
-                            New-HTMLSection -HeaderText 'Operating Systems' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Operating Systems' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color DarkViolet
-                                    Foreach ($_ in $ADComputersOperatingSystems){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'OS Versions' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'OS Versions' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Blue
-                                    Foreach ($_ in $ADComputersOSVersions){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'OS Service Packs' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'OS Service Packs' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Green
-                                    Foreach ($_ in $ADComputersOSServicePacks){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'OS Hotfixes' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'OS Hotfixes' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Gold
-                                    Foreach ($_ in $ADComputersOSHotfixes){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'IPv4 Addresses' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'IPv4 Addresses' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Orange
-                                    Foreach ($_ in $ADComputersIPv4Address){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Enabled' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Enabled' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Red
-                                    Foreach ($_ in $ADComputersEnabled){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Date Created' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Date Created' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color DarkViolet
-                                    Foreach ($_ in $ADComputersWhenCreatedDay){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Date Changed' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Date Changed' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Blue
-                                    Foreach ($_ in $ADComputersWhenChangedDay){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Date Of Last Logon' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Date Of Last Logon' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Green
-                                    Foreach ($_ in $ADComputersLastLogonDay){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
-                            New-HTMLSection -HeaderText 'Date Password Last Set' -HeaderTextColor White -HeaderTextAlignment center -CanCollapse {
-                                New-HTMLChart -Title 'Date Password Last Set' -Gradient -TitleAlignment left {
-                                    New-ChartBarOptions -Type Bar -DataLabelsColor White -Gradient
-                                    New-ChartLegend -LegendPosition topRight -Color Gold
-                                    Foreach ($_ in $ADComputersPassWordLastSetDay){
-                                        New-ChartBar -Name $_.Name -Value $_.Count
-                                    }
-                                }
-                            }
+                            script:Generate-TablePieBarCharts -Title "Operating Systems" -Data $ADComputersOperatingSystems
+                            script:Generate-TablePieBarCharts -Title "OS Versions" -Data $ADComputersOSVersions
+                            script:Generate-TablePieBarCharts -Title "OS Service Packs" -Data $ADComputersOSServicePacks
+                            script:Generate-TablePieBarCharts -Title "OS Hot fixes" -Data $ADComputersOSHotfixes
+                            script:Generate-TablePieBarCharts -Title "IPv4 Address" -Data $ADComputersIPv4Address
+                            script:Generate-TablePieBarCharts -Title "Enabled" -Data $ADComputersEnabled
+                            script:Generate-TablePieBarCharts -Title "When Created Day" -Data $ADComputersWhenCreatedDay
+                            script:Generate-TablePieBarCharts -Title "When Changed Day" -Data $ADComputersWhenChangedDay
+                            script:Generate-TablePieBarCharts -Title "Last Logon Day" -Data $ADComputersLastLogonDay              
+                            script:Generate-TablePieBarCharts -Title "PassWord Last Set Day" -Data $ADComputersPassWordLastSetDay
                         }
                         ###########
                         New-HTMLTab -TabName 'Graph & Table' -IconSolid bezier-curve {
@@ -4422,7 +3521,7 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
                     }
                 }
             }
-            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PSWriteHTMLADComputers'
+            Monitor-Jobs -CollectionName $CollectionName -MonitorMode -PSWriteHTMLSwitch -PSWriteHTML 'PSWriteHTMLADComputers' -PSWriteHTMLFilePath $script:PSWriteHTMLFilePath
         }
         elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
             $script:PSWriteHTMLForest = invoke-command -ScriptBlock { Get-ADForest } -Session $PSSession
@@ -4510,8 +3609,8 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and `
     ##################################
     if ($script:PSWriteHTMLIndividualWebPagesCheckbox.checked -eq $false -and $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Session Based') {
         New-HTML -TitleText 'PoSh-EasyWin' -FavIcon "$Dependencies\Images\favicon.jpg" -Online `
-            -FilePath "$($script:CollectionSavedDirectoryTextBox.Text)\PoSh-EasyWin $(Get-Date).html" -Show {
-            
+            -FilePath $script:PSWriteHTMLFilePath {
+                #-Show
             New-HTMLHeader { 
                 New-HTMLText -Text "Date of this report $(Get-Date)" -Color Blue -Alignment right 
 
@@ -4549,7 +3648,7 @@ if ($PSWriteHTMLCheckedListBox.CheckedItems.Count -gt 0 -and `
                     -FontSize 12 `
                     -FontFamily 'Source Sans Pro' `
                     -Color Black `
-                    -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided And done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.' `
+                    -Text 'Disclaimer: The information provided by PoSh-EasyWin is for general information purposes only. All data collected And represented is provided and done so in good faith, however we make no representation, guarentee, or warranty of any kind, expressed or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any infomration collected or represented.' `
                     -Alignment left
                 New-HTMLText `
                     -Text "https://www.GitHub.com/high101bro/PoSh-EasyWin" `

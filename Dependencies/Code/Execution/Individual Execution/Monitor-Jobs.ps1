@@ -17,7 +17,8 @@ function Monitor-Jobs {
         $InputValues,
         [switch]$PcapSwitch,
         [switch]$PSWriteHTMLSwitch,
-        $PSWriteHTML
+        $PSWriteHTML,
+        $PSWriteHTMLFilePath
     )
 
     $JobId = Get-Random -Minimum 100009 -Maximum 999999
@@ -759,10 +760,12 @@ if ($MonitorMode) {
         [System.GC]::Collect()                    
     }
 
-    `$script:SmithScript$JobId  = `$SmithScript
-    `$script:RestartTime$JobId  = `$RestartTime
-    `$script:InputValues$JobId  = `$InputValues
-    `$script:ArgumentList$JobId = `$ArgumentList 
+    `$script:SmithScript$JobId         = `$SmithScript
+    `$script:RestartTime$JobId         = `$RestartTime
+    `$script:InputValues$JobId         = `$InputValues
+    `$script:ArgumentList$JobId        = `$ArgumentList 
+    `$script:PSWriteHTMLFilePath$JobId = `$PSWriteHTMLFilePath
+
 "@
 #    if ($SMITH) {
 #        Invoke-Expression @"
@@ -1141,9 +1144,37 @@ if ($MonitorMode) {
         }
     
     
+        if ($PSWriteHTMLSwitch) {
         Invoke-Expression @"
             `$script:Section3MonitorJobShellButton$JobId = New-Object System.Windows.Forms.Button -Property @{
-                text     = 'Console'
+                text     = 'Browser'
+                Left     = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
+                Top      = `$script:Section3MonitorJobViewButton$JobId.Top + `$script:Section3MonitorJobViewButton$JobId.Height + (`$FormScale * 5)
+                Width    = `$FormScale * 60
+                Height   = `$FormScale * 21
+                Font     = New-Object System.Drawing.Font('Courier New',`$(`$FormScale * 8),1,2,1)
+                Add_click = {
+                    if (`$This.BackColor -ne 'LightGray') {
+                        `$This.BackColor = 'LightGray'
+                    }
+                    if ((Test-Path "`$script:PSWriteHTMLFilePath$JobId")) {
+                        Invoke-Item `$script:PSWriteHTMLFilePath$JobId
+                    }
+                    else {
+                        [System.Windows.Forms.MessageBox]::Show("There is currently on data available.",'PoSh-EasyWin - Console')
+                    }
+                    [System.GC]::Collect()
+                }
+            }
+            if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) {
+                `$script:Section3MonitorJobShellButton$JobId.Text = 'Browser'
+            }
+"@
+        }
+        else {
+            Invoke-Expression @"
+            `$script:Section3MonitorJobShellButton$JobId = New-Object System.Windows.Forms.Button -Property @{
+                text     = 'Shell'
                 Left     = `$script:Section3MonitorJobProgressBar$JobId.Left + `$script:Section3MonitorJobProgressBar$JobId.Width + (`$FormScale * 5)
                 Top      = `$script:Section3MonitorJobViewButton$JobId.Top + `$script:Section3MonitorJobViewButton$JobId.Height + (`$FormScale * 5)
                 Width    = `$FormScale * 60
@@ -1171,10 +1202,13 @@ if ($MonitorMode) {
                 }
             }
             if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) {
-                `$script:Section3MonitorJobShellButton$JobId.Text = 'Console'
+                `$script:Section3MonitorJobShellButton$JobId.Text = 'Shell'
             }
+"@
+        }            
 
 
+            Invoke-Expression @"
             `$script:Section3MonitorJobChartsButton$JobId = New-Object System.Windows.Forms.Button -Property @{
                 Left     = `$script:Section3MonitorJobShellButton$JobId.Left + `$script:Section3MonitorJobShellButton$JobId.Width + (`$FormScale * 5)
                 Top      = `$script:Section3MonitorJobViewButton$JobId.Top + `$script:Section3MonitorJobViewButton$JobId.Height + (`$FormScale * 5)
@@ -2226,8 +2260,11 @@ if ($DisableReRun) {
                 `$script:Section3MonitorJobProgressBar$JobId.ForeColor = 'LightGreen'
                 `$script:Section3MonitorJobViewButton$JobId.Text = 'View Results'
                 `$script:Section3MonitorJobViewButton$JobId.BackColor = 'LightGreen'
-                if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightCoral' }
-                else { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightGreen' }
+                
+                #if (`$OptionSaveCliXmlDataCheckBox.checked -eq `$false) { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightCoral' }
+                #else { `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightGreen' }
+                `$script:Section3MonitorJobShellButton$JobId.BackColor = 'LightGreen'
+
                 `$script:Section3MonitorJobChartsButton$JobId.BackColor = 'LightGreen'
 
                 `$script:JobsTimeCompleted$JobId = Get-Date
@@ -2256,10 +2293,6 @@ if ($DisableReRun) {
                 elseif ("$PSWriteHTML" -eq 'PowerShellSessionsData') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
                     script:Individual-PSWriteHTML -Title 'PowerShell Sessions' -Data { script:Start-PSWriteHTMLPowerShellSessions }
-                }
-                elseif ("$PSWriteHTML" -eq 'XXXXXXXXXXXXXXXXX') {
-                    `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
-
                 }
                 elseif ("$PSWriteHTML" -eq 'EndpointApplicationCrashes') {
                     `$script:$PSWriteHTML = `$script:CurrentJobs$JobId | Receive-Job
@@ -2460,7 +2493,7 @@ if ($DisableReRun) {
                                 `$script:CurrentJobsWithComputerNameAuto$JobId | Select-Object * | Export-CliXml "`$(`$script:CollectionSavedDirectoryTextBox.Text)\`$script:JobName$JobId (`$(`$JobStartTimeFileFriendly$JobId)).xml"
                             }
                             else {
-                                `$script:Section3MonitorJobShellButton$JobId.Text = 'Console'
+                                `$script:Section3MonitorJobShellButton$JobId.Text = 'Shell'
                                 #[System.Windows.Forms.MessageBox]::Show("The Feature is disabled by default as it can be resource intensive. To enable, checkbox the 'Save XML Data' within the top center Options tab.",'PoSh-EasyWin')
                             }
                         }

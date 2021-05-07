@@ -1,3 +1,28 @@
+Change Log and Version Breakdown
+v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
+
+==================================================
+To Do List:
+==================================================
+Accounts Treeview
+
+==================================================
+v5.3.2 - 7 May 2021
+==================================================
+Added the following message to teh popup when clicking on Pivot Thru (WinRM): 
+	- Note: Integration with Credential Auto-Rollover has not been fully tested yet.
+
+Monitor Jobs
+	- Added 'browser' button to Monitor Jobs for PSWriteHTML data collection
+
+PSWriteHTML
+	- Disabled auto launching of the broswer when showing PSWriteHTML data collected
+	- Added 'browser' button to Monitor Jobs for PSWriteHTML data collection
+	- Endpoint Network Connections
+		- Removed Testing divider from the Charts tab
+		- Fixed the default IPs listed to exclude, they were all showing up on a single line but are now on separate lines
+	- changed the majority of charts to a Table, Pie, and Bar chart combo
+
 ==================================================
 v5.3.1 - 29 April 2021
 ==================================================
@@ -84,6 +109,28 @@ Upated PSWriteHTML to new version
 	- the graph nodes how have some editing features
 	- abiltity link tables to graph nodes
 		- my code is still in BETA... need to get off my ass and finish this
+
+Added Pivot Thru (WinRM) feature / button
+	- if you checkbox this and provide a valid endpoint, you can pivot through that endpoint to other selected endpoints
+		- obviously only if the endpoint has access to the other endpoint
+		- commands are sent through WinRM
+		- Commands sent to the pivot host are intered sent from the endpoint
+			- the commands/queries are not just redirected, rather sent to the pivot host who then executes the commands to query the other host
+		- Pivot-PSSession uses a unique 'trick' to simulate an actual shell
+			- essentially a session is created witht the pivot host
+			- a while loop is started, prompting the user to input commands
+			- commands are sent to the pivot host who in turn executes those commands on the final endpoint
+			- results are then displayed on the localhost when the results are returned
+
+Added ability to scan through pivot feature
+	- added monitor jobs support for pivot scanning
+
+Added Port Proxy feature
+	- Added Manage Port Proxy form
+		- able to Show, Create, and Remove port proxies
+		- the proxy host field is auto filled using the computer treeview list
+	- gives ability to setup and manage pivoting between hosts
+		- gives ability to access hosts otherwise that you'd be unable to, provided the port proxies are setup correctly
 
 Enumeration scans conducted by PoSh-EasyWin 
 	- now populate under each node
