@@ -230,10 +230,6 @@ $Section3HostDataTab.Controls.Add($Section3HostDataNotesAddOpNotesButton)
 CommonButtonSettings -Button $Section3HostDataNotesAddOpNotesButton
 
 
-# Mass Tag one or multiple hosts in the computer treeview
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Save-ComputerTreeNodeHostData.ps1"
-. "$Dependencies\Code\Tree View\Computer\Save-ComputerTreeNodeHostData.ps1"
-
 # Checks if the Host Data has been modified and determines the text color: Green/Red
 Update-FormProgress "$Dependencies\Code\Main Body\Check-HostDataIfModified.ps1"
 . "$Dependencies\Code\Main Body\Check-HostDataIfModified.ps1"

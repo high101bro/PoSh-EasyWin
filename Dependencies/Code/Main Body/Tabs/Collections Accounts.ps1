@@ -174,7 +174,7 @@ $AccountsCurrentlyLoggedInConsoleCheckbox  = New-Object System.Windows.Forms.Che
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes 
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
@@ -208,7 +208,7 @@ $AccountsCurrentlyLoggedInPSSessionCheckbox  = New-Object System.Windows.Forms.C
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
@@ -239,7 +239,7 @@ $AccountActivityCheckbox  = New-Object System.Windows.Forms.CheckBox -Property @
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
@@ -265,8 +265,8 @@ $AccountActivitySelectionButton = New-Object System.Windows.Forms.Button -Proper
     Width  = $FormScale * 125
     Height = $FormScale * 20
     Add_Click = {
-        if (Test-Path "$PoShHome\Account Data.csv") {
-            Import-Csv "$PoShHome\Account Data.csv" | Out-GridView -Title 'PoSh-EasyWin Select Accounts' -PassThru | Set-Variable -Name AccountCsvData
+        if (Test-Path $script:AccountsTreeNodeFileSave) {
+            Import-Csv $script:AccountsTreeNodeFileSave | Out-GridView -Title 'PoSh-EasyWin Select Accounts' -PassThru | Set-Variable -Name AccountCsvData
             $AccountActivityTextbox.lines = ''
             foreach ($Account in $AccountCsvData) { $AccountActivityTextbox.lines += $Account.Name}
         }

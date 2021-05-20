@@ -1,5 +1,5 @@
-Update-FormProgress "$Dependencies\Code\Tree View\Computer\Create-ComputerNodeCheckBoxArray.ps1"
-. "$Dependencies\Code\Tree View\Computer\Create-ComputerNodeCheckBoxArray.ps1"
+Update-FormProgress "$Dependencies\Code\Tree View\Create-TreeViewCheckBoxArray.ps1"
+. "$Dependencies\Code\Tree View\Create-TreeViewCheckBoxArray.ps1"
 
 Update-FormProgress "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedLessThanOne.ps1"
 . "$Dependencies\Code\Tree View\Computer\ComputerNodeSelectedLessThanOne.ps1"

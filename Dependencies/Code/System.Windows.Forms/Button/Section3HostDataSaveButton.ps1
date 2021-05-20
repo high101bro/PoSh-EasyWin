@@ -1,5 +1,5 @@
 $Section3HostDataSaveButtonAdd_Click = {
-    Save-ComputerTreeNodeHostData
+    Save-TreeViewData -Endpoint
     $StatusListBox.Items.Clear()
     $StatusListBox.Items.Add("Saved Host Data:  $($script:Section3HostDataNameTextBox.Text)")
 }
@@ -10,5 +10,3 @@ $Section3HostDataSaveButtonAdd_MouseHover = {
 +  That said, data is automatically saved when you select a endpoint in the computer treeview
 "@
 }
-
-

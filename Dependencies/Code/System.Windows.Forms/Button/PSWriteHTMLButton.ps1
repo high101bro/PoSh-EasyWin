@@ -382,8 +382,8 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
             # #Checks if the computer entered is in the computer treeview  
             # $ComputerNodeFound = $false
-            # [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-            # foreach ($root in $AllHostsNode) {
+            # [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            # foreach ($root in $AllTreeViewNodes) {
             #     foreach ($Category in $root.Nodes) {
             #         foreach ($Entry in $Category.nodes) { 
             #             if ($Entry.Text -eq $script:PSWriteHTMLSupportOkayTextBox.text){
@@ -1452,8 +1452,8 @@ if ($script:PSWriteHTMLFormOkay -eq $true -and $script:ComputerList.count -gt 0 
 
 
                                 #$script:AllComputersList = @()
-                                #[System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-                                #foreach ($root in $AllHostsNode) {
+                                #[System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+                                #foreach ($root in $AllTreeViewNodes) {
                                 #    foreach ($Category in $root.Nodes) {
                                 #        foreach ($Entry in $Category.nodes) {
                                 #            $script:AllComputersList += $Entry.text

@@ -13,14 +13,14 @@ function Compile-SelectedCommandTreeNode {
     # Commands in the treenode that are selected
     $script:CommandsCheckedBoxesSelected = @()
 
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:CommandsTreeView.Nodes
+    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:CommandsTreeView.Nodes
     #Removed For Testing#$ResultsListBox.Items.Clear()
 
     # Compiles all the commands treenodes into one object
     $script:AllCommands  = $script:AllEndpointCommands
     $script:AllCommands += $script:AllActiveDirectoryCommands
 
-    foreach ($root in $AllHostsNode) {
+    foreach ($root in $AllTreeViewNodes) {
         foreach ($Category in $root.Nodes) {
             if ($CommandsViewProtocolsUsedRadioButton.Checked) {
                 foreach ($Entry in $Category.nodes) {

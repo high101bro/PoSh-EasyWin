@@ -47,14 +47,14 @@ $script:CustomGroupCommandsListListListList = @()
 #
 #======================================================================
 
-$script:TreeeViewComputerListCount = 0
+$script:TreeeViewEndpointCount = 0
 $script:TreeeViewCommandsCount     = 0
 
 # Handles the behavior of nodes when clicked, such as checking all sub-checkboxes, changing text colors, and Tabs selected.
 # Also counts the total number of checkboxes checked (both command and computer treenodes, and other query checkboxes) and
 # changes the color of the start collection button to-and-from Green.
-Update-FormProgress "$Dependencies\Code\Tree View\Conduct-NodeAction.ps1"
-. "$Dependencies\Code\Tree View\Conduct-NodeAction.ps1"
+Update-FormProgress "$Dependencies\Code\Tree View\Update-TreeViewData.ps1"
+. "$Dependencies\Code\Tree View\Update-TreeViewData.ps1"
 
 # Initializes the Commands TreeView section that various command nodes are added to
 # TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
@@ -88,6 +88,9 @@ Update-FormProgress "$Dependencies\Code\Main Body\DeselectAllCommands.ps1"
 
 Update-FormProgress "$Dependencies\Code\Main Body\DeselectAllComputers.ps1"
 . "$Dependencies\Code\Main Body\DeselectAllComputers.ps1"
+
+Update-FormProgress "$Dependencies\Code\Main Body\DeselectAllAccounts.ps1"
+. "$Dependencies\Code\Main Body\DeselectAllAccounts.ps1"
 
 
 # Initially imports the Custom Group Commands and populates the command treenode
@@ -337,8 +340,8 @@ $script:CommandsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     #LabelEdit       = $True
     ShowLines        = $True
     ShowNodeToolTips = $True
-    Add_Click        = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
-    Add_AfterSelect  = { Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands }
+    Add_Click        = { Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes }
+    Add_AfterSelect  = { Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes }
 }
 $script:CommandsTreeView.Sort()
 $Section1CommandsTab.Controls.Add($script:CommandsTreeView)
@@ -358,7 +361,7 @@ $CustomQueryScriptBlockCheckBox = New-Object System.Windows.Forms.CheckBox -Prop
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($script:CustomQueryScriptBlockTextbox.text -ne $script:CustomQueryScriptBlockSaved) {
             $CustomQueryScriptBlockCheckBox.checked = $false
             $CustomQueryScriptBlockCheckBox.enabled = $false

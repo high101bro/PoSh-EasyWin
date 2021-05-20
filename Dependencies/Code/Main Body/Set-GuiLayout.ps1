@@ -38,7 +38,7 @@ function Set-GuiLayout {
         $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 300
             $ComputerAndAccountTreeViewTabControl.Width = $FormScale * 230
             $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 275
-            $ComputerTreeNodeSearchGreedyCheckbox.Left = $ComputerTreeNodeOUHostnameRadioButton.Left + $ComputerTreeNodeOUHostnameRadioButton.Width + $($FormScale * 45)
+            $ComputerTreeNodeSearchGreedyCheckbox.Left = $script:ComputerTreeNodeComboBox.Left + $script:ComputerTreeNodeComboBox.Width + $($FormScale * 45)
             $ComputerTreeNodeSearchComboBox.Width = $FormScale * 162
             $ComputerTreeNodeSearchButton.Left = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5 )
             $script:ComputerTreeView.Left = $ComputerTreeNodeSearchComboBox.Left
@@ -113,7 +113,7 @@ function Set-GuiLayout {
         $ComputerAndAccountTreeNodeViewPanel.Height = $FormScale * 635
             $ComputerAndAccountTreeViewTabControl.Width = $FormScale * 192
             $ComputerAndAccountTreeViewTabControl.Height = $FormScale * 635
-            $ComputerTreeNodeSearchGreedyCheckbox.Left = $ComputerTreeNodeOUHostnameRadioButton.Left + $ComputerTreeNodeOUHostnameRadioButton.Width + $($FormScale * 5)
+            $ComputerTreeNodeSearchGreedyCheckbox.Left = $script:ComputerTreeNodeComboBox.Left + $script:ComputerTreeNodeComboBox.Width + $($FormScale * 5)
             $ComputerTreeNodeSearchComboBox.Width = $FormScale * 120
             $ComputerTreeNodeSearchButton.Left = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5 )
             $script:ComputerTreeView.Left = $ComputerTreeNodeSearchComboBox.Left

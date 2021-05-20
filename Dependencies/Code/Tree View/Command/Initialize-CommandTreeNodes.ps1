@@ -26,7 +26,7 @@ function Initialize-CommandTreeNodes {
     #$script:TreeNodeCustomGroupCommands.Collapse()
     $script:CommandsTreeView.Nodes.Clear()
 
-#    Update-TreeNodeComputerState
+#    UpdateState-TreeViewData -Endpoint
 }
 
 

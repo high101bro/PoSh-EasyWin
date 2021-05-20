@@ -1,9 +1,9 @@
 $ComputerTreeViewAdd_Click = {
-    Conduct-NodeAction -TreeView $this.Nodes -ComputerList
+    Update-TreeViewData -Endpoint -TreeView $this.Nodes
 
     # When the node is checked, it updates various items
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $this.Nodes
-    foreach ($root in $AllHostsNode) {
+    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $this.Nodes
+    foreach ($root in $AllTreeViewNodes) {
         if ($root.checked) {
             $root.Expand()
             foreach ($Category in $root.Nodes) {
@@ -68,11 +68,11 @@ $ComputerTreeViewAdd_Click = {
 }
 
 $ComputerTreeViewAdd_AfterSelect = {
-    Conduct-NodeAction -TreeView $this.Nodes -ComputerList
+    Update-TreeViewData -Endpoint -TreeView $this.Nodes
 
     # This will return data on hosts selected/highlight, but not necessarily checked
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $this.Nodes
-    foreach ($root in $AllHostsNode) {
+    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $this.Nodes
+    foreach ($root in $AllTreeViewNodes) {
         if ($root.isselected) {
             $script:ComputerTreeViewSelected = ""
             $StatusListBox.Items.clear()
@@ -148,7 +148,7 @@ $ComputerTreeViewAdd_AfterSelect = {
                     #>
 
                     # Automatically saves the hostdata notes if modified
-                    Save-ComputerTreeNodeHostData
+                    Save-TreeViewData -Endpoint
                     Update-HostDataNotes
 
                     #                    $StatusListBox.Items.Clear()

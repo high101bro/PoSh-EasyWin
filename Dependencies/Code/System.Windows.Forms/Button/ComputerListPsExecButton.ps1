@@ -1,6 +1,6 @@
 $ComputerListPsExecButtonAdd_Click = {
     $InformationTabControl.SelectedTab = $Section3ResultsTab
-    Create-ComputerNodeCheckBoxArray
+    Create-TreeViewCheckBoxArray -Endpoint
     Generate-ComputerList
 
     if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
@@ -12,8 +12,8 @@ $ComputerListPsExecButtonAdd_Click = {
             $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
         }
         else {
-            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-            foreach ($root in $AllHostsNode) {
+            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+            foreach ($root in $AllTreeViewNodes) {
                 foreach ($Category in $root.Nodes) {
                     foreach ($Entry in $Category.nodes) {
                         if ($Entry.Text -eq $script:ComputerListEndpointNameToolStripLabel.text) {

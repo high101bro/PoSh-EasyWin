@@ -258,21 +258,22 @@ $InitialScriptLoadTime = Get-Date
 
 
 # Location PoSh-EasyWin will save files
-$PoShHome                         = $PSScriptRoot #Deprecated# Split-Path -parent $MyInvocation.MyCommand.Definition
+$PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -parent $MyInvocation.MyCommand.Definition
     # Creates settings directory
-    $PoShSettings                 = "$PoShHome\Settings"
+    $PoShSettings                    = "$PoShHome\Settings"
 
     # The path of PoSh-EasyWin when executed
-    $ThisScriptPath               = $myinvocation.mycommand.definition
-    $ThisScript                   = "& '$ThisScriptPath'"
+    $ThisScriptPath                  = $myinvocation.mycommand.definition
+    $ThisScript                      = "& '$ThisScriptPath'"
 
-    $LogFile                      = "$PoShHome\Log File.txt"
-    $IPListFile                   = "$PoShHome\iplist.txt"
+    $LogFile                         = "$PoShHome\Log File.txt"
+    $IPListFile                      = "$PoShHome\iplist.txt"
 
-    $script:ComputerTreeNodeFileSave     = "$PoShHome\Computer List TreeView (Saved).csv"
+    $script:EndpointTreeNodeFileSave = "$PoShHome\TreeView Data - Endpoint (Saved).csv"
+    $script:AccountsTreeNodeFileSave = "$PoShHome\TreeView Data - Accounts (Saved).csv"
 
-    $OpNotesFile                  = "$PoShHome\OpNotes.txt"
-    $OpNotesWriteOnlyFile         = "$PoShHome\OpNotes (Write Only).txt"
+    $OpNotesFile                     = "$PoShHome\OpNotes.txt"
+    $OpNotesWriteOnlyFile            = "$PoShHome\OpNotes (Write Only).txt"
 
     $script:CredentialManagementPath = "$PoShHome\Credential Management\"
 
@@ -771,6 +772,54 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
             }
             $ComputerAndAccountTreeNodeViewPanel.Controls.Add($ComputerAndAccountTreeViewTabControl)
 
+                    # If Computer treenodes are imported/created with missing data, this populates various fields with default data
+                    Update-FormProgress "$Dependencies\Code\Tree View\Normalize-TreeViewData.ps1"
+                    . "$Dependencies\Code\Tree View\Normalize-TreeViewData.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\Tree View\Save-TreeViewData.ps1"
+                    . "$Dependencies\Code\Tree View\Save-TreeViewData.ps1"
+
+                    # Initializes the Computer TreeView section that computer nodes are added to
+                    # TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
+                    # These include the root nodes of Search, and various Operating System and OU/CN names
+                    Update-FormProgress "$Dependencies\Code\Tree View\Initialize-TreeViewData.ps1"
+                    . "$Dependencies\Code\Tree View\Initialize-TreeViewData.ps1"
+
+                    # This will keep the Computer TreeNodes checked when switching between OS and OU/CN views
+                    Update-FormProgress "$Dependencies\Code\Tree View\UpdateState-TreeViewData.ps1"
+                    . "$Dependencies\Code\Tree View\UpdateState-TreeViewData.ps1"
+
+                    # Adds a treenode to the specified root node... a computer node within a category node
+                    Update-FormProgress "$Dependencies\Code\Tree View\AddTreeNodeTo-TreeViewData.ps1"
+                    . "$Dependencies\Code\Tree View\AddTreeNodeTo-TreeViewData.ps1"
+
+                    # Populate Auto Tag List used for Host Data tagging and Searching
+                    $TagListFileContents = Get-Content -Path $TagAutoListFile
+
+                    # Searches for Accounts nodes that match a given search entry
+                    # A new category node named by the search entry will be created and all results will be nested within
+                    Update-FormProgress "$Dependencies\Code\Tree View\Search-TreeViewData.ps1"
+                    . "$Dependencies\Code\Tree View\Search-TreeViewData.ps1"
+
+                    # Code to remove empty categoryies
+                    Update-FormProgress "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
+                    . "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\Tree View\Message-NodeAlreadyExists.ps1"
+                    . "$Dependencies\Code\Tree View\Message-NodeAlreadyExists.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\Tree View\Show-MoveForm.ps1"
+                    . "$Dependencies\Code\Tree View\Show-MoveForm.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\Tree View\Show-TagForm.ps1"
+                    . "$Dependencies\Code\Tree View\Show-TagForm.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
+                    . "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
+                    . "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
+
 
             $ComputerTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
                 Text   = "Endpoints"
@@ -778,8 +827,259 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                 UseVisualStyleBackColor = $True
             }
             $ComputerAndAccountTreeViewTabControl.Controls.Add($ComputerTreeviewTab)
-            
 
+
+                    $script:ComputerTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                        Text    = 'CanonicalName'
+                        Left    = 0
+                        Top     = $FormScale * 5
+                        Width   = $FormScale * 120
+                        Height  = $FormScale * 25
+                        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        AutoCompleteSource = "ListItems"
+                        AutoCompleteMode   = "SuggestAppend"    
+                        add_SelectedIndexChanged = {
+                            # This variable stores data on checked checkboxes, so boxes checked remain among different views
+                            $script:ComputerTreeViewSelected = @()
+
+                            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+                            foreach ($root in $AllTreeViewNodes) {
+                                foreach ($Category in $root.Nodes) {
+                                    foreach ($Entry in $Category.nodes) {
+                                        if ($Entry.Checked) {
+                                            $script:ComputerTreeViewSelected += $Entry.Text
+                                        }
+                                    }
+                                }
+                            }
+                            $script:ComputerTreeView.Nodes.Clear()
+                            Initialize-TreeViewData -Endpoint
+                            Normalize-TreeViewData -Endpoint
+                            Save-TreeViewData -Endpoint
+
+                            Foreach($ComputerData in $script:ComputerTreeViewData) {
+                                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $ComputerData.$($This.SelectedItem) -Entry $ComputerData.Name -ToolTip 'No ToolTip Data' -Metadata $ComputerData #-IPv4Address $ComputerData.IPv4Address
+                            }
+                            $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
+                            UpdateState-TreeViewData -Endpoint
+                            Update-TreeViewData -Endpoint
+                        }
+                        #Add_MouseHover = $ComputerTreeNodeEnabledRadioButtonAdd_MouseHover
+                    }
+                    $ComputerTreeNodeComboBoxList = @('CanonicalName','OperatingSystem') #,'IPV4Address','MACAddress'
+                    ForEach ($Item in $ComputerTreeNodeComboBoxList) { $script:ComputerTreeNodeComboBox.Items.Add($Item) }
+                    $ComputerTreeviewTab.Controls.Add($script:ComputerTreeNodeComboBox)
+
+
+                    $ComputerTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+                        Text    = "Greedy"
+                        Left    = $script:ComputerTreeNodeComboBox.Left + $script:ComputerTreeNodeComboBox.Width + ($FormScale * 5)
+                        Top     = $script:ComputerTreeNodeComboBox.Top - ($FormScale * 6)
+                        Height  = $FormScale * 25
+                        Width   = $FormScale * 65
+                        Checked = $true
+                        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    }
+                    $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchGreedyCheckbox)
+                            
+
+                    # Initial load of CSV data
+                    $script:ComputerTreeViewData = $null
+                    $script:ComputerTreeViewData = Import-Csv $script:EndpointTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
+
+                    $script:ComputerTreeViewSelected = ""
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
+                    $ComputerTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                        Name   = "Search TextBox"
+                        Left   = $script:ComputerTreeNodeComboBox.Left
+                        Top    = $script:ComputerTreeNodeComboBox.Top + $script:ComputerTreeNodeComboBox.Height + ($FormScale * 5)
+                        Width  = $FormScale * 120
+                        Height = $FormScale * 25
+                        AutoCompleteSource = "ListItems"
+                        AutoCompleteMode   = "SuggestAppend"
+                        Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown
+                        Add_MouseHover     = $ComputerTreeNodeSearchComboBoxAdd_MouseHover
+                    }
+                    ForEach ($Tag in $TagListFileContents) { [void] $ComputerTreeNodeSearchComboBox.Items.Add($Tag) }
+                    $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchComboBox)
+
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
+                    $ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
+                        Text   = "Search"
+                        Left   = $ComputerTreeNodeSearchComboBox.Left + $ComputerTreeNodeSearchComboBox.Width + ($FormScale * 5)
+                        Top    = $ComputerTreeNodeSearchComboBox.Top
+                        Width  = $FormScale * 55
+                        Height = $FormScale * 22
+                        Add_Click = { 
+                            Search-TreeViewData -Endpoint
+                        }
+                        Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
+                    }
+                    $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchButton)
+                    CommonButtonSettings -Button $ComputerTreeNodeSearchButton
+
+                    Remove-EmptyCategory -Endpoint
+
+
+                    Update-FormProgress "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
+                    . "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
+
+
+
+
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
+
+                    # Code for the Context Menu
+                    # This context menu is the one activeated when you click within the computer treeview area, but not when clicking on a computer ndoe itself
+                    Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
+                    . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
+
+                    # This context menu is the one activeated when you click on the computer node itself within the computer treeview
+                    # It is also activated within the Update-TreeViewData function
+                    Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
+                    . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
+                    Display-ContextMenuForComputerTreeNode
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
+                    $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
+                        Left   = $ComputerTreeNodeSearchComboBox.Left
+                        Top    = $ComputerTreeNodeSearchButton.Top + $ComputerTreeNodeSearchButton.Height + ($FormScale * 5)
+                        Width  = $ComputerTreeNodeSearchComboBox.Width + $ComputerTreeNodeSearchButton.Width + ($FormScale * 5)
+                        Height = $FormScale * 558
+                        # Note: size and location properties are are managed by 
+                        Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        CheckBoxes        = $True
+                        #LabelEdit         = $True  #Not implementing yet...
+                        #not working # AfterLabelEdit = {  }
+                        #not working #ShowRootLines     = $false
+                        ShowLines         = $True
+                        ShowNodeToolTips  = $True
+                        Add_Click         = $ComputerTreeViewAdd_Click
+                        Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
+                        Add_MouseHover    = $ComputerTreeViewAdd_MouseHover
+                        Add_MouseEnter    = {
+                            $ComputerAndAccountTreeNodeViewPanel.bringtofront()
+                            $ComputerAndAccountTreeViewTabControl.bringtofront()
+                            $script:ComputerTreeView.bringtofront()
+                        }
+                        Add_MouseLeave    = $ComputerTreeViewAdd_MouseLeave
+                        #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
+                        ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
+                        ShowPlusMinus     = $true
+                        HideSelection     = $false
+                        #not working #AfterSelect       = {( 1 | ogv )}
+                        ImageList         = $ComputerTreeViewImageList
+                        ImageIndex        = 1
+                    }
+                    $script:ComputerTreeView.Sort()
+                    $ComputerTreeviewTab.Controls.Add($script:ComputerTreeView)
+
+
+                    Initialize-TreeViewData -Endpoint
+                    Normalize-TreeViewData -Endpoint
+
+                    # Yes, save initially during the load because it will save any poulated default data
+                    #Save-TreeViewData -Endpoint
+    
+                    # This will load data that is located in the saved file
+                    Foreach($Computer in $script:ComputerTreeViewData) {
+                        #AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
+                    }
+                    $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
+
+                    # Controls the layout of the computer treeview
+                    $script:ComputerTreeView.ExpandAll()
+                    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+                    foreach ($root in $AllTreeViewNodes) {
+                        foreach ($Category in $root.Nodes) {
+                            foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
+                        }
+                    }
+
+
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    
             $AccountsTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
                 Text   = "Accounts"
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -788,232 +1088,255 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
             $ComputerAndAccountTreeViewTabControl.Controls.Add($AccountsTreeviewTab)
 
 
-            $FutureFeatureLabel = New-Object System.Windows.Forms.Label -Property @{
-                Text   = "Future Feature Under Development!"
-                Left   = $FormScale * 5
-                Top    = $FormScale * 20
-                Width  = $FormScale * 200
-                Height = $FormScale * 25
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
-                ForeColor = 'Blue'
-            }
-            $AccountsTreeviewTab.Controls.Add($FutureFeatureLabel)
-            
+                    $script:AccountsTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                        Text    = "CanonicalName"
+                        Left    = 0
+                        Top     = $FormScale * 5
+                        Width   = $FormScale * 120
+                        Height  = $FormScale * 25
+                        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        AutoCompleteSource = "ListItems"
+                        AutoCompleteMode   = "SuggestAppend"    
+                        add_SelectedIndexChanged      = {
+                            # This variable stores data on checked checkboxes, so boxes checked remain among different views
+                            $script:AccountsTreeViewSelected = @()
 
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOSHostnameRadioButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOSHostnameRadioButton.ps1"
-            $script:ComputerTreeNodeOSHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-                Text    = "OS"
-                Left    = 0
-                Top     = 0
-                Width   = $FormScale * 42
-                Height  = $FormScale * 25
-                Checked = $True
-                Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_Click      = $ComputerTreeNodeOSHostnameRadioButtonAdd_Click
-                Add_MouseHover = $ComputerTreeNodeOSHostnameRadioButtonAdd_MouseHover
-            }
-            $ComputerTreeviewTab.Controls.Add($script:ComputerTreeNodeOSHostnameRadioButton)
+                            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:AccountsTreeView.Nodes
+                            foreach ($root in $AllTreeViewNodes) {
+                                foreach ($Category in $root.Nodes) {
+                                    foreach ($Entry in $Category.nodes) {
+                                        if ($Entry.Checked) {
+                                            $script:AccountsTreeViewSelected += $Entry.Text
+                                        }
+                                    }
+                                }
+                            }
+                            $script:AccountsTreeView.Nodes.Clear()
+                            Initialize-TreeViewData -Accounts
+                            Normalize-TreeViewData -Accounts
+                            Save-TreeViewData -Accounts
 
-
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOUHostnameRadioButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\RadioButton\ComputerTreeNodeOUHostnameRadioButton.ps1"
-            $ComputerTreeNodeOUHostnameRadioButton = New-Object System.Windows.Forms.RadioButton -Property @{
-                Text    = "OU / CN"
-                Left    = $script:ComputerTreeNodeOSHostnameRadioButton.Left + $script:ComputerTreeNodeOSHostnameRadioButton.Width + $($FormScale * 5)
-                Top     = $script:ComputerTreeNodeOSHostnameRadioButton.Top
-                Width   = $FormScale * 73
-                Height  = $FormScale * 25
-                Checked = $false
-                Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_Click      = $ComputerTreeNodeOUHostnameRadioButtonAdd_Click
-                Add_MouseHover = $ComputerTreeNodeOUHostnameRadioButtonAdd_MouseHover
-            }
-            $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeOUHostnameRadioButton)
+                            Foreach($AccountsData in $script:AccountsTreeViewData) {
+                                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.$($This.SelectedItem) -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $AccountsData #-IPv4Address $AccountsData.IPv4Address
+                            }
+                            $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
+                            UpdateState-TreeViewData -Accounts
+                            Update-TreeViewData -Accounts
+                        }
+                        #Add_MouseHover = $AccountsTreeNodeEnabledRadioButtonAdd_MouseHover
+                    }
+                    $AccountsTreeNodeComboBoxList = @('CanonicalName','Enabled','LockedOut','SmartCardLogonRequired','Created','Modified','LastLogonDate','LastBadPasswordAttempt','PasswordNeverExpires','PasswordExpired','PasswordNotRequired','BadLogonCount',,'ScriptPath','HomeDrive')
+                    ForEach ($Item in $AccountsTreeNodeComboBoxList) { $script:AccountsTreeNodeComboBox.Items.Add($Item) }
+                    $AccountsTreeviewTab.Controls.Add($script:AccountsTreeNodeComboBox)
 
 
-            $ComputerTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
-                Text    = "Greedy"
-                Top     = $ComputerTreeNodeOUHostnameRadioButton.Top
-                Height  = $FormScale * 25
-                Width   = $FormScale * 65
-                Checked = $true
-                Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            }
-            $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchGreedyCheckbox)
-                      
-
-            # Initial load of CSV data
-            $script:ComputerTreeViewData = $null
-            $script:ComputerTreeViewData = Import-Csv $script:ComputerTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
-
-            # Initializes the Computer TreeView section that computer nodes are added to
-            # TreeView initialization initially happens upon load and whenever the it is regenerated, like when switching between views
-            # These include the root nodes of Search, and various Operating System and OU/CN names
-            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Initialize-ComputerTreeNodes.ps1"
-            . "$Dependencies\Code\Tree View\Computer\Initialize-ComputerTreeNodes.ps1"
-
-            # If Computer treenodes are imported/created with missing data, this populates various fields with default data
-            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Populate-ComputerTreeNodeDefaultData.ps1"
-            . "$Dependencies\Code\Tree View\Computer\Populate-ComputerTreeNodeDefaultData.ps1"
-
-            # This will keep the Computer TreeNodes checked when switching between OS and OU/CN views
-            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Update-TreeNodeComputerState.ps1"
-            . "$Dependencies\Code\Tree View\Computer\Update-TreeNodeComputerState.ps1"
-
-            # Adds a treenode to the specified root node... a computer node within a category node
-            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Add-NodeComputer.ps1"
-            . "$Dependencies\Code\Tree View\Computer\Add-NodeComputer.ps1"
-
-            $script:ComputerTreeViewSelected = ""
-
-            # Populate Auto Tag List used for Host Data tagging and Searching
-            $TagListFileContents = Get-Content -Path $TagAutoListFile
-
-            # Searches for Computer nodes that match a given search entry
-            # A new category node named by the search entry will be created and all results will be nested within
-            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1"
-            . "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1"
 
 
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ComboBox\ComputerTreeNodeSearchComboBox.ps1"
-            $ComputerTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                Name   = "Search TextBox"
-                Left   = $script:ComputerTreeNodeOSHostnameRadioButton.Left
-                Top    = $script:ComputerTreeNodeOSHostnameRadioButton.Top + $script:ComputerTreeNodeOSHostnameRadioButton.Height
-                Height = $FormScale * 25
-                AutoCompleteSource = "ListItems"
-                AutoCompleteMode   = "SuggestAppend"
-                Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Add_KeyDown        = $ComputerTreeNodeSearchComboBoxAdd_KeyDown
-                Add_MouseHover     = $ComputerTreeNodeSearchComboBoxAdd_MouseHover
-            }
-            ForEach ($Tag in $TagListFileContents) { [void] $ComputerTreeNodeSearchComboBox.Items.Add($Tag) }
-            $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchComboBox)
 
 
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\Button\ComputerTreeNodeSearchButton.ps1"
-            $ComputerTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
-                Text   = "Search"
-                Top    = $ComputerTreeNodeSearchComboBox.Top
-                Width  = $FormScale * 55
-                Height = $FormScale * 22
-                Add_Click = { 
-                    Search-ComputerTreeNode
-                }
-                Add_MouseHover = $ComputerTreeNodeSearchButtonAdd_MouseHover
-            }
-            $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchButton)
-            CommonButtonSettings -Button $ComputerTreeNodeSearchButton
 
 
-            # Code to remove empty categoryies
-            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1"
-            . "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1"
-            Remove-EmptyCategory
 
 
-            # Context menu button code
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListCollapseToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListCollapseToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1"
-            . "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1"
-            Update-FormProgress "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
-            . "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListAddEndpointToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListAddEndpointToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListNSLookupCheckedToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListTagToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNodeSelected.ps1"
-            . "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNodeSelected.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListMoveToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeleteToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRenameToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
-            . "$Dependencies\Code\Execution\Action\Check-Connection.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListPingToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListRPCCheckToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListSMBCheckToolStripButton.ps1"
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
-
-            # Code for the Context Menu
-            # This context menu is the one activeated when you click within the computer treeview area, but not when clicking on a computer ndoe itself
-            Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
-            . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
-
-            # This context menu is the one activeated when you click on the computer node itself within the computer treeview
-            # It is also activated within the Conduct-NodeAction function
-            Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
-            . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
-            Display-ContextMenuForComputerTreeNode
-
-            Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
-            . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
-            $script:ComputerTreeView = New-Object System.Windows.Forms.TreeView -Property @{
-                # Note: size and location properties are are managed by 
-                Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                CheckBoxes        = $True
-                #LabelEdit         = $True  #Not implementing yet...
-                #not working # AfterLabelEdit = {  }
-                #not working #ShowRootLines     = $false
-                ShowLines         = $True
-                ShowNodeToolTips  = $True
-                Add_Click         = $ComputerTreeViewAdd_Click
-                Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
-                Add_MouseHover    = $ComputerTreeViewAdd_MouseHover
-                Add_MouseEnter    = {
-                    $ComputerAndAccountTreeNodeViewPanel.bringtofront()
-                    $ComputerAndAccountTreeViewTabControl.bringtofront()
-                    $script:ComputerTreeView.bringtofront()
-                }
-                Add_MouseLeave    = $ComputerTreeViewAdd_MouseLeave
-                #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
-                ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
-                ShowPlusMinus     = $true
-                HideSelection     = $false
-                #not working #AfterSelect       = {( 1 | ogv )}
-                ImageList         = $ComputerTreeViewImageList
-                ImageIndex        = 1
-            }
-            $script:ComputerTreeView.Sort()
-            $ComputerTreeviewTab.Controls.Add($script:ComputerTreeView)
 
 
-            Initialize-ComputerTreeNodes
-            Populate-ComputerTreeNodeDefaultData
 
-            # Yes, save initially during the load because it will save any poulated default data
-            Save-ComputerTreeNodeHostData
 
-            # This will load data that is located in the saved file
-            Foreach($Computer in $script:ComputerTreeViewData) {
-                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
-            }
-            $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
 
-            # Controls the layout of the computer treeview
-            $script:ComputerTreeView.ExpandAll()
-            [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-            foreach ($root in $AllHostsNode) {
-                foreach ($Category in $root.Nodes) {
-                    foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
-                }
-            }
+
+
+
+                    $AccountsTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
+                        Text    = "Greedy"
+                        Left    = $script:AccountsTreeNodeComboBox.Left + $script:AccountsTreeNodeComboBox.Width + ($FormScale * 5)
+                        Top     = $script:AccountsTreeNodeComboBox.Top - ($FormScale * 6)
+                        Height  = $FormScale * 25
+                        Width   = $FormScale * 65
+                        Checked = $false
+                        Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    }
+                    $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchGreedyCheckbox)
+                            
+
+                    # Initial load of CSV data
+                    $script:AccountsTreeViewData = $null
+                    $script:AccountsTreeViewData = Import-Csv $script:AccountsTreeNodeFileSave -ErrorAction SilentlyContinue #| Select-Object -Property Name, OperatingSystem, CanonicalName, IPv4Address, MACAddress, Notes
+
+                    $script:AccountsTreeViewSelected = ""
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\AccountsTreeNodeSearchComboBox.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\ComboBox\AccountsTreeNodeSearchComboBox.ps1"
+                    $AccountsTreeNodeSearchComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                        Name   = "Search TextBox"
+                        Left   = $script:AccountsTreeNodeComboBox.Left
+                        Top    = $script:AccountsTreeNodeComboBox.Top + $script:AccountsTreeNodeComboBox.Height + ($FormScale * 5)
+                        Width  = $FormScale * 120
+                        Height = $FormScale * 25
+                        AutoCompleteSource = "ListItems"
+                        AutoCompleteMode   = "SuggestAppend"
+                        Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        Add_KeyDown        = $AccountsTreeNodeSearchComboBoxAdd_KeyDown
+                        Add_MouseHover     = $AccountsTreeNodeSearchComboBoxAdd_MouseHover
+                    }
+                    ForEach ($Tag in $TagListFileContents) { [void] $AccountsTreeNodeSearchComboBox.Items.Add($Tag) }
+                    $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchComboBox)
+
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\AccountsTreeNodeSearchButton.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\Button\AccountsTreeNodeSearchButton.ps1"
+                    $AccountsTreeNodeSearchButton = New-Object System.Windows.Forms.Button -Property @{
+                        Text   = "Search"
+                        Left   = $AccountsTreeNodeSearchComboBox.Left + $AccountsTreeNodeSearchComboBox.Width + ($FormScale * 5)
+                        Top    = $AccountsTreeNodeSearchComboBox.Top
+                        Width  = $FormScale * 55
+                        Height = $FormScale * 22
+                        Add_Click = { 
+                            Search-TreeViewData -Accounts
+                        }
+                        Add_MouseHover = $AccountsTreeNodeSearchButtonAdd_MouseHover
+                    }
+                    $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchButton)
+                    CommonButtonSettings -Button $AccountsTreeNodeSearchButton
+
+                    Remove-EmptyCategory -Accounts
+
+                    Update-FormProgress "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
+                    . "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
+
+
+                    # Code for the Context Menu
+                    # This context menu is the one activeated when you click within the Accounts treeview area, but not when clicking on a Accounts ndoe itself
+                    Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeView.ps1"
+                    . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeView.ps1"
+
+                    # This context menu is the one activeated when you click on the Accounts node itself within the Accounts treeview
+                    # It is also activated within the Update-TreeViewData function
+                    Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
+                    . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
+                    Display-ContextMenuForAccountsTreeNode
+
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
+                    $script:AccountsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
+                        Left   = $AccountsTreeNodeSearchComboBox.Left
+                        Top    = $AccountsTreeNodeSearchButton.Top + $AccountsTreeNodeSearchButton.Height + ($FormScale * 5)
+                        Width  = $AccountsTreeNodeSearchComboBox.Width + $AccountsTreeNodeSearchButton.Width + ($FormScale * 5)
+                        Height = $FormScale * 558
+                        # Note: size and location properties are are managed by 
+                        Font              = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        CheckBoxes        = $True
+                        #LabelEdit         = $True  #Not implementing yet...
+                        #not working # AfterLabelEdit = {  }
+                        #not working #ShowRootLines     = $false
+                        ShowLines         = $True
+                        ShowNodeToolTips  = $True
+                        Add_Click         = $AccountsTreeViewAdd_Click
+                        Add_AfterSelect   = $AccountsTreeViewAdd_AfterSelect
+                        Add_MouseHover    = $AccountsTreeViewAdd_MouseHover
+                        Add_MouseEnter    = {
+                            $ComputerAndAccountTreeNodeViewPanel.bringtofront()
+                            $ComputerAndAccountTreeViewTabControl.bringtofront()
+                            $script:AccountsTreeView.bringtofront()
+                        }
+                        Add_MouseLeave    = $AccountsTreeViewAdd_MouseLeave
+                        #ShortcutsEnabled  = $false                                #Used for ContextMenuStrip
+                        ContextMenuStrip  = $AccountsListContextMenuStrip      #Ref Add_click
+                        ShowPlusMinus     = $true
+                        HideSelection     = $false
+                        #not working #AfterSelect       = {( 1 | ogv )}
+                        ImageList         = $AccountsTreeViewImageList
+                        ImageIndex        = 1
+                    }
+                    $script:AccountsTreeView.Sort()
+                    $AccountsTreeviewTab.Controls.Add($script:AccountsTreeView)
+
+
+                    Initialize-TreeViewData -Accounts
+                    Normalize-TreeViewData -Accounts
+
+                    # # Yes, save initially during the load because it will save any poulated default data
+                    #Save-TreeViewData -Accounts
+                    
+                    # This will load data that is located in the saved file
+                    Foreach($AccountsData in $script:AccountsTreeViewData) {
+                        #AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.Enabled -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address 
+                        #AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category 'Alphabetical' -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address
+                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.CanonicalName -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address
+                    }
+                    $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
+
+                    # Controls the layout of the Accounts treeview
+                    $script:AccountsTreeView.ExpandAll()
+                    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:AccountsTreeView.Nodes
+                    foreach ($root in $AllTreeViewNodes) {
+                        foreach ($Category in $root.Nodes) {
+                            foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
+                        }
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    
+
+
+
+                    
 
 $PoShEasyWin.Controls.Add($ComputerAndAccountTreeNodeViewPanel)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1380,7 +1703,7 @@ $ExecuteScriptHandler = {
 
 
         if ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Monitor Jobs' -or $script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'Individual Execution') {
-            Create-ComputerNodeCheckBoxArray
+            Create-TreeViewCheckBoxArray -Endpoint
 
             # Compares the computerlist against the previous computerlist queried (generated when previous query is completed )
             # If the computerlists changed, it will prompt you to do connections tests and generate a new computerlist if endpoints fail

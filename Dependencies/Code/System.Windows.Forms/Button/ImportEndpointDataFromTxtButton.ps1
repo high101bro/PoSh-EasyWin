@@ -1,4 +1,6 @@
 $ImportEndpointDataFromTxtButtonAdd_Click = {
+    $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+
     [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
     $ComputerTreeNodeImportTxtOpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog -Property @{
         Title            = "Import .txt Data"
@@ -16,15 +18,14 @@ $ImportEndpointDataFromTxtButtonAdd_Click = {
     foreach ($Computer in $($ComputerTreeNodeImportTxt | Where-Object {$_ -ne ''}) ) {
         # Checks if the data already exists
         if ($script:ComputerTreeViewData.Name -contains $Computer) {
-            Message-HostAlreadyExists -Message "Import .CSV:  Warning" -Computer $Computer -ResultsListBoxMessage
+            Message-NodeAlreadyExists -Endpoint -Message "Import .CSV:  Warning" -Computer $Computer -ResultsListBoxMessage
         }
         else {
-            if ($ComputerTreeNodeOSHostnameRadioButton.Checked -and $Computer -ne "") {
-                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category 'Unknown' -Entry $Computer -ToolTip 'N/A'
-            }
-            elseif ($ComputerTreeNodeOUHostnameRadioButton.Checked -and $Computer -ne "") {
-                Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer -ToolTip 'N/A'
-            }
+            $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+            $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
+
+            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer -ToolTip 'N/A'
+
             $script:ComputerTreeViewData += [PSCustomObject]@{
                 Name            = $Computer
                 OperatingSystem = 'Unknown'
@@ -33,14 +34,14 @@ $ImportEndpointDataFromTxtButtonAdd_Click = {
                 MACAddress      = 'N/A'
             }
             $script:ComputerTreeView.Nodes.Clear()
-            Initialize-ComputerTreeNodes
-            Update-TreeNodeComputerState -NoMessage
-            Populate-ComputerTreeNodeDefaultData
-            Foreach($Computer in $script:ComputerTreeViewData) { Add-NodeComputer -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
+            Initialize-TreeViewData -Endpoint
+            UpdateState-TreeViewData -Endpoint -NoMessage
+            Normalize-TreeViewData -Endpoint
+            Foreach($Computer in $script:ComputerTreeViewData) { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
             $script:ComputerTreeView.ExpandAll()
         }
     }
-    Save-ComputerTreeNodeHostData
+    Save-TreeViewData -Endpoint
 }
 
 

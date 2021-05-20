@@ -30,7 +30,7 @@ $script:CommandTreeViewQueryMethodSelectionComboBoxAdd_SelectedIndexChanged = {
                         }
                     }
                 }
-                Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+                Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
 
                 # This brings specific tabs to the forefront/front view
                 $MainLeftTabControl.SelectedTab = $Section1CollectionsTab

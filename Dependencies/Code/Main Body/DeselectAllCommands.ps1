@@ -75,7 +75,6 @@ function Deselect-AllCommands {
     $SysinternalsProcessMonitorCheckbox.ForeColor                = 'Blue'
     $ExeScriptUserSpecifiedExecutableAndScriptCheckbox.ForeColor = 'Blue'
 
-#Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
-}
+#Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
 
 

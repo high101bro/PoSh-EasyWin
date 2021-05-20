@@ -185,7 +185,7 @@ function Conduct-PortScan {
             $script:ProgressBarQueriesProgressBar.Value += 1
         }
 
-        Save-ComputerTreeNodeHostData -SaveScan -Ports $script:ScanConnectedPort -Endpoints $IPAddress
+        Save-TreeViewData -Endpoint -SaveScan -Ports $script:ScanConnectedPort -Endpoints $IPAddress
         
         if ($NetworkPortScanIPResponded -ne "") { $EnumerationComputerListBox.Items.Add("$NetworkPortScanIPResponded") }
         $NetworkPortScanResultsIPList = @() # To Clear out the Variable

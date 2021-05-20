@@ -1,6 +1,6 @@
 $ComputerTreeNodeSearchComboBoxAdd_KeyDown = {
     if ($_.KeyCode -eq "Enter") {
-        Search-ComputerTreeNode
+        Search-TreeViewData -Endpoint
     }
 }
 

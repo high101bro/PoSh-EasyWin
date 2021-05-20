@@ -5,6 +5,57 @@ v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
 To Do List:
 ==================================================
 Accounts Treeview
+	- update Set-GuiLayout.ps1
+	- search
+	- greedy
+	- checkbox parent to check all
+	- move all
+	- tag all
+	- sometimes it opens the wrong context memu
+	- the other context menu doesn't appear
+
+==================================================
+v5.4.0 - 7 May 2021
+==================================================
+Populating Accounts Treeview with data
+
+	Moved "$Dependencies/Code/Tree View/Computer/Populate-TreeNodeDefaultData -Endpoint.ps1" to "$Dependencies/Code/Tree View/Populate-TreeNodeDefaultData.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies/Code/Tree View/Computer/Save-ComputerTreeNodeHostData -Endpoint.ps1" to "$Dependencies/Code/Tree View/Save-TreeNodeData.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies/Code/Tree View/Computer/Initialize-ComputerTreeNodes.ps1" to "$Dependencies/Code/Tree View/Initialize-TreeViewData.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies/Code/Tree View/Computer/Update-TreeNodeState -Endpoint.ps1" to "$Dependencies/Code/Tree View/Update-TreeNodeState.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies\Code\Tree View\Computer\Add-NodeComputer.ps1" to "$Dependencies/Code/Tree View/Add-TreeNode.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Created "$Dependencies\Code\System.Windows.Forms\RadioButton\AccountsTreeNodeOSHostnameRadioButton.ps1"
+	Created "$Dependencies\Code\System.Windows.Forms\RadioButton\AccountsTreeNodeOUHostnameRadioButton.ps1"
+	Moved "$Dependencies\Code\Tree View\Computer\Search-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Search-TreeNode.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies\Code\Tree View\Computer\Remove-EmptyCategory.ps1" to "$Dependencies\Code\Tree View\Remove-EmptyCategory.ps1"
+		- Added code and parameters for Accounts and Endpoint
+    Moved "$Dependencies\Code\Tree View\Computer\Message-HostAlreadyExists.ps1" to "$Dependencies\Code\Tree View\Message-HostAlreadyExists.ps1"
+		- Added code and parameters for Accounts and Endpoint
+	Moved "$Dependencies\Code\Tree View\Computer\Move-ComputerTreeNode.ps1" to "$Dependencies\Code\Tree View\Computer\MoveNode-TreeViewData.ps1"
+		- Added code and parameters for Accounts and Endpoint
+
+Updated TreeView function names and locations for standarization
+	AddTreeNodeTo-TreeViewData
+	Initialize-TreeViewData
+	Normalize-TreeViewData
+	Save-TreeViewData
+	Search-TreeViewData
+	Update-TreeViewData
+	UpdateState-TreeViewData
+	Update-TreeViewData
+	Acknowledgement-TreeViewData
+
+Added new options to context menu
+	endpoint treeview &	accounts treeview
+		out-gridview
+		spreadsheet
+		browser html view
 
 ==================================================
 v5.3.2 - 7 May 2021

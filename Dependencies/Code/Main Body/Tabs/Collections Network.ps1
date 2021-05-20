@@ -61,7 +61,7 @@ $NetworkConnectionSearchRemoteIPAddressCheckbox = New-Object System.Windows.Form
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands 
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
@@ -111,7 +111,7 @@ $NetworkConnectionSearchRemotePortCheckbox = New-Object System.Windows.Forms.Che
     Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
@@ -161,7 +161,7 @@ $NetworkConnectionSearchLocalPortCheckbox = New-Object System.Windows.Forms.Chec
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = { 
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
@@ -229,7 +229,7 @@ $NetworkConnectionSearchCommandLineCheckbox = New-Object System.Windows.Forms.Ch
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
@@ -263,7 +263,7 @@ $NetworkConnectionSearchExecutablePathCheckbox = New-Object System.Windows.Forms
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
@@ -317,7 +317,7 @@ $NetworkConnectionSearchProcessCheckbox = New-Object System.Windows.Forms.CheckB
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }
@@ -355,7 +355,7 @@ $NetworkConnectionSearchDNSCacheCheckbox = New-Object System.Windows.Forms.Check
     Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 12),1,2,1)
     ForeColor = 'Blue'
     Add_Click = {
-        Conduct-NodeAction -TreeView $script:CommandsTreeView.Nodes -Commands
+        Update-TreeViewData -Commands -TreeView $script:CommandsTreeView.Nodes
         if ($this.checked){$this.ForeColor = 'Red'} else {$this.ForeColor = 'Blue'}
     }
 }

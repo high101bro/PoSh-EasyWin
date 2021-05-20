@@ -12,10 +12,10 @@ function Quarantine-EndpointsWithFirewallRules {
 
     function Tag-QuarantineMessage {
         param($Message,$Computer)
-        [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
+        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
         $ComputerListMassTagArray = @()
         foreach ($node in $script:ComputerTreeViewSelected) {
-            foreach ($root in $AllHostsNode) {
+            foreach ($root in $AllTreeViewNodes) {
                 foreach ($Category in $root.Nodes) {
                     foreach ($Entry in $Category.Nodes) {
                         if ($Entry.Checked -and $Entry.Text -eq "$Computer" -and $Entry.Text -notin $ComputerListMassTagArray) {
@@ -31,7 +31,7 @@ function Quarantine-EndpointsWithFirewallRules {
                 }
             }
         }
-        Save-ComputerTreeNodeHostData -SaveAllChecked
+        Save-TreeViewData -Endpoint -SaveAllChecked
     }
 
     Generate-ComputerList

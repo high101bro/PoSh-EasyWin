@@ -1,7 +1,7 @@
 function Deselect-AllComputers {
     #$script:ComputerTreeView.Nodes.Clear()
-    [System.Windows.Forms.TreeNodeCollection]$AllHostsNode = $script:ComputerTreeView.Nodes
-    foreach ($root in $AllHostsNode) {
+    [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+    foreach ($root in $AllTreeViewNodes) {
         #if ($root.Checked) { $root.Checked = $false }
         $root.Checked = $false
         foreach ($Category in $root.Nodes) {
@@ -17,7 +17,7 @@ function Deselect-AllComputers {
             }
         }
     }
-    Conduct-NodeAction -TreeView $script:ComputerTreeView.Nodes -ComputerList
+    Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
 }
 
 

@@ -1,6 +1,6 @@
 $ImportAccountDataFromActiveDirectoryButtonAdd_Click = {
 
-
+$ComputerAndAccountTreeViewTabControl.SelectedTab = $AccountsTreeviewTab
 
 $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
     Text          = 'Import account information from Active Directory'
@@ -77,7 +77,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Width     = $FormScale * 100
             Height    = $FormScale * 20
             Add_Click = {
-                Create-ComputerNodeCheckBoxArray
+                Create-TreeViewCheckBoxArray -Accounts
                 if ($ImportFromADWinRMManuallEntryTextBox.Text -ne '<Enter a hostname/IP>' -and $ImportFromADWinRMManuallEntryTextBox.Text -ne '' -and $ImportFromADWinRMAutoCheckBox.checked -eq $false ) {
                     if (Verify-Action -Title "Verification: Active Directory Import" -Question "Credentials Used:`n$($script:Credential.UserName)`n`nImport Active Directory account information from the following?" -Computer $ImportFromADWinRMManuallEntryTextBox.text) {
                         $StatusListBox.Items.Clear()
@@ -91,21 +91,30 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName
                             $Password = '"PASSWORD HIDDEN"'
-                            Invoke-Command -ScriptBlock {
+                            $script:AccountsTreeViewData = Invoke-Command -ScriptBlock {
                                 Get-ADUser -Filter * -Properties * `
                                 | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
-                            } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential `
-                            | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
+                            } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential
+                            $script:AccountsTreeViewData | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
                         }
                         else {
-                            Invoke-Command -ScriptBlock {
+                            $script:AccountsTreeViewData = Invoke-Command -ScriptBlock {
                                 Get-ADUser -Filter * -Properties * `
                                 | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
-                            } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget `
-                            | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
+                            } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget
+                            $script:AccountsTreeViewData | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
                         }
+                        #Initialize-TreeViewData -Accounts
+                        Normalize-TreeViewData -Accounts
+#                        Save-TreeViewData -Accounts
+
+                        Foreach($AccountsData in $script:AccountsTreeViewData) {
+                            AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.Enabled -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address 
+                        }
+                        
+                        UpdateState-TreeViewData -Accounts
                     }
                     else {
                         [system.media.systemsounds]::Exclamation.play()
@@ -114,7 +123,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                     }
                 }
                 elseif ($ImportFromADWinRMAutoCheckBox.checked -and $script:ComputerTreeViewSelected.count -eq 1) {
-                    Create-ComputerNodeCheckBoxArray
+                    Create-TreeViewCheckBoxArray -Accounts
                     if (Verify-Action -Title "Verification: Active Directory Import" -Question "Make sure to select the proper server.`nImport Active Directory hosts from the following?" -Computer $($script:ComputerTreeViewSelected -join ', ')) {
                         $InformationTabControl.SelectedTab = $Section3ResultsTab
 
@@ -127,22 +136,31 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                             $Username = $script:Credential.UserName
                             $Password = '"PASSWORD HIDDEN"'
 
-                            Invoke-Command -ScriptBlock {
+                            $script:AccountsTreeViewData = Invoke-Command -ScriptBlock {
                                 Get-ADUser -Filter * -Properties * `
                                 | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
-                            } -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential `
-                            | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
+                            } -ComputerName $script:ComputerTreeViewSelected -Credential $script:Credential
+                            $script:AccountsTreeViewData | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
 
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $script:ComputerTreeViewSelected -Credential [ $UserName | $Password ]"
                         }
                         else {
-                            Invoke-Command -ScriptBlock {
+                            $script:AccountsTreeViewData = Invoke-Command -ScriptBlock {
                                 Get-ADUser -Filter * -Properties * `
                                 | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
-                            } -ComputerName $script:ComputerTreeViewSelected `
-                            | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
+                            } -ComputerName $script:ComputerTreeViewSelected
+                            $script:AccountsTreeViewData | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $script:ComputerTreeViewSelected"
                         }
+                        #Initialize-TreeViewData -Accounts
+                        Normalize-TreeViewData -Accounts
+                        Save-TreeViewData -Accounts
+
+                        Foreach($AccountsData in $script:AccountsTreeViewData) {
+                            AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.Enabled -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address 
+                        }
+                        
+                        UpdateState-TreeViewData -Accounts
                     }
                     else {
                         [system.media.systemsounds]::Exclamation.play()
@@ -150,10 +168,10 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                         $StatusListBox.Items.Add("Import from Active Directory:  Cancelled")
                     }
                 }
-                elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Importing Hosts' }
-                elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Importing Hosts' }
+                elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Importing Accounts' }
+                elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Importing Accounts' }
 
-                Save-ComputerTreeNodeHostData
+                Save-TreeViewData -Endpoint
                 
                 $ImportFromADFrom.Close()
             }
@@ -239,7 +257,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                         Get-ADUser -Filter * -Properties * `
                         | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                     } -Credential $script:Credential `
-                    | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
+                    | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -Credential [ $UserName | $Password ]"
                 }
                 else {
@@ -247,11 +265,12 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                         Get-ADUser -Filter * -Properties * `
                         | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
                     } `
-                    | Export-Csv "$PoShHome\Account Data.csv" -NoTypeInformation
+                    | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive }"
                 }
-                Save-ComputerTreeNodeHostData
-            
+                Save-TreeViewData -Endpoint
+
+                $AccountsTreeNodeOUCNRadioButton.checked = $true
                 $ImportFromADFrom.Close()
             }
         }

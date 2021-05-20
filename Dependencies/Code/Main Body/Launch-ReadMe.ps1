@@ -1,7 +1,7 @@
 
 function Launch-ReadMe {
     param([switch]$ReadMe)
-function Conduct-NodeActionAcknowledgement {
+function Acknowledgement-TreeViewData {
     param($TreeView)
     [System.Windows.Forms.TreeNodeCollection]$AllNodes = $TreeView
     foreach ($root in $AllNodes) {
@@ -61,10 +61,10 @@ $AcknowledgeTreeView = New-Object System.Windows.Forms.TreeView -Property @{
     ShowNodeToolTips = $True
     Add_Click        = {
         if (-not (Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
-            Conduct-NodeActionAcknowledgement -TreeView $AcknowledgeTreeView.Nodes
+            Acknowledgement-TreeViewData -TreeView $AcknowledgeTreeView.Nodes
         }
     }
-    ###Add_AfterSelect  = { Conduct-NodeAction -TreeView $AcknowledgeTreeView.Nodes -Commands }
+    ###Add_AfterSelect  = { Update-TreeViewData -Commands -TreeView $AcknowledgeTreeView.Nodes }
 }
 $UserNoticeAcknowledgementForm.Controls.Add($AcknowledgeTreeView)
 
