@@ -862,11 +862,12 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             }
                             $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
                             UpdateState-TreeViewData -Endpoint
-                            Update-TreeViewData -Endpoint
+                            #batman
+                            Update-TreeViewData -Endpoint -TreeView $script:AccountsTreeView.Nodes
                         }
                         #Add_MouseHover = $ComputerTreeNodeEnabledRadioButtonAdd_MouseHover
                     }
-                    $ComputerTreeNodeComboBoxList = @('CanonicalName','OperatingSystem') #,'IPV4Address','MACAddress'
+                    $ComputerTreeNodeComboBoxList = @('CanonicalName', 'OperatingSystem', 'OperatingSystemHotfix', 'OperatingSystemServicePack', 'Enabled', 'LockedOut', 'LogonCount', 'Created', 'Modified', 'LastLogonDate', 'MemberOf', 'isCriticalSystemObject', 'HomedirRequired', 'Location', 'ProtectedFromAccidentalDeletion', 'TrustedForDelegation')
                     ForEach ($Item in $ComputerTreeNodeComboBoxList) { $script:ComputerTreeNodeComboBox.Items.Add($Item) }
                     $ComputerTreeviewTab.Controls.Add($script:ComputerTreeNodeComboBox)
 
@@ -991,7 +992,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         ShowNodeToolTips  = $True
                         Add_Click         = $ComputerTreeViewAdd_Click
                         Add_AfterSelect   = $ComputerTreeViewAdd_AfterSelect
-                        Add_MouseHover    = $ComputerTreeViewAdd_MouseHover
+                        #Add_MouseHover    = $ComputerTreeViewAdd_MouseHover
                         Add_MouseEnter    = {
                             $ComputerAndAccountTreeNodeViewPanel.bringtofront()
                             $ComputerAndAccountTreeViewTabControl.bringtofront()
@@ -1232,7 +1233,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         ShowNodeToolTips  = $True
                         Add_Click         = $AccountsTreeViewAdd_Click
                         Add_AfterSelect   = $AccountsTreeViewAdd_AfterSelect
-                        Add_MouseHover    = $AccountsTreeViewAdd_MouseHover
+                        #Add_MouseHover    = $AccountsTreeViewAdd_MouseHover
                         Add_MouseEnter    = {
                             $ComputerAndAccountTreeNodeViewPanel.bringtofront()
                             $ComputerAndAccountTreeViewTabControl.bringtofront()
@@ -1405,6 +1406,10 @@ $InformationPanel = New-Object System.Windows.Forms.Panel
             # Endpoint Data Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
+
+            # Account Data Tab
+            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Account Data.ps1"
+            . "$Dependencies\Code\Main Body\Tabs\Account Data.ps1"
 
             # Query Exploration Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"

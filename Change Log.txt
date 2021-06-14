@@ -4,6 +4,12 @@ v{Major}.{Minor}.{HotFix} - {Day} {Month} {Year}
 ==================================================
 To Do List:
 ==================================================
+Update Sysinternal tools
+Add sysmon event id 3 to pswritehtml charts
+check sysmon config name... update if necessary
+
+Commands Select All Button isn't working...
+
 Accounts Treeview
 	- update Set-GuiLayout.ps1
 	- search
@@ -17,6 +23,23 @@ Accounts Treeview
 ==================================================
 v5.4.0 - 7 May 2021
 ==================================================
+https://github.com/olafhartong/sysmon-modular/blob/master/sysmonconfig.xml
+
+Added Invoke-SRUMDump script variants
+	- Modified version from WiredPulse
+	- Made code more PoSh-EasyWin friendly
+		- No longer outputs csv data, but rather raw object data
+		- Changed default save location from user Desktop to C:\Windows\Temp
+		- Rewrote code into separate scripts
+			Invoke-SRUMDump (Network Connections)
+			Invoke-SRUMDump (Network Data)
+			Invoke-SRUMDump (Applicastion Use)
+			Invoke-SRUMDump (Application Timeline)
+			Invoke-SRUMDump (Push Notifications)
+		- Removed unndeed code
+		- Trimmed down Comment Based Help section
+			- Ensured to keep credits referencing WiredPulse
+
 Populating Accounts Treeview with data
 
 	Moved "$Dependencies/Code/Tree View/Computer/Populate-TreeNodeDefaultData -Endpoint.ps1" to "$Dependencies/Code/Tree View/Populate-TreeNodeDefaultData.ps1"

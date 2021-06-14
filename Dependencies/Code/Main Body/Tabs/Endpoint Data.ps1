@@ -1,4 +1,3 @@
-
 $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
     Text = "Endpoint Data"
     Name = "Host Data Tab"
@@ -9,190 +8,311 @@ $Section3HostDataTab = New-Object System.Windows.Forms.TabPage -Property @{
 $InformationTabControl.Controls.Add($Section3HostDataTab)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataNameTextBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataNameTextBox.ps1"
 $script:Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = 0
-                  Y = $FormScale * 3 }
-    Size     = @{ Width  = $FormScale * 250
-                  Height = $FormScale * 25 }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    ReadOnly = $true
-    Add_MouseHover = $script:Section3HostDataNameTextBoxAdd_MouseHover
+    Left      = 0
+    Top       = $FormScale * 3
+    Width     = $FormScale * 250
+    Height    = $FormScale * 25
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseHover = {
+        Show-ToolTip -Title "Hostname" -Icon "Info" -Message @"
++  This field is reserved for the hostname.
++  Hostnames are not case sensitive.
++  Though IP addresses may be entered, WinRM queries may fail as
+    IPs may only be used for authentication under certain conditions.
+"@
+    }
 }
 $Section3HostDataTab.Controls.Add($script:Section3HostDataNameTextBox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOSTextBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOSTextBox.ps1"
 $Section3HostDataOSTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = 0
-                  Y = $script:Section3HostDataNameTextBox.Location.Y + $script:Section3HostDataNameTextBox.Size.Height + $($FormScale * 4) }
-    Size     = @{ Width  = $FormScale * 250
-                  Height = $FormScale * 25 }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    ReadOnly = $true
-    Add_MouseHover = $Section3HostDataOSTextBoxAdd_MouseHover
+    Left      = 0
+    Top       = $script:Section3HostDataNameTextBox.Top + $script:Section3HostDataNameTextBox.Height + $($FormScale * 4)
+    Width     = $FormScale * 250
+    Height    = $FormScale * 25
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseHover = {
+        Show-ToolTip -Title "Operating System" -Icon "Info" -Message @"
++  This field is useful to view groupings of hosts by OS.
+"@
+    }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataOSTextBox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOUTextBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataOUTextBox.ps1"
 $Section3HostDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = 0
-                  Y = $Section3HostDataOSTextBox.Location.Y + $Section3HostDataOSTextBox.Size.Height + $($FormScale * 4) }
-    Size     = @{ Width  = $FormScale * 250
-                  Height = $FormScale * 25 }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    ReadOnly = $true
-    Add_MouseHover = $Section3HostDataOUTextBoxAdd_MouseHover
+    Left      = 0
+    Top       = $Section3HostDataOSTextBox.Top + $Section3HostDataOSTextBox.Height + $($FormScale * 4)
+    Width     = $FormScale * 250
+    Height    = $FormScale * 25
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseHover = {
+        Show-ToolTip -Title "Organizational Unit / Container Name" -Icon "Info" -Message @"
++  This field is useful to view groupings of hosts by OU/CN.
+"@
+    }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataOUTextBox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataIPTextBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataIPTextBox.ps1"
 $Section3HostDataIPTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = 0
-                  Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + $($FormScale * 4) }
-    Size     = @{ Width  = $FormScale * 120
-                  Height = $FormScale * 25 }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    ReadOnly = $false
-    Add_MouseHover = $Section3HostDataIPTextBoxAdd_MouseHover
+    Left      = 0
+    Top       = $Section3HostDataOUTextBox.Top + $Section3HostDataOUTextBox.Height + $($FormScale * 4)
+    Width     = $FormScale * 120
+    Height    = $FormScale * 25
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $false
+    Add_MouseHover = {
+        Show-ToolTip -Title "IP Address" -Icon "Info" -Message @"
++  Informational field not used to query hosts.
+"@
+    }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataIPTextBox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataMACTextBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\TextBox\Section3HostDataMACTextBox.ps1"
 $Section3HostDataMACTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Location = @{ X = $Section3HostDataIPTextBox.Size.Width + $($FormScale * 10)
-                  Y = $Section3HostDataOUTextBox.Location.Y + $Section3HostDataOUTextBox.Size.Height + $($FormScale * 4) }
-    Size     = @{ Width  = $FormScale * 120
-                  Height = $FormScale * 25 }
-    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    ReadOnly = $false
-    Add_MouseHover = $Section3HostDataMACTextBoxAdd_MouseHover
+    Left      = $Section3HostDataIPTextBox.Width + $($FormScale * 10)
+    Top       = $Section3HostDataOUTextBox.Top + $Section3HostDataOUTextBox.Height + $($FormScale * 4)
+    Width     = $FormScale * 120
+    Height    = $FormScale * 25
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $false
+    Add_MouseHover = {
+        Show-ToolTip -Title "MAC Address" -Icon "Info" -Message @"
++  Informational field not used to query hosts.
+"@
+    }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataMACTextBox)
 
 
-#============================================================================================================================================================
-# Host Data - Selection Data ComboBox and Date/Time ComboBox
-#============================================================================================================================================================
 $HostDataList1 = (Get-ChildItem -Path $CollectedDataDirectory -Recurse | Where-Object {$_.Extension -match 'csv'}).basename | ForEach-Object { $_.split('(')[0].trim() } | Sort-Object -Unique -Descending
 
-    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataSelectionComboBox.ps1"
-    . "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataSelectionComboBox.ps1"
-    $Section3HostDataSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text      = "Host Data - Selection"
-        Location  = @{ X = $FormScale * 260
-                       Y = $FormScale * 3 }
-        Size      = @{ Width  = $FormScale * 200
-                       Height = $FormScale * 25 }
-        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        ForeColor = "Black"
-        AutoCompleteSource = "ListItems"
-        AutoCompleteMode   = "SuggestAppend"
-        DataSource         = $HostDataList1
-        Add_MouseHover     = $Section3HostDataSelectionComboBoxAdd_MouseHover
-        Add_SelectedIndexChanged = $Section3HostDataSelectionComboBoxAdd_SelectedIndexChanged
-    }
-    $Section3HostDataTab.Controls.Add($Section3HostDataSelectionComboBox)
 
-
-    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataSelectionDateTimeComboBox.ps1"
-    . "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataSelectionDateTimeComboBox.ps1"
-    $Section3HostDataSelectionDateTimeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-        Text      = "Host Data - Date & Time"
-        Location  = @{ X = $FormScale * 260
-                       Y = $Section3HostDataSelectionComboBox.Size.Height + $Section3HostDataSelectionComboBox.Location.Y + $($FormScale * 3)}
-        Size      = @{ Width  = $FormScale * 200
-                       Height = $FormScale * 25 }
-        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-        ForeColor = "Black"
-        AutoCompleteSource = "ListItems"
-        AutoCompleteMode   = "SuggestAppend"
-        Add_MouseHover     = $Section3HostDataSelectionDateTimeComboBoxAdd_MouseHover
-    }
-    $Section3HostDataTab.Controls.Add($Section3HostDataSelectionDateTimeComboBox)
-
-
-    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataGetDataButton.ps1"
-    . "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataGetDataButton.ps1"
-    $Section3HostDataGridViewButton = New-Object System.Windows.Forms.Button -Property @{
-        Text     = "Grid View"
-        Location = @{ X = $Section3HostDataSelectionDateTimeComboBox.Location.X + $Section3HostDataSelectionDateTimeComboBox.Size.Width + $($FormScale * 5)
-                      Y =  $Section3HostDataSelectionDateTimeComboBox.Location.Y - $($FormScale * 1) }
-        Size     = @{ Width  = $FormScale * 75
-                      Height = $FormScale * 22 }
-        Add_Click = $Section3HostDataGridViewButtonAdd_Click
-        Add_MouseHover = $Section3HostDataGridViewButtonAdd_MouseHover
-    }
-    $Section3HostDataTab.Controls.Add($Section3HostDataGridViewButton)
-    CommonButtonSettings -Button $Section3HostDataGridViewButton
-
-
-    if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
-        $Section3HostDataPSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
-            Text     = "HTML"
-            Location = @{ X = $Section3HostDataGridViewButton.Location.X + $Section3HostDataGridViewButton.Size.Width + $($FormScale * 5)
-                          Y =  $Section3HostDataGridViewButton.Location.Y - $($FormScale * 1) }
-            Size     = @{ Width  = $FormScale * 75
-                          Height = $FormScale * 22 }
-            Add_Click = $Section3HostDataPSWriteHTMLButtonAdd_Click
-        }
-        $Section3HostDataTab.Controls.Add($Section3HostDataPSWriteHTMLButton)
-        CommonButtonSettings -Button $Section3HostDataPSWriteHTMLButton    
-    }
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataTagsComboBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\ComboBox\Section3HostDataTagsComboBox.ps1"
-$Section3HostDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Name               = "Tags"
-    Text               = "Tags"
-    Location = @{ X = $FormScale * 260
-                  Y = $Section3HostDataMACTextBox.Location.Y }
-    Size     = @{ Width  = $FormScale * 200
-                  Height = $FormScale * 25 }
+$Section3HostDataSelectionComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+    Text      = "Host Data - Selection"
+    Left      = $FormScale * 260
+    Top       = $FormScale * 3
+    Width     = $FormScale * 200
+    Height    = $FormScale * 25
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ForeColor = "Black"
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
-    Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    Add_MouseHover     = $Section3HostDataTagsComboBoxAdd_MouseHover
+    DataSource         = $HostDataList1
+    Add_MouseHover = {
+        Show-ToolTip -Title "Select Search Topic" -Icon "Info" -Message @"
++  If data exists, the datetime group will be displayed below.
++  These files can be searchable, toggle in Options Tab.
++  Note: Datetimes with more than one collection type won't
+display, these results will need to be navigated to manually.
+"@            
+    }
+    Add_SelectedIndexChanged = {
+        function Get-HostDataCsvResults {
+            param(
+                $ComboxInput
+            )
+            # Searches though the all Collection Data Directories to find files that match
+            $ListOfCollectedDataDirectories = $(Get-ChildItem -Path $CollectedDataDirectory  | Sort-Object -Descending).FullName
+            $script:CSVFileMatch = @()
+            foreach ($CollectionDir in $ListOfCollectedDataDirectories) {
+                $CSVFiles = Get-ChildItem -Path $CollectionDir -Recurse | Where {$_.Extension -match 'csv'}
+                foreach ($CSVFile in $CSVFiles) {
+                    # Searches for the CSV file that matches the data selected
+                    if ($CSVFile.BaseName -match $ComboxInput) {
+                        $CsvComputerNameList = Import-Csv $CSVFile.FullName | Select -Property ComputerName -Unique
+                        foreach ($computer in $CsvComputerNameList){
+                            if ("$computer" -match "$($script:Section3HostDataNameTextBox.Text)"){
+                                $script:CSVFileMatch += $CSVFile.Name
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    
+        Get-HostDataCsvResults -ComboxInput $Section3HostDataSelectionComboBox.SelectedItem
+    
+        if (($script:CSVFileMatch).count -eq 0) {
+            $Section3HostDataSelectionDateTimeComboBox.DataSource = @('No Data Available')
+        }
+        else {
+            $Section3HostDataSelectionDateTimeComboBox.DataSource = $script:CSVFileMatch
+            #    Get-HostDataCsvDateTime -ComboBoxInput $script:CSVFileMatch
+        }
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3HostDataSelectionComboBox)
+
+
+$Section3HostDataSelectionDateTimeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+    Text      = "Host Data - Date & Time"
+    Left      = $FormScale * 260
+    Top       = $Section3HostDataSelectionComboBox.Height + $Section3HostDataSelectionComboBox.Top + $($FormScale * 3)
+    Width     = $FormScale * 200
+    Height    = $FormScale * 25
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ForeColor = "Black"
+    AutoCompleteSource = "ListItems"
+    AutoCompleteMode = "SuggestAppend"
+    Add_MouseHover = {
+        Show-ToolTip -Title "Datetime of Results" -Icon "Info" -Message @"
++  If data exists, the datetime group will be displayed.
++  These files can be searchable, toggle in Options Tab.
++  Note: Datetimes with more than one collection type won't
+display, these results will need to be navigated to manually.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3HostDataSelectionDateTimeComboBox)
+
+
+$Section3HostDataGridViewButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = "Grid View"
+    Left      = $Section3HostDataSelectionDateTimeComboBox.Left + $Section3HostDataSelectionDateTimeComboBox.Width + $($FormScale * 5)
+    Top       =  $Section3HostDataSelectionDateTimeComboBox.Top - $($FormScale * 1)
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Add_Click = {
+        # Chooses the most recent file if multiple exist
+        $CSVFileToImport = (Get-ChildItem -File -Path $CollectedDataDirectory -Recurse | Where-Object {$_.name -like $Section3HostDataSelectionDateTimeComboBox.SelectedItem}).Fullname
+        $HostData = Import-Csv $CSVFileToImport
+        if ($HostData) {
+            $StatusListBox.Items.Clear()
+            $StatusListBox.Items.Add("Showing Results:  $HostDataSection")
+            $HostData | Out-GridView -Title 'PoSh-EasyWin: Collected Data' -OutputMode Multiple | Set-Variable -Name HostDataResultsSection
+
+            # Adds Out-GridView selected Host Data to OpNotes
+            foreach ($Selection in $HostDataResultsSection) {
+                $OpNotesListBox.Items.Add("$((Get-Date).ToString('yyyy/MM/dd HH:mm:ss'))  $HostDataSection - $($Selection -replace '@{','' -replace '}','')")
+                Add-Content -Path $OpNotesWriteOnlyFile -Value ($OpNotesListBox.SelectedItems) -Force
+            }
+            Save-OpNotes
+        }
+        else {
+            $StatusListBox.Items.Clear()
+            $StatusListBox.Items.Add("No Data Available:  $HostDataSection")
+            # Sounds a chime if there is not data
+            [system.media.systemsounds]::Exclamation.play()
+        }
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Get Data" -Icon "Info" -Message @"
++  If data exists, the datetime group will be displayed.
++  These files can be searchable, toggle in Options Tab.
++  Note: If datetimes don't show contents, it may be due to multiple results.
+If this is the case, navigate to the csv file manually.
+"@
+    }
+}
+$Section3HostDataTab.Controls.Add($Section3HostDataGridViewButton)
+CommonButtonSettings -Button $Section3HostDataGridViewButton
+
+
+if ((Test-Path -Path "$Dependencies\Modules\PSWriteHTML") -and (Get-Content "$PoShHome\Settings\PSWriteHTML Module Install.txt") -match 'Yes') {
+    $Section3HostDataPSWriteHTMLButton = New-Object System.Windows.Forms.Button -Property @{
+        Text      = "HTML"
+        Left      = $Section3HostDataGridViewButton.Left + $Section3HostDataGridViewButton.Width + $($FormScale * 5)
+        Top       = $Section3HostDataGridViewButton.Top - $($FormScale * 1)
+        Width     = $FormScale * 75
+        Height    = $FormScale * 22
+        Add_Click = {
+            # Chooses the most recent file if multiple exist
+            $CSVFileToImport = (Get-ChildItem -File -Path $CollectedDataDirectory -Recurse | Where-Object {$_.name -like $Section3HostDataSelectionDateTimeComboBox.SelectedItem}).Fullname
+            $HostData = Import-Csv $CSVFileToImport
+            if ($HostData) {
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("Showing Results:  $HostDataSection")
+                $HostData | Out-HTMLView -Title "$($CSVFileToImport | Split-Path -Leaf)"
+            }
+            else {
+                $StatusListBox.Items.Clear()
+                $StatusListBox.Items.Add("No Data Available:  $HostDataSection")
+                # Sounds a chime if there is not data
+                [system.media.systemsounds]::Exclamation.play()
+            }
+        }
+    }
+    $Section3HostDataTab.Controls.Add($Section3HostDataPSWriteHTMLButton)
+    CommonButtonSettings -Button $Section3HostDataPSWriteHTMLButton    
+}
+
+
+$Section3HostDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+    Name      = "Tags"
+    Text      = "Tags"
+    Left      = $FormScale * 260
+    Top       = $Section3HostDataMACTextBox.Top
+    Width     = $FormScale * 200
+    Height    = $FormScale * 25
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    AutoCompleteSource = "ListItems"
+    AutoCompleteMode   = "SuggestAppend"
+    Add_MouseHover     = {
+        Show-ToolTip -Title "List of Pre-Built Tags" -Icon "Info" -Message @"
++  Tags are not mandatory.
++  Tags provide standized info to aide searches.
++  Custom tags can be modified, created, and used.
+"@
+    }
 }
 ForEach ($Item in $TagListFileContents) { $Section3HostDataTagsComboBox.Items.Add($Item) }
 $Section3HostDataTab.Controls.Add($Section3HostDataTagsComboBox)
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataTagsAddButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataTagsAddButton.ps1"
 $Section3HostDataTagsAddButton = New-Object System.Windows.Forms.Button -Property @{
-    Text     = "Add"
-    Location = @{ X = $Section3HostDataTagsComboBox.Size.Width + $Section3HostDataTagsComboBox.Location.X + $($FormScale * 5)
-                  Y = $Section3HostDataTagsComboBox.Location.Y - $($FormScale * 1) }
-    Size     = @{ Width  = $FormScale * 75
-                  Height = $FormScale * 22 }
-    Add_Click = $Section3HostDataTagsAddButtonAdd_Click
-    Add_MouseHover = $Section3HostDataTagsAddButtonAdd_MouseHover
+    Text      = "Add"
+    Left      = $Section3HostDataTagsComboBox.Width + $Section3HostDataTagsComboBox.Left + $($FormScale * 5)
+    Top       = $Section3HostDataTagsComboBox.Top - $($FormScale * 1)
+    Width     = $FormScale * 70
+    Height    = $FormScale * 22
+    Add_Click = {
+        if (!($Section3HostDataTagsComboBox.SelectedItem -eq "Tags")) {
+            $Section3HostDataNotesRichTextBox.text = "[$($Section3HostDataTagsComboBox.SelectedItem)] " + $Section3HostDataNotesRichTextBox.text
+        }
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Add Tag to Notes" -Icon "Info" -Message @"
++  Tags are not mandatory.
++  Tags provide standized info to aide searches.
++  Custom tags can be created and used.
+"@
+    }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataTagsAddButton)
 CommonButtonSettings -Button $Section3HostDataTagsAddButton
 
 
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\RichTextBox\Section3HostDataNotesRichTextBox.ps1"
-. "$Dependencies\Code\System.Windows.Forms\RichTextBox\Section3HostDataNotesRichTextBox.ps1"
 $Section3HostDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
-    Left   = 0
-    Top    = $Section3HostDataMACTextBox.Location.Y + $Section3HostDataMACTextBox.Size.Height + $($FormScale * 6)
-    Width  = $FormScale * 634
-    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    Left       = 0
+    Top        = $Section3HostDataMACTextBox.Top + $Section3HostDataMACTextBox.Height + $($FormScale * 6)
+    Width      = $FormScale * 634
+    Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor  = 'White'
     Multiline  = $True
     ScrollBars = 'Vertical'
     WordWrap   = $True
     ReadOnly   = $false
-    Add_MouseHover = $Section3HostDataNotesRichTextBoxAdd_MouseHover
+    Add_MouseHover = {
+        Show-ToolTip -Title "Host Notes" -Icon "Info" -Message @"
++  These notes are specific to the host.
++  Also can contains Tags if used.
+"@
+    }
     Add_MouseEnter = { Check-HostDataIfModified }
     Add_MouseLeave = { Check-HostDataIfModified }
 }
@@ -200,16 +320,23 @@ $Section3HostDataTab.Controls.Add($Section3HostDataNotesRichTextBox)
 
 
 $script:Section3HostDataNotesSaveCheck = ""
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataSaveButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataSaveButton.ps1"
 $Section3HostDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Data Saved"
-    Location = @{ X = $Section3HostDataNotesRichTextBox.Location.X + $Section3HostDataNotesRichTextBox.Size.Width + $($FormScale + 5)
-                  Y = $Section3HostDataNotesRichTextBox.Location.Y }
-    Size     = @{ Width  = $FormScale * 100
-                  Height = $FormScale * 22 }
-    Add_Click = $Section3HostDataSaveButtonAdd_Click
-    Add_MouseHover = $Section3HostDataSaveButtonAdd_MouseHover
+    Left      = $Section3HostDataNotesRichTextBox.Left + $Section3HostDataNotesRichTextBox.Width + $($FormScale + 5)
+    Top       = $Section3HostDataNotesRichTextBox.Top
+    Width     = $FormScale * 100
+    Height    = $FormScale * 22
+    Add_Click = {
+        Save-TreeViewData -Endpoint
+        $StatusListBox.Items.Clear()
+        $StatusListBox.Items.Add("Saved Host Data:  $($script:Section3HostDataNameTextBox.Text)")            
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Warning" -Icon "Warning" -Message @"
++  It's Best practice is to manually save after modifying each host data.
++  That said, data is automatically saved when you select a endpoint in the computer treeview
+"@
+    }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataSaveButton)
 CommonButtonSettings -Button $Section3HostDataSaveButton
@@ -219,12 +346,32 @@ Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Section3Host
 . "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataNotesAddOpNotesButton.ps1"
 $Section3HostDataNotesAddOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Add To OpNotes"
-    Location = @{ X = $Section3HostDataSaveButton.Location.X
-                  Y = $Section3HostDataSaveButton.Location.Y + $Section3HostDataSaveButton.Size.Height + $($FormScale + 5) }
-    Size     = @{ Width  = $FormScale * 100
-                  Height = $FormScale * 22 }
-    Add_Click = $Section3HostDataNotesAddOpNotesButtonAdd_Click
-    Add_MouseHover = $Section3HostDataNotesAddOpNotesButtonAdd_MouseHover
+    Left      = $Section3HostDataSaveButton.Left
+    Top       = $Section3HostDataSaveButton.Top + $Section3HostDataSaveButton.Height + $($FormScale + 5)
+    Width     = $FormScale * 100
+    Height    = $FormScale * 22
+    Add_Click = {
+        $MainLeftTabControl.SelectedTab   = $Section1OpNotesTab
+        
+        if ($Section3HostDataNotesRichTextBox.text) {
+            $TimeStamp = Get-Date
+            $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($script:Section3HostDataNameTextBox.Text)")
+            Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($script:Section3HostDataNameTextBox.Text)" -Force
+            foreach ( $Line in ($Section3HostDataNotesRichTextBox.text -split "`r`n") ){
+                $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line")
+                Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line" -Force
+            }
+            Save-OpNotes
+        }    
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Add Selected To OpNotes" -Icon "Info" -Message @"
++  One or more lines can be selected to add to the OpNotes.
++  The selection can be contiguous by using the Shift key
+    and/or be separate using the Ctrl key, the press OK.
++  A Datetime stampe will be prefixed to the entry.
+"@
+    }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataNotesAddOpNotesButton)
 CommonButtonSettings -Button $Section3HostDataNotesAddOpNotesButton

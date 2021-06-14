@@ -1,4 +1,4 @@
-$ComputerTreeViewAdd_Click = {
+$AccountsTreeViewAdd_Click = {
     Update-TreeViewData -Accounts -TreeView $this.Nodes
 
     # When the node is checked, it updates various items
@@ -67,7 +67,7 @@ $ComputerTreeViewAdd_Click = {
     }
 }
 
-$ComputerTreeViewAdd_AfterSelect = {
+$AccountsTreeViewAdd_AfterSelect = {
     Update-TreeViewData -Accounts -TreeView $this.Nodes
 
     # This will return data on hosts selected/highlight, but not necessarily checked
@@ -108,11 +108,9 @@ $ComputerTreeViewAdd_AfterSelect = {
                 # $Section3HostDataNotesRichTextBox.Text = "N/A"
 
                 # Brings the Host Data Tab to the forefront/front view
-                $InformationTabControl.SelectedTab = $Section3HostDataTab
             }
             foreach ($Entry in $Category.nodes) {
                 if ($Entry.isselected) {
-                    $InformationTabControl.SelectedTab = $Section3HostDataTab
                     $script:ComputerTreeViewSelected = $Entry.Text
                     # Function Update-HostDataNotes {
                     #     # Populates the Host Data Tab with data from the selected TreeNode

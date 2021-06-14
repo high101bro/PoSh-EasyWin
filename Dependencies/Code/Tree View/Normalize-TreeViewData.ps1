@@ -123,6 +123,7 @@ function Normalize-TreeViewData {
             # Trims out the domain name from the the CanonicalName
             $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
 
+
             $ComputerTreeNodeInsertDefaultData = New-Object PSObject -Property @{ Name = $Computer.Name}
             if ($Computer.OperatingSystem) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystem -Value $Computer.OperatingSystem -Force }
@@ -146,13 +147,99 @@ function Normalize-TreeViewData {
 
             if ($Computer.PortScan) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PortScan -Value $Computer.PortScan -Force }
-    #        else {
-    #            $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PortScan -Value "No Ports Available" -Force }
+            else {
+               $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PortScan -Value "No Ports" -Force }
 
             if ($Computer.Notes) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Notes -Value $Computer.Notes -Force }
             else {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Notes -Value "No Notes Available" -Force }
+
+            if ($Computer.OperatingSystemHotfix) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemHotfix -Value $Computer.OperatingSystemHotfix -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemHotfix -Value "No Operating System Hotfixes" -Force }
+
+            if ($Computer.OperatingSystemServicePack) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemServicePack -Value $Computer.OperatingSystemServicePack -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemServicePack -Value "No Operating System Service Packs" -Force }
+
+            if ($Computer.Enabled) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Enabled -Value $Computer.Enabled -Force }
+            elseif ($Computer.Enabled -eq $false) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Enabled -Value $Computer.Enabled -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Enabled -Value "Unknown Status" -Force }
+
+            if ($Computer.LockedOut) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LockedOut -Value $Computer.LockedOut -Force }
+            elseif ($Computer.LockedOut -eq $false) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LockedOut -Value $Computer.LockedOut -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LockedOut -Value "Unknown Status" -Force }
+
+            if ($Computer.LogonCount) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LogonCount -Value $Computer.LogonCount -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LogonCount -Value "0" -Force }
+
+            if ($Computer.Created) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Created -Value $Computer.Created -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Created -Value "No Creation Time" -Force }
+
+            if ($Computer.Modified) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Modified -Value $Computer.Modified -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Modified -Value "No Modification Time" -Force }
+
+            if ($Computer.LastLogonDate) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LastLogonDate -Value $Computer.LastLogonDate -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LastLogonDate -Value "No Last Logon Date" -Force }
+
+            if ($Computer.MemberOf) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MemberOf -Value $Computer.MemberOf -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MemberOf -Value "No Groups" -Force }
+
+            if ($Computer.isCriticalSystemObject) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name isCriticalSystemObject -Value $Computer.isCriticalSystemObject -Force }
+            elseif ($Computer.isCriticalSystemObject -eq $false) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name isCriticalSystemObject -Value $Computer.isCriticalSystemObject -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name isCriticalSystemObject -Value "Unknown Status" -Force }
+
+            if ($Computer.HomedirRequired) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name HomedirRequired -Value $Computer.HomedirRequired -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name HomedirRequired -Value "No Home Dir Required" -Force }
+
+            if ($Computer.Location) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Location -Value $Computer.Location -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Location -Value "No Location" -Force }
+
+            if ($Computer.ProtectedFromAccidentalDeletion) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ProtectedFromAccidentalDeletion -Value $Computer.ProtectedFromAccidentalDeletion -Force }
+            elseif ($Computer.ProtectedFromAccidentalDeletion -eq $false) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ProtectedFromAccidentalDeletion -Value $Computer.ProtectedFromAccidentalDeletion -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ProtectedFromAccidentalDeletion -Value "Unknown Status" -Force }
+
+            if ($Computer.TrustedForDelegation) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name TrustedForDelegation -Value $Computer.TrustedForDelegation -Force }
+            elseif ($Computer.TrustedForDelegation -eq $false) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name TrustedForDelegation -Value $Computer.TrustedForDelegation -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name TrustedForDelegation -Value "Unknown Status" -Force }
+
+            if ($Computer.SID) {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SID -Value $Computer.SID -Force }
+            else {
+                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SID -Value "No SID" -Force }
+
 
             $script:ComputerTreeViewDataTemp += $ComputerTreeNodeInsertDefaultData
             ###write-host $($ComputerTreeNodeInsertDefaultData | Select Name, OperatingSystem, CanonicalName, IPv4Address, Notes)
