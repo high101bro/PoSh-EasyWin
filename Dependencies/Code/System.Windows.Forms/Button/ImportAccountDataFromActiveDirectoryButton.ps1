@@ -41,11 +41,13 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Height    = $FormScale * 22
             Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 10),0,0,0)
             ForeColor = "Black"
+            Add_KeyDown    = { if ($_.KeyCode -eq "Enter") { & $ImportFromADWinRMManuallEntryTextBoxAdd_MouseEnter }}
             Add_MouseEnter = $ImportFromADWinRMManuallEntryTextBoxAdd_MouseEnter
             Add_MouseLeave = $ImportFromADWinRMManuallEntryTextBoxAdd_MouseLeave
             Add_MouseHover = $ImportFromADWinRMManuallEntryTextBoxAdd_MouseHover
         }
         $ImportFromADWinRMGroupBox.Controls.Add($ImportFromADWinRMManuallEntryTextBox)
+        if (Get-Content $script:ActiveDirectoryEndpoint) { $ImportFromADWinRMManuallEntryTextBox.Text = Get-Content $script:ActiveDirectoryEndpoint }
 
 
         $ImportFromADWinRMAutoCheckBox = New-Object System.Windows.Forms.Checkbox -Property @{
@@ -77,6 +79,8 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
             Width     = $FormScale * 100
             Height    = $FormScale * 20
             Add_Click = {
+                $ImportFromADWinRMManuallEntryTextBox.Text | Out-File $script:ActiveDirectoryEndpoint -Force
+
                 Create-TreeViewCheckBoxArray -Accounts
                 if ($ImportFromADWinRMManuallEntryTextBox.Text -ne '<Enter a hostname/IP>' -and $ImportFromADWinRMManuallEntryTextBox.Text -ne '' -and $ImportFromADWinRMAutoCheckBox.checked -eq $false ) {
                     if (Verify-Action -Title "Verification: Active Directory Import" -Question "Credentials Used:`n$($script:Credential.UserName)`n`nImport Active Directory account information from the following?" -Computer $ImportFromADWinRMManuallEntryTextBox.text) {

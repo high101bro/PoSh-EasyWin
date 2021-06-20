@@ -286,6 +286,9 @@ $PoShHome                            = $PSScriptRoot #Deprecated# Split-Path -pa
             $CommandsEndpoint                 = "$QueryCommandsAndScripts\Commands - Endpoint.csv"
             $CommandsActiveDirectory          = "$QueryCommandsAndScripts\Commands - Active Directory.csv"
 
+        # The stored Active Directory hostname if previously entered
+        $script:ActiveDirectoryEndpoint       = "$PoShHome\Settings\Active Directory Hostname.txt"
+
         # Location of Event Logs Commands
         $CommandsEventLogsDirectory           = "$Dependencies\Event Log Info"
 

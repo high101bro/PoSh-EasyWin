@@ -316,6 +316,60 @@ $Section3AccountDataPasswordNotRequiredTextBox = New-Object System.Windows.Forms
 $Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordNotRequiredTextBox)
 
 
+$Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = "Update Data"
+    Left      = $Section3AccountDataBadLogonCountTextBox.Left + ($FormScale * 120)
+    Top       = $Section3AccountDataPasswordNotRequiredTextBox.Top + $Section3AccountDataPasswordNotRequiredTextBox.Height + $($FormScale * 4)
+    Width     = $FormScale * 100
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    Add_Click = {
+        if ($root.text -match 'All Accounts') {
+            $ADAccount = $script:Section3AccountDataNameTextBox.text
+        }
+        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if (!$script:Credential) { Create-NewCredentials }
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+            $Username = $script:Credential.UserName
+            $Password = '"PASSWORD HIDDEN"'
+
+            ### TODO: put in addition checks that prompt if this file is not populated or notifies the user of the AD server used
+            if (Get-Content $script:ActiveDirectoryEndpoint) { $ImportFromADWinRMManuallEntryTextBoxTarget = Get-Content $script:ActiveDirectoryEndpoint }
+
+            $script:UpdatedADAccountInfo = Invoke-Command -ScriptBlock {
+                Get-ADUser -Filter {Name -eq $ADName} -Properties * `
+                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
+            } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential
+            
+            $ADAccount | ogv
+            $ImportFromADWinRMManuallEntryTextBoxTarget | ogv
+            $script:UpdatedADAccountInfo | ogv
+
+            #$script:UpdatedADAccountInfo | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
+        }
+        else {
+            $script:UpdatedADAccountInfo = Invoke-Command -ScriptBlock {
+                Get-ADUser -Filter {Name -eq $ADName} -Properties * `
+                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
+            } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget
+            #$script:UpdatedADAccountInfo | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
+            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
+        }
+
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Update Account Data From Active Directory" -Icon "Info" -Message @"
++  This will query Active Directory and pull any updated information for the account.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataUpdateDataButton)
+CommonButtonSettings -Button $Section3AccountDataUpdateDataButton
+
+
+
 $Section3AccountDataMemberOfComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
     Left      = $Section3AccountDataBadLogonCountTextBox.Left
     Top       = $Section3AccountDataTagsComboBox.Top

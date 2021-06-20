@@ -65,8 +65,12 @@ function Update-TreeViewData {
             $script:CategorySelected  = $null
             $script:EntrySelected     = $null
 
-            Display-ContextMenuForAccountsTreeNode
-            Display-ContextMenuForComputerTreeNode
+            if ($Accounts) { 
+                Display-ContextMenuForAccountsTreeNode
+            }
+            elseif ($Endpoint) { 
+                Display-ContextMenuForComputerTreeNode
+            }
 
             $script:HostQueryTreeViewSelected              = ""
             $Section3QueryExplorationName.Text             = "N/A"
@@ -229,9 +233,13 @@ function Update-TreeViewData {
                     $script:CategorySelected  = $Category
                     $script:EntrySelected     = $null
 
-                    #Display-ContextMenuForAccountsTreeNode
-                    #Display-ContextMenuForComputerTreeNode
-
+                    if ($Accounts) { 
+                        Display-ContextMenuForAccountsTreeNode
+                    }
+                    elseif ($Endpoint) { 
+                        Display-ContextMenuForComputerTreeNode
+                    }
+        
                     $script:HostQueryTreeViewSelected = ""
                     #$StatusListBox.Items.clear()
                     #$StatusListBox.Items.Add("Category:  $($Category.Text)")
