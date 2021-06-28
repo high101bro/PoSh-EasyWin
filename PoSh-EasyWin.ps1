@@ -865,8 +865,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             }
                             $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
                             UpdateState-TreeViewData -Endpoint
-                            #batman
-                            Update-TreeViewData -Endpoint -TreeView $script:AccountsTreeView.Nodes
+
+                            Update-TreeViewData -Endpoint -TreeView $script:ComputerTreeView.Nodes
                         }
                         #Add_MouseHover = $ComputerTreeNodeEnabledRadioButtonAdd_MouseHover
                     }
@@ -976,7 +976,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     # It is also activated within the Update-TreeViewData function
                     Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
                     . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
-                    Display-ContextMenuForComputerTreeNode
+                    #Display-ContextMenuForComputerTreeNode
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
@@ -1125,29 +1125,14 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             }
                             $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
                             UpdateState-TreeViewData -Accounts
-                            Update-TreeViewData -Accounts
+                            Update-TreeViewData -Accounts -TreeView $script:AccountsTreeView.Nodes
+
                         }
                         #Add_MouseHover = $AccountsTreeNodeEnabledRadioButtonAdd_MouseHover
                     }
                     $AccountsTreeNodeComboBoxList = @('CanonicalName','Enabled','LockedOut','SmartCardLogonRequired','Created','Modified','LastLogonDate','LastBadPasswordAttempt','PasswordNeverExpires','PasswordExpired','PasswordNotRequired','BadLogonCount',,'ScriptPath','HomeDrive')
                     ForEach ($Item in $AccountsTreeNodeComboBoxList) { $script:AccountsTreeNodeComboBox.Items.Add($Item) }
                     $AccountsTreeviewTab.Controls.Add($script:AccountsTreeNodeComboBox)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                     $AccountsTreeNodeSearchGreedyCheckbox = New-Object System.Windows.Forms.CheckBox -Property @{
@@ -1217,7 +1202,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     # It is also activated within the Update-TreeViewData function
                     Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
                     . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
-                    Display-ContextMenuForAccountsTreeNode
+                    #Display-ContextMenuForAccountsTreeNode
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"

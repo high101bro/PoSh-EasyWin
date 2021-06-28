@@ -10,9 +10,10 @@ function AddTreeNodeTo-TreeViewData {
         $IPv4Address,
         $ToolTip
     )
-    # checks if data is in date format, if so, it trims off the time
+    # checks if data is in date/datetime format, if so, it trims off the time
     if ($Category -match ".{1,2}/.{1,2}/.{4}") {
-        $Category = ($Category.ToString() -split ' ')[0]        
+        #$Category = ($Category.ToString() -split ' ')[0]
+        $Category = ([datetime]$Category).ToString("yyyy-MM-dd")
     }
 
     if ($Accounts) {

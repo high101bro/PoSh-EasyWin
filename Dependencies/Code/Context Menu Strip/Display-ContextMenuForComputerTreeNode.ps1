@@ -10,7 +10,39 @@ function Display-ContextMenuForComputerTreeNode {
         ForeColor = 'Black'
     }
 
-    #$ComputerListContextMenuStrip.Items.Add("$($Entry.Text)")
+    #$ComputerListContextMenuStrip.Items.Add("Import Endpoints")
+    $ComputerListImportEndpointsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+        Text      = "Import Endpoints"
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+        ForeColor = 'Blue'
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListImportEndpointsToolStripLabel)
+
+    $ComputerListImportEndpointsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
+        Size = @{ Width  = $FormScale * 125 }
+        Text = '   - Make a selection'
+        ForeColor = 'DarkRed'
+        ToolTipText = 'Import Endpoint Data from various sources. Duplicate names will not be imported.'
+        Add_SelectedIndexChanged = {
+            if ($This.selectedItem -eq 'Active Directory') { 
+                & $ImportEndpointDataFromActiveDirectoryButtonAdd_Click
+            }
+            if ($This.selectedItem -eq 'Local .csv File')  { 
+                & $ImportEndpointDataFromCsvButtonAdd_Click
+            }
+            if ($This.selectedItem -eq 'Local .txt File')  { 
+                & $ImportEndpointDataFromTxtButtonAdd_Click
+            }
+        }
+    }
+    $ComputerListImportEndpointsToolStripComboBox.Items.Add('Active Directory')
+    $ComputerListImportEndpointsToolStripComboBox.Items.Add('Local .csv File')
+    $ComputerListImportEndpointsToolStripComboBox.Items.Add('Local .txt File')
+    $ComputerListContextMenuStrip.Items.Add($ComputerListImportEndpointsToolStripComboBox)
+
+    $ComputerListContextMenuStrip.Items.Add('-')
+
+
     $script:ComputerListEndpointNameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
         Text      = "$($Entry.Text)"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
@@ -75,6 +107,30 @@ function Display-ContextMenuForComputerTreeNode {
     }
 
     
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     $script:ExpandCollapseStatus = "Collapse"
     $ComputerListCollapseToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "Collapse"
@@ -96,304 +152,288 @@ function Display-ContextMenuForComputerTreeNode {
     $ComputerListContextMenuStrip.Items.Add($ComputerListCollapseToolStripButton)
 
 
-    $ComputerListTagSelectedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Tag"
-        Add_CLick = {
-            $InformationTabControl.SelectedTab = $Section3HostDataTab
-
-            if ($script:EntrySelected) {
-                Show-TagForm
-                if ($script:ComputerListMassTagValue) {
-                    $script:Section3HostDataNameTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Name
-                    $Section3HostDataOSTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).OperatingSystem
-                    $Section3HostDataOUTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).CanonicalName
-                    $Section3HostDataIPTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).IPv4Address
-                    $Section3HostDataMACTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).MACAddress
-                    $Section3HostDataNotesRichTextBox.Text = "[$($script:ComputerListMassTagValue)] " + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Notes
-                    Save-TreeViewData -Endpoint
-                    Check-HostDataIfModified
-                    $StatusListBox.Items.clear()
-                    $StatusListBox.Items.Add("Tag applied to: $($script:EntrySelected.text)")
-                }
-            }            
-        }
+    $ComputerListSelectedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+        Text      = "Selected Node Actions"
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+        ForeColor = 'Black'
     }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListTagSelectedToolStripButton)
+    $ComputerListContextMenuStrip.Items.Add($ComputerListSelectedNodeActionsToolStripLabel)
 
-<# Working proof of concept...
-    $comboBoxMenuItem = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Width = $FormScale * 500
+
+    $ComputerListSelectedNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
+        Size = @{ Width  = $FormScale * 125 }
+        Text = '   - Make a selection'
+        ForeColor = 'DarkRed'
+        ToolTipText = 'Import Endpoint Data from various sources. Duplicate names will not be imported.'
         Add_SelectedIndexChanged = {
-            if ($This.selectedItem -eq 'Add Endpoint') { & $ComputerListAddEndpointToolStripButtonAdd_Click }
-            if ($This.selectedItem -eq 'Rename')       { & $ComputerListRenameToolStripButtonAdd_Click }
-            if ($This.selectedItem -eq 'Move')         { & $ComputerListMoveSelectedToolStripButtonAdd_Click }
-            if ($This.selectedItem -eq 'Delete')       { & $ComputerListDeleteSelectedToolStripButtonAdd_Click }
-        }
-    }
-    $comboBoxMenuItem.Items.Add('Add Endpoint')
-    $comboBoxMenuItem.Items.Add('Rename')
-    $comboBoxMenuItem.Items.Add('Move')
-    $comboBoxMenuItem.Items.Add('Delete')
-    $ComputerListContextMenuStrip.Items.Add($comboBoxMenuItem)
-#>
+            if ($This.selectedItem -eq 'Tag') { 
+                $InformationTabControl.SelectedTab = $Section3HostDataTab
 
-<#
-$textBoxMenuItem = New-Object System.Windows.Forms.ToolStripTextBox
-$textBoxMenuItem.Text = 'Default Text'
-$textBoxMenuItem.Width = 300
-$ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
-#>
-
-    $ComputerListAddEndpointToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Add Endpoint"
-        Add_CLick = {
-            $StatusListBox.Items.Clear()
-            $StatusListBox.Items.Add("Add hostname/IP:")
-        
-        
-            $ComputerTreeNodePopup = New-Object system.Windows.Forms.Form -Property @{
-                Text          = "Add Hostname/IP"
-                Width  = $FormScale * 335
-                Height = $FormScale * 177
-                StartPosition = "CenterScreen"
-                Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
-                Add_Closing = { $This.dispose() }
+                if ($script:EntrySelected) {
+                    Show-TagForm
+                    if ($script:ComputerListMassTagValue) {
+                        $script:Section3HostDataNameTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Name
+                        $Section3HostDataOSTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).OperatingSystem
+                        $Section3HostDataOUTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).CanonicalName
+                        $Section3HostDataIPTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).IPv4Address
+                        $Section3HostDataMACTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).MACAddress
+                        $Section3HostDataNotesRichTextBox.Text = "[$($script:ComputerListMassTagValue)] " + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Notes
+                        Save-TreeViewData -Endpoint
+                        Check-HostDataIfModified
+                        $StatusListBox.Items.clear()
+                        $StatusListBox.Items.Add("Tag applied to: $($script:EntrySelected.text)")
+                    }
+                }   
             }
-        
-        
-            $ComputerTreeNodePopupAddTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-                Text     = "Enter a hostname/IP"
-                Location = @{ X = $FormScale * 10
-                              Y = $FormScale * 10 }
-                Width  = $FormScale * 300
-                Height = $FormScale * 25
-                Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            }
-            $ComputerTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
-            $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddTextBox)
-        
-        
-            $ComputerTreeNodePopupOSComboBox  = New-Object System.Windows.Forms.ComboBox -Property @{
-                Text = "Select an Operating System (or type in a new one)"
-                Location = @{ X = $FormScale * 10
-                              Y = $ComputerTreeNodePopupAddTextBox.Location.Y + $ComputerTreeNodePopupAddTextBox.Size.Height + $($FormScale * 10) }
-                Width  = $FormScale * 300
-                Height = $FormScale * 25
-                AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-                AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-                Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            }
-            $ComputerTreeNodeOSCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty OperatingSystem -Unique
-        
-        
-            # Dynamically creates the OS Category combobox list used for OS Selection
-            ForEach ($OS in $ComputerTreeNodeOSCategoryList) { $ComputerTreeNodePopupOSComboBox.Items.Add($OS) }
-            $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupOSComboBox)
-        
-        
-            $ComputerTreeNodePopupOUComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                Text  = "Select an Organizational Unit / Canonical Name (or type a new one)"
-                Location = @{ X = $FormScale * 10
-                              Y = $ComputerTreeNodePopupOSComboBox.Location.Y + $ComputerTreeNodePopupOSComboBox.Size.Height + $($FormScale * 10) }
-                Width  = $FormScale * 300
-                Height = $FormScale * 25
-                AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
-                AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
-                Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-            }
-            $ComputerTreeNodeOUCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty CanonicalName -Unique
-            # Dynamically creates the OU Category combobox list used for OU Selection
-            ForEach ($OU in $ComputerTreeNodeOUCategoryList) { $ComputerTreeNodePopupOUComboBox.Items.Add($OU) }
-            $ComputerTreeNodePopupOUComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
-            $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupOUComboBox)
-        
-            $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
-            $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
-        
-            if ($Script:CategorySelected){ $ComputerTreeNodePopupOUComboBox.Text = $Script:CategorySelected.text }
-            elseif ($Script:EntrySelected){ $ComputerTreeNodePopupOUComboBox.Text = $Script:EntrySelected.text }
-            else { $ComputerTreeNodePopupOUComboBox.Text  = "Select an Organizational Unit / Canonical Name (or type a new one)" }
-        
-        
-            $ComputerTreeNodePopupAddHostButton = New-Object System.Windows.Forms.Button -Property @{
-                Text     = "Add Host"
-                Location = @{ X = $FormScale * 210
-                              Y = $ComputerTreeNodePopupOUComboBox.Location.Y + $ComputerTreeNodePopupOUComboBox.Size.Height + $($FormScale * 10) }
-                Width  = $FormScale * 100
-                Height = $FormScale * 25
-                Add_Click = { AddHost-ComputerTreeNode }
-                Add_KeyDown = { if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } }    
-            }
-            CommonButtonSettings -Button $ComputerTreeNodePopupAddHostButton
-            $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddHostButton)
-        
-            # $script:ComputerTreeView.ExpandAll()
-            # Remove-EmptyCategory -Endpoint
-            # Normalize-TreeViewData -Endpoint
-            # Save-TreeViewData -Endpoint
-            $ComputerTreeNodePopup.ShowDialog()            
-        }
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListAddEndpointToolStripButton)
-
-
-    $ComputerListRenameToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Rename"
-        Add_CLick = {
-            # This brings specific tabs to the forefront/front view
-            $InformationTabControl.SelectedTab = $Section3ResultsTab
-
-            Create-TreeViewCheckBoxArray -Endpoint
-            if ($script:EntrySelected) {
+            if ($This.selectedItem -eq 'Add Endpoint')  { 
                 $StatusListBox.Items.Clear()
-                $StatusListBox.Items.Add("Enter a new name:")
-
-                $ComputerTreeNodeRenamePopup               = New-Object system.Windows.Forms.Form
-                $ComputerTreeNodeRenamePopup.Text          = "Rename $($script:EntrySelected.text)"
-                $ComputerTreeNodeRenamePopup.Size          = New-Object System.Drawing.Size(($FormScale * 330),($FormScale * 107))
-                $ComputerTreeNodeRenamePopup.StartPosition = "CenterScreen"
-                $ComputerTreeNodeRenamePopup.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                $ComputerTreeNodeRenamePopup.Add_Closing   = { $This.dispose() }
-
-                $script:ComputerTreeNodeRenamePopupTextBox          = New-Object System.Windows.Forms.TextBox
-                $script:ComputerTreeNodeRenamePopupTextBox.Text     = "New Hostname/IP"
-                $script:ComputerTreeNodeRenamePopupTextBox.Size     = New-Object System.Drawing.Size(($FormScale * 300),($FormScale * 25))
-                $script:ComputerTreeNodeRenamePopupTextBox.Location = New-Object System.Drawing.Point(($FormScale * 10),($FormScale * 10))
-                $script:ComputerTreeNodeRenamePopupTextBox.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-
-
-                # Renames the computer treenode to the specified name
-                . "$Dependencies\Code\Tree View\Computer\Rename-ComputerTreeNodeSelected.ps1"
-
-                # Moves the hostname/IPs to the new Category
-                $script:ComputerTreeNodeRenamePopupTextBox.Add_KeyDown({
-                    if ($_.KeyCode -eq "Enter") { Rename-ComputerTreeNodeSelected }
-                })
-                $ComputerTreeNodeRenamePopup.Controls.Add($script:ComputerTreeNodeRenamePopupTextBox)
-
-
-                $ComputerTreeNodeRenamePopupButton = New-Object System.Windows.Forms.Button -Property @{
-                    Text     = "Execute"
-                    Location = @{ X = $FormScale * 210
-                                Y = $script:ComputerTreeNodeRenamePopupTextBox.Location.X + $script:ComputerTreeNodeRenamePopupTextBox.Size.Height + ($FormScale * 5) }
-                    Size     = @{ Width  = $FormScale * 100
-                                Height = $FormScale * 22 }
+                $StatusListBox.Items.Add("Add hostname/IP:")
+            
+            
+                $ComputerTreeNodePopup = New-Object system.Windows.Forms.Form -Property @{
+                    Text          = "Add Hostname/IP"
+                    Width  = $FormScale * 335
+                    Height = $FormScale * 177
+                    StartPosition = "CenterScreen"
+                    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
+                    Add_Closing = { $This.dispose() }
                 }
-                CommonButtonSettings -Button $ComputerTreeNodeRenamePopupButton
-                $ComputerTreeNodeRenamePopupButton.Add_Click({ Rename-ComputerTreeNodeSelected })
-                $ComputerTreeNodeRenamePopup.Controls.Add($ComputerTreeNodeRenamePopupButton)
-
-                $ComputerTreeNodeRenamePopup.ShowDialog()
-            }
-            else {
-                $StatusListBox.Items.Clear()
-                $StatusListBox.Items.Add($script:EntrySelected.text)
-            }
-            #elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Rename Selection' }
-            #elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Rename Selection' }
-
-            Remove-EmptyCategory -Endpoint
-            Save-TreeViewData -Endpoint
-        }
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripButton)
-
-
-    $ComputerListMoveToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        Text      = "Move"
-        Add_CLick = {
-            $InformationTabControl.SelectedTab = $Section3ResultsTab
-
-            Create-TreeViewCheckBoxArray -Endpoint
-            if ($script:EntrySelected) {
-                Show-MoveForm -Endpoint -Title "Move: $($script:EntrySelected.Text)" -SelectedEndpoint
-        
-                $script:ComputerTreeView.Nodes.Clear()
-                Initialize-TreeViewData -Endpoint
-        
+            
+            
+                $ComputerTreeNodePopupAddTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+                    Text     = "Enter a hostname/IP"
+                    Location = @{ X = $FormScale * 10
+                                  Y = $FormScale * 10 }
+                    Width  = $FormScale * 300
+                    Height = $FormScale * 25
+                    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                }
+                $ComputerTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
+                $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddTextBox)
+            
+            
+                $ComputerTreeNodePopupOSComboBox  = New-Object System.Windows.Forms.ComboBox -Property @{
+                    Text = "Select an Operating System (or type in a new one)"
+                    Location = @{ X = $FormScale * 10
+                                  Y = $ComputerTreeNodePopupAddTextBox.Location.Y + $ComputerTreeNodePopupAddTextBox.Size.Height + $($FormScale * 10) }
+                    Width  = $FormScale * 300
+                    Height = $FormScale * 25
+                    AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
+                    AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+                    Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                }
+                $ComputerTreeNodeOSCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty OperatingSystem -Unique
+            
+            
+                # Dynamically creates the OS Category combobox list used for OS Selection
+                ForEach ($OS in $ComputerTreeNodeOSCategoryList) { $ComputerTreeNodePopupOSComboBox.Items.Add($OS) }
+                $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupOSComboBox)
+            
+            
+                $ComputerTreeNodePopupOUComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+                    Text  = "Select an Organizational Unit / Canonical Name (or type a new one)"
+                    Location = @{ X = $FormScale * 10
+                                  Y = $ComputerTreeNodePopupOSComboBox.Location.Y + $ComputerTreeNodePopupOSComboBox.Size.Height + $($FormScale * 10) }
+                    Width  = $FormScale * 300
+                    Height = $FormScale * 25
+                    AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
+                    AutoCompleteMode   = "SuggestAppend" # Options are: "Suggest", "Append", "SuggestAppend"
+                    Font               = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                }
+                $ComputerTreeNodeOUCategoryList = $script:ComputerTreeViewData | Select-Object -ExpandProperty CanonicalName -Unique
+                # Dynamically creates the OU Category combobox list used for OU Selection
+                ForEach ($OU in $ComputerTreeNodeOUCategoryList) { $ComputerTreeNodePopupOUComboBox.Items.Add($OU) }
+                $ComputerTreeNodePopupOUComboBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
+                $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupOUComboBox)
+            
                 $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
                 $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
-        
-                Foreach($Computer in $script:ComputerTreeViewData) {
-                    AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address  -Metadata $Computer
+            
+                if ($Script:CategorySelected){ $ComputerTreeNodePopupOUComboBox.Text = $Script:CategorySelected.text }
+                elseif ($Script:EntrySelected){ $ComputerTreeNodePopupOUComboBox.Text = $Script:EntrySelected.text }
+                else { $ComputerTreeNodePopupOUComboBox.Text  = "Select an Organizational Unit / Canonical Name (or type a new one)" }
+            
+            
+                $ComputerTreeNodePopupAddHostButton = New-Object System.Windows.Forms.Button -Property @{
+                    Text     = "Add Host"
+                    Location = @{ X = $FormScale * 210
+                                  Y = $ComputerTreeNodePopupOUComboBox.Location.Y + $ComputerTreeNodePopupOUComboBox.Size.Height + $($FormScale * 10) }
+                    Width  = $FormScale * 100
+                    Height = $FormScale * 25
+                    Add_Click = { AddHost-ComputerTreeNode }
+                    Add_KeyDown = { if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } }    
                 }
-        
+                CommonButtonSettings -Button $ComputerTreeNodePopupAddHostButton
+                $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddHostButton)
+            
+                # $script:ComputerTreeView.ExpandAll()
+                # Remove-EmptyCategory -Endpoint
+                # Normalize-TreeViewData -Endpoint
+                # Save-TreeViewData -Endpoint
+                $ComputerTreeNodePopup.ShowDialog()
+            }
+            if ($This.selectedItem -eq 'Rename')  { 
+                # This brings specific tabs to the forefront/front view
+                $InformationTabControl.SelectedTab = $Section3ResultsTab
+
+                Create-TreeViewCheckBoxArray -Endpoint
+                if ($script:EntrySelected) {
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("Enter a new name:")
+
+                    $ComputerTreeNodeRenamePopup               = New-Object system.Windows.Forms.Form
+                    $ComputerTreeNodeRenamePopup.Text          = "Rename $($script:EntrySelected.text)"
+                    $ComputerTreeNodeRenamePopup.Size          = New-Object System.Drawing.Size(($FormScale * 330),($FormScale * 107))
+                    $ComputerTreeNodeRenamePopup.StartPosition = "CenterScreen"
+                    $ComputerTreeNodeRenamePopup.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    $ComputerTreeNodeRenamePopup.Add_Closing   = { $This.dispose() }
+
+                    $script:ComputerTreeNodeRenamePopupTextBox          = New-Object System.Windows.Forms.TextBox
+                    $script:ComputerTreeNodeRenamePopupTextBox.Text     = "New Hostname/IP"
+                    $script:ComputerTreeNodeRenamePopupTextBox.Size     = New-Object System.Drawing.Size(($FormScale * 300),($FormScale * 25))
+                    $script:ComputerTreeNodeRenamePopupTextBox.Location = New-Object System.Drawing.Point(($FormScale * 10),($FormScale * 10))
+                    $script:ComputerTreeNodeRenamePopupTextBox.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+
+
+                    # Renames the computer treenode to the specified name
+                    . "$Dependencies\Code\Tree View\Computer\Rename-ComputerTreeNodeSelected.ps1"
+
+                    # Moves the hostname/IPs to the new Category
+                    $script:ComputerTreeNodeRenamePopupTextBox.Add_KeyDown({
+                        if ($_.KeyCode -eq "Enter") { Rename-ComputerTreeNodeSelected }
+                    })
+                    $ComputerTreeNodeRenamePopup.Controls.Add($script:ComputerTreeNodeRenamePopupTextBox)
+
+
+                    $ComputerTreeNodeRenamePopupButton = New-Object System.Windows.Forms.Button -Property @{
+                        Text     = "Execute"
+                        Location = @{ X = $FormScale * 210
+                                    Y = $script:ComputerTreeNodeRenamePopupTextBox.Location.X + $script:ComputerTreeNodeRenamePopupTextBox.Size.Height + ($FormScale * 5) }
+                        Size     = @{ Width  = $FormScale * 100
+                                    Height = $FormScale * 22 }
+                    }
+                    CommonButtonSettings -Button $ComputerTreeNodeRenamePopupButton
+                    $ComputerTreeNodeRenamePopupButton.Add_Click({ Rename-ComputerTreeNodeSelected })
+                    $ComputerTreeNodeRenamePopup.Controls.Add($ComputerTreeNodeRenamePopupButton)
+
+                    $ComputerTreeNodeRenamePopup.ShowDialog()
+                }
+                else {
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add($script:EntrySelected.text)
+                }
+                #elseif ($script:ComputerTreeViewSelected.count -lt 1) { ComputerNodeSelectedLessThanOne -Message 'Rename Selection' }
+                #elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Rename Selection' }
+
                 Remove-EmptyCategory -Endpoint
                 Save-TreeViewData -Endpoint
-                UpdateState-TreeViewData -Endpoint -NoMessage
-        
-                $StatusListBox.Items.Clear()
-                $StatusListBox.Items.Add("Moved:  $($script:EntrySelected.text)")
-            }            
-        }
-    }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListMoveToolStripButton)
+            }
+            if ($This.selectedItem -eq 'Move')  { 
+                $InformationTabControl.SelectedTab = $Section3ResultsTab
 
+                Create-TreeViewCheckBoxArray -Endpoint
+                if ($script:EntrySelected) {
+                    Show-MoveForm -Endpoint -Title "Move: $($script:EntrySelected.Text)" -SelectedEndpoint
+            
+                    $script:ComputerTreeView.Nodes.Clear()
+                    Initialize-TreeViewData -Endpoint
+            
+                    $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+                    $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
+            
+                    Foreach($Computer in $script:ComputerTreeViewData) {
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address  -Metadata $Computer
+                    }
+            
+                    Remove-EmptyCategory -Endpoint
+                    Save-TreeViewData -Endpoint
+                    UpdateState-TreeViewData -Endpoint -NoMessage
+            
+                    $StatusListBox.Items.Clear()
+                    $StatusListBox.Items.Add("Moved:  $($script:EntrySelected.text)")
+                }
+            }
+            if ($This.selectedItem -eq 'Delete')  { 
+                # This brings specific tabs to the forefront/front view
+                $InformationTabControl.SelectedTab = $Section3ResultsTab
 
-    $ComputerListDeleteSelectedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-        #Text      = "Delete:  $($script:EntrySelected.text)"
-        Text      = "Delete"
-        Add_CLick = {
-            # This brings specific tabs to the forefront/front view
-            $InformationTabControl.SelectedTab = $Section3ResultsTab
+                Create-TreeViewCheckBoxArray -Endpoint
+                if ($script:EntrySelected) {
+                    $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of Endpoint Node: $($script:EntrySelected.text)`r`n`r`nAll Endpoint metadata and notes will be lost.`r`n`r`nAny previously collected data will still remain.",'Delete Endpoint','YesNo')
 
-            Create-TreeViewCheckBoxArray -Endpoint
-            if ($script:EntrySelected) {
-                $MessageBox = [System.Windows.MessageBox]::Show("Confirm Deletion of Endpoint Node: $($script:EntrySelected.text)`r`n`r`nAll Endpoint metadata and notes will be lost.`r`n`r`nAny previously collected data will still remain.",'Delete Endpoint','YesNo')
-
-                Switch ( $MessageBox ) {
-                    'Yes' {
-                        # Removes selected computer nodes
-                        [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
-                        foreach ($root in $AllTreeViewNodes) {
-                            foreach ($Category in $root.Nodes) {
-                                foreach ($Entry in $Category.nodes) {
-                                    if ($Entry.text -eq $script:EntrySelected.text) {
-                                        # Removes the node from the treeview
-                                        $Entry.remove()
-                                        # Removes the host from the variable storing the all the computers
-                                        $script:ComputerTreeViewData = $script:ComputerTreeViewData | Where-Object {$_.Name -ne $Entry.text}
+                    Switch ( $MessageBox ) {
+                        'Yes' {
+                            # Removes selected computer nodes
+                            [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
+                            foreach ($root in $AllTreeViewNodes) {
+                                foreach ($Category in $root.Nodes) {
+                                    foreach ($Entry in $Category.nodes) {
+                                        if ($Entry.text -eq $script:EntrySelected.text) {
+                                            # Removes the node from the treeview
+                                            $Entry.remove()
+                                            # Removes the host from the variable storing the all the computers
+                                            $script:ComputerTreeViewData = $script:ComputerTreeViewData | Where-Object {$_.Name -ne $Entry.text}
+                                        }
                                     }
                                 }
                             }
+                            $StatusListBox.Items.Clear()
+                            $StatusListBox.Items.Add("Deleted:  $($script:EntrySelected.text)")
+
+                            $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
+                            $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
+
+                            #This is a bit of a workaround, but it prevents the host data message from appearing after a computer node is deleted...
+                            $script:FirstCheck = $false
+
+                            Remove-EmptyCategory -Endpoint
+                            Save-TreeViewData -Endpoint
                         }
-                        $StatusListBox.Items.Clear()
-                        $StatusListBox.Items.Add("Deleted:  $($script:EntrySelected.text)")
-
-                        $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
-                        $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
-
-                        #This is a bit of a workaround, but it prevents the host data message from appearing after a computer node is deleted...
-                        $script:FirstCheck = $false
-
-                        Remove-EmptyCategory -Endpoint
-                        Save-TreeViewData -Endpoint
+                        'No' {
+                            $StatusListBox.Items.Clear()
+                            $StatusListBox.Items.Add('Endpoint Deletion Cancelled')
+                        }
                     }
-                    'No' {
-                        $StatusListBox.Items.Clear()
-                        $StatusListBox.Items.Add('Endpoint Deletion Cancelled')
-                    }
-                }
+                }   
             }
         }
     }
-    $ComputerListContextMenuStrip.Items.Add($ComputerListDeleteSelectedToolStripButton)
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add('Tag')
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add('Add Endpoint')
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add('Rename')
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add('Move')
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add('Delete')
+    $ComputerListContextMenuStrip.Items.Add($ComputerListSelectedNodeActionsToolStripComboBox)
 
 
-        $ComputerListContextMenuStrip.Items.Add('-')
-        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-            Text      = 'Checked Endpoints'
-            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-            ForeColor = 'Blue'
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
-        $ComputerListContextMenuStrip.Items.Add('-')
+    $ComputerListContextMenuStrip.Items.Add('-')
+    $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+        Text      = 'Checked Endpoints'
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+        ForeColor = 'Blue'
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
 
 
-        $ComputerListDeselectAllToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Uncheck All"
-            Add_CLick = {
+    $ComputerListContextMenuStrip.Items.Add('-')
+
+
+    $ComputerListCheckedNodeActionsToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+        Text      = "Checked Node Actions"
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+        ForeColor = 'Black'
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsToolStripLabel)
+
+
+    $ComputerListCheckedNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
+        Size = @{ Width  = $FormScale * 125 }
+        Text = '   - Make a selection'
+        ForeColor = 'DarkRed'
+        ToolTipText = 'Import Endpoint Data from various sources. Duplicate names will not be imported.'
+        Add_SelectedIndexChanged = {
+            if ($This.selectedItem -eq 'Uncheck All') { 
                 ### ... I didn't feel the need to error on unchecking... becuase it's not conducting any actions on the network
                 #if ($script:ComputerTreeViewSelected.count -eq 0){
                 #    [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Uncheck All')
@@ -402,13 +442,7 @@ $ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
                     Deselect-AllComputers
                 #}
             }
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListDeselectAllToolStripButton)
-
-
-        $ComputerListNSLookupCheckedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "NSLookup"
-            Add_CLick = {
+            if ($This.selectedItem -eq 'NSLookup')  { 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
                     [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','NSLookup')
                 }
@@ -464,21 +498,15 @@ $ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
                                     }
                                 }
                             }
-             #               Save-TreeViewData -Endpoint -SaveAllChecked
-             #               Check-HostDataIfModified
+                #               Save-TreeViewData -Endpoint -SaveAllChecked
+                #               Check-HostDataIfModified
                             $StatusListBox.Items.clear()
                             $StatusListBox.Items.Add("NSLookup Complete: $($script:ComputerTreeViewSelected.count) Endpoints")
                         }
                     }
-                }                
+                }     
             }
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListNSLookupCheckedToolStripButton)
-
-
-        $ComputerListTagAllCheckedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Tag All"
-            Add_CLick = {
+            if ($This.selectedItem -eq 'Tag All')  { 
                 Create-TreeViewCheckBoxArray -Endpoint
                 if ($script:ComputerTreeViewSelected.count -eq 0){
                     [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Tag All')
@@ -522,15 +550,9 @@ $ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
                             $StatusListBox.Items.Add("Tag Complete: $($script:ComputerTreeViewSelected.count) Endpoints")
                         }
                     }
-                }                
+                }      
             }
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListTagAllCheckedToolStripButton)
-
-
-        $ComputerListMoveToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Move All"
-            Add_CLick = {
+            if ($This.selectedItem -eq 'Move All')  { 
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
@@ -562,15 +584,9 @@ $ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
                         $ResultsListBox.Items.Add("The following hostnames/IPs have been moved to $($ComputerTreeNodePopupMoveComboBox.SelectedItem):")
                     }
                     else { ComputerNodeSelectedLessThanOne -Message 'Move Selection' }
-                }                
+                }      
             }
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListMoveToolStripButton)
-
-
-        $ComputerListDeleteAllCheckedToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Delete All"
-            Add_CLick = {
+            if ($This.selectedItem -eq 'Delete All')  { 
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
@@ -649,24 +665,31 @@ $ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
                             $StatusListBox.Items.Add('Endpoint Deletion Cancelled')
                         }
                     }
-                }                
+                }      
             }
         }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListDeleteAllCheckedToolStripButton)
+    }
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('Uncheck All')
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('NSLookup')
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('Tag All')
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('Move All')
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('Delete All')
+    $ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsToolStripComboBox)
 
 
-        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-            Text      = 'Test Connection'
-            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-            ForeColor = 'Black'
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+    $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+        Text      = 'Test Connection'
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+        ForeColor = 'Black'
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
 
-
-        $ComputerListPingToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "   - ICMP Ping"
-            ForeColor = 'DarkRed'
-            Add_CLick = {
+    $ComputerListTestConnectionToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
+        Size = @{ Width  = $FormScale * 125 }
+        Text = '   - Make a selection'
+        ForeColor = "DarkRed"
+        Add_SelectedIndexChanged = {
+            if ($This.selectedItem -eq 'ICMP Ping') { 
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
@@ -683,14 +706,7 @@ $ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
                     }
                 }            
             }
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListPingToolStripButton)
-
-
-        $ComputerListRPCCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "   - RPC Port Check"
-            ForeColor = 'DarkRed'
-            Add_CLick = {
+            if ($This.selectedItem -eq 'RPC Port Check')  { 
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
@@ -708,16 +724,9 @@ $ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("RPC Port Check:  Cancelled")
                     }
-                }            
+                }
             }
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListRPCCheckToolStripButton)
-
-
-        $ComputerListSMBCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "   - SMB Port Check"
-            ForeColor = 'DarkRed'
-            Add_CLick = {
+            if ($This.selectedItem -eq 'SMB Port Check')  { 
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
@@ -735,16 +744,9 @@ $ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("SMB Port Check:  Cancelled")
                     }
-                }                
+                }
             }
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListSMBCheckToolStripButton)
-
-
-        $ComputerListWinRMCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "   - WinRM Check"
-            ForeColor = 'DarkRed'
-            Add_CLick = {
+            if ($This.selectedItem -eq 'WinRM Check')  { 
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
@@ -762,48 +764,54 @@ $ComputerListContextMenuStrip.Items.Add($textBoxMenuItem)
                         $StatusListBox.Items.Clear()
                         $StatusListBox.Items.Add("WinRM Check:  Cancelled")
                     }
-                }                
+                }
             }
         }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListWinRMCheckToolStripButton)
+    }
+    $ComputerListTestConnectionToolStripComboBox.Items.Add('ICMP Ping')
+    $ComputerListTestConnectionToolStripComboBox.Items.Add('RPC Port Check')
+    $ComputerListTestConnectionToolStripComboBox.Items.Add('SMB Port Check')
+    $ComputerListTestConnectionToolStripComboBox.Items.Add('WinRM Check')
+    $ComputerListContextMenuStrip.Items.Add($ComputerListTestConnectionToolStripComboBox)
 
 
+    $ComputerListContextMenuStrip.Items.Add('-')
 
-        $ComputerListContextMenuStrip.Items.Add('-')
-        $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-            Text      = 'View Endpoint Data'
-            Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
-            ForeColor = 'Blue'
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
-        $ComputerListContextMenuStrip.Items.Add('-')
-        
-        
-        $ComputerListOpenGridViewCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Out-GridView"
-            Add_CLick = {
+
+    $ComputerListRenameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+        Text      = 'View Endpoint Data'
+        Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
+        ForeColor = 'Blue'
+    }
+    $ComputerListContextMenuStrip.Items.Add($ComputerListRenameToolStripLabel)
+
+
+    $ComputerListContextMenuStrip.Items.Add('-')
+
+    $ComputerListViewEndpointDataToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
+        Size = @{ Width  = $FormScale * 125 }
+        Text = '   - Make a selection'
+        ForeColor = 'DarkRed'
+        ToolTipText = 'Import Endpoint Data from various sources. Duplicate names will not be imported.'
+        Add_SelectedIndexChanged = {
+            if ($This.selectedItem -eq 'Out-GridView') { 
                 Import-Csv -Path $script:EndpointTreeNodeFileSave | Out-GridView -Title 'Endpoint Data'
             }
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListOpenGridViewCheckToolStripButton)
-        
-        $ComputerListOpenSpreadsheetCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Spreadsheet"
-            Add_CLick = {
+            if ($This.selectedItem -eq 'Spreadsheet')  { 
                 Invoke-Item -Path $script:EndpointTreeNodeFileSave
             }
-        }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListOpenSpreadsheetCheckToolStripButton)
-        
-        
-        $ComputerListOpenHtmlViewCheckToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Browser HTML View"
-            Add_CLick = {
+            if ($This.selectedItem -eq 'Browser HTML View')  { 
                 Import-Csv -Path $script:EndpointTreeNodeFileSave | Out-HTMLView -Title 'Endpoint Data'
             }
         }
-        $ComputerListContextMenuStrip.Items.Add($ComputerListOpenHtmlViewCheckToolStripButton)
+    }
+    $ComputerListViewEndpointDataToolStripComboBox.Items.Add('Out-GridView')
+    $ComputerListViewEndpointDataToolStripComboBox.Items.Add('Spreadsheet')
+    $ComputerListViewEndpointDataToolStripComboBox.Items.Add('Browser HTML View')
+    $ComputerListContextMenuStrip.Items.Add($ComputerListViewEndpointDataToolStripComboBox)
 
+    $ComputerListContextMenuStrip.Items.Add('-')
+    
 
     $Entry.ContextMenuStrip = $ComputerListContextMenuStrip
 }

@@ -20,6 +20,17 @@ Accounts Treeview
 	- sometimes it opens the wrong context memu
 	- the other context menu doesn't appear
 
+!!!!!!!!!!!Move feature in updated context menu not working.
+
+==================================================
+v5.4.1 -
+==================================================
+Changed the way date category nodes are displayed in the treeview to properly display in order
+	- FROM dd-MM-yyyy TO yyyy-MM-dd
+
+Updated Context Menu to use combobox's... it was getting crowded.
+	!!!!!!!!!!!!!!!!!!need to finish updating
+
 ==================================================
 v5.4.0 - 7 May 2021
 ==================================================

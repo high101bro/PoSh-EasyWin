@@ -37,10 +37,11 @@ function Import-EndpointsFromDomain {
 
 #    $script:ComputerTreeView.Nodes.Clear()
 #    Initialize-TreeViewData -Endpoint
-    UpdateState-TreeViewData -Endpoint -NoMessage
     Normalize-TreeViewData -Endpoint
     Foreach($Computer in $script:ComputerTreeViewData) { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
     $script:ComputerTreeView.ExpandAll()
+
+    UpdateState-TreeViewData -Endpoint
     Save-TreeViewData -Endpoint
 }
 
@@ -200,7 +201,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                 elseif ($script:ComputerTreeViewSelected.count -gt 1) { ComputerNodeSelectedMoreThanOne -Message 'Importing Hosts' }
 
                 Import-EndpointsFromDomain -ADComputer $ImportedActiveDirectoryHosts
-                UpdateState-TreeViewData -Endpoint -NoMessage
+                UpdateState-TreeViewData -Endpoint
 
                 $ImportFromADFrom.Close()
             }
@@ -290,7 +291,7 @@ $ImportFromADFrom = New-Object Windows.Forms.Form -Property @{
                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADComputer -Filter * -Properties Name, CanonicalName, OperatingSystem, OperatingSystemHotfix, OperatingSystemServicePack, Enabled, LockedOut, LogonCount, Created, Modified, LastLogonDate, IPv4Address, MACAddress, MemberOf, isCriticalSystemObject, HomedirRequired, Location, ProtectedFromAccidentalDeletion, TrustedForDelegation, SID }"
                 }
                 Import-EndpointsFromDomain -ADComputer $ImportedActiveDirectoryHosts
-                UpdateState-TreeViewData -Endpoint -NoMessage
+                UpdateState-TreeViewData -Endpoint
 
                 $ImportFromADFrom.Close()
             }
@@ -410,7 +411,7 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
                 }
             }
             Save-TreeViewData -Endpoint
-            UpdateState-TreeViewData -Endpoint -NoMessage
+            UpdateState-TreeViewData -Endpoint
 
             $ImportFromADFrom.Close()
         }
@@ -419,7 +420,6 @@ $ImportFromADAutoPullGroupBox = New-Object System.Windows.Forms.GroupBox -Proper
     CommonButtonSettings -Button $ImportFromADImportButton
     $ImportFromADFrom.Controls.Add($ImportFromADAutoPullGroupBox)
 
-    # Garbage Collection to free up memory
     [System.GC]::Collect()
 
     $ImportFromADFrom.ShowDialog()

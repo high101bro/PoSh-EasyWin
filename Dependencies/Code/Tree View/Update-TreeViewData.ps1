@@ -65,13 +65,6 @@ function Update-TreeViewData {
             $script:CategorySelected  = $null
             $script:EntrySelected     = $null
 
-            if ($Accounts) { 
-                Display-ContextMenuForAccountsTreeNode
-            }
-            elseif ($Endpoint) { 
-                Display-ContextMenuForComputerTreeNode
-            }
-
             $script:HostQueryTreeViewSelected              = ""
             $Section3QueryExplorationName.Text             = "N/A"
             $Section3QueryExplorationTypeTextBox.Text      = "N/A"
@@ -232,13 +225,6 @@ function Update-TreeViewData {
                     $script:rootSelected      = $null
                     $script:CategorySelected  = $Category
                     $script:EntrySelected     = $null
-
-                    if ($Accounts) { 
-                        Display-ContextMenuForAccountsTreeNode
-                    }
-                    elseif ($Endpoint) { 
-                        Display-ContextMenuForComputerTreeNode
-                    }
         
                     $script:HostQueryTreeViewSelected = ""
                     #$StatusListBox.Items.clear()
@@ -270,7 +256,7 @@ function Update-TreeViewData {
             foreach ($Entry in $Category.nodes) {
                 $EntryNodesWithinCategory += 1
 
-                if ($Commands) {
+                if ($Endpoint) {
                     if ($Entry.isselected) {
                         $script:rootSelected      = $null
                         $script:CategorySelected  = $Category
