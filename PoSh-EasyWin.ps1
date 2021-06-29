@@ -216,34 +216,14 @@ param (
         Mandatory=$false,
         HelpMessage="Enables the audiable voice completion message at the end of queries/collections.")]
     [switch] $AudibleCompletionMessage
-
+)
 
 # Keycodes
 # https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.keys?view=net-5.0
 
-<#
-    # Removed because of inconsistent Winform scaling. The Out-GridView used to show the Copyright/EULA also had the quirk of changing the scaling of WinForms.
-    # I cannot find a solution online, but the OGV EULA allowed forced the quirk to happen, allowing for some level of consistency when scaling the GUI.
-    # The -AcceptEULA switch, although useful to bypass the EULA, is not currently implemented until I can find a better solution with the scaling.
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="GUI")]
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="No GUI Computer Name",
-        HelpMessage="Accepts the End User License Agreement (EULA). The GUI for the GNU GPL wont display.")]
-    [Parameter(
-        Mandatory=$false,
-        ParameterSetName="No GUI Computer Search",
-        HelpMessage="Accepts the End User License Agreement (EULA). The GUI for the GNU GPL wont display.")]
-    [switch] $AcceptEULA
-#>
-)
-
 # Generates the GUI and contains the majority of the script
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
-
 
 #============================================================================================================================================================
 # Variables
@@ -481,7 +461,7 @@ function Update-FormProgress {
         [string]$ScriptPath = '...'
     )
     $StatusDescription = $ScriptPath | Split-Path -Leaf
-    # NOTE!!! Apparently there are usues with scope when dot sourcing within a function
+    # NOTE: Apparently there are issues with scoping when dot sourcing within a function
     #if ($ScriptPath -ne '...') {
     #    # Loads the script using the Dot Sourcing method
     #    . $ScriptPath
@@ -529,7 +509,6 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
     MinimizeBox = $true
     StartPosition  = "CenterScreen"
     FormBorderStyle =  'Sizable' #  Fixed3D, FixedDialog, FixedSingle, FixedToolWindow, None, Sizable, SizableToolWindow
-    #Backcolor = 'LightGray'
     Add_Load = {
         $This.TopMost = $false
         if ((Test-Path "$script:CredentialManagementPath\Specified Credentials.txt")) {
@@ -625,14 +604,6 @@ Update-FormProgress "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 . "$Dependencies\Code\Main Body\Show-ToolTip.ps1"
 
 
-
-
-
-
-
-
-
-
 $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
     Left   = $FormScale * 5
     Top    = $FormScale * 5
@@ -668,7 +639,6 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
                     }                    
                 }
             }
-            # Added/Removed by Set-GuiLayout
 
             $MainLeftTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
@@ -721,14 +691,6 @@ $QueryAndCollectionPanel = New-Object System.Windows.Forms.Panel -Property @{
 $PoShEasyWin.Controls.Add($QueryAndCollectionPanel)
 
 
-
-
-
-
-
-
-
-
 $MainCenterPanel = New-Object System.Windows.Forms.Panel
 
             $MainCenterTabControl = New-Object System.Windows.Forms.TabControl -Property @{
@@ -758,20 +720,20 @@ $MainCenterPanel = New-Object System.Windows.Forms.Panel
 $PoShEasyWin.Controls.Add($MainCenterPanel)
 
 
-
-
-
-
-
-
-
-
 $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
 
             $ComputerAndAccountTreeViewTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Top    = 0
                 Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Add_Click = {
+                    if ($This.SelectedTab -eq $ComputerTreeviewTab) {
+                        $InformationTabControl.SelectedTab = $Section3HostDataTab
+                    }
+                    elseif ($This.SelectedTab -eq $AccountsTreeviewTab) {
+                        $InformationTabControl.SelectedTab = $Section3AccountDataTab
+                    }
+                }
             }
             $ComputerAndAccountTreeNodeViewPanel.Controls.Add($ComputerAndAccountTreeViewTabControl)
 
@@ -825,12 +787,11 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
 
 
             $ComputerTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
-                Text   = "Endpoints"
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Text = "Endpoints"
+                Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 UseVisualStyleBackColor = $True
             }
             $ComputerAndAccountTreeViewTabControl.Controls.Add($ComputerTreeviewTab)
-
 
                     $script:ComputerTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
                         Text    = 'CanonicalName'
@@ -933,10 +894,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     Update-FormProgress "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
                     . "$Dependencies\Code\Tree View\Computer\AddHost-ComputerTreeNode.ps1"
 
-
-
-
-
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListDeselectAllToolStripButton.ps1"
 
@@ -1013,7 +970,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $script:ComputerTreeView.Sort()
                     $ComputerTreeviewTab.Controls.Add($script:ComputerTreeView)
 
-
                     Initialize-TreeViewData -Endpoint
                     Normalize-TreeViewData -Endpoint
 
@@ -1037,60 +993,12 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     }
 
 
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    
             $AccountsTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
-                Text   = "Accounts"
-                Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                Text = "Accounts"
+                Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 UseVisualStyleBackColor = $True
             }
             $ComputerAndAccountTreeViewTabControl.Controls.Add($AccountsTreeviewTab)
-
 
                     $script:AccountsTreeNodeComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
                         Text    = "CanonicalName"
@@ -1192,7 +1100,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     Update-FormProgress "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
                     . "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
 
-
                     # Code for the Context Menu
                     # This context menu is the one activeated when you click within the Accounts treeview area, but not when clicking on a Accounts ndoe itself
                     Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeView.ps1"
@@ -1239,7 +1146,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     $script:AccountsTreeView.Sort()
                     $AccountsTreeviewTab.Controls.Add($script:AccountsTreeView)
 
-
                     Initialize-TreeViewData -Accounts
                     Normalize-TreeViewData -Accounts
 
@@ -1262,78 +1168,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             foreach ($Entry in $Category.nodes) { $Entry.Collapse() }
                         }
                     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                     
-
-
-
-                    
-
 $PoShEasyWin.Controls.Add($ComputerAndAccountTreeNodeViewPanel)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 $ExecutionButtonPanel = New-Object System.Windows.Forms.Panel
@@ -1348,22 +1184,13 @@ $ExecutionButtonPanel = New-Object System.Windows.Forms.Panel
             }
             $ExecutionButtonPanel.Controls.Add($MainRightTabControl)
 
-            # Action Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Action.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Action.ps1"
 
-            # Manage Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Import Data.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Import Data.ps1"
 
 $PoShEasyWin.Controls.Add($ExecutionButtonPanel)
-
-
-
-
-
-
-
 
 
 $InformationPanel = New-Object System.Windows.Forms.Panel
@@ -1379,39 +1206,25 @@ $InformationPanel = New-Object System.Windows.Forms.Panel
             }
             $InformationPanel.Controls.Add($InformationTabControl)
 
-            # About Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\About.ps1"
             . "$Dependencies\Code\Main Body\Tabs\About.ps1"
 
-            # Results Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Results.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Results.ps1"
 
-            # Monitor Jobs Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Monitor Jobs.ps1"
 
-            # Endpoint Data Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Endpoint Data.ps1"
 
-            # Account Data Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Account Data.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Account Data.ps1"
 
-            # Query Exploration Tab
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Query Exploration.ps1"
 
 $PoShEasyWin.Controls.Add($InformationPanel)
-
-
-
-
-
-
-
-
 
 
 # Charts - Convert CSV Number Strings To Intergers
@@ -1507,14 +1320,6 @@ Update-FormProgress "$Dependencies\Code\Main Body\Set-GuiLayout.ps1"
         }
         $InformationTabControlOriginalTop    = $InformationPanel.Top
         $InformationTabControlOriginalHeight = $InformationPanel.Height
-
-
-
-
-
-
-
-
 
 
 #============================================================================================================================================================
@@ -2103,8 +1908,3 @@ if ((Test-Path "$PoShHome\Settings\User Notice And Acknowledgement.txt")) {
     Launch-ProgressBarForm -FormTitle "PoSh-EasyWin  [$InitialScriptLoadTime]" -ShowImage -ScriptBlockProgressBarInput $ScriptBlockProgressBarInput
     $script:ProgressBarSelectionForm.Topmost = $false
 }
-
-
-
-
-

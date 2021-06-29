@@ -1,7 +1,4 @@
 PoSh-EasyWin: PowerShell - Endpoint Analysis Solution Your Windows Intranet Needs!
-Formerly known as PoSh-ACME:  PowerShell - Analyst's Collection Made Easy
-I know, I know... but who doesn't love tools with catchy acronym names? 
-Rebranded because another tool had the same name, which made it hard to locate online.
 
      File Name      : PoSh-EasyWin.ps1
      Version        : v5.3.2 
@@ -24,5 +21,5 @@ Rebranded because another tool had the same name, which made it hard to locate o
 
 PoSh-EasyWin is a tool that allows you to run any number of queries against any number of hosts. Depending on what you select, the queries can consist of one liner commands or scripts (built-in or user created). PoSh-EasyWin consists of queries speicific for hosts and servers, workgroups and domains, registry and Event Logs, file searching and network connections. It provides a simple way to view data in a grid format, manipulate data in a PowerShell terminal, as well as displays the data in various chart formats. Other add-on features includes various Sysinternals tools, and basic reference info for quick use when not on the web.
 
-As the name indicates, PoSh-EasyWin is writen in PowerShell and uses the .NET Framework to create the GUI.
+The underlying code writen in PowerShell and uses the .NET Framework and various external executables.
  

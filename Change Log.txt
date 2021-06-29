@@ -31,6 +31,8 @@ Changed the way date category nodes are displayed in the treeview to properly di
 Updated Context Menu to use combobox's... it was getting crowded.
 	!!!!!!!!!!!!!!!!!!need to finish updating
 
+Removed messages about this tool previously being known as PoSh-ACME (PowerShell - Analyst Collection Made Easy)
+
 ==================================================
 v5.4.0 - 7 May 2021
 ==================================================
