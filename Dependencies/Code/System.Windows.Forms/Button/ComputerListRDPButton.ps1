@@ -9,7 +9,7 @@ $ComputerListRDPButtonAdd_Click = {
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
         $VerifyAction = Verify-Action -Title "Verification: Remote Desktop" -Question "Connecting Account:  $Username`n`nOpen a Remote Desktop session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
         if ($script:ComputerListUseDNSCheckbox.checked) { 
-            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
         }
         else {
             [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
@@ -91,15 +91,3 @@ $ComputerListRDPButtonAdd_Click = {
         $StatusListBox.Items.Add("Remote Desktop:  Cancelled")
     }
 }
-
-# $ComputerListRDPButtonAdd_MouseHover = {
-# Show-ToolTip -Title "Remote Desktop Connection" -Icon "Info" -Message @"
-# +  Will attempt to RDP into a single host.
-# +  Command:
-#         mstsc /v:<target>:3389 /NoConsentPrompt
-#         mstsc /v:<target>:3389 /user:USERNAME /pass:PASSWORD /NoConsentPrompt
-# +  Compatiable with 'Specify Credentials' if permitted by network policy
-# "@
-# }
-
-

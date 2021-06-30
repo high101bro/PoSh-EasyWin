@@ -9,7 +9,7 @@ $ComputerListPsExecButtonAdd_Click = {
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
         $VerifyAction = Verify-Action -Title "Verification: PSExec" -Question "Connecting Account:  $Username`n`nEnter a PSEexec session to the following?" -Computer $($script:ComputerListEndpointNameToolStripLabel.text)
         if ($script:ComputerListUseDNSCheckbox.checked) { 
-            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text 
+            $script:ComputerTreeViewSelected = $script:ComputerListEndpointNameToolStripLabel.text
         }
         else {
             [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
@@ -75,17 +75,3 @@ $ComputerListPsExecButtonAdd_Click = {
         $StatusListBox.Items.Add("PSExec Session:  Cancelled")
     }
 }
-
-# $ComputerListPsExecButtonAdd_MouseHover = {
-#     Show-ToolTip -Title "PsExec" -Icon "Info" -Message @"
-# +  Will attempt to obtain a cmd prompt via PsExec.
-# +  PsExec is a Windows Sysinternals tool.
-# +  Some anti-virus scanners will alert on this.
-# +  Command:
-#         PsExec.exe -AcceptEULA -NoBanner \\<target> cmd
-#         PsExec.exe -AcceptEULA -NoBanner \\<target> -u <domain\username> -p <password> cmd
-# +  Compatiable with 'Specify Credentials'
-# "@
-# }
-
-

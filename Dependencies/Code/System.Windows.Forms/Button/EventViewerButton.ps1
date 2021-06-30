@@ -64,15 +64,3 @@ $EventViewerButtonAdd_Click = {
         $StatusListBox.Items.Add("Event Viewer:  Cancelled")
     }
 }
-
-$EventViewerButtonAdd_MouseHover = {
-    Show-ToolTip -Title "Event Viewer" -Icon "Info" -Message @"
-+  Will attempt to show the Event Viewer for a single host.
-+  NOT compatiable with 'Specify Credentials'
-+  Uses RPC/DCOM, not WinRM
-+  Command:
-        Show-EventLog -ComputerName <Hostname>
-"@
-}
-
-

@@ -29,9 +29,13 @@ Changed the way date category nodes are displayed in the treeview to properly di
 	- FROM dd-MM-yyyy TO yyyy-MM-dd
 
 Updated Context Menu to use combobox's... it was getting crowded.
-	!!!!!!!!!!!!!!!!!!need to finish updating
+	!!!!!!!!!!!!! trouble shoot selecting a node and moving it to a new ou/cn
+	!!!!!!!!!!!!! trouble shoot checkboxing multiple nodes and moving it to a new ou/cn
+	!!!!!!!!!!!!! add tooltip messages to combobox items like ping, smb, winrm check, pswritehtml...etc
 
 Removed messages about this tool previously being known as PoSh-ACME (PowerShell - Analyst Collection Made Easy)
+
+Combned Display-ContextMenuForComputerTreeNode and Display-ContextMenuForComputerTreeView into single function with parameter switches
 
 ==================================================
 v5.4.0 - 7 May 2021

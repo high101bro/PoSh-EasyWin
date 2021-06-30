@@ -1,10 +1,14 @@
 function Display-ContextMenuForComputerTreeNode {
+    param(
+        [switch]$ClickedOnNode,
+        [switch]$ClickedOnArea
+    )
+
     Create-TreeViewCheckBoxArray -Endpoint
 
-    $script:ComputerListContextMenuStrip.Items.Remove($ComputerListRenameToolStripButton)
     $script:ComputerListContextMenuStrip = New-Object System.Windows.Forms.ContextMenuStrip -Property @{
-        ShowCheckMargin = $false
-        ShowImageMargin = $false
+        ShowCheckMargin  = $false
+        ShowImageMargin  = $false
         ShowItemToolTips = $true
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
         ForeColor = 'Black'
@@ -12,18 +16,19 @@ function Display-ContextMenuForComputerTreeNode {
 
     #$script:ComputerListContextMenuStrip.Items.Add("Import Endpoints")
     $script:ComputerListEndpointNameToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
-        Text      = "Node: $($Entry.Text)"
+        Text      = "$($Entry.Text)"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Blue'
         BackColor = 'lightgray'
     }
     $script:ComputerListContextMenuStrip.Items.Add($script:ComputerListEndpointNameToolStripLabel)
+    if ($Entry.Text -eq $null) {$script:ComputerListEndpointNameToolStripLabel.Text = "Node Not Selected"}
 
 
     $script:ComputerListContextMenuStrip.Items.Add('-')
 
 
-    $ComputerListInteractWithEndpointToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+    $ComputerListInteractWithEndpointToolStripLabel = New-Object System.Windows.Forms.ToolStripButton -Property @{
         Text      = "Interact With Endpoint"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
@@ -31,45 +36,185 @@ function Display-ContextMenuForComputerTreeNode {
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListInteractWithEndpointToolStripLabel)
 
 
-    if ($script:ComputerListPivotExecutionCheckbox.checked -eq $false) {
-        $ComputerListEndpointInteractionToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-            Size = @{ Width  = $FormScale * 150 }
-            Text = '   - Make a selection'
-            ForeColor = 'DarkRed'
-            ToolTipText = 'Interact with endpoints in various way if they are configured to do so.'
-            Add_SelectedIndexChanged = {
-                $script:ComputerListContextMenuStrip.Close()
-                if ($This.selectedItem -eq 'Remote Desktop') { 
-                    & $ComputerListRDPButtonAdd_Click
-                }
-                if ($This.selectedItem -eq 'PSSession')  { 
-                    & $ComputerListPSSessionButtonAdd_Click
-                }
-                if ($This.selectedItem -eq 'PSExec')  { 
-                    & $ComputerListPsExecButtonAdd_Click
-                }
-                if ($This.selectedItem -eq 'SSH')  { 
-                    & $ComputerListSSHButtonAdd_Click
-                }
-                if ($This.selectedItem -eq 'Event Viewer')  { 
-                    & $EventViewerButtonAdd_Click
-                }
+    if ($ClickedOnNode) {
+        if ($script:ComputerListPivotExecutionCheckbox.checked -eq $false) {
+            $ComputerListRemoteDesktopToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text        = "  - Remote Desktop"
+                ForeColor   = 'Black'
+                Add_Click   = $ComputerListRDPButtonAdd_Click
+                ToolTipText = "
+Establishes a Remote Desktop session with an endpoint.
+
+Uses the native cmd called mstsc.exe (Microsoft Terminal Services Client)
+
+Requires RDP to be entabled within the network or on the host.
+
+Default ports, protocols, and services: 
+    TCP|UDP / 3389
+    Remote Desktop Protocol (RDP)
+    SSL/TLS Encryption: Windows Vista + / Server 2003 +
+
+Command:
+    mstsc /v:<target>:3389 /user:USERNAME /pass:PASSWORD /NoConsentPrompt
+"
             }
+            $script:ComputerListContextMenuStrip.Items.Add($ComputerListRemoteDesktopToolStripButton)
+
+
+            $ComputerListEnterPSSessionToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text        = "  - Enter-PSSession"
+                ForeColor   = 'Black'
+                Add_Click   = $ComputerListPSSessionButtonAdd_Click
+                ToolTipText = "
+Establishes an interactive Powershell Session with an endpoint.
+
+Normally, conntections with endpoints are authenticated with Active Directory and the hostname.
+
+To use with an IP address, rather than a hostname, the Credential parameter must be used. Also, the endpoint must have the remote computer's IP must be in the local TrustedHosts or be configured for HTTPS transport.
+
+Default ports, protocols, and services: 
+    TCP / 47001 - Endpoint Listener
+    TCP / 5985 [HTTP]  Windows 7+
+    TCP / 5986 [HTTPS] Windows 7+
+    TCP / 80   [HTTP]  Windows Vista-
+    TCP / 443  [HTTPS] Windows Vista-
+    Windows Remote Management (WinRM)
+    Regardless of the transport protocol used (HTTP or HTTPS), WinRM always encrypts all PowerShell remoting communication after initial authentication
+
+Command:
+    Enter-PSSession -ComputerName <target> -Credential <`$creds>
+"
+            }
+            $script:ComputerListContextMenuStrip.Items.Add($ComputerListEnterPSSessionToolStripButton)
+
+
+            $ComputerListPSExecToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text        = "  - PSExec (Sysinternals)"
+                ForeColor   = 'Black'
+                Add_Click   = $ComputerListPsExecButtonAdd_Click
+                ToolTipText = "
+Establishes an interactive cmd prompt via PSExec.
+
+PsExec.exe is a Windows Sysinternals tool.
+
+This tool is particularly useful when WinRM is disabled or when trying to access an endpoint not joined to a domain.
+
+Depending on the network security policy, PSExec may be prevented from running.
+
+Additionally, many anti-virus scanners or security tools will alert on this as malicious executable, despite it being legitimate.
+
+Default ports, protocols, and services: 
+    TCP / 445 
+    Server Message Block (SMB)
+    PSExec version 2.1+ (released 7 March 2014), encrypts all communication between local and remote systems
+
+Command:
+    PsExec.exe -AcceptEULA -NoBanner \\<target> -u <domain\username> -p <password> cmd
+"
+            }
+            $script:ComputerListContextMenuStrip.Items.Add($ComputerListPSExecToolStripButton)
+
+
+            $ComputerListSSHToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text        = "  - SSH (Secure Shell)"
+                ForeColor   = 'Black'
+                Add_Click   = $ComputerListSSHButtonAdd_Click
+                ToolTipText = "
+Establishes an interactive secure shell (SSH) with an endpoint.
+
+Useful to access Linux and Windows hosts with SSH enabled.
+
+SSH/OpenSSH is natively available on Windows 10 as up the April 2018 update, it does not support passing credentials automatically.
+
+Uses KiTTY, a better version forked from Plink (PuTTY) that not only has all the same features has but many more.
+
+Plink (PuTTY CLI tool), is an ssh client often used for automation, but has some integration issues with PoSh-EasyWin.
+
+Default ports, protocols, and services: 
+    TCP / 22
+    Secure Socket Layer/Transport Socket Layer (SSL/TLS)
+
+Command:
+    kitty.exe -ssh 'IP/hostname' -l 'username' -pw 'password'
+"
+            }
+            $script:ComputerListContextMenuStrip.Items.Add($ComputerListSSHToolStripButton)
+
+
+            $ComputerListEventViewerToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text        = "  - Event Viewer GUI"
+                ForeColor   = 'Black'
+                Add_Click   = $EventViewerButtonAdd_Click
+                ToolTipText = "
+Establishes an interactive session and displays a GUI with an endpoint.
+
+Must launch shell with elevated permissions, as there is no credential parameter for Show-EventLog.
+
+Default ports, protocols, and services: 
+    TCP / 135 and dynamic ports, typically:
+    TCP / 49152-65535 (Windows Vista, Server 2008 and above)
+    TCP / 1024 -65535 (Windows NT4, Windows 2000, Windows 2003)
+    Remote Procedure Call / Distributed Component Object Model (RPC/DCOM)
+
+Command:
+    Show-EventLog -ComputerName <Hostname>
+"
+            }
+            $script:ComputerListContextMenuStrip.Items.Add($ComputerListEventViewerToolStripButton)
+
+            # $ComputerListEndpointInteractionToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
+            #     Size = @{ Width  = $FormScale * 150 }
+            #     Text = '  - Make a selection'
+            #     ForeColor = 'Black'
+            #     ToolTipText = 'Interact with endpoints in various way if they are configured to do so.'
+            #     Add_SelectedIndexChanged = {
+            #         $script:ComputerListContextMenuStrip.Close()
+            #         if ($This.selectedItem -eq ' - Remote Desktop') { 
+            #             $script:ComputerListContextMenuStrip.Close()
+            #             & $ComputerListRDPButtonAdd_Click
+            #         }
+            #         if ($This.selectedItem -eq ' - PSSession')  { 
+            #             $script:ComputerListContextMenuStrip.Close()
+            #             & $ComputerListPSSessionButtonAdd_Click
+            #         }
+            #         if ($This.selectedItem -eq ' - PSExec')  { 
+            #             $script:ComputerListContextMenuStrip.Close()
+            #             & $ComputerListPsExecButtonAdd_Click
+            #         }
+            #         if ($This.selectedItem -eq ' - SSH')  { 
+            #             $script:ComputerListContextMenuStrip.Close()
+            #             & $ComputerListSSHButtonAdd_Click
+            #         }
+            #         if ($This.selectedItem -eq ' - Event Viewer')  { 
+            #             $script:ComputerListContextMenuStrip.Close()
+            #             & $EventViewerButtonAdd_Click
+            #         }
+            #     }
+            # }
+            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - Remote Desktop')
+            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - PSSession')
+            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - PSExec')
+            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - SSH')
+            # $ComputerListEndpointInteractionToolStripComboBox.Items.Add(' - Event Viewer')
+            # $script:ComputerListContextMenuStrip.Items.Add($ComputerListEndpointInteractionToolStripComboBox)    
         }
-        $ComputerListEndpointInteractionToolStripComboBox.Items.Add('Remote Desktop')
-        $ComputerListEndpointInteractionToolStripComboBox.Items.Add('PSSession')
-        $ComputerListEndpointInteractionToolStripComboBox.Items.Add('PSExec')
-        $ComputerListEndpointInteractionToolStripComboBox.Items.Add('SSH')
-        $ComputerListEndpointInteractionToolStripComboBox.Items.Add('Event Viewer')
-        $script:ComputerListContextMenuStrip.Items.Add($ComputerListEndpointInteractionToolStripComboBox)    
+        elseif ($script:ComputerListPivotExecutionCheckbox.checked -eq $true) {
+            $ComputerListPSSessionPivotToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
+                Text        = "  - Pivot-PSSession"
+                ForeColor   = 'Black'
+                Add_Click   = $ComputerListPSSessionPivotButtonAdd_Click
+                ToolTipText = 'Sends commands to a pivot host to execute on an endpoint.'
+            }
+            $script:ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionPivotToolStripButton)
+        }
     }
-    elseif ($script:ComputerListPivotExecutionCheckbox.checked -eq $true) {
-        $ComputerListPSSessionPivotToolStripButton = New-Object System.Windows.Forms.ToolStripButton -Property @{
-            Text      = "Pivot-PSSession"
+    else {
+        $ComputerListLeftClick1ToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
+            Text      = "Left-Click an endpoint,`nthen Right-Click for options."
+            TextAlign = 'MiddleLeft'
             ForeColor = 'DarkRed'
-            Add_Click = $ComputerListPSSessionPivotButtonAdd_Click
         }
-        $script:ComputerListContextMenuStrip.Items.Add($ComputerListPSSessionPivotToolStripButton)
+        $ComputerListContextMenuStrip.Items.Add($ComputerListLeftClick1ToolStripLabel)
     }
 
 
@@ -82,13 +227,16 @@ function Display-ContextMenuForComputerTreeNode {
 
 
     $ComputerListSelectedNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size = @{ Width  = $FormScale * 150 }
-        Text = '   - Make a selection'
-        ForeColor = 'DarkRed'
+        Size        = @{ Width  = $FormScale * 150 }
+        Text        = '  - Make a selection'
+        ForeColor   = 'Black'
         ToolTipText = 'Conduct various actions against a single node.'
         Add_SelectedIndexChanged = {
             $script:ComputerListContextMenuStrip.Close()
-            if ($This.selectedItem -eq "Tag Node With Metadata") { 
+
+            if ($This.selectedItem -eq " - Tag Node With Metadata") { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 $InformationTabControl.SelectedTab = $Section3HostDataTab
 
                 if ($script:EntrySelected) {
@@ -107,38 +255,40 @@ function Display-ContextMenuForComputerTreeNode {
                     }
                 }   
             }
-            if ($This.selectedItem -eq 'Add New Endpoint')  { 
+            if ($This.selectedItem -eq ' - Add New Endpoint')  { 
+                $script:ComputerListContextMenuStrip.Close()
+    
                 $StatusListBox.Items.Clear()
                 $StatusListBox.Items.Add("Add hostname/IP:")
-            
-            
+           
+                
                 $ComputerTreeNodePopup = New-Object system.Windows.Forms.Form -Property @{
-                    Text          = "Add Hostname/IP"
+                    Text   = "Add Hostname/IP"
                     Width  = $FormScale * 335
                     Height = $FormScale * 177
+                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Icon   = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
                     StartPosition = "CenterScreen"
-                    Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    Icon          = [System.Drawing.Icon]::ExtractAssociatedIcon("$EasyWinIcon")
                     Add_Closing = { $This.dispose() }
                 }
             
             
                 $ComputerTreeNodePopupAddTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-                    Text     = "Enter a hostname/IP"
-                    Location = @{ X = $FormScale * 10
-                                  Y = $FormScale * 10 }
+                    Text   = "Enter a hostname/IP"
+                    Left   = $FormScale * 10
+                    Top    = $FormScale * 10
                     Width  = $FormScale * 300
                     Height = $FormScale * 25
-                    Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                    Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
                 }
                 $ComputerTreeNodePopupAddTextBox.Add_KeyDown({ if ($_.KeyCode -eq "Enter") { AddHost-ComputerTreeNode } })
                 $ComputerTreeNodePopup.Controls.Add($ComputerTreeNodePopupAddTextBox)
             
             
                 $ComputerTreeNodePopupOSComboBox  = New-Object System.Windows.Forms.ComboBox -Property @{
-                    Text = "Select an Operating System (or type in a new one)"
-                    Location = @{ X = $FormScale * 10
-                                  Y = $ComputerTreeNodePopupAddTextBox.Location.Y + $ComputerTreeNodePopupAddTextBox.Size.Height + $($FormScale * 10) }
+                    Text   = "Select an Operating System (or type in a new one)"
+                    Left   = $FormScale * 10
+                    Top    = $ComputerTreeNodePopupAddTextBox.Top + $ComputerTreeNodePopupAddTextBox.Height + $($FormScale * 10)
                     Width  = $FormScale * 300
                     Height = $FormScale * 25
                     AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
@@ -154,9 +304,9 @@ function Display-ContextMenuForComputerTreeNode {
             
             
                 $ComputerTreeNodePopupOUComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-                    Text  = "Select an Organizational Unit / Canonical Name (or type a new one)"
-                    Location = @{ X = $FormScale * 10
-                                  Y = $ComputerTreeNodePopupOSComboBox.Location.Y + $ComputerTreeNodePopupOSComboBox.Size.Height + $($FormScale * 10) }
+                    Text   = "Select an Organizational Unit / Canonical Name (or type a new one)"
+                    Left   = $FormScale * 10
+                    Top    = $ComputerTreeNodePopupOSComboBox.Top + $ComputerTreeNodePopupOSComboBox.Height + $($FormScale * 10)
                     Width  = $FormScale * 300
                     Height = $FormScale * 25
                     AutoCompleteSource = "ListItems" # Options are: FileSystem, HistoryList, RecentlyUsedList, AllURL, AllSystemSources, FileSystemDirectories, CustomSource, ListItems, None
@@ -178,9 +328,9 @@ function Display-ContextMenuForComputerTreeNode {
             
             
                 $ComputerTreeNodePopupAddHostButton = New-Object System.Windows.Forms.Button -Property @{
-                    Text     = "Add Host"
-                    Location = @{ X = $FormScale * 210
-                                  Y = $ComputerTreeNodePopupOUComboBox.Location.Y + $ComputerTreeNodePopupOUComboBox.Size.Height + $($FormScale * 10) }
+                    Text   = "Add Host"
+                    Left   = $FormScale * 210
+                    Top    = $ComputerTreeNodePopupOUComboBox.Top + $ComputerTreeNodePopupOUComboBox.Height + $($FormScale * 10)
                     Width  = $FormScale * 100
                     Height = $FormScale * 25
                     Add_Click = { AddHost-ComputerTreeNode }
@@ -195,7 +345,9 @@ function Display-ContextMenuForComputerTreeNode {
                 # Save-TreeViewData -Endpoint
                 $ComputerTreeNodePopup.ShowDialog()
             }
-            if ($This.selectedItem -eq "Rename $($Entry.Text)")  { 
+            if ($This.selectedItem -eq " - Rename Selected Node")  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 # This brings specific tabs to the forefront/front view
                 $InformationTabControl.SelectedTab = $Section3ResultsTab
 
@@ -204,19 +356,23 @@ function Display-ContextMenuForComputerTreeNode {
                     $StatusListBox.Items.Clear()
                     $StatusListBox.Items.Add("Enter a new name:")
 
-                    $ComputerTreeNodeRenamePopup               = New-Object system.Windows.Forms.Form
-                    $ComputerTreeNodeRenamePopup.Text          = "Rename $($script:EntrySelected.text)"
-                    $ComputerTreeNodeRenamePopup.Size          = New-Object System.Drawing.Size(($FormScale * 330),($FormScale * 107))
-                    $ComputerTreeNodeRenamePopup.StartPosition = "CenterScreen"
-                    $ComputerTreeNodeRenamePopup.Font          = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-                    $ComputerTreeNodeRenamePopup.Add_Closing   = { $This.dispose() }
+                    $ComputerTreeNodeRenamePopup = New-Object system.Windows.Forms.Form -Property @{
+                        Text   = "Rename $($script:EntrySelected.text)"
+                        Width  = $FormScale * 330
+                        Height = $FormScale * 107
+                        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        StartPosition = "CenterScreen"
+                        Add_Closing   = { $This.dispose() }    
+                    }
 
-                    $script:ComputerTreeNodeRenamePopupTextBox          = New-Object System.Windows.Forms.TextBox
-                    $script:ComputerTreeNodeRenamePopupTextBox.Text     = "New Hostname/IP"
-                    $script:ComputerTreeNodeRenamePopupTextBox.Size     = New-Object System.Drawing.Size(($FormScale * 300),($FormScale * 25))
-                    $script:ComputerTreeNodeRenamePopupTextBox.Location = New-Object System.Drawing.Point(($FormScale * 10),($FormScale * 10))
-                    $script:ComputerTreeNodeRenamePopupTextBox.Font     = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-
+                    $script:ComputerTreeNodeRenamePopupTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+                        Text   = "New Hostname/IP"
+                        Left   = $FormScale * 10
+                        Top    = $FormScale * 10
+                        Width  = $FormScale * 300
+                        Height = $FormScale * 25
+                        Font   = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)    
+                    }
 
                     # Renames the computer treenode to the specified name
                     . "$Dependencies\Code\Tree View\Computer\Rename-ComputerTreeNodeSelected.ps1"
@@ -229,11 +385,11 @@ function Display-ContextMenuForComputerTreeNode {
 
 
                     $ComputerTreeNodeRenamePopupButton = New-Object System.Windows.Forms.Button -Property @{
-                        Text     = "Execute"
-                        Location = @{ X = $FormScale * 210
-                                    Y = $script:ComputerTreeNodeRenamePopupTextBox.Location.X + $script:ComputerTreeNodeRenamePopupTextBox.Size.Height + ($FormScale * 5) }
-                        Size     = @{ Width  = $FormScale * 100
-                                    Height = $FormScale * 22 }
+                        Text   = "Execute"
+                        Left   = $FormScale * 210
+                        Top    = $script:ComputerTreeNodeRenamePopupTextBox.Left + $script:ComputerTreeNodeRenamePopupTextBox.Height + ($FormScale * 5)
+                        Width  = $FormScale * 100
+                        Height = $FormScale * 22
                     }
                     CommonButtonSettings -Button $ComputerTreeNodeRenamePopupButton
                     $ComputerTreeNodeRenamePopupButton.Add_Click({ Rename-ComputerTreeNodeSelected })
@@ -251,7 +407,9 @@ function Display-ContextMenuForComputerTreeNode {
                 Remove-EmptyCategory -Endpoint
                 Save-TreeViewData -Endpoint
             }
-            if ($This.selectedItem -eq "Move Node To New OU/CN")  { 
+            if ($This.selectedItem -eq " - Move Node To New OU/CN")  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                 Create-TreeViewCheckBoxArray -Endpoint
@@ -276,10 +434,12 @@ function Display-ContextMenuForComputerTreeNode {
                     $StatusListBox.Items.Add("Moved:  $($script:EntrySelected.text)")
                 }
             }
-            if ($This.selectedItem -eq "Delete $($Entry.Text)")  {
+            if ($This.selectedItem -eq " - Delete Selected Node")  {
+                $script:ComputerListContextMenuStrip.Close()
+
                 # This brings specific tabs to the forefront/front view
                 $InformationTabControl.SelectedTab = $Section3ResultsTab
-                
+
                 Create-TreeViewCheckBoxArray -Endpoint
                 if ($script:EntrySelected) {
 
@@ -322,11 +482,11 @@ function Display-ContextMenuForComputerTreeNode {
             }
         }
     }
-    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add("Add New Endpoint")
-    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add("Tag Node With Metadata")
-    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add("Move Node To New OU/CN")
-    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add("Delete $($Entry.Text)")
-    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add("Rename $($Entry.Text)")
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Add New Endpoint")
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Tag Node With Metadata")
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Move Node To New OU/CN")
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Delete Selected Node")
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Rename Selected Node")
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListSelectedNodeActionsToolStripComboBox)
 
 
@@ -352,11 +512,14 @@ function Display-ContextMenuForComputerTreeNode {
 
     $ComputerListTestConnectionToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
         Size = @{ Width  = $FormScale * 150 }
-        Text = '   - Make a selection'
-        ForeColor = "DarkRed"
+        Text = '  - Make a selection'
+        ForeColor = "Black"
         Add_SelectedIndexChanged = {
             $script:ComputerListContextMenuStrip.Close()
-            if ($This.selectedItem -eq 'ICMP Ping') { 
+
+            if ($This.selectedItem -eq ' - ICMP Ping') { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
@@ -373,7 +536,9 @@ function Display-ContextMenuForComputerTreeNode {
                     }
                 }            
             }
-            if ($This.selectedItem -eq 'RPC Port Check')  { 
+            if ($This.selectedItem -eq ' - RPC Port Check')  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
@@ -393,7 +558,9 @@ function Display-ContextMenuForComputerTreeNode {
                     }
                 }
             }
-            if ($This.selectedItem -eq 'SMB Port Check')  { 
+            if ($This.selectedItem -eq ' - SMB Port Check')  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
@@ -413,7 +580,9 @@ function Display-ContextMenuForComputerTreeNode {
                     }
                 }
             }
-            if ($This.selectedItem -eq 'WinRM Check')  { 
+            if ($This.selectedItem -eq ' - WinRM Check')  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
@@ -435,10 +604,10 @@ function Display-ContextMenuForComputerTreeNode {
             }
         }
     }
-    $ComputerListTestConnectionToolStripComboBox.Items.Add('ICMP Ping')
-    $ComputerListTestConnectionToolStripComboBox.Items.Add('RPC Port Check')
-    $ComputerListTestConnectionToolStripComboBox.Items.Add('SMB Port Check')
-    $ComputerListTestConnectionToolStripComboBox.Items.Add('WinRM Check')
+    $ComputerListTestConnectionToolStripComboBox.Items.Add(' - ICMP Ping')
+    $ComputerListTestConnectionToolStripComboBox.Items.Add(' - RPC Port Check')
+    $ComputerListTestConnectionToolStripComboBox.Items.Add(' - SMB Port Check')
+    $ComputerListTestConnectionToolStripComboBox.Items.Add(' - WinRM Check')
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListTestConnectionToolStripComboBox)
 
 
@@ -452,23 +621,28 @@ function Display-ContextMenuForComputerTreeNode {
 
     $ComputerListCheckedNodeActionsToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
         Size = @{ Width  = $FormScale * 150 }
-        Text = '   - Make a selection'
-        ForeColor = 'DarkRed'
+        Text = '  - Make a selection'
+        ForeColor = 'Black'
         ToolTipText = 'Conduct various actions against selected nodes.'
         Add_SelectedIndexChanged = {
             $script:ComputerListContextMenuStrip.Close()
-            if ($This.selectedItem -eq 'Uncheck All Nodes') { 
+
+            if ($This.selectedItem -eq ' - Uncheck All Nodes') { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 Deselect-AllComputers
             }
-            if ($This.selectedItem -eq 'NSLookup (Hostname to IP)')  { 
+            if ($This.selectedItem -eq ' - NSLookup (Hostname to IP)')  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 if ($script:ComputerTreeViewSelected.count -eq 0){
                     [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','NSLookup')
                 }
                 else {
                     $InformationTabControl.SelectedTab = $Section3HostDataTab
             
-                    $script:ProgressBarEndpointsProgressBar.Value     = 0
-                    $script:ProgressBarQueriesProgressBar.Value       = 0
+                    $script:ProgressBarEndpointsProgressBar.Value = 0
+                    $script:ProgressBarQueriesProgressBar.Value   = 0
             
                     Create-TreeViewCheckBoxArray -Endpoint
                     if ($script:ComputerTreeViewSelected.count -ge 0) {
@@ -499,14 +673,14 @@ function Display-ContextMenuForComputerTreeNode {
                                             if ($Entry.Checked -and $Entry.Text -notin $ComputerListNSLookupArray) {
                                                 $ComputerListNSLookupArray += $Entry.Text
                                                 $script:Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
-                                                $Section3HostDataOSTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
-                                                $Section3HostDataOUTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
+                                                $Section3HostDataOSTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
+                                                $Section3HostDataOUTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
             
                                                 $LookupEndpoint = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
                                                 $NSlookup = $((Resolve-DnsName "$LookupEndpoint" | Sort-Object IPAddress | Select-Object -ExpandProperty IPAddress -Unique) -Join ', ')
-                                                $Section3HostDataIPTextBox.Text   = $NSlookup
+                                                $Section3HostDataIPTextBox.Text = $NSlookup
             
-                                                $Section3HostDataMACTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
+                                                $Section3HostDataMACTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
                                                 $Section3HostDataNotesRichTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                                                 Save-TreeViewData -Endpoint
             
@@ -524,7 +698,9 @@ function Display-ContextMenuForComputerTreeNode {
                     }
                 }     
             }
-            if ($This.selectedItem -eq 'Tag Nodes With Metadata')  { 
+            if ($This.selectedItem -eq ' - Tag Nodes With Metadata')  {
+                $script:ComputerListContextMenuStrip.Close()
+
                 Create-TreeViewCheckBoxArray -Endpoint
                 if ($script:ComputerTreeViewSelected.count -eq 0){
                     [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Tag All')
@@ -532,8 +708,8 @@ function Display-ContextMenuForComputerTreeNode {
                 else {
                     $InformationTabControl.SelectedTab = $Section3HostDataTab
             
-                    $script:ProgressBarEndpointsProgressBar.Value     = 0
-                    $script:ProgressBarQueriesProgressBar.Value       = 0
+                    $script:ProgressBarEndpointsProgressBar.Value = 0
+                    $script:ProgressBarQueriesProgressBar.Value   = 0
             
                     Create-TreeViewCheckBoxArray -Endpoint
                     if ($script:ComputerTreeViewSelected.count -ge 0) {
@@ -550,12 +726,12 @@ function Display-ContextMenuForComputerTreeNode {
                                         foreach ($Entry in $Category.Nodes) {
                                             if ($Entry.Checked -and $Entry.Text -notin $ComputerListMassTagArray) {
                                                 $ComputerListMassTagArray += $Entry.Text
-                                                $script:Section3HostDataNameTextBox.Text      = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
-                                                $Section3HostDataOSTextBox.Text        = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
-                                                $Section3HostDataOUTextBox.Text        = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
-                                                $Section3HostDataIPTextBox.Text        = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
-                                                $Section3HostDataMACTextBox.Text       = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
-                                                $Section3HostDataNotesRichTextBox.Text = "[$($script:ComputerListMassTagValue)] " + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
+                                                $script:Section3HostDataNameTextBox.Text = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Name
+                                                $Section3HostDataOSTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).OperatingSystem
+                                                $Section3HostDataOUTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
+                                                $Section3HostDataIPTextBox.Text          = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
+                                                $Section3HostDataMACTextBox.Text         = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
+                                                $Section3HostDataNotesRichTextBox.Text   = "[$($script:ComputerListMassTagValue)] " + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                                             }
                                             $script:ProgressBarEndpointsProgressBar.Value += 1
                                         }
@@ -570,7 +746,9 @@ function Display-ContextMenuForComputerTreeNode {
                     }
                 }      
             }
-            if ($This.selectedItem -eq 'Move Nodes To New OU/CN')  { 
+            if ($This.selectedItem -eq ' - Move Nodes To New OU/CN')  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
@@ -604,7 +782,9 @@ function Display-ContextMenuForComputerTreeNode {
                     else { ComputerNodeSelectedLessThanOne -Message 'Move Selection' }
                 }      
             }
-            if ($This.selectedItem -eq 'Delete Checked Nodes')  { 
+            if ($This.selectedItem -eq ' - Delete Checked Nodes')  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 Create-TreeViewCheckBoxArray -Endpoint
 
                 if ($script:ComputerTreeViewSelected.count -eq 0){
@@ -687,11 +867,11 @@ function Display-ContextMenuForComputerTreeNode {
             }
         }
     }
-    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('Uncheck All Nodes')
-    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('NSLookup (Hostname to IP)')
-    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('Tag Nodes With Metadata')
-    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('Move Nodes To New OU/CN')
-    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add('Delete Checked Nodes')
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Uncheck All Nodes')
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - NSLookup (Hostname to IP)')
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Tag Nodes With Metadata')
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Move Nodes To New OU/CN')
+    $ComputerListCheckedNodeActionsToolStripComboBox.Items.Add(' - Delete Checked Nodes')
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListCheckedNodeActionsToolStripComboBox)
 
 
@@ -718,26 +898,30 @@ function Display-ContextMenuForComputerTreeNode {
 
 
     $ComputerListImportEndpointDataToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size = @{ Width  = $FormScale * 150 }
-        Text = '   - Make a selection'
-        ForeColor = 'DarkRed'
+        Size        = @{ Width  = $FormScale * 150 }
+        Text        = '  - Make a selection'
+        ForeColor   = 'Black'
         ToolTipText = 'Import Endpoint Data from various sources. Conflicting endpoint names will not be imported.'
         Add_SelectedIndexChanged = {
             $script:ComputerListContextMenuStrip.Close()
-            if ($This.selectedItem -eq 'Active Directory') { 
+
+            if ($This.selectedItem -eq ' - Active Directory') { 
+                $script:ComputerListContextMenuStrip.Close()
                 & $ImportEndpointDataFromActiveDirectoryButtonAdd_Click
             }
-            if ($This.selectedItem -eq 'Local .csv File')  { 
+            if ($This.selectedItem -eq ' - Local .csv File')  { 
+                $script:ComputerListContextMenuStrip.Close()
                 & $ImportEndpointDataFromCsvButtonAdd_Click
             }
-            if ($This.selectedItem -eq 'Local .txt File')  { 
+            if ($This.selectedItem -eq ' - Local .txt File')  { 
+                $script:ComputerListContextMenuStrip.Close()
                 & $ImportEndpointDataFromTxtButtonAdd_Click
             }
         }
     }
-    $ComputerListImportEndpointDataToolStripComboBox.Items.Add('Active Directory')
-    $ComputerListImportEndpointDataToolStripComboBox.Items.Add('Local .csv File')
-    $ComputerListImportEndpointDataToolStripComboBox.Items.Add('Local .txt File')
+    $ComputerListImportEndpointDataToolStripComboBox.Items.Add(' - Active Directory')
+    $ComputerListImportEndpointDataToolStripComboBox.Items.Add(' - Local .csv File')
+    $ComputerListImportEndpointDataToolStripComboBox.Items.Add(' - Local .txt File')
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListImportEndpointDataToolStripComboBox)
 
 
@@ -750,26 +934,30 @@ function Display-ContextMenuForComputerTreeNode {
 
 
     $ComputerListViewEndpointDataToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size = @{ Width  = $FormScale * 150 }
-        Text = '   - Make a selection'
-        ForeColor = 'DarkRed'
+        Size        = @{ Width  = $FormScale * 150 }
+        Text        = '  - Make a selection'
+        ForeColor   = 'Black'
         ToolTipText = 'View the local data for all endpoints that populates the treeview.'
         Add_SelectedIndexChanged = {
             $script:ComputerListContextMenuStrip.Close()
-            if ($This.selectedItem -eq 'Out-GridView') { 
+
+            if ($This.selectedItem -eq ' - Out-GridView') { 
+                $script:ComputerListContextMenuStrip.Close()
                 Import-Csv -Path $script:EndpointTreeNodeFileSave | Out-GridView -Title 'Endpoint Data'
             }
-            if ($This.selectedItem -eq 'Spreadsheet Software')  { 
+            if ($This.selectedItem -eq ' - Spreadsheet Software')  { 
+                $script:ComputerListContextMenuStrip.Close()
                 Invoke-Item -Path $script:EndpointTreeNodeFileSave
             }
-            if ($This.selectedItem -eq 'Browser HTML View')  { 
+            if ($This.selectedItem -eq ' - Browser HTML View')  { 
+                $script:ComputerListContextMenuStrip.Close()
                 Import-Csv -Path $script:EndpointTreeNodeFileSave | Out-HTMLView -Title 'Endpoint Data'
             }
         }
     }
-    $ComputerListViewEndpointDataToolStripComboBox.Items.Add('Out-GridView')
-    $ComputerListViewEndpointDataToolStripComboBox.Items.Add('Spreadsheet Software')
-    $ComputerListViewEndpointDataToolStripComboBox.Items.Add('Browser HTML View')
+    $ComputerListViewEndpointDataToolStripComboBox.Items.Add(' - Out-GridView')
+    $ComputerListViewEndpointDataToolStripComboBox.Items.Add(' - Spreadsheet Software')
+    $ComputerListViewEndpointDataToolStripComboBox.Items.Add(' - Browser HTML View')
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListViewEndpointDataToolStripComboBox)    
 
 
@@ -782,18 +970,23 @@ function Display-ContextMenuForComputerTreeNode {
 
 
     $ComputerListEndpointUpdateTreeviewToolStripComboBox = New-Object System.Windows.Forms.ToolStripComboBox -Property @{
-        Size = @{ Width  = $FormScale * 150 }
-        Text = '   - Make a selection'
-        ForeColor = 'DarkRed'
+        Size        = @{ Width  = $FormScale * 150 }
+        Text        = '  - Make a selection'
+        ForeColor   = 'Black'
         ToolTipText = 'Quickly modify the endpoint treeview to better manage and find nodes.'
         Add_SelectedIndexChanged = {
             $script:ComputerListContextMenuStrip.Close()
-            if ($This.selectedItem -eq 'Collapsed View') { 
+            
+            if ($This.selectedItem -eq ' - Collapsed View') { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
                 $script:ComputerTreeView.CollapseAll()
                 foreach ($root in $AllTreeViewNodes) { $root.Expand() }
             }
-            if ($This.selectedItem -eq 'Normal View')  { 
+            if ($This.selectedItem -eq ' - Normal View')  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
                 $script:ComputerTreeView.CollapseAll()
                 foreach ($root in $AllTreeViewNodes) {  
@@ -803,7 +996,9 @@ function Display-ContextMenuForComputerTreeNode {
                     }
                 }
             }
-            if ($This.selectedItem -eq 'Expanded View')  { 
+            if ($This.selectedItem -eq ' - Expanded View')  { 
+                $script:ComputerListContextMenuStrip.Close()
+
                 [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
                 foreach ($root in $AllTreeViewNodes) {  
                     $root.Expand() 
@@ -823,9 +1018,9 @@ function Display-ContextMenuForComputerTreeNode {
             }
         }
     }
-    $ComputerListEndpointUpdateTreeviewToolStripComboBox.Items.Add('Collapsed View')
-    $ComputerListEndpointUpdateTreeviewToolStripComboBox.Items.Add('Normal View')
-    $ComputerListEndpointUpdateTreeviewToolStripComboBox.Items.Add('Expanded View')
+    $ComputerListEndpointUpdateTreeviewToolStripComboBox.Items.Add(' - Collapsed View')
+    $ComputerListEndpointUpdateTreeviewToolStripComboBox.Items.Add(' - Normal View')
+    $ComputerListEndpointUpdateTreeviewToolStripComboBox.Items.Add(' - Expanded View')
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListEndpointUpdateTreeviewToolStripComboBox)    
 
 

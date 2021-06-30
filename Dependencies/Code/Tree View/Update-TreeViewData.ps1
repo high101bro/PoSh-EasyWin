@@ -262,7 +262,7 @@ function Update-TreeViewData {
                         $script:CategorySelected  = $Category
                         $script:EntrySelected     = $Entry
 
-                        Display-ContextMenuForComputerTreeNode
+                        Display-ContextMenuForComputerTreeNode -ClickedOnNode
 
                         $script:HostQueryTreeViewSelected = $Entry.Text
 

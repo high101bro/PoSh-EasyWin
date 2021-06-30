@@ -72,18 +72,3 @@ $ComputerListSSHButtonAdd_Click = {
         $StatusListBox.Items.Add("SSH:  Cancelled")
     }
 }
-
-$ComputerListPsExecButtonAdd_MouseHover = {
-    Show-ToolTip -Title "SSH" -Icon "Info" -Message @"
-+  Will attempt to obtain a cmd prompt via SSH.
-+  KiTTY is a better version forked from Plink (PuTTY) that not only has all the same features has but many more.
-+  Plink (PuTTY cli tool), is an ssh client often used for automation, but has integration issues with this tool.
-+  SSH (OpenSSH) is natively available on Windows 10 as up the April 2018 update, it does not support passing credentials automatically.
-+  Usefult to access Linux and Windows hosts with SSH enabled.
-+  Command:
-        kitty.exe -ssh 'IP/hostname' -l 'username' -pw 'password'
-+  Compatiable with 'Specify Credentials'
-"@
-}
-
-

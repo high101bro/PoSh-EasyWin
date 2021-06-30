@@ -924,16 +924,9 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\ToolStripButton\ComputerListWinRMCheckToolStripButton.ps1"
 
-                    # Code for the Context Menu
-                    # This context menu is the one activeated when you click within the computer treeview area, but not when clicking on a computer ndoe itself
-                    Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
-                    . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeView.ps1"
-
-                    # This context menu is the one activeated when you click on the computer node itself within the computer treeview
-                    # It is also activated within the Update-TreeViewData function
                     Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
                     . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForComputerTreeNode.ps1"
-                    #Display-ContextMenuForComputerTreeNode
+                    Display-ContextMenuForComputerTreeNode -ClickedOnArea
 
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\ComputerTreeView.ps1"
