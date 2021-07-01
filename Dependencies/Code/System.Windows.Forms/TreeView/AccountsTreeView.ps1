@@ -123,7 +123,6 @@ $AccountsTreeViewAdd_AfterSelect = {
 
                     #     $Section3HostDataSelectionComboBox.Text         = "Host Data - Selection"
                     #     $Section3HostDataSelectionDateTimeComboBox.Text = "Host Data - Date & Time"
-                    #     Check-HostDataIfModified
                     # }
                     <# This provides a prompt to save or not if a different node was selected and data wasn't saved... decided to save automatically instead
                                 if ($script:Section3HostDataNotesSaveCheck -ne $Section3HostDataNotesRichTextBox.Text) {
@@ -156,6 +155,8 @@ $AccountsTreeViewAdd_AfterSelect = {
             }
         }
     }
+    $InformationTabControl.SelectedTab = $Section3AccountDataTab
+    Display-ContextMenuForAccountsTreeNode -ClickedOnArea
 }
 
 

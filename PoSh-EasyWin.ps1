@@ -722,6 +722,10 @@ $PoShEasyWin.Controls.Add($MainCenterPanel)
 
 $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
 
+            Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
+            . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
+            Display-ContextMenuForAccountsTreeNode -ClickedOnArea
+
             $ComputerAndAccountTreeViewTabControl = New-Object System.Windows.Forms.TabControl -Property @{
                 Left   = 0
                 Top    = 0
@@ -785,7 +789,15 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     Update-FormProgress "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
                     . "$Dependencies\Code\Tree View\MoveNode-TreeViewData.ps1"
 
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromActiveDirectory.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromActiveDirectory.ps1"
 
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromCsv.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromCsv.ps1"
+                    
+                    Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromTxt.ps1"
+                    . "$Dependencies\Code\System.Windows.Forms\Button\Import-DataFromTxt.ps1"
+                    
             $ComputerTreeviewTab = New-Object System.Windows.Forms.TabPage -Property @{
                 Text = "Endpoints"
                 Font = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
@@ -1093,17 +1105,6 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     Update-FormProgress "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
                     . "$Dependencies\Code\Tree View\Accounts\AddAccount-AccountsTreeNode.ps1"
 
-                    # Code for the Context Menu
-                    # This context menu is the one activeated when you click within the Accounts treeview area, but not when clicking on a Accounts ndoe itself
-                    Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeView.ps1"
-                    . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeView.ps1"
-
-                    # This context menu is the one activeated when you click on the Accounts node itself within the Accounts treeview
-                    # It is also activated within the Update-TreeViewData function
-                    Update-FormProgress "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
-                    . "$Dependencies\Code\Context Menu Strip\Display-ContextMenuForAccountsTreeNode.ps1"
-                    #Display-ContextMenuForAccountsTreeNode
-
                     Update-FormProgress "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
                     . "$Dependencies\Code\System.Windows.Forms\TreeView\AccountsTreeView.ps1"
                     $script:AccountsTreeView = New-Object System.Windows.Forms.TreeView -Property @{
@@ -1179,9 +1180,6 @@ $ExecutionButtonPanel = New-Object System.Windows.Forms.Panel
 
             Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Action.ps1"
             . "$Dependencies\Code\Main Body\Tabs\Action.ps1"
-
-            Update-FormProgress "$Dependencies\Code\Main Body\Tabs\Import Data.ps1"
-            . "$Dependencies\Code\Main Body\Tabs\Import Data.ps1"
 
 $PoShEasyWin.Controls.Add($ExecutionButtonPanel)
 

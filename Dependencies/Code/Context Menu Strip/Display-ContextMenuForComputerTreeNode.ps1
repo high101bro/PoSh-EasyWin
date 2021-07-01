@@ -28,7 +28,7 @@ function Display-ContextMenuForComputerTreeNode {
     $script:ComputerListContextMenuStrip.Items.Add('-')
 
 
-    $ComputerListInteractWithEndpointToolStripLabel = New-Object System.Windows.Forms.ToolStripButton -Property @{
+    $ComputerListInteractWithEndpointToolStripLabel = New-Object System.Windows.Forms.ToolStripLabel -Property @{
         Text      = "Interact With Endpoint"
         Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),1,2,1)
         ForeColor = 'Black'
@@ -240,7 +240,7 @@ Command:
                 $InformationTabControl.SelectedTab = $Section3HostDataTab
 
                 if ($script:EntrySelected) {
-                    Show-TagForm
+                    Show-TagForm -Endpoint
                     if ($script:ComputerListMassTagValue) {
                         $script:Section3HostDataNameTextBox.Text  = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Name
                         $Section3HostDataOSTextBox.Text    = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).OperatingSystem
@@ -249,13 +249,12 @@ Command:
                         $Section3HostDataMACTextBox.Text   = $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).MACAddress
                         $Section3HostDataNotesRichTextBox.Text = "[$($script:ComputerListMassTagValue)] " + $($script:ComputerTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Notes
                         Save-TreeViewData -Endpoint
-                        Check-HostDataIfModified
                         $StatusListBox.Items.clear()
                         $StatusListBox.Items.Add("Tag applied to: $($script:EntrySelected.text)")
                     }
                 }   
             }
-            if ($This.selectedItem -eq ' - Add New Endpoint')  { 
+            if ($This.selectedItem -eq ' - Add New Endpoint Node')  { 
                 $script:ComputerListContextMenuStrip.Close()
     
                 $StatusListBox.Items.Clear()
@@ -348,7 +347,7 @@ Command:
             if ($This.selectedItem -eq " - Rename Selected Node")  { 
                 $script:ComputerListContextMenuStrip.Close()
 
-                # This brings specific tabs to the forefront/front view
+                
                 $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                 Create-TreeViewCheckBoxArray -Endpoint
@@ -437,7 +436,6 @@ Command:
             if ($This.selectedItem -eq " - Delete Selected Node")  {
                 $script:ComputerListContextMenuStrip.Close()
 
-                # This brings specific tabs to the forefront/front view
                 $InformationTabControl.SelectedTab = $Section3ResultsTab
 
                 Create-TreeViewCheckBoxArray -Endpoint
@@ -482,7 +480,7 @@ Command:
             }
         }
     }
-    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Add New Endpoint")
+    $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Add New Endpoint Node")
     $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Tag Node With Metadata")
     $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Move Node To New OU/CN")
     $ComputerListSelectedNodeActionsToolStripComboBox.Items.Add(" - Delete Selected Node")
@@ -691,7 +689,6 @@ Command:
                                 }
                             }
                 #               Save-TreeViewData -Endpoint -SaveAllChecked
-                #               Check-HostDataIfModified
                             $StatusListBox.Items.clear()
                             $StatusListBox.Items.Add("NSLookup Complete: $($script:ComputerTreeViewSelected.count) Endpoints")
                         }
@@ -713,7 +710,7 @@ Command:
             
                     Create-TreeViewCheckBoxArray -Endpoint
                     if ($script:ComputerTreeViewSelected.count -ge 0) {
-                        Show-TagForm
+                        Show-TagForm -Endpoint
             
                         $script:ProgressBarEndpointsProgressBar.Maximum  = $script:ComputerTreeViewSelected.count
                         [System.Windows.Forms.TreeNodeCollection]$AllTreeViewNodes = $script:ComputerTreeView.Nodes
@@ -739,7 +736,6 @@ Command:
                                 }
                             }
                             Save-TreeViewData -Endpoint -SaveAllChecked
-                            Check-HostDataIfModified
                             $StatusListBox.Items.clear()
                             $StatusListBox.Items.Add("Tag Complete: $($script:ComputerTreeViewSelected.count) Endpoints")
                         }
@@ -791,7 +787,7 @@ Command:
                     [System.Windows.MessageBox]::Show('Error: You need to check at least one endpoint.','Delete All')
                 }
                 else {
-                    # This brings specific tabs to the forefront/front view
+                    
                     $InformationTabControl.SelectedTab = $Section3ResultsTab
             
                     if ($script:ComputerTreeViewSelected.count -eq 1) {
@@ -907,21 +903,39 @@ Command:
 
             if ($This.selectedItem -eq ' - Active Directory') { 
                 $script:ComputerListContextMenuStrip.Close()
-                & $ImportEndpointDataFromActiveDirectoryButtonAdd_Click
+                Import-DataFromActiveDirectory -Endpoint
             }
             if ($This.selectedItem -eq ' - Local .csv File')  { 
                 $script:ComputerListContextMenuStrip.Close()
-                & $ImportEndpointDataFromCsvButtonAdd_Click
+                Import-DataFromCsv -Endpoint
             }
             if ($This.selectedItem -eq ' - Local .txt File')  { 
                 $script:ComputerListContextMenuStrip.Close()
-                & $ImportEndpointDataFromTxtButtonAdd_Click
+                Import-DataFromTxt -Endpoint
             }
         }
     }
     $ComputerListImportEndpointDataToolStripComboBox.Items.Add(' - Active Directory')
+        # Opens a form that provides you options on how to import endpoint data from Acitve Directory
+        # Options include:
+        #   - Import from Domain with Directory Searcher
+        #   - Import from Active Directory remotely using WinRM
+        #   - Import from Active Directory Locally
     $ComputerListImportEndpointDataToolStripComboBox.Items.Add(' - Local .csv File')
+        # Imports data from a selected Comma Separated Value file
+        # This file can be easily generated with the following command:
+        #   - Get-ADComputer -Filter * -Properties Name,OperatingSystem,CanonicalName,IPv4Address,MACAddress | Export-Csv "Domain Computers.csv"
+        # This file should be formatted with the following headers, though the import script should populate default missing data:
+        #   - Name
+        #   - OperatingSystem
+        #   - CanonicalName
+        #   - IPv4Address
+        #   - MACAddress
+        #   - Notes    
     $ComputerListImportEndpointDataToolStripComboBox.Items.Add(' - Local .txt File')
+        # Imports data from a selected Text file
+        # Useful if you recieve a computer list file from an Admin or outputted from nmap
+        # This file should be formatted with one hostname or IP address per line
     $script:ComputerListContextMenuStrip.Items.Add($ComputerListImportEndpointDataToolStripComboBox)
 
 

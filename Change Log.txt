@@ -37,6 +37,16 @@ Removed messages about this tool previously being known as PoSh-ACME (PowerShell
 
 Combned Display-ContextMenuForComputerTreeNode and Display-ContextMenuForComputerTreeView into single function with parameter switches
 
+Removed Check-NodeDataIfModified, using new technique to identify changed text
+
+Updated tag feature
+	- When tagging endpoint/account nodes, the data is now also included
+	- Tags when applied are now appear on their own line
+
+Updated text field features for Endpoint and Account metadata
+	- Added Mouse Enter/Leave color changing
+	- Added Mouse Enter/Leave text change for field description
+
 ==================================================
 v5.4.0 - 7 May 2021
 ==================================================

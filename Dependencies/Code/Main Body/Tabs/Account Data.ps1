@@ -19,6 +19,15 @@ $script:Section3AccountDataNameTextBox = New-Object System.Windows.Forms.TextBox
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Account Name"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Account Name" -Icon "Info" -Message @"
 +  This field is reserved for the Account Name.
@@ -39,6 +48,15 @@ $Section3AccountDataOUTextBox = New-Object System.Windows.Forms.TextBox -Propert
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Organizational Unit / Container Name"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Organizational Unit / Container Name" -Icon "Info" -Message @"
 +  The OU/CN that the account belongs to.
@@ -56,6 +74,15 @@ $Section3AccountDataCreatedTextBox = New-Object System.Windows.Forms.TextBox -Pr
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Created"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Created" -Icon "Info" -Message @"
 +  When the account was created.
@@ -73,6 +100,15 @@ $Section3AccountDataModifiedTextBox = New-Object System.Windows.Forms.TextBox -P
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Modified"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Modified" -Icon "Info" -Message @"
 +  When the account was last modified.
@@ -90,8 +126,17 @@ $Section3AccountDataLastLogonDateTextBox = New-Object System.Windows.Forms.TextB
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Last Logon"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
-        Show-ToolTip -Title "Last Logon Date" -Icon "Info" -Message @"
+        Show-ToolTip -Title "Last Logon" -Icon "Info" -Message @"
 +  Whent the account was last logged on to.
 "@
     }
@@ -107,6 +152,15 @@ $Section3AccountDataLastBadPasswordAttemptTextBox = New-Object System.Windows.Fo
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Last Bad Password Attempt"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Last Bad Password Attempt" -Icon "Info" -Message @"
 +  Whent the account was last bad password attempt was logged.
@@ -127,6 +181,15 @@ $Section3AccountDataSIDTextBox = New-Object System.Windows.Forms.TextBox -Proper
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "SID"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "SID" -Icon "Info" -Message @"
 +  This is the accounts Security Identifier (SID).
@@ -145,6 +208,15 @@ $Section3AccountDataEnabledTextBox = New-Object System.Windows.Forms.TextBox -Pr
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Enabled"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Enabled" -Icon "Info" -Message @"
 +  Enabled status of the account.
@@ -162,6 +234,15 @@ $Section3AccountDataLockedOutTextBox = New-Object System.Windows.Forms.TextBox -
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Locked Out"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Locked Out" -Icon "Info" -Message @"
 +  Locked Out status of the account.
@@ -179,6 +260,15 @@ $Section3AccountDataSmartCardLogonRequiredTextBox = New-Object System.Windows.Fo
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Smart Card Logon Required"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Smart Card Logon Required" -Icon "Info" -Message @"
 +  Configuration state if a smart card logon is required for the account.
@@ -196,6 +286,15 @@ $Section3AccountDataScriptPathTextBox = New-Object System.Windows.Forms.TextBox 
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Script Path"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Script Path" -Icon "Info" -Message @"
 +  Configured script path for the account.
@@ -213,9 +312,18 @@ $Section3AccountDataHomeDriveTextBox = New-Object System.Windows.Forms.TextBox -
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Home Drive"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
-        Show-ToolTip -Title "Script Path" -Icon "Info" -Message @"
-+  Configured script path for the account.
+        Show-ToolTip -Title "Home Drive" -Icon "Info" -Message @"
++  Configured home drive for the account.
 "@
     }
 }
@@ -233,7 +341,13 @@ $Section3AccountDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Pro
     BackColor = 'White'
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
-    Add_MouseHover     = {
+    Add_MouseEnter = {
+        $This.ForeColor = 'DarkRed'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+    }
+    Add_MouseHover = {
         Show-ToolTip -Title "List of Pre-Built Tags" -Icon "Info" -Message @"
 +  Tags are not mandatory.
 +  Tags provide standized info to aide searches.
@@ -256,6 +370,15 @@ $Section3AccountDataBadLogonCountTextBox = New-Object System.Windows.Forms.TextB
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Bad Logon Count"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Bad Logon Count" -Icon "Info" -Message @"
 +  Number of bad logon counts for the account.
@@ -273,6 +396,15 @@ $Section3AccountDataPasswordExpiredTextBox = New-Object System.Windows.Forms.Tex
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Password Expired"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Password Expired" -Icon "Info" -Message @"
 +  Password expiration status for the account.
@@ -290,6 +422,15 @@ $Section3AccountDataPasswordNeverExpiresTextBox = New-Object System.Windows.Form
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Password Never Expires"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Password Never Expires" -Icon "Info" -Message @"
 +  Status if the account's password is set to never expire.
@@ -307,6 +448,15 @@ $Section3AccountDataPasswordNotRequiredTextBox = New-Object System.Windows.Forms
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Password Not Required"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Password Not Required" -Icon "Info" -Message @"
 +  Status if the account's does not require a password.
@@ -359,6 +509,8 @@ $Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -P
         }
 
     }
+    Add_MouseEnter = {}
+    Add_MouseLeave = {}
     Add_MouseHover = {
         Show-ToolTip -Title "Update Account Data From Active Directory" -Icon "Info" -Message @"
 +  This will query Active Directory and pull any updated information for the account.
@@ -377,6 +529,15 @@ $Section3AccountDataMemberOfComboBox = New-Object System.Windows.Forms.ComboBox 
     Height    = $FormScale * 25
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Member Of"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Member Of" -Icon "Info" -Message @"
 +  The groups the account is a member of.
@@ -384,27 +545,6 @@ $Section3AccountDataMemberOfComboBox = New-Object System.Windows.Forms.ComboBox 
     }
 }
 $Section3AccountDataTab.Controls.Add($Section3AccountDataMemberOfComboBox)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 $Section3AccountDataTagsAddButton = New-Object System.Windows.Forms.Button -Property @{
@@ -416,10 +556,13 @@ $Section3AccountDataTagsAddButton = New-Object System.Windows.Forms.Button -Prop
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     Add_Click = {
-        if (!($Section3AccountDataTagsComboBox.SelectedItem -eq "Tags")) {
-            $Section3AccountDataNotesRichTextBox.text = "[$($Section3AccountDataTagsComboBox.SelectedItem)] " + $Section3AccountDataNotesRichTextBox.text
+        if (-not ($Section3AccountDataTagsComboBox.SelectedItem -eq "Tags")) {
+            $Section3AccountDataNotesRichTextBox.text = "[ $(Get-Date) -- $($Section3AccountDataTagsComboBox.SelectedItem) ] " + $Section3AccountDataNotesRichTextBox.text
         }
+        Save-TreeViewData -Endpoint
     }
+    Add_MouseEnter = {}
+    Add_MouseLeave = {}
     Add_MouseHover = {
         Show-ToolTip -Title "Add Tag to Notes" -Icon "Info" -Message @"
 +  Tags are not mandatory.
@@ -435,7 +578,8 @@ CommonButtonSettings -Button $Section3AccountDataTagsAddButton
 $Section3AccountDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Left       = 0
     Top        = $Section3AccountDataLastBadPasswordAttemptTextBox.Top + $Section3AccountDataLastBadPasswordAttemptTextBox.Height + $($FormScale * 6)
-    Width      = $FormScale * 634
+    Width      = $FormScale * 740
+    Height     = $FormScale * 205
     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor  = 'White'
     Multiline  = $True
@@ -448,74 +592,42 @@ $Section3AccountDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextB
 +  Also can contains Tags if used.
 "@
     }
-    Add_MouseEnter = { Check-AccountDataIfModified }
-    Add_MouseLeave = { Check-AccountDataIfModified }
+    Add_MouseEnter = {
+        $This.ForeColor = 'DarkRed'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+        Save-TreeViewData -Endpoint
+    }
+    Add_KeyDown    = {
+        if ($_.KeyCode) {
+            $This.ForeColor = 'DarkRed'
+        }
+    }
 }
 $Section3AccountDataTab.Controls.Add($Section3AccountDataNotesRichTextBox)
 
-
-$script:Section3AccountDataNotesSaveCheck = ""
-$Section3AccountDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Data Saved"
-    Left      = $Section3AccountDataNotesRichTextBox.Left + $Section3AccountDataNotesRichTextBox.Width + $($FormScale + 5)
-    Top       = $Section3AccountDataNotesRichTextBox.Top
-    Width     = $FormScale * 100
-    Height    = $FormScale * 22
-    Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    Add_Click = {
-        Save-TreeViewData -Endpoint
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Add("Saved Host Data:  $($script:Section3AccountDataNameTextBox.Text)")            
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Warning" -Icon "Warning" -Message @"
-+  It's Best practice is to manually save after modifying each host data.
-+  That said, data is automatically saved when you select a endpoint in the computer treeview
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataSaveButton)
-CommonButtonSettings -Button $Section3AccountDataSaveButton
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Section3AccountDataNotesAddOpNotesButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\Section3AccountDataNotesAddOpNotesButton.ps1"
-$Section3AccountDataNotesAddOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Add To OpNotes"
-    Left      = $Section3AccountDataSaveButton.Left
-    Top       = $Section3AccountDataSaveButton.Top + $Section3AccountDataSaveButton.Height + $($FormScale + 5)
-    Width     = $FormScale * 100
-    Height    = $FormScale * 22
-    Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    Add_Click = {
-        $MainLeftTabControl.SelectedTab   = $Section1OpNotesTab
-        
-        if ($Section3AccountDataNotesRichTextBox.text) {
-            $TimeStamp = Get-Date
-            $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($script:Section3AccountDataNameTextBox.Text)")
-            Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($script:Section3AccountDataNameTextBox.Text)" -Force
-            foreach ( $Line in ($Section3AccountDataNotesRichTextBox.text -split "`r`n") ){
-                $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line")
-                Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line" -Force
-            }
-            Save-OpNotes
-        }    
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Add Selected To OpNotes" -Icon "Info" -Message @"
-+  One or more lines can be selected to add to the OpNotes.
-+  The selection can be contiguous by using the Shift key
-    and/or be separate using the Ctrl key, the press OK.
-+  A Datetime stampe will be prefixed to the entry.
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataNotesAddOpNotesButton)
-CommonButtonSettings -Button $Section3AccountDataNotesAddOpNotesButton
-
-
-# Checks if the Host Data has been modified and determines the text color: Green/Red
-Update-FormProgress "$Dependencies\Code\Main Body\Check-AccountDataIfModified.ps1"
-. "$Dependencies\Code\Main Body\Check-AccountDataIfModified.ps1"
+# DEPRECATED
+# $script:Section3AccountDataNotesSaveCheck = ""
+# $Section3AccountDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
+#     Text      = "Data Saved"
+#     Left      = $Section3AccountDataNotesRichTextBox.Left + $Section3AccountDataNotesRichTextBox.Width + $($FormScale + 5)
+#     Top       = $Section3AccountDataNotesRichTextBox.Top
+#     Width     = $FormScale * 100
+#     Height    = $FormScale * 22
+#     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+#     BackColor = 'White'
+#     Add_Click = {
+#         Save-TreeViewData -Endpoint
+#         $StatusListBox.Items.Clear()
+#         $StatusListBox.Items.Add("Saved Host Data:  $($script:Section3AccountDataNameTextBox.Text)")            
+#     }
+#     Add_MouseHover = {
+#         Show-ToolTip -Title "Warning" -Icon "Warning" -Message @"
+# +  It's Best practice is to manually save after modifying each host data.
+# +  That said, data is automatically saved when you select a endpoint in the computer treeview
+# "@
+#     }
+# }
+# $Section3AccountDataTab.Controls.Add($Section3AccountDataSaveButton)
+# CommonButtonSettings -Button $Section3AccountDataSaveButton

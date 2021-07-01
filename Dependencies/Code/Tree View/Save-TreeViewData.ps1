@@ -57,7 +57,6 @@ Function Save-TreeViewData {
         $AccountsTreeNodeSaveData     = $null
  
         $script:Section3AccountsDataNotesSaveCheck = $Section3AccountsDataNotesRichTextBox.Text
-        #Check-HostDataIfModified
 
         # Saves the TreeView Data to File
         $script:AccountsTreeViewData | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation -Force
@@ -87,21 +86,13 @@ Function Save-TreeViewData {
             $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name ProtectedFromAccidentalDeletion -Value $Computer.ProtectedFromAccidentalDeletion -Force
             $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name TrustedForDelegation            -Value $Computer.TrustedForDelegation -Force
             $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name SID                             -Value $Computer.SID -Force
+            $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name PortScan                        -Value $Computer.PortScan -Force
+            $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes                           -Value $Computer.Notes -Force
 
             if ($SaveScan){
                 # If the node is selected, it will save the values you enter
                 if ($Computer.Name -in $Endpoints) {
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name IPv4Address -Value $Computer.IPv4Address -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name MACAddress  -Value $Computer.MACAddress -Force
                     $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name PortScan    -Value "$($Ports -join',')" -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Computer.Notes -Force
-                }
-                # Else, if the node is not selected, it will retain what was saved
-                else {
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name IPv4Address -Value $Computer.IPv4Address -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name MACAddress  -Value $Computer.MACAddress -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name PortScan    -Value $Computer.PortScan -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Computer.Notes -Force
                 }
                 $ComputerTreeNodeSaveData += $ComputerTreeNodeSaveDataTemp
             }
@@ -114,13 +105,6 @@ Function Save-TreeViewData {
                     $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name PortScan    -Value $Computer.PortScan -Force
                     $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Section3HostDataNotesRichTextBox.Text -Force
                 }
-                # Else, if the node is not selected, it will retain what was saved
-                else {
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name IPv4Address -Value $Computer.IPv4Address -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name MACAddress  -Value $Computer.MACAddress -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name PortScan    -Value $Computer.PortScan -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Computer.Notes -Force
-                }
                 $ComputerTreeNodeSaveData += $ComputerTreeNodeSaveDataTemp
             }
             ### Saves just that selected
@@ -132,13 +116,6 @@ Function Save-TreeViewData {
                     $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name PortScan    -Value $Computer.PortScan -Force
                     $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Section3HostDataNotesRichTextBox.Text -Force
                 }
-                # Else, if the node is not selected, it will retain what was saved
-                else {
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name IPv4Address -Value $Computer.IPv4Address -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name MACAddress  -Value $Computer.MACAddress -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name PortScan    -Value $Computer.PortScan -Force
-                    $ComputerTreeNodeSaveDataTemp | Add-Member -MemberType NoteProperty -Name Notes       -Value $Computer.Notes -Force
-                }
                 $ComputerTreeNodeSaveData += $ComputerTreeNodeSaveDataTemp
             }
         }
@@ -147,7 +124,6 @@ Function Save-TreeViewData {
         $ComputerTreeNodeSaveData     = $null
 
         $script:Section3HostDataNotesSaveCheck = $Section3HostDataNotesRichTextBox.Text
-        Check-HostDataIfModified
 
         # Saves the TreeView Data to File
         $script:ComputerTreeViewData | Export-Csv $script:EndpointTreeNodeFileSave -NoTypeInformation -Force

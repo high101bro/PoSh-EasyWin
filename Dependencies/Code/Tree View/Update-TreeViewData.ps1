@@ -258,11 +258,14 @@ function Update-TreeViewData {
 
                 if ($Endpoint) {
                     if ($Entry.isselected) {
-                        $script:rootSelected      = $null
-                        $script:CategorySelected  = $Category
-                        $script:EntrySelected     = $Entry
+                        $script:rootSelected     = $null
+                        $script:CategorySelected = $Category
+                        $script:EntrySelected    = $Entry
 
                         Display-ContextMenuForComputerTreeNode -ClickedOnNode
+                        $Section3HostDataIPTextBox.ForeColor        = 'Black'
+                        $Section3HostDataMACTextBox.ForeColor       = 'Black'
+                        $Section3HostDataNotesRichTextBox.ForeColor = 'Black'
 
                         $script:HostQueryTreeViewSelected = $Entry.Text
 
@@ -381,7 +384,8 @@ function Update-TreeViewData {
                         $script:CategorySelected  = $Category
                         $script:EntrySelected     = $Entry
 
-                        Display-ContextMenuForAccountsTreeNode
+                        Display-ContextMenuForAccountsTreeNode -ClickedOnNode
+                        $Section3AccountDataNotesRichTextBox.ForeColor = 'Black'
 
                         # $script:HostQueryTreeViewSelected = $Entry.Text
 

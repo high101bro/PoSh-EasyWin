@@ -16,6 +16,15 @@ $script:Section3HostDataNameTextBox = New-Object System.Windows.Forms.TextBox -P
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Hostname"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Hostname" -Icon "Info" -Message @"
 +  This field is reserved for the hostname.
@@ -36,6 +45,15 @@ $Section3HostDataOSTextBox = New-Object System.Windows.Forms.TextBox -Property @
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Operating System"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Operating System" -Icon "Info" -Message @"
 +  This field is useful to view groupings of hosts by OS.
@@ -53,6 +71,15 @@ $Section3HostDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
+    Add_MouseEnter = {
+        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+        $This.Text         = "Organizational Unit / Container Name"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+        $This.Text         = $script:TextMemory
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Organizational Unit / Container Name" -Icon "Info" -Message @"
 +  This field is useful to view groupings of hosts by OU/CN.
@@ -75,6 +102,18 @@ $Section3HostDataIPTextBox = New-Object System.Windows.Forms.TextBox -Property @
 +  Informational field not used to query hosts.
 "@
     }
+    Add_MouseEnter = {
+        $This.ForeColor = 'DarkRed'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+        Save-TreeViewData -Endpoint
+    }
+    Add_KeyDown    = {
+        if ($_.KeyCode) {
+            $This.ForeColor = 'DarkRed'
+        }
+    }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataIPTextBox)
 
@@ -91,6 +130,18 @@ $Section3HostDataMACTextBox = New-Object System.Windows.Forms.TextBox -Property 
         Show-ToolTip -Title "MAC Address" -Icon "Info" -Message @"
 +  Informational field not used to query hosts.
 "@
+    }
+    Add_MouseEnter = {
+        $This.ForeColor = 'DarkRed'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+        Save-TreeViewData -Endpoint
+    }
+    Add_KeyDown    = {
+        if ($_.KeyCode) {
+            $This.ForeColor = 'DarkRed'
+        }
     }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataMACTextBox)
@@ -111,6 +162,12 @@ $Section3HostDataSelectionComboBox = New-Object System.Windows.Forms.ComboBox -P
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
     DataSource         = $HostDataList1
+    Add_MouseEnter = {
+        $This.ForeColor = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Select Search Topic" -Icon "Info" -Message @"
 +  If data exists, the datetime group will be displayed below.
@@ -168,6 +225,12 @@ $Section3HostDataSelectionDateTimeComboBox = New-Object System.Windows.Forms.Com
     ForeColor = "Black"
     AutoCompleteSource = "ListItems"
     AutoCompleteMode = "SuggestAppend"
+    Add_MouseEnter = {
+        $This.ForeColor = 'Blue'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+    }
     Add_MouseHover = {
         Show-ToolTip -Title "Datetime of Results" -Icon "Info" -Message @"
 +  If data exists, the datetime group will be displayed.
@@ -262,7 +325,13 @@ $Section3HostDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Proper
     BackColor = 'White'
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
-    Add_MouseHover     = {
+    Add_MouseEnter = {
+        $This.ForeColor = 'DarkRed'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+    }
+    Add_MouseHover = {
         Show-ToolTip -Title "List of Pre-Built Tags" -Icon "Info" -Message @"
 +  Tags are not mandatory.
 +  Tags provide standized info to aide searches.
@@ -281,9 +350,10 @@ $Section3HostDataTagsAddButton = New-Object System.Windows.Forms.Button -Propert
     Width     = $FormScale * 70
     Height    = $FormScale * 22
     Add_Click = {
-        if (!($Section3HostDataTagsComboBox.SelectedItem -eq "Tags")) {
-            $Section3HostDataNotesRichTextBox.text = "[$($Section3HostDataTagsComboBox.SelectedItem)] " + $Section3HostDataNotesRichTextBox.text
+        if (-not ($Section3HostDataTagsComboBox.SelectedItem -eq "Tags")) {
+            $Section3HostDataNotesRichTextBox.text = "[ $(Get-Date) -- $($Section3HostDataTagsComboBox.SelectedItem) ]`n" + $Section3HostDataNotesRichTextBox.text
         }
+        Save-TreeViewData -Endpoint
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Add Tag to Notes" -Icon "Info" -Message @"
@@ -300,7 +370,7 @@ CommonButtonSettings -Button $Section3HostDataTagsAddButton
 $Section3HostDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Left       = 0
     Top        = $Section3HostDataMACTextBox.Top + $Section3HostDataMACTextBox.Height + $($FormScale * 6)
-    Width      = $FormScale * 634
+    Width      = $FormScale * 740
     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor  = 'White'
     Multiline  = $True
@@ -313,70 +383,41 @@ $Section3HostDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox 
 +  Also can contains Tags if used.
 "@
     }
-    Add_MouseEnter = { Check-HostDataIfModified }
-    Add_MouseLeave = { Check-HostDataIfModified }
+    Add_MouseEnter = {
+        $This.ForeColor = 'DarkRed'
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+        Save-TreeViewData -Endpoint
+    }
+    Add_KeyDown    = {
+        if ($_.KeyCode) {
+            $This.ForeColor = 'DarkRed'
+        }
+    }
 }
 $Section3HostDataTab.Controls.Add($Section3HostDataNotesRichTextBox)
 
 
-$script:Section3HostDataNotesSaveCheck = ""
-$Section3HostDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Data Saved"
-    Left      = $Section3HostDataNotesRichTextBox.Left + $Section3HostDataNotesRichTextBox.Width + $($FormScale + 5)
-    Top       = $Section3HostDataNotesRichTextBox.Top
-    Width     = $FormScale * 100
-    Height    = $FormScale * 22
-    Add_Click = {
-        Save-TreeViewData -Endpoint
-        $StatusListBox.Items.Clear()
-        $StatusListBox.Items.Add("Saved Host Data:  $($script:Section3HostDataNameTextBox.Text)")            
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Warning" -Icon "Warning" -Message @"
-+  It's Best practice is to manually save after modifying each host data.
-+  That said, data is automatically saved when you select a endpoint in the computer treeview
-"@
-    }
-}
-$Section3HostDataTab.Controls.Add($Section3HostDataSaveButton)
-CommonButtonSettings -Button $Section3HostDataSaveButton
-
-
-Update-FormProgress "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataNotesAddOpNotesButton.ps1"
-. "$Dependencies\Code\System.Windows.Forms\Button\Section3HostDataNotesAddOpNotesButton.ps1"
-$Section3HostDataNotesAddOpNotesButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Add To OpNotes"
-    Left      = $Section3HostDataSaveButton.Left
-    Top       = $Section3HostDataSaveButton.Top + $Section3HostDataSaveButton.Height + $($FormScale + 5)
-    Width     = $FormScale * 100
-    Height    = $FormScale * 22
-    Add_Click = {
-        $MainLeftTabControl.SelectedTab   = $Section1OpNotesTab
-        
-        if ($Section3HostDataNotesRichTextBox.text) {
-            $TimeStamp = Get-Date
-            $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($script:Section3HostDataNameTextBox.Text)")
-            Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss')) [+] Host Data Notes from: $($script:Section3HostDataNameTextBox.Text)" -Force
-            foreach ( $Line in ($Section3HostDataNotesRichTextBox.text -split "`r`n") ){
-                $OpNotesListBox.Items.Add("$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line")
-                Add-Content -Path $OpNotesWriteOnlyFile -Value "$(($TimeStamp).ToString('yyyy/MM/dd HH:mm:ss'))  -  $Line" -Force
-            }
-            Save-OpNotes
-        }    
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Add Selected To OpNotes" -Icon "Info" -Message @"
-+  One or more lines can be selected to add to the OpNotes.
-+  The selection can be contiguous by using the Shift key
-    and/or be separate using the Ctrl key, the press OK.
-+  A Datetime stampe will be prefixed to the entry.
-"@
-    }
-}
-$Section3HostDataTab.Controls.Add($Section3HostDataNotesAddOpNotesButton)
-CommonButtonSettings -Button $Section3HostDataNotesAddOpNotesButton
-
-
-# Checks if the Host Data has been modified and determines the text color: Green/Red
-Update-FormProgress "$Dependencies\Code\Main Body\Check-HostDataIfModified.ps1"
-. "$Dependencies\Code\Main Body\Check-HostDataIfModified.ps1"
+# DEPRECATED
+# $script:Section3HostDataNotesSaveCheck = ""
+# $Section3HostDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
+#     Text      = "Data Saved"
+#     Left      = $Section3HostDataNotesRichTextBox.Left + $Section3HostDataNotesRichTextBox.Width + $($FormScale + 5)
+#     Top       = $Section3HostDataNotesRichTextBox.Top
+#     Width     = $FormScale * 100
+#     Height    = $FormScale * 22
+#     Add_Click = {
+#         Save-TreeViewData -Endpoint
+#         $StatusListBox.Items.Clear()
+#         $StatusListBox.Items.Add("Saved Host Data:  $($script:Section3HostDataNameTextBox.Text)")            
+#     }
+#     Add_MouseHover = {
+#         Show-ToolTip -Title "Warning" -Icon "Warning" -Message @"
+# +  It's Best practice is to manually save after modifying each host data.
+# +  That said, data is automatically saved when you select a endpoint in the computer treeview
+# "@
+#     }
+# }
+# $Section3HostDataTab.Controls.Add($Section3HostDataSaveButton)
+# CommonButtonSettings -Button $Section3HostDataSaveButton
