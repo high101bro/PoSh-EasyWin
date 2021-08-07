@@ -55,7 +55,7 @@ function Query-EventLogLogsEventIDsIndividualSelectionSessionBased {
     if ($RPC){
         Invoke-Expression -Command "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
 
-    "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"|ogv
+    "$EventLogQueryCommand -ComputerName $TargetComputer -Credential `$Script:Credential $EventLogQueryFilter $EventLogQueryPipe"
     }
     else {
         Invoke-Expression "$EventLogQueryCommand $EventLogQueryFilter $EventLogQueryPipe"

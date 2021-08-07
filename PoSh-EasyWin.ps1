@@ -969,7 +969,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         ContextMenuStrip  = $ComputerListContextMenuStrip      #Ref Add_click
                         ShowPlusMinus     = $true
                         HideSelection     = $false
-                        #not working #AfterSelect       = {( 1 | ogv )}
+                        #not working #AfterSelect       = {}
                         ImageList         = $ComputerTreeViewImageList
                         ImageIndex        = 1
                     }
@@ -1135,7 +1135,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         ContextMenuStrip  = $AccountsListContextMenuStrip      #Ref Add_click
                         ShowPlusMinus     = $true
                         HideSelection     = $false
-                        #not working #AfterSelect       = {( 1 | ogv )}
+                        #not working #AfterSelect       = {}
                         ImageList         = $AccountsTreeViewImageList
                         ImageIndex        = 1
                     }
