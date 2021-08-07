@@ -422,7 +422,7 @@ Command:
                     $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                     Foreach($Computer in $script:ComputerTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address  -Metadata $Computer
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address  -Metadata $Computer
                     }
             
                     Remove-EmptyCategory -Endpoint
@@ -539,7 +539,7 @@ Command:
 
                 Create-TreeViewCheckBoxArray -Endpoint
 
-                if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
                 else {$Username = $PoShEasyWinAccountLaunch }
             
                 if ($script:ComputerTreeViewSelected.count -eq 0){
@@ -561,7 +561,7 @@ Command:
 
                 Create-TreeViewCheckBoxArray -Endpoint
 
-                if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
                 else {$Username = $PoShEasyWinAccountLaunch }
             
                 if ($script:ComputerTreeViewSelected.count -eq 0){
@@ -583,7 +583,7 @@ Command:
 
                 Create-TreeViewCheckBoxArray -Endpoint
 
-                if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
                 else {$Username = $PoShEasyWinAccountLaunch }
             
                 if ($script:ComputerTreeViewSelected.count -lt 1){
@@ -763,7 +763,7 @@ Command:
                         $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                         Foreach($Computer in $script:ComputerTreeViewData) {
-                            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address  -Metadata $Computer
+                            AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address  -Metadata $Computer
                         }
             
                         Remove-EmptyCategory -Endpoint

@@ -3,7 +3,7 @@ $ComputerListSSHButtonAdd_Click = {
     Create-TreeViewCheckBoxArray -Endpoint
     Generate-ComputerList
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
 
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
@@ -39,7 +39,7 @@ $ComputerListSSHButtonAdd_Click = {
         $StatusListBox.Items.Clear()
         $StatusListBox.Items.Add("SSH:  $($script:ComputerTreeViewSelected)")
         #Removed For Testing#$ResultsListBox.Items.Clear()
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
             $Username = $script:Credential.UserName
@@ -61,7 +61,7 @@ $ComputerListSSHButtonAdd_Click = {
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "start-process $kitty_ssh_client -ArgumentList @(`"-ssh`",$script:ComputerTreeViewSelected,`"-l`",$User)"
         }
 
-        if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+        if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
             Start-Sleep -Seconds 3
             Generate-NewRollingPassword
         }

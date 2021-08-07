@@ -16,7 +16,7 @@ Function Import-DataFromActiveDirectory {
                 # Checks if data already exists
                 if ($script:ComputerTreeViewData.Name -contains $Computer.Name) {
                     Message-NodeAlreadyExists -Endpoint -Message "Importing Hosts:  Warning" -Computer $Computer.Name -ResultsListBoxMessage
-                    AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
+                    AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address
                 }
                 else {
                     $ComputerAndAccountTreeViewTabControl.SelectedTab = $ComputerTreeviewTab
@@ -24,10 +24,10 @@ Function Import-DataFromActiveDirectory {
         
                     $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
                     if ($Computer.CanonicalName -eq "") {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address
                     }
                     else {
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address
                     }
                     $script:ComputerTreeViewData += $Computer
                 }
@@ -37,13 +37,13 @@ Function Import-DataFromActiveDirectory {
             $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
         
             Foreach($Computer in $script:ComputerTreeViewData) {
-                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
+                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address
             }
         
         #    $script:ComputerTreeView.Nodes.Clear()
         #    Initialize-TreeViewData -Endpoint
             Normalize-TreeViewData -Endpoint
-            Foreach($Computer in $script:ComputerTreeViewData) { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
+            Foreach($Computer in $script:ComputerTreeViewData) { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address }
             $script:ComputerTreeView.ExpandAll()
         
             UpdateState-TreeViewData -Endpoint
@@ -140,7 +140,7 @@ Function Import-DataFromActiveDirectory {
         
                         Create-TreeViewCheckBoxArray -Endpoint
                         if ($ImportFromADWinRMManuallEntryTextBox.Text -ne '<Enter a hostname/IP>' -and $ImportFromADWinRMManuallEntryTextBox.Text -ne '' -and $ImportFromADWinRMAutoCheckBox.checked -eq $false ) {
-                            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                 $CredentialsUsed = $script:Credential.UserName
                             }
                             else {
@@ -154,7 +154,7 @@ Function Import-DataFromActiveDirectory {
                                 # This brings specific tabs to the forefront/front view
                                 $InformationTabControl.SelectedTab = $Section3ResultsTab
                                 $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
-                                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Create-NewCredentials }
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
@@ -182,7 +182,7 @@ Function Import-DataFromActiveDirectory {
                                 $StatusListBox.Items.Clear()
                                 $StatusListBox.Items.Add("Importing Hosts From Active Directory")
         
-                                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Create-NewCredentials }
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
@@ -283,7 +283,7 @@ Function Import-DataFromActiveDirectory {
                     Width     = $FormScale * 100
                     Height    = $FormScale * 20
                     Add_Click = {
-                        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                             if (!$script:Credential) { Create-NewCredentials }
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName
@@ -391,7 +391,7 @@ Function Import-DataFromActiveDirectory {
                             $ResultsListBox.Items.Clear()
                             foreach ($Computer in $script:ComputerList) {
                                 if ($ImportFromADAutoCheckBox.Checked) {
-                                    AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $CurrentDomain -Entry $Computer -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
+                                    AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $CurrentDomain -Entry $Computer -ToolTip $Computer.IPv4Address -IPv4Address $Computer.IPv4Address
                                     $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
                                         Name            = $Computer
                                         OperatingSystem = 'Unknown'
@@ -401,7 +401,7 @@ Function Import-DataFromActiveDirectory {
                                     $script:ComputerTreeViewData += $ComputerTreeNodeAddHostnameIP
                                 }
                                 else {
-                                    AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $($ImportFromADManualEntryTextBox.Text) -Entry $Computer -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
+                                    AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $($ImportFromADManualEntryTextBox.Text) -Entry $Computer -ToolTip $Computer.IPv4Address -IPv4Address $Computer.IPv4Address
                                     $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{
                                         Name            = $Computer
                                         OperatingSystem = 'Unknown'
@@ -520,7 +520,7 @@ Function Import-DataFromActiveDirectory {
                                 # This brings specific tabs to the forefront/front view
                                 $InformationTabControl.SelectedTab = $Section3ResultsTab
                                 $ImportFromADWinRMManuallEntryTextBoxTarget = $ImportFromADWinRMManuallEntryTextBox.Text
-                                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Create-NewCredentials }
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
@@ -544,8 +544,8 @@ Function Import-DataFromActiveDirectory {
                                 Normalize-TreeViewData -Accounts
                                 Save-TreeViewData -Accounts
         
-                                Foreach($AccountsData in $script:AccountsTreeViewData) {
-                                    AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.Enabled -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address 
+                                Foreach($Account in $script:AccountsTreeViewData) {
+                                    AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.Enabled -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account 
                                 }
                                 
                                 UpdateState-TreeViewData -Accounts
@@ -564,7 +564,7 @@ Function Import-DataFromActiveDirectory {
                                 $StatusListBox.Items.Clear()
                                 $StatusListBox.Items.Add("Importing Hosts From Active Directory")
         
-                                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Create-NewCredentials }
                                     Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                                     $Username = $script:Credential.UserName
@@ -590,8 +590,8 @@ Function Import-DataFromActiveDirectory {
                                 Normalize-TreeViewData -Accounts
                                 Save-TreeViewData -Accounts
         
-                                Foreach($AccountsData in $script:AccountsTreeViewData) {
-                                    AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.Enabled -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address 
+                                Foreach($Account in $script:AccountsTreeViewData) {
+                                    AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.Enabled -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account 
                                 }
                                 
                                 UpdateState-TreeViewData -Accounts
@@ -674,7 +674,7 @@ Function Import-DataFromActiveDirectory {
                     Width     = $FormScale * 100
                     Height    = $FormScale * 20
                     Add_Click = {
-                        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                             if (!$script:Credential) { Create-NewCredentials }
                             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
                             $Username = $script:Credential.UserName

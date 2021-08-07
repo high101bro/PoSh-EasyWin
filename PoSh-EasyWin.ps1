@@ -517,7 +517,7 @@ $PoShEasyWin = New-Object System.Windows.Forms.Form -Property @{
             $script:Credential      = Import-CliXml $script:SelectedCredentialPath
             $StatusListBox.Items.Clear()
             $StatusListBox.Items.Add("Credentials:  $SelectedCredentialName.xml")
-            $ComputerListProvideCredentialsCheckBox.checked = $true
+            $script:ComputerListProvideCredentialsCheckBox.checked = $true
         }
         else {
             $StatusListBox.Items.Clear()
@@ -834,7 +834,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             Save-TreeViewData -Endpoint
 
                             Foreach($ComputerData in $script:ComputerTreeViewData) {
-                                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $ComputerData.$($This.SelectedItem) -Entry $ComputerData.Name -ToolTip 'No ToolTip Data' -Metadata $ComputerData #-IPv4Address $ComputerData.IPv4Address
+                                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $ComputerData.$($This.SelectedItem) -Entry $ComputerData.Name -ToolTip $ComputerData.IPv4Address -Metadata $ComputerData
                             }
                             $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
                             UpdateState-TreeViewData -Endpoint
@@ -856,6 +856,7 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         Width   = $FormScale * 65
                         Checked = $true
                         Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        #ToolTipText = "Checkbox this to get results with partial matches`nex: 'server' will show results with 'server-01' and 'Windows Server 2012'"
                     }
                     $ComputerTreeviewTab.Controls.Add($ComputerTreeNodeSearchGreedyCheckbox)
                             
@@ -983,8 +984,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
     
                     # This will load data that is located in the saved file
                     Foreach($Computer in $script:ComputerTreeViewData) {
-                        #AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
-                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
+                        #AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
+                        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
                     }
                     $script:ComputerTreeView.Nodes.Add($script:TreeNodeComputerList)
 
@@ -1033,8 +1034,8 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                             Normalize-TreeViewData -Accounts
                             Save-TreeViewData -Accounts
 
-                            Foreach($AccountsData in $script:AccountsTreeViewData) {
-                                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.$($This.SelectedItem) -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $AccountsData #-IPv4Address $AccountsData.IPv4Address
+                            Foreach($Account in $script:AccountsTreeViewData) {
+                                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.$($This.SelectedItem) -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
                             }
                             $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
                             UpdateState-TreeViewData -Accounts
@@ -1054,8 +1055,9 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                         Top     = $script:AccountsTreeNodeComboBox.Top - ($FormScale * 6)
                         Height  = $FormScale * 25
                         Width   = $FormScale * 65
-                        Checked = $false
+                        Checked = $true
                         Font    = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+                        #ToolTipText = "Checkbox this to get results with partial matches`nex: 'admin' will show results with 'admin' and 'administrator'"
                     }
                     $AccountsTreeviewTab.Controls.Add($AccountsTreeNodeSearchGreedyCheckbox)
                             
@@ -1147,10 +1149,10 @@ $ComputerAndAccountTreeNodeViewPanel = New-Object System.Windows.Forms.Panel
                     #Save-TreeViewData -Accounts
                     
                     # This will load data that is located in the saved file
-                    Foreach($AccountsData in $script:AccountsTreeViewData) {
-                        #AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.Enabled -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address 
-                        #AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category 'Alphabetical' -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $AccountsData.CanonicalName -Entry $AccountsData.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts #-IPv4Address $AccountsData.IPv4Address
+                    Foreach($Account in $script:AccountsTreeViewData) {
+                        #AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.Enabled -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account 
+                        #AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category 'Alphabetical' -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
+                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID -Metadata $Account
                     }
                     $script:AccountsTreeView.Nodes.Add($script:TreeNodeAccountsList)
 
@@ -1344,7 +1346,7 @@ $ExecuteScriptHandler = {
     $script:ProgressBarEndpointsProgressBar.BackColor = 'White'
     $script:ProgressBarQueriesProgressBar.BackColor   = 'White'
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
 
     # Clears previous and generates new computerlist
@@ -1711,7 +1713,7 @@ $ExecuteScriptHandler = {
             New-Item -Type Directory -Path $script:CollectedDataTimeStampDirectory -ErrorAction SilentlyContinue
 
             if (Verify-Action -Title "Execution Verification" -Question "Connecting Account:  $Username`n`nNumber of Queries:  $($QueryCount)`n`nEndpoints:  $($script:ComputerList.count)" -Computer $($script:ComputerList -join ', ')) {
-                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
                     $PSSession = New-PSSession -ComputerName $script:ComputerList -Credential $script:Credential | Sort-Object ComputerName
                 }

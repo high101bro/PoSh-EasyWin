@@ -79,7 +79,7 @@ function MonitorJobScriptBlock {
         Create-LogEntry -TargetComputer $TargetComputer  -LogFile $LogFile -Message $CollectionName
 
         if ($EventLogWinRMRadioButton.Checked) {
-            if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 if (!$script:Credential) { Create-NewCredentials }
 
 
@@ -97,7 +97,7 @@ function MonitorJobScriptBlock {
             }
         }
         else {
-            if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 if (!$script:Credential) { Create-NewCredentials }
 
                 Start-Job -ScriptBlock {

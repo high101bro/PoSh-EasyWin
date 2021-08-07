@@ -324,7 +324,7 @@ $Section3HostDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Proper
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     AutoCompleteSource = "ListItems"
-    AutoCompleteMode   = "SuggestAppend"
+    AutoCompleteMode = "SuggestAppend"
     Add_MouseEnter = {
         $This.ForeColor = 'DarkRed'
     }
@@ -351,7 +351,7 @@ $Section3HostDataTagsAddButton = New-Object System.Windows.Forms.Button -Propert
     Height    = $FormScale * 22
     Add_Click = {
         if (-not ($Section3HostDataTagsComboBox.SelectedItem -eq "Tags")) {
-            $Section3HostDataNotesRichTextBox.text = "[ $(Get-Date) -- $($Section3HostDataTagsComboBox.SelectedItem) ]`n" + $Section3HostDataNotesRichTextBox.text
+            $Section3HostDataNotesRichTextBox.text = "$(Get-Date) -- $($Section3HostDataTagsComboBox.SelectedItem)`n" + $Section3HostDataNotesRichTextBox.text
         }
         Save-TreeViewData -Endpoint
     }

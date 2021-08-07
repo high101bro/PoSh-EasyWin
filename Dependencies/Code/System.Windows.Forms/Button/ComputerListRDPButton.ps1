@@ -3,7 +3,7 @@ $ComputerListRDPButtonAdd_Click = {
     Create-TreeViewCheckBoxArray -Endpoint
     Generate-ComputerList
 
-    if ($ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) { $Username = $script:Credential.UserName}
     else {$Username = $PoShEasyWinAccountLaunch }
 
     if ($script:ComputerListEndpointNameToolStripLabel.text) {
@@ -35,7 +35,7 @@ $ComputerListRDPButtonAdd_Click = {
     if ($VerifyAction) {
         # This brings specific tabs to the forefront/front view
         $InformationTabControl.SelectedTab = $Section3ResultsTab
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { Create-NewCredentials }
 
             Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
@@ -66,7 +66,7 @@ $ComputerListRDPButtonAdd_Click = {
             cmdkey /delete /ras
             cmdkey /delete:"$script:ComputerTreeViewSelected"
 
-            if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+            if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
                 Start-Sleep -Seconds 3
                 Generate-NewRollingPassword
             }

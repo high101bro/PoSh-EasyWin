@@ -144,7 +144,7 @@ function Display-ContextMenuForAccountsTreeNode {
                         $Section3AccountDataOUTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).CanonicalName
                         $Section3AccountDataIPTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).IPv4Address
                         $Section3AccountDataMACTextBox.Text         = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).MACAddress
-                        $Section3AccountDataNotesRichTextBox.Text   = "[$($script:AccountsListMassTagValue)] " + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Notes
+                        $script:Section3AccountDataNotesRichTextBox.Text   = "[$($script:AccountsListMassTagValue)] " + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $script:EntrySelected.Text}).Notes
                         Save-TreeViewData -Accounts
                         $StatusListBox.Items.clear()
                         $StatusListBox.Items.Add("Tag applied to: $($script:EntrySelected.text)")
@@ -167,7 +167,7 @@ function Display-ContextMenuForAccountsTreeNode {
                     $script:AccountsTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                     Foreach($Accounts in $script:AccountsTreeViewData) {
-                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Accounts.CanonicalName -Entry $Accounts.Name -ToolTip 'No ToolTip Data' -IPv4Address $Accounts.IPv4Address  -Metadata $Accounts
+                        AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Accounts.CanonicalName -Entry $Accounts.Name -ToolTip $Accounts.SID -Metadata $Accounts
                     }
             
                     Remove-EmptyCategory -Accounts
@@ -360,7 +360,7 @@ function Display-ContextMenuForAccountsTreeNode {
                                                 $Section3AccountDataOUTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).CanonicalName
                                                 $Section3AccountDataIPTextBox.Text          = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).IPv4Address
                                                 $Section3AccountDataMACTextBox.Text         = $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).MACAddress
-                                                $Section3AccountDataNotesRichTextBox.Text   = "[$($script:AccountsListMassTagValue)] " + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
+                                                $script:Section3AccountDataNotesRichTextBox.Text   = "[$($script:AccountsListMassTagValue)] " + $($script:AccountsTreeViewData | Where-Object {$_.Name -eq $Entry.Text}).Notes
                                             }
                                             $script:ProgressBarAccountsProgressBar.Value += 1
                                         }
@@ -395,7 +395,7 @@ function Display-ContextMenuForAccountsTreeNode {
                         $script:AccountsTreeNodeComboBox.SelectedItem = 'CanonicalName'
             
                         Foreach($Accounts in $script:AccountsTreeViewData) {
-                            AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Accounts.CanonicalName -Entry $Accounts.Name -ToolTip 'No ToolTip Data' -Metadata $Accounts
+                            AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Accounts.CanonicalName -Entry $Accounts.Name -ToolTip $Accounts.SID -Metadata $Accounts
                         }
             
                         Remove-EmptyCategory -Accounts

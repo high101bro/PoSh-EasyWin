@@ -111,7 +111,7 @@ $ManageCredentialsGroupBox = New-Object System.Windows.Forms.GroupBox -Property 
 
             Update-FormProgress "$Dependencies\Code\System.Windows.Forms\CheckBox\ComputerListProvideCredentialsCheckBox.ps1"
             . "$Dependencies\Code\System.Windows.Forms\CheckBox\ComputerListProvideCredentialsCheckBox.ps1"
-            $ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
+            $script:ComputerListProvideCredentialsCheckBox = New-Object System.Windows.Forms.CheckBox -Property @{
                 Text    = "Use Selected Creds"
                 Left    = $FormScale * 3 + 1
                 Top     = $ProvideCredentialsButton.Top + $ProvideCredentialsButton.Height + ($FormScale * 3)
@@ -122,8 +122,8 @@ $ManageCredentialsGroupBox = New-Object System.Windows.Forms.GroupBox -Property 
                 Add_Click      = $ComputerListProvideCredentialsCheckBoxAdd_Click
                 Add_MouseHover = $ComputerListProvideCredentialsCheckBoxAdd_MouseHover
             }
-            $ManageCredentialsGroupBox.Controls.Add($ComputerListProvideCredentialsCheckBox)
-
+            $ManageCredentialsGroupBox.Controls.Add($script:ComputerListProvideCredentialsCheckBox)
+  
 $Section3ActionTab.Controls.Add($ManageCredentialsGroupBox)
 
 

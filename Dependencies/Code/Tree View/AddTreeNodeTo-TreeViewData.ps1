@@ -42,19 +42,21 @@ function AddTreeNodeTo-TreeViewData {
             $newNode.Nodes.Add($MetadataLockedOut)
 
             $MetadataGroups = New-Object System.Windows.Forms.TreeNode -Property @{
-                Name = 'Groups Membership'
-                Text = 'Groups Membership'
+                Name = 'Group Membership'
+                Text = 'Group Membership'
             }
             $newNode.Nodes.Add($MetadataGroups)
             
-            $AccountGroups = $Metadata.MemberOf -split ' CN=' | Foreach-Object {$_.trim('CN=').split(',')[0]}
-            $MetadataGroups.Nodes.Add("[ Total Count: $($AccountGroups.Count) ]")
+            $AccountGroups = $Metadata.MemberOf.split("`n")
+            $MetadataGroups.Nodes.Add("[ Count: $(if ($AccountGroups -ne $null) {$AccountGroups.Count} else {0}) ]")
             foreach ($Group in $AccountGroups) {
-                $MetadataEachGroup = New-Object System.Windows.Forms.TreeNode -Property @{
-                    Name = $Group
-                    Text = $Group
+                if ($AccountGroups -ne $null) {
+                    $MetadataEachGroup = New-Object System.Windows.Forms.TreeNode -Property @{
+                        Name = $Group
+                        Text = $Group
+                    }
+                    $MetadataGroups.Nodes.Add($MetadataEachGroup)
                 }
-                $MetadataGroups.Nodes.Add($MetadataEachGroup)
             }
         }
 
@@ -116,13 +118,15 @@ function AddTreeNodeTo-TreeViewData {
             }
             $newNode.Nodes.Add($MetadataIPv4Ports)
     
-            $MetadataIPv4Ports.Nodes.Add("[ Total Count: $($Metadata.PortScan.split(',').Count) ]")
+            $MetadataIPv4Ports.Nodes.Add("[ Count: $(if ($Metadata.PortScan -ne $null) {$Metadata.PortScan.split(',').Count} else{0}) ]")
             foreach ($PortScan in ($Metadata.PortScan.split(','))) {
-                $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
-                    Name = $PortScan
-                    Text = $PortScan
+                if ($Metadata.PortScan -ne $null){
+                    $MetadataIPv4EachPort = New-Object System.Windows.Forms.TreeNode -Property @{
+                        Name = $PortScan
+                        Text = $PortScan
+                    }
+                    $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)
                 }
-                $MetadataIPv4Ports.Nodes.Add($MetadataIPv4EachPort)
             }
         }
     

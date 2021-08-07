@@ -11,7 +11,7 @@ Function Completed-QueryExecution {
     $CollectionTimerStop = Get-Date
     $ResultsListBox.Items.Insert(0,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Finished Executing Commands")
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
         Generate-NewRollingPassword
         $ResultsListBox.Items.Insert(1,"$(($CollectionTimerStop).ToString('yyyy/MM/dd HH:mm:ss'))  Rolled Password For Account: $($script:PoShEasyWinAccount)")

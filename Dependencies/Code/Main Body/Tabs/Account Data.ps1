@@ -8,25 +8,40 @@ $Section3AccountDataTab = New-Object System.Windows.Forms.TabPage -Property @{
 $InformationTabControl.Controls.Add($Section3AccountDataTab)
 
 
+#############
 ### Row 1 ###
+#############
+
+
+$Section3AccountDataNameLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Name:'
+    Left      = 0
+    Top       = $FormScale * 3
+    Width     = $FormScale * 50
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataNameLabel)
+$Section3AccountDataNameLabel.bringtofront()
 
 
 $script:Section3AccountDataNameTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = 0
+    Left      = $Section3AccountDataNameLabel.Left + $Section3AccountDataNameLabel.Width
     Top       = $FormScale * 3
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Width     = $FormScale * 200
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
+#        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Account Name"
+#        $This.Text         = "Account Name"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
+#        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Account Name" -Icon "Info" -Message @"
@@ -40,22 +55,35 @@ $script:Section3AccountDataNameTextBox = New-Object System.Windows.Forms.TextBox
 $Section3AccountDataTab.Controls.Add($script:Section3AccountDataNameTextBox)
 
 
+$Section3AccountDataOULabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'OU/CN:'
+    Left      = $Section3AccountDataNameLabel.Left
+    Top       = $Section3AccountDataNameLabel.Top + $Section3AccountDataNameLabel.Height
+    Width     = $FormScale * 50
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataOULabel)
+$Section3AccountDataOULabel.bringtofront()
+
+
 $Section3AccountDataOUTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = 0
-    Top       = $script:Section3AccountDataNameTextBox.Top + $script:Section3AccountDataNameTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Left      = $script:Section3AccountDataNameTextBox.Left
+    Top       = $Section3AccountDataOULabel.Top
+    Width     = $FormScale * 200
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
+#        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Organizational Unit / Container Name"
+#        $This.Text         = "Organizational Unit / Container Name"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
+#        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Organizational Unit / Container Name" -Icon "Info" -Message @"
@@ -66,22 +94,34 @@ $Section3AccountDataOUTextBox = New-Object System.Windows.Forms.TextBox -Propert
 $Section3AccountDataTab.Controls.Add($Section3AccountDataOUTextBox)
 
 
-$Section3AccountDataCreatedTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+$Section3AccountDataCreatedLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Account Creation:'
     Left      = 0
-    Top       = $Section3AccountDataOUTextBox.Top + $Section3AccountDataOUTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Top       = $Section3AccountDataOULabel.Top + $Section3AccountDataOULabel.Height
+    Width     = $FormScale * 115
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataCreatedLabel)
+
+
+$Section3AccountDataCreatedTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataCreatedLabel.Left + $Section3AccountDataCreatedLabel.Width
+    Top       = $Section3AccountDataCreatedLabel.Top
+    Width     = $FormScale * 135
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
+#        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Created"
+#        $This.Text         = "Created"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
+#        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Created" -Icon "Info" -Message @"
@@ -92,22 +132,34 @@ $Section3AccountDataCreatedTextBox = New-Object System.Windows.Forms.TextBox -Pr
 $Section3AccountDataTab.Controls.Add($Section3AccountDataCreatedTextBox)
 
 
-$Section3AccountDataModifiedTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+$Section3AccountDataModifiedLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Last Modified:'
     Left      = 0
-    Top       = $Section3AccountDataCreatedTextBox.Top + $Section3AccountDataCreatedTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Top       = $Section3AccountDataCreatedLabel.Top + $Section3AccountDataCreatedLabel.Height
+    Width     = $FormScale * 110
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataModifiedLabel)
+
+
+$Section3AccountDataModifiedTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataCreatedTextBox.Left
+    Top       = $Section3AccountDataModifiedLabel.Top
+    Width     = $FormScale * 135
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
+#        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Modified"
+#        $This.Text         = "Modified"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
+#        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Modified" -Icon "Info" -Message @"
@@ -118,22 +170,35 @@ $Section3AccountDataModifiedTextBox = New-Object System.Windows.Forms.TextBox -P
 $Section3AccountDataTab.Controls.Add($Section3AccountDataModifiedTextBox)
 
 
+$Section3AccountDataLastLogonDateLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Last Logon Date:'
+    Left      = $Section3AccountDataModifiedLabel.Left
+    Top       = $Section3AccountDataModifiedLabel.Top + $Section3AccountDataModifiedLabel.Height
+    Width     = $FormScale * 110
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataLastLogonDateLabel)
+$Section3AccountDataLastLogonDateLabel.bringtofront()
+
+
 $Section3AccountDataLastLogonDateTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = 0
-    Top       = $Section3AccountDataModifiedTextBox.Top + $Section3AccountDataModifiedTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Left      = $Section3AccountDataModifiedTextBox.Left
+    Top       = $Section3AccountDataLastLogonDateLabel.Top
+    Width     = $FormScale * 135
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
+#        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Last Logon"
+#        $This.Text         = "Last Logon"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
+#        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Last Logon" -Icon "Info" -Message @"
@@ -144,22 +209,35 @@ $Section3AccountDataLastLogonDateTextBox = New-Object System.Windows.Forms.TextB
 $Section3AccountDataTab.Controls.Add($Section3AccountDataLastLogonDateTextBox)
 
 
-$Section3AccountDataLastBadPasswordAttemptTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+$Section3AccountDataLastBadPasswordAttemptLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Last Bad Password:'
     Left      = 0
-    Top       = $Section3AccountDataLastLogonDateTextBox.Top + $Section3AccountDataLastLogonDateTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Top       = $Section3AccountDataLastLogonDateLabel.Top + $Section3AccountDataLastLogonDateLabel.Height
+    Width     = $FormScale * 110
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataLastBadPasswordAttemptLabel)
+$Section3AccountDataLastBadPasswordAttemptLabel.bringtofront()
+
+
+$Section3AccountDataLastBadPasswordAttemptTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataLastLogonDateTextBox.Left
+    Top       = $Section3AccountDataLastBadPasswordAttemptLabel.Top
+    Width     = $FormScale * 135
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
+#        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Last Bad Password Attempt"
+#        $This.Text         = "Last Bad Password Attempt"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
+#        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Last Bad Password Attempt" -Icon "Info" -Message @"
@@ -170,25 +248,118 @@ $Section3AccountDataLastBadPasswordAttemptTextBox = New-Object System.Windows.Fo
 $Section3AccountDataTab.Controls.Add($Section3AccountDataLastBadPasswordAttemptTextBox)
 
 
+#############
 ### Row 2 ###
+#############
 
 
-$Section3AccountDataSIDTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+$Section3AccountDataEnabledLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Account is Enabled:'
     Left      = $script:Section3AccountDataNameTextBox.Left + $script:Section3AccountDataNameTextBox.Width + $($FormScale * 10)
     Top       = $FormScale * 3
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Width     = $FormScale * 175
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataEnabledLabel)
+$Section3AccountDataEnabledLabel.bringtofront()
+
+
+$Section3AccountDataEnabledTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataEnabledLabel.Left + $Section3AccountDataEnabledLabel.Width
+    Top       = $Section3AccountDataEnabledLabel.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
+#        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "SID"
+#        $This.Text         = "Enabled"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
+#        $This.Text         = $script:TextMemory
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Enabled" -Icon "Info" -Message @"
++  Enabled status of the account.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataEnabledTextBox)
+
+
+$Section3AccountDataSmartCardLogonRequiredLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Smart Card Logon Required:'
+    Left      = $Section3AccountDataEnabledLabel.Left
+    Top       = $Section3AccountDataEnabledLabel.Top + $Section3AccountDataEnabledLabel.Height
+    Width     = $FormScale * 175
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataSmartCardLogonRequiredLabel)
+$Section3AccountDataSmartCardLogonRequiredLabel.bringtofront()
+
+
+$Section3AccountDataSmartCardLogonRequiredTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataEnabledTextBox.Left
+    Top       = $Section3AccountDataSmartCardLogonRequiredLabel.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+#        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+#        $This.Text         = "Smart Card Logon Required"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+#        $This.Text         = $script:TextMemory
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Smart Card Logon Required" -Icon "Info" -Message @"
++  Configuration state if a smart card logon is required for the account.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataSmartCardLogonRequiredTextBox)
+
+
+$Section3AccountDataSIDLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Security ID:'
+    Left      = $Section3AccountDataSmartCardLogonRequiredLabel.Left
+    Top       = $Section3AccountDataSmartCardLogonRequiredLabel.Top + $Section3AccountDataSmartCardLogonRequiredLabel.Height
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataSIDLabel)
+$Section3AccountDataSIDLabel.bringtofront()
+
+
+$Section3AccountDataSIDTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataSIDLabel.Left + $Section3AccountDataSIDLabel.Width
+    Top       = $Section3AccountDataSIDLabel.Top
+    Width     = $FormScale * 170
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+#        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+#        $This.Text         = "SID"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+#        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "SID" -Icon "Info" -Message @"
@@ -200,100 +371,35 @@ $Section3AccountDataSIDTextBox = New-Object System.Windows.Forms.TextBox -Proper
 $Section3AccountDataTab.Controls.Add($Section3AccountDataSIDTextBox)
 
 
-$Section3AccountDataEnabledTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3AccountDataSIDTextBox.Left
-    Top       = $FormScale * 3
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+$Section3AccountDataScriptPathLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Script Path:'
+    Left      = $Section3AccountDataSIDLabel.Left
+    Top       = $Section3AccountDataSIDLabel.Top + $Section3AccountDataSIDLabel.Height
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    ReadOnly  = $true
-    Add_MouseEnter = {
-        $script:TextMemory = $This.Text
-        $This.ForeColor    = 'Blue'
-        $This.Text         = "Enabled"
-    }
-    Add_MouseLeave = {
-        $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Enabled" -Icon "Info" -Message @"
-+  Enabled status of the account.
-"@
-    }
+    ForeColor = 'Black'
 }
-$Section3AccountDataTab.Controls.Add($Section3AccountDataEnabledTextBox)
-
-
-$Section3AccountDataLockedOutTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3AccountDataSIDTextBox.Left
-    Top       = $Section3AccountDataEnabledTextBox.Top + $Section3AccountDataEnabledTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    ReadOnly  = $true
-    Add_MouseEnter = {
-        $script:TextMemory = $This.Text
-        $This.ForeColor    = 'Blue'
-        $This.Text         = "Locked Out"
-    }
-    Add_MouseLeave = {
-        $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Locked Out" -Icon "Info" -Message @"
-+  Locked Out status of the account.
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataLockedOutTextBox)
-
-
-$Section3AccountDataSmartCardLogonRequiredTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3AccountDataSIDTextBox.Left
-    Top       = $Section3AccountDataLockedOutTextBox.Top + $Section3AccountDataLockedOutTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    ReadOnly  = $true
-    Add_MouseEnter = {
-        $script:TextMemory = $This.Text
-        $This.ForeColor    = 'Blue'
-        $This.Text         = "Smart Card Logon Required"
-    }
-    Add_MouseLeave = {
-        $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Smart Card Logon Required" -Icon "Info" -Message @"
-+  Configuration state if a smart card logon is required for the account.
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataSmartCardLogonRequiredTextBox)
+$Section3AccountDataTab.Controls.Add($Section3AccountDataScriptPathLabel)
+$Section3AccountDataScriptPathLabel.bringtofront()
 
 
 $Section3AccountDataScriptPathTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3AccountDataSIDTextBox.Left
-    Top       = $Section3AccountDataSmartCardLogonRequiredTextBox.Top + $Section3AccountDataSmartCardLogonRequiredTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Left      = $Section3AccountDataScriptPathLabel.Left + $Section3AccountDataScriptPathLabel.Width
+    Top       = $Section3AccountDataScriptPathLabel.Top
+    Width     = $FormScale * 175
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
+#        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Script Path"
+#        $This.Text         = "Script Path"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
+#        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Script Path" -Icon "Info" -Message @"
@@ -304,22 +410,35 @@ $Section3AccountDataScriptPathTextBox = New-Object System.Windows.Forms.TextBox 
 $Section3AccountDataTab.Controls.Add($Section3AccountDataScriptPathTextBox)
 
 
+$Section3AccountDataHomeDriveLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Home Drive:'
+    Left      = $Section3AccountDataScriptPathLabel.Left
+    Top       = $Section3AccountDataScriptPathLabel.Top + $Section3AccountDataScriptPathLabel.Height
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataHomeDriveLabel)
+$Section3AccountDataHomeDriveLabel.bringtofront()
+
+
 $Section3AccountDataHomeDriveTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3AccountDataSIDTextBox.Left
-    Top       = $Section3AccountDataScriptPathTextBox.Top + $Section3AccountDataScriptPathTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 250
-    Height    = $FormScale * 25
+    Left      = $Section3AccountDataHomeDriveLabel.Left + $Section3AccountDataHomeDriveLabel.Width
+    Top       = $Section3AccountDataHomeDriveLabel.Top
+    Width     = $FormScale * 175
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     ReadOnly  = $true
     Add_MouseEnter = {
-        $script:TextMemory = $This.Text
+#        $script:TextMemory = $This.Text
         $This.ForeColor    = 'Blue'
-        $This.Text         = "Home Drive"
+#        $This.Text         = "Home Drive"
     }
     Add_MouseLeave = {
         $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
+#        $This.Text         = $script:TextMemory
     }
     Add_MouseHover = {
         Show-ToolTip -Title "Home Drive" -Icon "Info" -Message @"
@@ -330,22 +449,246 @@ $Section3AccountDataHomeDriveTextBox = New-Object System.Windows.Forms.TextBox -
 $Section3AccountDataTab.Controls.Add($Section3AccountDataHomeDriveTextBox)
 
 
+$Section3AccountDataMemberOfComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
+    Left      = $Section3AccountDataHomeDriveLabel.Left
+    Top       = $Section3AccountDataHomeDriveLabel.Top + $Section3AccountDataHomeDriveLabel.Height
+    Width     = $FormScale * 250
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    Add_MouseEnter = {
+        $This.ForeColor = 'Blue'
+#        $This.Text      = "Groups Member Of "
+    }
+    Add_MouseLeave = {
+        $This.ForeColor = 'Black'
+#        $Section3AccountDataMemberOfComboBox.Text = "- Select Dropdown [$($script:MemberOfList.count)] Groups"
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Member Of" -Icon "Info" -Message @"
++  The groups the account is a member of.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataMemberOfComboBox)
+
+
+#############
+### Row 3 ###
+#############
+
+
+$Section3AccountDataLockedOutLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Account is Locked Out:'
+    Left      = $Section3AccountDataSIDTextBox.Left + $Section3AccountDataSIDTextBox.Width + $($FormScale * 10)
+    Top       = $FormScale * 3
+    Width     = $FormScale * 150
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataLockedOutLabel)
+$Section3AccountDataLockedOutLabel.bringtofront()
+
+
+$Section3AccountDataLockedOutTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataLockedOutLabel.Left + $Section3AccountDataLockedOutLabel.Width
+    Top       = $Section3AccountDataLockedOutLabel.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+#        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+#        $This.Text         = "Locked Out"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+#        $This.Text         = $script:TextMemory
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Locked Out" -Icon "Info" -Message @"
++  Locked Out status of the account.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataLockedOutTextBox)
+
+
+$Section3AccountDataBadLogonCountLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Bad Logon Count:'
+    Left      = $Section3AccountDataLockedOutLabel.Left
+    Top       = $Section3AccountDataLockedOutLabel.Top + $Section3AccountDataLockedOutLabel.Height
+    Width     = $FormScale * 150
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataBadLogonCountLabel)
+$Section3AccountDataBadLogonCountLabel.bringtofront()
+
+
+$Section3AccountDataBadLogonCountTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataLockedOutTextBox.Left
+    Top       = $Section3AccountDataBadLogonCountLabel.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+#        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+#        $This.Text         = "Bad Logon Count"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+#        $This.Text         = $script:TextMemory
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Bad Logon Count" -Icon "Info" -Message @"
++  Number of bad logon counts for the account.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataBadLogonCountTextBox)
+                            
+
+$Section3AccountDataPasswordExpiredLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Password Expired:'
+    Left      = $Section3AccountDataBadLogonCountLabel.Left
+    Top       = $Section3AccountDataBadLogonCountLabel.Top + $Section3AccountDataBadLogonCountLabel.Height
+    Width     = $FormScale * 150
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordExpiredLabel)
+$Section3AccountDataPasswordExpiredLabel.bringtofront()
+
+
+$Section3AccountDataPasswordExpiredTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataBadLogonCountTextBox.Left
+    Top       = $Section3AccountDataPasswordExpiredLabel.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+#        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+#        $This.Text         = "Password Expired"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+#        $This.Text         = $script:TextMemory
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Password Expired" -Icon "Info" -Message @"
++  Password expiration status for the account.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordExpiredTextBox)
+
+
+$Section3AccountDataPasswordNeverExpiresLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Password Never Expires:'
+    Left      = $Section3AccountDataPasswordExpiredLabel.Left
+    Top       = $Section3AccountDataPasswordExpiredLabel.Top + $Section3AccountDataPasswordExpiredLabel.Height
+    Width     = $FormScale * 150
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordNeverExpiresLabel)
+$Section3AccountDataPasswordNeverExpiresLabel.bringtofront()
+
+
+$Section3AccountDataPasswordNeverExpiresTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataPasswordNeverExpiresLabel.Left + $Section3AccountDataPasswordNeverExpiresLabel.Width
+    Top       = $Section3AccountDataPasswordNeverExpiresLabel.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+#        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+#        $This.Text         = "Password Never Expires"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+#        $This.Text         = $script:TextMemory
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Password Never Expires" -Icon "Info" -Message @"
++  Status if the account's password is set to never expire.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordNeverExpiresTextBox)
+
+
+$Section3AccountDataPasswordNotRequiredLabel = New-Object System.Windows.Forms.Label -Property @{
+    Text      = 'Password Not Required:'
+    Left      = $Section3AccountDataPasswordNeverExpiresLabel.Left
+    Top       = $Section3AccountDataPasswordNeverExpiresLabel.Top + $Section3AccountDataPasswordNeverExpiresLabel.Height
+    Width     = $FormScale * 150
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    ForeColor = 'Black'
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordNotRequiredLabel)
+$Section3AccountDataPasswordNotRequiredLabel.bringtofront()
+
+
+$Section3AccountDataPasswordNotRequiredTextBox = New-Object System.Windows.Forms.TextBox -Property @{
+    Left      = $Section3AccountDataPasswordNotRequiredLabel.Left + $Section3AccountDataPasswordNotRequiredLabel.Width
+    Top       = $Section3AccountDataPasswordNotRequiredLabel.Top
+    Width     = $FormScale * 75
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    ReadOnly  = $true
+    Add_MouseEnter = {
+#        $script:TextMemory = $This.Text
+        $This.ForeColor    = 'Blue'
+#        $This.Text         = "Password Not Required"
+    }
+    Add_MouseLeave = {
+        $This.ForeColor    = 'Black'
+#        $This.Text         = $script:TextMemory
+    }
+    Add_MouseHover = {
+        Show-ToolTip -Title "Password Not Required" -Icon "Info" -Message @"
++  Status if the account's does not require a password.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordNotRequiredTextBox)
+
+
+
 $Section3AccountDataTagsComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Name      = "Tags"
     Text      = "Tags"
-    Left      = $FormScale * 260
-    Top       = $Section3AccountDataLastBadPasswordAttemptTextBox.Top
-    Width     = $FormScale * 200
-    Height    = $FormScale * 25
+    Left      = $Section3AccountDataPasswordNotRequiredLabel.Left
+    Top       = $Section3AccountDataPasswordNotRequiredLabel.Top + $Section3AccountDataPasswordNotRequiredLabel.Height
+    Width     = $FormScale * 175
+    Height    = $FormScale * 22
     Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor = 'White'
     AutoCompleteSource = "ListItems"
     AutoCompleteMode   = "SuggestAppend"
     Add_MouseEnter = {
-        $This.ForeColor = 'DarkRed'
+        $This.ForeColor = 'Blue'
     }
     Add_MouseLeave = {
-        $This.ForeColor = 'Black'
+        $This.ForeColor = 'Blue'
     }
     Add_MouseHover = {
         Show-ToolTip -Title "List of Pre-Built Tags" -Icon "Info" -Message @"
@@ -359,193 +702,6 @@ ForEach ($Item in $TagListFileContents) { $Section3AccountDataTagsComboBox.Items
 $Section3AccountDataTab.Controls.Add($Section3AccountDataTagsComboBox)
 
 
-### Row 3 ###
-
-
-$Section3AccountDataBadLogonCountTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3AccountDataSIDTextBox.Left + $Section3AccountDataSIDTextBox.Width + $($FormScale * 10)
-    Top       = $FormScale * 3
-    Width     = $FormScale * 220
-    Height    = $FormScale * 25
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    ReadOnly  = $true
-    Add_MouseEnter = {
-        $script:TextMemory = $This.Text
-        $This.ForeColor    = 'Blue'
-        $This.Text         = "Bad Logon Count"
-    }
-    Add_MouseLeave = {
-        $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Bad Logon Count" -Icon "Info" -Message @"
-+  Number of bad logon counts for the account.
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataBadLogonCountTextBox)
-                            
-
-$Section3AccountDataPasswordExpiredTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3AccountDataBadLogonCountTextBox.Left
-    Top       = $Section3AccountDataBadLogonCountTextBox.Top + $Section3AccountDataBadLogonCountTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 220
-    Height    = $FormScale * 25
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    ReadOnly  = $true
-    Add_MouseEnter = {
-        $script:TextMemory = $This.Text
-        $This.ForeColor    = 'Blue'
-        $This.Text         = "Password Expired"
-    }
-    Add_MouseLeave = {
-        $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Password Expired" -Icon "Info" -Message @"
-+  Password expiration status for the account.
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordExpiredTextBox)
-
-
-$Section3AccountDataPasswordNeverExpiresTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3AccountDataBadLogonCountTextBox.Left
-    Top       = $Section3AccountDataPasswordExpiredTextBox.Top + $Section3AccountDataPasswordExpiredTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 220
-    Height    = $FormScale * 25
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    ReadOnly  = $true
-    Add_MouseEnter = {
-        $script:TextMemory = $This.Text
-        $This.ForeColor    = 'Blue'
-        $This.Text         = "Password Never Expires"
-    }
-    Add_MouseLeave = {
-        $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Password Never Expires" -Icon "Info" -Message @"
-+  Status if the account's password is set to never expire.
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordNeverExpiresTextBox)
-
-
-$Section3AccountDataPasswordNotRequiredTextBox = New-Object System.Windows.Forms.TextBox -Property @{
-    Left      = $Section3AccountDataBadLogonCountTextBox.Left
-    Top       = $Section3AccountDataPasswordNeverExpiresTextBox.Top + $Section3AccountDataPasswordNeverExpiresTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 220
-    Height    = $FormScale * 25
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    ReadOnly  = $true
-    Add_MouseEnter = {
-        $script:TextMemory = $This.Text
-        $This.ForeColor    = 'Blue'
-        $This.Text         = "Password Not Required"
-    }
-    Add_MouseLeave = {
-        $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Password Not Required" -Icon "Info" -Message @"
-+  Status if the account's does not require a password.
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataPasswordNotRequiredTextBox)
-
-
-$Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -Property @{
-    Text      = "Update Data"
-    Left      = $Section3AccountDataBadLogonCountTextBox.Left + ($FormScale * 120)
-    Top       = $Section3AccountDataPasswordNotRequiredTextBox.Top + $Section3AccountDataPasswordNotRequiredTextBox.Height + $($FormScale * 4)
-    Width     = $FormScale * 100
-    Height    = $FormScale * 22
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    Add_Click = {
-        if ($root.text -match 'All Accounts') {
-            $ADAccount = $script:Section3AccountDataNameTextBox.text
-        }
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
-            if (!$script:Credential) { Create-NewCredentials }
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
-            $Username = $script:Credential.UserName
-            $Password = '"PASSWORD HIDDEN"'
-
-            ### TODO: put in addition checks that prompt if this file is not populated or notifies the user of the AD server used
-            if (Get-Content $script:ActiveDirectoryEndpoint) { $ImportFromADWinRMManuallEntryTextBoxTarget = Get-Content $script:ActiveDirectoryEndpoint }
-
-            $script:UpdatedADAccountInfo = Invoke-Command -ScriptBlock {
-                Get-ADUser -Filter {Name -eq $ADName} -Properties * `
-                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
-            } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential
-            
-            $ADAccount | ogv
-            $ImportFromADWinRMManuallEntryTextBoxTarget | ogv
-            $script:UpdatedADAccountInfo | ogv
-
-            #$script:UpdatedADAccountInfo | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
-        }
-        else {
-            $script:UpdatedADAccountInfo = Invoke-Command -ScriptBlock {
-                Get-ADUser -Filter {Name -eq $ADName} -Properties * `
-                | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
-            } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget
-            #$script:UpdatedADAccountInfo | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
-            Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
-        }
-
-    }
-    Add_MouseEnter = {}
-    Add_MouseLeave = {}
-    Add_MouseHover = {
-        Show-ToolTip -Title "Update Account Data From Active Directory" -Icon "Info" -Message @"
-+  This will query Active Directory and pull any updated information for the account.
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataUpdateDataButton)
-CommonButtonSettings -Button $Section3AccountDataUpdateDataButton
-
-
-
-$Section3AccountDataMemberOfComboBox = New-Object System.Windows.Forms.ComboBox -Property @{
-    Left      = $Section3AccountDataBadLogonCountTextBox.Left
-    Top       = $Section3AccountDataTagsComboBox.Top
-    Width     = $FormScale * 220
-    Height    = $FormScale * 25
-    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
-    BackColor = 'White'
-    Add_MouseEnter = {
-        $script:TextMemory = $This.Text
-        $This.ForeColor    = 'Blue'
-        $This.Text         = "Member Of"
-    }
-    Add_MouseLeave = {
-        $This.ForeColor    = 'Black'
-        $This.Text         = $script:TextMemory
-    }
-    Add_MouseHover = {
-        Show-ToolTip -Title "Member Of" -Icon "Info" -Message @"
-+  The groups the account is a member of.
-"@
-    }
-}
-$Section3AccountDataTab.Controls.Add($Section3AccountDataMemberOfComboBox)
-
 
 $Section3AccountDataTagsAddButton = New-Object System.Windows.Forms.Button -Property @{
     Text      = "Add"
@@ -557,9 +713,9 @@ $Section3AccountDataTagsAddButton = New-Object System.Windows.Forms.Button -Prop
     BackColor = 'White'
     Add_Click = {
         if (-not ($Section3AccountDataTagsComboBox.SelectedItem -eq "Tags")) {
-            $Section3AccountDataNotesRichTextBox.text = "[ $(Get-Date) -- $($Section3AccountDataTagsComboBox.SelectedItem) ] " + $Section3AccountDataNotesRichTextBox.text
+            $script:Section3AccountDataNotesRichTextBox.text = "$(Get-Date) -- $($Section3AccountDataTagsComboBox.SelectedItem)`n" + $script:Section3AccountDataNotesRichTextBox.text
         }
-        Save-TreeViewData -Endpoint
+        Save-TreeViewData -Accounts
     }
     Add_MouseEnter = {}
     Add_MouseLeave = {}
@@ -575,11 +731,16 @@ $Section3AccountDataTab.Controls.Add($Section3AccountDataTagsAddButton)
 CommonButtonSettings -Button $Section3AccountDataTagsAddButton
 
 
-$Section3AccountDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
+###############
+# Botton Half #
+###############
+
+
+$script:Section3AccountDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextBox -Property @{
     Left       = 0
     Top        = $Section3AccountDataLastBadPasswordAttemptTextBox.Top + $Section3AccountDataLastBadPasswordAttemptTextBox.Height + $($FormScale * 6)
     Width      = $FormScale * 740
-    Height     = $FormScale * 205
+    Height     = $FormScale * 200
     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
     BackColor  = 'White'
     Multiline  = $True
@@ -594,10 +755,18 @@ $Section3AccountDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextB
     }
     Add_MouseEnter = {
         $This.ForeColor = 'DarkRed'
+        $script:Section3AccountDataNotesRichTextBoxPreSave = $This.text
+        $This.text = "$(Get-Date) -- `n" + $This.text
+        $script:Section3AccountDataNotesRichTextBoxSaveCheck = $This.text
     }
     Add_MouseLeave = {
         $This.ForeColor = 'Black'
-        Save-TreeViewData -Endpoint
+        if ($script:Section3AccountDataNotesRichTextBoxSaveCheck -ne $This.text) {
+            Save-TreeViewData -Accounts
+        }
+        else {
+            $This.text = $script:Section3AccountDataNotesRichTextBoxPreSave
+        }
     }
     Add_KeyDown    = {
         if ($_.KeyCode) {
@@ -605,20 +774,121 @@ $Section3AccountDataNotesRichTextBox = New-Object System.Windows.Forms.RichTextB
         }
     }
 }
-$Section3AccountDataTab.Controls.Add($Section3AccountDataNotesRichTextBox)
+$Section3AccountDataTab.Controls.Add($script:Section3AccountDataNotesRichTextBox)
+$Section3AccountDataTab.ForcedVertical()
 
+
+$Section3AccountDataUpdateDataButton = New-Object System.Windows.Forms.Button -Property @{
+    Text      = "Update Data"
+    Left      = $script:Section3AccountDataNotesRichTextBox.Left + $script:Section3AccountDataNotesRichTextBox.Width - ($FormScale * 100 + 5)
+    Top       = $script:Section3AccountDataNotesRichTextBox.Top + $script:Section3AccountDataNotesRichTextBox.Height - $($FormScale * 22 + 5)
+    Width     = $FormScale * 100
+    Height    = $FormScale * 22
+    Font      = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
+    BackColor = 'White'
+    Add_Click = {
+        if ($root.text -match 'All Accounts') {
+            $ADAccount = $script:Section3AccountDataNameTextBox.text
+        }
+        $Verify = [System.Windows.Forms.MessageBox]::Show(
+            "Do you want to pull updated data for the account `"$($ADAccount)`" from Active Directory?",
+            "PoSh-EasyWin - high101bro",
+            'YesNo',
+            "Warning")
+        switch ($Verify) {
+            'Yes'{
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
+                    if (!$script:Credential) { Create-NewCredentials }
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
+                    $Username = $script:Credential.UserName
+                    $Password = '"PASSWORD HIDDEN"'
+        
+                    ### TODO: put in addition checks that prompt if this file is not populated or notifies the user of the AD server used
+                    if (Get-Content $script:ActiveDirectoryEndpoint) { $ImportFromADWinRMManuallEntryTextBoxTarget = Get-Content $script:ActiveDirectoryEndpoint }
+        
+                    $script:UpdatedADAccountInfo = Invoke-Command -ScriptBlock {
+                        param ($ADAccount)
+                        Get-ADUser -Filter {Name -eq $ADAccount} -Properties * `
+                        | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
+                    } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -Credential $script:Credential -ArgumentList @($ADAccount,$null)
+                    
+                    foreach ($Account in $script:AccountsTreeViewData) {
+                        if ($Account.Name -eq $ADAccount){
+                            $Account | Add-Member -MemberType NoteProperty -Name SID                    -Value $script:UpdatedADAccountInfo.SID -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name Enabled                -Value $script:UpdatedADAccountInfo.Enabled -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name LockedOut              -Value $script:UpdatedADAccountInfo.LockedOut -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name Created                -Value $script:UpdatedADAccountInfo.Created -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name Modified               -Value $script:UpdatedADAccountInfo.Modified -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name LastLogonDate          -Value $script:UpdatedADAccountInfo.LastLogonDate -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name LastBadPasswordAttempt -Value $script:UpdatedADAccountInfo.LastBadPasswordAttempt -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name BadLogonCount          -Value $script:UpdatedADAccountInfo.BadLogonCount -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name PasswordLastSet        -Value $script:UpdatedADAccountInfo.PasswordLastSet -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name PasswordExpired        -Value $script:UpdatedADAccountInfo.PasswordExpired -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name PasswordNeverExpires   -Value $script:UpdatedADAccountInfo.PasswordNeverExpires -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name PasswordNotRequired    -Value $script:UpdatedADAccountInfo.PasswordNotRequired -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name CanonicalName          -Value "/$($script:UpdatedADAccountInfo.CanonicalName | Split-Path -Parent | Split-Path -Leaf)" -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name MemberOf               -Value $(($script:UpdatedADAccountInfo | Select-Object -ExpandProperty MemberOf) -join "`n") -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name SmartCardLogonRequired -Value $script:UpdatedADAccountInfo.SmartCardLogonRequired -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name ScriptPath             -Value $script:UpdatedADAccountInfo.ScriptPath -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name HomeDrive              -Value $script:UpdatedADAccountInfo.HomeDrive -Force
+                            $Account | Add-Member -MemberType NoteProperty -Name Notes                  -Value $("$(Get-Date) -- Pulled Updated Account Data`n" + $script:Section3AccountDataNotesRichTextBox.text) -Force
+                        }
+                    }
+
+                    # Yep, needed to update treeview before saving
+                    Update-TreeViewData -Accounts -TreeView $script:AccountsTreeView.Nodes
+
+                    Normalize-TreeViewData -Accounts
+                    Save-TreeViewData -Accounts -SkipTextFieldSave
+
+                    # Yep, needed to reload the data in the Accounts tab
+                    Update-TreeViewData -Accounts -TreeView $script:AccountsTreeView.Nodes
+
+                    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
+                        Start-Sleep -Seconds 3
+                        Generate-NewRollingPassword
+                    }               
+        
+                    #$script:UpdatedADAccountInfo | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text) -Credential [ $UserName | $Password ]"
+                }
+                else {
+                    $script:UpdatedADAccountInfo = Invoke-Command -ScriptBlock {
+                        param ($ADAccount)
+                        Get-ADUser -Filter {Name -eq $ADAccount} -Properties * `
+                        | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive
+                    } -ComputerName $ImportFromADWinRMManuallEntryTextBoxTarget -ArgumentList @($ADAccount,$null)
+        
+                    #$script:UpdatedADAccountInfo | Export-Csv $script:AccountsTreeNodeFileSave -NoTypeInformation
+                    Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message  "Invoke-Command -ScriptBlock { Get-ADUser -Filter * -Properties * | Select-Object Name, SID, Enabled, LockedOut, Created, Modified, LastLogonDate, LastBadPasswordAttempt, BadLogonCount, PasswordLastSet, PasswordExpired, PasswordNeverExpires, PasswordNotRequired, CanonicalName, MemberOf, SmartCardLogonRequired, ScriptPath, HomeDrive } -ComputerName $($ImportFromADWinRMManuallEntryTextBox.Text)"
+                }
+            }
+            'No' {continue}
+        }
+    }
+    Add_MouseEnter = {}
+    Add_MouseLeave = {}
+    Add_MouseHover = {
+        Show-ToolTip -Title "Update Account Data From Active Directory" -Icon "Info" -Message @"
++  This will query Active Directory and pull any updated information for the account.
+"@
+    }
+}
+$Section3AccountDataTab.Controls.Add($Section3AccountDataUpdateDataButton)
+$Section3AccountDataUpdateDataButton.bringtofront()
+CommonButtonSettings -Button $Section3AccountDataUpdateDataButton
 # DEPRECATED
 # $script:Section3AccountDataNotesSaveCheck = ""
 # $Section3AccountDataSaveButton = New-Object System.Windows.Forms.Button -Property @{
 #     Text      = "Data Saved"
-#     Left      = $Section3AccountDataNotesRichTextBox.Left + $Section3AccountDataNotesRichTextBox.Width + $($FormScale + 5)
-#     Top       = $Section3AccountDataNotesRichTextBox.Top
+#     Left      = $script:Section3AccountDataNotesRichTextBox.Left + $script:Section3AccountDataNotesRichTextBox.Width + $($FormScale + 5)
+#     Top       = $script:Section3AccountDataNotesRichTextBox.Top
 #     Width     = $FormScale * 100
 #     Height    = $FormScale * 22
 #     Font       = New-Object System.Drawing.Font("$Font",$($FormScale * 11),0,0,0)
 #     BackColor = 'White'
 #     Add_Click = {
-#         Save-TreeViewData -Endpoint
+#         Save-TreeViewData -Accounts
 #         $StatusListBox.Items.Clear()
 #         $StatusListBox.Items.Add("Saved Host Data:  $($script:Section3AccountDataNameTextBox.Text)")            
 #     }

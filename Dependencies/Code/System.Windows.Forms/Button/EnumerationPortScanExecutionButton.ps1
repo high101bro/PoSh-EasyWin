@@ -182,7 +182,7 @@ $($EnumerationPortScanTimeoutTextbox.Text)
             $InformationTabControl.SelectedTab = $Section3MonitorJobsTab
 
             if ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $true) {
-                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
                     $CollectionName = "Enumeration Scanning $($script:ComputerList.count) [Pivot: $($script:ComputerListPivotExecutionTextBox.text)]"
 
@@ -236,7 +236,7 @@ $($EnumerationPortScanTimeoutTextbox.Text)
                 }
             }
             elseif ($script:EnumerationPortScanSpecificComputerNodeCheckbox.checked -eq $false) {
-                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                     if (!$script:Credential) { Create-NewCredentials }
                     $CollectionName = "Enumeration Scanning $(
                         $(
@@ -315,7 +315,7 @@ $($EnumerationPortScanTimeoutTextbox.Text)
     $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
     
     Foreach($Computer in $script:ComputerTreeViewData) {
-        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address -Metadata $Computer
+        AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.OperatingSystem -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address -Metadata $Computer
     }
     UpdateState-TreeViewData -Endpoint
 }

@@ -609,7 +609,7 @@ $EnumerationComputerListBoxAddToListButton = New-Object System.Windows.Forms.But
                 $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
 
                 $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
-                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address
+                AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Selected -ToolTip 'Enumeration Scan' -IPv4Address $Computer.IPv4Address
                 $ResultsListBox.Items.Add("$($Selected) has been added to /Unknown category")
 
                 $ComputerTreeNodeAddHostnameIP = New-Object PSObject -Property @{

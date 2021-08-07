@@ -27,7 +27,7 @@ function Stop-ProcessesOnMultipleComputers {
             [System.Windows.MessageBox]::Show('Ensure you checkbox one or more endpoints to collect process data from. Alternatively, you can select a CSV file from a previous process collection.','Error: No Endpoints Selected')
         }
         else {
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 Invoke-Command -ScriptBlock {
                     Get-Process #| Select-Object -Property @{n='PSComputerName';e={$(hostname)}}, *
@@ -92,7 +92,7 @@ function Stop-ProcessesOnMultipleComputers {
     # To alert the user that it's finished
     [system.media.systemsounds]::Exclamation.play()
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
         Generate-NewRollingPassword
     }

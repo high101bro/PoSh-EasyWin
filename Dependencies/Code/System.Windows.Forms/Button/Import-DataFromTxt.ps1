@@ -43,7 +43,7 @@ Function Import-DataFromTxt {
                 Initialize-TreeViewData -Endpoint
                 UpdateState-TreeViewData -Endpoint -NoMessage
                 Normalize-TreeViewData -Endpoint
-                Foreach($Computer in $script:ComputerTreeViewData) { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
+                Foreach($Computer in $script:ComputerTreeViewData) { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address }
                 $script:ComputerTreeView.ExpandAll()
             }
         }
@@ -66,19 +66,19 @@ Function Import-DataFromTxt {
         #Removed For Testing#
         $ResultsListBox.Items.Clear()
     
-        foreach ($Accounts in $($AccountsTreeNodeImportTxt | Where-Object {$_ -ne ''}) ) {
+        foreach ($Account in $($AccountsTreeNodeImportTxt | Where-Object {$_ -ne ''}) ) {
             # Checks if the data already exists
-            if ($script:AccountsTreeViewData.Name -contains $Accounts) {
-                Message-NodeAlreadyExists -Accounts -Message "Import .CSV:  Warning" -Account $Accounts -ResultsListBoxMessage
+            if ($script:AccountsTreeViewData.Name -contains $Account) {
+                Message-NodeAlreadyExists -Accounts -Message "Import .CSV:  Warning" -Account $Account -ResultsListBoxMessage
             }
             else {
                 $ComputerAndAccountTreeViewTabControl.SelectedTab = $AccountsTreeviewTab
                 $script:AccountsTreeNodeComboBox.SelectedItem = 'CanonicalName'
     
-                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category '/Unknown' -Entry $Accounts -ToolTip 'N/A'
+                AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category '/Unknown' -Entry $Account -ToolTip 'N/A'
     
                 $script:AccountsTreeViewData += [PSCustomObject]@{
-                    Name            = $Accounts
+                    Name            = $Account
                     OperatingSystem = 'Unknown'
                     CanonicalName   = '/Unknown'
                     IPv4Address     = 'N/A'
@@ -88,7 +88,7 @@ Function Import-DataFromTxt {
                 Initialize-TreeViewData -Accounts
                 UpdateState-TreeViewData -Accounts -NoMessage
                 Normalize-TreeViewData -Accounts
-                Foreach($Accounts in $script:AccountsTreeViewData) { AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Accounts.CanonicalName -Entry $Accounts.Name -ToolTip 'No ToolTip Data' -IPv4Address $Accounts.IPv4Address }
+                Foreach($Account in $script:AccountsTreeViewData) { AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID }
                 $script:AccountsTreeView.ExpandAll()
             }
         }

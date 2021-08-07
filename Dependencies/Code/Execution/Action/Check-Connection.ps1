@@ -77,7 +77,7 @@ function Check-Connection {
                 # The following does a ping first...
                 # Test-NetConnection -CommonTCPPort WINRM -ComputerName <Target>
 
-                #if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                #if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 #    if (!$script:Credential) { Create-NewCredentials }
                 #    $CheckCommand = Test-WSman -ComputerName $target #-Credential $script:Credential
                 #}

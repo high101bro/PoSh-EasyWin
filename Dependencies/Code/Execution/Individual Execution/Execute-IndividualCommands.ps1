@@ -30,7 +30,7 @@ Foreach ($Command in $script:CommandsCheckedBoxesSelected) {
         Foreach ($TargetComputer in $script:ComputerList) {
             # Checks for the type of command selected and assembles the command to be executed
             $OutputFileFileType = ""
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "Credentials Used: $($script:Credential.UserName)"
 

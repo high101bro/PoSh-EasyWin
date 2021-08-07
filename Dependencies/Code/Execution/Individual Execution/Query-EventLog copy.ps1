@@ -28,7 +28,7 @@ function Query-EventLog {
 | Select-Object PSComputerName, LogFile, EventIdentifier, CategoryString, @{Name='TimeGenerated';Expression={[Management.ManagementDateTimeConverter]::ToDateTime(`$_.TimeGenerated)}}, Message, Type $EventLogQueryMax
 "@
         if ($EventLogWinRMRadioButton.Checked) {
-            if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 $EventLogQueryBuild = "Invoke-Command -Credential $script:Credential $EventLogQueryComputer -ScriptBlock { $EventLogQueryCommand $EventLogQueryFilter } $EventLogQueryPipe"
                 Start-Job -ScriptBlock {
                     param(
@@ -56,7 +56,7 @@ function Query-EventLog {
             Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "$EventLogQueryBuild"
         }
         elseif ($EventLogRPCRadioButton.Checked) {
-            if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 $EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryComputer $EventLogQueryFilter -Credential $script:Credential $EventLogQueryPipe"
                 Start-Job -Name "PoSh-EasyWin: $CollectionName -- $TargetComputer" -ScriptBlock {
                     param(

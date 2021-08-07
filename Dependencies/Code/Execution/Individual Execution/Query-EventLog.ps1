@@ -68,7 +68,7 @@ function Query-EventLog {
 
 
         if ($EventLogWinRMRadioButton.Checked) {
-            if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 if (!$script:Credential) { Create-NewCredentials }
 
                 Invoke-Command -ScriptBlock ${function:Compiled-EventLogCommand} `
@@ -107,7 +107,7 @@ function Query-EventLog {
             #Create-LogEntry -LogFile $LogFile -TargetComputer $TargetComputer -Message "$EventLogQueryBuild"
         }
         elseif ($EventLogRPCRadioButton.Checked) {
-            if ( $ComputerListProvideCredentialsCheckBox.Checked ) {
+            if ( $script:ComputerListProvideCredentialsCheckBox.Checked ) {
                 #$EventLogQueryBuild = "$EventLogQueryCommand $EventLogQueryComputer $EventLogQueryFilter -Credential $script:Credential $EventLogQueryPipe"
                 #Start-Job -Name "PoSh-EasyWin: $CollectionName -- $TargetComputer" -ScriptBlock {
                 #    param(

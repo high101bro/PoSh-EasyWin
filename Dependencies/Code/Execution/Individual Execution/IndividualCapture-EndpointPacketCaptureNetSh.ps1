@@ -252,7 +252,7 @@ foreach ($TargetComputer in $script:ComputerList) {
 
     Start-Job -Name "PoSh-EasyWin: $CollectionName -- $TargetComputer $DateTime" -ScriptBlock {
         param(
-            $ComputerListProvideCredentialsCheckBox,
+            $script:ComputerListProvideCredentialsCheckBox,
             $script:Credential,
             $TargetComputer,
             $EndpointEtlTraceFile,
@@ -269,7 +269,7 @@ foreach ($TargetComputer in $script:ComputerList) {
         )
 
 
-        if ($ComputerListProvideCredentialsCheckBox.Checked) {
+        if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
             if (!$script:Credential) { $script:Credential = Get-Credential }
             
             $Session = New-PSSession -ComputerName $TargetComputer -Credential $script:Credential
@@ -323,7 +323,7 @@ foreach ($TargetComputer in $script:ComputerList) {
         
 
     } -ArgumentList @(
-        $ComputerListProvideCredentialsCheckBox,
+        $script:ComputerListProvideCredentialsCheckBox,
         $script:Credential,
         $TargetComputer,
         $EndpointEtlTraceFile,

@@ -16,7 +16,7 @@ $AdminShare                   = 'c$'
 $ExeScriptSelectScript = Get-Content $ExeScriptSelectScriptPath -Raw
 
 foreach ($TargetComputer in $script:ComputerList) {
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }
 
         Start-Job -ScriptBlock {
@@ -145,7 +145,7 @@ elseif ($script:CommandTreeViewQueryMethodSelectionComboBox.SelectedItem -eq 'In
 
 <# DEPRECATED
 foreach ($TargetComputer in $script:ComputerList) {
-    if ($ComputerListProvideCredentialsCheckBox.Checked) {
+    if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
         if (!$script:Credential) { Create-NewCredentials }
         $Session = New-PSSession -ComputerName $TargetComputer -Name $TargetComputer -Credential $script:Credential
         Create-LogEntry -LogFile $LogFile -NoTargetComputer -Message "[+] New-PSSession -ComputerName $TargetComputer -Credential `$script:Credential"

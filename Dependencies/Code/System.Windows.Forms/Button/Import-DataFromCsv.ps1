@@ -33,8 +33,8 @@ Function Import-DataFromCsv {
                 $script:ComputerTreeNodeComboBox.SelectedItem = 'CanonicalName'
     
                 $CanonicalName = $($($Computer.CanonicalName) -replace $Computer.Name,"" -replace $Computer.CanonicalName.split('/')[0],"").TrimEnd("/")
-                if ($Computer.CanonicalName -eq "") { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
-                else { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
+                if ($Computer.CanonicalName -eq "") { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category '/Unknown' -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address }
+                else { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address }
     
                 $script:ComputerTreeViewData += $Computer
     
@@ -42,7 +42,7 @@ Function Import-DataFromCsv {
                 Initialize-TreeViewData -Endpoint
                 UpdateState-TreeViewData -Endpoint -NoMessage
                 Normalize-TreeViewData -Endpoint
-                Foreach($Computer in $script:ComputerTreeViewData) { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip 'No ToolTip Data' -IPv4Address $Computer.IPv4Address }
+                Foreach($Computer in $script:ComputerTreeViewData) { AddTreeNodeTo-TreeViewData -Endpoint -RootNode $script:TreeNodeComputerList -Category $Computer.CanonicalName -Entry $Computer.Name -ToolTip $ComputerData.IPv4Address -IPv4Address $Computer.IPv4Address }
                 $script:ComputerTreeView.ExpandAll()
             }
         }
@@ -67,26 +67,26 @@ Function Import-DataFromCsv {
         $ResultsListBox.Items.Clear()
         
         # Imports data
-        foreach ($Accounts in $AccountsTreeNodeImportCsv) {
+        foreach ($Account in $AccountsTreeNodeImportCsv) {
             # Checks if data already exists
-            if ($script:AccountsTreeViewData.Name -contains $Accounts.Name) {
-                Message-NodeAlreadyExists -Accounts -Message "Import .CSV:  Warning" -Account $Accounts.Name -ResultsListBoxMessage
+            if ($script:AccountsTreeViewData.Name -contains $Account.Name) {
+                Message-NodeAlreadyExists -Accounts -Message "Import .CSV:  Warning" -Account $Account.Name -ResultsListBoxMessage
             }
             else {
                 $ComputerAndAccountTreeViewTabControl.SelectedTab = $AccountsTreeviewTab
                 $script:AccountsTreeNodeComboBox.SelectedItem = 'CanonicalName'
         
-                $CanonicalName = $($($Accounts.CanonicalName) -replace $Accounts.Name,"" -replace $Accounts.CanonicalName.split('/')[0],"").TrimEnd("/")
-                if ($Accounts.CanonicalName -eq "") { AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category '/Unknown' -Entry $Accounts.Name -ToolTip 'No ToolTip Data' -IPv4Address $Accounts.IPv4Address }
-                else { AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $CanonicalName -Entry $Accounts.Name -ToolTip 'No ToolTip Data' -IPv4Address $Accounts.IPv4Address }
+                $CanonicalName = $($($Account.CanonicalName) -replace $Account.Name,"" -replace $Account.CanonicalName.split('/')[0],"").TrimEnd("/")
+                if ($Account.CanonicalName -eq "") { AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category '/Unknown' -Entry $Account.Name -ToolTip $Account.SID }
+                else { AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $CanonicalName -Entry $Account.Name -ToolTip $Account.SID }
         
-                $script:AccountsTreeViewData += $Accounts
+                $script:AccountsTreeViewData += $Account
         
                 $script:AccountsTreeView.Nodes.Clear()
                 Initialize-TreeViewData -Accounts
                 UpdateState-TreeViewData -Accounts -NoMessage
                 Normalize-TreeViewData -Accounts
-                Foreach($Accounts in $script:AccountsTreeViewData) { AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Accounts.CanonicalName -Entry $Accounts.Name -ToolTip 'No ToolTip Data' -IPv4Address $Accounts.IPv4Address }
+                Foreach($Account in $script:AccountsTreeViewData) { AddTreeNodeTo-TreeViewData -Accounts -RootNode $script:TreeNodeAccountsList -Category $Account.CanonicalName -Entry $Account.Name -ToolTip $Account.SID }
                 $script:AccountsTreeView.ExpandAll()
             }
         }

@@ -7,106 +7,99 @@ function Normalize-TreeViewData {
         # This section populates the data with default data if it doesn't have any
         $script:AccountsTreeViewDataTemp = @()
         
-        Foreach($AccountsData in $script:AccountsTreeViewData) {
+        Foreach($Account in $script:AccountsTreeViewData) {
             # Trims out the domain name from the the CanonicalName
-            $CanonicalName = $($($AccountsData.CanonicalName) -replace $AccountsData.Name,"" -replace $AccountsData.CanonicalName.split('/')[0],"").TrimEnd("/")
+            $CanonicalName = $($($Account.CanonicalName) -replace $Account.Name,"" -replace $Account.CanonicalName.split('/')[0],"").TrimEnd("/")
 
-            $AccountsTreeNodeInsertDefaultData = New-Object PSObject -Property @{ Name = $AccountsData.Name}
+            $AccountsTreeNodeInsertDefaultData = New-Object PSObject -Property @{ Name = $Account.Name}
 
 
-            if ($AccountsData.Enabled) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Enabled -Value $AccountsData.Enabled -Force }
-            elseif ($AccountsData.Enabled -eq $false) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Enabled -Value $AccountsData.Enabled -Force }
+            if ($Account.Enabled -eq $true -or $Account.Enabled -eq $false) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Enabled -Value $Account.Enabled -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Enabled -Value "Unknown Status" -Force }
 
-            if ($AccountsData.CanonicalName) {
+            if ($Account.CanonicalName) {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name CanonicalName -Value $CanonicalName -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name CanonicalName -Value "/Unknown OU" -Force }
 
-            if ($AccountsData.LockedOut) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LockedOut -Value $AccountsData.LockedOut -Force }
-            elseif ($AccountsData.LockedOut -eq $false) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LockedOut -Value $AccountsData.LockedOut -Force }
+            if ($Account.LockedOut -eq $true -or $Account.LockedOut -eq $false) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LockedOut -Value $Account.LockedOut -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LockedOut -Value "Unknown Status" -Force }
 
-            if ($AccountsData.SmartCardLogonRequired) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SmartCardLogonRequired -Value $AccountsData.SmartCardLogonRequired -Force }
-            elseif ($AccountsData.SmartCardLogonRequired -eq $false) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SmartCardLogonRequired -Value $AccountsData.SmartCardLogonRequired -Force }
+            if ($Account.SmartCardLogonRequired -eq $true -or $Account.SmartCardLogonRequired -eq $false) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SmartCardLogonRequired -Value $Account.SmartCardLogonRequired -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SmartCardLogonRequired -Value "Unknown Status" -Force }
 
-            if ($AccountsData.Created) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Created -Value $AccountsData.Created -Force }
+            if ($Account.Created) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Created -Value $Account.Created -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Created -Value "No TimeStamp" -Force }
 
-            if ($AccountsData.Modified) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Modified -Value $AccountsData.Modified -Force }
+            if ($Account.Modified) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Modified -Value $Account.Modified -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Modified -Value "No TimeStamp" -Force }
 
-            if ($AccountsData.LastLogonDate) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LastLogonDate -Value $AccountsData.LastLogonDate -Force }
+            if ($Account.LastLogonDate) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LastLogonDate -Value $Account.LastLogonDate -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LastLogonDate -Value "No TimeStamp" -Force }
 
-            if ($AccountsData.LastBadPasswordAttempt) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LastBadPasswordAttempt -Value $AccountsData.LastBadPasswordAttempt -Force }
+            if ($Account.LastBadPasswordAttempt) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LastBadPasswordAttempt -Value $Account.LastBadPasswordAttempt -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name LastBadPasswordAttempt -Value "No TimeStamp" -Force }
 
-            if ($AccountsData.BadLogonCount) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name BadLogonCount -Value $AccountsData.BadLogonCount -Force }
+            if ($Account.BadLogonCount) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name BadLogonCount -Value $Account.BadLogonCount -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name BadLogonCount -Value "0" -Force }
 
-            if ($AccountsData.PasswordExpired) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordExpired -Value $AccountsData.PasswordExpired -Force }
-            elseif ($AccountsData.PasswordExpired -eq $false) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordExpired -Value $AccountsData.PasswordExpired -Force }
+            if ($Account.PasswordExpired -eq $true -or $Account.PasswordExpired -eq $false) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordExpired -Value $Account.PasswordExpired -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordExpired -Value "Unknown Status" -Force }
 
-            if ($AccountsData.PasswordNeverExpires) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordNeverExpires -Value $AccountsData.PasswordNeverExpires -Force }
-            elseif ($AccountsData.PasswordNeverExpires -eq $false) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordNeverExpires -Value $AccountsData.PasswordNeverExpires -Force }
+            if ($Account.PasswordNeverExpires -eq $true -or $Account.PasswordNeverExpires -eq $false) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordNeverExpires -Value $Account.PasswordNeverExpires -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordNeverExpires -Value "Unknown Status" -Force }
 
-            if ($AccountsData.PasswordNotRequired) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordNotRequired -Value $AccountsData.PasswordNotRequired -Force }
-            elseif ($AccountsData.PasswordNotRequired -eq $false) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordNotRequired -Value $AccountsData.PasswordNotRequired -Force }
+            if ($Account.PasswordNotRequired -eq $true -or $Account.PasswordNotRequired -eq $false) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordNotRequired -Value $Account.PasswordNotRequired -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PasswordNotRequired -Value "Unknown Status" -Force }
 
-            if ($AccountsData.MemberOf) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MemberOf -Value $AccountsData.MemberOf -Force }
-            else {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MemberOf -Value "No Group" -Force }
+            if ($Account.MemberOf) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MemberOf -Value $Account.MemberOf -Force }
+            # Note: removed, it produced a false group count of 1... it counted "No Group" as a group...
+            # else {
+            #     $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name MemberOf -Value "No Group" -Force }
 
-            if ($AccountsData.SID) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SID -Value $AccountsData.SID -Force }
+            if ($Account.SID) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SID -Value $Account.SID -Force }
             else {
                 $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name SID -Value "Unknown SID" -Force }
 
-            if ($AccountsData.ScriptPath) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ScriptPath -Value $AccountsData.ScriptPath -Force }
+            if ($Account.ScriptPath) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ScriptPath -Value $Account.ScriptPath -Force }
             else {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ScriptPath -Value "No ScriptPath" -Force }
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name ScriptPath -Value "No Script Path" -Force }
 
-            if ($AccountsData.HomeDrive) {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name HomeDrive -Value $AccountsData.HomeDrive -Force }
+            if ($Account.HomeDrive) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name HomeDrive -Value $Account.HomeDrive -Force }
             else {
-                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name HomeDrive -Value "No HomeDrive" -Force }
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name HomeDrive -Value "No Home Drive" -Force }
 
-
+            if ($Account.Notes) {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Notes -Value $Account.Notes -Force }
+            else {
+                $AccountsTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Notes -Value $null -Force }
+    
             $script:AccountsTreeViewDataTemp += $AccountsTreeNodeInsertDefaultData
             ###write-host $($AccountsTreeNodeInsertDefaultData | Select Name, OperatingSystem, CanonicalName, IPv4Address, Notes)
         }
@@ -147,13 +140,14 @@ function Normalize-TreeViewData {
 
             if ($Computer.PortScan) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PortScan -Value $Computer.PortScan -Force }
-            else {
-               $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PortScan -Value "No Ports" -Force }
+            # Note: removed, it produced a false group count of 1... it counted "No Ports" as a group...
+            # else {
+            #    $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name PortScan -Value "No Ports" -Force }
 
             if ($Computer.Notes) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Notes -Value $Computer.Notes -Force }
-            else {
-                $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Notes -Value "No Notes Available" -Force }
+            # else {
+            #     $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name Notes -Value "No Notes Available" -Force }
 
             if ($Computer.OperatingSystemHotfix) {
                 $ComputerTreeNodeInsertDefaultData | Add-Member -MemberType NoteProperty -Name OperatingSystemHotfix -Value $Computer.OperatingSystemHotfix -Force }

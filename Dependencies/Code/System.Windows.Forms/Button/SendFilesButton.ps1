@@ -329,7 +329,7 @@ $SendFilesButtonAdd_Click = {
                             $FilePaths = [array]$script:FileTransferPathsListBox.SelectedItems
 
                             foreach ($TargetComputer in $script:ComputerList) {
-                                if ($ComputerListProvideCredentialsCheckBox.Checked) {
+                                if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                                     if (!$script:Credential) { Create-NewCredentials }
                                     
                                     Start-Job -ScriptBlock {

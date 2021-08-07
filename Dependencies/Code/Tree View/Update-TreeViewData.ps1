@@ -7,7 +7,7 @@ function Update-TreeViewData {
     )
     #Previously known as: Conduct-NodeAction
 
-    if ($Commands) { 
+    if ($Commands) {
         $script:TreeeViewCommandsCount = 0 
         $InformationTabControl.SelectedTab = $Section3QueryExplorationTabPage
     }
@@ -61,9 +61,9 @@ function Update-TreeViewData {
             }
         }
         if ($root.isselected) {
-            $script:rootSelected      = $root
-            $script:CategorySelected  = $null
-            $script:EntrySelected     = $null
+            $script:rootSelected     = $root
+            $script:CategorySelected = $null
+            $script:EntrySelected    = $null
 
             $script:HostQueryTreeViewSelected              = ""
             $Section3QueryExplorationName.Text             = "N/A"
@@ -385,7 +385,7 @@ function Update-TreeViewData {
                         $script:EntrySelected     = $Entry
 
                         Display-ContextMenuForAccountsTreeNode -ClickedOnNode
-                        $Section3AccountDataNotesRichTextBox.ForeColor = 'Black'
+                        $script:Section3AccountDataNotesRichTextBox.ForeColor = 'Black'
 
                         # $script:HostQueryTreeViewSelected = $Entry.Text
 
@@ -403,11 +403,17 @@ function Update-TreeViewData {
                             $Section3AccountDataPasswordExpiredTextBox.Text         = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).PasswordExpired
                             $Section3AccountDataPasswordNeverExpiresTextBox.Text    = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).PasswordNeverExpires
                             $Section3AccountDataPasswordNotRequiredTextBox.Text     = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).PasswordNotRequired
-                            $Section3AccountDataMemberOfComboBox.Text               = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).MemberOf
+                            $Section3AccountDataMemberOfComboBox.ForeColor          = "Black"
+                                $Section3AccountDataMemberOfComboBox.Items.Clear()
+                                $script:MemberOfList = $(($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like $_.Name}).MemberOf).split("`n") | Sort-Object
+                                ForEach ($Group in $script:MemberOfList) { 
+                                    $Section3AccountDataMemberOfComboBox.Items.Add($Group) 
+                                }
+                            $Section3AccountDataMemberOfComboBox.Text               = "- Select Dropdown [$(if ($script:MemberOfList -ne $null) {$script:MemberOfList.count} else {0})] Groups"
                             $Section3AccountDataSIDTextBox.Text                     = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).SID
                             $Section3AccountDataScriptPathTextBox.Text              = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).ScriptPath
                             $Section3AccountDataHomeDriveTextBox.Text               = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).HomeDrive
-                            $Section3AccountDataNotesRichTextBox.Text               = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Notes
+                            $script:Section3AccountDataNotesRichTextBox.Text        = $($script:AccountsTreeViewData | Where-Object {$($Entry.Text) -like "*$($_.Name)" }).Notes
                         }
                     }
                 }
@@ -459,9 +465,9 @@ function Update-TreeViewData {
         if ($ExeScriptUserSpecifiedExecutableAndScriptCheckbox.checked) { $script:TreeeViewCommandsCount++ }
     }
 
-
     # Updates the color of the button if there is at least one query and endpoint selected
-    if ($script:TreeeViewCommandsCount -gt 0 -and $script:TreeeViewEndpointCount -gt 0) {
+    Generate-ComputerList
+    if (($script:TreeeViewCommandsCount -gt 0 -or $script:TreeeViewEndpointCount -gt 0) -and $script:ComputerList.count -gt 0) {
         $script:ComputerListExecuteButton.Enabled   = $true
         $script:ComputerListExecuteButton.forecolor = 'Black'
         $script:ComputerListExecuteButton.backcolor = 'lightgreen'

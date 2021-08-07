@@ -12,7 +12,7 @@ function Update-AutoChartsActiveDirectoryGroups {
 
         <#
         if ($AutoChartPullNewDataEnrichedCheckBox.checked) {
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Get-ActiveDirectoryUserAccountsEnriched - (WinRM) Script'
@@ -35,7 +35,7 @@ function Update-AutoChartsActiveDirectoryGroups {
         }
         else {
         #>
-            if ($ComputerListProvideCredentialsCheckBox.Checked) {
+            if ($script:ComputerListProvideCredentialsCheckBox.Checked) {
                 if (!$script:Credential) { Create-NewCredentials }
                 if ($AutoChartProtocolWinRMRadioButton.checked) {
                     $CollectionName = 'Active Directory Groups - (WinRM)'
@@ -139,7 +139,7 @@ Elasped Time:  $($Timecount -replace '-','')"
         Monitor-Jobs -CollectionName $CollectionName
     }
 
-    if ($script:RollCredentialsState -and $ComputerListProvideCredentialsCheckBox.checked) {
+    if ($script:RollCredentialsState -and $script:ComputerListProvideCredentialsCheckBox.checked) {
         Start-Sleep -Seconds 3
         Generate-NewRollingPassword
     }
